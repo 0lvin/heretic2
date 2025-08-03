@@ -44,7 +44,7 @@ void DefenceThink_Tornado(edict_t *Caster,char *Format,...)
 
 	// Take off mana
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->playerinfo.pers.inventory[Caster->client->playerinfo.def_ammo_index]-= Caster->client->playerinfo.pers.defence->quantity;
+		Caster->client->pers.inventory[Caster->client->playerinfo.def_ammo_index]-= Caster->client->pers.defence->quantity;
 }
 
 

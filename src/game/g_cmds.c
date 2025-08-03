@@ -68,7 +68,7 @@ ClientTeam(edict_t *ent, char* value)
 		return value;
 	}
 
-	strcpy(value, Info_ValueForKey(ent->client->playerinfo.pers.userinfo, "skin"));
+	strcpy(value, Info_ValueForKey(ent->client->pers.userinfo, "skin"));
 	p = strchr(value, '/');
 
 	if (!p)
@@ -134,9 +134,9 @@ SelectNextItem(edict_t *ent, int itflags)
 	/* scan  for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
 	{
-		index = (cl->playerinfo.pers.selected_item + i)%MAX_ITEMS;
+		index = (cl->pers.selected_item + i)%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 		{
 			continue;
 		}
@@ -153,11 +153,11 @@ SelectNextItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		cl->playerinfo.pers.selected_item = index;
+		cl->pers.selected_item = index;
 		return;
 	}
 
-	cl->playerinfo.pers.selected_item = -1;
+	cl->pers.selected_item = -1;
 }
 
 static void
@@ -182,9 +182,9 @@ SelectPrevItem(edict_t *ent, int itflags)
 	/* scan for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
 	{
-		index = (cl->playerinfo.pers.selected_item + MAX_ITEMS - i) % MAX_ITEMS;
+		index = (cl->pers.selected_item + MAX_ITEMS - i) % MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 		{
 			continue;
 		}
@@ -201,12 +201,12 @@ SelectPrevItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		cl->playerinfo.pers.selected_item = index;
-		cl->playerinfo.pers.defence = it;
+		cl->pers.selected_item = index;
+		cl->pers.defence = it;
 		return;
 	}
 
-	cl->playerinfo.pers.selected_item = -1;
+	cl->pers.selected_item = -1;
 }
 
 void
@@ -221,7 +221,7 @@ ValidateSelectedItem(edict_t *ent)
 
 	cl = ent->client;
 
-	if (cl->playerinfo.pers.inventory[cl->playerinfo.pers.selected_item])
+	if (cl->pers.inventory[cl->pers.selected_item])
 	{
 		return; /* valid */
 	}
@@ -384,16 +384,16 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			ent->client->playerinfo.pers.inventory[i] += 1;
+			ent->client->pers.inventory[i] += 1;
 
 			if((it->playeranimseq == ASEQ_WRRBOW_GO)||(it->playeranimseq == ASEQ_WPHBOW_GO))
 			{
 				// This is a bow, put the bow on his back.
 
 				if (it->tag == ITEM_WEAPON_PHOENIXBOW)
-					ent->client->playerinfo.pers.bowtype = BOW_TYPE_PHOENIX;
+					ent->client->pers.bowtype = BOW_TYPE_PHOENIX;
 				else
-					ent->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
+					ent->client->pers.bowtype = BOW_TYPE_REDRAIN;
 
 				SetupPlayerinfo_effects(ent);
 				playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
@@ -422,12 +422,12 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			ent->client->playerinfo.pers.inventory[i] += 1;
+			ent->client->pers.inventory[i] += 1;
 		}
 
 		// if we don't already have a defence item, make the ring default
-		if (ent->client->playerinfo.pers.defence == NULL)
-			ent->client->playerinfo.pers.defence=FindItem("ring");
+		if (ent->client->pers.defence == NULL)
+			ent->client->pers.defence=FindItem("ring");
 
 		if (!give_all)
 		{
@@ -461,15 +461,15 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all || (Q_stricmp(name, "armor") == 0))
 	{
-		if (ent->client->playerinfo.pers.armortype == ARMOR_TYPE_NONE)
+		if (ent->client->pers.armortype == ARMOR_TYPE_NONE)
 		{
-			ent->client->playerinfo.pers.armor_count = silver_armor_info.max_armor;
-			ent->client->playerinfo.pers.armortype = ARMOR_TYPE_SILVER;
+			ent->client->pers.armor_count = silver_armor_info.max_armor;
+			ent->client->pers.armortype = ARMOR_TYPE_SILVER;
 		}
 		else	// We'll assume there's armor, so load up with gold.
 		{
-			ent->client->playerinfo.pers.armor_count = gold_armor_info.max_armor;
-			ent->client->playerinfo.pers.armortype = ARMOR_TYPE_GOLD;
+			ent->client->pers.armor_count = gold_armor_info.max_armor;
+			ent->client->pers.armortype = ARMOR_TYPE_GOLD;
 
 		}
 
@@ -486,12 +486,12 @@ Cmd_Give_f(edict_t *ent)
 	// Give all does not give staff powerup
 	if (Q_stricmp(name, "staff") == 0)
 	{
-		if (ent->client->playerinfo.pers.stafflevel < (STAFF_LEVEL_MAX-1))
-			ent->client->playerinfo.pers.stafflevel++;
+		if (ent->client->pers.stafflevel < (STAFF_LEVEL_MAX-1))
+			ent->client->pers.stafflevel++;
 		else
-			ent->client->playerinfo.pers.stafflevel = STAFF_LEVEL_BASIC;
+			ent->client->pers.stafflevel = STAFF_LEVEL_BASIC;
 
-		gi.dprintf("Setting staff level to %d\n", ent->client->playerinfo.pers.stafflevel);
+		gi.dprintf("Setting staff level to %d\n", ent->client->pers.stafflevel);
 
 		SetupPlayerinfo_effects(ent);
 		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
@@ -569,7 +569,7 @@ Cmd_Give_f(edict_t *ent)
 
 		gi.dprintf("Setting plague level to %d\n", ent->client->playerinfo.plaguelevel);
 
-		memcpy (userinfo, ent->client->playerinfo.pers.userinfo, sizeof(userinfo));
+		memcpy (userinfo, ent->client->pers.userinfo, sizeof(userinfo));
 		ClientUserinfoChanged (ent, userinfo);
 
 		SetupPlayerinfo_effects(ent);
@@ -595,7 +595,7 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			ent->client->playerinfo.pers.inventory[i] = 1;
+			ent->client->pers.inventory[i] = 1;
 		}
 
 		return;
@@ -625,27 +625,27 @@ Cmd_Give_f(edict_t *ent)
 
 	if (it->flags & IT_WEAPON)
 	{
-		ent->client->playerinfo.pers.inventory[index] += 1;
+		ent->client->pers.inventory[index] += 1;
 	}
 	else if (it->flags & IT_AMMO)
 	{
 		if (gi.argc() == 3)
 		{
-			ent->client->playerinfo.pers.inventory[index] += atoi(gi.argv(2));
+			ent->client->pers.inventory[index] += atoi(gi.argv(2));
 		}
 		else
 		{
-			ent->client->playerinfo.pers.inventory[index] += it->quantity;
+			ent->client->pers.inventory[index] += it->quantity;
 		}
 	}
 	else
 	{
-		ent->client->playerinfo.pers.inventory[index] += 1;
+		ent->client->pers.inventory[index] += 1;
 	}
 
  	// if we don't already have a defence item, make this defence item default
-	if ((ent->client->playerinfo.pers.defence == NULL) && (it->flags & IT_DEFENSE))
-			ent->client->playerinfo.pers.defence=it;
+	if ((ent->client->pers.defence == NULL) && (it->flags & IT_DEFENSE))
+			ent->client->pers.defence=it;
 }
 
 /*
@@ -833,7 +833,7 @@ Cmd_Use_f(edict_t *ent)
 	}
 	index = ITEM_INDEX(it);
 
-	if (!playerinfo->pers.inventory[index])
+	if (!ent->client->pers.inventory[index])
 	{
 		if (it->flags & (IT_WEAPON|IT_DEFENSE))
 			// index is two off, since we can never run out of the staff or the flying fist
@@ -849,18 +849,18 @@ Cmd_Use_f(edict_t *ent)
 	{
 		if (playerinfo->leveltime > playerinfo->defensive_debounce)
 		{	// Do something only if the debounce is okay.
-			playerinfo->pers.lastdefence = playerinfo->pers.defence;
-			playerinfo->pers.defence=it;
+			ent->client->pers.lastdefence = ent->client->pers.defence;
+			ent->client->pers.defence = it;
 
 			if (Defence_CurrentShotsLeft(playerinfo, 1) > 0)
 			{
 				/* Only if there is ammo */
 				it->weaponthink(ent, "");
 
-				if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
-					playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
+				if(ent->client->pers.defence && ent->client->pers.defence->ammo)
+					playerinfo->def_ammo_index = ITEM_INDEX(FindItem(ent->client->pers.defence->ammo));
 				else
-					playerinfo->def_ammo_index=0;
+					playerinfo->def_ammo_index = 0;
 
 				playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
 			}
@@ -871,8 +871,8 @@ Cmd_Use_f(edict_t *ent)
 			}
 
 			// Put the ammo back.
-			playerinfo->pers.defence = playerinfo->pers.lastdefence;
-			playerinfo->pers.lastdefence = it;
+			ent->client->pers.defence = ent->client->pers.lastdefence;
+			ent->client->pers.lastdefence = it;
 		}
 	}
 	else
@@ -930,17 +930,17 @@ Cmd_WeapPrev_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
+	if (!cl->pers.weapon || sv_cinematicfreeze->value)
 		return;
 
-	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
+	selected_weapon = ITEM_INDEX(cl->pers.weapon);
 
 	// scan  for the next valid one
 	for (i=1 ; i<=MAX_ITEMS ; i++)
 	{
 		index = (selected_weapon + (MAX_ITEMS -i))%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 			continue;
 
 		it = itemlist + index;
@@ -957,8 +957,10 @@ Cmd_WeapPrev_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
-		if (ent->client->playerinfo.pers.newweapon == it)
+		if (ent->client->pers.newweapon == it)
+		{
 			return;	// successful
+		}
 	}
 }
 
@@ -977,17 +979,17 @@ Cmd_WeapNext_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
+	if (!cl->pers.weapon || sv_cinematicfreeze->value)
 		return;
 
-	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
+	selected_weapon = ITEM_INDEX(cl->pers.weapon);
 
 	// scan  for the next valid one
 	for (i=1 ; i<=MAX_ITEMS ; i++)
 	{
 		index = (selected_weapon + i)%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 			continue;
 
 		it = itemlist + index;
@@ -1004,8 +1006,10 @@ Cmd_WeapNext_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
-		if (ent->client->playerinfo.pers.newweapon == it)
+		if (ent->client->pers.newweapon == it)
+		{
 			return;	// successful
+		}
 	}
 }
 /*
@@ -1027,10 +1031,10 @@ Cmd_DefPrev_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.defence)
+	if (!cl->pers.defence)
 		selected_defence = 1;
 	else
-		selected_defence = ITEM_INDEX(cl->playerinfo.pers.defence);
+		selected_defence = ITEM_INDEX(cl->pers.defence);
 	start_defence = selected_defence;
 
 	// scan  for the next valid one
@@ -1038,7 +1042,7 @@ Cmd_DefPrev_f(edict_t *ent)
 	{
 		index = (selected_defence + (MAX_ITEMS-i))%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 			continue;
 
 		it = &itemlist[index];
@@ -1049,7 +1053,7 @@ Cmd_DefPrev_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
-		if (cl->playerinfo.pers.defence == it)
+		if (cl->pers.defence == it)
 		{
 			selected_defence = index;
 			break;	// successful
@@ -1086,10 +1090,10 @@ Cmd_DefNext_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.defence)
+	if (!cl->pers.defence)
 		selected_defence = 1;
 	else
-		selected_defence = ITEM_INDEX(cl->playerinfo.pers.defence);
+		selected_defence = ITEM_INDEX(cl->pers.defence);
 	start_defence = selected_defence;
 
 	// scan  for the next valid one
@@ -1097,7 +1101,7 @@ Cmd_DefNext_f(edict_t *ent)
 	{
 		index = (selected_defence + i)%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 			continue;
 		it = itemlist + index;
 		if (!it->use)
@@ -1106,7 +1110,7 @@ Cmd_DefNext_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
-		if (cl->playerinfo.pers.defence == it)
+		if (cl->pers.defence == it)
 		{
 			selected_defence = index;
 			break;	// successful
@@ -1136,11 +1140,11 @@ Cmd_WeapLast_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || !cl->playerinfo.pers.lastweapon)
+	if (!cl->pers.weapon || !cl->pers.lastweapon)
 		return;
 
-	index = ITEM_INDEX(cl->playerinfo.pers.lastweapon);
-	if (!cl->playerinfo.pers.inventory[index])
+	index = ITEM_INDEX(cl->pers.lastweapon);
+	if (!cl->pers.inventory[index])
 		return;
 
 	it = itemlist + index;
@@ -1236,7 +1240,7 @@ Cmd_Players_f(edict_t *ent)
 
 	for (i = 0; i < maxclients->value; i++)
 	{
-		if (game.clients[i].playerinfo.pers.connected)
+		if (game.clients[i].pers.connected)
 		{
 			index[count] = i;
 			count++;
@@ -1253,7 +1257,7 @@ Cmd_Players_f(edict_t *ent)
 	{
 		Com_sprintf(small, sizeof(small), "%3i %s\n",
 				game.clients[index[i]].ps.stats[STAT_FRAGS],
-				game.clients[index[i]].playerinfo.pers.netname);
+				game.clients[index[i]].pers.netname);
 
 		if (strlen(small) + strlen(large) > sizeof(large) - 100)
 		{
@@ -1465,11 +1469,11 @@ Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 
 	if (team)
 	{
-		Com_sprintf(text, sizeof(text), "(%s): ", ent->client->playerinfo.pers.netname);
+		Com_sprintf(text, sizeof(text), "(%s): ", ent->client->pers.netname);
 	}
 	else
 	{
-		Com_sprintf(text, sizeof(text), "%s: ", ent->client->playerinfo.pers.netname);
+		Com_sprintf(text, sizeof(text), "%s: ", ent->client->pers.netname);
 	}
 
 	if (arg0)
@@ -2188,7 +2192,7 @@ Cmd_TestFX_f(edict_t *ent)
 
 	i = irand(0, 15);
 	gi.dprintf("Setting pain skin number %d\n", i);
-	ent->client->playerinfo.pers.altparts |= 1<<i;
+	ent->client->pers.altparts |= 1<<i;
 
 	SetupPlayerinfo_effects(ent);
 	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);

@@ -4594,7 +4594,7 @@ EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer)
 			}
 			// possibly, we might want to reflect this if the player has gold armor
 			else
-			if((ent->client->playerinfo.pers.armortype == ARMOR_TYPE_GOLD) && (ent->client->playerinfo.pers.armor_count) && (irand(0,100) < 30))
+			if((ent->client->pers.armortype == ARMOR_TYPE_GOLD) && (ent->client->pers.armor_count) && (irand(0,100) < 30))
 				return true;
 
 		}

@@ -134,7 +134,7 @@ BeginIntermission(edict_t *targ)
 		}
 
 		/* Save third person view */
-		client->client->playerinfo.pers.chasetoggle = client->client->chasetoggle;
+		client->client->pers.chasetoggle = client->client->chasetoggle;
 	}
 
 	level.intermissiontime = level.time;
@@ -274,7 +274,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 
 			// determine score and team type
 			score = game.clients[i].resp.score;
-			strcpy(value, Info_ValueForKey (cl_ent->client->playerinfo.pers.userinfo, "skin"));
+			strcpy(value, Info_ValueForKey (cl_ent->client->pers.userinfo, "skin"));
 
 			if (!value[0])
 				continue;
@@ -619,7 +619,7 @@ G_SetStats(edict_t *ent)
 
 	pi = ent->client;
 	ps = &ent->client->ps;
-	pers = &ent->client->playerinfo.pers;
+	pers = &ent->client->pers;
 
 	// ********************************************************************************************
 	// Frags
@@ -731,12 +731,12 @@ G_SetStats(edict_t *ent)
 	if(pers->armortype == ARMOR_TYPE_SILVER)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_silver");
-		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 100) / MAX_SILVER_ARMOR;
+		ps->stats[STAT_ARMOUR] = (pi->pers.armor_count * 100) / MAX_SILVER_ARMOR;
 	}
 	if(pers->armortype == ARMOR_TYPE_GOLD)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_gold");
-		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 250) / MAX_GOLD_ARMOR;
+		ps->stats[STAT_ARMOUR] = (pi->pers.armor_count * 250) / MAX_GOLD_ARMOR;
 	}
 
 	// ********************************************************************************************

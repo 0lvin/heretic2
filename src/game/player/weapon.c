@@ -4121,11 +4121,11 @@ WeaponThink_FlyingFist(edict_t *caster, char *Format, ...)
 	SpellCastFlyingFist(caster, StartPos,caster->client->aimangles,Forward,0.0);
 
 	// Take off mana, but if there is none, then fire a wimpy fizzle-weapon.
-	if (caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] > 0)
+	if (caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] > 0)
 	{
 		if (!(deathmatch->value && ((int)dmflags->value & DF_INFINITE_MANA)))
-				caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
-						caster->client->playerinfo.pers.weapon->quantity;
+				caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
+						caster->client->pers.weapon->quantity;
 	}
 }
 
@@ -4158,8 +4158,8 @@ WeaponThink_Maceballs(edict_t *caster, char *format,...)
 		SpellCastMaceball(caster, startpos, caster->client->aimangles, NULL, 0.0);
 		// Giant iron dooms require lotsa mana, but yer average ripper needs far less.
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
-					caster->client->playerinfo.pers.weapon->quantity * 2.0;
+			caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
+					caster->client->pers.weapon->quantity * 2.0;
 	}
 	else
 	{
@@ -4171,8 +4171,8 @@ WeaponThink_Maceballs(edict_t *caster, char *format,...)
 
 		SpellCastRipper(caster, startpos, caster->client->aimangles, NULL);
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
-					caster->client->playerinfo.pers.weapon->quantity;		// Un-powered
+			caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
+					caster->client->pers.weapon->quantity;		// Un-powered
 	}
 }
 
@@ -4225,7 +4225,7 @@ WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 		gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/MagicMissileSpreadFire.wav"), 1, ATTN_NORM, 0);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index]--;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index]--;
 }
 
 // ************************************************************************************************
@@ -4264,7 +4264,7 @@ WeaponThink_SphereOfAnnihilation(edict_t *caster, char *Format, ...)
 								 ReleaseFlagsPtr);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4278,7 +4278,7 @@ WeaponThink_Firewall(edict_t *caster, char *format,...)
 	SpellCastWall(caster, caster->s.origin, caster->client->aimangles, NULL, 0.0);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4299,7 +4299,7 @@ WeaponThink_RedRainBow(edict_t *caster,char *Format,...)
 	SpellCastRedRain(caster, StartPos, caster->client->aimangles, NULL, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4320,7 +4320,7 @@ WeaponThink_PhoenixBow(edict_t *caster,char *Format,...)
 	SpellCastPhoenix(caster, StartPos, caster->client->aimangles, Forward, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4358,7 +4358,7 @@ void WeaponThink_HellStaff(edict_t *caster,char *Format,...)
 	SpellCastHellstaff(caster, StartPos, caster->client->aimangles, NULL);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4398,7 +4398,7 @@ WeaponThink_Blast(edict_t *caster,char *Format,...)
 	SpellCastBlast(caster, startpos, caster->client->aimangles, NULL);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->pers.weapon->quantity;
 
 	gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/BlastFire.wav"), 1, ATTN_NORM, 0);
 }
