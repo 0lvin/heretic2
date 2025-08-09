@@ -546,7 +546,7 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 qboolean
 Add_Ammo(edict_t *ent, gitem_t *item, int count)
 {
-	int bo;
+	int index;
 	int max;
 
 	if (!ent || !item || !ent->client)
@@ -554,20 +554,70 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 		return false;
 	}
 
-	if ((item->tag == ITEM_AMMO_MANA_OFFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
+	if (item->tag == AMMO_BULLETS)
+	{
+		max = ent->client->pers.max_bullets;
+	}
+	else if (item->tag == AMMO_SHELLS)
+	{
+		max = ent->client->pers.max_shells;
+	}
+	else if (item->tag == AMMO_ROCKETS)
+	{
+		max = ent->client->pers.max_rockets;
+	}
+	else if (item->tag == AMMO_GRENADES)
+	{
+		max = ent->client->pers.max_grenades;
+	}
+	else if (item->tag == AMMO_CELLS)
+	{
+		max = ent->client->pers.max_cells;
+	}
+	else if (item->tag == AMMO_SLUGS)
+	{
+		max = ent->client->pers.max_slugs;
+	}
+	else if (item->tag == AMMO_MAGSLUG)
+	{
+		max = ent->client->pers.max_magslug;
+	}
+	else if (item->tag == AMMO_TRAP)
+	{
+		max = ent->client->pers.max_trap;
+	}
+	else if (item->tag == AMMO_FLECHETTES)
+	{
+		max = ent->client->pers.max_flechettes;
+	}
+	else if (item->tag == AMMO_PROX)
+	{
+		max = ent->client->pers.max_prox;
+	}
+	else if (item->tag == AMMO_TESLA)
+	{
+		max = ent->client->pers.max_tesla;
+	}
+	else if (item->tag == AMMO_DISRUPTOR)
+	{
+		max = ent->client->pers.max_rounds;
+	}
+	else if ((item->tag == ITEM_AMMO_MANA_OFFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
 	{
 		item = FindItemByClassname("item_mana_offensive_half");
 		max = ent->client->playerinfo.pers.max_offmana;
-		return(Add_AmmoToInventory (ent,item,count,max));
+		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if ((item->tag == ITEM_AMMO_MANA_DEFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_DEFENSIVE_FULL))
 	{
 		item = FindItemByClassname("item_mana_defensive_half");
 		max = ent->client->playerinfo.pers.max_defmana;
-		return(Add_AmmoToInventory (ent,item,count,max));
+		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if ((item->tag == ITEM_AMMO_MANA_COMBO_QUARTER) || (item->tag == ITEM_AMMO_MANA_COMBO_HALF))
 	{
+		qboolean bo;
+
 		item = FindItemByClassname("item_mana_offensive_half");
 		max = ent->client->playerinfo.pers.max_offmana;
 
@@ -575,30 +625,46 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 
 		item = FindItemByClassname("item_mana_defensive_half");
 		max = ent->client->playerinfo.pers.max_defmana;
-		bo |= Add_AmmoToInventory (ent,item,count,max);
+		bo |= Add_AmmoToInventory(ent, item, count, max);
 
-		return(bo);
+		return bo;
 	}
 	else if (item->tag == ITEM_AMMO_REDRAIN)
 	{
 		max = ent->client->playerinfo.pers.max_redarrow;
-		return(Add_AmmoToInventory (ent,item,count,max));
+		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if (item->tag == ITEM_AMMO_PHOENIX)
 	{
 		max = ent->client->playerinfo.pers.max_phoenarr;
-		return(Add_AmmoToInventory (ent,item,count,max));
+		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if (item->tag == ITEM_AMMO_HELLSTAFF)
 	{
 		max = ent->client->playerinfo.pers.max_hellstaff;
-		return(Add_AmmoToInventory (ent,item,count,max));
+		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else
 	{
 		gi.dprintf("undefined ammo type\n");
 		return false;
 	}
+
+	index = ITEM_INDEX(item);
+
+	if (ent->client->pers.inventory[index] == max)
+	{
+		return false;
+	}
+
+	ent->client->pers.inventory[index] += count;
+
+	if (ent->client->pers.inventory[index] > max)
+	{
+		ent->client->pers.inventory[index] = max;
+	}
+
+	return true;
 }
 
 qboolean

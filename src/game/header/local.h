@@ -1991,6 +1991,34 @@ typedef struct
 	int selected_item;
 	int inventory[MAX_ITEMS];
 
+	/* ammo capacities */
+	int max_bullets;
+	int max_shells;
+	int max_rockets;
+	int max_grenades;
+	int max_cells;
+	int max_slugs;
+	int max_magslug;
+	int max_trap;
+
+	gitem_t *weapon;
+	gitem_t *lastweapon;
+
+	int power_cubes;            /* used for tracking the cubes in coop games */
+	int score;                  /* for calculating total unit score in coop games */
+
+	int game_helpchanged;
+	int helpchanged;
+
+	qboolean spectator;         /* client is a spectator */
+	int chasetoggle;       /* Chasetoggle */
+
+	int max_tesla;
+	int max_prox;
+	int max_mines;
+	int max_flechettes;
+	int max_rounds;
+
 	// ********************************************************************************************
 	// User info.
 	// ********************************************************************************************
@@ -2031,16 +2059,8 @@ typedef struct
 
 	// Offenses and defenses.
 
-	gitem_t		*weapon,*lastweapon,
-				*defence,*lastdefence,
+	gitem_t *defence, *lastdefence,
 				*newweapon;
-
-	// For calculating total unit score in co-op games.
-	int			score;
-
-	qboolean spectator;         /* client is a spectator */
-	int chasetoggle;       /* Chasetoggle */
-	int helpchanged;
 } client_persistant_t;
 
 // ************************************************************************************************
