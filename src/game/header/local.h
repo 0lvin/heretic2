@@ -300,14 +300,9 @@ typedef struct
 #define WEAP_TOTAL			20
 //JABot[end]
 
-// Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
-typedef struct playerinfo_s playerinfo_t;
-
 typedef struct gitem_s
 {
 	char *classname; /* spawning name */
-	short		msg_pickup;		// Pickup string id.
-	short		msg_nouse;		// Can`t use.
 	qboolean (*pickup)(struct edict_s *ent, struct edict_s *other);
 	void (*use)(struct edict_s *ent, struct gitem_s *item);
 	void (*drop)(struct edict_s *ent, struct gitem_s *item);
@@ -315,27 +310,31 @@ typedef struct gitem_s
 	char *pickup_sound;
 	char *world_model;
 	int world_model_flags;
+	char *view_model;
 
 	/* client side info */
 	char *icon;
 	char *pickup_name;          /* for printing on pickup */
-	vec3_t mins;			// Bounding box
-	vec3_t maxs;			// Bounding box
-
-	int playeranimseq;	// The ASEQ_ player sequence that should be engaged when this item is used.
-	int altanimseq;		// Powerup animation sequence
-
-	int MaxActive;		// Maximum allowable active uses of items of this type by a single
-				// player, at any instant in time. -1 indicates no limit.
-
 	int count_width;            /* number of digits to display by icon */
 
 	int quantity;               /* for ammo how much, for weapons how much is used per shot */
 	char *ammo;                 /* for weapons */
 	int flags;                  /* IT_* flags */
 
+	int weapmodel;              /* weapon model index (for weapons) */
+
 	void *info;
 	int tag;
+
+	char *precaches;            /* string of all models, sounds, and images this item will use */
+	short msg_pickup;           /* Pickup string id. */
+	short msg_nouse;            /* Can`t use. */
+	vec3_t mins;                /* Bounding box */
+	vec3_t maxs;                /* Bounding box */
+	int playeranimseq;          /* The ASEQ_ player sequence that should be engaged when this item is used. */
+	int altanimseq;             /* Powerup animation sequence */
+	int MaxActive;              /* Maximum allowable active uses of items of this type by a single
+				 	player, at any instant in time. -1 indicates no limit. */
 } gitem_t;
 
 /* this structure is left intact through an entire game
@@ -372,6 +371,9 @@ typedef struct
 
 	qboolean entitiesSpawned;
 } game_locals_t;
+
+// Forward define 'playerinfo_t' for use in 'panimframe_t' and 'panimmove_t'.
+typedef struct playerinfo_s playerinfo_t;
 
 // ************************************************************************************************
 // panimframe_t
