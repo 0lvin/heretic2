@@ -41,34 +41,6 @@
 #define HEALTH_IGNORE_MAX 1
 #define HEALTH_TIMED 2
 
-qboolean Pickup_Weapon(edict_t *ent, edict_t *other);
-void Use_Weapon(edict_t *ent, gitem_t *inv);
-void Use_Weapon2(edict_t *ent, gitem_t *inv);
-void Drop_Weapon(edict_t *ent, gitem_t *inv);
-
-void Weapon_Blaster(edict_t *ent);
-void Weapon_Shotgun(edict_t *ent);
-void Weapon_SuperShotgun(edict_t *ent);
-void Weapon_Machinegun(edict_t *ent);
-void Weapon_Chaingun(edict_t *ent);
-void Weapon_HyperBlaster(edict_t *ent);
-void Weapon_RocketLauncher(edict_t *ent);
-void Weapon_Grenade(edict_t *ent);
-void Weapon_GrenadeLauncher(edict_t *ent);
-void Weapon_Railgun(edict_t *ent);
-void Weapon_BFG(edict_t *ent);
-void Weapon_ChainFist(edict_t *ent);
-void Weapon_Disintegrator(edict_t *ent);
-void Weapon_ETF_Rifle(edict_t *ent);
-void Weapon_Heatbeam(edict_t *ent);
-void Weapon_Prox(edict_t *ent);
-void Weapon_Tesla(edict_t *ent);
-void Weapon_ProxLauncher(edict_t *ent);
-
-void Weapon_Ionripper(edict_t *ent);
-void Weapon_Phalanx(edict_t *ent);
-void Weapon_Trap(edict_t *ent);
-
 gitem_armor_t jacketarmor_info = {25, 50, .30, .00, ARMOR_JACKET};
 gitem_armor_t combatarmor_info = {50, 100, .60, .30, ARMOR_COMBAT};
 gitem_armor_t bodyarmor_info = {100, 200, .80, .60, ARMOR_BODY};
@@ -78,9 +50,6 @@ static int combat_armor_index;
 static int body_armor_index;
 static int power_screen_index;
 static int power_shield_index;
-
-void Use_Quad(edict_t *ent, gitem_t *item);
-void Use_QuadFire(edict_t *ent, gitem_t *item);
 
 static int quad_drop_timeout_hack;
 static int quad_fire_drop_timeout_hack;
@@ -938,6 +907,16 @@ Drop_Item(edict_t *ent, gitem_t *item)
 	dropped->spawnflags = DROPPED_ITEM;
 	dropped->s.effects = item->world_model_flags;
 	dropped->s.renderfx = RF_GLOW;
+
+	if (frandk() > 0.5)
+	{
+		dropped->s.angles[1] += frandk()*45;
+	}
+	else
+	{
+		dropped->s.angles[1] -= frandk()*45;
+	}
+
 	VectorSet(dropped->mins, -15, -15, -15);
 	VectorSet(dropped->maxs, 15, 15, 15);
 	gi.setmodel(dropped, dropped->item->world_model);
@@ -1224,52 +1203,174 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
 }
 
 /*
-===============
-PrecacheItem
-
-Precaches all data needed for a given item. This will be called for each item
-spawned in a level, and for each item in each client's inventory.
-===============
-*/
-
+ * Precaches all data needed for a given item.
+ * This will be called for each item spawned in a level,
+ * and for each item in each client's inventory.
+ */
 void
 PrecacheItem(gitem_t *it)
 {
-	gitem_t	*ammo;
+	char *s, *start;
+	char data[MAX_QPATH];
+	int len;
+	gitem_t *ammo;
 
 	if (!it)
+	{
 		return;
+	}
 
 	if (it->pickup_sound)
+	{
 		gi.soundindex(it->pickup_sound);
-	if (it->world_model)
-		gi.modelindex (it->world_model);
-	if (it->icon)
-		gi.imageindex (it->icon);
+	}
 
-	// parse everything for its ammo
+	if (it->world_model)
+	{
+		gi.modelindex(it->world_model);
+	}
+
+#if 0
+	if (it->view_model)
+	{
+		gi.modelindex(it->view_model);
+	}
+#endif
+
+	if (it->icon)
+	{
+		gi.imageindex(it->icon);
+	}
+
+	/* parse everything for its ammo */
 	if (it->ammo && it->ammo[0])
 	{
 		ammo = FindItem(it->ammo);
+
 		if (ammo != it)
 		{
 			PrecacheItem(ammo);
 		}
 	}
+
+#if 0
+	/* parse the space seperated precache string for other items */
+	s = it->precaches;
+
+	if (!s || !s[0])
+	{
+		return;
+	}
+
+	while (*s)
+	{
+		start = s;
+
+		while (*s && *s != ' ')
+		{
+			s++;
+		}
+
+		len = s - start;
+
+		if ((len >= MAX_QPATH) || (len < 5))
+		{
+			gi.error("PrecacheItem: %s has bad precache string", it->classname);
+		}
+
+		memcpy(data, start, len);
+		data[len] = 0;
+
+		if (*s)
+		{
+			s++;
+		}
+
+		/* determine type based on extension */
+		if (!strcmp(data + len - 3, "md2"))
+		{
+			gi.modelindex(data);
+		}
+		else if (!strcmp(data + len - 3, "sp2"))
+		{
+			gi.modelindex(data);
+		}
+		else if (!strcmp(data + len - 3, "wav"))
+		{
+			gi.soundindex(data);
+		}
+
+		if (!strcmp(data + len - 3, "pcx"))
+		{
+			gi.imageindex(data);
+		}
+	}
+#endif
 }
 
-// ************************************************************************************************
-// SpawnItem
-// ---------
-// Sets the clipping size and plants the object on the floor. Items can't be immediately dropped to
-// the floor because they might be on an entity that hasn't spawned yet.
-// ************************************************************************************************
+/*
+ * Create the item marked for spawn creation
+ */
+void
+Item_TriggeredSpawn(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	self->svflags &= ~SVF_NOCLIENT;
+	self->use = NULL;
 
+	if (strcmp(self->classname, "key_power_cube"))
+	{
+		self->spawnflags = 0;
+	}
+
+	droptofloor(self);
+}
+
+/*
+ * Set up an item to spawn in later.
+ */
+void
+SetTriggeredSpawn(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	/* don't do anything on key_power_cubes. */
+	if (!strcmp(ent->classname, "key_power_cube"))
+	{
+		return;
+	}
+
+	ent->think = NULL;
+	ent->nextthink = 0;
+	ent->use = Item_TriggeredSpawn;
+	ent->svflags |= SVF_NOCLIENT;
+	ent->solid = SOLID_NOT;
+}
+
+/*
+ * ============
+ * Sets the clipping size and
+ * plants the object on the floor.
+ *
+ * Items can't be immediately dropped
+ * to floor, because they might be on
+ * an entity that hasn't spawned yet.
+ * ============
+ */
 void
 SpawnItem(edict_t *ent, gitem_t *item)
 {
-	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
+	if (!ent || !item)
+	{
 		return;
+	}
+
+	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
+	{
+		return;
+	}
 
 	/* RREXTEND: Reset dynamic model assign */
 	ent->s.modelindex = 0;
