@@ -1396,19 +1396,19 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 	{
 		max = ent->client->pers.max_rounds;
 	}
-	else if ((item->tag == ITEM_AMMO_MANA_OFFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
+	else if ((item->tag == AMMO_MANA_OFFENSIVE_HALF) || (item->tag == AMMO_MANA_OFFENSIVE_FULL))
 	{
 		item = FindItemByClassname("item_mana_offensive_half");
 		max = ent->client->playerinfo.pers.max_offmana;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
-	else if ((item->tag == ITEM_AMMO_MANA_DEFENSIVE_HALF) || (item->tag == ITEM_AMMO_MANA_DEFENSIVE_FULL))
+	else if ((item->tag == AMMO_MANA_DEFENSIVE_HALF) || (item->tag == AMMO_MANA_DEFENSIVE_FULL))
 	{
 		item = FindItemByClassname("item_mana_defensive_half");
 		max = ent->client->playerinfo.pers.max_defmana;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
-	else if ((item->tag == ITEM_AMMO_MANA_COMBO_QUARTER) || (item->tag == ITEM_AMMO_MANA_COMBO_HALF))
+	else if ((item->tag == AMMO_MANA_COMBO_QUARTER) || (item->tag == AMMO_MANA_COMBO_HALF))
 	{
 		qboolean bo;
 
@@ -1423,17 +1423,17 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 
 		return bo;
 	}
-	else if (item->tag == ITEM_AMMO_REDRAIN)
+	else if (item->tag == AMMO_REDRAIN)
 	{
 		max = ent->client->playerinfo.pers.max_redarrow;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
-	else if (item->tag == ITEM_AMMO_PHOENIX)
+	else if (item->tag == AMMO_PHOENIX)
 	{
 		max = ent->client->playerinfo.pers.max_phoenarr;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
-	else if (item->tag == ITEM_AMMO_HELLSTAFF)
+	else if (item->tag == AMMO_HELLSTAFF)
 	{
 		max = ent->client->playerinfo.pers.max_hellstaff;
 		return Add_AmmoToInventory(ent, item, count, max);
@@ -2521,7 +2521,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	}
 	else if (item->flags & IT_AMMO)
 	{
-		if (item->tag == ITEM_AMMO_REDRAIN || item->tag == ITEM_AMMO_PHOENIX)
+		if (item->tag == AMMO_REDRAIN || item->tag == AMMO_PHOENIX)
 			ent->delay = RESPAWN_TIME_ARROWS;
 		else
 			ent->delay = RESPAWN_TIME_AMMO;
@@ -3107,7 +3107,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_OFFENSE,					// flags
 		0,										// weapon model index
 		NULL,									// void * ?
-		ITEM_AMMO_MANA_OFFENSIVE_HALF,			// tag ?
+		AMMO_MANA_OFFENSIVE_HALF,			// tag ?
 		NULL,									// precaches
 		GM_OFFMANAS,							// pickup message
 		0,										// can`t use message
@@ -3140,7 +3140,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_OFFENSE,					// flags
 		0,									// weapon model index
 		NULL,									// void * ?
-		ITEM_AMMO_MANA_OFFENSIVE_FULL,			// tag ?
+		AMMO_MANA_OFFENSIVE_FULL,			// tag ?
 		NULL,									// precaches
 		GM_OFFMANAB,										// pickup message
 		0,							// can`t use message
@@ -3173,7 +3173,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_DEFENSE,					// flags
 		0,									// weapon model index
 		NULL,									// void * ?
-		ITEM_AMMO_MANA_DEFENSIVE_HALF,			// tag ?
+		AMMO_MANA_DEFENSIVE_HALF,			// tag ?
 		NULL,									// precaches
 		GM_DEFMANAS,							// pickup message
 		0,
@@ -3206,7 +3206,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_DEFENSE,					// flags
 		0,									// weapon model index
 		NULL,									// void * ?
-		ITEM_AMMO_MANA_DEFENSIVE_FULL,			// tag ?
+		AMMO_MANA_DEFENSIVE_FULL,			// tag ?
 		NULL,									// precaches
 		GM_DEFMANAB,							// pickup message
 		0,
@@ -3239,7 +3239,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO,									  // flags
 		0,									// weapon model index
 		NULL,										  // void * ?
-		ITEM_AMMO_MANA_COMBO_QUARTER,				  // tag ?
+		AMMO_MANA_COMBO_QUARTER,				  // tag ?
 		NULL,									// precaches
 		GM_COMBMANAS,										// pickup message
 		0,
@@ -3272,7 +3272,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO,									  // flags
 		0,									// weapon model index
 		NULL,										  // void * ?
-		ITEM_AMMO_MANA_COMBO_HALF,					  // tag ?
+		AMMO_MANA_COMBO_HALF,					  // tag ?
 		NULL,									// precaches
 		GM_COMBMANAB,										// pickup message
 		0,
@@ -3305,7 +3305,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_OFFENSE,						  // flags
 		0,									// weapon model index
 		NULL,										  // void * ?
-		ITEM_AMMO_REDRAIN,								  // tag ?
+		AMMO_REDRAIN,								  // tag ?
 		NULL,									// precaches
 		GM_STORMARROWS,										// pickup message
 		0,
@@ -3338,7 +3338,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_OFFENSE,						  // flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_AMMO_PHOENIX,							  // tag ?
+		AMMO_PHOENIX,							  // tag ?
 		NULL,									// precaches
 		GM_PHOENARROWS,										// pickup message
 		0,
@@ -3371,7 +3371,7 @@ static const gitem_t gameitemlist[] = {
 		IT_AMMO | IT_OFFENSE,						  // flags
 		0,									// weapon model index
 		NULL,										  // void * ?
-		ITEM_AMMO_HELLSTAFF,						  // tag ?
+		AMMO_HELLSTAFF,						  // tag ?
 		NULL,									// precaches
 		GM_HELLORB,										// pickup message
 		0,

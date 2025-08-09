@@ -47,21 +47,4 @@ typedef enum
 	ITEM_DEFENSE_POWERUP,
 } itemdefense_t;
 
-// ************************************************************************************************
-// itemammo_t
-// ------
-// ************************************************************************************************
-typedef enum
-{
-	ITEM_AMMO_MANA_DEFENSIVE_HALF,
-	ITEM_AMMO_MANA_DEFENSIVE_FULL,
-	ITEM_AMMO_MANA_OFFENSIVE_HALF,
-	ITEM_AMMO_MANA_OFFENSIVE_FULL,
-	ITEM_AMMO_MANA_COMBO_QUARTER,
-	ITEM_AMMO_MANA_COMBO_HALF,
-	ITEM_AMMO_HELLSTAFF,
-	ITEM_AMMO_REDRAIN,
-	ITEM_AMMO_PHOENIX,
-} itemammo_t;
-
 #endif

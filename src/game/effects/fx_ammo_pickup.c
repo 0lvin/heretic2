@@ -17,6 +17,20 @@
 #include "../common/angles.h"
 #include "../header/g_items.h"
 
+/* keep it same as in game/header/local.h */
+typedef enum
+{
+	AMMO_MANA_DEFENSIVE_HALF,
+	AMMO_MANA_DEFENSIVE_FULL,
+	AMMO_MANA_OFFENSIVE_HALF,
+	AMMO_MANA_OFFENSIVE_FULL,
+	AMMO_MANA_COMBO_QUARTER,
+	AMMO_MANA_COMBO_HALF,
+	AMMO_HELLSTAFF,
+	AMMO_REDRAIN,
+	AMMO_PHOENIX,
+} itemammo_t;
+
 #define BOB_HEIGHT		6.0
 #define BOB_SPEED		ANGLE_10
 #define HEALTH_RADIUS	6.0
@@ -25,15 +39,15 @@
 static struct model_s *ammomodels[NUM_AMMO_MODELS];
 void PreCacheItemAmmo()
 {
-	ammomodels[0] = fxi.RegisterModel("models/items/mana/half/tris.fm");	// ITEM_AMMO_MANA_DEFENSIVE_HALF
-	ammomodels[1] = fxi.RegisterModel("models/items/mana/full/tris.fm");	// ITEM_AMMO_MANA_DEFENSIVE_FULL
-	ammomodels[2] = fxi.RegisterModel("models/items/mana/half/tris.fm");	// ITEM_AMMO_MANA_OFFENSIVE_HALF
-	ammomodels[3] = fxi.RegisterModel("models/items/mana/full/tris.fm");	// ITEM_AMMO_MANA_OFFENSIVE_FULL
-	ammomodels[4] = fxi.RegisterModel("models/items/mana/combo/tris.fm");		// ITEM_AMMO_MANA_COMBO_QUARTER
-	ammomodels[5] = fxi.RegisterModel("models/items/mana/combo/tris.fm");		// ITEM_AMMO_MANA_COMBO_HALF
-	ammomodels[6] = fxi.RegisterModel("models/items/ammo/hellstaff/tris.fm");		// ITEM_AMMO_HELLSTAFF
-	ammomodels[7] = fxi.RegisterModel("models/items/ammo/redrain/tris.fm");		// ITEM_AMMO_REDRAIN
-	ammomodels[8] = fxi.RegisterModel("models/items/ammo/phoenix/tris.fm");		// ITEM_AMMO_PHOENIX
+	ammomodels[0] = fxi.RegisterModel("models/items/mana/half/tris.fm");	// AMMO_MANA_DEFENSIVE_HALF
+	ammomodels[1] = fxi.RegisterModel("models/items/mana/full/tris.fm");	// AMMO_MANA_DEFENSIVE_FULL
+	ammomodels[2] = fxi.RegisterModel("models/items/mana/half/tris.fm");	// AMMO_MANA_OFFENSIVE_HALF
+	ammomodels[3] = fxi.RegisterModel("models/items/mana/full/tris.fm");	// AMMO_MANA_OFFENSIVE_FULL
+	ammomodels[4] = fxi.RegisterModel("models/items/mana/combo/tris.fm");		// AMMO_MANA_COMBO_QUARTER
+	ammomodels[5] = fxi.RegisterModel("models/items/mana/combo/tris.fm");		// AMMO_MANA_COMBO_HALF
+	ammomodels[6] = fxi.RegisterModel("models/items/ammo/hellstaff/tris.fm");		// AMMO_HELLSTAFF
+	ammomodels[7] = fxi.RegisterModel("models/items/ammo/redrain/tris.fm");		// AMMO_REDRAIN
+	ammomodels[8] = fxi.RegisterModel("models/items/ammo/phoenix/tris.fm");		// AMMO_PHOENIX
 }
 
 // --------------------------------------------------------------
@@ -119,8 +133,8 @@ void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
 
-	if ((tag == ITEM_AMMO_MANA_COMBO_HALF) || (tag == ITEM_AMMO_MANA_DEFENSIVE_FULL) ||
-		(tag == ITEM_AMMO_MANA_OFFENSIVE_FULL))
+	if ((tag == AMMO_MANA_COMBO_HALF) || (tag == AMMO_MANA_DEFENSIVE_FULL) ||
+		(tag == AMMO_MANA_OFFENSIVE_FULL))
 	{
 		VectorSet(ce->r.scale, 1.25, 1.25, 1.25);
 	}
