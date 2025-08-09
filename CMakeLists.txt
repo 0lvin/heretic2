@@ -428,6 +428,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_skeletons.c
 	${GAME_SRC_DIR}/g_spawnf.c
 	${GAME_SRC_DIR}/g_spawn.c
+	${GAME_SRC_DIR}/g_sphere.c
 	${GAME_SRC_DIR}/g_stateinfo.c
 	${GAME_SRC_DIR}/g_svcmds.c
 	${GAME_SRC_DIR}/g_target.c
@@ -485,6 +486,8 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/tcheckrik/tcheckrik_anim.c
 	${GAME_SRC_DIR}/monster/tcheckrik/tcheckrik.c
 	${GAME_SRC_DIR}/monster/tcheckrik/tcheckrik_spells.c
+	${GAME_SRC_DIR}/monster/widow/widow2.c
+	${GAME_SRC_DIR}/monster/widow/widow.c
 	${GAME_SRC_DIR}/player/chase.c
 	${GAME_SRC_DIR}/player/client.c
 	${GAME_SRC_DIR}/player/funcs.c

@@ -134,7 +134,6 @@ void
 RespawnedThink(edict_t *ent)
 {
 	ent->think = NULL;
-//	ent->svflags |= SVF_NOCLIENT;
 }
 
 /* ====================================================================== */
@@ -253,20 +252,17 @@ PreRespawnThink(edict_t *ent)
 	}
 	ent->nextthink = level.time + delay - FRAMETIME;
 	ent->think = DoRespawn;
-//	ent->svflags |= SVF_NOCLIENT;
 }
-
-// ************************************************************************************************
-// SetRespawn
-// ----------
-// ************************************************************************************************
 
 void
 SetRespawn(edict_t *ent, float delay)
 {
-	// So it'll get sent to the client again.
+	if (!ent)
+	{
+		return;
+	}
 
-//	ent->svflags &= ~SVF_NOCLIENT;
+	// So it'll get sent to the client again.
 
 	// Disables all the effects on the entity.
 
@@ -298,6 +294,940 @@ SetRespawn(edict_t *ent, float delay)
 	}
 
 	ent->think = PreRespawnThink;
+}
+
+/* ====================================================================== */
+
+qboolean
+Pickup_Powerup(edict_t *ent, edict_t *other)
+{
+	int quantity;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+
+	if (((skill->value == SKILL_MEDIUM) &&
+		 (quantity >= 2)) || ((skill->value >= SKILL_HARD) && (quantity >= 1)))
+	{
+		return false;
+	}
+
+	if ((coop->value) && (ent->item->flags & IT_STAY_COOP) && (quantity > 0))
+	{
+		return false;
+	}
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+
+	if (deathmatch->value)
+	{
+		if (!(ent->spawnflags & DROPPED_ITEM))
+		{
+			SetRespawn(ent, ent->item->quantity);
+		}
+
+		if (((int)dmflags->value & DF_INSTANT_ITEMS) ||
+			((ent->item->use == Use_Quad) &&
+			 (ent->spawnflags & DROPPED_PLAYER_ITEM)))
+		{
+			if ((ent->item->use == Use_Quad) &&
+				(ent->spawnflags & DROPPED_PLAYER_ITEM))
+			{
+				quad_drop_timeout_hack =
+					(ent->nextthink - level.time) / FRAMETIME;
+			}
+
+			ent->item->use(other, ent->item);
+		}
+	}
+
+	return true;
+}
+
+qboolean
+Pickup_General(edict_t *ent, edict_t *other)
+{
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	if (other->client->pers.inventory[ITEM_INDEX(ent->item)])
+	{
+		return false;
+	}
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+
+	if (deathmatch->value)
+	{
+		if (!(ent->spawnflags & DROPPED_ITEM))
+		{
+			SetRespawn(ent, ent->item->quantity);
+		}
+	}
+
+	return true;
+}
+
+void
+Drop_General(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	Drop_Item(ent, item);
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+}
+
+/* ====================================================================== */
+
+qboolean
+Pickup_Adrenaline(edict_t *ent, edict_t *other)
+{
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	if (!deathmatch->value)
+	{
+		other->max_health += 1;
+	}
+
+	if (other->health < other->max_health)
+	{
+		other->health = other->max_health;
+	}
+
+	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	{
+		SetRespawn(ent, ent->item->quantity);
+	}
+
+	return true;
+}
+
+qboolean
+Pickup_AncientHead(edict_t *ent, edict_t *other)
+{
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	other->max_health += 2;
+
+	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	{
+		SetRespawn(ent, ent->item->quantity);
+	}
+
+	return true;
+}
+
+qboolean
+Pickup_Bandolier(edict_t *ent, edict_t *other)
+{
+	gitem_t *item;
+	int index;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	if (other->client->pers.max_bullets < 250)
+	{
+		other->client->pers.max_bullets = 250;
+	}
+
+	if (other->client->pers.max_shells < 150)
+	{
+		other->client->pers.max_shells = 150;
+	}
+
+	if (other->client->pers.max_cells < 250)
+	{
+		other->client->pers.max_cells = 250;
+	}
+
+	if (other->client->pers.max_slugs < 75)
+	{
+		other->client->pers.max_slugs = 75;
+	}
+
+	if (other->client->pers.max_magslug < 75)
+	{
+		other->client->pers.max_magslug = 75;
+	}
+
+	if (other->client->pers.max_flechettes < 250)
+	{
+		other->client->pers.max_flechettes = 250;
+	}
+
+	if (g_disruptor->value)
+	{
+		if (other->client->pers.max_rounds < 150)
+		{
+			other->client->pers.max_rounds = 150;
+		}
+	}
+
+	item = FindItem("Bullets");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_bullets)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_bullets;
+		}
+	}
+
+	item = FindItem("Shells");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_shells)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_shells;
+		}
+	}
+
+	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	{
+		SetRespawn(ent, ent->item->quantity);
+	}
+
+	return true;
+}
+
+qboolean
+Pickup_Pack(edict_t *ent, edict_t *other)
+{
+	gitem_t *item;
+	int index;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	if (other->client->pers.max_bullets < 300)
+	{
+		other->client->pers.max_bullets = 300;
+	}
+
+	if (other->client->pers.max_shells < 200)
+	{
+		other->client->pers.max_shells = 200;
+	}
+
+	if (other->client->pers.max_rockets < 100)
+	{
+		other->client->pers.max_rockets = 100;
+	}
+
+	if (other->client->pers.max_grenades < 100)
+	{
+		other->client->pers.max_grenades = 100;
+	}
+
+	if (other->client->pers.max_cells < 300)
+	{
+		other->client->pers.max_cells = 300;
+	}
+
+	if (other->client->pers.max_slugs < 100)
+	{
+		other->client->pers.max_slugs = 100;
+	}
+
+	if (other->client->pers.max_magslug < 100)
+	{
+		other->client->pers.max_magslug = 100;
+	}
+
+	if (other->client->pers.max_flechettes < 200)
+	{
+		other->client->pers.max_flechettes = 200;
+	}
+
+	if (g_disruptor->value)
+	{
+		if (other->client->pers.max_rounds < 200)
+		{
+			other->client->pers.max_rounds = 200;
+		}
+	}
+
+	item = FindItem("Bullets");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_bullets)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_bullets;
+		}
+	}
+
+	item = FindItem("Shells");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_shells)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_shells;
+		}
+	}
+
+	item = FindItem("Cells");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_cells)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_cells;
+		}
+	}
+
+	item = FindItem("Grenades");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_grenades)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_grenades;
+		}
+	}
+
+	item = FindItem("Rockets");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_rockets)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_rockets;
+		}
+	}
+
+	item = FindItem("Slugs");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_slugs)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_slugs;
+		}
+	}
+
+	item = FindItem("Mag Slug");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_magslug)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_magslug;
+		}
+	}
+
+	item = FindItem("Flechettes");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+			other->client->pers.max_flechettes)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_flechettes;
+		}
+	}
+
+	item = FindItem("Rounds");
+
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		other->client->pers.inventory[index] += item->quantity;
+
+		if (other->client->pers.inventory[index] >
+				other->client->pers.max_rounds)
+		{
+			other->client->pers.inventory[index] =
+				other->client->pers.max_rounds;
+		}
+	}
+
+	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	{
+		SetRespawn(ent, ent->item->quantity);
+	}
+
+	return true;
+}
+
+/* ====================================================================== */
+
+qboolean
+Pickup_Nuke(edict_t *ent, edict_t *other)
+{
+	int quantity;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+
+	if (quantity >= 1)
+	{
+		return false;
+	}
+
+	if ((coop->value) && (ent->item->flags & IT_STAY_COOP))
+	{
+		return false;
+	}
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+
+	if (deathmatch->value)
+	{
+		if (!(ent->spawnflags & DROPPED_ITEM))
+		{
+			SetRespawn(ent, ent->item->quantity);
+		}
+	}
+
+	return true;
+}
+
+void
+Use_IR(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (ent->client->ir_framenum > level.framenum)
+	{
+		ent->client->ir_framenum += 600;
+	}
+	else
+	{
+		ent->client->ir_framenum = level.framenum + 600;
+	}
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/ir_start.wav"), 1, ATTN_NORM, 0);
+}
+
+void
+Use_Double(edict_t *ent, gitem_t *item)
+{
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (ent->client->double_framenum > level.framenum)
+	{
+		ent->client->double_framenum += 300;
+	}
+	else
+	{
+		ent->client->double_framenum = level.framenum + 300;
+	}
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/ddamage1.wav"), 1, ATTN_NORM, 0);
+}
+
+void
+Use_Compass(edict_t *ent, gitem_t *item)
+{
+	int ang;
+
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	ang = (int)(ent->client->v_angle[1]);
+
+	if (ang < 0)
+	{
+		ang += 360;
+	}
+
+	gi.cprintf(ent, PRINT_HIGH, "Origin: %0.0f,%0.0f,%0.0f    Dir: %d\n",
+			ent->s.origin[0], ent->s.origin[1], ent->s.origin[2], ang);
+}
+
+void
+Use_Nuke(edict_t *ent, gitem_t *item)
+{
+	vec3_t forward, right, start;
+	float speed;
+
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+
+	VectorCopy(ent->s.origin, start);
+	speed = 100;
+	fire_nuke(ent, start, forward, speed);
+}
+
+void
+Use_Doppleganger(edict_t *ent, gitem_t *item)
+{
+	vec3_t forward, right;
+	vec3_t createPt, spawnPt;
+	vec3_t ang;
+
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	VectorClear(ang);
+	ang[YAW] = ent->client->v_angle[YAW];
+	AngleVectors(ang, forward, right, NULL);
+
+	VectorMA(ent->s.origin, 48, forward, createPt);
+
+	if (!FindSpawnPoint(createPt, ent->mins, ent->maxs, spawnPt, 32))
+	{
+		return;
+	}
+
+	if (!CheckGroundSpawnPoint(spawnPt, ent->mins, ent->maxs, 64, -1))
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	SpawnGrow_Spawn(spawnPt, 0);
+	fire_doppleganger(ent, spawnPt, forward);
+}
+
+qboolean
+Pickup_Doppleganger(edict_t *ent, edict_t *other)
+{
+	int quantity;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	if (!(deathmatch->value))
+	{
+		return false;
+	}
+
+	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+
+	if (quantity >= 1)
+	{
+		return false;
+	}
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+
+	if (!(ent->spawnflags & DROPPED_ITEM))
+	{
+		SetRespawn(ent, ent->item->quantity);
+	}
+
+	return true;
+}
+
+qboolean
+Pickup_Sphere(edict_t *ent, edict_t *other)
+{
+	int quantity = 0;
+
+	if (!ent || !other || !other->client || other->client->owned_sphere)
+	{
+		return false;
+	}
+
+	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+
+	if (((skill->value == SKILL_MEDIUM) &&
+		 (quantity >= 2)) || ((skill->value >= SKILL_HARD) && (quantity >= 1)))
+	{
+		return false;
+	}
+
+	if ((coop->value) && (ent->item->flags & IT_STAY_COOP) && (quantity > 0))
+	{
+		return false;
+	}
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+
+	if (deathmatch->value)
+	{
+		if (!(ent->spawnflags & DROPPED_ITEM))
+		{
+			SetRespawn(ent, ent->item->quantity);
+		}
+	}
+
+	return true;
+}
+
+void
+Use_Defender(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	if (ent->client->owned_sphere)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Only one sphere at a time!\n");
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	Defender_Launch(ent);
+}
+
+void
+Use_Hunter(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	if (ent->client->owned_sphere)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Only one sphere at a time!\n");
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	Hunter_Launch(ent);
+}
+
+void
+Use_Vengeance(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	if (ent->client->owned_sphere)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Only one sphere at a time!\n");
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	Vengeance_Launch(ent);
+}
+
+/* ====================================================================== */
+
+void
+Use_Quad(edict_t *ent, gitem_t *item)
+{
+	int timeout;
+
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (quad_drop_timeout_hack)
+	{
+		timeout = quad_drop_timeout_hack;
+		quad_drop_timeout_hack = 0;
+	}
+	else
+	{
+		timeout = 300;
+	}
+
+	if (ent->client->quad_framenum > level.framenum)
+	{
+		ent->client->quad_framenum += timeout;
+	}
+	else
+	{
+		ent->client->quad_framenum = level.framenum + timeout;
+	}
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/damage.wav"), 1, ATTN_NORM,
+			0);
+}
+
+/* ===================================================================== */
+
+void
+Use_QuadFire(edict_t *ent, gitem_t *item)
+{
+	int timeout;
+
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (quad_fire_drop_timeout_hack)
+	{
+		timeout = quad_fire_drop_timeout_hack;
+		quad_fire_drop_timeout_hack = 0;
+	}
+	else
+	{
+		timeout = 300;
+	}
+
+	if (ent->client->quadfire_framenum > level.framenum)
+	{
+		ent->client->quadfire_framenum += timeout;
+	}
+	else
+	{
+		ent->client->quadfire_framenum = level.framenum + timeout;
+	}
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/quadfire1.wav"), 1, ATTN_NORM, 0);
+}
+
+/* ====================================================================== */
+
+void
+Use_Breather(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (ent->client->breather_framenum > level.framenum)
+	{
+		ent->client->breather_framenum += 300;
+	}
+	else
+	{
+		ent->client->breather_framenum = level.framenum + 300;
+	}
+}
+
+/* ====================================================================== */
+
+void
+Use_Envirosuit(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item || !ent->client)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (ent->client->enviro_framenum > level.framenum)
+	{
+		ent->client->enviro_framenum += 300;
+	}
+	else
+	{
+		ent->client->enviro_framenum = level.framenum + 300;
+	}
+}
+
+/* ====================================================================== */
+
+void
+Use_Invulnerability(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+
+	if (ent->client->invincible_framenum > level.framenum)
+	{
+		ent->client->invincible_framenum += 300;
+	}
+	else
+	{
+		ent->client->invincible_framenum = level.framenum + 300;
+	}
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex(
+					"items/protect.wav"), 1, ATTN_NORM, 0);
+}
+
+void
+Use_Invisibility(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+
+	if (ent->client->invisible_framenum > level.framenum)
+	{
+		ent->client->invisible_framenum += 300;
+	}
+	else
+	{
+		ent->client->invisible_framenum = level.framenum + 300;
+	}
+
+	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect.wav"), 1, ATTN_NORM, 0);
+}
+
+/* ====================================================================== */
+
+void
+Use_Silencer(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	ent->client->pers.inventory[ITEM_INDEX(item)]--;
+	ValidateSelectedItem(ent);
+	ent->client->silencer_shots += 30;
+}
+
+/* ====================================================================== */
+
+qboolean
+Pickup_Key(edict_t *ent, edict_t *other)
+{
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	if (coop->value)
+	{
+		if (strcmp(ent->classname, "key_power_cube") == 0)
+		{
+			if (other->client->pers.power_cubes &
+				((ent->spawnflags & 0x0000ff00) >> 8))
+			{
+				return false;
+			}
+
+			other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+			other->client->pers.power_cubes |=
+				((ent->spawnflags & 0x0000ff00) >> 8);
+		}
+		else
+		{
+			if (other->client->pers.inventory[ITEM_INDEX(ent->item)])
+			{
+				return false;
+			}
+
+			other->client->pers.inventory[ITEM_INDEX(ent->item)] = 1;
+		}
+
+		return true;
+	}
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+	return true;
 }
 
 // ************************************************************************************************

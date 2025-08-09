@@ -1055,6 +1055,7 @@ GAME_OBJS_ = \
 	src/game/g_skeletons.o \
 	src/game/g_spawnf.o \
 	src/game/g_spawn.o \
+	src/game/g_sphere.o \
 	src/game/g_stateinfo.o \
 	src/game/g_svcmds.o \
 	src/game/g_target.o \
@@ -1112,6 +1113,8 @@ GAME_OBJS_ = \
 	src/game/monster/tcheckrik/tcheckrik_anim.o \
 	src/game/monster/tcheckrik/tcheckrik.o \
 	src/game/monster/tcheckrik/tcheckrik_spells.o \
+	src/game/monster/widow/widow2.o \
+	src/game/monster/widow/widow.o \
 	src/game/player/chase.o \
 	src/game/player/client.o \
 	src/game/player/funcs.o \

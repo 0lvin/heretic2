@@ -1469,6 +1469,62 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 }
 
 void
+LookAtKiller(edict_t *self, edict_t *inflictor, edict_t *attacker)
+{
+	vec3_t dir;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (attacker && (attacker != world) && (attacker != self))
+	{
+		VectorSubtract(attacker->s.origin, self->s.origin, dir);
+	}
+	else if (inflictor && (inflictor != world) && (inflictor != self))
+	{
+		VectorSubtract(inflictor->s.origin, self->s.origin, dir);
+	}
+	else
+	{
+		self->client->killer_yaw = self->s.angles[YAW];
+		return;
+	}
+
+	if (dir[0])
+	{
+		self->client->killer_yaw = 180 / M_PI * atan2(dir[1], dir[0]);
+	}
+	else if (dir[1] > 0)
+	{
+		self->client->killer_yaw = 90;
+	}
+	else if (dir[1] < 0)
+	{
+		self->client->killer_yaw = 270;
+	}
+	else
+	{
+		self->client->killer_yaw = 0;
+
+		if (dir[1] > 0)
+		{
+			self->client->killer_yaw = 90;
+		}
+		else if (dir[1] < 0)
+		{
+			self->client->killer_yaw = -90;
+		}
+	}
+
+	if (self->client->killer_yaw < 0)
+	{
+		self->client->killer_yaw += 360;
+	}
+}
+
+void
 player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point /* unused */)
 {
