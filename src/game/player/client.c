@@ -845,8 +845,8 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 		}
 		if(dismember_ok)
 		{
-			if(self->client->playerinfo.frame > FRAME_vault3 &&
-				self->client->playerinfo.frame < FRAME_vault15)
+			if(self->client->playerinfo.frame > FRAMEH2_vault3 &&
+				self->client->playerinfo.frame < FRAMEH2_vault15)
 				inpolevault = true;
 			else
 				inpolevault = false;
