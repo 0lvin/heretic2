@@ -6,7 +6,7 @@
 //
 
 #include "../../header/local.h"
-#include "../../monster/misc/player.h"
+#include "../../monster/misc/playerh2.h"
 #include "p_animactor.h"
 #include "p_anim_data.h"
 #include "p_anims.h"

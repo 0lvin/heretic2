@@ -27,6 +27,7 @@
 
 #include "../header/local.h"
 #include "../monster/misc/player.h"
+#include "../monster/misc/playerh2.h"
 #include "../header/g_defaultmessagehandler.h"
 #include "../header/g_skeletons.h"
 #include "../player/library/p_main.h"
@@ -252,7 +253,6 @@ SP_info_player_start(edict_t *self)
 
 	DynamicResetSpawnModels(self);
 
-#if 0
 	/* Call function to hack unnamed spawn points */
 	self->think = SP_CreateUnnamedSpawn;
 	self->nextthink = level.time + FRAMETIME;
@@ -267,7 +267,6 @@ SP_info_player_start(edict_t *self)
 
 	/* Fix coop spawn points */
 	SP_FixCoopSpots(self);
-#endif
 }
 
 /*
@@ -290,7 +289,7 @@ SP_info_player_deathmatch(edict_t *self)
 	}
 
 	DynamicResetSpawnModels(self);
-	// SP_misc_teleporter_dest(self);
+	SP_misc_teleporter_dest(self);
 }
 
 /*
@@ -1368,7 +1367,8 @@ static const short KillBy[MOD_MAX] =
 	GM_OBIT_TORN	//MOD_TORN
 };
 
-void ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
+void
+ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 {
 	short		message;
 	int			friendlyFire;
@@ -2192,7 +2192,120 @@ SelectFarthestDeathmatchSpawnPoint(void)
 static edict_t *
 SelectDeathmatchSpawnPoint(void)
 {
-	return SelectFarthestDeathmatchSpawnPoint();
+	if ((int)(dmflags->value) & DF_SPAWN_FARTHEST)
+	{
+		return SelectFarthestDeathmatchSpawnPoint();
+	}
+	else
+	{
+		return SelectRandomDeathmatchSpawnPoint();
+	}
+}
+
+static edict_t *
+SelectLavaCoopSpawnPoint(edict_t *ent)
+{
+	int index;
+	edict_t *spot = NULL;
+	float lavatop;
+	edict_t *lava;
+	edict_t *pointWithLeastLava;
+	float lowest;
+	edict_t *spawnPoints[64];
+	vec3_t center;
+	int numPoints;
+	edict_t *highestlava;
+
+	if (!ent)
+	{
+		return NULL;
+	}
+
+	lavatop = -99999;
+	highestlava = NULL;
+
+	lava = NULL;
+
+	while (1)
+	{
+		lava = G_Find(lava, FOFS(classname), "func_door");
+
+		if (!lava)
+		{
+			break;
+		}
+
+		VectorAdd(lava->absmax, lava->absmin, center);
+		VectorScale(center, 0.5, center);
+
+		if (lava->spawnflags & 2 && (gi.pointcontents(center) & MASK_WATER))
+		{
+			if (lava->absmax[2] > lavatop)
+			{
+				lavatop = lava->absmax[2];
+				highestlava = lava;
+			}
+		}
+	}
+
+	/* if we didn't find ANY lava, then return NULL */
+	if (!highestlava)
+	{
+		return NULL;
+	}
+
+	/* find the top of the lava and include a small margin of error (plus bbox size) */
+	lavatop = highestlava->absmax[2] + 64;
+
+	/* find all the lava spawn points and store them in spawnPoints[] */
+	spot = NULL;
+	numPoints = 0;
+
+	while ((spot = (G_Find(spot, FOFS(classname), "info_player_coop_lava"))))
+	{
+		if (numPoints == 64)
+		{
+			break;
+		}
+
+		spawnPoints[numPoints++] = spot;
+	}
+
+	if (numPoints < 1)
+	{
+		return NULL;
+	}
+
+	/* walk up the sorted list and return the lowest, open, non-lava spawn point */
+	spot = NULL;
+	lowest = 999999;
+	pointWithLeastLava = NULL;
+
+	for (index = 0; index < numPoints; index++)
+	{
+		if (spawnPoints[index]->s.origin[2] < lavatop)
+		{
+			continue;
+		}
+
+		if (PlayersRangeFromSpot(spawnPoints[index]) > 32)
+		{
+			if (spawnPoints[index]->s.origin[2] < lowest)
+			{
+				/* save the last point */
+				pointWithLeastLava = spawnPoints[index];
+				lowest = spawnPoints[index]->s.origin[2];
+			}
+		}
+	}
+
+	/* well, we may telefrag someone, but oh well... */
+	if (pointWithLeastLava)
+	{
+		return pointWithLeastLava;
+	}
+
+	return NULL;
 }
 
 static edict_t *
@@ -2205,6 +2318,11 @@ SelectCoopSpawnPoint(edict_t *ent)
 	if (!ent)
 	{
 		return NULL;
+	}
+
+	if (!Q_stricmp(level.mapname, "rmine2p") || !Q_stricmp(level.mapname, "rmine2"))
+	{
+		return SelectLavaCoopSpawnPoint(ent);
 	}
 
 	index = ent->client - game.clients;
@@ -2309,16 +2427,12 @@ SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 	/* find a single player start spot */
 	if (!spot)
 	{
-		while ((spot = G_Find (spot, FOFS(classname), "info_player_start")) != NULL)
+		spot = SelectSpawnPointByTarget(game.spawnpoint);
+
+		if (!spot)
 		{
-			if (!game.spawnpoint[0] && !spot->targetname)
-				break;
-
-			if (!game.spawnpoint[0] || !spot->targetname)
-				continue;
-
-			if (Q_stricmp(game.spawnpoint, spot->targetname) == 0)
-				break;
+			/* previous map use incorrect target, use default */
+			spot = SelectSpawnPointByTarget("");
 		}
 
 		if (!spot)
@@ -2914,7 +3028,14 @@ PutClientInServer(edict_t *ent)
 	/* find a spawn point do it before setting
 	   health back up, so farthest ranging
 	   doesn't count this client */
-	SelectSpawnPoint(ent, spawn_origin, spawn_angles);
+	if (gamerules && gamerules->value && DMGame.SelectSpawnPoint)
+	{
+		DMGame.SelectSpawnPoint(ent, spawn_origin, spawn_angles);
+	}
+	else
+	{
+		SelectSpawnPoint(ent, spawn_origin, spawn_angles);
+	}
 
 	index = ent - g_edicts - 1;
 	client = ent->client;

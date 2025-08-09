@@ -14,7 +14,7 @@
 #include "../../common/h2rand.h"
 #include "../../header/g_physics.h"
 #include "p_anim_data.h"
-#include "../../monster/misc/player.h"
+#include "../../monster/misc/playerh2.h"
 #include "../../header/g_playstats.h"
 
 #define FALL_MINHEIGHT	34

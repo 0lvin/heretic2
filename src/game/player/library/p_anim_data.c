@@ -13,7 +13,7 @@
 #include "p_chicken.h"
 #include "p_main.h"
 #include "p_ctrl.h"
-#include "../../monster/misc/player.h"
+#include "../../monster/misc/playerh2.h"
 #include "../../common/fx.h"
 #include "../../common/reference.h"
 #include "../../header/local.h"
