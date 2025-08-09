@@ -1065,6 +1065,9 @@ GAME_OBJS_ = \
 	src/game/g_weapon.o \
 	src/game/g_waterfx.o \
 	src/game/mg_guide.o \
+	src/game/dm/ball.o \
+	src/game/dm/tag.o \
+	src/game/menu/menu.o \
 	src/game/monster/assassin/assassin_anim.o \
 	src/game/monster/assassin/assassin.o \
 	src/game/monster/beast/beast_anim.o \

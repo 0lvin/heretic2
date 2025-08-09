@@ -402,89 +402,135 @@ PlayerNoise(edict_t *who, vec3_t where, int type)
 	gi.linkentity(noise);
 }
 
-#if 0
+// ************************************************************************************************
+// AddWeaponToInventory
+// --------------------
+// ************************************************************************************************
+
+qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
+{
+	gitem_t	*newitem;
+	int		count;
+
+	// Do we already have this weapon?
+
+	if(!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
+	{
+		// We don't already have it, so get the weapon and some ammo.
+
+		if (item->tag == ITEM_WEAPON_SWORDSTAFF)
+			count= 0;
+		else if (item->tag == ITEM_WEAPON_HELLSTAFF)
+			count = AMMO_COUNT_HELLSTAFF;
+		else if (item->tag == ITEM_WEAPON_REDRAINBOW)
+		{
+			// give us the bowtype
+			player->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
+			count = AMMO_COUNT_REDRAINBOW;
+		}
+		else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
+		{
+			// give us the bowtype
+			player->client->playerinfo.pers.bowtype = BOW_TYPE_PHOENIX;
+			count = AMMO_COUNT_PHOENIXBOW;
+		}
+		else
+			count = AMMO_COUNT_MOST;
+
+		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+
+		if(count)
+		{
+			newitem = FindItem(item->ammo);
+			Add_Ammo(player, newitem,count);
+		}
+
+		// Now decide if we want to swap weapons or not.
+
+		if (player->client->playerinfo.pers.autoweapon)
+		{
+			// If this new weapon is a higher value than the one we currently have, swap the current
+			// weapon for the new one.
+
+			if (ITEM_INDEX(item) > ITEM_INDEX(player->client->playerinfo.pers.weapon))
+			{
+				item->use(player, item);
+			}
+		}
+
+		return true;
+	}
+	else
+	{
+		// We already have it...
+
+		if(!((deathmatch->value&&((int)dmflags->value&DF_WEAPONS_STAY))||coop->value))
+		{
+			// ...and DF_WEPONS_STAY is off and we're not in coop, so just try to up the ammo counts.
+
+			if (item->tag == ITEM_WEAPON_HELLSTAFF)
+			{
+				newitem = FindItemByClassname("item_ammo_hellstaff");
+				count = AMMO_COUNT_HELLSTAFF;
+			}
+			else if (item->tag == ITEM_WEAPON_REDRAINBOW)
+			{
+				newitem = FindItemByClassname("item_ammo_redrain");
+				count = AMMO_COUNT_REDRAINBOW;
+			}
+			else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
+			{
+				newitem = FindItemByClassname("item_ammo_phoenix");
+				count = AMMO_COUNT_PHOENIXBOW;
+			}
+			else
+			{
+				newitem = FindItemByClassname("item_mana_offensive_half");
+				count = AMMO_COUNT_MOST;
+			}
+
+			if(Add_Ammo(player, newitem,count))
+			{
+				// Have space in our inventory, so add ammo.
+
+				return true;
+			}
+			else
+			{
+				// No space in inventory to add the ammo.
+
+				return false;
+			}
+		}
+		else
+		{
+			// ...but we're not able to pick it up.
+
+			return false;
+		}
+	}
+}
+
 qboolean
 Pickup_Weapon(edict_t *ent, edict_t *other)
 {
-	int index;
-
-	if (!ent || !other)
+	if (other->flags & FL_CHICKEN)
 	{
 		return false;
 	}
 
-	index = ITEM_INDEX(ent->item);
-
-	if ((((int)(dmflags->value) & DF_WEAPONS_STAY) || coop->value) &&
-		other->client->pers.inventory[index])
+	if(AddWeaponToInventory(ent->item,other))
 	{
-		if (!(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)) &&
-				(!coop_pickup_weapons->value || (ent->flags & FL_COOP_TAKEN)))
-		{
-			return false; /* leave the weapon for others to pickup */
-		}
+		G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
+
+		return true;
 	}
-
-	other->client->pers.inventory[index]++;
-
-	if (!(ent->spawnflags & DROPPED_ITEM))
+	else
 	{
-		if (ent->item->ammo)
-		{
-			gitem_t *ammo;
+		// We already have it.
 
-			/* give them some ammo with it */
-			ammo = FindItem(ent->item->ammo);
-			if (!ammo)
-			{
-				gi.dprintf("Ammo %s for item %s has not be found\n",
-					ent->item->ammo, ent->item->classname);
-				return false;
-			}
-
-			/* Don't get infinite ammo with trap */
-			if (((int)dmflags->value & DF_INFINITE_AMMO) &&
-				Q_stricmp(ent->item->pickup_name, "ammo_trap"))
-			{
-				Add_Ammo(other, ammo, 1000);
-			}
-			else
-			{
-				Add_Ammo(other, ammo, ammo->quantity);
-			}
-		}
-
-		if (!(ent->spawnflags & DROPPED_PLAYER_ITEM))
-		{
-			if (deathmatch->value)
-			{
-				if ((int)(dmflags->value) & DF_WEAPONS_STAY)
-				{
-					ent->flags |= FL_RESPAWN;
-				}
-				else
-				{
-					SetRespawn(ent, 30);
-				}
-			}
-
-			if (coop->value)
-			{
-				ent->flags |= FL_RESPAWN;
-				ent->flags |= FL_COOP_TAKEN;
-			}
-		}
+		return false;
 	}
-
-	if ((other->client->pers.weapon != ent->item) &&
-		(other->client->pers.inventory[index] == 1) &&
-		(!deathmatch->value ||
-		 (other->client->pers.weapon == FindItem("blaster"))))
-	{
-		other->client->newweapon = ent->item;
-	}
-
-	return true;
 }
 
 /*
@@ -561,6 +607,7 @@ ChangeWeapon(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_PAIN;
 
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crpain1;
@@ -571,6 +618,7 @@ ChangeWeapon(edict_t *ent)
 		ent->s.frame = FRAME_pain301;
 		ent->client->anim_end = FRAME_pain304;
 	}
+*/
 }
 
 void
@@ -646,7 +694,6 @@ NoAmmoWeaponChange(edict_t *ent)
 
 	ent->client->newweapon = FindItem("blaster");
 }
-#endif
 
 /*
  * Called by ClientBeginServerFrame and ClientThink
@@ -659,7 +706,6 @@ Think_Weapon(edict_t *ent)
 		return;
 	}
 
-#if 0
 	/* if just died, put the weapon away */
 	if (ent->health < 1)
 	{
@@ -681,12 +727,10 @@ Think_Weapon(edict_t *ent)
 			is_silenced = 0;
 		}
 
-		ent->client->pers.weapon->weaponthink(ent);
+		// ent->client->pers.weapon->weaponthink(ent);
 	}
-#endif
 }
 
-#if 0
 /*
  * Make the weapon ready if there is ammo
  */
@@ -814,7 +858,6 @@ Use_Weapon2(edict_t *ent, gitem_t *item)
 	/* change to this weapon when down */
 	ent->client->newweapon = item;
 }
-#endif
 
 void
 Drop_Weapon(edict_t *ent, gitem_t *item)
@@ -846,7 +889,6 @@ Drop_Weapon(edict_t *ent, gitem_t *item)
 	ent->client->pers.inventory[index]--;
 }
 
-#if 0
 /*
  * Client (player) animation for changing weapon
  */
@@ -860,6 +902,7 @@ Change_Weap_Animation(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_REVERSE;
 
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crpain4 + 1;
@@ -870,6 +913,7 @@ Change_Weap_Animation(edict_t *ent)
 		ent->s.frame = FRAME_pain304 + 1;
 		ent->client->anim_end = FRAME_pain301;
 	}
+*/
 }
 
 /*
@@ -961,6 +1005,7 @@ Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 				/* start the animation */
 				ent->client->anim_priority = ANIM_ATTACK;
 
+/*
 				if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 				{
 					ent->s.frame = FRAME_crattak1 - 1;
@@ -971,6 +1016,7 @@ Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 					ent->s.frame = FRAME_attack1 - 1;
 					ent->client->anim_end = FRAME_attack8;
 				}
+*/
 			}
 			else
 			{
@@ -1178,7 +1224,7 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 	{
 		return;
 	}
-
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->client->anim_priority = ANIM_ATTACK;
@@ -1191,6 +1237,7 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 		ent->s.frame = FRAME_wave08;
 		ent->client->anim_end = FRAME_wave01;
 	}
+*/
 }
 
 void
@@ -1802,6 +1849,7 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 
 			ent->client->anim_priority = ANIM_ATTACK;
 
+/*
 			if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 			{
 				ent->s.frame = FRAME_crattak1 - 1;
@@ -1812,6 +1860,7 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 				ent->s.frame = FRAME_attack1 - 1;
 				ent->client->anim_end = FRAME_attack8;
 			}
+*/
 		}
 
 		ent->client->ps.gunframe++;
@@ -1980,6 +2029,7 @@ Machinegun_Fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - (int)(random() + 0.25);
@@ -1990,6 +2040,7 @@ Machinegun_Fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - (int)(random() + 0.25);
 		ent->client->anim_end = FRAME_attack8;
 	}
+*/
 }
 
 void
@@ -2076,6 +2127,7 @@ Chaingun_Fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - (ent->client->ps.gunframe & 1);
@@ -2086,6 +2138,7 @@ Chaingun_Fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - (ent->client->ps.gunframe & 1);
 		ent->client->anim_end = FRAME_attack8;
 	}
+*/
 
 	if (ent->client->ps.gunframe <= 9)
 	{
@@ -3060,6 +3113,7 @@ weapon_etf_rifle_fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - 1;
@@ -3070,6 +3124,7 @@ weapon_etf_rifle_fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - 1;
 		ent->client->anim_end = FRAME_attack8;
 	}
+*/
 }
 
 void
@@ -3165,6 +3220,7 @@ Heatbeam_Fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
+/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - 1;
@@ -3175,6 +3231,7 @@ Heatbeam_Fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - 1;
 		ent->client->anim_end = FRAME_attack8;
 	}
+*/
 }
 
 void
@@ -3581,7 +3638,6 @@ Weapon_Trap(edict_t *ent)
 		}
 	}
 }
-#endif
 
 // ************************************************************************************************
 // Weapon_CalcStartPos

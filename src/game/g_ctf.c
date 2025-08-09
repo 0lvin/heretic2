@@ -628,7 +628,6 @@ SelectCTFSpawnPoint(edict_t *ent)
 	return spot;
 }
 
-#if 0
 /*------------------------------------------------------------------------*/
 
 /*
@@ -870,7 +869,6 @@ CTFCheckHurtCarrier(edict_t *targ, edict_t *attacker)
 		attacker->client->resp.ctf_lasthurtcarrier = level.time;
 	}
 }
-#endif
 
 /*------------------------------------------------------------------------*/
 
@@ -910,7 +908,6 @@ CTFResetFlag(int ctf_team)
 	}
 }
 
-#if 0
 static void
 CTFResetFlags(void)
 {
@@ -2371,12 +2368,10 @@ FindTechSpawn(void)
 
 	return spot;
 }
-#endif
 
 static void
 TechThink(edict_t *tech)
 {
-#if 0
 	edict_t *spot;
 
 	if ((spot = FindTechSpawn()) != NULL)
@@ -2389,26 +2384,22 @@ TechThink(edict_t *tech)
 		tech->nextthink = level.time + CTF_TECH_TIMEOUT;
 		tech->think = TechThink;
 	}
-#endif
 }
 
 void
 CTFDrop_Tech(edict_t *ent, gitem_t *item)
 {
-#if 0
 	edict_t *tech;
 
 	tech = Drop_Item(ent, item);
 	tech->nextthink = level.time + CTF_TECH_TIMEOUT;
 	tech->think = TechThink;
 	ent->client->pers.inventory[ITEM_INDEX(item)] = 0;
-#endif
 }
 
 void
 CTFDeadDropTech(edict_t *ent)
 {
-#if 0
 	gitem_t *tech;
 	edict_t *dropped;
 	int i;
@@ -2433,7 +2424,6 @@ CTFDeadDropTech(edict_t *ent)
 
 		i++;
 	}
-#endif
 }
 
 static void
@@ -2477,7 +2467,6 @@ SpawnTech(gitem_t *item, edict_t *spot)
 static void
 SpawnTechs(edict_t *ent)
 {
-#if 0
 	gitem_t *tech;
 	edict_t *spot;
 	int i;
@@ -2499,7 +2488,6 @@ SpawnTechs(edict_t *ent)
 	{
 		G_FreeEdict(ent);
 	}
-#endif
 }
 
 /*
@@ -2508,7 +2496,6 @@ SpawnTechs(edict_t *ent)
 void
 CTFRespawnTech(edict_t *ent)
 {
-#if 0
 	edict_t *spot;
 
 	if ((spot = FindTechSpawn()) != NULL)
@@ -2517,7 +2504,6 @@ CTFRespawnTech(edict_t *ent)
 	}
 
 	G_FreeEdict(ent);
-#endif
 }
 
 void
@@ -2535,7 +2521,6 @@ CTFSetupTechSpawn(void)
 	ent->think = SpawnTechs;
 }
 
-#if 0
 void
 CTFResetTech(void)
 {
@@ -2758,7 +2743,6 @@ CTFApplyRegeneration(edict_t *ent)
 		}
 	}
 }
-#endif
 
 qboolean
 CTFHasRegeneration(edict_t *ent)
@@ -2770,18 +2754,15 @@ CTFHasRegeneration(edict_t *ent)
 		tech = FindItemByClassname("item_tech4");
 	}
 
-/*
 	if (tech && ent->client &&
 		ent->client->pers.inventory[ITEM_INDEX(tech)])
 	{
 		return true;
 	}
-*/
 
 	return false;
 }
 
-#if 0
 /*
  * ======================================================================
  *
@@ -3561,8 +3542,8 @@ CTFStartMatch(void)
 			ent->client->respawn_time = level.time + 1.0 + ((rand() % 30) / 10.0);
 			ent->client->ps.pmove.pm_type = PM_DEAD;
 			ent->client->anim_priority = ANIM_DEATH;
-			ent->s.frame = FRAME_death308 - 1;
-			ent->client->anim_end = FRAME_death308;
+			// ent->s.frame = FRAME_death308 - 1;
+			// ent->client->anim_end = FRAME_death308;
 			ent->deadflag = DEAD_DEAD;
 			ent->movetype = MOVETYPE_NOCLIP;
 			ent->client->ps.gunindex = 0;
@@ -5260,4 +5241,4 @@ CTFSetPowerUpEffect(edict_t *ent, int def)
 		ent->s.effects |= def;
 	}
 }
-#endif
+

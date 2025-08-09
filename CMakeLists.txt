@@ -396,6 +396,8 @@ set(Game-Source
 	${GAME_SRC_DIR}/character/victimssithra/victimssithra.c
 	${GAME_SRC_DIR}/decals.c
 	${GAME_SRC_DIR}/ds.cpp
+	${GAME_SRC_DIR}/dm/ball.c
+	${GAME_SRC_DIR}/dm/tag.c
 	${GAME_SRC_DIR}/g_ai.c
 	${GAME_SRC_DIR}/game_utilities.c
 	${GAME_SRC_DIR}/g_breakable.c
@@ -436,6 +438,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_trigger.c
 	${GAME_SRC_DIR}/g_utils.c
 	${GAME_SRC_DIR}/g_weapon.c
+	${GAME_SRC_DIR}/menu/menu.c
 	${GAME_SRC_DIR}/g_waterfx.c
 	${GAME_SRC_DIR}/mg_guide.c
 	${GAME_SRC_DIR}/monster/assassin/assassin_anim.c

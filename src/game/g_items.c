@@ -1262,142 +1262,6 @@ Pickup_Puzzle(edict_t *ent, edict_t *other)
 }
 
 // ************************************************************************************************
-// AddWeaponToInventory
-// --------------------
-// ************************************************************************************************
-
-qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
-{
-	gitem_t	*newitem;
-	int		count;
-
-	// Do we already have this weapon?
-
-	if(!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
-	{
-		// We don't already have it, so get the weapon and some ammo.
-
-		if (item->tag == ITEM_WEAPON_SWORDSTAFF)
-			count= 0;
-		else if (item->tag == ITEM_WEAPON_HELLSTAFF)
-			count = AMMO_COUNT_HELLSTAFF;
-		else if (item->tag == ITEM_WEAPON_REDRAINBOW)
-		{
-			// give us the bowtype
-			player->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
-			count = AMMO_COUNT_REDRAINBOW;
-		}
-		else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
-		{
-			// give us the bowtype
-			player->client->playerinfo.pers.bowtype = BOW_TYPE_PHOENIX;
-			count = AMMO_COUNT_PHOENIXBOW;
-		}
-		else
-			count = AMMO_COUNT_MOST;
-
-		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
-
-		if(count)
-		{
-			newitem = FindItem(item->ammo);
-			Add_Ammo(player, newitem,count);
-		}
-
-		// Now decide if we want to swap weapons or not.
-
-		if (player->client->playerinfo.pers.autoweapon)
-		{
-			// If this new weapon is a higher value than the one we currently have, swap the current
-			// weapon for the new one.
-
-			if (ITEM_INDEX(item) > ITEM_INDEX(player->client->playerinfo.pers.weapon))
-			{
-				item->use(player, item);
-			}
-		}
-
-		return true;
-	}
-	else
-	{
-		// We already have it...
-
-		if(!((deathmatch->value&&((int)dmflags->value&DF_WEAPONS_STAY))||coop->value))
-		{
-			// ...and DF_WEPONS_STAY is off and we're not in coop, so just try to up the ammo counts.
-
-			if (item->tag == ITEM_WEAPON_HELLSTAFF)
-			{
-				newitem = FindItemByClassname("item_ammo_hellstaff");
-				count = AMMO_COUNT_HELLSTAFF;
-			}
-			else if (item->tag == ITEM_WEAPON_REDRAINBOW)
-			{
-				newitem = FindItemByClassname("item_ammo_redrain");
-				count = AMMO_COUNT_REDRAINBOW;
-			}
-			else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
-			{
-				newitem = FindItemByClassname("item_ammo_phoenix");
-				count = AMMO_COUNT_PHOENIXBOW;
-			}
-			else
-			{
-				newitem = FindItemByClassname("item_mana_offensive_half");
-				count = AMMO_COUNT_MOST;
-			}
-
-			if(Add_Ammo(player, newitem,count))
-			{
-				// Have space in our inventory, so add ammo.
-
-				return true;
-			}
-			else
-			{
-				// No space in inventory to add the ammo.
-
-				return false;
-			}
-		}
-		else
-		{
-			// ...but we're not able to pick it up.
-
-			return false;
-		}
-	}
-}
-
-// ************************************************************************************************
-// Pickup_Weapon
-// -------------
-// ************************************************************************************************
-
-qboolean
-Pickup_Weapon(edict_t *ent, edict_t *other)
-{
-	if (other->flags & FL_CHICKEN)
-	{
-		return false;
-	}
-
-	if(AddWeaponToInventory(ent->item,other))
-	{
-		G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
-
-		return true;
-	}
-	else
-	{
-		// We already have it.
-
-		return false;
-	}
-}
-
-// ************************************************************************************************
 // AddDefenseToInventory
 // ---------------------
 // ************************************************************************************************
@@ -1758,15 +1622,270 @@ Pickup_Health(edict_t *ent, edict_t *other)
 	return true;
 }
 
-/*
-===============
-Touch_Item
-===============
-*/
+/* ====================================================================== */
+
+int
+ArmorIndex(edict_t *ent)
+{
+	if (!ent || !ent->client)
+	{
+		return 0;
+	}
+
+	if (ent->client->pers.inventory[jacket_armor_index] > 0)
+	{
+		return jacket_armor_index;
+	}
+
+	if (ent->client->pers.inventory[combat_armor_index] > 0)
+	{
+		return combat_armor_index;
+	}
+
+	if (ent->client->pers.inventory[body_armor_index] > 0)
+	{
+		return body_armor_index;
+	}
+
+	return 0;
+}
+
+qboolean
+Pickup_Armor(edict_t *ent, edict_t *other)
+{
+	int old_armor_index;
+	gitem_armor_t *oldinfo;
+	gitem_armor_t *newinfo;
+	int newcount;
+	float salvage;
+	int salvagecount;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	/* get info on new armor */
+	newinfo = (gitem_armor_t *)ent->item->info;
+
+	old_armor_index = ArmorIndex(other);
+
+	/* handle armor shards specially */
+	if (ent->item->tag == ARMOR_SHARD)
+	{
+		if (!old_armor_index)
+		{
+			other->client->pers.inventory[jacket_armor_index] = 2;
+		}
+		else
+		{
+			other->client->pers.inventory[old_armor_index] += 2;
+		}
+	}
+
+	/* if player has no armor, just use it */
+	else if (!old_armor_index)
+	{
+		other->client->pers.inventory[ITEM_INDEX(ent->item)] =
+			newinfo->base_count;
+	}
+
+	/* use the better armor */
+	else
+	{
+		/* get info on old armor */
+		if (old_armor_index == jacket_armor_index)
+		{
+			oldinfo = &jacketarmor_info;
+		}
+		else if (old_armor_index == combat_armor_index)
+		{
+			oldinfo = &combatarmor_info;
+		}
+		else /* (old_armor_index == body_armor_index) */
+		{
+			oldinfo = &bodyarmor_info;
+		}
+
+		if (newinfo->normal_protection > oldinfo->normal_protection)
+		{
+			/* calc new armor values */
+			salvage = oldinfo->normal_protection / newinfo->normal_protection;
+			salvagecount = salvage *
+						   other->client->pers.inventory[old_armor_index];
+			newcount = newinfo->base_count + salvagecount;
+
+			if (newcount > newinfo->max_count)
+			{
+				newcount = newinfo->max_count;
+			}
+
+			/* zero count of old armor so it goes away */
+			other->client->pers.inventory[old_armor_index] = 0;
+
+			/* change armor to new item with computed value */
+			other->client->pers.inventory[ITEM_INDEX(ent->item)] = newcount;
+		}
+		else
+		{
+			/* calc new armor values */
+			salvage = newinfo->normal_protection / oldinfo->normal_protection;
+			salvagecount = salvage * newinfo->base_count;
+			newcount = other->client->pers.inventory[old_armor_index] +
+					   salvagecount;
+
+			if (newcount > oldinfo->max_count)
+			{
+				newcount = oldinfo->max_count;
+			}
+
+			/* if we're already maxed out then we don't need the new armor */
+			if (other->client->pers.inventory[old_armor_index] >= newcount)
+			{
+				return false;
+			}
+
+			/* update current armor value */
+			other->client->pers.inventory[old_armor_index] = newcount;
+		}
+	}
+
+	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
+	{
+		SetRespawn(ent, 20);
+	}
+
+	return true;
+}
+
+/* ====================================================================== */
+
+int
+PowerArmorType(edict_t *ent)
+{
+	if (!ent)
+	{
+		return POWER_ARMOR_NONE;
+	}
+
+	if (!ent->client)
+	{
+		return POWER_ARMOR_NONE;
+	}
+
+	if (!(ent->flags & FL_POWER_ARMOR))
+	{
+		return POWER_ARMOR_NONE;
+	}
+
+	if (ent->client->pers.inventory[power_shield_index] > 0)
+	{
+		return POWER_ARMOR_SHIELD;
+	}
+
+	if (ent->client->pers.inventory[power_screen_index] > 0)
+	{
+		return POWER_ARMOR_SCREEN;
+	}
+
+	return POWER_ARMOR_NONE;
+}
 
 void
-Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+Use_PowerArmor(edict_t *ent, gitem_t *item)
 {
+	int index;
+
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	if (ent->flags & FL_POWER_ARMOR)
+	{
+		ent->flags &= ~FL_POWER_ARMOR;
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(
+						"misc/power2.wav"), 1, ATTN_NORM, 0);
+	}
+	else
+	{
+		index = ITEM_INDEX(FindItem("cells"));
+
+		if (!ent->client->pers.inventory[index])
+		{
+			gi.cprintf(ent, PRINT_HIGH, "No cells for power armor.\n");
+			return;
+		}
+
+		ent->flags |= FL_POWER_ARMOR;
+		gi.sound(ent, CHAN_AUTO, gi.soundindex(
+						"misc/power1.wav"), 1, ATTN_NORM, 0);
+	}
+}
+
+qboolean
+Pickup_PowerArmor(edict_t *ent, edict_t *other)
+{
+	int quantity;
+
+	if (!ent || !other)
+	{
+		return false;
+	}
+
+	quantity = other->client->pers.inventory[ITEM_INDEX(ent->item)];
+
+	other->client->pers.inventory[ITEM_INDEX(ent->item)]++;
+
+	if (deathmatch->value)
+	{
+		if (!(ent->spawnflags & DROPPED_ITEM))
+		{
+			SetRespawn(ent, ent->item->quantity);
+		}
+
+		/* auto-use for DM only if we didn't already have one */
+		if (!quantity)
+		{
+			ent->item->use(other, ent->item);
+		}
+	}
+
+	return true;
+}
+
+void
+Drop_PowerArmor(edict_t *ent, gitem_t *item)
+{
+	if (!ent || !item)
+	{
+		return;
+	}
+
+	if ((ent->flags & FL_POWER_ARMOR) &&
+		(ent->client->pers.inventory[ITEM_INDEX(item)] == 1))
+	{
+		Use_PowerArmor(ent, item);
+	}
+
+	Drop_General(ent, item);
+}
+
+/* ====================================================================== */
+
+void
+Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */)
+{
+	if (!ent || !other)
+	{
+		return;
+	}
+
+	if (!other->client)
+	{
+		return;
+	}
+
 	if(strcmp(other->classname,"player"))
 	{
 		// Only players can touch items.
@@ -1774,7 +1893,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 		return;
 	}
 
-	if(other->health <= 0)
+	if (other->health < 1)
 	{
 		// Dead players can't pickup.
 
@@ -4069,6 +4188,679 @@ static const gitem_t gameitemlist[] = {
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
 		1,										// Max uses (-1 = inifinite)
+	},
+
+	/*
+	 * QUAKED item_ancient_head (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * Special item that gives +2 to maximum health
+	 */
+	{
+		"item_ancient_head",
+		Pickup_AncientHead,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/c_head/tris.md2", EF_ROTATE,
+		NULL,
+		"i_fixme",
+		"Ancient Head",
+		2,
+		60,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED item_adrenaline (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * gives +1 to maximum health
+	 */
+	{
+		"item_adrenaline",
+		Pickup_Adrenaline,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/adrenal/tris.md2", EF_ROTATE,
+		NULL,
+		"p_adrenaline",
+		"Adrenaline",
+		2,
+		60,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED item_bandolier (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 */
+	{
+		"item_bandolier",
+		Pickup_Bandolier,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/band/tris.md2", EF_ROTATE,
+		NULL,
+		"p_bandolier",
+		"Bandolier",
+		2,
+		60,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED item_pack (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 */
+	{
+		"item_pack",
+		Pickup_Pack,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/pack/tris.md2", EF_ROTATE,
+		NULL,
+		"i_pack",
+		"Ammo Pack",
+		2,
+		180,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	{
+		NULL,
+		Tag_PickupToken,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/tagtoken/tris.md2",
+		EF_ROTATE | EF_TAGTRAIL,
+		NULL,
+		"i_tagtoken",
+		"Tag Token",
+		0,
+		0,
+		NULL,
+		IT_POWERUP | IT_NOT_GIVEABLE,
+		0,
+		NULL,
+		1,
+		NULL,
+	},
+
+	/*
+	 * QUAKED key_data_cd (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * key for computer centers
+	 */
+	{
+		"key_data_cd",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/data_cd/tris.md2", EF_ROTATE,
+		NULL,
+		"k_datacd",
+		"Data CD",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_power_cube (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN NO_TOUCH
+	 * warehouse circuits
+	 */
+	{
+		"key_power_cube",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/power/tris.md2", EF_ROTATE,
+		NULL,
+		"k_powercube",
+		"Power Cube",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_explosive_charges (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN NO_TOUCH
+	 * warehouse circuits, key for N64
+	 */
+	{
+		"key_explosive_charges",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/n64/charge/tris.md2", EF_ROTATE,
+		NULL,
+		"n64/i_charges",
+		"Explosive Charges",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_yellow_key (0 .5 .8) (-16 -16 -16) (16 16 16)
+	 * normal door key - yellow, key for N64
+	 */
+	{
+		"key_yellow_key",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/n64/yellow_key/tris.md2", EF_ROTATE,
+		NULL,
+		"n64/i_yellow_key",
+		"Yellow Key",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_power_core (0 .5 .8) (-16 -16 -16) (16 16 16)
+	 * key for N64
+	 */
+	{
+		"key_power_core",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/n64/power_core/tris.md2", EF_ROTATE,
+		NULL,
+		"k_pyramid",
+		"Power Core",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_pyramid (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * key for the entrance of jail3
+	 */
+	{
+		"key_pyramid",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/pyramid/tris.md2", EF_ROTATE,
+		NULL,
+		"k_pyramid",
+		"Pyramid Key",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_data_spinner (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * key for the city computer
+	 */
+	{
+		"key_data_spinner",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/spinner/tris.md2", EF_ROTATE,
+		NULL,
+		"k_dataspin",
+		"Data Spinner",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_pass (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * security pass for the security level
+	 */
+	{
+		"key_pass",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/pass/tris.md2", EF_ROTATE,
+		NULL,
+		"k_security",
+		"Security Pass",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_blue_key (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * normal door key - blue
+	 */
+	{
+		"key_blue_key",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/key/tris.md2", EF_ROTATE,
+		NULL,
+		"k_bluekey",
+		"Blue Key",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_red_key (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * normal door key - red
+	 */
+	{
+		"key_red_key",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/red_key/tris.md2", EF_ROTATE,
+		NULL,
+		"k_redkey",
+		"Red Key",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_green_key (0 .5 .8) (-16 -16 -16) (16 16 16)
+	 * normal door key - blue
+	 */
+	{
+		"key_green_key",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/green_key/tris.md2", EF_ROTATE,
+		NULL,
+		"k_green",
+		"Green Key",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_commander_head (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * tank commander's head
+	 */
+	{
+		"key_commander_head",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/monsters/commandr/head/tris.md2", EF_GIB,
+		NULL,
+		"k_comhead",
+		"Commander's Head",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_airstrike_target (0 .5 .8) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 * tank commander's head
+	 */
+	{
+		"key_airstrike_target",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/items/keys/target/tris.md2", EF_ROTATE,
+		NULL,
+		"i_airstrike",
+		"Airstrike Marker",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		""
+	},
+
+	/*
+	 * QUAKED key_nuke_container (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 */
+	{
+		"key_nuke_container",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/weapons/g_nuke/tris.md2",
+		EF_ROTATE,
+		NULL,
+		"i_contain",
+		"Antimatter Pod",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		NULL,
+	},
+
+	/*
+	 * QUAKED key_nuke (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
+	 */
+	{
+		"key_nuke",
+		Pickup_Key,
+		NULL,
+		Drop_General,
+		NULL,
+		"items/pkup.wav",
+		"models/weapons/g_nuke/tris.md2",
+		EF_ROTATE,
+		NULL,
+		"i_nuke",
+		"Antimatter Bomb",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP | IT_KEY,
+		0,
+		NULL,
+		0,
+		NULL,
+	},
+
+	{
+		NULL,
+		Pickup_Health,
+		NULL,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		NULL, 0,
+		NULL,
+		"i_health",
+		"Health",
+		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		"items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav"
+	},
+
+	/*
+	 * QUAKED item_flag_team1 (1 0.2 0) (-16 -16 -24) (16 16 32)
+	 */
+	{
+		"item_flag_team1",
+		CTFPickup_Flag,
+		NULL,
+		CTFDrop_Flag,
+		NULL,
+		"ctf/flagtk.wav",
+		"players/male/flag1.md2", EF_FLAG1,
+		NULL,
+		"i_ctf1",
+		"Red Flag",
+		2,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		"ctf/flagcap.wav"
+	},
+
+	/*
+	 * QUAKED item_flag_team2 (1 0.2 0) (-16 -16 -24) (16 16 32)
+	 */
+	{
+		"item_flag_team2",
+		CTFPickup_Flag,
+		NULL,
+		CTFDrop_Flag,
+		NULL,
+		"ctf/flagtk.wav",
+		"players/male/flag2.md2", EF_FLAG2,
+		NULL,
+		"i_ctf2",
+		"Blue Flag",
+		2,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+		"ctf/flagcap.wav"
+	},
+
+	/* Resistance Tech */
+	{
+		"item_tech1",
+		CTFPickup_Tech,
+		NULL,
+		CTFDrop_Tech,
+		NULL,
+		"items/pkup.wav",
+		"models/ctf/resistance/tris.md2", EF_ROTATE,
+		NULL,
+		"tech1",
+		"Disruptor Shield",
+		2,
+		0,
+		NULL,
+		IT_TECH,
+		0,
+		NULL,
+		0,
+		"ctf/tech1.wav"
+	},
+
+	/* Strength Tech */
+	{
+		"item_tech2",
+		CTFPickup_Tech,
+		NULL,
+		CTFDrop_Tech,
+		NULL,
+		"items/pkup.wav",
+		"models/ctf/strength/tris.md2", EF_ROTATE,
+		NULL,
+		"tech2",
+		"Power Amplifier",
+		2,
+		0,
+		NULL,
+		IT_TECH,
+		0,
+		NULL,
+		0,
+		"ctf/tech2.wav ctf/tech2x.wav"
+	},
+
+	/* Haste Tech */
+	{
+		"item_tech3",
+		CTFPickup_Tech,
+		NULL,
+		CTFDrop_Tech,
+		NULL,
+		"items/pkup.wav",
+		"models/ctf/haste/tris.md2", EF_ROTATE,
+		NULL,
+		"tech3",
+		"Time Accel",
+		2,
+		0,
+		NULL,
+		IT_TECH,
+		0,
+		NULL,
+		0,
+		"ctf/tech3.wav"
+	},
+
+	/* Regeneration Tech */
+	{
+		"item_tech4",
+		CTFPickup_Tech,
+		NULL,
+		CTFDrop_Tech,
+		NULL,
+		"items/pkup.wav",
+		"models/ctf/regeneration/tris.md2", EF_ROTATE,
+		NULL,
+		"tech4",
+		"AutoDoc",
+		2,
+		0,
+		NULL,
+		IT_TECH,
+		0,
+		NULL,
+		0,
+		"ctf/tech4.wav"
+	},
+
+	{
+		"item_flashlight",
+		Pickup_General,
+		Use_Flashlight,
+		NULL,
+		NULL,
+		"items/pkup.wav",
+		"models/items/flashlight/tris.md2", EF_ROTATE,
+		NULL,
+		"p_torch",
+		"Flashlight",
+		2,
+		0,
+		NULL,
+		IT_STAY_COOP,
+		0,
+		NULL,
+		0,
+		"items/flashlight_on.wav items/flashlight_off.wav",
 	},
 
 	/* end of list marker */
