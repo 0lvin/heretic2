@@ -402,19 +402,18 @@ PlayerNoise(edict_t *who, vec3_t where, int type)
 	gi.linkentity(noise);
 }
 
-// ************************************************************************************************
-// AddWeaponToInventory
-// --------------------
-// ************************************************************************************************
-
-qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
+qboolean
+AddWeaponToInventory(gitem_t *item, edict_t *player)
 {
 	gitem_t	*newitem;
 	int		count;
+	int index;
+
+	index = ITEM_INDEX(item);
 
 	// Do we already have this weapon?
 
-	if(!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
+	if(!player->client->playerinfo.pers.inventory[index])
 	{
 		// We don't already have it, so get the weapon and some ammo.
 
@@ -437,7 +436,7 @@ qboolean AddWeaponToInventory(gitem_t *item,edict_t *player)
 		else
 			count = AMMO_COUNT_MOST;
 
-		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+		player->client->playerinfo.pers.inventory[index] = 1;
 
 		if(count)
 		{
@@ -607,7 +606,6 @@ ChangeWeapon(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_PAIN;
 
-/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crpain1;
@@ -618,7 +616,6 @@ ChangeWeapon(edict_t *ent)
 		ent->s.frame = FRAME_pain301;
 		ent->client->anim_end = FRAME_pain304;
 	}
-*/
 }
 
 void
@@ -727,7 +724,7 @@ Think_Weapon(edict_t *ent)
 			is_silenced = 0;
 		}
 
-		// ent->client->pers.weapon->weaponthink(ent);
+		ent->client->pers.weapon->weaponthink(ent, "");
 	}
 }
 
@@ -902,7 +899,6 @@ Change_Weap_Animation(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_REVERSE;
 
-/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crpain4 + 1;
@@ -913,7 +909,6 @@ Change_Weap_Animation(edict_t *ent)
 		ent->s.frame = FRAME_pain304 + 1;
 		ent->client->anim_end = FRAME_pain301;
 	}
-*/
 }
 
 /*
@@ -1005,7 +1000,6 @@ Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 				/* start the animation */
 				ent->client->anim_priority = ANIM_ATTACK;
 
-/*
 				if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 				{
 					ent->s.frame = FRAME_crattak1 - 1;
@@ -1016,7 +1010,6 @@ Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 					ent->s.frame = FRAME_attack1 - 1;
 					ent->client->anim_end = FRAME_attack8;
 				}
-*/
 			}
 			else
 			{
@@ -1224,7 +1217,7 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 	{
 		return;
 	}
-/*
+
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->client->anim_priority = ANIM_ATTACK;
@@ -1237,7 +1230,6 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 		ent->s.frame = FRAME_wave08;
 		ent->client->anim_end = FRAME_wave01;
 	}
-*/
 }
 
 void
@@ -1849,7 +1841,6 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 
 			ent->client->anim_priority = ANIM_ATTACK;
 
-/*
 			if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 			{
 				ent->s.frame = FRAME_crattak1 - 1;
@@ -1860,7 +1851,6 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 				ent->s.frame = FRAME_attack1 - 1;
 				ent->client->anim_end = FRAME_attack8;
 			}
-*/
 		}
 
 		ent->client->ps.gunframe++;
@@ -2029,7 +2019,6 @@ Machinegun_Fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
-/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - (int)(random() + 0.25);
@@ -2040,7 +2029,6 @@ Machinegun_Fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - (int)(random() + 0.25);
 		ent->client->anim_end = FRAME_attack8;
 	}
-*/
 }
 
 void
@@ -2127,7 +2115,6 @@ Chaingun_Fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
-/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - (ent->client->ps.gunframe & 1);
@@ -2138,7 +2125,6 @@ Chaingun_Fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - (ent->client->ps.gunframe & 1);
 		ent->client->anim_end = FRAME_attack8;
 	}
-*/
 
 	if (ent->client->ps.gunframe <= 9)
 	{
@@ -3113,7 +3099,6 @@ weapon_etf_rifle_fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
-/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - 1;
@@ -3124,7 +3109,6 @@ weapon_etf_rifle_fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - 1;
 		ent->client->anim_end = FRAME_attack8;
 	}
-*/
 }
 
 void
@@ -3220,7 +3204,6 @@ Heatbeam_Fire(edict_t *ent)
 
 	ent->client->anim_priority = ANIM_ATTACK;
 
-/*
 	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 	{
 		ent->s.frame = FRAME_crattak1 - 1;
@@ -3231,7 +3214,6 @@ Heatbeam_Fire(edict_t *ent)
 		ent->s.frame = FRAME_attack1 - 1;
 		ent->client->anim_end = FRAME_attack8;
 	}
-*/
 }
 
 void

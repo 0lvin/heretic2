@@ -242,6 +242,7 @@ Cmd_Give_f(edict_t *ent)
 	int index;
 	int i;
 	qboolean give_all;
+	edict_t *it_ent;
 
 	if (!ent)
 	{
@@ -450,7 +451,32 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			Add_Ammo (ent, it, 1000);
+			Add_Ammo(ent, it, 1000);
+		}
+
+		if (!give_all)
+		{
+			return;
+		}
+	}
+
+	if (give_all || (Q_stricmp(name, "ammo") == 0))
+	{
+		for (i = 0; i < game.num_items; i++)
+		{
+			it = itemlist + i;
+
+			if (!it->pickup)
+			{
+				continue;
+			}
+
+			if (!(it->flags & IT_AMMO))
+			{
+				continue;
+			}
+
+			Add_Ammo(ent, it, 1000);
 		}
 
 		if (!give_all)
@@ -461,6 +487,18 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all || (Q_stricmp(name, "armor") == 0))
 	{
+		gitem_armor_t *info;
+
+		it = FindItem("Jacket Armor");
+		ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+
+		it = FindItem("Combat Armor");
+		ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+
+		it = FindItem("Body Armor");
+		info = (gitem_armor_t *)it->info;
+		ent->client->pers.inventory[ITEM_INDEX(it)] = info->max_count;
+
 		if (ent->client->playerinfo.pers.armortype == ARMOR_TYPE_NONE)
 		{
 			ent->client->playerinfo.pers.armor_count = silver_armor_info.max_armor;
@@ -476,6 +514,25 @@ Cmd_Give_f(edict_t *ent)
 		SetupPlayerinfo_effects(ent);
 		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
 		WritePlayerinfo_effects(ent);
+
+		if (!give_all)
+		{
+			return;
+		}
+	}
+
+	if (give_all || (Q_stricmp(name, "Power Shield") == 0))
+	{
+		it = FindItem("Power Shield");
+		it_ent = G_Spawn();
+		it_ent->classname = it->classname;
+		SpawnItem(it_ent, it);
+		Touch_Item(it_ent, ent, NULL, NULL);
+
+		if (it_ent->inuse)
+		{
+			G_FreeEdict(it_ent);
+		}
 
 		if (!give_all)
 		{
@@ -621,13 +678,15 @@ Cmd_Give_f(edict_t *ent)
 		return;
 	}
 
+	if (it->flags & IT_NOT_GIVEABLE)
+	{
+		gi.dprintf("item cannot be given\n");
+		return;
+	}
+
 	index = ITEM_INDEX(it);
 
-	if (it->flags & IT_WEAPON)
-	{
-		ent->client->playerinfo.pers.inventory[index] += 1;
-	}
-	else if (it->flags & IT_AMMO)
+	if (it->flags & IT_AMMO)
 	{
 		if (gi.argc() == 3)
 		{
@@ -637,6 +696,10 @@ Cmd_Give_f(edict_t *ent)
 		{
 			ent->client->playerinfo.pers.inventory[index] += it->quantity;
 		}
+	}
+	else if (it->flags & IT_WEAPON)
+	{
+		ent->client->playerinfo.pers.inventory[index] += 1;
 	}
 	else
 	{
