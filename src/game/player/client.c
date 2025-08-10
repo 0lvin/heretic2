@@ -161,7 +161,7 @@ SP_CreateCoopSpots(edict_t *self)
 		spot->s.origin[1] = -164;
 		spot->s.origin[2] = 80;
 		spot->targetname = "jail3";
-		spot->s.angles[1] = 90;
+		spot->s.angles[YAW] = 90;
 
 		spot = G_Spawn();
 		spot->classname = "info_player_coop";
@@ -169,7 +169,7 @@ SP_CreateCoopSpots(edict_t *self)
 		spot->s.origin[1] = -164;
 		spot->s.origin[2] = 80;
 		spot->targetname = "jail3";
-		spot->s.angles[1] = 90;
+		spot->s.angles[YAW] = 90;
 
 		spot = G_Spawn();
 		spot->classname = "info_player_coop";
@@ -177,7 +177,7 @@ SP_CreateCoopSpots(edict_t *self)
 		spot->s.origin[1] = -164;
 		spot->s.origin[2] = 80;
 		spot->targetname = "jail3";
-		spot->s.angles[1] = 90;
+		spot->s.angles[YAW] = 90;
 
 		return;
 	}
@@ -217,7 +217,7 @@ CreateUnnamedSpawnpoint(const edict_t *self, const char *mapname, const char *sp
 	spot->classname = "info_player_start";
 
 	VectorCopy(self->s.origin, spot->s.origin);
-	spot->s.angles[1] = self->s.angles[1];
+	spot->s.angles[YAW] = self->s.angles[YAW];
 }
 
 void
