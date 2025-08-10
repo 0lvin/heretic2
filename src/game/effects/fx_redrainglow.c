@@ -87,7 +87,7 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 	for(i = 0; i < 2; i++)
 	{
 		// Calc spherical offset around left hand ref point
-		VectorSet(vel, flrand(-1.0, 1.0), flrand(-1.0, 1.0), flrand(-1.0, 1.0));
+		VectorSet(vel, crandk(), crandk(), crandk());
 		if(Vec3IsZero(vel))
 			vel[2] = 1.0;			// Safety in case flrand gens all zeros (VERY unlikely)
 		VectorNormalize(vel);
@@ -112,7 +112,7 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 	// Add the core to the effect
 	spark = ClientParticle_new(sparktype, color, 500);
 	VectorCopy(orgleft, spark->origin);
-	VectorSet(spark->velocity, flrand(-16.0, 16.0), flrand(-16.0, 16.0), flrand(-8.0, 24.0));
+	VectorSet(spark->velocity, crandk() * 16.0, crandk() * 16.0, flrand(-8.0, 24.0));
 	VectorMA(spark->velocity, -1.75, atkvector, spark->velocity);
 	spark->scale = 10.0F;
 	spark->d_scale = 10.0F;

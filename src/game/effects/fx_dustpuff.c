@@ -22,7 +22,7 @@ void FXDustPuff(client_entity_t *owner, float scale)
 	color.c = 0x80c0c0c0;
 	puff = ClientParticle_new(PART_32x32_STEAM, color, 500);
 
-	VectorSet(puff->velocity, flrand(-50.0F, 50.0F), flrand(-50.0F, 50.0F), flrand(0.0F, 25.0F));
+	VectorSet(puff->velocity, crandk() * 50.0, crandk() * 50.0, flrand(0.0F, 25.0F));
 	VectorScale(puff->velocity, -1.23F, puff->acceleration);
 	puff->scale = scale;
 	puff->d_scale = 10.0;
@@ -33,7 +33,7 @@ void FXDustPuff(client_entity_t *owner, float scale)
 
 void CreateSinglePuff(vec3_t origin, float scale)
 {
- 	client_entity_t	*ce;
+	client_entity_t	*ce;
 
 	ce = ClientEntity_new(-1, CEF_NOMOVE | CEF_NO_DRAW, origin, NULL, 500);
 	FXDustPuff(ce, scale);

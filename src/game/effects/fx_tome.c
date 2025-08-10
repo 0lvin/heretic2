@@ -119,7 +119,7 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 		VectorSet(spark->origin, flrand(-TOME_RADIUS, TOME_RADIUS), flrand(-TOME_RADIUS, TOME_RADIUS), flrand(-TOME_RADIUS, TOME_RADIUS));
 		VectorAdd(tome->origin, spark->origin, spark->origin);
 		spark->scale = TOME_SCALE;
-		VectorSet(spark->velocity, flrand(-20.0, 20.0), flrand(-20.0, 20.0), flrand(-10.0, 10.0));
+		VectorSet(spark->velocity, crandk() * 20.0, crandk() * 20.0, crandk() * 10.0);
 		spark->acceleration[2] = TOME_ACCEL;
 		spark->d_scale = flrand(-20.0, -15.0);
 		spark->d_alpha = flrand(-500.0, -400.0);
@@ -138,7 +138,7 @@ void FXTomeOfPower(centity_t *owner, int type, int flags, vec3_t origin)
 	tome = ClientEntity_new(type, flags, origin, NULL, 100);
 
 	// Test model
- 	tome->r.model = torch_models[1];
+	tome->r.model = torch_models[1];
 	tome->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 	tome->flags |= CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS;
 	VectorSet(tome->r.scale, 0.55, 0.55, 0.55);
@@ -236,7 +236,7 @@ void FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*effect;
 
 	effect = ClientEntity_new(type, flags, origin, NULL, 100);
- 	effect->r.model = torch_models[0];
+	effect->r.model = torch_models[0];
 	effect->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	VectorSet(effect->r.scale, .35, .35, .35);
 	effect->color.c = 0xffffff;

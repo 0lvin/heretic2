@@ -346,8 +346,8 @@ FXMorkPPTrailThink(struct client_entity_s *self, centity_t *owner)
 		spark->duration = (255.0 * 2000.0) / -spark->d_alpha;		// time taken to reach zero alpha
 
 		VectorCopy(owner->origin, spark->origin);
-		offset[0] = flrand(-10, 10);
-		offset[1] = flrand(-10, 10);
+		offset[0] = crandk() * 10.0;
+		offset[1] = crandk() * 10.0;
 		offset[2] = flrand(0, 10);
 		VectorAdd(spark->origin, offset, spark->origin);
 		VectorSet(spark->velocity,	offset[0] * (-1.3, -0.9),
@@ -477,7 +477,7 @@ FXMPPExplosionCoreThink(client_entity_t *core, centity_t *owner)
 		core->r.color.g -= 10;
 
 	// Spawn another trail core
-	VectorSet(pos, flrand(-8, 8), flrand(-8, 8), flrand(-8, 8));
+	VectorSet(pos, crandk() * 8.0, crandk() * 8.0, crandk() * 8.0);
 	VectorAdd(pos, core->r.origin, pos);
 	newcore = ClientEntity_new(-1, core->r.flags, pos, NULL, 250);
 //	newcore = ClientEntity_new(-1, core->r.flags, pos, NULL, 100);
@@ -510,9 +510,9 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	// Create three smaller explosion spheres.
 	for (i=0; i < EXPLODE_NUM_SMALLBALLS; i++)
 	{
-		ballorigin[0] = origin[0] + flrand(-EXPLODE_BALL_RANGE, EXPLODE_BALL_RANGE) + (dir[0]*EXPLODE_BALL_RANGE);
-		ballorigin[1] = origin[1] + flrand(-EXPLODE_BALL_RANGE, EXPLODE_BALL_RANGE) + (dir[1]*EXPLODE_BALL_RANGE);
-		ballorigin[2] = origin[2] + flrand(-EXPLODE_BALL_RANGE, EXPLODE_BALL_RANGE) + (dir[2]*EXPLODE_BALL_RANGE);
+		ballorigin[0] = origin[0] + crandk() * EXPLODE_BALL_RANGE + (dir[0]*EXPLODE_BALL_RANGE);
+		ballorigin[1] = origin[1] + crandk() * EXPLODE_BALL_RANGE + (dir[1]*EXPLODE_BALL_RANGE);
+		ballorigin[2] = origin[2] + crandk() * EXPLODE_BALL_RANGE + (dir[2]*EXPLODE_BALL_RANGE);
 		subexplosion = ClientEntity_new(type, flags, ballorigin, NULL, 17);
 		subexplosion->r.model = Morkpp_models[4];
 		subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
@@ -524,9 +524,9 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 		subexplosion->r.color.g = irand(100, 200);
 		subexplosion->r.color.b = irand(50, 100);
 
-		subexplosion->r.angles[PITCH] = flrand(-180, 180);
-		subexplosion->r.angles[YAW] = flrand(-180, 180);
-		subexplosion->r.angles[ROLL] = flrand(-180, 180);
+		subexplosion->r.angles[PITCH] = crandk() * 180;
+		subexplosion->r.angles[YAW] = crandk() * 180;
+		subexplosion->r.angles[ROLL] = crandk() * 180;
 
 		subexplosion->LifeTime=PP_EXPLODE_LIFETIME + 1 + (EXPLODE_BALL_DELAY*i);		// Each successive ball has an additional delay.
 		subexplosion->Update = FXMPPExplosionSmallBallThink;
@@ -563,9 +563,9 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	for(i = 0; i < EXPLODE_NUM_BITS; i++)
 	{
 		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 2000);
-		VectorSet(spark->velocity,	flrand(-EXPLODE_SPEED, EXPLODE_SPEED),
-									flrand(-EXPLODE_SPEED, EXPLODE_SPEED),
-									flrand(-EXPLODE_SPEED, EXPLODE_SPEED));
+		VectorSet(spark->velocity,	crandk() * EXPLODE_SPEED,
+									crandk() * EXPLODE_SPEED,
+									crandk() * EXPLODE_SPEED);
 		VectorAdd(spark->velocity, dir, spark->velocity);
 		spark->acceleration[2] = EXPLODE_GRAVITY;
 		spark->scale = EXPLODE_SCALE;
@@ -727,8 +727,8 @@ FXMorkPPReadyThink(struct client_entity_s *self, centity_t *owner)
 		spark->d_alpha = flrand(-40.0, -32.0);
 		spark->duration = (255.0 * 2000.0) / -spark->d_alpha;		// time taken to reach zero alpha
 
-		offset[0] = flrand(-10, 10);
-		offset[1] = flrand(-10, 10);
+		offset[0] = crandk() * 10.0;
+		offset[1] = crandk() * 10.0;
 		offset[2] = flrand(0, 10);
 		VectorAdd(spark->origin, offset, spark->origin);
 		VectorSet(spark->velocity,	offset[0] * (-1.3, -0.9),
@@ -1638,9 +1638,9 @@ FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 		spark->acceleration[2] = flrand(10, 20);
 //		spark->extraUpdate = ParticleFadeToBlue;
 
-		VectorSet(spark->origin, flrand(-10,10),
-									flrand(-10,10),
-									flrand(-10, 10));
+		VectorSet(spark->origin, crandk() * 10.0,
+									crandk() * 10.0,
+									crandk() * 10.0);
 
 		AddParticleToList(TrailEnt, spark);
 	}
@@ -1762,7 +1762,7 @@ DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_ParticleUpdate_opt (st
 			else
 				VectorSet(self->acceleration, 0, 0, -10);
 			VectorClear(self->velocity);
-			VectorSet(self->velocity, flrand(-2, 2), flrand(-2, 2), 0);
+			VectorSet(self->velocity, crandk() * 2.0, crandk() * 2.0, 0);
 			self->d_alpha = -40.0f;
 			self->scale = flrand(2.0, 3.0);
 			self->d_scale = 0.5f;
@@ -2014,12 +2014,12 @@ qboolean ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
 	for(i = 0; i < num_parts; i++)
 	{
 		p = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), LightColor, 1000);
-		VectorSet(p->origin, flrand(-4, 4), flrand(-4, 4), flrand(-4, 4));
+		VectorSet(p->origin, crandk() * 4, crandk() * 4, crandk() * 4);
 		VectorAdd(self->r.origin, p->origin, p->origin);
 		p->scale = flrand(0.1, 0.5);
 		p->type |= PFL_ADDITIVE;
 
-		VectorSet(p->velocity, flrand(-10, 10), flrand(-10, 10), flrand(-1.0, 1.0));
+		VectorSet(p->velocity, crandk() * 10.0, crandk() * 10.0, crandk());
 		// Make the fire shoot out the back and to the side
 		VectorMA(p->velocity, flrand(-40, -10), fwd, p->velocity);
 		// Alternate left and right side of phoenix
@@ -2103,11 +2103,11 @@ qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 	for(i = 0; i < num_parts; i++)
 	{
 		p = ClientParticle_new(star_particle[irand(0, 2)], LightColor, 2000);
-		VectorSet(p->origin, flrand(-4, 4), flrand(-4, 4), flrand(-4, 4));
+		VectorSet(p->origin, crandk() * 4, crandk() * 4, crandk() * 4);
 		VectorAdd(self->r.origin, p->origin, p->origin);
 		p->scale = flrand(2.5, 3.0);
 
-		VectorSet(p->velocity, flrand(-10, 10), flrand(-10, 10), flrand(-1.0, 1.0));
+		VectorSet(p->velocity, crandk() * 10.0, crandk() * 10.0, crandk());
 		VectorMA(p->velocity, flrand(-40, -10), fwd, p->velocity);
 
 		if (i&0x01)
@@ -2192,7 +2192,7 @@ qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 	VectorMA(owner->current.origin, TrailEnt->SpawnInfo, fwd, TrailEnt->r.endpos);
 
 	//avelocity
-	VectorSet(TrailEnt->up, flrand(-10, 10), flrand(-10, 10), flrand(-10, 10));
+	VectorSet(TrailEnt->up, crandk() * 10.0, crandk() * 10.0, crandk() * 10.0);
 
 	//speed
 	VectorCopy(self->direction, TrailEnt->velocity);
@@ -2290,7 +2290,7 @@ qboolean FXBuoyUpdate (struct client_entity_s *self, centity_t *owner)
 			break;
 
 		case BUOY_FX_START://green
-			VectorSet(p->origin, flrand(-2, 2), flrand(-2, 2), flrand(8, 16));
+			VectorSet(p->origin, crandk() * 2.0, crandk() * 2.0, flrand(8, 16));
 			VectorSet(p->velocity, 0, 0, flrand(3.0, 7.0));
 			p->acceleration[2] = flrand(0.05, 2);
 			break;
@@ -2569,13 +2569,13 @@ qboolean FXUnderWaterWakeUpdate (struct client_entity_s *self, centity_t *owner)
 		else
 			p = ClientParticle_new(water_particle[irand(0, 5)]|PFL_SOFT_MASK, LightColor, irand(1000, 1500));
 
-		VectorSet(p->origin, flrand(-8, 8), flrand(-8, 8), flrand(-4, 4));
+		VectorSet(p->origin, crandk() * 8.0, crandk() * 8.0, crandk() * 4);
 		VectorAdd(self->r.origin, p->origin, p->origin);
 
 		p->scale = flrand(0.75, 1.5);
 		p->color.a = irand(100, 200);
 
-		VectorSet(p->velocity, flrand(-2, 2), flrand(-2, 2), flrand(-2.0, 2.0));
+		VectorSet(p->velocity, crandk() * 2.0, crandk() * 2.0, crandk() * 2.0);
 
 		if (irand(0, 1))
 			VectorMA(p->velocity, flrand(-10, -2), right, p->velocity);
@@ -2779,9 +2779,9 @@ missile_add_to_view(struct client_entity_s *self, centity_t *owner)
 	LinkedEntityUpdatePlacement(self, owner);
 	VectorCopy(self->r.origin, self->r.startpos);
 
-	self->direction[0] += flrand(-1.0, 1.0);
-	self->direction[1] += flrand(-1.0, 1.0);
-	self->direction[2] += flrand(-1.0, 1.0);
+	self->direction[0] += crandk();
+	self->direction[1] += crandk();
+	self->direction[2] += crandk();
 
 	VectorNormalize(self->direction);
 	VectorMA(self->r.startpos, irand(self->LifeTime/4, self->LifeTime), self->direction, self->r.endpos);
@@ -2878,9 +2878,9 @@ void FXMorkMissile ( centity_t *owner, vec3_t startpos )
 
 		VectorCopy(startpos, fx->r.startpos);
 
-		fx->direction[0] = flrand(-1.0, 1.0);
-		fx->direction[1] = flrand(-1.0, 1.0);
-		fx->direction[2] = flrand(-1.0, 1.0);
+		fx->direction[0] = crandk();
+		fx->direction[1] = crandk();
+		fx->direction[2] = crandk();
 
 		VectorMA(startpos, irand(4, 16), fx->direction, fx->r.endpos);
 

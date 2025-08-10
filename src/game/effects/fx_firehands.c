@@ -82,7 +82,7 @@ static qboolean FXFireHandsThink(struct client_entity_s *self, centity_t *owner)
 		VectorAdd(flame->origin, origin, flame->origin);
 
 		flame->scale = HANDFIRE_SCALE;
-		VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
+		VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
 		flame->acceleration[2] = HANDFIRE_ACCEL;
 		flame->d_scale = flrand(-10.0, -5.0);
 		flame->d_alpha = flrand(-200.0, -160.0);

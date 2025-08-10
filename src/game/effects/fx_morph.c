@@ -259,9 +259,9 @@ void FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 		ce->scale=flrand(3.0, max_rand);
 
-		ce->velocity[0]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
-		ce->velocity[1]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
-		ce->velocity[2]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
+		ce->velocity[0]+=crandk() * SMOKE_SPEED;
+		ce->velocity[1]+=crandk() * SMOKE_SPEED;
+		ce->velocity[2]+=crandk() * SMOKE_SPEED;
 
 		AddParticleToList(dlight, ce);
 	}
@@ -370,9 +370,9 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			feather->yscale = flrand(0.05,0.2);
 			feather->xscale = flrand(-0.2,0.2);
 
-			feather->origin[0] += flrand(-8.0F, 8.0F);
-			feather->origin[1] += flrand(-8.0F, 8.0F);
-			feather->origin[2] += flrand(-8.0F, 8.0F);
+			feather->origin[0] += crandk() * 8.0;
+			feather->origin[1] += crandk() * 8.0;
+			feather->origin[2] += crandk() * 8.0;
 
 			AddEffect(NULL, feather);
 		}
@@ -394,7 +394,7 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 			VectorSet(feather->r.scale, scale, scale, scale);
 			feather->SpawnInfo = 170;
 			feather->yscale = flrand(0.1,0.3);
-			feather->xscale = flrand(-0.3,0.3);
+			feather->xscale = crandk() * 0.3;
 			AddEffect(NULL, feather);
 		}
 	}

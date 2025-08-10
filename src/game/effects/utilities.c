@@ -275,8 +275,8 @@ void FizzleEffect (client_entity_t *self, vec3_t surface_top, vec3_t normal)
 	num_puffs = GetScaledCount(irand(2, 5), 0.3);
 	for(i = 0; i<num_puffs; i++)
 	{
-		spot[0] = surface_top[0] + flrand(-3, 3);
-		spot[1] = surface_top[1] + flrand(-3, 3);
+		spot[0] = surface_top[0] + crandk() * 3;
+		spot[1] = surface_top[1] + crandk() * 3;
 		spot[2] = surface_top[2] + flrand(0, 3);
 		FXDarkSmoke(spot, flrand(0.2, 0.5), flrand(30, 50));
 	}

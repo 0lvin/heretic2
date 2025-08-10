@@ -100,8 +100,8 @@ void RedRainThink(edict_t *self)
 			if (victim)
 			{	// Try to zap somebody with lightning
 				VectorSet(startpos,
-							flrand(-rradius*0.6, rradius*0.6),
-							flrand(-rradius*0.6, rradius*0.6),
+							crandk() * rradius * 0.6,
+							crandk() * rradius * 0.6,
 							self->maxs[2]);
 				VectorAdd(startpos, self->s.origin, startpos);
 				VectorSet(endpos,
@@ -149,13 +149,13 @@ void RedRainThink(edict_t *self)
 			else
 			{
 				VectorSet(startpos,
-							flrand(-rradius*0.75, rradius*0.75),
-							flrand(-rradius*0.75, rradius*0.75),
+							crandk() * rradius * 0.75,
+							crandk() * rradius * 0.75,
 							self->maxs[2]);
 				VectorAdd(startpos, self->s.origin, startpos);
 				VectorSet(endpos,
-							flrand(-rradius, rradius),
-							flrand(-rradius, rradius),
+							crandk() * rradius,
+							crandk() * rradius,
 							self->mins[2]);
 				VectorAdd(endpos, self->s.origin, endpos);
 				if (!poweredup)
@@ -393,7 +393,7 @@ void SpellCastRedRain(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	// health indicates a level of powerup
 	if (caster->client->playerinfo.powerup_timer > level.time)
 	{	// Shoot powered up red rain.
- 		redarrow->health = 1;
+		redarrow->health = 1;
 		powerup=true;
 	}
 	else

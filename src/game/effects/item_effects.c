@@ -27,8 +27,8 @@ void ItemRespawn(centity_t *owner, int type, int flags, vec3_t origin)
 	for(i = 0; i < 32; i++)
 	{
 		p = ClientParticle_new(PART_4x4_WHITE, color, 750);
-		p->velocity[0] = flrand(-20.0F, 20.0F);
-		p->velocity[1] = flrand(-20.0F, 20.0F);
+		p->velocity[0] = crandk() * 20.0F;
+		p->velocity[1] = crandk() * 20.0F;
 		p->velocity[2] = flrand(30.0F, 80.0F);
 		AddParticleToList(effect, p);
 	}

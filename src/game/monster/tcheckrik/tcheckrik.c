@@ -760,7 +760,7 @@ void insect_chicken (edict_t *self, int coward, int flee, float fleetime)
 {
 	float chance;
 
-	chance = flrand(0,10);
+	chance = (frandk() * 10);
 	if(chance<coward)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
@@ -879,9 +879,9 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.25)
+			if((frandk() * self->health)<damage*0.25)
 				insect_dropweapon (self, 0);
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_tc(self, MESH__HEAD,&throw_nodes);
 				canthrownode_tc(self, MESH__CROWN,&throw_nodes);
@@ -935,7 +935,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_TorsoBack://split in half?
 			if(self->s.fmnodeinfo[MESH_MASTER].flags & FMNI_USE_SKIN)
 				break;
-			if(flrand(0,self->health)<damage*0.5)
+			if((frandk() * self->health)<damage*0.5)
 				insect_dropweapon (self, 0);
 			self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
@@ -953,7 +953,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			{//male - sword arm
 				if(self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
-				if(flrand(0,self->health)<damage*0.4)
+				if((frandk() * self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_SWORD);
 				self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
@@ -974,7 +974,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					break;
 				if(self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
-				if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+				if((frandk() * self->health)<damage*0.75&&dismember_ok)
 				{
 					if(canthrownode_tc(self, MESH__L2NDARM, &throw_nodes))
 					{
@@ -990,7 +990,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				}
 				else
 				{
-					if(flrand(0,self->health)<damage*0.4)
+					if((frandk() * self->health)<damage*0.4)
 						insect_dropweapon (self, BIT_SPEAR);
 					self->s.fmnodeinfo[MESH__L2NDARM].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__L2NDARM].skin = self->s.skinnum+1;
@@ -1007,7 +1007,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				}
-				if(flrand(0,self->health)<damage*0.4)
+				if((frandk() * self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_STAFF);
 			}
 			else
@@ -1030,7 +1030,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH_MASTER].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH_MASTER].skin = self->s.skinnum+1;
 				}
-				if(flrand(0,self->health)<damage*0.4)
+				if((frandk() * self->health)<damage*0.4)
 					insect_dropweapon (self, BIT_STAFF);
 			}
 			else
@@ -1039,7 +1039,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					break;
 				if(self->s.fmnodeinfo[MESH__R2NDARM].flags & FMNI_USE_SKIN)
 					damage*=1.5;//greater chance to cut off if previously damaged
-				if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+				if((frandk() * self->health)<damage*0.75&&dismember_ok)
 				{
 					if(canthrownode_tc(self, MESH__R2NDARM, &throw_nodes))
 					{
@@ -1055,7 +1055,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				}
 				else
 				{
-					if(flrand(0,self->health)<damage*0.4)
+					if((frandk() * self->health)<damage*0.4)
 						insect_dropweapon (self, BIT_SPEAR);
 					self->s.fmnodeinfo[MESH__R2NDARM].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__R2NDARM].skin = self->s.skinnum+1;
@@ -1111,7 +1111,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		default:
-			if(flrand(0,self->health)<damage*0.25)
+			if((frandk() * self->health)<damage*0.25)
 				insect_dropweapon (self, 0);
 			break;
 	}
@@ -1150,7 +1150,7 @@ void insect_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_damage, &damage, &temp);
 
-	if(!force_damage&&flrand(0,self->health)>damage)
+	if(!force_damage&&(frandk() * self->health)>damage)
 		return;
 
 	gi.RemoveEffects(self, FX_I_EFFECTS);

@@ -946,9 +946,9 @@ void move_imp_hover(edict_t *self)
 
 
 			//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
-			self->velocity[0] = flrand(-IMP_DRIFT_AMOUNT_X, IMP_DRIFT_AMOUNT_X);
-			self->velocity[1] = flrand(-IMP_DRIFT_AMOUNT_Y, IMP_DRIFT_AMOUNT_Y);
-			self->velocity[2] = flrand(-IMP_DRIFT_AMOUNT_Z, IMP_DRIFT_AMOUNT_Z);
+			self->velocity[0] = crandk() * IMP_DRIFT_AMOUNT_X;
+			self->velocity[1] = crandk() * IMP_DRIFT_AMOUNT_Y;
+			self->velocity[2] = crandk() * IMP_DRIFT_AMOUNT_Z;
 
 			return;
 		}
@@ -1056,9 +1056,9 @@ void move_imp_hover(edict_t *self)
 				else
 				{
 					//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
-					self->velocity[0] = flrand(-IMP_DRIFT_AMOUNT_X, IMP_DRIFT_AMOUNT_X);
-					self->velocity[1] = flrand(-IMP_DRIFT_AMOUNT_Y, IMP_DRIFT_AMOUNT_Y);
-					self->velocity[2] = flrand(-IMP_DRIFT_AMOUNT_Z, IMP_DRIFT_AMOUNT_Z);
+					self->velocity[0] = crandk() * IMP_DRIFT_AMOUNT_X;
+					self->velocity[1] = crandk() * IMP_DRIFT_AMOUNT_Y;
+					self->velocity[2] = crandk() * IMP_DRIFT_AMOUNT_Z;
 
 					AngleVectors(self->s.angles, vec, NULL, NULL);
 					VectorMA(self->velocity, irand(200,300), vec, self->velocity);

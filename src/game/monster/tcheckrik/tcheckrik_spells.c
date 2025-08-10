@@ -282,8 +282,8 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 			}
 		}
 
-		self->velocity[0]=8.0*((self->owner->s.origin[0]+Forward[0]*22.0+flrand(-2.0F,2.0F))-self->s.origin[0]);
-		self->velocity[1]=8.0*((self->owner->s.origin[1]+Forward[1]*22.0+flrand(-2.0F,2.0F))-self->s.origin[1]);
+		self->velocity[0]=8.0*((self->owner->s.origin[0]+Forward[0]*22.0+crandk() * 2.0)-self->s.origin[0]);
+		self->velocity[1]=8.0*((self->owner->s.origin[1]+Forward[1]*22.0+crandk() * 2.0)-self->s.origin[1]);
 		self->velocity[2]=8.0*((self->owner->s.origin[2]+Up[2]*10.0)-self->s.origin[2]);
 
 		self->nextthink=level.time+0.1;

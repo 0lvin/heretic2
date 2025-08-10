@@ -23,8 +23,8 @@ void DoWaterSplash(client_entity_t *effect, paletteRGBA_t color, int count)
 
 		p->d_alpha = 0;
 		p->d_scale = -1.0;
-		p->velocity[0] = flrand(-20.0F, 20.0F);
-		p->velocity[1] = flrand(-20.0F, 20.0F);
+		p->velocity[0] = crandk() * 20.0F;
+		p->velocity[1] = crandk() * 20.0F;
 		p->velocity[2] = flrand(20.0F, 30.0F);
 
 		AddParticleToList(effect, p);

@@ -852,7 +852,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__LARM_P1].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_gk(self, MESH__LARM_P1, &throw_nodes))
 				{
@@ -873,7 +873,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmLowerRight://right arm
 			if(self->s.fmnodeinfo[MESH__RARM_P1].flags & FMNI_NO_DRAW)
 				break;
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				canthrownode_gk(self, MESH__RARM_P1, &throw_nodes);
 				if(canthrownode_gk(self, MESH__RARM_P1, &throw_nodes))

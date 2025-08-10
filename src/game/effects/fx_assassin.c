@@ -57,8 +57,8 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, TPortSmoke->r.color, 1300);
 
 		VectorClear(ce->origin);
-		ce->velocity[0] = flrand(-100.0F, 100.0F);
-		ce->velocity[1] = flrand(-100.0F, 100.0F);
+		ce->velocity[0] = crandk() * 100.0F;
+		ce->velocity[1] = crandk() * 100.0F;
 		ce->velocity[2] = flrand(50.0F, 250.0F);
 
 		VectorScale(ce->velocity, -1.23F, ce->acceleration);

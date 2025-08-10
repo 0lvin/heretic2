@@ -87,8 +87,8 @@ void CreateExplosionParticles(client_entity_t *_this)
 
 		p = ClientParticle_new(PART_4x4_WHITE, color, 500);
 
-		VectorSet(p->origin, flrand(-EXP_RANGE, EXP_RANGE), flrand(-EXP_RANGE, EXP_RANGE), flrand(-EXP_RANGE, EXP_RANGE));
-		VectorSet(p->velocity, flrand(-EXP_SPEED, EXP_SPEED), flrand(-EXP_SPEED, EXP_SPEED), flrand(-EXP_SPEED, EXP_SPEED));
+		VectorSet(p->origin, crandk() * EXP_SPEED, crandk() * EXP_SPEED, crandk() * EXP_SPEED);
+		VectorSet(p->velocity, crandk() * EXP_SPEED, crandk() * EXP_SPEED, crandk() * EXP_SPEED);
 
 		AddParticleToList(_this, p);
 	}

@@ -449,7 +449,7 @@ FXHPMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
 	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = hpproj_models[2];
 
- 	TrailEnt->r.spriteType = SPRITE_LINE;
+	TrailEnt->r.spriteType = SPRITE_LINE;
 	TrailEnt->r.tile = 1;
 	VectorSet(TrailEnt->r.scale, 2.5, 2.5, 2.5);
 	TrailEnt->alpha = 1.0;
@@ -636,8 +636,8 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 
 		VectorRandomCopy(dir, SmokePuff->velocity, flrand(16.0, 64.0));
 
-		SmokePuff->acceleration[0] = flrand(-200, 200);
-		SmokePuff->acceleration[1] = flrand(-200, 200);
+		SmokePuff->acceleration[0] = crandk() * 200;
+		SmokePuff->acceleration[1] = crandk() * 200;
 		SmokePuff->acceleration[2] = flrand(-60, -100);
 
 		SmokePuff->d_alpha= -0.4;

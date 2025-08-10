@@ -65,11 +65,11 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 
 		TrailEnt->r.model = spoo_models[irand(0, 1)];
 
-		TrailEnt->r.origin[0] += flrand(-3.0F, 3.0F);
-		TrailEnt->r.origin[1] += flrand(-3.0F, 3.0F);
-		TrailEnt->r.origin[2] += flrand(-3.0F, 3.0F);
+		TrailEnt->r.origin[0] += crandk() * 3.0;
+		TrailEnt->r.origin[1] += crandk() * 3.0;
+		TrailEnt->r.origin[2] += crandk() * 3.0;
 
-		VectorSet(TrailEnt->velocity, flrand(-64.0F, 64.0F), flrand(-64.0F, 64.0F), -64.0F);
+		VectorSet(TrailEnt->velocity, crandk() * 64.0, crandk() * 64.0, -64.0F);
 
 		VectorSet(TrailEnt->r.scale, 0.65, 0.65, 0.65);
 		TrailEnt->alpha = 1.0f;

@@ -241,7 +241,7 @@ FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 				flrand(-HELLLASER_SPEED, HELLLASER_SPEED),
 				flrand(-HELLLASER_SPEED, HELLLASER_SPEED),
 				flrand(-HELLLASER_SPEED, HELLLASER_SPEED));
- 		AddParticleToList(beam, spark);
+		AddParticleToList(beam, spark);
 		VectorAdd(curpos, dpos, curpos);
 	}
 

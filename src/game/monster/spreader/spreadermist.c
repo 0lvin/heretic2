@@ -214,8 +214,8 @@ static void spreader_grenade_bounce ( edict_t *self, trace_t *trace )
 		VectorNormalize(vel);
 		VectorScale(vel, 100, vel);
 
-		vel[0] += flrand(-100, 100);
-		vel[1] += flrand(-100, 100);
+		vel[0] += crandk() * 100;
+		vel[1] += crandk() * 100;
 		vel[2] = flrand(10, 100);
 
 		// create the volume effect for the damage
@@ -263,8 +263,8 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 	VectorNormalize(vel);
 	VectorScale(vel, 100, vel);
 
-	vel[0] += flrand(-100, 100);
-	vel[1] += flrand(-100, 100);
+	vel[0] += crandk() * 100;
+	vel[1] += crandk() * 100;
 	vel[2] = flrand(10, 100);
 
 	// create the volume effect for the damage
@@ -444,7 +444,7 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	VectorMA (grenade->velocity, flrand(100.0F, 125.0F), up, grenade->velocity);
 
 	//FIXME: Difficulty modifier here
-	VectorMA (grenade->velocity, flrand(-10.0F, 10.0F), right, grenade->velocity);
+	VectorMA (grenade->velocity, crandk() * 10.0F, right, grenade->velocity);
 
 	VectorSet(grenade->avelocity, flrand(300,600), flrand(300,600), flrand(300,600));
 

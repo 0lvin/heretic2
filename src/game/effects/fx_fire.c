@@ -64,13 +64,13 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 1000);
 
 		radius = AVG_VEC3T(spawner->r.scale) * FLARE_SPAWN_RADIUS;
-		VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-radius, -radius));
+		VectorSet(flame->origin, crandk() * radius, crandk() * radius, crandk() * radius);
 
 		flame->scale = FLARE_SCALE * AVG_VEC3T(spawner->r.scale);
 		VectorSet(flame->velocity,
-						flrand(-FLARE_SPEED, FLARE_SPEED),
-						flrand(-FLARE_SPEED, FLARE_SPEED),
-						flrand(-FLARE_SPEED, FLARE_SPEED));
+						crandk() * FLARE_SPEED,
+						crandk() * FLARE_SPEED,
+						crandk() * FLARE_SPEED);
 		flame->acceleration[2] = FLARE_ACCEL * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-20.0, -10.0);
 		flame->d_alpha = flrand(-320.0, -256.0);
@@ -105,10 +105,10 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 			flame = ClientParticle_new(PART_32x32_STEAM | PFL_NEARCULL, color, 2000);
 
 			radius = AVG_VEC3T(spawner->r.scale) * FIRE_SPAWN_RADIUS;
-			VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), 8 * AVG_VEC3T(spawner->r.scale));
+			VectorSet(flame->origin, crandk() * radius, crandk() * radius, 8 * AVG_VEC3T(spawner->r.scale));
 
 			flame->scale = (FIRE_SCALE * AVG_VEC3T(spawner->r.scale)) / 2;
-			VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
+			VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
 			flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 			flame->d_scale = flrand(15.0, 20.0);
 			flame->d_alpha = flrand(-100.0, -50.0);
@@ -121,10 +121,10 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 			flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 2000);
 
 			radius = AVG_VEC3T(spawner->r.scale) * FIRE_SPAWN_RADIUS;
-			VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-16.0F, -8.0F) * AVG_VEC3T(spawner->r.scale));
+			VectorSet(flame->origin, crandk() * radius, crandk() * radius, flrand(-16.0F, -8.0F) * AVG_VEC3T(spawner->r.scale));
 
 			flame->scale = FIRE_SCALE * AVG_VEC3T(spawner->r.scale);
-			VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
+			VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
 			flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 			flame->d_scale = flrand(-10.0, -5.0);
 			flame->d_alpha = flrand(-200.0, -160.0);
@@ -200,11 +200,11 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 				flame = ClientParticle_new(PART_32x32_STEAM | PFL_NEARCULL, color, 2000);
 
 				radius = AVG_VEC3T(spawner->r.scale);
-				VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-0.25, 0.75) * AVG_VEC3T(spawner->r.scale));
+				VectorSet(flame->origin, crandk() * radius, crandk() * radius, flrand(-0.25, 0.75) * AVG_VEC3T(spawner->r.scale));
 				VectorAdd(flame->origin, spawner->origin, flame->origin);
 
 				flame->scale = AVG_VEC3T(spawner->r.scale) * 2.0;
-				VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
+				VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
 				flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 				flame->d_scale = flrand(15.0, 20.0);
 				flame->d_alpha = flrand(-100.0, -50.0);
@@ -217,7 +217,7 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 				flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 1000);
 
 				radius = AVG_VEC3T(spawner->r.scale);
-				VectorSet(flame->origin, flrand(-radius, radius), flrand(-radius, radius), flrand(-0.25, 0.75)*radius);
+				VectorSet(flame->origin, crandk() * radius, crandk() * radius, flrand(-0.25, 0.75)*radius);
 				// If dead, then move the flame down a tad.
 				if(owner->current.effects&EF_DISABLE_EXTRA_FX)
 				{
@@ -226,7 +226,7 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 				VectorAdd(flame->origin, spawner->origin, flame->origin);
 
 				flame->scale = AVG_VEC3T(spawner->r.scale) *2.0;
-				VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(32.0, 48.0));
+				VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(32.0, 48.0));
 				flame->acceleration[2] = 2.0 * AVG_VEC3T(spawner->r.scale);
 				flame->d_scale = flrand(-20.0, -10.0);
 				flame->d_alpha = flrand(-400.0, -320.0);
@@ -282,8 +282,8 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 
 		radius = AVG_VEC3T(spawner->r.scale) * FIRE_SPAWN_RADIUS;
 		VectorSet(flame->origin,
-			flrand(-radius, radius),
-			flrand(-radius, radius),
+			crandk() * radius,
+			crandk() * radius,
 			flrand(-8.0F, 0.0F) * AVG_VEC3T(spawner->r.scale));
 		// If dead, then move the flame down a tad.
 		if(owner->current.effects&EF_DISABLE_EXTRA_FX)
@@ -293,7 +293,7 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 		VectorAdd(flame->origin, spawner->origin, flame->origin);
 
 		flame->scale = FIRE_ENT_SCALE * AVG_VEC3T(spawner->r.scale);
-		VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
+		VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
 		flame->acceleration[2] = FIRE_ACCEL * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-10.0, -5.0);
 		flame->d_alpha = flrand(-200.0, -160.0);

@@ -87,7 +87,7 @@ FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
 			TrailEnt->r.model = fist_models[0];
 			scale = trailscale + flrand(0.0, 0.05);
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
-			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
+			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 			VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 		}
 
@@ -274,8 +274,8 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 			}
 
 			VectorRandomCopy(dir, SmokePuff->velocity, blastvel);
-			SmokePuff->acceleration[0] = flrand(-200, 200);
-			SmokePuff->acceleration[1] = flrand(-200, 200);
+			SmokePuff->acceleration[0] = crandk() * 200;
+			SmokePuff->acceleration[1] = crandk() * 200;
 			SmokePuff->acceleration[2] = flrand(-40, -60);
 		}
 

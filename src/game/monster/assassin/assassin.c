@@ -410,7 +410,7 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 
 //	gi.dprintf("ETA: %f\n", eta);
 	//ideally, spin @1110 degrees in 1 sec
-	arrow->avelocity[PITCH] = -1/eta * (360*3 +30 + flrand(-10,10));
+	arrow->avelocity[PITCH] = -1/eta * (360*3 +30 + crandk() * 10.0);
 //	gi.dprintf("avel: %f\n", arrow->avelocity[PITCH]);
 //	gi.dprintf("final rotation: %f\n", arrow->avelocity[PITCH]*eta);
 //	gi.dprintf("final angle: %f\n", anglemod(arrow->s.angles[PITCH]+arrow->avelocity[PITCH]*eta));
@@ -1026,7 +1026,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_as(self, MESH__HEAD,&throw_nodes);
 
@@ -1055,7 +1055,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 
@@ -1082,7 +1082,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.5)
+//				if((frandk() * self->health)<damage*0.5)
 //					assassin_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__TORSOFT].skin = self->s.skinnum+1;
@@ -1093,7 +1093,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 
@@ -1120,7 +1120,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.5)
+//				if((frandk() * self->health)<damage*0.5)
 //					assassin_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__TORSOBK].skin = self->s.skinnum+1;
@@ -1132,9 +1132,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-//			if(flrand(0,self->health)<damage*0.4)
+//			if((frandk() * self->health)<damage*0.4)
 //				assassin_dropweapon (self, (int)damage);
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				canthrownode_as(self, MESH__L4ARM, &throw_nodes);
 				if(canthrownode_as(self, MESH__LUPARM, &throw_nodes))
@@ -1157,7 +1157,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_as(self, MESH__L4ARM, &throw_nodes))
 				{
@@ -1177,7 +1177,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmUpperRight:
 			if(self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
 				break;
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				canthrownode_as(self, MESH__R4ARM, &throw_nodes);
 				if(canthrownode_as(self, MESH__RUPARM, &throw_nodes))
@@ -1198,7 +1198,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmLowerRight://right arm
 			if(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_as(self, MESH__R4ARM, &throw_nodes))
 				{
@@ -1309,7 +1309,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 
 		default:
-			if(flrand(0,self->health)<damage*0.25)
+			if((frandk() * self->health)<damage*0.25)
 				assassin_dropweapon (self, (int)damage);
 			break;
 	}
@@ -1373,7 +1373,7 @@ void assassin_pain(edict_t *self, G_Message_t *msg)
 	}
 
 	if(!force_pain)
-		if(flrand(0,self->health)>damage)
+		if((frandk() * self->health)>damage)
 			return;
 
 	self->monsterinfo.aiflags &= ~AI_OVERRIDE_GUIDE;
@@ -2300,7 +2300,7 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 
 		if(chance<33)
 		{//ANY, OFF to behind enemy
-			VectorSet(teleport_angles, 0, anglemod(self->enemy->s.angles[YAW] + flrand(-90, 90)), 0);
+			VectorSet(teleport_angles, 0, anglemod(self->enemy->s.angles[YAW] + crandk() * 90.0), 0);
 			AngleVectors(teleport_angles, forward, NULL, NULL);
 			VectorCopy(self->enemy->s.origin, startpos);
 			startpos[2]+=self->enemy->mins[2];

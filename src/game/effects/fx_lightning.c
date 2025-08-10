@@ -66,7 +66,7 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	lightning->d_alpha = -4.0;
 	VectorCopy(start, lightning->r.startpos);
 	VectorCopy(end, lightning->r.endpos);
- 	lightning->r.spriteType = SPRITE_LINE;
+	lightning->r.spriteType = SPRITE_LINE;
 	AddEffect(NULL, lightning);
 
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 400);
@@ -256,7 +256,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	lightning->d_alpha = -1.5;
 	VectorCopy(Origin, lightning->r.startpos);
 	VectorCopy(target, lightning->r.endpos);
- 	lightning->r.spriteType = SPRITE_LINE;
+	lightning->r.spriteType = SPRITE_LINE;
 	AddEffect(NULL, lightning);
 
 	// Halo around the lightning

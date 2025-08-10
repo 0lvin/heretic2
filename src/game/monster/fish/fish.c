@@ -166,10 +166,10 @@ void fish_update_yaw(edict_t *self)
 void fish_new_direction(edict_t *self)
 {
 	if (!(irand(0,1)))
-		self->movedir[0] = flrand(-30.0, 30.0);
+		self->movedir[0] = crandk() * 30.0;
 	else
 		self->movedir[0] = 0;
-	self->movedir[1] += flrand(-45.0, 45.0);
+	self->movedir[1] += crandk() * 45.0;
 	// bring all our movedir angles up positive again
 	reset_fish_movedir(self);
 

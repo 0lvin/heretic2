@@ -1418,9 +1418,9 @@ void move_harpy_hover(edict_t *self)
 			//gi.dprintf("move_harpy_hover: no new direction found, bumping about\n");
 
 			//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
-			self->velocity[0] = flrand(-HARPY_DRIFT_AMOUNT_X, HARPY_DRIFT_AMOUNT_X);
-			self->velocity[1] = flrand(-HARPY_DRIFT_AMOUNT_Y, HARPY_DRIFT_AMOUNT_Y);
-			self->velocity[2] = flrand(-HARPY_DRIFT_AMOUNT_Z, HARPY_DRIFT_AMOUNT_Z);
+			self->velocity[0] = crandk() * HARPY_DRIFT_AMOUNT_X;
+			self->velocity[1] = crandk() * HARPY_DRIFT_AMOUNT_Y;
+			self->velocity[2] = crandk() * HARPY_DRIFT_AMOUNT_Z;
 
 			return;
 		}
@@ -1515,9 +1515,9 @@ void move_harpy_hover(edict_t *self)
 				else
 				{
 					//Otherwise just flap around and wait, perhaps lower yourself a bit if high up
-					self->velocity[0] = flrand(-HARPY_DRIFT_AMOUNT_X, HARPY_DRIFT_AMOUNT_X);
-					self->velocity[1] = flrand(-HARPY_DRIFT_AMOUNT_Y, HARPY_DRIFT_AMOUNT_Y);
-					self->velocity[2] = flrand(-HARPY_DRIFT_AMOUNT_Z, HARPY_DRIFT_AMOUNT_Z);
+					self->velocity[0] = crandk() * HARPY_DRIFT_AMOUNT_X;
+					self->velocity[1] = crandk() * HARPY_DRIFT_AMOUNT_Y;
+					self->velocity[2] = crandk() * HARPY_DRIFT_AMOUNT_Z;
 
 					AngleVectors(self->s.angles, vec, NULL, NULL);
 					VectorMA(self->velocity, irand(200,300), vec, self->velocity);

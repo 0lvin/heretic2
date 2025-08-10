@@ -38,7 +38,7 @@ void FXDarkSmoke(vec3_t origin, float scale, float range)
 
 	duration = Q_ftol(GetTimeToReachDistance(50.0, 0.0, range));
 
-	VectorSet(effect->velocity, flrand(-10.0, 10.0), flrand(-10.0, 10.0), 50.0);
+	VectorSet(effect->velocity, crandk() * 10.0, crandk() * 10.0, 50.0);
 	effect->nextThinkTime = effect->startTime + duration;
 	effect->alpha = 0.5;
 	effect->d_alpha = (-effect->alpha * 1000.0) / duration;		// Rate of change in transparency
@@ -61,7 +61,7 @@ void FXSmoke(vec3_t origin, float scale, float range)
 
 	duration = Q_ftol(GetTimeToReachDistance(50.0, 0.0, range));
 
-	VectorSet(effect->velocity, flrand(-10.0, 10.0), flrand(-10.0, 10.0), 50.0);
+	VectorSet(effect->velocity, crandk() * 10.0, crandk() * 10.0, 50.0);
 	effect->nextThinkTime = effect->startTime + duration;
 	effect->alpha = 0.5;
 	effect->d_alpha = (-effect->alpha * 1000.0) / duration;		// Rate of change in transparency

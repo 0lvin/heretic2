@@ -83,8 +83,8 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 	count = GetScaledCount(NUM_PORTAL_PARTS, 0.7);
 	for(i = 0; i < count; i++)
 	{
-		VectorScale(right, flrand(-1, 1), vel);
-		VectorMA(vel, flrand(-1, 1), up, vel);
+		VectorScale(right, crandk(), vel);
+		VectorMA(vel, crandk(), up, vel);
 		if(Vec3IsZero(vel))
 			vel[2] = 1.0;			// Safety in case flrand gens all zeros (VERY unlikely)
 		VectorNormalize(vel);
@@ -158,33 +158,33 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 
 		if(1)
 		{
-			self->r.verts[0][0] += flrand(-1, 1);
-			self->r.verts[0][1] += flrand(-1, 1);
+			self->r.verts[0][0] += crandk();
+			self->r.verts[0][1] += crandk();
 
-			self->r.verts[1][0] += flrand(-1, 1);
-			self->r.verts[1][1] += flrand(-1, 1);
+			self->r.verts[1][0] += crandk();
+			self->r.verts[1][1] += crandk();
 
-			self->r.verts[2][0] += flrand(-1, 1);
-			self->r.verts[2][1] += flrand(-1, 1);
+			self->r.verts[2][0] += crandk();
+			self->r.verts[2][1] += crandk();
 
-			self->r.verts[3][0] += flrand(-1, 1);
-			self->r.verts[3][1] += flrand(-1, 1);
+			self->r.verts[3][0] += crandk();
+			self->r.verts[3][1] += crandk();
 		}
 
 		if(1)
 		{
 			//FIXME: scroll based on viewangle to camera viewport - but what about alpha channel???
-			self->r.verts[0][2] += flrand(-0.001, 0.001);
-			self->r.verts[0][3] += flrand(-0.001, 0.001);
+			self->r.verts[0][2] += crandk() * 0.001;
+			self->r.verts[0][3] += crandk() * 0.001;
 
-			self->r.verts[1][2] += flrand(-0.001, 0.001);
-			self->r.verts[1][3] += flrand(-0.001, 0.001);
+			self->r.verts[1][2] += crandk() * 0.001;
+			self->r.verts[1][3] += crandk() * 0.001;
 
-			self->r.verts[2][2] += flrand(-0.001, 0.001);
-			self->r.verts[2][3] += flrand(-0.001, 0.001);
+			self->r.verts[2][2] += crandk() * 0.001;
+			self->r.verts[2][3] += crandk() * 0.001;
 
-			self->r.verts[3][2] += flrand(-0.001, 0.001);
-			self->r.verts[3][3] += flrand(-0.001, 0.001);
+			self->r.verts[3][2] += crandk() * 0.001;
+			self->r.verts[3][3] += crandk() * 0.001;
 		}
 	}
 
@@ -257,33 +257,33 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 		if(1)
 		{
 			//top left
-			portal->r.verts[0][0] = -PICTURE_RADIUS;// + flrand(-2, 2);//x
-			portal->r.verts[0][1] = -PICTURE_RADIUS;// + flrand(-2, 2);//y
+			portal->r.verts[0][0] = -PICTURE_RADIUS;// + crandk() * 2.0;//x
+			portal->r.verts[0][1] = -PICTURE_RADIUS;// + crandk() * 2.0;//y
 			//top right
-			portal->r.verts[1][0] = PICTURE_RADIUS;// + flrand(-2, 2);//x
-			portal->r.verts[1][1] = -PICTURE_RADIUS;// + flrand(-2, 2);//y
+			portal->r.verts[1][0] = PICTURE_RADIUS;// + crandk() * 2.0;//x
+			portal->r.verts[1][1] = -PICTURE_RADIUS;// + crandk() * 2.0;//y
 			//bottom left
-			portal->r.verts[2][0] = PICTURE_RADIUS;// + flrand(-2, 2);//x
-			portal->r.verts[2][1] = PICTURE_RADIUS;//+ flrand(-2, 2);//y
+			portal->r.verts[2][0] = PICTURE_RADIUS;// + crandk() * 2.0;//x
+			portal->r.verts[2][1] = PICTURE_RADIUS;//+ crandk() * 2.0;//y
 			//bottom right
-			portal->r.verts[3][0] = -PICTURE_RADIUS;// + flrand(-2, 2);//x
-			portal->r.verts[3][1] = PICTURE_RADIUS;// + flrand(-2, 2);//y
+			portal->r.verts[3][0] = -PICTURE_RADIUS;// + crandk() * 2.0;//x
+			portal->r.verts[3][1] = PICTURE_RADIUS;// + crandk() * 2.0;//y
 		}
 
 		if(1)
 		{
 			//top left
-			portal->r.verts[0][2] = 0;//PORTALPIC_SIZE;// + flrand(-2, 2);//u
-			portal->r.verts[0][3] = 1;//-PORTALPIC_SIZE;// + flrand(-2, 2);//v
+			portal->r.verts[0][2] = 0;//PORTALPIC_SIZE;// + crandk() * 2.0;//u
+			portal->r.verts[0][3] = 1;//-PORTALPIC_SIZE;// + crandk() * 2.0;//v
 			//top right
-			portal->r.verts[1][2] = 1;//PORTALPIC_SIZE;// + flrand(-2, 2);//u
-			portal->r.verts[1][3] = 1;//PORTALPIC_SIZE;// + flrand(-2, 2);//v
+			portal->r.verts[1][2] = 1;//PORTALPIC_SIZE;// + crandk() * 2.0;//u
+			portal->r.verts[1][3] = 1;//PORTALPIC_SIZE;// + crandk() * 2.0;//v
 			//bottom left
-			portal->r.verts[2][2] = 1;//-PORTALPIC_SIZE;// + flrand(-2, 2);//u
-			portal->r.verts[2][3] = 0;//PORTALPIC_SIZE;// + flrand(-2, 2);//v
+			portal->r.verts[2][2] = 1;//-PORTALPIC_SIZE;// + crandk() * 2.0;//u
+			portal->r.verts[2][3] = 0;//PORTALPIC_SIZE;// + crandk() * 2.0;//v
 			//bottom right
-			portal->r.verts[3][2] = 0;//-PORTALPIC_SIZE;// + flrand(-2, 2);//u
-			portal->r.verts[3][3] = 0;//-PORTALPIC_SIZE;// + flrand(-2, 2);//v
+			portal->r.verts[3][2] = 0;//-PORTALPIC_SIZE;// + crandk() * 2.0;//u
+			portal->r.verts[3][3] = 0;//-PORTALPIC_SIZE;// + crandk() * 2.0;//v
 		}
 
 		portal->r.model = portal_models[1];

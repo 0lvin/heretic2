@@ -139,7 +139,7 @@ FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner)
 		flame->scale = FIRETRAIL_SCALE;
 
 		VectorSet(flame->velocity,
-				flrand(-FIRETRAIL_SPEED, FIRETRAIL_SPEED), flrand(-FIRETRAIL_SPEED, FIRETRAIL_SPEED), flrand(-1.0, 1.0));
+				flrand(-FIRETRAIL_SPEED, FIRETRAIL_SPEED), flrand(-FIRETRAIL_SPEED, FIRETRAIL_SPEED), crandk());
 		// Make the fire shoot out the back and to the side
 		VectorAdd(flame->velocity, fwd, flame->velocity);
 		// Alternate left and right side of phoenix
@@ -297,7 +297,7 @@ FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *owner)
 		dur = 250;
 
 	// Spawn another trail bird
-	VectorSet(pos, flrand(-8, 8), flrand(-8, 8), flrand(-8, 8));
+	VectorSet(pos, crandk() * 8.0, crandk() * 8.0, crandk() * 8.0);
 	VectorAdd(pos, bird->r.origin, pos);
 	newbird = ClientEntity_new(-1, bird->r.flags, pos, NULL, dur);
 	newbird->r.model = phoen_models[3];
@@ -412,9 +412,9 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	for(i = 0; i < count; i++)
 	{
 		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 2000);
-		VectorSet(spark->velocity,	flrand(-EXPLODE_SPEED, EXPLODE_SPEED),
-									flrand(-EXPLODE_SPEED, EXPLODE_SPEED),
-									flrand(-EXPLODE_SPEED, EXPLODE_SPEED));
+		VectorSet(spark->velocity,	crandk() * EXPLODE_SPEED,
+									crandk() * EXPLODE_SPEED,
+									crandk() * EXPLODE_SPEED);
 		VectorAdd(spark->velocity, dir, spark->velocity);
 		spark->acceleration[2] = EXPLODE_GRAVITY;
 		spark->scale = EXPLODE_SCALE;
@@ -698,7 +698,7 @@ FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner)
 		flame->scale = FIRETRAIL_SCALE;
 
 		VectorSet(flame->velocity,
-				flrand(-FIRETRAIL_SPEED/3, FIRETRAIL_SPEED/3), flrand(-FIRETRAIL_SPEED/3, FIRETRAIL_SPEED/3), flrand(-1.0, 1.0));
+				flrand(-FIRETRAIL_SPEED/3, FIRETRAIL_SPEED/3), flrand(-FIRETRAIL_SPEED/3, FIRETRAIL_SPEED/3), crandk());
 		// Make the fire shoot out the back and to the side
 		VectorAdd(flame->velocity, fwd, flame->velocity);
 		// Alternate left and right side of phoenix

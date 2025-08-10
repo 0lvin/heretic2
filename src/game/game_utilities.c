@@ -859,9 +859,9 @@ void GetAimVelocity(edict_t *enemy, vec3_t org, vec_t speed, vec3_t AimAngles, v
 		{//if skill = 0, aim for center of chest, otherwise, offset it some
 			h_offs = enemy->maxs[0] * 0.75;
 			v_offs = enemy->maxs[2] * 0.5;
-			out[0] += flrand(-h_offs, h_offs);
-			out[1] += flrand(-h_offs, h_offs);
-			out[2] += flrand(-v_offs, v_offs);
+			out[0] += crandk() * h_offs;
+			out[1] += crandk() * h_offs;
+			out[2] += crandk() * v_offs;
 		}
 		else
 			out[2] += enemy->maxs[2] /2;

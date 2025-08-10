@@ -638,9 +638,9 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 
 		VectorAdd(self->startpos2, spark->origin, spark->origin);
 		VectorMA(spark->origin, dist/i, dir, spark->origin);
-		spark->origin[0] += flrand(-2, 2);
-		spark->origin[1] += flrand(-2, 2);
-		spark->origin[2] += flrand(-2, 2);
+		spark->origin[0] += crandk() * 2.0;
+		spark->origin[1] += crandk() * 2.0;
+		spark->origin[2] += crandk() * 2.0;
 
 		AddParticleToList(self, spark);
 	}

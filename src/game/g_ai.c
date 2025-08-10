@@ -2561,8 +2561,8 @@ extrapolateFiredir(edict_t *self, vec3_t p1, float pspeed, edict_t *targ, float 
 		else
 			offset = 48;
 
-		p2[0] += flrand(-offset, offset);
-		p2[1] += flrand(-offset, offset);
+		p2[0] += crandk() * offset;
+		p2[1] += crandk() * offset;
 		p2[2] += flrand(-offset/2, offset * 0.666);
 		VectorSubtract(p2, p1, vec2);
 		VectorNormalize(vec2);
@@ -2588,9 +2588,9 @@ extrapolateFiredir(edict_t *self, vec3_t p1, float pspeed, edict_t *targ, float 
 	VectorCopy(targ->s.origin, p2);
 	if(offset)
 	{
-		p2[0] += flrand(-offset*12, offset*12);
-		p2[1] += flrand(-offset*12, offset*12);
-		p2[2] += flrand(-offset*8, offset*8);
+		p2[0] += crandk() * offset * 12;
+		p2[1] += crandk() * offset * 12;
+		p2[2] += crandk() * offset * 8;
 	}
 
 	VectorSubtract(p2, p1, vec1);

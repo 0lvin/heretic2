@@ -755,8 +755,8 @@ void morcalavin_taunt_shot(edict_t *self)
 	VectorCopy(startOfs, proj->s.origin);
 	VectorCopy(angles, ang);
 
-	ang[PITCH]  = flrand( -4, 4 ) + -ang[PITCH];
-	ang[YAW]	+= flrand( -4, 4 );
+	ang[PITCH]  = crandk() * 4 + -ang[PITCH];
+	ang[YAW]	+= crandk() * 4;
 
 	AngleVectors( ang, vel, NULL, NULL );
 
@@ -869,9 +869,9 @@ void projectile_veer(edict_t *self, float amount)
 
 	speed = VectorLength(self->velocity);
 	VectorSet(veerdir,
-		flrand(-amount, amount),
-		flrand(-amount, amount),
-		flrand(-amount, amount));
+		crandk() * amount,
+		crandk() * amount,
+		crandk() * amount);
 	VectorAdd(veerdir, self->velocity, self->velocity);
 	VectorNormalize(self->velocity);
 	Vec3ScaleAssign(speed, self->velocity);

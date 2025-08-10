@@ -244,13 +244,13 @@ void DoFireTrail (client_entity_t *spawner)
 
 		radius = AVG_VEC3T(spawner->r.scale) * 2.0;
 		VectorSet(flame->origin,
-			flrand(-radius, radius),
-			flrand(-radius, radius),
+			crandk() * radius,
+			crandk() * radius,
 			flrand(-4.0F, -2.0F) * AVG_VEC3T(spawner->r.scale));
 		VectorAdd(flame->origin, spawner->r.origin, flame->origin);
 
 		flame->scale = master_scale;
-		VectorSet(flame->velocity, flrand(-1.0, 1.0), flrand(-1, 1.0), flrand(17.0, 20.0));
+		VectorSet(flame->velocity, crandk(), crandk(), flrand(17.0, 20.0));
 		flame->acceleration[2] = 32.0 * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-5.0, -2.5);
 		flame->d_alpha = flrand(-200.0, -160.0);
@@ -396,8 +396,8 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 
 	debris->acceleration[2] = GetGravity();
 
-	debris->r.angles[0] = flrand(-ANGLE_180, ANGLE_180);
-	debris->r.angles[1] = flrand(-ANGLE_90, ANGLE_90);
+	debris->r.angles[0] = crandk() * ANGLE_180;
+	debris->r.angles[1] = crandk() * ANGLE_90;
 
 	debris->elasticity = debrisElasticity[MAT_FLESH];
 
@@ -506,8 +506,8 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 	debris->r.model = debrisChunks[index].model;
 
 	VectorSet(debris->r.scale, scale, scale, scale);
-	debris->r.angles[0] = flrand(-ANGLE_180, ANGLE_180);
-	debris->r.angles[1] = flrand(-ANGLE_90, ANGLE_90);
+	debris->r.angles[0] = crandk() * ANGLE_180;
+	debris->r.angles[1] = crandk() * ANGLE_90;
 
 	debris->flags |= CEF_CLIP_TO_WORLD | CEF_ABSOLUTE_PARTS;
 	debris->radius = 5.0;
@@ -919,7 +919,7 @@ qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 		else if(flrand(0.0, 0.3) > AVG_VEC3T(self->r.scale))
 		{
 			self->dlight = NULL;
- 			self->flags &= ~CEF_FLAG6;
+			self->flags &= ~CEF_FLAG6;
 			self->d_scale = -0.01;
 		}
 		else

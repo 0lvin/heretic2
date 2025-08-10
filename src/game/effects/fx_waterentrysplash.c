@@ -62,8 +62,8 @@ FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner)
 		{	// Random ripples.
 			VectorSet(EntryRipple->r.scale, 0.1, 0.1, 0.1);
 			EntryRipple->d_scale=0.7;
-			EntryRipple->r.origin[0] += flrand(-6.0,6.0);
-			EntryRipple->r.origin[1] += flrand(-6.0,6.0);
+			EntryRipple->r.origin[0] += crandk() * 6.0;
+			EntryRipple->r.origin[1] += crandk() * 6.0;
 		}
 		else
 		{
@@ -223,7 +223,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		for (i=0; i<parts; i++)
 		{
 			part = ClientParticle_new(PART_32x32_WFALL, color, 750);
-			VectorSet(part->origin, flrand(-2.0,2.0), flrand(-2.0,2.0), 0);
+			VectorSet(part->origin, crandk() * 2.0, crandk() * 2.0, 0);
 			VectorScale(part->origin, 8.0, part->velocity);
 			part->velocity[2] = flrand(50.0, 100.0);
 			part->acceleration[2] = -320;

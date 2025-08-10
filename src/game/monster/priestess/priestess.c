@@ -676,8 +676,8 @@ void priestess_fire1( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 		VectorCopy(startOfs, proj->s.origin);
 		VectorCopy(angles, ang);
 
-		ang[PITCH]  = flrand( -4, 4 ) + -ang[PITCH];
-		ang[YAW]	+= flrand( -4, 4 );
+		ang[PITCH]  = crandk() * 4 + -ang[PITCH];
+		ang[YAW]	+= crandk() * 4;
 
 		AngleVectors( ang, vel, NULL, NULL );
 

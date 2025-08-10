@@ -763,7 +763,7 @@ void tbeast_footstep (edict_t *self)
 					FX_TB_PUFF,
 					vec3_origin);
 
-	VectorSet(up, flrand(-20, 20), flrand(-20, 20), flrand(20, 100));
+	VectorSet(up, crandk() * 20, crandk() * 20, flrand(20, 100));
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
 
 	gi.CreateEffect(self,
@@ -1003,26 +1003,26 @@ void tbeast_land(edict_t *self)
 					7);
 
 
-	VectorSet(up, flrand(-50,50), flrand(-50,50), flrand(50,300));
+	VectorSet(up, crandk() * 50, crandk() * 50, flrand(50,300));
 
 	VectorCopy(self->s.origin, pos);
-	pos[0] += flrand(-50,50);
-	pos[1] += flrand(-50,50);
+	pos[0] += crandk() * 50;
+	pos[1] += crandk() * 50;
 	pos[2] += self->mins[2];
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
 	VectorCopy(self->s.origin, pos);
-	pos[0] += flrand(-50,50);
-	pos[1] += flrand(-50,50);
+	pos[0] += crandk() * 50;
+	pos[1] += crandk() * 50;
 	pos[2] += self->mins[2];
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
 	VectorCopy(self->s.origin, pos);
-	pos[0] += flrand(-50,50);
-	pos[1] += flrand(-50,50);
+	pos[0] += crandk() * 50;
+	pos[1] += crandk() * 50;
 	pos[2] += self->mins[2];
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
 	VectorCopy(self->s.origin, pos);
-	pos[0] += flrand(-50,50);
-	pos[1] += flrand(-50,50);
+	pos[0] += crandk() * 50;
+	pos[1] += crandk() * 50;
 	pos[2] += self->mins[2];
 	gi.CreateEffect(NULL, FX_OGLE_HITPUFF, 0, pos, "v", up);
 

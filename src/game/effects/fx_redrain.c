@@ -148,9 +148,9 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 	for(j = 0; j < NUM_DROPS; j++)
 	{
 		VectorSet(origin,
-				flrand(-radius, radius),
-				flrand(-radius, radius),
-				rain->SpawnData + flrand(-8.0F, 8.0F));
+				crandk() * radius,
+				crandk() * radius,
+				rain->SpawnData + crandk() * 8.0);
 		VectorAdd(rain->origin, origin, origin);
 		duration = GetFallTime(origin, RAIN_INIT_VEL, -PARTICLE_GRAVITY, DROP_RADIUS, 3.0F, &trace);
 		drop = ClientEntity_new(-1, CEF_DONT_LINK, origin, NULL, duration);
@@ -378,9 +378,9 @@ RedRainExplosionThink(client_entity_t *explosion, centity_t *owner)
 	AngleVectors(explosion->r.angles, dir, NULL, NULL);
 	VectorMA(explosion->direction, radius*1.5, dir, targetpos);
 	VectorSet(randomvect,
-				flrand(-radius, radius),
-				flrand(-radius, radius),
-				flrand(-radius, radius));
+				crandk() * radius,
+				crandk() * radius,
+				crandk() * radius);
 	VectorAdd(targetpos, randomvect, targetpos);
 
 	// This is the velocity it would need to reach the position in one second.

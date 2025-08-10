@@ -169,7 +169,7 @@ void ssithra_stand(edict_t *self, G_Message_t *msg)
 	{
 		if(self->curAnimID == ANIM_STAND1)
 		{
-			if(flrand(0,10)<8)//9
+			if((frandk() * 10)<8)//9
 				SetAnim(self, ANIM_STAND1);
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
@@ -180,7 +180,7 @@ void ssithra_stand(edict_t *self, G_Message_t *msg)
 		}
 		else if(self->curAnimID == ANIM_IDLERIGHT)
 		{
-			if(flrand(0,10)<6)//7
+			if((frandk() * 10)<6)//7
 				SetAnim(self, ANIM_STAND1);
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
@@ -296,11 +296,11 @@ void ssithra_decide_stand(edict_t *self)
 	{
 		if((self->curAnimID == ANIM_STAND1)||(self->curAnimID == ANIM_IDLEBASIC))
 		{
-			if(flrand(0,10)<7)//9
+			if((frandk() * 10)<7)//9
 				SetAnim(self, ANIM_STAND1);
-			else if(flrand(0,10)<7)//9
+			else if((frandk() * 10)<7)//9
 				SetAnim(self, ANIM_IDLERIGHT);
-			else if(flrand(0,10)<5)//9
+			else if((frandk() * 10)<5)//9
 				SetAnim(self, ANIM_LOOKRIGHT);
 			else
 				SetAnim(self, ANIM_LOOKLEFT);
@@ -309,7 +309,7 @@ void ssithra_decide_stand(edict_t *self)
 			self->curAnimID == ANIM_LOOKLEFT||
 			self->curAnimID == ANIM_LOOKRIGHT)
 		{
-			if(flrand(0,10)<6)//7
+			if((frandk() * 10)<6)//7
 				SetAnim(self, ANIM_STAND1);
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
@@ -1448,7 +1448,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			// Is the pain skin engaged?
 			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode(self, MESH__HEAD,&throw_nodes);
 				canthrownode(self, MESH__CENTERSPIKE,&throw_nodes);
@@ -1515,7 +1515,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 				//seal up the caps left by this split
@@ -1559,7 +1559,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode(self, MESH__LEFTARM, &throw_nodes))
 				{
@@ -1582,7 +1582,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode(self, MESH__RIGHTARM, &throw_nodes))
 				{

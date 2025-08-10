@@ -350,9 +350,9 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 			AngleVectors(Temp,Forward,Right,NULL);
 
 
-			VectorSet(Glowball->r.origin,	flrand(-10.0, 10.0)+ Self->r.origin[0],
-											flrand(-10.0, 10.0)+ Self->r.origin[1],
-											flrand(-10.0, 10.0)+ Self->r.origin[2]);
+			VectorSet(Glowball->r.origin,	crandk() * 10.0+ Self->r.origin[0],
+											crandk() * 10.0+ Self->r.origin[1],
+											crandk() * 10.0+ Self->r.origin[2]);
 		}
 
 		VectorCopy(Owner->current.angles,Temp);
@@ -541,9 +541,9 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 
 		ce->scale=flrand(16.0, 32.0);
 
-		ce->velocity[0]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
-		ce->velocity[1]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
-		ce->velocity[2]+=flrand(-SMOKE_SPEED,SMOKE_SPEED);
+		ce->velocity[0]+=crandk() * SMOKE_SPEED;
+		ce->velocity[1]+=crandk() * SMOKE_SPEED;
+		ce->velocity[2]+=crandk() * SMOKE_SPEED;
 		AddParticleToList(Explosion, ce);
 
 	}
@@ -636,8 +636,8 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 		ce->acceleration[2] = 0;
 		ce->d_alpha=-768.0;
 		VectorMA(ce->origin, flrand(0, len), fwd, ce->origin);
-		VectorMA(ce->velocity, flrand(-15, 15), right, ce->velocity);
-		VectorMA(ce->velocity, flrand(-15, 15), up, ce->velocity);
+		VectorMA(ce->velocity, crandk() * 15, right, ce->velocity);
+		VectorMA(ce->velocity, crandk() * 15, up, ce->velocity);
 		VectorMA(ce->origin, flrand(-size*.4, size*.4), right, ce->origin);
 		VectorMA(ce->origin, flrand(-size*.4, size*.4), up, ce->origin);
 		AddParticleToList(exp1, ce);
@@ -804,13 +804,13 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		glowball->direction[YAW] = flrand(0, 360.0);	// This angle is kept at a constant distance from org.
 		glowball->direction[PITCH] = flrand(0, 360.0);
 
-		glowball->velocity2[YAW] = flrand(-90.0, 90.0);
+		glowball->velocity2[YAW] = crandk() * 90.0;
 		if (glowball->velocity2[YAW] < 0)				// Assure that the sparks are moving around at a pretty good clip.
 			glowball->velocity2[YAW] -= 90.0;
 		else
 			glowball->velocity2[YAW] += 90.0;
 
-		glowball->velocity2[PITCH] = flrand(-90.0, 90.0);	// This is a velocity around the sphere.
+		glowball->velocity2[PITCH] = crandk() * 90.0;	// This is a velocity around the sphere.
 		if (glowball->velocity2[PITCH] < 0)		// Assure that the sparks are moving around at a pretty good clip.
 			glowball->velocity2[PITCH] -= 90.0;
 		else

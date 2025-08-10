@@ -90,7 +90,7 @@ FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 			TrailEnt->r.model = arrow_models[0];
 			scale = ARROW_SCALE + flrand(-0.2, 0.2);
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
-			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
+			VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 			VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 		}
 		TrailEnt->d_alpha = flrand(-1.5, -2.0);
@@ -207,8 +207,8 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 		SmokePuff->d_scale = -2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
-		SmokePuff->acceleration[0] = flrand(-200, 200);
-		SmokePuff->acceleration[1] = flrand(-200, 200);
+		SmokePuff->acceleration[0] = crandk() * 200;
+		SmokePuff->acceleration[1] = crandk() * 200;
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		//make _this use tinting instead of darken?

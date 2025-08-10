@@ -1029,9 +1029,9 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.25)
+			if((frandk() * self->health)<damage*0.25)
 				plagueElf_dropweapon (self, (int)damage);
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_pe(self, MESH__HEAD,&throw_nodes);
 
@@ -1061,7 +1061,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(self->health > 0 && flrand(0,self->health)<damage*0.3 && dismember_ok)
+			if(self->health > 0 && (frandk() * self->health)<damage*0.3 && dismember_ok)
 			{
 				gore_spot[2]+=12;
 				canthrownode_pe(self, MESH__BODY,&throw_nodes);
@@ -1084,7 +1084,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				if(flrand(0,self->health)<damage*0.5)
+				if((frandk() * self->health)<damage*0.5)
 					plagueElf_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
@@ -1096,9 +1096,9 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.4)
+			if((frandk() * self->health)<damage*0.4)
 				plagueElf_dropweapon (self, (int)damage);
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_pe(self, MESH__L_ARM, &throw_nodes))
 				{
@@ -1123,7 +1123,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_pe(self, MESH__R_ARM, &throw_nodes))
 				{
@@ -1137,7 +1137,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				if(flrand(0,self->health)<damage*0.75)
+				if((frandk() * self->health)<damage*0.75)
 					plagueElf_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__R_ARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__R_ARM].skin = self->s.skinnum+1;
@@ -1192,7 +1192,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			break;
 
 		default:
-			if(flrand(0,self->health)<damage*0.25)
+			if((frandk() * self->health)<damage*0.25)
 				plagueElf_dropweapon (self, (int)damage);
 			break;
 	}
@@ -1237,7 +1237,7 @@ void plagueElf_pain(edict_t *self, G_Message_t *msg)
 
 	if(!(self->monsterinfo.aiflags & AI_COWARD) && !(self->monsterinfo.aiflags & AI_FLEE))
 		if(!force_pain)
-			if(flrand(0,self->health)>damage)
+			if((frandk() * self->health)>damage)
 				return;
 
 	if(self->fire_damage_time > level.time)

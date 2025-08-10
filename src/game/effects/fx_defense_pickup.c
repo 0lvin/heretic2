@@ -142,13 +142,13 @@ void FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
 			shield->direction[YAW] = flrand(0, 360.0);		// This angle is kept at a constant distance from org.
 			shield->direction[PITCH] = flrand(0, 360.0);
 
-			shield->velocity2[YAW] = flrand(-180.0, 180.0);
+			shield->velocity2[YAW] = crandk() * 180.0;
 			if (shield->velocity2[YAW] < 0)			// Assure that the sparks are moving around at a pretty good clip.
 				shield->velocity2[YAW] -= 180.0;
 			else
 				shield->velocity2[YAW] += 180.0;
 
-			shield->velocity2[PITCH] = flrand(-180.0, 180.0);	// This is a velocity around the sphere.
+			shield->velocity2[PITCH] = crandk() * 180.0;	// This is a velocity around the sphere.
 			if (shield->velocity2[PITCH] < 0)		// Assure that the sparks are moving around at a pretty good clip.
 				shield->velocity2[PITCH] -= 180.0;
 			else

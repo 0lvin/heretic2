@@ -199,7 +199,7 @@ static void SpherePowerLaserThink(edict_t *self)
 
 				// re-constitute aimangle
 				aimangles[1] += flrand(160,200);
-				aimangles[0] += flrand(-20,20);
+				aimangles[0] += crandk() * 20;
 
 				break;
 			}

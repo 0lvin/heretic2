@@ -186,7 +186,7 @@ FXShrineManaThink(struct client_entity_s *self, centity_t *owner)
 		for(i = 0; i < count; i++)
 		{
 			// Calc spherical offset around left hand ref point
-			VectorSet(vel, flrand(-1.0, 1.0), flrand(-1.0, 1.0), flrand(-1.0, 1.0));
+			VectorSet(vel, crandk() , crandk() , crandk() );
 			VectorNormalize(vel);
 			VectorScale(vel, MANA_RAD, vel);
 
@@ -255,7 +255,7 @@ FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
 		for(i = 0; i < count; i++)
 		{
 			// Calc spherical offset around left hand ref point
-			VectorSet(vel, flrand(-1.0, 1.0), flrand(-1.0, 1.0), flrand(-1.0, 1.0));
+			VectorSet(vel, crandk() , crandk() , crandk() );
 			VectorNormalize(vel);
 			VectorScale(vel, ARMOR_RAD, vel);
 
@@ -320,7 +320,7 @@ FXShrineLungsThink(struct client_entity_s *self, centity_t *owner)
 		for(i = 0; i < count; i++)
 		{
 			// Calc spherical offset around left hand ref point
-			VectorSet(vel, flrand(-1.0, 1.0), flrand(-1.0, 1.0), 0.01);
+			VectorSet(vel, crandk() , crandk() , 0.01);
 			VectorNormalize(vel);
 			VectorScale(vel, flrand(1.0,LUNG_RAD), vel);
 			vel[2] = -30.0;
@@ -818,7 +818,7 @@ FXShrineGhostThink(struct client_entity_s *self, centity_t *owner)
 
 	for( i=0; i< irand(3,5); i++)
 	{
-		VectorSet(origin, flrand(-20, 20), flrand(-20,20), flrand(-30,40));
+		VectorSet(origin, crandk() * 20, crandk() * 20, flrand(-30,40));
 
 		glow = ClientEntity_new(FX_SHRINE_GHOST, CEF_OWNERS_ORIGIN, origin, 0, 300);
 

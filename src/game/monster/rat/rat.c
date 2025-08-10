@@ -407,9 +407,9 @@ void ratbite (edict_t *self)
 
 	VectorCopy(self->enemy->s.origin, endpos);
 
-	endpos[0]+=flrand(-4, 4);
-	endpos[1]+=flrand(-4, 4);
-	endpos[2]+=flrand(-4, 4);
+	endpos[0]+=crandk() * 4;
+	endpos[1]+=crandk() * 4;
+	endpos[2]+=crandk() * 4;
 
 	VectorSubtract(endpos, startpos, dir);
 	len = VectorNormalize(dir);

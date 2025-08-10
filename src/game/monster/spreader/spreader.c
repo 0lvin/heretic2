@@ -180,7 +180,7 @@ void spreader_flyback_move(edict_t *self)
 			if(irand(0, 1))
 				flags |= CEF_FLAG6;
 
-			VectorSet(bottom, trace.endpos[0]+flrand(-4, 4), trace.endpos[1]+flrand(-4, 4), trace.endpos[2] + self->mins[2]);
+			VectorSet(bottom, trace.endpos[0]+crandk() * 4, trace.endpos[1]+crandk() * 4, trace.endpos[2] + self->mins[2]);
 
 			gi.CreateEffect(NULL,
 				FX_BLOOD_TRAIL,
@@ -208,8 +208,8 @@ void spreader_dead(edict_t *self)
 	{
 		edict_t	*gas;
 
-		spraydir[0] = flrand(-10, 10);
-		spraydir[1] = flrand(-10, 10);
+		spraydir[0] = crandk() * 10.0;
+		spraydir[1] = crandk() * 10.0;
 		spraydir[2] = flrand( 10, 100);
 
 		VectorSet(offset, 0, 0, -24);
@@ -766,7 +766,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_ps(self, MESH__HEAD,&throw_nodes);
 
@@ -846,7 +846,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_ps(self, MESH__LFTARM, &throw_nodes))
 				{
@@ -867,7 +867,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			//what about grenade?
 			if(self->s.fmnodeinfo[MESH__RITARM].flags & FMNI_NO_DRAW)
 				break;
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_ps(self, MESH__RITARM, &throw_nodes))
 				{
@@ -901,7 +901,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		default:
-			if(flrand(0,self->health)<damage*0.25)
+			if((frandk() * self->health)<damage*0.25)
 				spreader_dropweapon (self);
 			break;
 	}
@@ -1148,8 +1148,8 @@ void spreaderFly (edict_t *self)
 	VectorMA(self->s.origin, -12, forward, self->pos1);
 	self->pos1[2] += self->maxs[2] * 0.8;
 
-	spraydir[0] = flrand(-100, 100);
-	spraydir[1] = flrand(-100, 100);
+	spraydir[0] = crandk() * 100;
+	spraydir[1] = crandk() * 100;
 	spraydir[2] = -self->velocity[2];
 	gi.CreateEffect(NULL, FX_PLAGUEMIST, 0, self->pos1, "vb", spraydir, 41);
 

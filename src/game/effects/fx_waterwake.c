@@ -93,7 +93,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 	for (i=0; i<parts; i++)
 	{
 		part = ClientParticle_new(PART_32x32_WFALL, color, 500);
-		VectorScale(right, flrand(-12.0,12.0), part->origin);
+		VectorScale(right, crandk() * 12.0, part->origin);
 		VectorScale(part->origin, 0.01*vel, part->velocity);
 		VectorMA(part->velocity, flrand(0.2*vel, 0.5*vel), fwd, part->velocity);
 		part->velocity[2] += flrand(30.0, 40.0);

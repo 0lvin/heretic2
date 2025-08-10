@@ -909,8 +909,8 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				damage*=1.5;//greater chance to cut off if previously damaged
 
 			// NOTE I AM CUTTING DOWN THE DECAP CHANCE JUST A LITTLE BIT...  HAPPENED TOO OFTEN.
-//			if(flrand(0,self->health) < damage*0.5 && dismember_ok)
-			if(flrand(0,self->health) < damage*0.4 && dismember_ok)
+//			if((frandk() * self->health) < damage*0.5 && dismember_ok)
+			if((frandk() * self->health) < damage*0.4 && dismember_ok)
 			{
 //				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 
@@ -932,7 +932,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.25)
+//				if((frandk() * self->health)<damage*0.25)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__HEAD);
 				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
@@ -944,7 +944,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				self->client->playerinfo.flags |= (PLAYER_FLAG_NO_LARM|PLAYER_FLAG_NO_RARM);
 				gore_spot[2]+=12;
@@ -970,7 +970,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.5)
+//				if((frandk() * self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH_BASE2);
 				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
@@ -982,7 +982,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__BACK].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				self->client->playerinfo.flags |= (PLAYER_FLAG_NO_LARM|PLAYER_FLAG_NO_RARM);
 				gore_spot[2]+=12;
@@ -1008,7 +1008,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.5)
+//				if((frandk() * self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__BACK);
 				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
@@ -1021,7 +1021,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__LARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health) < damage && dismember_ok)
+			if((frandk() * self->health) < damage && dismember_ok)
 			{
 				if(canthrownode_player(self, MESH__LARM, &throw_nodes))
 				{
@@ -1040,7 +1040,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.4)
+//				if((frandk() * self->health)<damage*0.4)
 //					player_dropweapon (self, (int)damage, BIT_BOWACTV);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LARM);
 				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
@@ -1054,7 +1054,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__RARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health) < damage && dismember_ok)
+			if((frandk() * self->health) < damage && dismember_ok)
 			{
 				if(canthrownode_player(self, MESH__RARM, &throw_nodes))
 				{
@@ -1076,7 +1076,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if(flrand(0,self->health)<damage*0.75)
+//				if((frandk() * self->health)<damage*0.75)
 //					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__RARM);
 				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
@@ -1134,7 +1134,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			break;
 
 		default:
-//			if(flrand(0,self->health)<damage*0.25)
+//			if((frandk() * self->health)<damage*0.25)
 //				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 			break;
 	}
@@ -1699,7 +1699,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 				// Check if the player had a velocity forward or backward during death.
 				AngleVectors(self->s.angles, fwd, NULL, NULL);
 				speed = DotProduct(fwd, self->velocity);
-				speed += flrand(-16.0, 16.0);		// Add a spot of randomness to it.
+				speed += crandk() * 16.0;		// Add a spot of randomness to it.
 
 				if (speed > 16.0)
 				{	// Fly forward

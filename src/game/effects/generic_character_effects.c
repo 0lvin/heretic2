@@ -59,8 +59,8 @@ qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner)
 	for(i = 0; i < 40; i++)
 	{
 		p = ClientParticle_new(PART_4x4_WHITE, _this->color, PARTICLE_TRAIL_PUFF_TIME);
-		p->velocity[0] = flrand(-20.0F, 20.0F);
-		p->velocity[1] = flrand(-20.0F, 20.0F);
+		p->velocity[0] = crandk() * 20.0F;
+		p->velocity[1] = crandk() * 20.0F;
 		p->velocity[2] = flrand(30.0F, 80.0F);
 		AddParticleToList(effect, p);
 	}
@@ -210,12 +210,12 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		if (flags & CEF_FLAG6 || speed > 1.0f)
 		{
-			effect->acceleration[0] += flrand(-75.0, 75.0);
-			effect->acceleration[1] += flrand(-75.0, 75.0);
+			effect->acceleration[0] += crandk() * 75.0;
+			effect->acceleration[1] += crandk() * 75.0;
 			effect->acceleration[2] = flrand(125.0, 250.0);
 		}
 		else
-			effect->acceleration[2] = flrand(-50.0, 50.0);
+			effect->acceleration[2] = crandk() * 50.0;
 
 		effect->Update = PebbleUpdate;
 		effect->alpha = 1.0;
@@ -314,16 +314,16 @@ void SetupWaterParticle(client_particle_t *p, qboolean recycle)
 
 	shade = ((ishade * 0.04) - 3.1) * 0.35;
 
-	p->velocity[0] = flrand(-1.0F, 1.0F);
-	p->velocity[1] = flrand(-1.0F, 1.0F);
+	p->velocity[0] = crandk();
+	p->velocity[1] = crandk();
 	p->velocity[2] = flrand(shade, 0.0);
 
 	p->acceleration[2] = 0;
 	p->scale = flrand(0.3, 0.7);
 
-	dist[0] = flrand(-WATER_DIST, WATER_DIST);
-	dist[1] = flrand(-WATER_DIST, WATER_DIST);
-	dist[2] = flrand(-WATER_DIST, WATER_DIST);
+	dist[0] = crandk() * WATER_DIST;
+	dist[1] = crandk() * WATER_DIST;
+	dist[2] = crandk() * WATER_DIST;
 
 	// If we are recycling, we want to respawn as far away as possible
 	if(recycle)
@@ -431,7 +431,7 @@ qboolean WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
 		}
 		UpdateWaterParticles(self);
 	}
- 	return true;
+	return true;
 }
 
 
@@ -479,13 +479,13 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 		else
 			p = ClientParticle_new(wake_particle[irand(0, 5)]|PFL_SOFT_MASK, LightColor, irand(1000, 2000));
 
-		VectorSet(p->origin, flrand(-4, 4), flrand(-4, 4), flrand(-4, 4));
+		VectorSet(p->origin, crandk() * 4, crandk() * 4, crandk() * 4);
 		VectorAdd(handpt, p->origin, p->origin);
 
 		p->scale = flrand(0.75, 1.5);
 		p->color.a = irand(100, 200);
 
-		VectorSet(p->velocity, flrand(-2, 2), flrand(-2, 2), flrand(-2.0, 2.0));
+		VectorSet(p->velocity, crandk() * 2.0, crandk() * 2.0, crandk() * 2.0);
 
 		if (irand(0, 1))
 			VectorMA(p->velocity, flrand(-10, -2), right, p->velocity);
@@ -509,7 +509,7 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 		return true;
 
 	// Errr... what the hell, spawn some bubbles too.
-	VectorSet(org, flrand(-20.0, 20.0), flrand(-20.0 ,20.0), flrand(-20.0 ,20.0));
+	VectorSet(org, crandk() * 20.0, crandk() * 20.0, crandk() * 20.0);
 	VectorAdd(org, owner->origin, org);
 	MakeBubble(org, self);
 
@@ -582,11 +582,11 @@ qboolean DirectionalUpdate (client_entity_t *self, centity_t *owner)
 
 	part = ClientParticle_new(self->classID, color, 100);
 
-	VectorSet(part->origin, flrand(-12, 12), flrand(-12, 12), flrand(-8, 8));
+	VectorSet(part->origin, crandk() * 12, crandk() * 12, crandk() * 8.0);
 	VectorAdd(self->r.origin, part->origin, part->origin);
 
 	part->scale = flrand(1, 2);
-	VectorSet(part->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(15.0, 22.0));
+	VectorSet(part->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
 	part->acceleration[2] = 2;
 	part->d_scale = flrand(-1.5, -2.0);
 	part->d_alpha = flrand(-100.0, -50.0);
@@ -862,14 +862,14 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 
 			flame = ClientParticle_new(PART_32x32_STEAM, color, hand_flame_dur);
 			VectorSet(	flame->origin,
-						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS),
-						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS),
-						flrand(-FOOTTRAIL_RADIUS, FOOTTRAIL_RADIUS));
+						crandk() * FOOTTRAIL_RADIUS,
+						crandk() * FOOTTRAIL_RADIUS,
+						crandk() * FOOTTRAIL_RADIUS);
 			VectorAdd(flame->origin, self->origin, flame->origin);
 			VectorAdd(flame->origin, curpos, flame->origin);
 
 			flame->scale = FOOTTRAIL_SCALE;
-			VectorSet(flame->velocity, flrand(-5.0, 5.0), flrand(-5, 5.0), flrand(5.0, 15.0));
+			VectorSet(flame->velocity, crandk() * 5.0, crandk() * 5.0, flrand(5.0, 15.0));
 			flame->acceleration[2] = FOOTTRAIL_ACCEL;
 			flame->d_scale = flrand(-10.0, -5.0);
 			flame->d_alpha = flrand(-200.0, -160.0);

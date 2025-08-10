@@ -163,8 +163,8 @@ void MakeBubble(vec3_t loc, client_entity_t *spawner)
 	bubble->d_alpha = 0;
 	bubble->scale = flrand(0.5, 1.0);
 	bubble->d_scale = -bubble->scale;
-	bubble->velocity[0] = flrand(-10.0F, 10.0F);
-	bubble->velocity[1] = flrand(-10.0F, 10.0F);
+	bubble->velocity[0] = crandk() * 10.0F;
+	bubble->velocity[1] = crandk() * 10.0F;
 	bubble->acceleration[2] = 100;
 
 	AddParticleToList(spawner, bubble);

@@ -79,7 +79,7 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 		TrailEnt->r.color.g = irand(245, 255);
 		TrailEnt->r.color.b = irand(95, 105);
 
-		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
+		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 		VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 
 		TrailEnt->d_alpha = flrand(-1.5, -2.0);
@@ -172,8 +172,8 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 		SmokePuff->d_scale=-2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
-		SmokePuff->acceleration[0] = flrand(-200, 200);
-		SmokePuff->acceleration[1] = flrand(-200, 200);
+		SmokePuff->acceleration[0] = crandk() * 200;
+		SmokePuff->acceleration[1] = crandk() * 200;
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -238,7 +238,7 @@ FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 		TrailEnt->r.color.b = irand(245, 255);
 		TrailEnt->r.color.r = irand(95, 105);*/
 
-		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
+		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 		VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 
 		TrailEnt->d_alpha = flrand(-1.5, -2.0);
@@ -331,8 +331,8 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->d_scale=-2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
-		SmokePuff->acceleration[0] = flrand(-200, 200);
-		SmokePuff->acceleration[1] = flrand(-200, 200);
+		SmokePuff->acceleration[0] = crandk() * 200;
+		SmokePuff->acceleration[1] = crandk() * 200;
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -396,7 +396,7 @@ FXPESpell3TrailThink(struct client_entity_s *self, centity_t *owner)
 		TrailEnt->r.color.r = irand(245, 255);
 		TrailEnt->r.color.b = irand(95, 105);*/
 
-		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, flrand(-5.0, 5.0));
+		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 		VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 
 		TrailEnt->d_alpha = flrand(-1.5, -2.0);
@@ -489,8 +489,8 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->d_scale=-2.0;
 
 		VectorRandomCopy(dir, SmokePuff->velocity, 64.0);
-		SmokePuff->acceleration[0] = flrand(-200, 200);
-		SmokePuff->acceleration[1] = flrand(-200, 200);
+		SmokePuff->acceleration[0] = crandk() * 200;
+		SmokePuff->acceleration[1] = crandk() * 200;
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;

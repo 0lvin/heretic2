@@ -50,9 +50,9 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 	int					count;
 
 	// create the teleport effect around the player to begin with
- 	teleport_fx = ClientEntity_new(type, flags, origin, NULL, 410);
+	teleport_fx = ClientEntity_new(type, flags, origin, NULL, 410);
 	teleport_fx->radius = 20.0F;
- 	teleport_fx->AddToView = LinkedEntityUpdatePlacement;
+	teleport_fx->AddToView = LinkedEntityUpdatePlacement;
 
 	// determine if _this teleport is a spell, or a pad
 	// set up our colors appropriately
@@ -115,9 +115,9 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 	int					count;
 
 	// create the teleport effect around the player to begin with
- 	teleport_fx = ClientEntity_new(type, flags, origin, NULL, 410);
+	teleport_fx = ClientEntity_new(type, flags, origin, NULL, 410);
 	teleport_fx->radius = 20.0F;
- 	teleport_fx->AddToView = LinkedEntityUpdatePlacement;
+	teleport_fx->AddToView = LinkedEntityUpdatePlacement;
 
 	// determine if _this teleport is a spell, or a pad
 	// set up our colors appropriately
@@ -225,7 +225,7 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 	{
 		color.c = 0xffffffff;
   		ce = ClientParticle_new(PART_16x16_SPARK_R | PFL_NEARCULL, color, 250);
-		VectorSet(ce->velocity, flrand(-16.0, 16.0), flrand(-16.0, 16.0), flrand(-16.0, 16.0));
+		VectorSet(ce->velocity, crandk() * 16.0, crandk() * 16.0, crandk() * 16.0);
 
 		ce->color.a = 255;
 		ce->d_alpha = -1024;

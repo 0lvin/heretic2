@@ -174,7 +174,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->d_alpha=0.0;
 
 		spawner->Update = KeepSelfAI;
- 		spawner->AddToView = LinkedEntityUpdatePlacement;
+		spawner->AddToView = LinkedEntityUpdatePlacement;
 
 		AddEffect(owner, spawner);
 
@@ -192,7 +192,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->dlight=CE_DLight_new(light,100.0f,0.0f);
 
 		spawner->Update = FXCWStarThink;
- 		spawner->AddToView = LinkedEntityUpdatePlacement;
+		spawner->AddToView = LinkedEntityUpdatePlacement;
 
 		AddEffect(owner, spawner);
 
@@ -280,7 +280,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 		spawner->LifeTime = fxi.cl->time + 3100;
 
 		spawner->Update = FXCWBeamThink;
- 		spawner->AddToView = FXCWBeamUpdate;
+		spawner->AddToView = FXCWBeamUpdate;
 
 		AddEffect(owner, spawner);
 
@@ -297,7 +297,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		spawner->dlight=CE_DLight_new(white_light,200.0f,0.0f);
 
- 		spawner->Update = FXCWBeamThink2;
+		spawner->Update = FXCWBeamThink2;
 		spawner->AddToView = LinkedEntityUpdatePlacement;
 
 		fxi.Activate_Screen_Shake(8, 4000, fxi.cl->time, SHAKE_ALL_DIR);

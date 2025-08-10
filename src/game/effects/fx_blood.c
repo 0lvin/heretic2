@@ -89,7 +89,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 						bpart = irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2);
 					drop = ClientParticle_new(bpart, pal, 800);
 				}
-				VectorSet(drop->velocity, flrand(-speed, speed), flrand(-speed, speed), flrand(speed*2.0, speed*4.0));
+				VectorSet(drop->velocity, crandk() * speed, crandk() * speed, flrand(speed*2.0, speed*4.0));
 				drop->acceleration[2] = grav;
 				drop->d_alpha = 0.0;
 				drop->d_scale = -1.0;
@@ -115,7 +115,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 						bpart = PART_8x8_BLOOD;
 					drop = ClientParticle_new(bpart, pal, 800);
 				}
-				VectorSet(drop->velocity, flrand(-speed, speed), flrand(-speed, speed), flrand(speed*2.0, speed*4.0));
+				VectorSet(drop->velocity, crandk() * speed, crandk() * speed, flrand(speed*2.0, speed*4.0));
 				drop->acceleration[2] = grav;
 				drop->d_alpha = 0.0;
 				drop->scale = 2.0;
@@ -131,7 +131,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 				else
 					bpart = PART_16x16_BLOOD;
 				drop = ClientParticle_new(bpart, pal, 1000);
-				VectorSet(drop->velocity, flrand(-speed, speed), flrand(-speed, speed), flrand(speed, speed*2.0));
+				VectorSet(drop->velocity, crandk() * speed, crandk() * speed, flrand(speed, speed*2.0));
 				drop->acceleration[2] = grav*0.5;
 				drop->d_alpha = flrand(-512.0, -256.0);
 				drop->scale = 1.0;
@@ -145,7 +145,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 			else
 				bpart = PART_32x32_BLOOD;
 			drop = ClientParticle_new(bpart, pal, 500);
-			VectorSet(drop->velocity, flrand(-speed, speed), flrand(-speed, speed), flrand(0, speed));
+			VectorSet(drop->velocity, crandk() * speed, crandk() * speed, frandk() * speed);
 			drop->scale = 4.0;
 			drop->acceleration[2] = 0.0;
 			drop->d_scale = flrand(48.0, 64.0);
@@ -203,9 +203,9 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 					else
 						drop = ClientParticle_new(irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2), pal, 800);
 				}
-				VectorSet(drop->velocity, flrand(-speed, speed), flrand(-speed, speed), flrand(speed*2.0, speed*4.0));
+				VectorSet(drop->velocity, crandk() * speed, crandk() * speed, flrand(speed*2.0, speed*4.0));
 				VectorMA(drop->velocity, 0.5, spawner->velocity, drop->velocity);
-				VectorSet(drop->origin, flrand(-range, range), flrand(-range, range), flrand(-range, range));
+				VectorSet(drop->origin, crandk() * range, crandk() * range, crandk() * range);
 				VectorAdd(drop->origin, spawner->r.origin, drop->origin);
 				drop->acceleration[2] = grav;
 				drop->d_alpha = 0.0;
@@ -218,9 +218,9 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 				drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)], pal, 800);
 			else
 				drop = ClientParticle_new(PART_8x8_BLOOD, pal, 800);
-			VectorSet(drop->velocity, flrand(-speed, speed), flrand(-speed, speed), flrand(speed*2.0, speed*4.0));
+			VectorSet(drop->velocity, crandk() * speed, crandk() * speed, flrand(speed*2.0, speed*4.0));
 			VectorMA(drop->velocity, 0.5, spawner->velocity, drop->velocity);
-			VectorSet(drop->origin, flrand(-range, range), flrand(-range, range), flrand(-range, range));
+			VectorSet(drop->origin, crandk() * range, crandk() * range, crandk() * range);
 			VectorAdd(drop->origin, spawner->r.origin, drop->origin);
 			drop->acceleration[2] = grav;
 			drop->d_alpha = 0.0;
@@ -304,7 +304,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 		fxi.S_RegisterSound(va("ambient/waterdrop%c.wav", irand('1', '3'))), flrand(0.5, 0.8), ATTN_STATIC, 0);
 
 	if(!irand(0, 2))
-		VectorSet(self->startpos, flrand(-1, 1), flrand(-1, 1), 0);
+		VectorSet(self->startpos, crandk(), crandk(), 0);
 
 	self->Update = BloodSplatDripUpdate;
 	self->updateTime = irand(400, 1600);
@@ -374,7 +374,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 	else
 	{
 		if(!irand(0, 3))
-			VectorSet(self->startpos, flrand(-1, 1), flrand(-1, 1), 0);
+			VectorSet(self->startpos, crandk(), crandk(), 0);
 
 		self->updateTime = irand(400, 1600);
 	}

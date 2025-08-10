@@ -920,7 +920,7 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__GUARDHEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage*0.3&&dismember_ok)
+			if((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				seraph_guard_dropweapon(self);
 				canthrownode_sg(self, MESH__GUARDHEAD,&throw_nodes);
@@ -948,7 +948,7 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_TorsoFront://split in half?
 			if(self->s.fmnodeinfo[MESH__FRTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage)
+			if((frandk() * self->health)<damage)
 			{
 				self->s.fmnodeinfo[MESH__FRTORSO].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__FRTORSO].skin = self->s.skinnum+1;
@@ -957,7 +957,7 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_TorsoBack://split in half?
 			if(self->s.fmnodeinfo[MESH__BKTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health) < damage)
+			if((frandk() * self->health) < damage)
 			{
 				self->s.fmnodeinfo[MESH__BKTORSO].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BKTORSO].skin = self->s.skinnum+1;
@@ -965,12 +965,12 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_ArmUpperLeft:
-			if(flrand(0,self->health)<damage)
+			if((frandk() * self->health)<damage)
 			{
 				self->s.fmnodeinfo[MESH__LFTUPARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LFTUPARM].skin = self->s.skinnum+1;
 			}
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_sg(self, MESH__LHANDGRD, &throw_nodes))
 				{
@@ -988,7 +988,7 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			if(self->s.fmnodeinfo[MESH__LHANDGRD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0,self->health)<damage&&dismember_ok)
+			if((frandk() * self->health)<damage&&dismember_ok)
 			{
 				if(canthrownode_sg(self, MESH__LHANDGRD, &throw_nodes))
 				{
@@ -1007,12 +1007,12 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_ArmUpperRight:
-			if(flrand(0,self->health)<damage)
+			if((frandk() * self->health)<damage)
 			{
 				self->s.fmnodeinfo[MESH__RTARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RTARM].skin = self->s.skinnum+1;
 			}
-			if(flrand(0,self->health)<damage*0.75&&dismember_ok)
+			if((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				if(canthrownode_sg(self, MESH__RHAND, &throw_nodes))
 				{
@@ -1027,7 +1027,7 @@ void seraph_guard_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmLowerRight://right arm
 			if(self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
 				break;
-			if(flrand(0,self->health)<damage&&dismember_ok)
+			if((frandk() * self->health)<damage&&dismember_ok)
 			{
 				if(canthrownode_sg(self, MESH__RHAND, &throw_nodes))
 				{

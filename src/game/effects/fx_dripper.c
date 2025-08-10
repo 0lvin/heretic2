@@ -77,8 +77,8 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 
 	mist->d_scale = -2.0;
 	mist->d_alpha = -8.0F;
-//	mist->velocity[0] = flrand(-20.0F, 20.0F);
-//	mist->velocity[1] = flrand(-20.0F, 20.0F);
+//	mist->velocity[0] = crandk() * 20.0F;
+//	mist->velocity[1] = crandk() * 20.0F;
 	AddEffect(NULL, mist);
 
 	color.c = 0xffffffff;
@@ -110,8 +110,8 @@ qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
 
 	mist->alpha = 0.4F;
 	mist->d_alpha = -0.8F;
-	mist->velocity[0] = flrand(-10.0F, 10.0F);
-	mist->velocity[1] = flrand(-10.0F, 10.0F);
+	mist->velocity[0] = crandk() * 10.0F;
+	mist->velocity[1] = crandk() * 10.0F;
 	mist->velocity[2] = flrand(20.0F, 30.0F);
 	AddEffect(NULL, mist);
 

@@ -181,7 +181,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
   						forward, blen);
   					// re-constitute aimangle
   					aimangles[1] += flrand(160,200);
-  					aimangles[0] += flrand(-20,20);
+  					aimangles[0] += crandk() * 20;
   				}
   				else
   				{
@@ -231,7 +231,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
   								forward, blen);
   							// re-constitute aimangle
   							aimangles[1] += flrand(160,200);
-  							aimangles[0] += flrand(-20,20);
+  							aimangles[0] += crandk() * 20;
   						}
   						else
   						{

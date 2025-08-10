@@ -661,7 +661,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	gclient_t		*client;
 	int				take, dsm_dmg;
 	HitLocation_t	hl;
- 	gitem_armor_t	*info;
+	gitem_armor_t	*info;
 	int				force_pain = 0;
 	qboolean		was_dead = false;
 	vec3_t			dir, normal, point;
@@ -1113,7 +1113,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		{
 			vec3_t bubbleloc;
 
-			VectorSet(bubbleloc, flrand(-10, 10), flrand(-10,10), targ->viewheight);
+			VectorSet(bubbleloc, crandk() * 10.0, crandk() * 10.0, targ->viewheight);
 			VectorAdd(bubbleloc, targ->s.origin, bubbleloc);
 			gi.CreateEffect(NULL, FX_BUBBLE, 0, bubbleloc, "");
 		}
