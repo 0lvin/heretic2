@@ -1683,11 +1683,6 @@ SP_worldspawn(edict_t *ent)
 	   player bodies for coop / deathmatch */
 	InitBodyQue();
 
-	if((ent->spawnflags & 1) && (deathmatch->value || coop->value))
-	{
-		level.body_que = -1;
-	}
-
 	/* set configstrings for items */
 	SetItemNames();
 
@@ -1699,57 +1694,14 @@ SP_worldspawn(edict_t *ent)
 	/* make some data visible to the server */
 	if (ent->message && ent->message[0])
 	{
-		gi.configstring(CS_LEVEL_NUMBER, ent->message);
 		Q_strlcpy(level.level_name, LocalizationMessage(ent->message, NULL),
 			sizeof(level.level_name));
 		gi.configstring(CS_NAME, level.level_name);
-		gi.dprintf("Unique Level Index : %d\n", atoi(ent->message));
 	}
 	else
 	{
-		if(ent->text_msg)
-		{
-			gi.configstring (CS_NAME, ent->text_msg);
-		}
 		Q_strlcpy(level.level_name, level.mapname, sizeof(level.level_name));
-		gi.dprintf("Warning : No Unique Level Index\n");
 	}
-
-	// this is a tremendous hack, but given the state of the code at this point, there is no other way to do this.
-	for (i = 0; i < MAX_CURRENT_LEVELS; i++)
-	{
-		// search through all the currently defined world maps, looking for names, so we can set
-		// the EAX default sound type for this level.
-		if (!Q_stricmp(eax_level_info[i].level_name, level.mapname))
-		{
-			int eax_preset = -1;
-
-			// keep in sync with openal
-			switch (eax_level_info[i].default_preset)
-			{
-				case EAX_GENERIC: eax_preset = 0; break;
-				case EAX_ALL_STONE: eax_preset = 13; break;
-				case EAX_ARENA: eax_preset = 9; break;
-				case EAX_CITY_AND_SEWERS: eax_preset = 16; break;
-				case EAX_CITY_AND_ALLEYS: eax_preset = 14; break;
-				case EAX_FOREST: eax_preset = 15; break;
-				case EAX_PSYCHOTIC: eax_preset = 25; break;
-			}
-
-			gi.cvar_set("s_reverb_preset", va("%i", eax_preset));
-
-			break;
-		}
-	}
-
-	// if we didn't find it in the current level list, lets just set it to generic
-	if (i == MAX_CURRENT_LEVELS)
-	{
-		gi.cvar_set("s_reverb_preset", "0");
-	}
-
-	/* just in case, fix scale */
-	VectorClear(ent->rrs.scale);
 
 	if (st.sky && st.sky[0])
 	{
@@ -1799,6 +1751,44 @@ SP_worldspawn(edict_t *ent)
 		{
 			gi.configstring(CS_STATUSBAR, single_statusbar);
 		}
+	}
+
+	if((ent->spawnflags & 1) && (deathmatch->value || coop->value))
+	{
+		level.body_que = -1;
+	}
+
+	/* this is a tremendous hack, but given the state of the code at this point, there is no other way to do this. */
+	for (i = 0; i < MAX_CURRENT_LEVELS; i++)
+	{
+		// search through all the currently defined world maps, looking for names, so we can set
+		// the EAX default sound type for this level.
+		if (!Q_stricmp(eax_level_info[i].level_name, level.mapname))
+		{
+			int eax_preset = -1;
+
+			// keep in sync with openal
+			switch (eax_level_info[i].default_preset)
+			{
+				case EAX_GENERIC: eax_preset = 0; break;
+				case EAX_ALL_STONE: eax_preset = 13; break;
+				case EAX_ARENA: eax_preset = 9; break;
+				case EAX_CITY_AND_SEWERS: eax_preset = 16; break;
+				case EAX_CITY_AND_ALLEYS: eax_preset = 14; break;
+				case EAX_FOREST: eax_preset = 15; break;
+				case EAX_PSYCHOTIC: eax_preset = 25; break;
+			}
+
+			gi.cvar_set("s_reverb_preset", va("%i", eax_preset));
+
+			break;
+		}
+	}
+
+	/* if we didn't find it in the current level list, lets just set it to generic */
+	if (i == MAX_CURRENT_LEVELS)
+	{
+		gi.cvar_set("s_reverb_preset", "0");
 	}
 
 	// Starting weapons for players entering a coop game.

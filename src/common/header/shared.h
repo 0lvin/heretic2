@@ -1303,8 +1303,7 @@ typedef enum
 #define CS_SKY 2
 #define CS_SKYAXIS 3                /* %f %f %f format */
 #define CS_SKYROTATE 4
-#define CS_LEVEL_NUMBER	5
-#define CS_STATUSBAR 6              /* display program string */
+#define CS_STATUSBAR 5              /* display program string */
 
 #define CS_AIRACCEL 29              /* air acceleration control */
 #define CS_MAXCLIENTS 30
@@ -1319,8 +1318,7 @@ typedef enum
 #define CS_ITEMS (CS_SHADOWLIGHTS + MAX_SHADOW_LIGHTS)
 #define CS_PLAYERSKINS (CS_ITEMS + MAX_ITEMS)
 #define CS_GENERAL (CS_PLAYERSKINS + MAX_CLIENTS)
-#define CS_WELCOME (CS_PLAYERSKINS + MAX_CLIENTS)  // give us 4 welcome string messages so we can have a total of 256 characters per message
-#define MAX_CONFIGSTRINGS CS_WELCOME + 4
+#define MAX_CONFIGSTRINGS (CS_GENERAL + MAX_GENERAL)
 
 /* ============================================== */
 
