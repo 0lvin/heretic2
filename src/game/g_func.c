@@ -281,6 +281,11 @@ Move_Done(edict_t *ent)
 void
 Move_Final(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
 	VectorScale(ent->moveinfo.dir,
 			ent->moveinfo.remaining_distance / FRAMETIME,
 			ent->velocity);
@@ -447,7 +452,8 @@ AngleMove_Begin(edict_t *ent)
 // Support routines for angular movement of trains (changes in angle using avelocity)
 //
 
-void TrainAngleMove_Calc(edict_t *self, edict_t *ent, vec3_t dest)
+void
+TrainAngleMove_Calc(edict_t *self, edict_t *ent, vec3_t dest)
 {
 	float	len;
 	float	traveltime;
@@ -703,7 +709,7 @@ plat_hit_top(edict_t *ent)
 		if (ent->moveinfo.sound_end)
 		{
 			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
-					ent->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+					ent->moveinfo.sound_end, 1, ATTN_STATIC, 0);
 		}
 
 		ent->s.sound = 0;
@@ -728,7 +734,7 @@ plat_hit_bottom(edict_t *ent)
 		if (ent->moveinfo.sound_end)
 		{
 			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
-					ent->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+					ent->moveinfo.sound_end, 1, ATTN_STATIC, 0);
 		}
 
 		ent->s.sound = 0;
@@ -751,7 +757,7 @@ plat_go_down(edict_t *ent)
 		{
 			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
 					ent->moveinfo.sound_start, 1,
-					ATTN_IDLE, 0);
+					ATTN_STATIC, 0);
 		}
 
 		ent->s.sound = ent->moveinfo.sound_middle;
@@ -776,7 +782,7 @@ plat_go_up(edict_t *ent)
 		{
 			gi.sound(ent, CHAN_NO_PHS_ADD + CHAN_VOICE,
 					ent->moveinfo.sound_start, 1,
-					ATTN_IDLE, 0);
+					ATTN_STATIC, 0);
 		}
 
 		ent->s.sound = ent->moveinfo.sound_middle;
@@ -836,7 +842,7 @@ Use_Plat(edict_t *ent, edict_t *other, edict_t *activator /* unused */)
 
 	if (ent->think)
 	{
-		return; /* already down */
+		return; /* already down wait_and_change*/
 	}
 
 	plat_go_down(ent);
@@ -897,7 +903,7 @@ Touch_Plat_Center(edict_t *ent, edict_t *other, cplane_t *plane /* unsed */,
 
 	if (ent->moveinfo.state == STATE_BOTTOM)
 	{
-		plat_go_up(ent);
+		wait_and_change(ent, plat_go_up);
 	}
 	else if (ent->moveinfo.state == STATE_TOP)
 	{
@@ -1671,81 +1677,6 @@ SP_func_plat2(edict_t *ent)
 	ent->moveinfo.sound_end = gi.soundindex("plats/pt1_end.wav");
 }
 
-void
-FuncRotate_Deactivate(edict_t *self, G_Message_t *msg)
-{
-	VectorClear(self->velocity);
-	VectorClear(self->avelocity);
-}
-
-void
-FuncRotate_Activate(edict_t *self, G_Message_t *msg)
-{
-	self->use(self,NULL,NULL);
-	gi.linkentity(self);
-}
-
-void
-FuncRotateStaticsInit()
-{
-	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
-	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
-}
-
-void
-FuncDoor_Deactivate(edict_t *self, G_Message_t *msg)
-{
-	VectorClear(self->velocity);
-	VectorClear(self->avelocity);
-}
-
-void
-FuncDoor_Activate(edict_t *self, G_Message_t *msg)
-{
-	self->use(self,NULL,NULL);
-	gi.linkentity(self);
-}
-
-void
-FuncDoorStaticsInit()
-{
-	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
-	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
-}
-
-void
-rotate_sounds(edict_t *ent)
-{
-	if (ent->sounds == 0)
-	{
-		ent->moveinfo.sound_start = 0;
-		ent->moveinfo.sound_middle = 0;
-		ent->moveinfo.sound_end = 0;
-	}
-	else if (ent->sounds == 1)
-	{
-		ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
-	}
-	else if (ent->sounds == 2)
-	{
-		ent->moveinfo.sound_middle = gi.soundindex("objects/hugewheel.wav");
-	}
-	else if (ent->sounds == 3)
-	{
-		ent->moveinfo.sound_middle = gi.soundindex("objects/pizzawheel.wav");
-	}
-	else if (ent->sounds == 4)
-	{
-		ent->moveinfo.sound_start = gi.soundindex("objects/spankers.wav");
-	}
-	else
-	{
-		ent->moveinfo.sound_start = 0;
-		ent->moveinfo.sound_middle = 0;
-		ent->moveinfo.sound_end = 0;
-	}
-}
-
 /* ==================================================================== */
 
 /*
@@ -1882,6 +1813,81 @@ rotating_use(edict_t *self, edict_t *other /* unused */,
 }
 
 void
+FuncRotate_Deactivate(edict_t *self, G_Message_t *msg)
+{
+	VectorClear(self->velocity);
+	VectorClear(self->avelocity);
+}
+
+void
+FuncRotate_Activate(edict_t *self, G_Message_t *msg)
+{
+	self->use(self,NULL,NULL);
+	gi.linkentity(self);
+}
+
+void
+FuncRotateStaticsInit()
+{
+	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
+	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
+}
+
+void
+FuncDoor_Deactivate(edict_t *self, G_Message_t *msg)
+{
+	VectorClear(self->velocity);
+	VectorClear(self->avelocity);
+}
+
+void
+FuncDoor_Activate(edict_t *self, G_Message_t *msg)
+{
+	self->use(self,NULL,NULL);
+	gi.linkentity(self);
+}
+
+void
+FuncDoorStaticsInit()
+{
+	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
+	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
+}
+
+void
+rotate_sounds(edict_t *ent)
+{
+	if (ent->sounds == 0)
+	{
+		ent->moveinfo.sound_start = 0;
+		ent->moveinfo.sound_middle = 0;
+		ent->moveinfo.sound_end = 0;
+	}
+	else if (ent->sounds == 1)
+	{
+		ent->moveinfo.sound_middle = gi.soundindex("doors/stoneloop.wav");
+	}
+	else if (ent->sounds == 2)
+	{
+		ent->moveinfo.sound_middle = gi.soundindex("objects/hugewheel.wav");
+	}
+	else if (ent->sounds == 3)
+	{
+		ent->moveinfo.sound_middle = gi.soundindex("objects/pizzawheel.wav");
+	}
+	else if (ent->sounds == 4)
+	{
+		ent->moveinfo.sound_start = gi.soundindex("objects/spankers.wav");
+	}
+	else
+	{
+		ent->moveinfo.sound_start = 0;
+		ent->moveinfo.sound_middle = 0;
+		ent->moveinfo.sound_end = 0;
+	}
+}
+
+void
 SP_func_rotating(edict_t *ent)
 {
 	if (!ent)
@@ -1972,23 +1978,6 @@ SP_func_rotating(edict_t *ent)
 /* ==================================================================== */
 
 /* BUTTONS */
-
-void button_fire(edict_t *self);
-
-void
-button_killed2(edict_t *self, G_Message_t *msg)
-{
-	self->activator = self->enemy;
-	button_fire (self);
-	self->health = self->max_health;
-
-}
-
-void
-ButtonStaticsInit()
-{
-	classStatics[CID_BUTTON].msgReceivers[MSG_DEATH] = button_killed2;
-}
 
 /*
  * QUAKED func_button (0 .5 .8) ?
@@ -2082,7 +2071,7 @@ button_fire(edict_t *self)
 	{
 		gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
 				self->moveinfo.sound_start,
-				1, ATTN_IDLE, 0);
+				1, ATTN_STATIC, 0);
 	}
 
 	Move_Calc(self, self->moveinfo.end_origin, button_wait);
@@ -2135,6 +2124,23 @@ button_killed(edict_t *self, edict_t *inflictor /* unused */,
 	self->health = self->max_health;
 	self->takedamage = DAMAGE_NO;
 	button_fire(self);
+}
+
+void button_fire(edict_t *self);
+
+void
+button_killed2(edict_t *self, G_Message_t *msg)
+{
+	self->activator = self->enemy;
+	button_fire (self);
+	self->health = self->max_health;
+
+}
+
+void
+ButtonStaticsInit()
+{
+	classStatics[CID_BUTTON].msgReceivers[MSG_DEATH] = button_killed2;
 }
 
 void
@@ -2342,7 +2348,9 @@ door_hit_top(edict_t *self)
 	{
 		if (self->moveinfo.sound_end)
 		{
-			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE, self->moveinfo.sound_end, 1, ATTN_IDLE, 0);
+			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
+					self->moveinfo.sound_end, 1,
+					ATTN_STATIC, 0);
 		}
 
 		self->s.sound = 0;
@@ -2382,7 +2390,7 @@ door_hit_bottom(edict_t *self)
 		{
 			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
 					self->moveinfo.sound_end, 1,
-					ATTN_IDLE, 0);
+					ATTN_STATIC, 0);
 		}
 
 		self->s.sound = 0;
@@ -2414,7 +2422,7 @@ door_go_down(edict_t *self)
 		{
 			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
 					self->moveinfo.sound_start,
-					1, ATTN_IDLE, 0);
+					1, ATTN_STATIC, 0);
 		}
 
 		self->s.sound = self->moveinfo.sound_middle;
@@ -2473,7 +2481,7 @@ door_go_up(edict_t *self, edict_t *activator)
 		{
 			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
 					self->moveinfo.sound_start, 1,
-					ATTN_IDLE, 0);
+					ATTN_STATIC, 0);
 		}
 
 		self->s.sound = self->moveinfo.sound_middle;
@@ -2879,7 +2887,8 @@ door_blocked(edict_t *self, edict_t *other)
 
 	if (self->spawnflags & DOOR_CRUSHER)
 	{
-		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg * 10, 1, 0, MOD_CRUSH);
+		T_Damage(other, self, self, vec3_origin, other->s.origin,
+				vec3_origin, self->dmg * 10, 1, 0, MOD_CRUSH);
 		return;
 	}
 	T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, self->dmg, 1, 0, MOD_CRUSH);
@@ -3070,63 +3079,142 @@ door_sounds(edict_t *ent)
 }
 
 void
-SP_func_door(edict_t *self)
+SP_func_door(edict_t *ent)
 {
 	vec3_t abs_movedir;
 
+	if (!ent)
+	{
+		return;
+	}
+
+	door_sounds(ent);
+
+	G_SetMovedir(ent->s.angles, ent->movedir);
+	ent->movetype = MOVETYPE_PUSH;
+	ent->solid = SOLID_BSP;
+	gi.setmodel(ent, ent->model);
+
+	ent->blocked = door_blocked;
+	ent->use = door_use;
+
+	ent->msgHandler = DefaultMsgHandler;
+	ent->classID = CID_FUNC_DOOR;
+
+	gi.linkentity(ent);
+
+	if (!ent->speed)
+		ent->speed = 100;
+	if (!ent->accel)
+	{
+		ent->accel = ent->speed;
+	}
+
+	if (!ent->decel)
+	{
+		ent->decel = ent->speed;
+	}
+
+	if (!ent->wait)
+	{
+		ent->wait = 3;
+	}
+
+	if (!st.lip)
+	{
+		st.lip = 8;
+	}
+
+	if (!ent->dmg)
+	{
+		ent->dmg = 2;
+	}
+
+	/* calculate second position */
+	VectorCopy(ent->s.origin, ent->pos1);
+	VectorAbs(ent->movedir, abs_movedir);
+
+	if (!st.height)
+		ent->moveinfo.distance = DotProduct(abs_movedir, ent->size) - st.lip;
+	else
+		ent->moveinfo.distance = abs_movedir[0] * ent->size[0] + abs_movedir[1] * ent->size[1] + abs_movedir[2] * st.height;
+
+	VectorMA(ent->pos1, ent->moveinfo.distance, ent->movedir, ent->pos2);
+
+	/* if it starts open, switch the positions */
+	if (ent->spawnflags & DOOR_START_OPEN)
+	{
+		VectorCopy(ent->pos2, ent->s.origin);
+		VectorCopy(ent->pos1, ent->pos2);
+		VectorCopy(ent->s.origin, ent->pos1);
+	}
+
+	ent->moveinfo.state = STATE_BOTTOM;
+
+	if (ent->health)
+	{
+		ent->takedamage = DAMAGE_YES;
+		ent->die = door_killed;
+		ent->max_health = ent->health;
+	}
+	else if (ent->targetname && ent->message)
+	{
+		gi.soundindex("misc/talk.wav");
+		ent->isBlocking = door_touch;
+	}
+
+	ent->moveinfo.speed = ent->speed;
+	ent->moveinfo.accel = ent->accel;
+	ent->moveinfo.decel = ent->decel;
+	ent->moveinfo.wait = ent->wait;
+	VectorCopy(ent->pos1, ent->moveinfo.start_origin);
+	VectorCopy(ent->s.angles, ent->moveinfo.start_angles);
+	VectorCopy(ent->pos2, ent->moveinfo.end_origin);
+	VectorCopy(ent->s.angles, ent->moveinfo.end_angles);
+
+	VectorSubtract(ent->maxs, ent->mins, ent->s.bmodel_origin);
+	Vec3ScaleAssign(0.5, ent->s.bmodel_origin);
+	VectorAdd(ent->mins, ent->s.bmodel_origin, ent->s.bmodel_origin);
+
+	if (ent->spawnflags & DOOR_ANIMATED)
+	{
+		ent->s.effects |= EF_ANIM_ALL;
+	}
+
+	if (ent->spawnflags & DOOR_ANIMATED_FAST)
+	{
+		ent->s.effects |= EF_ANIM_ALLFAST;
+	}
+
+	/* to simplify logic elsewhere, make
+	   non-teamed doors into a team of one */
+	if (!ent->team)
+	{
+		ent->teammaster = ent;
+	}
+
+	ent->nextthink = level.time + FRAMETIME;
+
+	if (ent->health || ent->targetname)
+	{
+		ent->think = Think_CalcMoveSpeed;
+	}
+	else
+	{
+		ent->think = Think_SpawnDoorTrigger;
+	}
+}
+
+void
+Door_Activate(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
+{
 	if (!self)
 	{
 		return;
 	}
 
-	door_sounds(self);
-
-	G_SetMovedir (self->s.angles, self->movedir);
-	self->movetype = MOVETYPE_PUSH;
-	self->solid = SOLID_BSP;
-	self->blocked = door_blocked;
-	self->use = door_use;
-
-	self->msgHandler = DefaultMsgHandler;
-	self->classID = CID_FUNC_DOOR;
-
-	gi.setmodel(self, self->model);
-	gi.linkentity(self);
-
-	if (!self->speed)
-		self->speed = 100;
-	if (!self->accel)
-		self->accel = self->speed;
-	if (!self->decel)
-		self->decel = self->speed;
-
-	if (!self->wait)
-		self->wait = 3;
-	if (!st.lip)
-		st.lip = 8;
-	if (!self->dmg)
-		self->dmg = 2;
-
-	// calculate second position
-	VectorCopy(self->s.origin, self->pos1);
-	VectorAbs(self->movedir, abs_movedir);
-
-	if (!st.height)
-		self->moveinfo.distance = DotProduct(abs_movedir, self->size) - st.lip;
-	else
-		self->moveinfo.distance = abs_movedir[0] * self->size[0] + abs_movedir[1] * self->size[1] + abs_movedir[2] * st.height;
-
-	VectorMA (self->pos1, self->moveinfo.distance, self->movedir, self->pos2);
-
-	// if it starts open, switch the positions
-	if (self->spawnflags & DOOR_START_OPEN)
-	{
-		VectorCopy(self->pos2, self->s.origin);
-		VectorCopy(self->pos1, self->pos2);
-		VectorCopy(self->s.origin, self->pos1);
-	}
-
-	self->moveinfo.state = STATE_BOTTOM;
+	self->use = NULL;
 
 	if (self->health)
 	{
@@ -3134,36 +3222,8 @@ SP_func_door(edict_t *self)
 		self->die = door_killed;
 		self->max_health = self->health;
 	}
-	else if (self->targetname && self->message)
-	{
-		gi.soundindex("misc/talk.wav");
-		self->isBlocking = door_touch;
-	}
 
-	self->moveinfo.speed = self->speed;
-	self->moveinfo.accel = self->accel;
-	self->moveinfo.decel = self->decel;
-	self->moveinfo.wait = self->wait;
-	VectorCopy(self->pos1, self->moveinfo.start_origin);
-	VectorCopy(self->s.angles, self->moveinfo.start_angles);
-	VectorCopy(self->pos2, self->moveinfo.end_origin);
-	VectorCopy(self->s.angles, self->moveinfo.end_angles);
-
-	VectorSubtract(self->maxs, self->mins, self->s.bmodel_origin);
-	Vec3ScaleAssign(0.5, self->s.bmodel_origin);
-	VectorAdd(self->mins, self->s.bmodel_origin, self->s.bmodel_origin);
-
-	if (self->spawnflags & 16)
-		self->s.effects |= EF_ANIM_ALL;
-	if (self->spawnflags & 64)
-		self->s.effects |= EF_ANIM_ALLFAST;
-
-	// to simplify logic elsewhere, make non-teamed doors into a team of one
-	if (!self->team)
-		self->teammaster = self;
-
-	self->nextthink = level.time + FRAMETIME;
-	if (self->health || self->targetname)
+	if (self->health)
 	{
 		self->think = Think_CalcMoveSpeed;
 	}
@@ -3171,6 +3231,8 @@ SP_func_door(edict_t *self)
 	{
 		self->think = Think_SpawnDoorTrigger;
 	}
+
+	self->nextthink = level.time + FRAMETIME;
 }
 
 /*
@@ -3618,7 +3680,7 @@ train_wait(edict_t *self)
 			{
 				gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
 						self->moveinfo.sound_end, 1,
-						ATTN_IDLE, 0);
+						ATTN_STATIC, 0);
 			}
 
 			self->s.sound = 0;
@@ -3693,7 +3755,7 @@ again:
 		{
 			gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,
 					self->moveinfo.sound_start, 1,
-					ATTN_IDLE, 0);
+					ATTN_STATIC, 0);
 		}
 
 		self->s.sound = self->moveinfo.sound_middle;
@@ -5057,7 +5119,7 @@ void SP_func_monsterspawner (edict_t *self)
  * QUAKED monster_chkroktk (1 .5 0) (-16 -16 -26) (16 16 26) AMBUSH ASLEEP
  * The  chkroktk
  */
-void SP_monster_chkroktk (edict_t *self)
+void SP_monster_chkroktk(edict_t *self)
 {
 	self->style = MS_CHKROKTK;
 	monsterspawner_go(self);
@@ -5067,7 +5129,8 @@ void SP_monster_chkroktk (edict_t *self)
  * QUAKED character_sidhe_guard (1 .5 0) (-16 -16 -26) (16 16 26) AMBUSH ASLEEP
 The Sidhe Guard
 */
-void SP_character_sidhe_guard (edict_t *self)
+void
+SP_character_sidhe_guard(edict_t *self)
 {
 	self->style = MS_SIDHE_GUARD;
 	monsterspawner_go(self);
