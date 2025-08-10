@@ -376,7 +376,6 @@ InitGame(void)
 	sv_jumpcinematic = gi.cvar("sv_jumpcinematic", "0", 0);
 
 	blood_level = gi.cvar("blood_level", VIOLENCE_DEFAULT_STR, CVAR_ARCHIVE);
-	dm_no_bodies = gi.cvar("dm_no_bodies", "0", CVAR_ARCHIVE);
 
 	gi.cvar("flash_screen", "1", 0);
 
@@ -410,8 +409,6 @@ InitGame(void)
 	no_irondoom = gi.cvar("no_irondoom","0",0);
 	no_morph = gi.cvar("no_morph","0",0);
 	no_shield = gi.cvar("no_shield","0",0);
-
-	game_test = gi.cvar("game_test", "0", 0);
 
 	/* initilize localization */
 	LocalizationInit();

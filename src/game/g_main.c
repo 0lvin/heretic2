@@ -128,8 +128,6 @@ cvar_t *no_phoenix;
 cvar_t *no_morph;
 cvar_t *no_shield;
 cvar_t *no_teleport;
-cvar_t *game_test;
-cvar_t *dm_no_bodies;
 
 cvar_t *sv_nomonsters = NULL;
 cvar_t *sv_freezemonsters;

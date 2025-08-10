@@ -2496,6 +2496,42 @@ body_die(edict_t *self, edict_t *inflictor /* unused */,
 }
 
 void
+CopyToBodyQue(edict_t *ent)
+{
+	edict_t *body;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	/* grab a body que and cycle to the next one */
+	body = &g_edicts[(int)maxclients->value + level.body_que + 1];
+	level.body_que = (level.body_que + 1) % BODY_QUEUE_SIZE;
+
+	gi.unlinkentity(ent);
+	gi.unlinkentity(body);
+	body->s = ent->s;
+	body->s.number = body - g_edicts;
+
+	body->svflags = ent->svflags;
+	VectorCopy(ent->mins, body->mins);
+	VectorCopy(ent->maxs, body->maxs);
+	VectorCopy(ent->absmin, body->absmin);
+	VectorCopy(ent->absmax, body->absmax);
+	VectorCopy(ent->size, body->size);
+	body->solid = ent->solid;
+	body->clipmask = ent->clipmask;
+	body->owner = ent->owner;
+	body->movetype = ent->movetype;
+
+	body->die = body_die;
+	body->takedamage = DAMAGE_YES;
+
+	gi.linkentity(body);
+}
+
+void
 player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, vec3_t point)
 {
 	byte	magb;
@@ -2538,87 +2574,6 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 }
 
 void
-CopyToBodyQue(edict_t *ent)
-{
-	edict_t *body;
-	vec3_t	origin;
-
-	if (!ent)
-	{
-		return;
-	}
-
-	/* grab a body que and cycle to the next one */
-	if(!ent->s.modelindex)
-	{
-		// Safety - was gibbed?
-
-		return;
-	}
-
-	if(level.body_que == -1)
-	{
-		VectorCopy(ent->s.origin, origin);
-		origin[2] += (ent->mins[2] + 8.0f);
-
-		// Put in the pretty effect when removing the corpse first.
-
-		gi.CreateEffect(NULL, FX_CORPSE_REMOVE, 0, origin, "");
-
-		// No body que on this level.
-
-		return;
-	}
-
-	/* grab a body que and cycle to the next one */
-	body = &g_edicts[(int)maxclients->value + level.body_que + 1];
-	level.body_que = (level.body_que + 1) % BODY_QUEUE_SIZE;
-
-	gi.unlinkentity(ent);
-
-	// If the body was being used, then lets put an effect on it before removing it.
-
-	if (body->inuse && (body->s.modelindex!=0))
-	{
-		VectorCopy(body->s.origin, origin);
-		origin[2] += (body->mins[2] + 8.0f);
-		gi.CreateEffect(NULL, FX_CORPSE_REMOVE, 0, origin, "");
-	}
-
-	gi.unlinkentity(body);
-	body->s = ent->s;
-	body->s.number = body - g_edicts;
-
-	body->s.skeletalType = SKEL_NULL;
-	body->s.effects &= ~(EF_JOINTED|EF_SWAPFRAME);
-	body->s.rootJoint = NULL_ROOT_JOINT;
-	body->s.swapFrame = NO_SWAP_FRAME;
-	body->owner = ent->owner;
-	VectorScale(ent->mins, 0.5, body->mins);
-	VectorScale(ent->maxs, 0.5, body->maxs);
-	body->maxs[2] = 10;
-	VectorCopy(ent->absmin, body->absmin);
-	VectorCopy(ent->absmax, body->absmax);
-	body->absmax[2] = 10;
-	VectorCopy(ent->size, body->size);
-	body->svflags = ent->svflags|SVF_DEADMONSTER; // Stops player getting stuck.
-	body->movetype = MOVETYPE_STEP;
-	body->solid = SOLID_BBOX;
-	body->clipmask = MASK_PLAYERSOLID;
-	body->takedamage = DAMAGE_YES;
-	body->materialtype = MAT_FLESH;
-	body->health = 25;
-	body->deadflag = DEAD_NO;
-	body->die = player_body_die;
-
-	gi.linkentity(body);
-
-	// Clear out any client effectsBuffer_t on the corpse (inherited from the player who just died)
-	// as the engine will take care of deallocating any effects still on the player.
-	memset(&body->s.clientEffects, 0, sizeof(EffectsBuffer_t));
-}
-
-void
 respawn(edict_t *self)
 {
 	if (!self)
@@ -2640,12 +2595,9 @@ respawn(edict_t *self)
 
 	if (deathmatch->value || coop->value)
 	{
-		// FIXME: make bodyque objects obey gravity.
-
-		if(!(self->flags & FL_CHICKEN) && !((int)dm_no_bodies->value))
+		/* spectator's don't leave bodies */
+		if (self->movetype != MOVETYPE_NOCLIP)
 		{
-			// We're not set as a chicken, so duplicate ourselves.
-
 			CopyToBodyQue(self);
 		}
 

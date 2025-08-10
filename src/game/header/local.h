@@ -1419,9 +1419,6 @@ extern cvar_t *allowillegalskins;
 extern cvar_t *monster_speeds;
 extern cvar_t *pvs_cull;
 
-extern cvar_t *game_test; // sfs--for testing the speed impact of code changes
-extern cvar_t *dm_no_bodies;
-
 extern cvar_t *player_dll;
 extern cvar_t *advancedstaff;
 extern cvar_t *sv_friction;
