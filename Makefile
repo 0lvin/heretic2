@@ -1046,6 +1046,9 @@ GAME_OBJS_ = \
 	src/game/g_moveinfo.o \
 	src/game/g_newai.o \
 	src/game/g_newdm.o \
+	src/game/g_newfnc.o \
+	src/game/g_newtarg.o \
+	src/game/g_newtrig.o \
 	src/game/g_newweap.o \
 	src/game/g_obj.o \
 	src/game/g_phys.o \
@@ -1061,6 +1064,7 @@ GAME_OBJS_ = \
 	src/game/g_target.o \
 	src/game/g_translate.o \
 	src/game/g_trigger.o \
+	src/game/g_turret.o \
 	src/game/g_utils.o \
 	src/game/g_weapon.o \
 	src/game/g_waterfx.o \
@@ -1088,6 +1092,7 @@ GAME_OBJS_ = \
 	src/game/monster/imp/imp_anim.o \
 	src/game/monster/imp/imp.o \
 	src/game/monster/misc/fmtest.o \
+	src/game/monster/infantry/infantry.o \
 	src/game/monster/misc/move.o \
 	src/game/monster/morcalavin/morcalavin_anim.o \
 	src/game/monster/morcalavin/morcalavin.o \
@@ -1122,6 +1127,7 @@ GAME_OBJS_ = \
 	src/game/player/client.o \
 	src/game/player/funcs.o \
 	src/game/player/hud.o \
+	src/game/player/trail.o \
 	src/game/player/library.o \
 	src/game/player/item.o \
 	src/game/player/view.o \

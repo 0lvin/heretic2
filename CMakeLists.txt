@@ -404,6 +404,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_classstatics.c
 	${GAME_SRC_DIR}/g_chase.c
 	${GAME_SRC_DIR}/g_cmds.c
+	${GAME_SRC_DIR}/g_combat.c
 	${GAME_SRC_DIR}/g_ctf.c
 	${GAME_SRC_DIR}/g_combat.c
 	${GAME_SRC_DIR}/g_defaultmessagehandler.c
@@ -421,6 +422,9 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_moveinfo.c
 	${GAME_SRC_DIR}/g_newai.c
 	${GAME_SRC_DIR}/g_newdm.c
+	${GAME_SRC_DIR}/g_newfnc.c
+	${GAME_SRC_DIR}/g_newtarg.c
+	${GAME_SRC_DIR}/g_newtrig.c
 	${GAME_SRC_DIR}/g_newweap.c
 	${GAME_SRC_DIR}/g_obj.c
 	${GAME_SRC_DIR}/g_phys.c
@@ -436,6 +440,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/g_target.c
 	${GAME_SRC_DIR}/g_translate.c
 	${GAME_SRC_DIR}/g_trigger.c
+	${GAME_SRC_DIR}/g_turret.c
 	${GAME_SRC_DIR}/g_utils.c
 	${GAME_SRC_DIR}/g_weapon.c
 	${GAME_SRC_DIR}/menu/menu.c
@@ -461,6 +466,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/imp/imp_anim.c
 	${GAME_SRC_DIR}/monster/imp/imp.c
 	${GAME_SRC_DIR}/monster/misc/fmtest.c
+	${GAME_SRC_DIR}/monster/infantry/infantry.c
 	${GAME_SRC_DIR}/monster/misc/move.c
 	${GAME_SRC_DIR}/monster/morcalavin/morcalavin_anim.c
 	${GAME_SRC_DIR}/monster/morcalavin/morcalavin.c
@@ -495,6 +501,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/player/client.c
 	${GAME_SRC_DIR}/player/funcs.c
 	${GAME_SRC_DIR}/player/hud.c
+	${GAME_SRC_DIR}/player/trail.c
 	${GAME_SRC_DIR}/player/library.c
 	${GAME_SRC_DIR}/player/item.c
 	${GAME_SRC_DIR}/player/view.c
