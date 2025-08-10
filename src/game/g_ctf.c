@@ -3542,8 +3542,8 @@ CTFStartMatch(void)
 			ent->client->respawn_time = level.time + 1.0 + ((rand() % 30) / 10.0);
 			ent->client->ps.pmove.pm_type = PM_DEAD;
 			ent->client->anim_priority = ANIM_DEATH;
-			// ent->s.frame = FRAME_death308 - 1;
-			// ent->client->anim_end = FRAME_death308;
+			ent->s.frame = FRAME_death308 - 1;
+			ent->client->anim_end = FRAME_death308;
 			ent->deadflag = DEAD_DEAD;
 			ent->movetype = MOVETYPE_NOCLIP;
 			ent->client->ps.gunindex = 0;

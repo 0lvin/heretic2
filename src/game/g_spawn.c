@@ -1547,61 +1547,121 @@ static char *dm_statusbar =
 "endif "
 ;
 
-/*QUAKED worldspawn (0 0 0) ? NOBODIES
+static char *roarke_statusbar =
+	"yb	-70 "
 
-Only used for the world.
+/* health */
+	"xl	3 "
+	"pic 0 "
+	"yb	-68 "
+	"xl	35 "
+	"hnum "
 
-NOBODIES - In DM, no bodies will be left behind by players- for maps with large amounts of visibility
+/* draw ammo value */
+	"yb	-35 "
+	"xl	3 "
+	"pic 8 "
+	"yb	-33 "
+	"xl	35 "
+	"num 3 9 "
+	"yt	5 "
+	"xr	-35 "
+	"pic 31 "
 
-"sky"			environment map name:
+/* selected item */
+	"if 6 "
+	"	yt	45 "
+	"	xr	-70 "
+	"	num	2	7 "
+	"	xr	-35 "
+	"	pic	6 "
+	"endif "
 
-	andoria
-	desert
-	hive
-	sky1	- Night Sky
-	storm
-	swamp
-	town
+/* chase camera */
+	"if 16 "
+	"	yb	-105 "
+	"	xr	-35 "
+	"	pic 16 "
+	"endif "
 
-"skyaxis"		vector axis for rotating sky
-"skyrotate"		speed of rotation in degrees/second
-"sounds"		music cd track number
-"gravity"		800 is default gravity
-"message"		text to print at user logon
-"skinnum"		plague level for corvus: 0-2
-"cooptimeout"	time to wait (in seconds) for all clients to have joined a map in coop (default is 0).
-"scale"	EAX environment type for this map.
+/* ammo */
+	"if 2 "
+	"	yb	-70 "
+	"	xr	-87 "
+	"	anum "
+	"	yb	-68 "
+	"	xr	-35 "
+	"	pic 2 "
+	"endif "
 
- 0 EAX_GENERIC,
- 1 EAX_ALL_STONE,
- 2 EAX_ARENA,
- 3 EAX_CITY_AND_SEWERS,
- 4 EAX_CITY_AND_ALLEYS,
- 5 EAX_FOREST,
- 6 EAX_PSYCHOTIC,
+/* armor */
+	"if 4 "
+	"	yb	-35 "
+	"	xr	-87 "
+	"	rnum "
+	"	yb	-33 "
+	"	xr	-35 "
+	"	pic 4 "
+	"endif "
 
-"offensive"		starting offensive weapons (flag bits):
+/* selected item */
+	"if 12 "
+	"	xv	145 "
+	"	yt 5 "
+	"	pic 12 "
+	"endif"
+;
 
-  1		- swordstaff
-  2		- fireball
-  4		- hellstaff
-  8		- magic missile array
-  16	- red-rain bow
-  32	- sphere of annihlation
-  64	- phoenix bow
-  128	- mace balls
-  256	- firewall
-
-"defensive"		starting defensive weapons (flag bits):
-
-  1		- ring of repulsion
-  2		- lightning shield
-  4		- teleport
-  8		- morph ovum
-  16	- meteor barrier
-
-*/
-
+/*
+ * QUAKED worldspawn (0 0 0) ? NOBODIES
+ *
+ * Only used for the world.
+ *
+ * NOBODIES - In DM, no bodies will be left behind by players- for maps with large amounts of visibility
+ *
+ * "sky"	environment map name
+ *	andoria
+ *	desert
+ *	hive
+ *	sky1	- Night Sky
+ *	storm
+ *	swamp
+ *	town
+ *
+ * "skyaxis"	vector axis for rotating sky
+ * "skyrotate"	speed of rotation in degrees/second
+ * "sounds"	music cd track number
+ * "gravity"	800 is default gravity
+ * "message"	text to print at user logon
+ * "skinnum"		plague level for corvus: 0-2
+ * "cooptimeout"	time to wait (in seconds) for all clients to have joined a map in coop (default is 0).
+ * "scale"	EAX environment type for this map.
+ *	0 EAX_GENERIC,
+ *	1 EAX_ALL_STONE,
+ *	2 EAX_ARENA,
+ *	3 EAX_CITY_AND_SEWERS,
+ *	4 EAX_CITY_AND_ALLEYS,
+ *	5 EAX_FOREST,
+ *	6 EAX_PSYCHOTIC,
+ *
+ * "offensive"		starting offensive weapons (flag bits):
+ *	1		- swordstaff
+ *	2		- fireball
+ *	4		- hellstaff
+ *	8		- magic missile array
+ *	16	- red-rain bow
+ *	32	- sphere of annihlation
+ *	64	- phoenix bow
+ *	128	- mace balls
+ *	256	- firewall
+ *
+ * "defensive"		starting defensive weapons (flag bits):
+ *	1		- ring of repulsion
+ *	2		- lightning shield
+ *	4		- teleport
+ *	8		- morph ovum
+ *	16	- meteor barrier
+ */
 void
 SP_worldspawn(edict_t *ent)
 {
@@ -1624,7 +1684,9 @@ SP_worldspawn(edict_t *ent)
 	InitBodyQue();
 
 	if((ent->spawnflags & 1) && (deathmatch->value || coop->value))
+	{
 		level.body_que = -1;
+	}
 
 	/* set configstrings for items */
 	SetItemNames();
@@ -1637,21 +1699,24 @@ SP_worldspawn(edict_t *ent)
 	/* make some data visible to the server */
 	if (ent->message && ent->message[0])
 	{
-		gi.configstring(CS_LEVEL_NUMBER, ent->message );
-		gi.configstring(CS_NAME, LocalizationMessage(ent->message, NULL));
-		strncpy(level.level_name, ent->message, sizeof(level.level_name));
+		gi.configstring(CS_LEVEL_NUMBER, ent->message);
+		Q_strlcpy(level.level_name, LocalizationMessage(ent->message, NULL),
+			sizeof(level.level_name));
+		gi.configstring(CS_NAME, level.level_name);
 		gi.dprintf("Unique Level Index : %d\n", atoi(ent->message));
 	}
 	else
 	{
 		if(ent->text_msg)
+		{
 			gi.configstring (CS_NAME, ent->text_msg);
-		strncpy(level.level_name, level.mapname, sizeof(level.level_name));
+		}
+		Q_strlcpy(level.level_name, level.mapname, sizeof(level.level_name));
 		gi.dprintf("Warning : No Unique Level Index\n");
 	}
 
 	// this is a tremendous hack, but given the state of the code at this point, there is no other way to do this.
-	for (i=0 ; i<MAX_CURRENT_LEVELS;i++)
+	for (i = 0; i < MAX_CURRENT_LEVELS; i++)
 	{
 		// search through all the currently defined world maps, looking for names, so we can set
 		// the EAX default sound type for this level.
@@ -1726,7 +1791,14 @@ SP_worldspawn(edict_t *ent)
 	}
 	else
 	{
-		gi.configstring (CS_STATUSBAR, single_statusbar);
+		if (!strcmp(g_game->string, "roarke")) /* DoD */
+		{
+			gi.configstring(CS_STATUSBAR, roarke_statusbar);
+		}
+		else
+		{
+			gi.configstring(CS_STATUSBAR, single_statusbar);
+		}
 	}
 
 	// Starting weapons for players entering a coop game.
@@ -1751,7 +1823,16 @@ SP_worldspawn(edict_t *ent)
 
 	/* --------------- */
 
-	// GRAVITY for all games.
+	/* help icon for statusbar */
+	gi.imageindex("i_help");
+	if (!strcmp(g_game->string, "roarke")) /* DoD */
+	{
+		level.pic_health = gi.imageindex("i_life");
+	}
+	else
+	{
+		level.pic_health = gi.imageindex("i_health");
+	}
 
 	if (!st.gravity)
 	{
@@ -1761,8 +1842,6 @@ SP_worldspawn(edict_t *ent)
 	{
 		gi.cvar_set("sv_gravity", st.gravity);
 	}
-
-	// FRICTION for all games.
 
 	sv_friction = gi.cvar ("sv_friction", "1600.0", 0);
 
@@ -2143,9 +2222,9 @@ spawngrow_think(edict_t *self)
 
 	for (i = 0; i < 2; i++)
 	{
-		self->s.angles[0] = rand() % 360;
-		self->s.angles[1] = rand() % 360;
-		self->s.angles[2] = rand() % 360;
+		self->s.angles[PITCH] = rand() % 360;
+		self->s.angles[YAW] = rand() % 360;
+		self->s.angles[ROLL] = rand() % 360;
 	}
 
 	if ((level.time < self->wait) && (self->s.frame < 2))
@@ -2186,9 +2265,9 @@ SpawnGrow_Spawn(vec3_t startpos, int size)
 
 	for (i = 0; i < 2; i++)
 	{
-		ent->s.angles[0] = rand() % 360;
-		ent->s.angles[1] = rand() % 360;
-		ent->s.angles[2] = rand() % 360;
+		ent->s.angles[PITCH] = rand() % 360;
+		ent->s.angles[YAW] = rand() % 360;
+		ent->s.angles[ROLL] = rand() % 360;
 	}
 
 	ent->solid = SOLID_NOT;
