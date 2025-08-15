@@ -222,6 +222,9 @@ CL_AddMuzzleFlash(void)
 			S_StartSound(NULL, i, CHAN_WEAPON,
 				S_RegisterSound("weapons/bfg__f1y.wav"), volume, ATTN_NORM, 0);
 			break;
+		case MZ_BFG2:
+			VectorSet(dl->color, 0, 1, 0);
+			break;
 
 		case MZ_LOGIN:
 			dl->color[0] = 0;
@@ -257,12 +260,22 @@ CL_AddMuzzleFlash(void)
 			S_StartSound(NULL, i, CHAN_WEAPON,
 				S_RegisterSound("weapons/plasshot.wav"), volume, ATTN_NORM, 0);
 			break;
+		case MZ_PHALANX2:
+			VectorSet(dl->color, 1, 0.5f, 0.5f);
+			break;
 		case MZ_IONRIPPER:
 			dl->color[0] = 1;
 			dl->color[1] = 0.5;
 			dl->color[2] = 0.5;
 			S_StartSound(NULL, i, CHAN_WEAPON,
 				S_RegisterSound("weapons/rippfire.wav"), volume, ATTN_NORM, 0);
+			break;
+		case MZ_PROX:
+			VectorSet(dl->color, 1, 0.5f, 0);
+			S_StartSound(NULL, i, CHAN_WEAPON,
+				S_RegisterSound("weapons/grenlf1a.wav"), volume, ATTN_NORM, 0);
+			S_StartSound(NULL, i, CHAN_AUTO,
+				S_RegisterSound("weapons/proxlr1a.wav"), volume, ATTN_NORM, 0.1f);
 			break;
 		case MZ_ETF_RIFLE:
 			dl->color[0] = 0.9f;
@@ -350,6 +363,19 @@ CL_AddMuzzleFlash2(void)
 		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
 	}
 
+	if (flash_number == 255)
+	{
+		/* hact to support effects 255 .. 511 */
+		int flash_add;
+
+		flash_add = MSG_ReadByte(&net_message);
+		if (flash_add < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+		}
+		flash_number += flash_add;
+	}
+
 	if (flash_number > MZ2_EFFECT_MAX)
 	{
 		Com_DPrintf("%s: bad offset\n", __func__);
@@ -390,6 +416,15 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_INFANTRY_MACHINEGUN_11:
 		case MZ2_INFANTRY_MACHINEGUN_12:
 		case MZ2_INFANTRY_MACHINEGUN_13:
+		case MZ2_INFANTRY_MACHINEGUN_14:
+		case MZ2_INFANTRY_MACHINEGUN_15:
+		case MZ2_INFANTRY_MACHINEGUN_16:
+		case MZ2_INFANTRY_MACHINEGUN_17:
+		case MZ2_INFANTRY_MACHINEGUN_18:
+		case MZ2_INFANTRY_MACHINEGUN_19:
+		case MZ2_INFANTRY_MACHINEGUN_20:
+		case MZ2_INFANTRY_MACHINEGUN_21:
+		case MZ2_INFANTRY_MACHINEGUN_22:
 			dl->color[0] = 1;
 			dl->color[1] = 1;
 			dl->color[2] = 0;
@@ -407,6 +442,7 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_SOLDIER_MACHINEGUN_6:
 		case MZ2_SOLDIER_MACHINEGUN_7:
 		case MZ2_SOLDIER_MACHINEGUN_8:
+		case MZ2_SOLDIER_MACHINEGUN_9:
 			dl->color[0] = 1;
 			dl->color[1] = 1;
 			dl->color[2] = 0;
@@ -476,6 +512,7 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_SOLDIER_BLASTER_6:
 		case MZ2_SOLDIER_BLASTER_7:
 		case MZ2_SOLDIER_BLASTER_8:
+		case MZ2_SOLDIER_BLASTER_9:
 		case MZ2_TURRET_BLASTER:
 			dl->color[0] = 1;
 			dl->color[1] = 1;
@@ -494,6 +531,18 @@ CL_AddMuzzleFlash2(void)
 			break;
 
 		case MZ2_MEDIC_BLASTER_1:
+		case MZ2_MEDIC_HYPERBLASTER1_1:
+		case MZ2_MEDIC_HYPERBLASTER1_2:
+		case MZ2_MEDIC_HYPERBLASTER1_3:
+		case MZ2_MEDIC_HYPERBLASTER1_4:
+		case MZ2_MEDIC_HYPERBLASTER1_5:
+		case MZ2_MEDIC_HYPERBLASTER1_6:
+		case MZ2_MEDIC_HYPERBLASTER1_7:
+		case MZ2_MEDIC_HYPERBLASTER1_8:
+		case MZ2_MEDIC_HYPERBLASTER1_9:
+		case MZ2_MEDIC_HYPERBLASTER1_10:
+		case MZ2_MEDIC_HYPERBLASTER1_11:
+		case MZ2_MEDIC_HYPERBLASTER1_12:
 			dl->color[0] = 1;
 			dl->color[1] = 1;
 			dl->color[2] = 0;
@@ -502,6 +551,7 @@ CL_AddMuzzleFlash2(void)
 			break;
 
 		case MZ2_HOVER_BLASTER_1:
+		case MZ2_HOVER_BLASTER_2:
 			dl->color[0] = 1;
 			dl->color[1] = 1;
 			dl->color[2] = 0;
@@ -525,6 +575,7 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_SOLDIER_SHOTGUN_6:
 		case MZ2_SOLDIER_SHOTGUN_7:
 		case MZ2_SOLDIER_SHOTGUN_8:
+		case MZ2_SOLDIER_SHOTGUN_9:
 			dl->color[0] = 1;
 			dl->color[1] = 1;
 			dl->color[2] = 0;
@@ -611,6 +662,12 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_GUNNER_GRENADE_2:
 		case MZ2_GUNNER_GRENADE_3:
 		case MZ2_GUNNER_GRENADE_4:
+		case MZ2_GUNNER_GRENADE2_1:
+		case MZ2_GUNNER_GRENADE2_2:
+		case MZ2_GUNNER_GRENADE2_3:
+		case MZ2_GUNNER_GRENADE2_4:
+		case MZ2_SUPERTANK_GRENADE_1:
+		case MZ2_SUPERTANK_GRENADE_2:
 			dl->color[0] = 1;
 			dl->color[1] = 0.5;
 			dl->color[2] = 0;
@@ -621,6 +678,11 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_GLADIATOR_RAILGUN_1:
 		case MZ2_CARRIER_RAILGUN:
 		case MZ2_WIDOW_RAIL:
+		case MZ2_MAKRON_RAILGUN_1:
+		case MZ2_ARACHNID_RAIL1:
+		case MZ2_ARACHNID_RAIL2:
+		case MZ2_ARACHNID_RAIL_UP1:
+		case MZ2_ARACHNID_RAIL_UP2:
 			dl->color[0] = 0.5;
 			dl->color[1] = 0.5;
 			dl->color[2] = 1.0;
@@ -708,6 +770,7 @@ CL_AddMuzzleFlash2(void)
 
 		case MZ2_STALKER_BLASTER:
 		case MZ2_DAEDALUS_BLASTER:
+		case MZ2_DAEDALUS_BLASTER_2:
 		case MZ2_MEDIC_BLASTER_2:
 		case MZ2_WIDOW_BLASTER:
 		case MZ2_WIDOW_BLASTER_SWEEP1:
@@ -745,6 +808,18 @@ CL_AddMuzzleFlash2(void)
 		case MZ2_WIDOW_RUN_6:
 		case MZ2_WIDOW_RUN_7:
 		case MZ2_WIDOW_RUN_8:
+		case MZ2_MEDIC_HYPERBLASTER2_1:
+		case MZ2_MEDIC_HYPERBLASTER2_2:
+		case MZ2_MEDIC_HYPERBLASTER2_3:
+		case MZ2_MEDIC_HYPERBLASTER2_4:
+		case MZ2_MEDIC_HYPERBLASTER2_5:
+		case MZ2_MEDIC_HYPERBLASTER2_6:
+		case MZ2_MEDIC_HYPERBLASTER2_7:
+		case MZ2_MEDIC_HYPERBLASTER2_8:
+		case MZ2_MEDIC_HYPERBLASTER2_9:
+		case MZ2_MEDIC_HYPERBLASTER2_10:
+		case MZ2_MEDIC_HYPERBLASTER2_11:
+		case MZ2_MEDIC_HYPERBLASTER2_12:
 			dl->color[0] = 0;
 			dl->color[1] = 1;
 			dl->color[2] = 0;
@@ -782,6 +857,58 @@ CL_AddMuzzleFlash2(void)
 			dl->color[1] = 1;
 			dl->color[2] = 0;
 			dl->die = cl.time + 200;
+			break;
+
+		case MZ2_SOLDIER_RIPPER_1:
+		case MZ2_SOLDIER_RIPPER_2:
+		case MZ2_SOLDIER_RIPPER_3:
+		case MZ2_SOLDIER_RIPPER_4:
+		case MZ2_SOLDIER_RIPPER_5:
+		case MZ2_SOLDIER_RIPPER_6:
+		case MZ2_SOLDIER_RIPPER_7:
+		case MZ2_SOLDIER_RIPPER_8:
+		case MZ2_SOLDIER_RIPPER_9:
+			VectorSet(dl->color, 1, 0.5f, 0.5f);
+			S_StartSound(NULL, ent, CHAN_WEAPON,
+				S_RegisterSound("weapons/rippfire.wav"), 1, ATTN_NORM, 0);
+			break;
+
+		case MZ2_SOLDIER_HYPERGUN_1:
+		case MZ2_SOLDIER_HYPERGUN_2:
+		case MZ2_SOLDIER_HYPERGUN_3:
+		case MZ2_SOLDIER_HYPERGUN_4:
+		case MZ2_SOLDIER_HYPERGUN_5:
+		case MZ2_SOLDIER_HYPERGUN_6:
+		case MZ2_SOLDIER_HYPERGUN_7:
+		case MZ2_SOLDIER_HYPERGUN_8:
+		case MZ2_SOLDIER_HYPERGUN_9:
+			VectorSet(dl->color, 0, 0, 1);
+			S_StartSound(NULL, ent, CHAN_WEAPON,
+				S_RegisterSound("weapons/hyprbf1a.wav"), 1, ATTN_NORM, 0);
+			break;
+
+		case MZ2_GUARDIAN_BLASTER:
+			VectorSet(dl->color, 1, 1, 0);
+			S_StartSound(NULL, ent, CHAN_WEAPON,
+				S_RegisterSound("weapons/hyprbf1a.wav"), 1, ATTN_NORM, 0);
+			break;
+
+		case MZ2_GUNCMDR_CHAINGUN_1:
+		case MZ2_GUNCMDR_CHAINGUN_2:
+			VectorSet(dl->color, 0, 0, 1);
+			S_StartSound(NULL, ent, CHAN_WEAPON,
+				S_RegisterSound("guncmdr/gcdratck2.wav"), 1, ATTN_NORM, 0);
+			break;
+
+		case MZ2_GUNCMDR_GRENADE_MORTAR_1:
+		case MZ2_GUNCMDR_GRENADE_MORTAR_2:
+		case MZ2_GUNCMDR_GRENADE_MORTAR_3:
+		case MZ2_GUNCMDR_GRENADE_FRONT_1:
+		case MZ2_GUNCMDR_GRENADE_FRONT_2:
+		case MZ2_GUNCMDR_GRENADE_FRONT_3:
+			VectorSet(dl->color, 1, 0.5f, 0);
+			S_StartSound(NULL, ent, CHAN_WEAPON,
+				S_RegisterSound("guncmdr/gcdratck3.wav"), 1, ATTN_NORM, 0);
 			break;
 	}
 }
