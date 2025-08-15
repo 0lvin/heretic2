@@ -56,7 +56,7 @@ static void TornadoThink(edict_t *self)
 				VectorClear(ent->velocity);
 
 				// no damage if reflection is on.
-				if(EntReflecting(ent, true, true))
+				if (EntReflecting(ent, true, true))
 					damage = 0;
 
 				VectorMA(ent->s.origin, -ent->maxs[0], vel, hitloc);
@@ -259,11 +259,11 @@ static void tornboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	vec3_t		planedir;
 	int			flags = 0;
 
-	if(other == self->owner)
+	if (other == self->owner)
 	{
 		return;
 	}
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -272,7 +272,7 @@ static void tornboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	// has the target got reflection turned on ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			// scale speed down
@@ -283,9 +283,9 @@ static void tornboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	}
 
 	AlertMonsters (self, self->owner, 1, false);
-	if(other->takedamage)
+	if (other->takedamage)
 	{
-		if(deathmatch->value)
+		if (deathmatch->value)
 			damage = irand(FIREBALL_DAMAGE_MIN/2, FIREBALL_DAMAGE_MAX/2);
 		else
 			damage = irand(FIREBALL_DAMAGE_MIN, FIREBALL_DAMAGE_MAX);
@@ -297,7 +297,7 @@ static void tornboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	}
 
 	// Attempt to apply a scorchmark decal to the thing I hit.
-	if(IsDecalApplicable(self, other, self->s.origin, surface, plane, planedir))
+	if (IsDecalApplicable(self, other, self->s.origin, surface, plane, planedir))
 	{
 		flags |= CEF_FLAG6;
 	}
@@ -332,7 +332,7 @@ void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	AngleVectors(aimangles, forward, NULL, NULL);
 	VectorMA(tornbolt->s.origin, FLYING_FIST_SPEED, forward, endpos);
 	trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
-	if(trace.ent && ok_to_autotarget(caster, trace.ent))
+	if (trace.ent && ok_to_autotarget(caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, FLYING_FIST_SPEED, tornbolt->velocity);
 	}

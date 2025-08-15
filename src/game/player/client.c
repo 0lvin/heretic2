@@ -97,7 +97,7 @@ SP_FixCoopSpots(edict_t *self)
 	   This unnamed info_player_start is selected as
 	   spawnpoint for player 0, therefor none of the
 	   named info_coop_start() matches... */
-	if(Q_stricmp(level.mapname, "xware") == 0)
+	if (Q_stricmp(level.mapname, "xware") == 0)
 	{
 		if (self->s.number == 292)
 		{
@@ -480,19 +480,19 @@ BleederThink(edict_t *self)
 	vec3_t	bleed_spot, bleed_dir, forward, right, up;
 	int		damage;
 
-	if(!self->owner)
+	if (!self->owner)
 		goto byebye;
 
-	if(!self->owner->client)
+	if (!self->owner->client)
 		goto byebye;
 
-	if(!self->owner->s.modelindex)
+	if (!self->owner->s.modelindex)
 		goto byebye;
 
-	if(!(self->owner->client->playerinfo.flags&PLAYER_FLAG_BLEED))
+	if (!(self->owner->client->playerinfo.flags&PLAYER_FLAG_BLEED))
 		goto byebye;
 
-	if(self->owner->health <= 0)
+	if (self->owner->health <= 0)
 		goto byebye;
 
 	//FIXME: this will be a client effect attached to ref points
@@ -508,12 +508,12 @@ BleederThink(edict_t *self)
 	VectorMA(bleed_dir, self->movedir[2], up, bleed_dir);
 	VectorScale(bleed_dir, damage*3, bleed_dir);
 
-	if(self->owner->materialtype == MAT_INSECT)
+	if (self->owner->materialtype == MAT_INSECT)
 		gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, bleed_spot, "ub", bleed_dir, damage);
 	else
 		gi.CreateEffect(NULL, FX_BLOOD, 0, bleed_spot, "ub", bleed_dir, damage);
 
-	if(!irand(0,3))//25%chance to do damage
+	if (!irand(0,3))//25%chance to do damage
 		T_Damage(self->owner, self, self->activator, bleed_dir, bleed_spot, bleed_dir, damage, 0, DAMAGE_NO_BLOOD|DAMAGE_NO_KNOCKBACK|DAMAGE_BLEEDING|DAMAGE_AVOID_ARMOR,MOD_BLEED);//armor doesn't stop it
 
 	self->nextthink = level.time + flrand(0.1, 0.5);
@@ -557,20 +557,20 @@ void player_repair_skin (edict_t *self)
 	int	checked = 0;
 	int hurt_nodes[NUM_PLAYER_NODES];
 
-	if(!self->client)
+	if (!self->client)
 		return;
 
-	if(!self->s.modelindex)
+	if (!self->s.modelindex)
 		return;
 
 	num_allowed_dmg_skins = 5 - floor(self->health/20);
 	gi.dprintf("Allowed damaged nodes: %d\n", num_allowed_dmg_skins);
 
-	if(num_allowed_dmg_skins <= 0)
+	if (num_allowed_dmg_skins <= 0)
 	{//restore all nodes
 		for(i = 0; i < NUM_PLAYER_NODES; i++)
 		{
-			if(i == MESH__STOFF||
+			if (i == MESH__STOFF||
 				i == MESH__BOFF||
 				i == MESH__ARMOR||
 				i == MESH__STAFACTV||
@@ -595,7 +595,7 @@ void player_repair_skin (edict_t *self)
 
 	for(i = 0; i<NUM_PLAYER_NODES; i++)
 	{//how many nodes are hurt
-		if(i == MESH__STOFF||
+		if (i == MESH__STOFF||
 			i == MESH__BOFF||
 			i == MESH__ARMOR||
 			i == MESH__STAFACTV||
@@ -604,7 +604,7 @@ void player_repair_skin (edict_t *self)
 			i == MESH__BOWACTV)
 			continue;//these shouldn't be fucked with
 
-		if(!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW)&&(self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN))
+		if (!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW)&&(self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN))
 		{
 			hurt_nodes[found_dmg_skins] = i;
 			found_dmg_skins++;
@@ -612,7 +612,7 @@ void player_repair_skin (edict_t *self)
 	}
 
 	gi.dprintf("Found damaged nodes: %d\n", found_dmg_skins);
-	if(found_dmg_skins<=num_allowed_dmg_skins)//no healing
+	if (found_dmg_skins<=num_allowed_dmg_skins)//no healing
 		return;
 
 	to_fix = found_dmg_skins - num_allowed_dmg_skins;
@@ -620,9 +620,9 @@ void player_repair_skin (edict_t *self)
 	while(to_fix > 0 && checked<100)
 	{//heal num damaged nodes over allowed
 		i = hurt_nodes[irand(0, (found_dmg_skins - 1))];
-		if(!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW))
+		if (!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW))
 		{
-			if(self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[i].flags&FMNI_USE_SKIN)
 			{
 				gi.dprintf("Healed player skin on node %d\n", i);
 				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
@@ -630,7 +630,7 @@ void player_repair_skin (edict_t *self)
 
 				self->client->playerinfo.pers.altparts &= ~(1<<i);
 
-				if(i == MESH__LARM)
+				if (i == MESH__LARM)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_LARM;
 				else if(i == MESH__RARM)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_RARM;
@@ -649,7 +649,7 @@ void player_repair_skin (edict_t *self)
 void
 ResetPlayerBaseNodes(edict_t *ent)
 {
-	if(!ent->client)
+	if (!ent->client)
 		return;
 
 	ent->client->playerinfo.flags &= ~PLAYER_FLAG_BLEED;
@@ -742,7 +742,7 @@ qboolean
 canthrownode_player(edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_player[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -759,11 +759,11 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 	vec3_t handspot, forward, right, up;
 
 	//Current code doesn't really support dropping weapons!!!
-	if(deathmatch->value)
+	if (deathmatch->value)
 	{
-		if(!((int)dmflags->value&DF_DISMEMBER))
+		if (!((int)dmflags->value&DF_DISMEMBER))
 		{
-			if(self->health > 0)
+			if (self->health > 0)
 			{
 				return;
 			}
@@ -779,7 +779,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 	VectorMA(handspot,8,right,handspot);
 	VectorMA(handspot,-6,up,handspot);
 
-	if(whichweaps & BIT_BLADSTF && !(self->s.fmnodeinfo[MESH__BLADSTF].flags & FMNI_NO_DRAW))
+	if (whichweaps & BIT_BLADSTF && !(self->s.fmnodeinfo[MESH__BLADSTF].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.stafflevel = 0;
 		ThrowWeapon(self, &handspot, BIT_BLADSTF, damage, 0);
@@ -788,7 +788,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
 
-	if(whichweaps & BIT_HELSTF && !(self->s.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
+	if (whichweaps & BIT_HELSTF && !(self->s.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.helltype = 0;
 		ThrowWeapon(self, &handspot, BIT_HELSTF, damage, 0);
@@ -797,7 +797,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
 	}
 
-	if(whichweaps & BIT_BOWACTV && !(self->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
+	if (whichweaps & BIT_BOWACTV && !(self->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
 	{
 //		self->client->playerinfo.bowtype = 0;
 		ThrowWeapon(self, &handspot, BIT_BOFF, damage, 0);
@@ -826,31 +826,31 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 	qboolean dismember_ok = false;
 	qboolean inpolevault = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
 	//dismember living players in deathmatch only if that dmflag set!
-	if(deathmatch->value)
+	if (deathmatch->value)
 	{
-		if(!((int)dmflags->value&DF_DISMEMBER))
+		if (!((int)dmflags->value&DF_DISMEMBER))
 		{
-			if(self->health > 0)// && !(self->flags&FL_GODMODE))
+			if (self->health > 0)// && !(self->flags&FL_GODMODE))
 			{
 				dismember_ok = false;
 			}
 		}
-		if(dismember_ok)
+		if (dismember_ok)
 		{
-			if(self->client->playerinfo.frame > FRAMEH2_vault3 &&
+			if (self->client->playerinfo.frame > FRAMEH2_vault3 &&
 				self->client->playerinfo.frame < FRAMEH2_vault15)
 				inpolevault = true;
 			else
 				inpolevault = false;
 
-			if(inpolevault)
+			if (inpolevault)
 			{
 				//Horizontal, in air, need to alter hitloc
 				switch(HitLocation)
@@ -867,12 +867,12 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				}
 			}
 
-			if(self->health > 0 && !irand(0,2) &&
+			if (self->health > 0 && !irand(0,2) &&
 				HitLocation != hl_Head &&
 				HitLocation != hl_ArmUpperLeft &&
 				HitLocation != hl_ArmUpperRight)
 			{//deathmatch hack
-				if(irand(0,1))
+				if (irand(0,1))
 					HitLocation = hl_ArmUpperLeft;
 				else
 					HitLocation = hl_ArmUpperRight;
@@ -882,19 +882,19 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 	else if(self->health > 0)// && !(self->flags&FL_GODMODE))
 		dismember_ok = false;
 
-	if(!dismember_ok)
+	if (!dismember_ok)
 	{
-		if(damage <= 3 && self->health>10)
+		if (damage <= 3 && self->health>10)
 			return;
 
-		if(damage < 10 && self->health>85)
+		if (damage < 10 && self->health>85)
 			return;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 
 //FIXME: special manipulations of hit locations depending on anim
@@ -903,14 +903,14 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
 
 			// NOTE I AM CUTTING DOWN THE DECAP CHANCE JUST A LITTLE BIT...  HAPPENED TOO OFTEN.
-//			if((frandk() * self->health) < damage*0.5 && dismember_ok)
-			if((frandk() * self->health) < damage*0.4 && dismember_ok)
+//			if ((frandk() * self->health) < damage*0.5 && dismember_ok)
+			if ((frandk() * self->health) < damage*0.4 && dismember_ok)
 			{
 //				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 
@@ -922,7 +922,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, other, other, vec3_origin, vec3_origin, vec3_origin, 10, 20,DAMAGE_AVOID_ARMOR,MOD_STAFF);
@@ -932,7 +932,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.25)
+//				if ((frandk() * self->health)<damage*0.25)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__HEAD);
 				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
@@ -940,11 +940,11 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			break;
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH_BASE2].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				self->client->playerinfo.flags |= (PLAYER_FLAG_NO_LARM|PLAYER_FLAG_NO_RARM);
 				gore_spot[2]+=12;
@@ -961,7 +961,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, other, other, vec3_origin, vec3_origin, vec3_origin, 10, 20,DAMAGE_AVOID_ARMOR,MOD_STAFF);
@@ -970,7 +970,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.5)
+//				if ((frandk() * self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH_BASE2);
 				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
@@ -978,11 +978,11 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BACK].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__BACK].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__BACK].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__BACK].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				self->client->playerinfo.flags |= (PLAYER_FLAG_NO_LARM|PLAYER_FLAG_NO_RARM);
 				gore_spot[2]+=12;
@@ -999,7 +999,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, other, other, vec3_origin, vec3_origin, vec3_origin, 10, 20,DAMAGE_AVOID_ARMOR,MOD_STAFF);
@@ -1008,7 +1008,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.5)
+//				if ((frandk() * self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->playerinfo.pers.altparts |= (1<<MESH__BACK);
 				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
@@ -1017,13 +1017,13 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			break;
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__LARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__LARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health) < damage && dismember_ok)
+			if ((frandk() * self->health) < damage && dismember_ok)
 			{
-				if(canthrownode_player(self, MESH__LARM, &throw_nodes))
+				if (canthrownode_player(self, MESH__LARM, &throw_nodes))
 				{
 					self->client->playerinfo.flags |= PLAYER_FLAG_NO_LARM;
 					player_dropweapon (self, (int)damage, BIT_BOWACTV);
@@ -1040,7 +1040,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.4)
+//				if ((frandk() * self->health)<damage*0.4)
 //					player_dropweapon (self, (int)damage, BIT_BOWACTV);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LARM);
 				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
@@ -1050,13 +1050,13 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
 			//Knock weapon out of hand?
-			if(self->s.fmnodeinfo[MESH__RARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__RARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__RARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__RARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health) < damage && dismember_ok)
+			if ((frandk() * self->health) < damage && dismember_ok)
 			{
-				if(canthrownode_player(self, MESH__RARM, &throw_nodes))
+				if (canthrownode_player(self, MESH__RARM, &throw_nodes))
 				{
 					self->client->playerinfo.flags |= PLAYER_FLAG_NO_RARM;
 					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
@@ -1070,13 +1070,13 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 					VectorSet(blood_spot, 0, 12, 10);
 					SpawnBleeder(self, other, blood_dir, blood_spot);//, CORVUS_RARM);
 
-					if(inpolevault)//oops!  no staff! fall down!
+					if (inpolevault)//oops!  no staff! fall down!
 						playerExport->KnockDownPlayer(&self->client->playerinfo);
 				}
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.75)
+//				if ((frandk() * self->health)<damage*0.75)
 //					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
 				self->client->playerinfo.pers.altparts |= (1<<MESH__RARM);
 				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
@@ -1086,9 +1086,9 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->health>0)
+			if (self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->client->playerinfo.pers.altparts |= (1<<MESH__LLEG);
 				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
@@ -1096,9 +1096,9 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_player(self, MESH__LLEG, &throw_nodes))
+				if (canthrownode_player(self, MESH__LLEG, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1110,9 +1110,9 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->health>0)
+			if (self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->client->playerinfo.pers.altparts |= (1<<MESH__RLEG);
 				self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
@@ -1120,9 +1120,9 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_player(self, MESH__RLEG, &throw_nodes))
+				if (canthrownode_player(self, MESH__RLEG, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1134,18 +1134,18 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			break;
 
 		default:
-//			if((frandk() * self->health)<damage*0.25)
+//			if ((frandk() * self->health)<damage*0.25)
 //				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 			break;
 	}
-	if(throw_nodes)
+	if (throw_nodes)
 	{
 		self->pain_debounce_time = 0;
-		if(!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
+		if (!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
 		{
 			playerExport->PlayerInterruptAction(&self->client->playerinfo);
 			playerExport->PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
-			if(irand(0, 1))
+			if (irand(0, 1))
 				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_PAIN_A);
 			else
 				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_PAIN_B);
@@ -1168,7 +1168,7 @@ player_decap(edict_t *self, edict_t *other)
 	//FIXME: special manipulations of hit locations depending on anim.
 
 	VectorClear(gore_spot);
-	if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 		return;
 
 	player_dropweapon (self, 100, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
@@ -1183,7 +1183,7 @@ player_decap(edict_t *self, edict_t *other)
 
 	SprayDebris(self, gore_spot, 8, 100);
 
-	if(self->health > 0)
+	if (self->health > 0)
 	{
 		self->health = 0;
 		self->client->meansofdeath = MOD_DECAP;
@@ -1204,7 +1204,7 @@ void player_leader_effect(void)
 	edict_t		*ent;
 
 	// if we don't want leader effects, bump outta here.
-	if(!(((int)dmflags->value) & DF_SHOW_LEADER))
+	if (!(((int)dmflags->value) & DF_SHOW_LEADER))
 		return;
 
 	// now we decide if anyone is a leader here, and if they are, we put the glow around them.
@@ -1375,7 +1375,7 @@ ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 	assert(self->client);
 
-	if(!(deathmatch->value || coop->value))
+	if (!(deathmatch->value || coop->value))
 	{
 		// No obituaries in single player.
 
@@ -1388,21 +1388,21 @@ ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 	self->client->meansofdeath = (MOD_t)((int)self->client->meansofdeath & ~MOD_FRIENDLY_FIRE);
 // jmarshall end
 
-	if(deathmatch->value || coop->value)
+	if (deathmatch->value || coop->value)
 	{
 		self->enemy = attacker;
 
-		if(attacker && attacker->client && attacker != self)
+		if (attacker && attacker->client && attacker != self)
 		{
 			message = KillBy[self->client->meansofdeath];
 
-			if(message)
+			if (message)
 			{
 				G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, attacker->s.number);
 
-				if(deathmatch->value)
+				if (deathmatch->value)
 				{
-					if(friendlyFire)
+					if (friendlyFire)
 						attacker->client->resp.score--;
 					else
 						attacker->client->resp.score++;
@@ -1416,11 +1416,11 @@ ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
 		// Wasn't an awarded a frag, check for suicide messages.
 		message = KillSelf[self->client->meansofdeath];
 
-		if(message)
+		if (message)
 		{
 			G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, 0);
 
-			if(deathmatch->value)
+			if (deathmatch->value)
 			{
 				self->client->resp.score--;
 				player_leader_effect();
@@ -1446,7 +1446,7 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 	float		mag;
 	int	i, num_limbs;
 
-	if(self->client)
+	if (self->client)
 	{
 		//FIXME: Have a generic GibParts effect that throws flesh and several body parts - much cheaper.
 
@@ -1548,7 +1548,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 	VectorClear(self->avelocity);
 
-	if(self->health < -99)
+	if (self->health < -99)
 	{
 		self->health = -99;//looks better on stat bar display
 	}
@@ -1631,7 +1631,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	// Remove any sound effects we may be generating.
 	gi.sound(self, CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM,0);
 
-	if((self->health<-40) && !(self->flags & FL_CHICKEN))
+	if ((self->health<-40) && !(self->flags & FL_CHICKEN))
 	{
 		gi.sound(self,CHAN_BODY, gi.soundindex("*gib.wav"), 1, ATTN_NORM, 0);
 
@@ -1651,7 +1651,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 		self->health=-1;
 
-		if(!self->deadflag)
+		if (!self->deadflag)
 		{
 			self->client->respawn_time=level.time+1.0;
 			self->client->ps.pmove.pm_type=PM_DEAD;
@@ -1870,7 +1870,7 @@ InitClientPersistant(edict_t *ent)
 	client->playerinfo.pers.lastweapon = item;
 	client->playerinfo.weap_ammo_index = 0;
 
-	if(!(((int)dmflags->value) & DF_NO_OFFENSIVE_SPELL))
+	if (!(((int)dmflags->value) & DF_NO_OFFENSIVE_SPELL))
 	{
 		item = FindItem("fball");
 		AddWeaponToInventory(item, ent);
@@ -2607,7 +2607,7 @@ respawn(edict_t *self)
 
 		gi.CreatePersistantEffect(self,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
-		if(deathmatch->value)
+		if (deathmatch->value)
 		{
 			// Respawning in deathmatch always means a complete reset of the player's model.
 
@@ -2793,12 +2793,12 @@ GiveLevelItems(edict_t *player)
 
 	weapon=NULL;
 
-	if(level.offensive_weapons&1)
+	if (level.offensive_weapons&1)
 	{
 		item=FindItem("staff");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2807,12 +2807,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&2)
+	if (level.offensive_weapons&2)
 	{
 		item=FindItem("fball");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2821,12 +2821,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&4)
+	if (level.offensive_weapons&4)
 	{
 		item=FindItem("hell");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2835,12 +2835,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&8)
+	if (level.offensive_weapons&8)
 	{
 		item=FindItem("array");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2849,12 +2849,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&16)
+	if (level.offensive_weapons&16)
 	{
 		item=FindItem("rain");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2863,12 +2863,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&32)
+	if (level.offensive_weapons&32)
 	{
 		item=FindItem("sphere");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2877,12 +2877,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&64)
+	if (level.offensive_weapons&64)
 	{
 		item=FindItem("phoen");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2891,12 +2891,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&128)
+	if (level.offensive_weapons&128)
 	{
 		item=FindItem("mace");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2905,12 +2905,12 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.offensive_weapons&256)
+	if (level.offensive_weapons&256)
 	{
 		item=FindItem("fwall");
-		if(AddWeaponToInventory(item,player))
+		if (AddWeaponToInventory(item,player))
 		{
-			if((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
 				client->playerinfo.pers.newweapon=item;
@@ -2919,31 +2919,31 @@ GiveLevelItems(edict_t *player)
 		}
 	}
 
-	if(level.defensive_weapons&1)
+	if (level.defensive_weapons&1)
 	{
 		item=FindItem("ring");
 		AddDefenseToInventory(item,player);
 	}
 
-	if(level.defensive_weapons&2)
+	if (level.defensive_weapons&2)
 	{
 		item=FindItem("lshield");
 		AddDefenseToInventory(item,player);
 	}
 
-	if(level.defensive_weapons&4)
+	if (level.defensive_weapons&4)
 	{
 		item=FindItem("tele");
 		AddDefenseToInventory(item,player);
 	}
 
-	if(level.defensive_weapons&8)
+	if (level.defensive_weapons&8)
 	{
 		item=FindItem("morph");
 		AddDefenseToInventory(item,player);
 	}
 
-	if(level.defensive_weapons&16)
+	if (level.defensive_weapons&16)
 	{
 		item=FindItem("meteor");
 		AddDefenseToInventory(item,player);
@@ -3040,7 +3040,7 @@ PutClientInServer(edict_t *ent)
 
 	// Complete or partial reset of the player's model?
 
-	if(!deathmatch->value)
+	if (!deathmatch->value)
 	{
 		complete_reset = client->complete_reset;
 	}
@@ -3242,7 +3242,7 @@ PutClientInServer(edict_t *ent)
 
 	ClientSetSkinType(ent, Info_ValueForKey (ent->client->playerinfo.pers.userinfo, "skin"));
 
-	if(deathmatch->value||coop->value)
+	if (deathmatch->value||coop->value)
 	{
 		// Reset the player's fmodel nodes when spawning in deathmatch or coop.
 
@@ -3267,10 +3267,10 @@ PutClientInServer(edict_t *ent)
 
 	SpawnInitialPlayerEffects(ent);
 
-	if(coop->value)
+	if (coop->value)
 		GiveLevelItems(ent);
 
-	if(((int)dmflags->value)&DF_NO_OFFENSIVE_SPELL)
+	if (((int)dmflags->value)&DF_NO_OFFENSIVE_SPELL)
 	{
 		// For blade only DMing, ensure we start with staff in our hand.
 
@@ -3807,7 +3807,7 @@ ClientDisconnect(edict_t *ent)
 		return;
 	}
 
-	if(ent->client->chasetoggle)
+	if (ent->client->chasetoggle)
 	{
 		ChasecamRemove(ent);
 	}
@@ -4052,7 +4052,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 		// Handle lockmove cases.
 
-		if((client->playerinfo.flags & (PLAYER_FLAG_LOCKMOVE_WAS_SET|PLAYER_FLAG_USE_ENT_POS)) &&
+		if ((client->playerinfo.flags & (PLAYER_FLAG_LOCKMOVE_WAS_SET|PLAYER_FLAG_USE_ENT_POS)) &&
 		   !(client->ps.pmove.pm_flags&PMF_LOCKMOVE))
 		{
 			// Lockmove was set last frame, but isn't now, so we copy the player edict's origin and
@@ -4181,7 +4181,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
 		VectorCopy(pm.s.velocity, client->playerinfo.velocity);
-		if(ent->waterlevel)
+		if (ent->waterlevel)
 		{
 			client->playerinfo.flags |= FL_INWATER;
 		}
@@ -4313,7 +4313,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 	TargetEnt=ent->enemy=NULL;
 	client->ps.AutotargetEntityNum=0;
 
-	if(client->playerinfo.autoaim)
+	if (client->playerinfo.autoaim)
 	{
 		// Autoaiming is active so look for an enemy to autotarget.
 
@@ -4325,7 +4325,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 												   SVF_MONSTER,
 												   LOSOrigin,
 												   NULL,NULL);
-		if(TargetEnt!=NULL)
+		if (TargetEnt!=NULL)
 		{
 			// An enemy was successfully autotargeted, so store away the pointer to our enemy.
 

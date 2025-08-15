@@ -30,7 +30,7 @@ void RedRainThink(edict_t *self)
 	float	lradius, rradius, rad_dmg;
 	int		damage;
 
-	if(deathmatch->value)
+	if (deathmatch->value)
 		rad_dmg = self->dmg * 0.25;
 	else
 		rad_dmg = self->dmg;
@@ -38,7 +38,7 @@ void RedRainThink(edict_t *self)
 	// find all the entities in the volume
 	while((victim = findinblocking(victim, self)))
 	{
-		if(victim != self->owner && victim->takedamage &&
+		if (victim != self->owner && victim->takedamage &&
 				(victim->client || victim->svflags & SVF_MONSTER) && !(victim->svflags & SVF_DEADMONSTER))
 		{	// No damage to casting player
 			VectorSubtract(self->pos1, victim->s.origin, vec);
@@ -124,7 +124,7 @@ void RedRainThink(edict_t *self)
 						// Do a nasty looking blast at the impact point
 						gi.CreateEffect(victim, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN | CEF_FLAG7, NULL, "t", diffpos);
 
-						if(!(EntReflecting(victim, true, true)))
+						if (!(EntReflecting(victim, true, true)))
 						{
 							T_Damage(victim, self, self->owner, diffpos, endpos, vec3_origin,
 									irand(RED_RAIN_DMG_LIGHTNING_MIN, RED_RAIN_DMG_LIGHTNING_MAX), 0, DAMAGE_SPELL,MOD_STORM);
@@ -136,7 +136,7 @@ void RedRainThink(edict_t *self)
 								startpos, "vb", endpos, (byte)POWER_RAIN_LIGHTNING_WIDTH);
 						gi.sound(victim,CHAN_WEAPON, gi.soundindex("weapons/LightningPower.wav"), 1, ATTN_NORM, 0);
 
-						if(!(EntReflecting(victim, true, true)))
+						if (!(EntReflecting(victim, true, true)))
 						{
 							damage = irand(POWER_RAIN_DMG_LIGHTNING_MIN, POWER_RAIN_DMG_LIGHTNING_MAX);
 
@@ -232,7 +232,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	// has the target got reflection turned on ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			Vec3ScaleAssign(RED_ARROW_SPEED/2, self->velocity);
@@ -242,14 +242,14 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		}
 	}
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{	// Damage from direct impact of arrow, normal or powered up.
 		T_Damage(other, self, self->owner, self->movedir, self->s.origin, plane->normal, self->dmg, self->dmg, DAMAGE_SPELL,MOD_STORM);
 	}
 	AlertMonsters (self, self->owner, 5, false);
 
 	// Backup effect a little so it doesn`t appear in the wall (but only if we hit the wall)
-	if(other->svflags & SVF_MONSTER)
+	if (other->svflags & SVF_MONSTER)
 	{
 		VectorCopy(self->s.origin, org);
 	}
@@ -270,7 +270,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	damagearea->clipmask = CONTENTS_EMPTY;
 	damagearea->movetype = MOVETYPE_FLYMISSILE;				// Necessary for proper processing of thinkers
 	damagearea->wait = RED_RAIN_DAMAGE_INTERVAL;
-	if(deathmatch->value)
+	if (deathmatch->value)
 		damagearea->delay = level.time + RED_RAIN_DURATION - 2;//5 secs in DM
 	else
 		damagearea->delay = level.time + RED_RAIN_DURATION;
@@ -298,7 +298,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	end[2] += MAX_REDRAINHEIGHT;
 
 	trace = gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID);
-//	if(trace.startsolid)						// Ignore startsolids.
+//	if (trace.startsolid)						// Ignore startsolids.
 //		damagearea->maxs[2] = 1.0;
 //	else
 	if (trace.fraction == 1.0F)
@@ -310,7 +310,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	end[2] = org[2] - MAX_REDRAINFALLDIST;
 
 	trace = gi.trace(org, damagearea->mins, damagearea->maxs, end, damagearea, MASK_SOLID);
-//	if(trace.startsolid)						// Startsolids mean that the area is too close to a wall
+//	if (trace.startsolid)						// Startsolids mean that the area is too close to a wall
 //		damagearea->mins[2] = -1.0;
 //	else
 	if (trace.fraction == 1.0F)
@@ -407,7 +407,7 @@ void SpellCastRedRain(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	AngleVectors(AimAngles, forward, NULL, NULL);
 	VectorMA(StartPos, RED_ARROW_SPEED, forward, endpos);
 	trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
-	if(trace.ent && ok_to_autotarget(caster, trace.ent))
+	if (trace.ent && ok_to_autotarget(caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, RED_ARROW_SPEED, redarrow->velocity);
 	}

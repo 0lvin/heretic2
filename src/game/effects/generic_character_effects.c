@@ -120,7 +120,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_OGLE_HITPUFF].formatString, dir);			// normalized direction vector
 
 	speed = VectorNormalize(dir);
-	if(speed>1.0f)
+	if (speed>1.0f)
 		count = irand(10,15);
 	else
 		count = irand(1,4);
@@ -132,7 +132,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 		effect->r.model = genfx_models[0];
 		effect->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-		if(speed>1.0f)
+		if (speed>1.0f)
 		{
 			VectorRandomCopy(dir, work, 0.5);
 			VectorScale(work, speed, effect->velocity);
@@ -156,7 +156,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		effect->alpha = 0.35;
 
-		if(speed > 1)
+		if (speed > 1)
 		{
 			float scale;
 
@@ -197,7 +197,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 			break;
 		}
 
-		if(speed>1.0f)
+		if (speed>1.0f)
 		{
 			VectorRandomCopy(dir, work, 0.5);
 			VectorScale(work, speed, effect->velocity);
@@ -219,7 +219,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 		effect->Update = PebbleUpdate;
 		effect->alpha = 1.0;
-		if(speed > 1)
+		if (speed > 1)
 		{
 			float scale = flrand(0.8, 1.5) * speed / 100;
 			VectorSet(effect->r.scale, scale, scale, scale);
@@ -326,7 +326,7 @@ void SetupWaterParticle(client_particle_t *p, qboolean recycle)
 	dist[2] = crandk() * WATER_DIST;
 
 	// If we are recycling, we want to respawn as far away as possible
-	if(recycle)
+	if (recycle)
 	{
 		VectorNormalize(dist);
 		Vec3ScaleAssign(WATER_DIST, dist);
@@ -397,7 +397,7 @@ void UpdateWaterParticles(client_entity_t *self)
 	{
 		VectorSubtract(p->origin, fxi.cl->refdef.vieworg, part_dist);
 		dist = VectorLengthSquared(part_dist);
-		if(dist >= WATERPARTICLE_CLIPDIST)
+		if (dist >= WATERPARTICLE_CLIPDIST)
 		{
 			SetupWaterParticle(p, true);
 			continue;
@@ -414,9 +414,9 @@ void UpdateWaterParticles(client_entity_t *self)
 qboolean WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
 {
 	// Free up particles when we are not under water
-	if(!cl_camera_under_surface->value)
+	if (!cl_camera_under_surface->value)
 	{
-		if(water_particles_spawned)
+		if (water_particles_spawned)
 		{
 			FreeParticles(self);
 			water_particles_spawned = false;
@@ -424,7 +424,7 @@ qboolean WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
 	}
 	else
 	{
-		if(!water_particles_spawned)
+		if (!water_particles_spawned)
 		{
 			CreateWaterParticles(self);
 			water_particles_spawned = true;
@@ -474,7 +474,7 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 
 	for(i = 0; i < num_parts; i++)
 	{
-		if(r_detail->value > DETAIL_LOW)
+		if (r_detail->value > DETAIL_LOW)
 			p = ClientParticle_new(wake_particle[irand(0, 5)], LightColor, irand(1000, 2000));
 		else
 			p = ClientParticle_new(wake_particle[irand(0, 5)]|PFL_SOFT_MASK, LightColor, irand(1000, 2000));
@@ -505,7 +505,7 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 {
 	vec3_t	org;
 
-	if(!cl_camera_under_surface->value)
+	if (!cl_camera_under_surface->value)
 		return true;
 
 	// Errr... what the hell, spawn some bubbles too.
@@ -563,7 +563,7 @@ qboolean DirectionalUpdate (client_entity_t *self, centity_t *owner)
 	paletteRGBA_t		color = {{{255, 128, 128, 128}}};
 	client_particle_t	*part;
 
-	if(!compass->value)
+	if (!compass->value)
 	{
 		self->updateTime = 2000;
 		self->flags |= CEF_NO_DRAW;
@@ -762,23 +762,23 @@ static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
 	if ((owner->current.renderfx & RF_TRANS_GHOST) || (owner->current.effects & EF_CLIENT_DEAD))
 		return true;
 
-   	// create the ring of particles that goes up
-   	color.c = 0x7fffffff;
+	// create the ring of particles that goes up
+	color.c = 0x7fffffff;
 
-   	// figure out how many particles we are going to use
+	// figure out how many particles we are going to use
 
-   	ce = ClientParticle_new(PART_16x16_SPARK_Y, color, 800);
-   	ce->acceleration[2] = 0.0;
-   	VectorSet(ce->origin, LEADER_RAD * cos(self->Scale), LEADER_RAD * sin(self->Scale), 4);
-   	ce->scale = 8.0F;
-   	AddParticleToList(self, ce);
-   	// create the ring of particles that goes down
+	ce = ClientParticle_new(PART_16x16_SPARK_Y, color, 800);
+	ce->acceleration[2] = 0.0;
+	VectorSet(ce->origin, LEADER_RAD * cos(self->Scale), LEADER_RAD * sin(self->Scale), 4);
+	ce->scale = 8.0F;
+	AddParticleToList(self, ce);
+	// create the ring of particles that goes down
 
-   	ce = ClientParticle_new(PART_16x16_SPARK_Y, color, 800);
-   	ce->acceleration[2] = 0.0;
-   	VectorSet(ce->origin, LEADER_RAD * cos(self->Scale+3.14), LEADER_RAD * sin(self->Scale+3.14), 4);
-   	ce->scale = 8.0F;
-   	AddParticleToList(self, ce);
+	ce = ClientParticle_new(PART_16x16_SPARK_Y, color, 800);
+	ce->acceleration[2] = 0.0;
+	VectorSet(ce->origin, LEADER_RAD * cos(self->Scale+3.14), LEADER_RAD * sin(self->Scale+3.14), 4);
+	ce->scale = 8.0F;
+	AddParticleToList(self, ce);
 
 	// move the rings up/down next frame
 	self->Scale += 0.17;
@@ -911,7 +911,7 @@ void FXFeetTrail(centity_t *owner,int type,int flags,vec3_t origin)
 
 	for(i=0;i<16;i++)
 	{
-		if(!(refpoints & (1 << i)))
+		if (!(refpoints & (1 << i)))
 			continue;
 
 		trail=ClientEntity_new(type,flags,origin,0,flame_dur);

@@ -192,7 +192,7 @@ void RegisterModels()
 
 	for(i = 0; i < NUM_FX; i++)
 	{
-		if(clientEffectSpawners[i].PrecacheCFX)
+		if (clientEffectSpawners[i].PrecacheCFX)
 		{
 			clientEffectSpawners[i].PrecacheCFX();
 		}

@@ -25,7 +25,7 @@ qboolean MG_SwimFlyToGoal(edict_t* self, float dist);
 
 void ssithra_ai_run (edict_t *self, float dist)
 {
-	if(ssithraCheckInWater(self))
+	if (ssithraCheckInWater(self))
 	{
 		MG_SwimFlyToGoal(self, dist);//really need to get rid of this!
 		MG_Pathfind(self, false);

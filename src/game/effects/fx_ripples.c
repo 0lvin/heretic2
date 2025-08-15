@@ -44,7 +44,7 @@ FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 
 	AddEffect(NULL, ripple);
 
-	if(spawner->SpawnInfo-- < 0)
+	if (spawner->SpawnInfo-- < 0)
 	{
 		spawner->updateTime = 1000;
 		spawner->Update = RemoveSelfAI;
@@ -58,7 +58,7 @@ void FXWaterRipples(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	vec3_t				dir;
 	vec_t				dist;
 
-	if(GetWaterNormal(Origin, 1.0, 20.0F, dir, &dist))
+	if (GetWaterNormal(Origin, 1.0, 20.0F, dir, &dist))
 	{
 		Origin[2] += dist;
 		spawner = ClientEntity_new(Type, Flags, Origin, dir, 200);

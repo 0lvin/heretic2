@@ -60,7 +60,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 	vel = VectorNormalize(Velocity);
 
 	len = vel-30.0;
-	if(len > 50.0)
+	if (len > 50.0)
 	{
 		len = 50.0;
 	}

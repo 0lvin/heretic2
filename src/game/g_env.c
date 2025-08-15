@@ -18,7 +18,7 @@ void env_dust_use(edict_t *self, edict_t *other, edict_t *activator)
 
 	gi.sound(self, CHAN_NO_PHS_ADD + CHAN_VOICE,self->moveinfo.sound_middle, 1, ATTN_NORM, 0);
 
-	if(!self->count)
+	if (!self->count)
 	{
 		count = (byte)(self->size[0] * self->size[1] / 800.0);   //  28 x 28
 		if (count > 16)

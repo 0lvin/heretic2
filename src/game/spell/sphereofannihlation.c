@@ -56,7 +56,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 	// is unlikely to happen, sooooo...
 
 	// if we have released, or we are dead, or a chicken, release the sphere
-	if(*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
+	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
 		&& (self->owner->client && !(self->owner->client->playerinfo.edictflags & FL_CHICKEN)) &&
 		(!(self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
@@ -78,7 +78,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 		}
 
 		// detect if we have teleported, since we need to move with the player if thats so
-		if(self->owner->client)
+		if (self->owner->client)
 		{
 			VectorCopy(self->owner->s.origin, self->s.origin);
 			self->s.origin[0] += Forward[0]*20.0;
@@ -102,14 +102,14 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 		//FIXME: Need to get rid of the 'client' reference so that anything can cast this spell.
 
 		//Check ahead first to see if it's going to hit anything at this angle
-		if(self->owner->client)
+		if (self->owner->client)
 			VectorCopy(self->owner->client->aimangles, angles);
 		else
 			VectorCopy(self->owner->s.angles, angles);
 		AngleVectors(angles, Forward, NULL, NULL);
 		VectorMA(self->s.origin, SPHERE_FLY_SPEED, Forward, endpos);
 		trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, endpos, self->owner, MASK_MONSTERSOLID);
-		if(trace.ent && ok_to_autotarget(self->owner, trace.ent))
+		if (trace.ent && ok_to_autotarget(self->owner, trace.ent))
 		{//already going to hit a valid target at this angle- so don't autotarget
 			VectorScale(Forward, SPHERE_FLY_SPEED, self->velocity);
 		}
@@ -173,20 +173,20 @@ static void SpherePowerLaserThink(edict_t *self)
 		AngleVectors(aimangles, shootDir, NULL, NULL);
 		VectorMA(startPos, sphere_dist, shootDir, endPos);
 		tr = gi.trace(startPos, min, max, endPos, traceBuddy, MASK_SHOT);
-		if(level.fighting_beast)
+		if (level.fighting_beast)
 		{
 			edict_t *ent;
 
-			if((ent = check_hit_beast(startPos, tr.endpos)))
+			if ((ent = check_hit_beast(startPos, tr.endpos)))
 				tr.ent = ent;
 		}
 
 		if (!tr.ent->takedamage)
 			break;
 
-		if((tr.startsolid || tr.fraction < .99) && tr.ent)
+		if ((tr.startsolid || tr.fraction < .99) && tr.ent)
 		{
-			if(EntReflecting(tr.ent, true, true))
+			if (EntReflecting(tr.ent, true, true))
 			{
 
 				// reflect it off into space
@@ -221,7 +221,7 @@ static void SpherePowerLaserThink(edict_t *self)
 		VectorCopy(tr.endpos, startPos);
 		// this seems to alleviate the problem of a trace hitting the same ent multiple times...
 		VectorSubtract(endPos, startPos, tempVect);
-		if(VectorLength(tempVect) > 16.0)
+		if (VectorLength(tempVect) > 16.0)
 		{
 			VectorMA(startPos, 16.0, shootDir, startPos);
 		}
@@ -236,7 +236,7 @@ static void SpherePowerLaserThink(edict_t *self)
 	if (self->health==2)
 		flags|=CEF_FLAG8;
 
-	if(IsDecalApplicable(self, tr.ent, self->s.origin, tr.surface, &tr.plane, planedir))
+	if (IsDecalApplicable(self, tr.ent, self->s.origin, tr.surface, &tr.plane, planedir))
 		flags|=CEF_FLAG6;
 
 	gi.CreateEffect(NULL, FX_WEAPON_SPHEREPOWER, flags, startPos, "xbb",
@@ -269,7 +269,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
 	// is unlikely to happen, sooooo...
 
-	if(*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
+	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
 		&& (self->owner->client && !(self->owner->client->playerinfo.edictflags & FL_CHICKEN)) &&
 		(!(self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
@@ -291,7 +291,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 		}
 
 		// detect if we have teleported, since we need to move with the player if thats so
-		if(self->owner->client)
+		if (self->owner->client)
 		{
 			VectorCopy(self->owner->s.origin, self->s.origin);
 			self->s.origin[0] += Forward[0] * 20.0;
@@ -430,7 +430,7 @@ static void SphereOfAnnihilationTouch(edict_t *self, edict_t *other, cplane_t *P
 	edict_t		*explosion;
 
 	// has the target got reflection turned on ?
-	if(EntReflecting(other, true, true) && self->reflect_debounce_time)
+	if (EntReflecting(other, true, true) && self->reflect_debounce_time)
 	{
 		Create_rand_relect_vect(self->velocity, self->velocity);
 		Vec3ScaleAssign(SPHERE_FLY_SPEED/2, self->velocity);
@@ -438,7 +438,7 @@ static void SphereOfAnnihilationTouch(edict_t *self, edict_t *other, cplane_t *P
 		return;
 	}
 
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -507,7 +507,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 
 	Sphere=G_Spawn();
 
-	if(Caster->client)
+	if (Caster->client)
 	{
 		VectorCopy(Caster->s.origin, Sphere->s.origin);
 		Sphere->s.origin[0] += AimDir[0]*20.0;
@@ -553,7 +553,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 
 	gi.linkentity(Sphere);
 
-	if(!Caster->client)
+	if (!Caster->client)
 		flags = 0;
 	else
 		flags = CEF_OWNERS_ORIGIN;
@@ -565,7 +565,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 					"s",
 					(short)Caster->s.number);
 
-	if(!Caster->client)
+	if (!Caster->client)
 		flags = CEF_FLAG6;
 	else
 		flags = CEF_OWNERS_ORIGIN;
@@ -600,7 +600,7 @@ void SphereWatcherFlyThink(edict_t *self)
 {
 	self->count++;
 
-	if(self->count > 20)
+	if (self->count > 20)
 	{
 		// End the circling...
 		G_SetToFree(self);
@@ -628,14 +628,14 @@ static void SphereWatcherGrowThink(edict_t *self)
 	// is unlikely to happen, sooooo...
 
 	// if we have released, or we are dead, or a chicken, release the sphere
-	if(*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD)))
+	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD)))
 	{
 
 		self->count+=irand(1,2);
 
-		if((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < SPHERE_MAX_SCALE))
+		if ((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < SPHERE_MAX_SCALE))
 		{
-			if(self->count > 20)
+			if (self->count > 20)
 			{
 				self->rrs.scale[0] -= 0.01;
 				self->rrs.scale[1] -= 0.01;
@@ -648,7 +648,7 @@ static void SphereWatcherGrowThink(edict_t *self)
 				self->rrs.scale[2] += 0.1;
 			}
 
-			if(self->count>25)
+			if (self->count>25)
 			{
 				self->count&=3;
 			}
@@ -673,7 +673,7 @@ static void SphereWatcherGrowThink(edict_t *self)
 		AngleVectors(angles, Forward, NULL, NULL);
 		VectorMA(self->s.origin, SPHERE_FLY_SPEED, Forward, endpos);
 		trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, endpos, self->owner, MASK_MONSTERSOLID);
-		if(trace.ent && ok_to_autotarget(self->owner, trace.ent))
+		if (trace.ent && ok_to_autotarget(self->owner, trace.ent))
 		{//already going to hit a valid target at this angle- so don't autotarget
 			VectorScale(Forward, SPHERE_FLY_SPEED, self->velocity);
 		}
@@ -773,7 +773,7 @@ static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, c
 	int			makeScorch;
 
 	// has the target got reflection turned on ?
-	if(EntReflecting(Other, true, true) && self->reflect_debounce_time)
+	if (EntReflecting(Other, true, true) && self->reflect_debounce_time)
 	{
 		Create_rand_relect_vect(self->velocity, self->velocity);
 		Vec3ScaleAssign(SPHERE_FLY_SPEED/2, self->velocity);
@@ -782,14 +782,14 @@ static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, c
 	}
 
 
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
 	}
 
 	AlertMonsters (self, self->owner, 3, false);
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		T_Damage(Other, self, self->owner, self->movedir, self->s.origin, Plane->normal, self->dmg, self->dmg, DAMAGE_SPELL,MOD_SPHERE);
 	}
@@ -802,7 +802,7 @@ static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, c
 
 	T_DamageRadius(self, self->owner, self, self->dmg_radius, self->dmg, self->dmg / 8, DAMAGE_ATTACKER_KNOCKBACK,MOD_SPHERE);
 	makeScorch = 0;
-	if(IsDecalApplicable(self, Other, self->s.origin, surface, Plane, NULL))
+	if (IsDecalApplicable(self, Other, self->s.origin, surface, Plane, NULL))
 	{
 		makeScorch = CEF_FLAG6;
 	}

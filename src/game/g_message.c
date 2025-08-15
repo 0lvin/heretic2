@@ -70,7 +70,7 @@ void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, const c
 	SinglyLinkedList_t *parms;
 	va_list marker;
 
-	if(!to->msgHandler)	// everything should really have one, but at _this point everything
+	if (!to->msgHandler)	// everything should really have one, but at _this point everything
 						// doesn't so, the messages will never get popped of the queue
 						// so don't push them on in the first place
 	{
@@ -87,7 +87,7 @@ void G_QPostMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, const c
 	newMsg->ID = ID;
 	newMsg->priority = priority;
 
-	if(format)
+	if (format)
 	{
 		va_start(marker, format);
 
@@ -104,7 +104,7 @@ void PostGameMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, const 
 	G_Message_t *newMsg;
 	SinglyLinkedList_t *parms;
 
-	if(!to->msgHandler)	// everything should really have one, but at _this point everything
+	if (!to->msgHandler)	// everything should really have one, but at _this point everything
 						// doesn't so, the messages will never get popped of the queue
 						// so don't push them on in the first place
 	{
@@ -121,7 +121,7 @@ void PostGameMessage(edict_t *to, G_MsgID_t ID, G_MsgPriority_t priority, const 
 	newMsg->ID = ID;
 	newMsg->priority = priority;
 
-	if(format)
+	if (format)
 	{
 		va_list marker;
 

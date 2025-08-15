@@ -68,7 +68,7 @@ static float PlayerAlpha = 1.0f;
 static void
 RemoveEffectsFromCent(centity_t *cent)
 {
-	if(cent->effects)
+	if (cent->effects)
 	{
 		RemoveOwnedEffectList(cent);
 	}
@@ -80,14 +80,14 @@ Clear(void)
 	centity_t *owner;
 	int i;
 
-	if(clientEnts)
+	if (clientEnts)
 	{
 		RemoveEffectList(&clientEnts);
 	}
 
 	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
 	{
-		if(owner->effects)
+		if (owner->effects)
 		{
 			RemoveOwnedEffectList(owner);
 		}
@@ -183,7 +183,7 @@ void AddEffects(void)
 	centity_t *owner;
 	int	num_free_inview = 0;
 
-	if(clientEnts)
+	if (clientEnts)
 	{
 		num_free_inview += AddEffectsToView(&clientEnts, NULL);
 	}
@@ -194,13 +194,13 @@ void AddEffects(void)
 	{
 		// gak, think something else need to be done... maybe a list of centities with effects.
 
-		if(owner->effects && (owner->current.effects & EF_ALWAYS_ADD_EFFECTS))
+		if (owner->effects && (owner->current.effects & EF_ALWAYS_ADD_EFFECTS))
 		{
 			num_owned_inview += AddEffectsToView(&owner->effects, owner);
 		}
 	}
 
-	if(fx_numinview->value)
+	if (fx_numinview->value)
 	{
 		fxi.Com_Printf("Active CE : free %d, owned %d. Particles : processed %d, rendered %d\n",
 					num_free_inview, num_owned_inview, numprocessedparticles, numrenderedparticles);
@@ -224,14 +224,14 @@ PostRenderUpdate(void)
 	numprocessedparticles = 0;
 	numrenderedparticles = 0;
 
-	if(clientEnts)
+	if (clientEnts)
 	{
 		num_free_active += UpdateEffects(&clientEnts, NULL);
 	}
 
 	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)	// gak, think something else need to be done
 	{											// maybe a list of centities with effects. . .
-		if(owner->effects)
+		if (owner->effects)
 		{
 			num_owned_active += UpdateEffects(&owner->effects, owner);
 		}
@@ -239,7 +239,7 @@ PostRenderUpdate(void)
 
 	fxi.CL_RunLightStyles();
 
-	if(fx_numactive->value)
+	if (fx_numactive->value)
 	{
 		fxi.Com_Printf("Active CE : free %d, owned %d\n", num_free_active, num_owned_active);
 	}
@@ -259,12 +259,12 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 
 	format = clientEffectSpawners[effect].formatString;
 
-	if(!format)
+	if (!format)
 		return 0;
 
-	if(ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
+	if (ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
 	{
-		if(!cl_effectpredict)
+		if (!cl_effectpredict)
 			fxBuf = &ent->current.clientEffects;
 		else
 			fxBuf = &clientPredEffects;
@@ -285,7 +285,7 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 	assert(format);
 	assert(format[0]);
 
-	if(!format)
+	if (!format)
 	{
 		fxi.Com_Error(ERR_DROP, "CL_ReadEffect: null format string");
 		return 0;
@@ -340,7 +340,7 @@ int DummyEffectParams(centity_t *ent, int flags, int effect)
 		++count;
 	}
 
-	if(ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
+	if (ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
 	{
 		fxBuf->freeBlock = msg_read->readcount;
 	}
@@ -372,7 +372,7 @@ ParseEffects(centity_t *owner)
 
 	tempOwner = owner;
 
-	if(owner)
+	if (owner)
 	{
 		// Where do we pull the effect from?
 
@@ -410,7 +410,7 @@ ParseEffects(centity_t *owner)
 
 	assert(num >= 0);
 
-	if(num < 0)
+	if (num < 0)
 	{
 		fxi.Com_Error(ERR_DROP, "ParseClientEffects: number of effects < 0");
 		return;
@@ -422,7 +422,7 @@ ParseEffects(centity_t *owner)
 
 		EffectIsFromServer=false;
 
-		if(owner)
+		if (owner)
 		{
 			msg_read->readcount = fxBuf->freeBlock;
 		}
@@ -431,11 +431,11 @@ ParseEffects(centity_t *owner)
 
 		flags = fxi.MSG_ReadShort(msg_read);
 
-		if(flags & (CEF_BROADCAST | CEF_MULTICAST))
+		if (flags & (CEF_BROADCAST | CEF_MULTICAST))
 		{
 			index = fxi.MSG_ReadShort(msg_read);
 
-			if(index)	// 0 should indicate the world
+			if (index)	// 0 should indicate the world
 			{
 				if (index < 0)
 				{
@@ -454,9 +454,9 @@ ParseEffects(centity_t *owner)
 			}
 		}
 
-		if(flags & CEF_OWNERS_ORIGIN)
+		if (flags & CEF_OWNERS_ORIGIN)
 		{
-			if(tempOwner)
+			if (tempOwner)
 			{
 				VectorCopy(tempOwner->origin, position);
 			}
@@ -469,7 +469,7 @@ ParseEffects(centity_t *owner)
 		{
 			fxi.MSG_ReadPos(msg_read, position);
 
-			if(tempOwner && !(flags & CEF_BROADCAST))
+			if (tempOwner && !(flags & CEF_BROADCAST))
 			{
 				position[0] += tempOwner->origin[0];
 				position[1] += tempOwner->origin[1];
@@ -485,20 +485,20 @@ ParseEffects(centity_t *owner)
 
 		assert(effect < NUM_FX);
 
-		if(!(effect >= 0 && effect < NUM_FX))
+		if (!(effect >= 0 && effect < NUM_FX))
 		{
 			fxi.Com_Error(ERR_DROP, "ParseClientEffects: bad effect %d last effect %d", effect, last_effect);
 			return;
 		}
 
-		if(owner && !(flags & (CEF_BROADCAST|CEF_MULTICAST)))
+		if (owner && !(flags & (CEF_BROADCAST|CEF_MULTICAST)))
 		{
 			fxBuf->freeBlock = msg_read->readcount;
 		}
 
 		// Do we want to start _this client-effect if client-prediction has already started it?
 
-		if((!cl_effectpredict) && fxi.cl_predict->value&&EffectIsFromServer&&
+		if ((!cl_effectpredict) && fxi.cl_predict->value&&EffectIsFromServer&&
 		   (EffectEventIdTimeArray[eventId]<=*fxi.leveltime)&&(EffectEventIdTimeArray[eventId]!=0.0))
 		{
 			// The client-effect has already been started by client-prediction, so just skip it.
@@ -514,17 +514,17 @@ ParseEffects(centity_t *owner)
 
 SkipEffect:
 
-		if((EffectIsFromServer)&&(EffectEventIdTimeArray[eventId]<=*fxi.leveltime))
+		if ((EffectIsFromServer)&&(EffectEventIdTimeArray[eventId]<=*fxi.leveltime))
 			EffectEventIdTimeArray[eventId]=0.0;
 
-		if(flags & (CEF_BROADCAST|CEF_MULTICAST))
+		if (flags & (CEF_BROADCAST|CEF_MULTICAST))
 		{
 			tempOwner = NULL;
 		}
 		last_effect = effect;
 	}
 
-	if(owner) // free the buffer allocated in CL_ParseDelta and passed onto owner->current
+	if (owner) // free the buffer allocated in CL_ParseDelta and passed onto owner->current
 	{
 		fxBuf->freeBlock = 0;
 		fxi.TagFree(fxBuf->buf);
@@ -570,7 +570,7 @@ AddServerEntities(frame_t *frame)
 
 	numEntsToAdd = frame->num_entities;
 
-	if(numEntsToAdd > MAX_ENTITIES)
+	if (numEntsToAdd > MAX_ENTITIES)
 	{
 		fxi.Com_Printf("Overflow:  Too many (%d : %d) server entities to add to view\n", numEntsToAdd, MAX_ENTITIES);
 		numEntsToAdd = MAX_ENTITIES;
@@ -585,7 +585,7 @@ AddServerEntities(frame_t *frame)
 
 		cent = fxi.server_entities + s1->number;
 
-		if((fxi.cl_predict->value)&&(s1->number==fxi.cl->playernum+1))
+		if ((fxi.cl_predict->value)&&(s1->number==fxi.cl->playernum+1))
 		{
 			// We are dealing with the client's model under prediction.
 
@@ -600,7 +600,7 @@ AddServerEntities(frame_t *frame)
 
 		// Setup effects, renderfx, skinnum and clientnum stuff.
 
-		if(isPredictedPlayer)
+		if (isPredictedPlayer)
 		{
 			cent->current.effects = effects = predictInfo.effects;
 			cent->current.renderfx = renderfx = predictInfo.renderfx;
@@ -650,7 +650,7 @@ AddServerEntities(frame_t *frame)
 
 			VectorSubtract(cent->current.origin, cent->prev.origin, dist);
 
-			if(DotProduct(dist, dist) <= cl_lerpdist2->value)
+			if (DotProduct(dist, dist) <= cl_lerpdist2->value)
 				VectorMA(cent->prev.origin, 1.0f - ent->backlerp, dist, ent->origin);
 			else
 				VectorCopy(cent->current.origin, ent->origin);
@@ -693,7 +693,7 @@ AddServerEntities(frame_t *frame)
 
 		VectorCopy(s1->scale, ent->scale);
 
-		if(s1->color[0] ||
+		if (s1->color[0] ||
 		   s1->color[1] ||
 		   s1->color[2] ||
 		   s1->color[3])
@@ -767,7 +767,7 @@ AddServerEntities(frame_t *frame)
 			VectorCopy(ent->angles, cent->lerp_angles);
 		}
 
-		if(isPredictedPlayer)
+		if (isPredictedPlayer)
 		{
 			// The corect frame and swapframe values have already been generated by prediction
 			// and written into the client's predictinfo_t structure.
@@ -784,14 +784,14 @@ AddServerEntities(frame_t *frame)
 			cent->prev.frame = ent->frame;
 			cent->current.frame = ent->frame;
 // jmarshall end
-			if((effects & EF_SWAPFRAME)&&(cent->current.swapFrame!=cent->current.frame))
+			if ((effects & EF_SWAPFRAME)&&(cent->current.swapFrame!=cent->current.frame))
 			{
 				ent->swapFrame=cent->current.swapFrame;
 				ent->oldSwapFrame=cent->prev.swapFrame;
 
 				// Yuck... but need to stop crashes for the demo.
 
-				if(ent->oldSwapFrame==NO_SWAP_FRAME)
+				if (ent->oldSwapFrame==NO_SWAP_FRAME)
 					ent->oldSwapFrame=ent->oldframe;
 			}
 			else
@@ -804,14 +804,14 @@ AddServerEntities(frame_t *frame)
 			// Always get the frame and swapframe values from the usual source, for all entities,
 			// including the player.
 
-			if((effects & EF_SWAPFRAME) && (s1->swapFrame != s1->frame))
+			if ((effects & EF_SWAPFRAME) && (s1->swapFrame != s1->frame))
 			{
 				ent->swapFrame = s1->swapFrame;
 				ent->oldSwapFrame = cent->prev.swapFrame;
 
 				// Yuck... but need to stop crashes for the demo.
 
-				if(ent->oldSwapFrame==NO_SWAP_FRAME)
+				if (ent->oldSwapFrame==NO_SWAP_FRAME)
 					ent->oldSwapFrame=ent->oldframe;
 			}
 			else
@@ -821,7 +821,7 @@ AddServerEntities(frame_t *frame)
 
 		}
 
-		if(cent->current.clientEffects.numEffects)
+		if (cent->current.clientEffects.numEffects)
 		{
 			cl_effectpredict = false;
 			ParseEffects(cent);
@@ -830,9 +830,9 @@ AddServerEntities(frame_t *frame)
 		// Add player's packet_entity_t to refresh list of entity_t's and save the entity_t pointer
 		// in PlayerEntPtr.
 
-		if(s1->number == fxi.cl->playernum + 1)
+		if (s1->number == fxi.cl->playernum + 1)
 		{
-			if((fxi.cl_predict->value) && (clientPredEffects.numEffects))
+			if ((fxi.cl_predict->value) && (clientPredEffects.numEffects))
 			{
 				cl_effectpredict = true;
 				ParseEffects(cent);
@@ -853,7 +853,7 @@ AddServerEntities(frame_t *frame)
 				ent->flags &= ~RF_TRANSLUCENT;
 			}
 
-			if(s1->modelindex)
+			if (s1->modelindex)
 			{
 				AddEntityToView(ent);
 			}
@@ -874,7 +874,7 @@ AddServerEntities(frame_t *frame)
 		// Cull (any elegible) entire models before they get rendered
 		// Don't ask me--I just commented what _this does - MW).
 
-		if(s1->modelindex)
+		if (s1->modelindex)
 		{
 			vec3_t dir;
 

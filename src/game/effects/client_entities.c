@@ -68,11 +68,11 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 	VectorCopy(origin, newEnt->r.origin);
 	VectorCopy(origin, newEnt->origin);
 
-	if(direction)
+	if (direction)
 	{
 		VectorCopy(direction, newEnt->direction);
 
-		if(newEnt->direction[2] == 0)
+		if (newEnt->direction[2] == 0)
 		{	// vertical wall
 			newEnt->up[0] = 0;
 			newEnt->up[1] = 0;
@@ -126,17 +126,17 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 
 void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 {
-	if(toDelete->p_root)
+	if (toDelete->p_root)
 	{
 		RemoveParticleList(&toDelete->p_root);
 	}
 
-	if(toDelete->dlight)
+	if (toDelete->dlight)
 	{
 		CE_DLight_delete(toDelete->dlight);
 	}
 
-	if(owner && toDelete->refMask)
+	if (owner && toDelete->refMask)
 	{
 		DisableRefPoints(owner->referenceInfo, toDelete->refMask);
 	}
@@ -210,7 +210,7 @@ void RemoveEffectTypeList(client_entity_t **root, FX_Type_t fx, centity_t *owner
 
 	for(prev = root, current = *root; current; current = current->next)
 	{
-		if(!fx || (current->effectID == fx))
+		if (!fx || (current->effectID == fx))
 		{
 			RemoveEffectFromList(prev, owner);
 			continue;
@@ -228,7 +228,7 @@ void PrepAddEffectsToView()
 
 	refDef = &fxi.cl->refdef;
 
-	if(refDef->fov_x > refDef->fov_y)
+	if (refDef->fov_x > refDef->fov_y)
 	{
 		viewFOV = cos(refDef->fov_x * 0.5 * ANGLE_TO_RAD * 1.2);
 	}
@@ -259,11 +259,11 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 		current->flags |= CEF_CULLED;
 		// if we have a light, particles, a model, a potential routine that will change our think function, and we aren't disappeared,
 		// determing if we should be culled or not.
-		if(current->dlight || current->p_root || current->r.model
+		if (current->dlight || current->p_root || current->r.model
 			|| (!(current->flags & (CEF_DISAPPEARED ))) || (current->flags & CEF_VIEWSTATUSCHANGED))
 		{
 			// do _this here since we do have an owner, and most probably we are tied to its origin, and we need that to do the proper culling routines
-			if(owner && current->AddToView)
+			if (owner && current->AddToView)
 			{
 				current->AddToView(current, owner);
 			}
@@ -272,12 +272,12 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 			current->r.depth = dist = VectorNormalize(dir);
 
-			if(dist > r_farclipdist->value)
+			if (dist > r_farclipdist->value)
 			{
 				continue;
 			}
 
-			if(r_detail->value == DETAIL_LOW && dist < r_nearclipdist->value && !current->p_root && !current->dlight)//not a particle thing and not a dlight thing
+			if (r_detail->value == DETAIL_LOW && dist < r_nearclipdist->value && !current->p_root && !current->dlight)//not a particle thing and not a dlight thing
 			{
 				continue;
 			}
@@ -288,15 +288,15 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 			continue;	// has nothing to add to view
 		}
 
-		if(current->dlight)
+		if (current->dlight)
 		{
 			CE_DLight_t *ce_dlight = current->dlight;
 
 			if ((*fxi.r_numdlights) < MAX_DLIGHTS)
 			{
-				if(ce_dlight->intensity > 0.0)
+				if (ce_dlight->intensity > 0.0)
 				{
-					if((dot + (ce_dlight->intensity*ce_dlight->intensity)/(dist*300.0f)) > viewFOV) // 300.0 was determined by trial and error with intensities of 200 and 400
+					if ((dot + (ce_dlight->intensity*ce_dlight->intensity)/(dist*300.0f)) > viewFOV) // 300.0 was determined by trial and error with intensities of 200 and 400
 					{
 						dlight_t *dl;
 
@@ -315,7 +315,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 		}
 
 		// if no part of our radius is in the field of view or we aren't within the current PVS, cull us.
-		if(((dot + (current->radius/dist)) < viewFOV) || !(fxi.InCameraPVS(current->r.origin)) ||
+		if (((dot + (current->radius/dist)) < viewFOV) || !(fxi.InCameraPVS(current->r.origin)) ||
 			// if we have an owner, and its server culled, and we want to check against it then do so
 			(owner && (owner->flags & CF_SERVER_CULLED) && (current->flags & CEF_CHECK_OWNER)))
 		{
@@ -323,7 +323,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 		}
 
 		// we do _this here cos we don't have an owner - only do the update if we haven't already been culled.
-		if(!owner && current->AddToView)
+		if (!owner && current->AddToView)
 		{
 			current->AddToView(current, owner);
 		}
@@ -331,23 +331,23 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 		++numFX;
 		current->flags &= ~CEF_CULLED;
 
-		if(current->p_root)	// add any particles
+		if (current->p_root)	// add any particles
 		{
 			numrenderedparticles += AddParticlesToView(current);
 		}
 
-		if(!(current->flags & (CEF_NO_DRAW | CEF_DISAPPEARED)))
+		if (!(current->flags & (CEF_NO_DRAW | CEF_DISAPPEARED)))
 		{
-			if(current->alpha < 0)
+			if (current->alpha < 0)
 			{	// wacky all colors at minimum, but drawn at max instead for addative transparent sprites
 				current->alpha = 0.0F;
 			}
 
 			current->r.color.a = Q_ftol(current->alpha * 255.0);
 
-			if(current->r.color.a && (AVG_VEC3T(current->r.scale) > 0.0))
+			if (current->r.color.a && (AVG_VEC3T(current->r.scale) > 0.0))
 			{
-				if(!AddEntityToView(&current->r))
+				if (!AddEntityToView(&current->r))
 				{
 					current->flags |= CEF_DROPPED;
 				}
@@ -407,7 +407,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 	// Always update the particle timer
 	ParticleUpdateTime = fxi.cl->time;
 
-	if(!useOtherTraces)
+	if (!useOtherTraces)
 	{
 		trace = traces;
 	}
@@ -422,19 +422,19 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 	{
 		numFX++;
 
-		if(current->msgHandler)
+		if (current->msgHandler)
 		{
 			ProcessMessages(current);
 		}
 
-		if(current->Update)
+		if (current->Update)
 		{
-			if(current->nextThinkTime <= curTime)
+			if (current->nextThinkTime <= curTime)
 			{
 				// Only think when not culled and not think culled
-				if(!((current->flags & CEF_VIEWSTATUSCHANGED) && (current->flags & CEF_CULLED)))
+				if (!((current->flags & CEF_VIEWSTATUSCHANGED) && (current->flags & CEF_CULLED)))
 				{
-					if(!current->Update(current, owner))
+					if (!current->Update(current, owner))
 					{
 						RemoveEffectFromList(prev, owner);
 						// current = current->next is still valid in the for loop.
@@ -450,7 +450,7 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 
 		r = &current->r;
 
-		if(!(current->flags & (CEF_NO_DRAW|CEF_DISAPPEARED)))
+		if (!(current->flags & (CEF_NO_DRAW|CEF_DISAPPEARED)))
 		{
 			float d_size;
 
@@ -493,24 +493,24 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 			}
 		}
 
-		if(current->dlight)
+		if (current->dlight)
 		{
 			current->dlight->intensity += (d_time * current->dlight->d_intensity);
 		}
-		if(current->p_root)
+		if (current->p_root)
 		{
 			numprocessedparticles += UpdateParticles(current);
 		}
 
-		if(!(current->flags & CEF_NOMOVE))
+		if (!(current->flags & CEF_NOMOVE))
 		{
-			if(!owner || (current->flags&CEF_DONT_LINK))
+			if (!owner || (current->flags&CEF_DONT_LINK))
 			{
-				if(current->flags & CEF_CLIP_TO_WORLD)
+				if (current->flags & CEF_CLIP_TO_WORLD)
 				{
-					if(curTrace < NUM_TRACES - 1) // leave one at the end to continue checking collisions
+					if (curTrace < NUM_TRACES - 1) // leave one at the end to continue checking collisions
 					{
-						if(Physics_MoveEnt(current, d_time, d_time2, trace))
+						if (Physics_MoveEnt(current, d_time, d_time2, trace))
 						{	// collided with something
 							++trace;
 							++curTrace;
@@ -594,17 +594,17 @@ qboolean AddEntityToView(entity_t *ent)
 	{
 		fxi.Com_Printf("AddEntityToView: NULL Model\n");
 	}
-	if((ent->flags & RF_TRANS_ADD) && (ent->flags & RF_ALPHA_TEXTURE))
+	if ((ent->flags & RF_TRANS_ADD) && (ent->flags & RF_ALPHA_TEXTURE))
 	{
 		fxi.Com_Printf("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
 	}
 
-	if(ent->color.a != 255)
+	if (ent->color.a != 255)
 	{
 		ent->flags |= RF_TRANSLUCENT;
 	}
 
-	if((*fxi.r_numentities) < MAX_ENTITIES)
+	if ((*fxi.r_numentities) < MAX_ENTITIES)
 	{
 		fxi.r_entities[(*fxi.r_numentities)++] = *ent;
 	}

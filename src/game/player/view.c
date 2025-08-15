@@ -473,7 +473,7 @@ SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.groundentity = ent->groundentity;
 
 	// Pointer to entity_state_t of player's enemy edict.
-	if(ent->enemy)
+	if (ent->enemy)
 	{
 		ent->client->playerinfo.enemystate = &ent->enemy->s;
 	}
@@ -830,7 +830,7 @@ P_WorldEffects(void)
 	// Start a waterwake effect if the current player has been in water and still is in water.
 	//
 
-	if(waterlevel && (old_waterlevel&&waterlevel < 3) && (VectorLength(current_player->velocity) != 0.0))
+	if (waterlevel && (old_waterlevel&&waterlevel < 3) && (VectorLength(current_player->velocity) != 0.0))
 	{
 		// no ripples while in cinematics
 		if (sv_cinematicfreeze->value)
@@ -838,7 +838,7 @@ P_WorldEffects(void)
 			return;
 		}
 
-		if((((int)(current_client->bobtime+bobmove)) != bobcycle) && (!sv_cinematicfreeze->value))
+		if ((((int)(current_client->bobtime+bobmove)) != bobcycle) && (!sv_cinematicfreeze->value))
 		{
 			// FIXME: Doing more work then we need to here???? How about re-writing this so that it
 			// is always active on the client and does water tests itself? We'll see - currently not
@@ -891,7 +891,7 @@ P_WorldEffects(void)
 	/* check for drowning */
 	if (waterlevel == 3)
 	{
-		if(current_player->watertype & CONTENTS_SLIME)
+		if (current_player->watertype & CONTENTS_SLIME)
 		{
 			// Slime should kill really quick.
 
@@ -1082,13 +1082,13 @@ ClientEndServerFrame(edict_t *ent)
 	// Set the player entity's model angles.
 	// ********************************************************************************************
 
-	if(ent->deadflag == DEAD_NO)
+	if (ent->deadflag == DEAD_NO)
 	{
 		// PITCH.
 
-		if((ent->client->playerinfo.pm_w_flags & (WF_DIVING | WF_SWIMFREE)))
+		if ((ent->client->playerinfo.pm_w_flags & (WF_DIVING | WF_SWIMFREE)))
 		{
-			if(ent->client->v_angle[PITCH] > 180.0)
+			if (ent->client->v_angle[PITCH] > 180.0)
 				ent->s.angles[PITCH] = -(-360.0 + ent->client->v_angle[PITCH]);
 			else
 				ent->s.angles[PITCH] = -ent->client->v_angle[PITCH];
@@ -1135,7 +1135,7 @@ ClientEndServerFrame(edict_t *ent)
 	{
 		// So bobbing only cycles when in water.
 
-		if(xyspeed > 100)
+		if (xyspeed > 100)
 			bobmove = 1.0;
 		else if(xyspeed > 50)
 			bobmove = 0.5;
@@ -1179,9 +1179,9 @@ ClientEndServerFrame(edict_t *ent)
 
 	playerExport->PlayerUpdateCmdFlags(&ent->client->playerinfo);
 
-	if(showbuoys->value) // Note this is a bit of a hack
+	if (showbuoys->value) // Note this is a bit of a hack
 	{
-		if(ent->client->playerinfo.seqcmd[ACMDL_ACTION])
+		if (ent->client->playerinfo.seqcmd[ACMDL_ACTION])
 		{
 			PrintLocalBuoyInfo(ent->s.origin);
 		}
@@ -1207,7 +1207,7 @@ ClientEndServerFrame(edict_t *ent)
 	// If the deathmatch scoreboard is up then update it.
 	// ********************************************************************************************
 
-	if(ent->client->playerinfo.showscores && deathmatch->value && (!(level.framenum&31)))
+	if (ent->client->playerinfo.showscores && deathmatch->value && (!(level.framenum&31)))
 	{
 		DeathmatchScoreboardMessage(ent, ent->enemy);
 
@@ -1222,7 +1222,7 @@ ClientEndServerFrame(edict_t *ent)
 
 	for(index = 0;index < MAX_ITEMS;index++)
 	{
-		if(current_client->playerinfo.pers.inventory[index] != current_client->playerinfo.pers.old_inventory[index])
+		if (current_client->playerinfo.pers.inventory[index] != current_client->playerinfo.pers.old_inventory[index])
 		{
 			current_client->ps.inventory_changes[i] = index;
 

@@ -31,7 +31,7 @@ entity_state_t *G_GetEntityStatePtr(edict_t *entity)
 
 void PlayerClimbSound(playerinfo_t *playerinfo, char *name)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(	SND_PRED_ID53,
 								playerinfo->origin,
@@ -67,7 +67,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
 	{
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
-		VectorCopy(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
+		VectorCopy((playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
 		threshold = VectorLengthSquared(playerinfo->velocity);
 
 		if (threshold < 300*300)
@@ -83,11 +83,11 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 		playerinfo->velocity[2]=250.0;
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
-		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
+		(playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
 
-		((edict_t *)playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
-		((edict_t *)playerinfo->self)->teamchain->enemy = NULL;
-		((edict_t *)playerinfo->self)->teamchain = NULL;
+		(playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+		(playerinfo->self)->teamchain->enemy = NULL;
+		(playerinfo->self)->teamchain = NULL;
 
 		playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 		playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
@@ -99,7 +99,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	{
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, -32, vr);
-		VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
+		VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
 		switch (playerinfo->lowerseq)
 		{
@@ -125,7 +125,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	{
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, 32, vr);
-		VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
+		VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
 		switch (playerinfo->lowerseq)
 		{
@@ -164,24 +164,24 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK])
 	{
-		if (((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time < level.time)
+		if ((playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time < level.time)
 		{
-			((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time = level.time + 2;
+			(playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time = level.time + 2;
 			AngleVectors(playerinfo->angles, vf, NULL, NULL);
 			VectorMA(vf, 400, vf, vf);
-			VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vf,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
+			VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vf,(playerinfo->self)->teamchain->teamchain->velocity);
 		}
 	}
 
 	if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
-		if (((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.search_time < level.time)
+		if ((playerinfo->self)->teamchain->teamchain->monsterinfo.search_time < level.time)
 		{
-			((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.search_time = level.time + 2;
+			(playerinfo->self)->teamchain->teamchain->monsterinfo.search_time = level.time + 2;
 
 			AngleVectors(playerinfo->angles, NULL, vr, NULL);
 			VectorScale(vr, -64, vr);
-			VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
+			VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
 			switch (playerinfo->lowerseq)
 			{
@@ -210,13 +210,13 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		if (((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished < level.time)
+		if ((playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished < level.time)
 		{
-			((edict_t *)playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished = level.time + 2;
+			(playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished = level.time + 2;
 
 			AngleVectors(playerinfo->angles, NULL, vr, NULL);
 			VectorScale(vr, 64, vr);
-			VectorAdd(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,vr,((edict_t *)playerinfo->self)->teamchain->teamchain->velocity);
+			VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
 			switch (playerinfo->lowerseq)
 			{
@@ -258,7 +258,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		{
 			// We bumped into something.
 
-			((edict_t *)playerinfo->self)->teamchain->teamchain->viewheight = ((edict_t *)playerinfo->self)->teamchain->teamchain->accel;
+			(playerinfo->self)->teamchain->teamchain->viewheight = (playerinfo->self)->teamchain->teamchain->accel;
 
 			switch (playerinfo->lowerseq)
 			{
@@ -357,11 +357,11 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
-		if (trace.fraction < 1.0 || trace.endpos[2] < ((edict_t *)playerinfo->self)->teamchain->target_ent->s.origin[2])
+		if (trace.fraction < 1.0 || trace.endpos[2] < (playerinfo->self)->teamchain->target_ent->s.origin[2])
 		{
 			// We bumped into something or have come to the end of the rope
 
-			((edict_t *)playerinfo->self)->teamchain->teamchain->viewheight = ((edict_t *)playerinfo->self)->teamchain->teamchain->accel;
+			(playerinfo->self)->teamchain->teamchain->viewheight = (playerinfo->self)->teamchain->teamchain->accel;
 
 			switch (playerinfo->lowerseq)
 			{
@@ -456,15 +456,15 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 	else if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
 	{
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
-		VectorCopy(((edict_t *)playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
+		VectorCopy((playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
 		playerinfo->velocity[2]=150.0;
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
-		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
+		(playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
 
-		((edict_t *)playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
-		((edict_t *)playerinfo->self)->teamchain->enemy = NULL;
-		((edict_t *)playerinfo->self)->teamchain = NULL;
+		(playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+		(playerinfo->self)->teamchain->enemy = NULL;
+		(playerinfo->self)->teamchain = NULL;
 
 		playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 
@@ -540,10 +540,10 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	VectorCopy(rope->s.origin, rope_top);
 	rope_top[2] += rope->maxs[2];
 
-  	//If we're above the rope then we can't grab it
+	//If we're above the rope then we can't grab it
 	if (playerinfo->origin[2] > rope_top[2])
 	{
-		//((edict_t *)playerinfo->self)->teamchain = NULL;
+		//(playerinfo->self)->teamchain = NULL;
 		return false;
 	}
 
@@ -556,7 +556,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	//Player is below the rope's length
 	if (len > dist)
 	{
-		//((edict_t *)playerinfo->self)->teamchain = NULL;
+		//(playerinfo->self)->teamchain = NULL;
 		return false;
 	}
 
@@ -595,7 +595,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 		return true;
 	}
 
-	//((edict_t *)playerinfo->self)->teamchain = NULL;
+	//(playerinfo->self)->teamchain = NULL;
 	return false;
 }
 
@@ -606,7 +606,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, float var3)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		// Pull Corvus into the rope.
 		G_PlayerActionCheckRopeGrab(playerinfo,1);
@@ -632,7 +632,7 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 			endpoint;
 	trace_t grabtrace;
 
- 	VectorCopy(playerinfo->angles,player_facing);
+	VectorCopy(playerinfo->angles,player_facing);
 	player_facing[PITCH]=player_facing[ROLL]=0;
 	AngleVectors(player_facing,forward,NULL,NULL);
 	VectorMA(playerinfo->origin,32,forward,endpoint);
@@ -644,13 +644,13 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 					   (edict_t *)playerinfo->self,
 					   MASK_PLAYERSOLID);
 
-	if((grabtrace.fraction==1)||(!grabtrace.ent))
+	if ((grabtrace.fraction==1)||(!grabtrace.ent))
 		return false;
 
-	if(!grabtrace.ent->item)
+	if (!grabtrace.ent->item)
 		return false;
 
-	if(grabtrace.ent->item->flags!=IT_PUZZLE)
+	if (grabtrace.ent->item->flags!=IT_PUZZLE)
 		return false;
 
 	playerinfo->targetEnt=grabtrace.ent;
@@ -665,8 +665,8 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 
 void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo)
 {
-	if(((edict_t *)playerinfo->self)->teamchain->use)
-		((edict_t *)playerinfo->self)->teamchain->use(((edict_t *)playerinfo->self)->teamchain,((edict_t *)playerinfo->self),((edict_t *)playerinfo->self));
+	if ((playerinfo->self)->teamchain->use)
+		(playerinfo->self)->teamchain->use((playerinfo->self)->teamchain,(playerinfo->self),(playerinfo->self));
 }
 
 // ************************************************************************************************
@@ -676,13 +676,13 @@ void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo)
 
 qboolean G_PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
- 	if (!((edict_t *)playerinfo->self)->target_ent)
+	if (!(playerinfo->self)->target_ent)
 		return false;
 
- 	if (strcmp(((edict_t *)playerinfo->self)->target_ent->classname,"trigger_playerusepuzzle"))
+	if (strcmp((playerinfo->self)->target_ent->classname,"trigger_playerusepuzzle"))
 		return false;
 
-	G_UseTargets(((edict_t *)playerinfo->self)->target_ent,((edict_t *)playerinfo->self));
+	G_UseTargets((playerinfo->self)->target_ent,(playerinfo->self));
 
 	return true;
 }
@@ -694,7 +694,7 @@ qboolean G_PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 
 qboolean G_PlayerActionCheckPushPull_Ent(edict_t *ent)
 {
-	if(!(strcmp(ent->classname,"func_train")==0)||!(ent->spawnflags&32))
+	if (!(strcmp(ent->classname,"func_train")==0)||!(ent->spawnflags&32))
 		return false;
 	else
 		return true;
@@ -712,7 +712,7 @@ void PushPull_stop(edict_t *self)
 
 	playerinfo=&self->target_ent->client->playerinfo;
 
-	if((playerinfo->lowerseq!=ASEQ_PUSH)&&(playerinfo->lowerseq!=ASEQ_PULL))
+	if ((playerinfo->lowerseq!=ASEQ_PUSH)&&(playerinfo->lowerseq!=ASEQ_PULL))
 		VectorClear(self->velocity);
 	else if (Vec3IsZero(self->target_ent->velocity))
 		VectorClear(self->target_ent->velocity);
@@ -736,7 +736,7 @@ void G_PlayerActionMoveItem(playerinfo_t *playerinfo,float distance)
 
 	((edict_t *)(playerinfo->self))->target_ent->think = PushPull_stop;
 	((edict_t *)(playerinfo->self))->target_ent->nextthink = level.time + 2 * FRAMETIME;
-	((edict_t *)(playerinfo->self))->target_ent->target_ent = ((edict_t *)playerinfo->self);
+	((edict_t *)(playerinfo->self))->target_ent->target_ent = (playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -755,7 +755,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 	// Are you near a button?
 
- 	if(!((edict_t *)playerinfo->self)->target)
+	if (!(playerinfo->self)->target)
 	{
 		// No button so return.
 
@@ -765,13 +765,13 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 	// A button is nearby, so look to see if it's in reach.
 
 	t = NULL;
-	t = G_Find(t,FOFS(targetname),((edict_t *)playerinfo->self)->target);
+	t = G_Find(t,FOFS(targetname),(playerinfo->self)->target);
 
 	if (!t)
 		return false;
 
 // 	if (!(strcmp(t->classname,"func_train")==0))
- 	if (t->classID == CID_BUTTON)
+	if (t->classID == CID_BUTTON)
 	{
 		// Get center of button
 		VectorAverage(t->mins, t->maxs, v);
@@ -784,7 +784,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 	if (len1 < MAX_PUSH_BUTTON_RANGE)
 	{
-		VectorCopy(((edict_t *)playerinfo->self)->client->playerinfo.aimangles, dir);
+		VectorCopy((playerinfo->self)->client->playerinfo.aimangles, dir);
 		dir[PITCH] = 0;
 
 		AngleVectors(dir, forward, NULL, NULL);
@@ -807,7 +807,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 void G_PlayerActionPushButton(playerinfo_t *playerinfo)
 {
-	G_UseTargets((edict_t *)playerinfo->self,(edict_t *)playerinfo->self);
+	G_UseTargets(playerinfo->self,(edict_t *)playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -829,7 +829,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 	// Are you near a lever?
 
- 	if(!(self->target))
+	if (!(self->target))
 	{
 		// No button so return.
 
@@ -844,7 +844,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 	if (!t)
 		return false;
 
- 	if (t->classID == CID_LEVER)
+	if (t->classID == CID_LEVER)
 	{
 		// Get distance from player origin to center of lever
 		VectorSubtract(playerinfo->origin, t->s.origin,v);
@@ -855,7 +855,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 	if (len1 < MAX_PUSH_LEVER_RANGE)
 	{
-		VectorCopy(((edict_t *)playerinfo->self)->client->playerinfo.aimangles, dir);
+		VectorCopy((playerinfo->self)->client->playerinfo.aimangles, dir);
 		dir[PITCH] = 0;
 
 		AngleVectors(dir, forward, NULL, NULL);
@@ -879,7 +879,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 void G_PlayerActionPushLever(playerinfo_t *playerinfo)
 {
-	G_UseTargets((edict_t *)playerinfo->self,(edict_t *)playerinfo->self);
+	G_UseTargets(playerinfo->self,(edict_t *)playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -895,13 +895,13 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 	{
 		// Are we doing de-materialiZe or...
 
-		if (((edict_t *)playerinfo->self)->client->tele_dest[0]!=-1)
+		if ((playerinfo->self)->client->tele_dest[0]!=-1)
 		{
 			// Are we done dematerialiZing? Or still fading?
 
-			if (((edict_t *)playerinfo->self)->client->tele_count--)
+			if ((playerinfo->self)->client->tele_count--)
 			{
-				((edict_t *)playerinfo->self)->s.color[3] -= TELE_FADE_OUT;
+				(playerinfo->self)->s.color[3] -= TELE_FADE_OUT;
 
 				return true;
 			}
@@ -911,19 +911,19 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 
 				if (playerinfo->flags & PLAYER_FLAG_TELEPORT)
 				{
-					Perform_Teleport((edict_t *)playerinfo->self);
+					Perform_Teleport(playerinfo->self);
 				}
 				else
 				{
-					if(playerinfo->edictflags & FL_CHICKEN)
+					if (playerinfo->edictflags & FL_CHICKEN)
 					{
 						// We're set as a chicken.
 
-						reset_morph_to_elf((edict_t *)playerinfo->self);
+						reset_morph_to_elf(playerinfo->self);
 					}
 					else
 					{
-						Perform_Morph((edict_t *)playerinfo->self);
+						Perform_Morph(playerinfo->self);
 					}
 				}
 
@@ -934,22 +934,22 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 		{
 			// Are we done dematerialiZing? Or still fading?
 
-			if (((edict_t *)playerinfo->self)->client->tele_count--)
+			if ((playerinfo->self)->client->tele_count--)
 			{
-				((edict_t *)playerinfo->self)->s.color[3] += TELE_FADE;
+				(playerinfo->self)->s.color[3] += TELE_FADE;
 			}
 			else
 			{
 				// We are done re-materialiZing, let's kill all this BS and get back to the game.
 
-				if(playerinfo->flags & PLAYER_FLAG_TELEPORT)
-					CleanUpTeleport((edict_t *)playerinfo->self);
+				if (playerinfo->flags & PLAYER_FLAG_TELEPORT)
+					CleanUpTeleport(playerinfo->self);
 				else
-					CleanUpMorph((edict_t *)playerinfo->self);
+					CleanUpMorph(playerinfo->self);
 			}
 		}
 
-		if(!deathmatch->value)
+		if (!deathmatch->value)
 			return true;
 	}
 
@@ -1023,7 +1023,7 @@ void G_SetJointAngles(playerinfo_t *playerinfo)
 	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,PITCH,playerinfo->targetjointangles[PITCH],M_PI / 4.0);
 	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,ROLL,playerinfo->targetjointangles[YAW],M_PI / 4.0);
 
-	if(!playerinfo->headjointonly)
+	if (!playerinfo->headjointonly)
 	{
 		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,PITCH,playerinfo->targetjointangles[PITCH],M_PI / 4.0);
 		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,PITCH,playerinfo->targetjointangles[PITCH],M_PI / 4.0);
@@ -1077,30 +1077,30 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 	//Account for step height
 	VectorSet(mins, playerinfo->mins[0], playerinfo->mins[1], playerinfo->mins[2] + 18);
 
-	trace = gi.trace(playerinfo->origin, mins, playerinfo->maxs, endpos, ((edict_t *)playerinfo->self), MASK_SHOT);
+	trace = gi.trace(playerinfo->origin, mins, playerinfo->maxs, endpos, (playerinfo->self), MASK_SHOT);
 
 	if (trace.ent && trace.ent->takedamage)
 	{
 		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
-			T_Damage(trace.ent,((edict_t *)playerinfo->self),((edict_t *)playerinfo->self),vf,trace.endpos,trace.plane.normal,500,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
+			T_Damage(trace.ent,(playerinfo->self),(playerinfo->self),vf,trace.endpos,trace.plane.normal,500,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 		else
-			T_Damage(trace.ent,((edict_t *)playerinfo->self),((edict_t *)playerinfo->self),vf,trace.endpos,trace.plane.normal,1,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
+			T_Damage(trace.ent,(playerinfo->self),(playerinfo->self),vf,trace.endpos,trace.plane.normal,1,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 
 		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
 		{
 			// Sound for hitting.
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite1.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite2.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite2.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			// Sound for hitting.
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite1.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite2.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 	else
@@ -1108,16 +1108,16 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
 		{
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck2.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck2.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			if (irand(0,1))
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck1.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound(((edict_t *)playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck2.wav"), 1, ATTN_NORM, 0);
+				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 }
@@ -1137,7 +1137,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 
 	ent->pain_debounce_time=level.time;
 
-	if(delta > 50)
+	if (delta > 50)
 		damage = delta - 30;
 	else if((damage = (delta - 30) * 0.8) < 1.0f)
 		damage = 1;
@@ -1146,9 +1146,9 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 
 	T_Damage(ent,world,world,dir,ent->s.origin,vec3_origin,damage,0,DAMAGE_AVOID_ARMOR,MOD_FALLING);
 
-	if(deathmatch->value || coop->value)
+	if (deathmatch->value || coop->value)
 	{
-		if(ent->groundentity && ent->groundentity->takedamage)
+		if (ent->groundentity && ent->groundentity->takedamage)
 		{
 			vec3_t	victim_dir, impact_spot;
 
@@ -1166,11 +1166,11 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 			VectorMA(ent->s.origin, -1.2 * ent->mins[2], victim_dir, impact_spot);
 
 			T_Damage(ent->groundentity, ent, ent, victim_dir, impact_spot, vec3_origin, damage, 0, DAMAGE_AVOID_ARMOR, 0);
-			if(ent->groundentity->client)
+			if (ent->groundentity->client)
 			{
-				if(ent->groundentity->health > 0)
+				if (ent->groundentity->health > 0)
 				{
-					if(!irand(0, 1))
+					if (!irand(0, 1))
 					{
 						playerExport->KnockDownPlayer(&ent->groundentity->client->playerinfo);
 					}
@@ -1191,7 +1191,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 
 void G_PlayerVaultKick(playerinfo_t *playerinfo)
 {
-	edict_t *self = ((edict_t *)playerinfo->self);
+	edict_t *self = (playerinfo->self);
 	trace_t trace;
 	vec3_t	endpos, vf;
 	float	kick_vel;
@@ -1220,11 +1220,11 @@ void G_PlayerVaultKick(playerinfo_t *playerinfo)
 			T_Damage(trace.ent, self, self, vf, trace.endpos, trace.plane.normal, kick_vel, kick_vel*2, DAMAGE_NORMAL,MOD_KICKED);
 			VectorMA(trace.ent->velocity, irand(300,500), vf, trace.ent->velocity);
 			trace.ent->velocity[2] = 150;
-			if(trace.ent->client)
+			if (trace.ent->client)
 			{
-				if(trace.ent->health > 0)
+				if (trace.ent->health > 0)
 				{
-					if(infront(trace.ent, self) && !irand(0, 2))
+					if (infront(trace.ent, self) && !irand(0, 2))
 					{
 						playerExport->KnockDownPlayer(&trace.ent->client->playerinfo);
 					}
@@ -1243,7 +1243,7 @@ extern void SpellLightningShieldAttack(edict_t *self);
 void G_PlayerSpellShieldAttack(playerinfo_t *playerinfo)
 {
 	if (irand(0, (SHIELD_ATTACK_CHANCE-1)) == 0)
-		SpellLightningShieldAttack((edict_t *)playerinfo->self);
+		SpellLightningShieldAttack(playerinfo->self);
 }
 
 // stop the attack and remove the persistant effect
@@ -1269,7 +1269,7 @@ void G_PlayerSpellStopShieldAttack(playerinfo_t *playerinfo)
 
 void G_PlayerActionSwordAttack(playerinfo_t *playerinfo,int value)
 {
-	WeaponThink_SwordStaff((edict_t *)playerinfo->self,"i",value);
+	WeaponThink_SwordStaffEx(playerinfo->self,"i",value);
 }
 
 // ************************************************************************************************
@@ -1279,7 +1279,7 @@ void G_PlayerActionSwordAttack(playerinfo_t *playerinfo,int value)
 
 void G_PlayerActionSpellFireball(playerinfo_t *playerinfo)
 {
-	WeaponThink_FlyingFist((edict_t *)playerinfo->self,"");
+	WeaponThink_FlyingFist(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1289,7 +1289,7 @@ void G_PlayerActionSpellFireball(playerinfo_t *playerinfo)
 
 void G_PlayerActionSpellBlast(playerinfo_t *playerinfo)
 {
-	WeaponThink_Blast((edict_t *)playerinfo->self,"");
+	WeaponThink_Blast(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1299,7 +1299,7 @@ void G_PlayerActionSpellBlast(playerinfo_t *playerinfo)
 
 void G_PlayerActionSpellArray(playerinfo_t *playerinfo,int value)
 {
-	WeaponThink_MagicMissileSpread((edict_t *)playerinfo->self,"i",value);
+	WeaponThink_MagicMissileSpreadEx(playerinfo->self,"i",value);
 }
 
 // ************************************************************************************************
@@ -1310,7 +1310,7 @@ void G_PlayerActionSpellArray(playerinfo_t *playerinfo,int value)
 void G_PlayerActionSpellSphereCreate(playerinfo_t *playerinfo,qboolean *Charging)
 {
 	// Start a glow effect.
-	WeaponThink_SphereOfAnnihilation((edict_t *)playerinfo->self,"g",Charging);
+	WeaponThink_SphereOfAnnihilationEx(playerinfo->self, "g", Charging);
 }
 
 // ************************************************************************************************
@@ -1320,7 +1320,7 @@ void G_PlayerActionSpellSphereCreate(playerinfo_t *playerinfo,qboolean *Charging
 
 void G_PlayerActionSpellBigBall(playerinfo_t *playerinfo)
 {
-	WeaponThink_Maceballs((edict_t *)playerinfo->self,"");
+	WeaponThink_Maceballs(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1330,7 +1330,7 @@ void G_PlayerActionSpellBigBall(playerinfo_t *playerinfo)
 
 void G_PlayerActionSpellFirewall(playerinfo_t *playerinfo)
 {
-	WeaponThink_Firewall((edict_t *)playerinfo->self,"");
+	WeaponThink_Firewall(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1340,7 +1340,7 @@ void G_PlayerActionSpellFirewall(playerinfo_t *playerinfo)
 
 void G_PlayerActionRedRainBowAttack(playerinfo_t *playerinfo)
 {
-	WeaponThink_RedRainBow((edict_t *)playerinfo->self,"");
+	WeaponThink_RedRainBow(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1350,7 +1350,7 @@ void G_PlayerActionRedRainBowAttack(playerinfo_t *playerinfo)
 
 void G_PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo)
 {
-	WeaponThink_PhoenixBow((edict_t *)playerinfo->self,"");
+	WeaponThink_PhoenixBow(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1360,7 +1360,7 @@ void G_PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo)
 
 void G_PlayerActionHellstaffAttack(playerinfo_t *playerinfo)
 {
-	WeaponThink_HellStaff((edict_t *)playerinfo->self,"");
+	WeaponThink_HellStaff(playerinfo->self);
 }
 
 // ************************************************************************************************
@@ -1376,7 +1376,7 @@ void G_PlayerActionSpellDefensive(playerinfo_t *playerinfo)
 	if (playerinfo->leveltime > playerinfo->defensive_debounce)
 	{
 //		playerinfo->pers.defence->use(playerinfo,playerinfo->pers.defence);
-		playerinfo->pers.defence->weaponthink((edict_t *)playerinfo->self,"");
+		playerinfo->pers.defence->weaponthink(playerinfo->self);
 		playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
 
 		// if we've run out of defence shots, and we have the ring of repulsion - switch to that.
@@ -1396,7 +1396,7 @@ void G_PlayerActionSpellDefensive(playerinfo_t *playerinfo)
 
 qboolean G_EntIsAButton(edict_t *ent)
 {
-	if(ent->classID == CID_BUTTON)
+	if (ent->classID == CID_BUTTON)
 		return (true);
 	return (false);
 }

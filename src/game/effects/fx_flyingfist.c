@@ -51,7 +51,7 @@ FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	self->updateTime = 20;
 
-	if(self->SpawnInfo > 9)
+	if (self->SpawnInfo > 9)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
@@ -183,7 +183,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FLYINGFISTEXPLODE].formatString, dir);
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
 	}
@@ -202,7 +202,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 //	fxi.GetEffect(owner, flags, "xb", dir, &powerup);
 	Vec3ScaleAssign(32.0, dir);
 
-	if(powerup)
+	if (powerup)
 	{
 		i = GetScaledCount(irand(12, 16), 0.8);
 		LightColor.c = 0xff0000ff;
@@ -286,7 +286,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 
 		SmokePuff->radius=20.0;
 
-		if(!i)
+		if (!i)
 		{
 			if (powerup)
 			{

@@ -121,7 +121,7 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 	float				duration, radius, width;
 	trace_t				trace;
 
-	if(rain->nextEventTime <= fxi.cl->time)
+	if (rain->nextEventTime <= fxi.cl->time)
 		return (false);//in case we lose the packet that tells us to remove
 
 	if (rain->SpawnInfo)
@@ -142,7 +142,7 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 			rain->SpawnData = 0.0;
 	}
 
-	if(owner->current.effects&EF_DISABLE_EXTRA_FX)//rain->LifeTime < 1000)
+	if (owner->current.effects&EF_DISABLE_EXTRA_FX)//rain->LifeTime < 1000)
 		return true;
 
 	for(j = 0; j < NUM_DROPS; j++)
@@ -170,7 +170,7 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 		drop->AddToView = FXRedRainDropUpdate;
 		AddEffect(NULL, drop);
 
-		if((duration > 20) && (r_detail->value > DETAIL_LOW))
+		if ((duration > 20) && (r_detail->value > DETAIL_LOW))
 		{
 			origin[2] += GetDistanceOverTime(RAIN_INIT_VEL, -PARTICLE_GRAVITY, (float)duration * 0.001F);
 			splash = ClientEntity_new(-1, CEF_NO_DRAW | CEF_NOMOVE, origin, NULL, duration);
@@ -337,7 +337,7 @@ static qboolean
 FXRedRainDLightThink(client_entity_t *dlight, centity_t *owner)
 {
 	dlight->dlight->intensity -= 10.0F;
-	if(dlight->dlight->intensity < 0.0F)
+	if (dlight->dlight->intensity < 0.0F)
 		return false;
 
 	return true;

@@ -160,11 +160,11 @@ void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHADOW].formatString, &scale);
 
-	if(r_detail->value < DETAIL_UBERHIGH)
+	if (r_detail->value < DETAIL_UBERHIGH)
 		return;
 
 	// Create shadow under the player
-  	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
+	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
 	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
@@ -183,7 +183,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*self;
 
 	// Create shadow under the player
-  	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
+	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
 	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
@@ -194,7 +194,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	FXShadowUpdate(self, owner);
 
 	// Create shadow under the left foot
-  	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
+	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
 	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;
@@ -206,7 +206,7 @@ void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	FXShadowUpdate(self, owner);
 
 	// Create shadow under the right foot
-  	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
+	self = ClientEntity_new(type, flags, origin, NULL, INT_MAX);
 	self->nextThinkTime = INT_MAX;
 	self->r.model = shadow_models[0];
 	self->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_ALPHA_TEXTURE;

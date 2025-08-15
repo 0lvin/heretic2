@@ -30,7 +30,7 @@ typedef enum ParticleTypes_e
 	PART_4x4_GREENBLOOD2,
 
 	// Unused 16x16 section, to right of above 16x16 section (1,0)
-  	PART_8x8_BUBBLE,
+	PART_8x8_BUBBLE,
 	PART_8x8_BLOOD,
 	PART_8x8_GLOBBIT1,
 	PART_8x8_GLOBBIT2,

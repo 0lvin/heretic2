@@ -89,7 +89,7 @@ void ai_c_move (edict_t *self,float forward,float right,float up)
 
 	dist = forward;
 
-  	M_ChangeYaw(self);
+	M_ChangeYaw(self);
 
 	if (dist == 0)	//	Just standing there
 	{

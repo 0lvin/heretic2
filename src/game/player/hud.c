@@ -297,10 +297,10 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 			for(j = 0; j<total_team;j++)
 			{
 				// is it the same as our current one ?
-   				if(!Q_stricmp(team_scores[j].teamname, p))
-   				{
+				if (!Q_stricmp(team_scores[j].teamname, p))
+				{
 					break;
-   				}
+				}
 			}
 
 			// find the position within the team mates array we should be, given score
@@ -365,7 +365,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 
 			Com_sprintf (entry, sizeof(entry), "tm %i %i %i %s ",x,y, team_scores[i].teamscore, team_scores[i].teamname);
 			j = strlen(entry);
-			if(stringlength + j > MAX_STRING_SIZE)
+			if (stringlength + j > MAX_STRING_SIZE)
 				break;
 
 			strcpy (string + stringlength, entry);
@@ -385,7 +385,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 				Com_sprintf (entry, sizeof(entry), "client %i %i %i %i %i %i ",
 					x, y, team_scores[i].team_sort[j].sorted,team_scores[i].team_sort[j].scores , cl->ping, (level.framenum - cl->resp.enterframe) / 600);
 				z = strlen(entry);
-				if(stringlength + z > MAX_STRING_SIZE)
+				if (stringlength + z > MAX_STRING_SIZE)
 					break;
 
 				strcpy (string + stringlength, entry);
@@ -410,7 +410,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 			score = game.clients[i].resp.score;
 			for(j = 0; j < total; j++)
 			{
-				if(score > sortedscores[j])
+				if (score > sortedscores[j])
 					break;
 			}
 			for(k = total; k > j; k--)
@@ -423,7 +423,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 			total++;
 		}
 
-		if(total > 12)
+		if (total > 12)
 		{
 			total = 12;
 		}
@@ -442,7 +442,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 			Com_sprintf (entry, sizeof(entry), "client %i %i %i %i %i %i ",
 				x, y, sorted[i], cl->resp.score, cl->ping, (level.framenum - cl->resp.enterframe) / 600);
 			j = strlen(entry);
-			if(stringlength + j > MAX_STRING_SIZE)
+			if (stringlength + j > MAX_STRING_SIZE)
 			{
 				break;
 			}
@@ -589,7 +589,7 @@ GetShrineTime(float time)
 	short		result;
 
 	duration = time - level.time;
-	if(duration < 0.0)
+	if (duration < 0.0)
 	{
 		return(0);
 	}
@@ -651,7 +651,7 @@ G_SetStats(edict_t *ent)
 	// Weapon ammo.
 	// ********************************************************************************************
 
-	if(pers->weapon->ammo && pers->weapon->count_width)
+	if (pers->weapon->ammo && pers->weapon->count_width)
 	{
 		item=FindItem(pers->weapon->ammo);
 		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
@@ -670,7 +670,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_OFFMANA_BACK] = gi.imageindex("icons/green-mana2");
 	item = FindItem("Off-mana");
 	ps->stats[STAT_OFFMANA] = (pers->inventory[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
-	if(ps->stats[STAT_OFFMANA] < 0)
+	if (ps->stats[STAT_OFFMANA] < 0)
 	{
 		ps->stats[STAT_OFFMANA] = 0;
 	}
@@ -683,7 +683,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_DEFMANA_BACK] = gi.imageindex("icons/blue-mana2");
 	item = FindItem("Def-mana");
 	ps->stats[STAT_DEFMANA] = (pers->inventory[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
-	if(ps->stats[STAT_DEFMANA] < 0)
+	if (ps->stats[STAT_DEFMANA] < 0)
 	{
 		ps->stats[STAT_DEFMANA] = 0;
 	}
@@ -704,13 +704,13 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_LUNG_BACK] =	gi.imageindex("icons/breath2");
 	ps->stats[STAT_LUNG_ICON] =	gi.imageindex("icons/breath");
 	ps->stats[STAT_LUNG_TIMER] = 0;
-	if((ent->waterlevel > 2) && !(ent->flags & FL_INLAVA))
+	if ((ent->waterlevel > 2) && !(ent->flags & FL_INLAVA))
 	{
 		// Make negative if we have lungs powerup.
-		if(pi->playerinfo.lungs_timer)
+		if (pi->playerinfo.lungs_timer)
 		{
 			time = pi->playerinfo.lungs_timer + ent->air_finished - level.time;
-			if(time > 0)
+			if (time > 0)
 			{
 				ps->stats[STAT_LUNG_TIMER] = -(time * 100) / (HOLD_BREATH_TIME + LUNGS_DURATION);
 			}
@@ -718,7 +718,7 @@ G_SetStats(edict_t *ent)
 		else
 		{
 			time = ent->air_finished - level.time;
-			if(time > 0)
+			if (time > 0)
 			{
 				ps->stats[STAT_LUNG_TIMER] = (time * 100) / HOLD_BREATH_TIME;
 			}
@@ -731,12 +731,12 @@ G_SetStats(edict_t *ent)
 
 	ps->stats[STAT_ARMOUR_ICON] = 0;
 	ps->stats[STAT_ARMOUR] = 0;
-	if(pers->armortype == ARMOR_TYPE_SILVER)
+	if (pers->armortype == ARMOR_TYPE_SILVER)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_silver");
 		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 100) / MAX_SILVER_ARMOR;
 	}
-	if(pers->armortype == ARMOR_TYPE_GOLD)
+	if (pers->armortype == ARMOR_TYPE_GOLD)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_gold");
 		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 250) / MAX_GOLD_ARMOR;
@@ -763,7 +763,7 @@ G_SetStats(edict_t *ent)
 			break;
 		}
 
-		if((item->flags & IT_PUZZLE) && pers->inventory[i])
+		if ((item->flags & IT_PUZZLE) && pers->inventory[i])
 		{
 			 if(count > STAT_PUZZLE_ITEM4)
 			 {
@@ -773,7 +773,7 @@ G_SetStats(edict_t *ent)
 			 {
 				ps->stats[count] = gi.imageindex(item->icon);
 				ps->stats[STAT_PUZZLE_COUNT]++;
-				if(PossessCorrectItem(ent, item))
+				if (PossessCorrectItem(ent, item))
 				{
 					ps->stats[count] |= 0x8000;
 				}
@@ -789,9 +789,9 @@ G_SetStats(edict_t *ent)
 	ent->client->ps.stats[STAT_LAYOUTS] = 0;
 
 	/* Inventory gets activated when player is in a use puzzle trigger field. */
-	if(ent->target_ent)
+	if (ent->target_ent)
 	{
-		if(!strcmp(ent->target_ent->classname, "trigger_playerusepuzzle"))
+		if (!strcmp(ent->target_ent->classname, "trigger_playerusepuzzle"))
 		{
 			ps->stats[STAT_LAYOUTS] |= 4;
 		}

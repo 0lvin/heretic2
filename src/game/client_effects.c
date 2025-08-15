@@ -197,7 +197,7 @@ static client_fx_import_t cl_game_import;
 void
 E_Freelib()
 {
-	if(!effects_library)
+	if (!effects_library)
 	{
 		return;
 	}

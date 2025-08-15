@@ -167,7 +167,7 @@ void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPELL_METEORBARRIEREXPLODE].formatString, dir);
 	Vec3ScaleAssign(32.0, dir);
 
-	if(flags&CEF_FLAG6)
+	if (flags&CEF_FLAG6)
 	{
 		// Impact explosion: throw off chunks of glowing meteor-rock and puffs of green smoke.
 		vec3_t			DebrisDir;
@@ -180,7 +180,7 @@ void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin
 
 	smokepuff = ClientEntity_new(type, flags|CEF_NO_DRAW | CEF_ADDITIVE_PARTS, origin, 0, 500);
 	smokepuff->radius = 10.0;
-	if(r_detail->value != DETAIL_LOW)
+	if (r_detail->value != DETAIL_LOW)
 		smokepuff->dlight = CE_DLight_new(LightColor, 150.0, 0.0);
 
 	AddEffect(NULL, smokepuff);

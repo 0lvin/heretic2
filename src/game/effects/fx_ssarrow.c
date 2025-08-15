@@ -120,7 +120,7 @@ void FXSsithraArrowMissile(centity_t *owner, int type, int flags, vec3_t origin)
 static qboolean FXSsithraArrowDLightThink(client_entity_t *dlight, centity_t *owner)
 {
 	dlight->dlight->intensity -= 10.0F;
-	if(dlight->dlight->intensity < 0.0F)
+	if (dlight->dlight->intensity < 0.0F)
 		return false;
 
 	return true;

@@ -403,7 +403,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 		targ->dead_size = Q_fabs( (targ->maxs[2] - targ->mins[2]) ) * 0.5;
 		MG_PostDeathThink(targ);
 
-		if(!(targ->svflags & SVF_WAIT_NOTSOLID))
+		if (!(targ->svflags & SVF_WAIT_NOTSOLID))
 			targ->svflags |= SVF_DEADMONSTER;	// now treat as a different content type
 		if (!(targ->monsterinfo.aiflags & AI_GOOD_GUY))
 		{
@@ -426,7 +426,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 		}
 		else
 		{
-			if((!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN]) && targ->die)
+			if ((!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN]) && targ->die)
 			{
 				targ->die(targ, inflictor, attacker, damage, vec3_origin);
 			}
@@ -439,7 +439,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 	}
 
 	// Also, put the flag of fire on the entity- makes fire lower when die
-	if(targ->size[2] > 24)
+	if (targ->size[2] > 24)
 		targ->s.effects |= EF_DISABLE_EXTRA_FX;
 
 	if (targ->deadflag != DEAD_DEAD)
@@ -451,7 +451,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 		monster_death_use (targ);
 	}
 
-	if(targ->client)
+	if (targ->client)
 	{	//FIXME: Make sure you can still dismember and gib player while dying
 		targ->client->meansofdeath = (MOD_t)mod;
 		player_die(targ, inflictor, attacker, damage, point);
@@ -459,7 +459,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 	else
 	{
 		//CID_RAT SHOULD NOT BE ZERO!!! CID_NONE SHOULD BE
-		if((!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN]) && targ->die)
+		if ((!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN]) && targ->die)
 		{
 			targ->die(targ, inflictor, attacker, damage, vec3_origin);
 		}
@@ -467,7 +467,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 			G_QPostMessage(targ,MSG_DEATH,PRI_DIRECTIVE,"eeei",targ,inflictor,attacker,damage);
 	}
 
-	if(Vec3IsZero(targ->velocity) && (damage != 12345))
+	if (Vec3IsZero(targ->velocity) && (damage != 12345))
 	{//fall back some!
 		VectorSubtract(targ->s.origin, inflictor->s.origin, hitdir);
 		hitdir[2] = 50;
@@ -491,7 +491,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 		return;
 
 	//FIXME: in SP, after player dead, allow this?  Or Make attacker lose it's enemy?
-	if(!anarchy->value && attacker->classID == targ->classID)
+	if (!anarchy->value && attacker->classID == targ->classID)
 		return;//monsters of same type won't fight each other
 
 	if (targ->classID == CID_OGLE && (!targ->monsterinfo.awake || attacker->client))//ogles do their own checks to get angry at their first enemy
@@ -500,7 +500,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 	if (attacker == targ->enemy)
 	{//ok, no more stalking- now we get serious
 		targ->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
-		if(!targ->monsterinfo.awake)
+		if (!targ->monsterinfo.awake)
 			FoundTarget(targ, true);
 		return;
 	}
@@ -508,7 +508,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 	if (!attacker->takedamage)//world, etc.
 		return;
 
-	if(targ->monsterinfo.c_mode)//don't anger cinematic monsters
+	if (targ->monsterinfo.c_mode)//don't anger cinematic monsters
 		return;
 
 	if (attacker->client)
@@ -548,11 +548,11 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 	{
 		if (attacker->enemy)		// This really should be an assert, but there are problems with this.
 		{
-			if(attacker->enemy==targ && attacker->classID ==targ->classID && !(targ->monsterinfo.aiflags&AI_AGRESSIVE))
+			if (attacker->enemy==targ && attacker->classID ==targ->classID && !(targ->monsterinfo.aiflags&AI_AGRESSIVE))
 			{//attacker was shooting at me(targ) and is my class, but I'm not agressive so I didn't hit him first
-				if(irand(0,10)<7)
+				if (irand(0,10)<7)
 				{//run away!
-					if(targ->enemy==attacker&&irand(0,10)<3 && Q_stricmp(attacker->classname, "player"))
+					if (targ->enemy==attacker&&irand(0,10)<3 && Q_stricmp(attacker->classname, "player"))
 					{
 						targ->monsterinfo.flee_finished = 0;
 					}
@@ -608,7 +608,7 @@ qboolean CheckTeamDamage (edict_t *targ, edict_t *attacker)
 
 qboolean flammable (edict_t *targ)
 {
-	if(targ->materialtype == MAT_CLOTH||
+	if (targ->materialtype == MAT_CLOTH||
 		targ->materialtype == MAT_FLESH||
 		targ->materialtype == MAT_POTTERY||
 		targ->materialtype == MAT_LEAF||
@@ -678,7 +678,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	{	// Both different players, let's check if this will do damage!
 		if (coop->value)
 		{
-			if(!((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
+			if (!((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
 				damage = 0;
 			else
 				MeansOfDeath |= MOD_FRIENDLY_FIRE;
@@ -689,7 +689,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			{
 				if (OnSameTeam (targ, attacker))
 				{
-					if(!((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
+					if (!((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
 						damage = 0;
 					else
 						MeansOfDeath |= MOD_FRIENDLY_FIRE;
@@ -706,7 +706,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	// Prevent players harming fellow players in non-deathmatch games. The attacking player can
 	// still harm himself of course.
 
-//	if((!deathmatch->value)&&(targ!=attacker)&&(targ->client)&&(attacker->client)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
+//	if ((!deathmatch->value)&&(targ!=attacker)&&(targ->client)&&(attacker->client)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
 //		return;
 
 	if (!targ->takedamage)
@@ -721,24 +721,24 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			return;
 	}
 
-	if(dflags & DAMAGE_ALIVE_ONLY)
+	if (dflags & DAMAGE_ALIVE_ONLY)
 		if (targ->materialtype != MAT_FLESH||targ->health<=0)
 			return;
 
-	if(targ->svflags&SVF_NO_PLAYER_DAMAGE)
-		if(attacker->client)
+	if (targ->svflags&SVF_NO_PLAYER_DAMAGE)
+		if (attacker->client)
 			return;
 
-	if(targ->health <= 0)
+	if (targ->health <= 0)
 	{
-		if(targ->client)//can't keep killing a dead player
+		if (targ->client)//can't keep killing a dead player
 			return;
 
-		if(targ->classID)
+		if (targ->classID)
 		{
-			if(classStatics[targ->classID].msgReceivers[MSG_DEATH_PAIN])
+			if (classStatics[targ->classID].msgReceivers[MSG_DEATH_PAIN])
 			{
-				if(dflags & DAMAGE_SUFFOCATION || dflags & DAMAGE_BLEEDING || dflags == DAMAGE_BURNING)
+				if (dflags & DAMAGE_SUFFOCATION || dflags & DAMAGE_BLEEDING || dflags == DAMAGE_BURNING)
 					return;
 				else
 					was_dead = true;
@@ -751,17 +751,17 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		return;
 
 //So we don't overwrite the passed-in vectors!!!
-	if(pdir && Vec3NotZero(pdir))
+	if (pdir && Vec3NotZero(pdir))
 		VectorCopy(pdir, dir);
 	else
 		VectorSet(dir, 0, 0, -1);
 
-	if(Vec3NotZero(pnormal))
+	if (Vec3NotZero(pnormal))
 		VectorCopy(pnormal, normal);
 	else
 		VectorSet(normal, 0, 0, 1);
 
-	if(ppoint)
+	if (ppoint)
 		VectorCopy(ppoint, point);
 	else
 		VectorCopy(inflictor->s.origin, point);
@@ -902,10 +902,10 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			vec3_t	kvel;
 			float	mass, force, upvel;
 
-			if(Vec3IsZero(dir))
+			if (Vec3IsZero(dir))
 			{
 				VectorSubtract(targ->s.origin, inflictor->s.origin, dir);
-				if(dir[2]<0)
+				if (dir[2]<0)
 					dir[2] = 0;
 				VectorNormalize(dir);
 			}
@@ -978,7 +978,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			}
 
 			//so knockback doesn't gib them unless it really really should
-			if(force<300)
+			if (force<300)
 				targ->jump_time = level.time + 0.5;
 		}
 	}
@@ -1003,11 +1003,11 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 	// If target and attacker are on the same team, don't inflict any damage.
 
-	if(CheckTeamDamage (targ, attacker))
+	if (CheckTeamDamage (targ, attacker))
 		return;
 
 	// Okay, we got all the way here, so do the damage.
-	if(take && !(targ->svflags & SVF_MONSTER && sv_freezemonsters->value != 0.0) && !(dflags & DAMAGE_ALL_KNOCKBACK))
+	if (take && !(targ->svflags & SVF_MONSTER && sv_freezemonsters->value != 0.0) && !(dflags & DAMAGE_ALL_KNOCKBACK))
 	{
 		int scale;
 		int duration;
@@ -1038,11 +1038,11 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			if (scale > 255)
 				scale = 255;
 
-			if(!(gi.pointcontents(targ->s.origin) & (CONTENTS_WATER|CONTENTS_SLIME)))
+			if (!(gi.pointcontents(targ->s.origin) & (CONTENTS_WATER|CONTENTS_SLIME)))
 			{//need to check if under water!
-				if(targ->fire_damage_time < level.time && !(targ->svflags & SVF_BOSS))
+				if (targ->fire_damage_time < level.time && !(targ->svflags & SVF_BOSS))
 				{//not already on fire
-					if(targ->client && deathmatch->value)
+					if (targ->client && deathmatch->value)
 						targ->fire_damage_time = level.time + duration * 0.25;//burn for 3.2 seconds- length of effect, if effect length changed, this should too!
 					else
 						targ->fire_damage_time = level.time + duration * 0.5;//burn for 3.2 seconds- length of effect, if effect length changed, this should too!
@@ -1089,7 +1089,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 					VectorMA(point, 0.5, diff, loc);
 				}
 
-				if(violence == VIOLENCE_NONE)
+				if (violence == VIOLENCE_NONE)
 					gi.CreateEffect(NULL, FX_HITPUFF, CEF_FLAG6, point, "db", dir, 5);
 				else if(targ->materialtype == MAT_INSECT)
 					gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, loc, "ub", vel, bloodamt);
@@ -1100,7 +1100,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			{
 				if ((targ->svflags & SVF_DEADMONSTER ||targ->materialtype == MAT_INSECT||targ->materialtype == MAT_FLESH) && violence > VIOLENCE_NONE)
 				{
-					if(targ->materialtype == MAT_INSECT)
+					if (targ->materialtype == MAT_INSECT)
 						gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, point, "ub", dir, 8);
 					else
 						gi.CreateEffect(NULL, FX_BLOOD, 0, point, "ub", dir, 8);
@@ -1120,31 +1120,31 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 		targ->health -= take;
 
-		if(targ!=attacker && violence > VIOLENCE_BLOOD)//can't dismember yourself
+		if (targ!=attacker && violence > VIOLENCE_BLOOD)//can't dismember yourself
 		{
-			if(attacker==inflictor)
+			if (attacker==inflictor)
 				VectorCopy(point, hit_spot);
 			else
 				VectorCopy(inflictor->s.origin, hit_spot);
 
-			if(targ->classID != CID_HARPY)//use new hitlocation function
+			if (targ->classID != CID_HARPY)//use new hitlocation function
 				hl = MG_GetHitLocation(targ, inflictor, point, dir);
 			else if (!(targ->svflags & SVF_MONSTER)&&!(client))//target not a monster or client
 				hl = T_GetHitLocation(targ, inflictor, hit_spot);
 			else
 				hl = T_GetHitLocation(targ, attacker, hit_spot);
 // jmarshall
-			if(dflags&DAMAGE_DISMEMBER)
+			if (dflags&DAMAGE_DISMEMBER)
 				hl = (HitLocation_t)(((int)hl) | hl_MeleeHit);//only melee can dismember Add the 16th bit to it for melee hit
 // jmarshall end
-			if(!(targ->svflags & SVF_PARTS_GIBBED) && !(dflags & DAMAGE_SUFFOCATION) && !(dflags & DAMAGE_BLEEDING))
+			if (!(targ->svflags & SVF_PARTS_GIBBED) && !(dflags & DAMAGE_SUFFOCATION) && !(dflags & DAMAGE_BLEEDING))
 			{//don't dismember someone who's already gibbed or gibbing, no dismember damage from suffocation or bleeding
-				if(dflags&DAMAGE_DOUBLE_DISMEMBER)
+				if (dflags&DAMAGE_DOUBLE_DISMEMBER)
 					dsm_dmg = take * 2;
 				else
 					dsm_dmg = take;
 
-				if(targ->client)
+				if (targ->client)
 					player_dismember(targ, attacker, dsm_dmg, hl);
 				else
 					G_QPostMessage(targ, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", dsm_dmg, hl);
@@ -1157,13 +1157,13 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 //				targ->flags |= FL_NO_KNOCKBACK;
 
 			// Target has died, so kill it good and dead.
-			if(was_dead)
+			if (was_dead)
 			{//FIXME: if on fire, Become a charred husk, no gib.
-				if(!(dflags & DAMAGE_SUFFOCATION) && !(dflags & DAMAGE_BLEEDING) && dflags != DAMAGE_BURNING)
+				if (!(dflags & DAMAGE_SUFFOCATION) && !(dflags & DAMAGE_BLEEDING) && dflags != DAMAGE_BURNING)
 				{//drowning, bleeding and burning do not gib
-					if(targ->health<=-100)
+					if (targ->health<=-100)
 					{
-						if(targ->think != BecomeDebris && targ->think != G_SetToFree)
+						if (targ->think != BecomeDebris && targ->think != G_SetToFree)
 						{
 							targ->post_think = BecomeDebris;
 							targ->next_post_think = level.time;
@@ -1181,9 +1181,9 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				return;
 			}
 
-			if(targ->client)
+			if (targ->client)
 			{
-				if(dflags & DAMAGE_FIRE && !(targ->svflags & SVF_BOSS))
+				if (dflags & DAMAGE_FIRE && !(targ->svflags & SVF_BOSS))
 				{
 					scale = (int)(VectorLength(targ->size)*(0.5*8.0));	// eight times the value is sent over, no more than 32 wide.
 					if (scale > 255)
@@ -1198,7 +1198,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				}
 			}
 
-			if(!targ->takedamage)//already killed by decapitation or some other killing dismemberment
+			if (!targ->takedamage)//already killed by decapitation or some other killing dismemberment
 				return;
 
 			Killed(targ, inflictor, attacker, take, point, MeansOfDeath);
@@ -1213,7 +1213,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	}
 	else if (targ->svflags & SVF_MONSTER)
 	{
-		if(!targ->enemy)
+		if (!targ->enemy)
 			force_pain = true;
 		else
 			force_pain = false;
@@ -1226,7 +1226,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		if (!(targ->monsterinfo.aiflags & AI_DUCKED) && (take) &&
 			(targ->pain_debounce_time  < level.time))
 		{
-			if(targ->classID == CID_ASSASSIN)
+			if (targ->classID == CID_ASSASSIN)
 				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", inflictor, attacker, force_pain, take, hl);
 			else
 				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", targ, attacker, force_pain, take, hl);
@@ -1247,9 +1247,9 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	{
 		if (targ->pain)
 		{
-			if(!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN])
+			if (!targ->classID || !classStatics[targ->classID].msgReceivers[MSG_PAIN])
 			{
-				if(!Q_stricmp(targ->classname, "NATE"))
+				if (!Q_stricmp(targ->classname, "NATE"))
 					targ->activator = inflictor;
 				targ->pain(targ, attacker, knockback, take);//pass spot too
 			}
@@ -1388,7 +1388,7 @@ T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edic
 			continue;
 
 		// if we are reflecting, stop us from taking damage
-		if((EntReflecting(ent, true, true)))
+		if ((EntReflecting(ent, true, true)))
 		{
 			continue;
 		}

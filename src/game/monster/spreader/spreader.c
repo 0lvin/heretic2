@@ -99,7 +99,7 @@ void SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage);
 
 void spreader_showgrenade(edict_t *self)
 {
-	if(self->monsterinfo.aiflags & AI_NO_MISSILE)
+	if (self->monsterinfo.aiflags & AI_NO_MISSILE)
 		return;//fixme: actually prevent these anims
 
 	self->s.fmnodeinfo[MESH__BOMB].flags &= ~FMNI_NO_DRAW;
@@ -113,7 +113,7 @@ void spreader_pain_sound(edict_t *self)
 
 void spreader_miststartsound(edict_t *self)
 {
-	if(self->monsterinfo.aiflags & AI_NO_MELEE)
+	if (self->monsterinfo.aiflags & AI_NO_MELEE)
 		return;//fixme: actually prevent these anims
 
 	gi.sound(self, CHAN_WEAPON, sounds[SND_SPRAYSTART], 1, ATTN_IDLE, 0);
@@ -133,14 +133,14 @@ void spreader_idlenoise(edict_t *self)
 	static int i = 0;
 
 	int chance = irand(0, 9);
-	if(i >= 50) i=0;
+	if (i >= 50) i=0;
 
-	if(chance < 7 && i)
+	if (chance < 7 && i)
 		return;
 	++i;
 	chance = irand(0, 9);
 
-	if(chance < 5 )
+	if (chance < 5 )
 		gi.sound(self, CHAN_AUTO, sounds[SND_VOICE1], 1, ATTN_IDLE, 0);
 	else
 		gi.sound(self, CHAN_AUTO, sounds[SND_VOICE2], 1, ATTN_IDLE, 0);
@@ -171,13 +171,13 @@ void spreader_flyback_move(edict_t *self)
 
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
 
-	if(trace.fraction < 1 || trace.startsolid || trace.allsolid)
+	if (trace.fraction < 1 || trace.startsolid || trace.allsolid)
 	{
-		if(trace.fraction < 1)
+		if (trace.fraction < 1)
 		{
 			vec3_t	bottom;
 
-			if(irand(0, 1))
+			if (irand(0, 1))
 				flags |= CEF_FLAG6;
 
 			VectorSet(bottom, trace.endpos[0]+crandk() * 4, trace.endpos[1]+crandk() * 4, trace.endpos[2] + self->mins[2]);
@@ -262,7 +262,7 @@ qboolean spreader_check_uncrouch(edict_t *self)
 	endpos[2] += desired_height;
 
 	trace = gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_MONSTERSOLID);
-	if(trace.fraction < 1.0)
+	if (trace.fraction < 1.0)
 		return false;
 /*
 	VectorCopy(self->mins,self->intentMins);
@@ -282,7 +282,7 @@ void spreader_duckpause(edict_t *self)
 	float dist;
 	qboolean	stay_duck = false;
 
-	if(self->evade_debounce_time > level.time)
+	if (self->evade_debounce_time > level.time)
 		stay_duck = true;
 
 	if (M_ValidTarget(self, self->enemy))
@@ -301,7 +301,7 @@ void spreader_duckpause(edict_t *self)
 		return;
 	}
 
-	if(spreader_check_uncrouch(self))
+	if (spreader_check_uncrouch(self))
 		SetAnim(self, ANIM_DUCKUP);
 	else
 		SetAnim(self, ANIM_DUCKSTILL);
@@ -309,7 +309,7 @@ void spreader_duckpause(edict_t *self)
 
 void spreader_pause(edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
+	if (self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -347,7 +347,7 @@ void spreader_pause(edict_t *self)
 		break;
 
 	case AI_MOOD_JUMP:
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 			SetAnim(self, ANIM_DELAY);
 		else
 			SetAnim(self, ANIM_FJUMP);
@@ -400,7 +400,7 @@ void spreader_run(edict_t *self, G_Message_t *msg)
 {
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 		{
 			SetAnim(self, ANIM_DELAY);
 			return;
@@ -419,7 +419,7 @@ void spreader_run(edict_t *self, G_Message_t *msg)
 
 void spreader_walk(edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
 	else
 		SetAnim(self, ANIM_WALK1);
@@ -434,9 +434,9 @@ void spreader_melee(edict_t *self, G_Message_t *msg)
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 		{
-			if(chance<50)
+			if (chance<50)
 				SetAnim(self, ANIM_DUCKDOWN);
 			else
 				SetAnim(self, ANIM_DELAY);
@@ -447,17 +447,17 @@ void spreader_melee(edict_t *self, G_Message_t *msg)
 
 		if (dist < 64)
 		{
-			if(self->curAnimID == ANIM_RUNATTACK)
+			if (self->curAnimID == ANIM_RUNATTACK)
 			{//bumped into player, knock him down
-				if(self->enemy->health>0)
+				if (self->enemy->health>0)
 				{
-					if(self->enemy->client)
+					if (self->enemy->client)
 					{
-						if(!irand(0, 2))
+						if (!irand(0, 2))
 						{
-							if(self->enemy->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+							if (self->enemy->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 							{
-								if(infront(self->enemy, self))
+								if (infront(self->enemy, self))
 								{
 									playerExport->KnockDownPlayer(&self->enemy->client->playerinfo);
 								}
@@ -467,7 +467,7 @@ void spreader_melee(edict_t *self, G_Message_t *msg)
 				}
 			}
 
-			if(self->curAnimID == ANIM_RUNATTACK || (self->curAnimID == ANIM_RUN1 && self->s.frame > FRAME_run1))
+			if (self->curAnimID == ANIM_RUNATTACK || (self->curAnimID == ANIM_RUN1 && self->s.frame > FRAME_run1))
 			{
 				if (chance < 40)
 					SetAnim(self, ANIM_DUCKDOWN);
@@ -516,7 +516,7 @@ void spreader_missile(edict_t *self, G_Message_t *msg)
 
 		if (dist < 64)
 		{
-			if(!(self->monsterinfo.aiflags & AI_NO_MELEE) && irand(0, 5))
+			if (!(self->monsterinfo.aiflags & AI_NO_MELEE) && irand(0, 5))
 				SetAnim(self, ANIM_BACKATTACK);
 			else
 				SetAnim(self, ANIM_BACKUP);
@@ -557,7 +557,7 @@ void spreader_missile(edict_t *self, G_Message_t *msg)
 
 void spreader_fallback(edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
 	else if(!(self->monsterinfo.aiflags & AI_NO_MELEE))
 		SetAnim(self, ANIM_BACKATTACK);
@@ -623,7 +623,7 @@ void spreader_evade(edict_t *self, G_Message_t *msg)
 		}
 
 		chance = irand(0, 100);
-		if(chance < duck_chance)
+		if (chance < duck_chance)
 		{
 			self->evade_debounce_time = level.time + eta;
 			spreader_crouch(self);
@@ -638,7 +638,7 @@ void spreader_death(edict_t *self, G_Message_t *msg)
 	float	damage;
 	vec3_t	dVel, vf, yf;
 
-	if(msg)
+	if (msg)
 		G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
 
 	spreader_hidegrenade(self);
@@ -704,7 +704,7 @@ static int Bit_for_MeshNode_ps [13] =
 qboolean canthrownode_ps (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_ps[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -720,7 +720,7 @@ void spreader_dropweapon (edict_t *self)
 
 	AngleVectors(self->s.angles,NULL,right,NULL);
 
-	if(self->s.fmnodeinfo[BIT_BOMB].flags & FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[BIT_BOMB].flags & FMNI_NO_DRAW)
 		return;
 
 	VectorClear(handspot);
@@ -732,8 +732,8 @@ void spreader_dropweapon (edict_t *self)
 
 void spreader_dead_pain (edict_t *self, G_Message_t *msg)
 {
-	if(msg)
-		if(!(self->svflags & SVF_PARTS_GIBBED))
+	if (msg)
+		if (!(self->svflags & SVF_PARTS_GIBBED))
 			MG_parse_dismember_msg(self, msg);
 }
 
@@ -746,27 +746,27 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t			gore_spot, right;
 	qboolean dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 
 	VectorCopy(vec3_origin,gore_spot);
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_ps(self, MESH__HEAD,&throw_nodes);
 
@@ -776,7 +776,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self, gore_spot,(byte)(8),damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -791,9 +791,9 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0, self->health) < damage*0.3 && !irand(0,9))		// One in 10 chance of the takeoff even if reqs met.
+			if (flrand(0, self->health) < damage*0.3 && !irand(0,9))		// One in 10 chance of the takeoff even if reqs met.
 			{//fly straight up, hit cieling, head squish, otherwise go though sky
 				gore_spot[2]+=12;
 
@@ -804,7 +804,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 
 				ThrowWeapon(self, &gore_spot, throw_nodes, 0, FRAME_death17);
 
-				if(self->health>0)
+				if (self->health>0)
 					spreaderTakeOff(self);
 				return;
 			}
@@ -815,9 +815,9 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(flrand(0, self->health) < damage*0.7 && !irand(0,3))		// 25% chance of the takeoff even if reqs met..
+			if (flrand(0, self->health) < damage*0.7 && !irand(0,3))		// 25% chance of the takeoff even if reqs met..
 			{//fly straight up, hit cieling, head squish, otherwise go though sky
 				gore_spot[2]+=12;
 
@@ -828,7 +828,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 
 				ThrowWeapon(self, &gore_spot, throw_nodes, 0, FRAME_death17);
 
-				if(self->health>0)
+				if (self->health>0)
 					spreaderTakeOff(self);
 				return;
 			}
@@ -842,13 +842,13 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
 			//what about hose?
-			if(self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LFTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_ps(self, MESH__LFTARM, &throw_nodes))
+				if (canthrownode_ps(self, MESH__LFTARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -865,11 +865,11 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
 			//what about grenade?
-			if(self->s.fmnodeinfo[MESH__RITARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__RITARM].flags & FMNI_NO_DRAW)
 				break;
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_ps(self, MESH__RITARM, &throw_nodes))
+				if (canthrownode_ps(self, MESH__RITARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -887,36 +887,36 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
 				break;
 			self->s.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->s.fmnodeinfo[MESH__RITLEG].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__RITLEG].flags & FMNI_USE_SKIN)
 				break;
 			self->s.fmnodeinfo[MESH__RITLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__RITLEG].skin = self->s.skinnum+1;
 			break;
 
 		default:
-			if((frandk() * self->health)<damage*0.25)
+			if ((frandk() * self->health)<damage*0.25)
 				spreader_dropweapon (self);
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW&&
+	if (self->s.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW&&
 		self->s.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 	}
 	else
 	{
-		if(self->s.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__LFTARM].flags&FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 
-		if(self->s.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__RITARM].flags&FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
 
@@ -936,9 +936,9 @@ void spreader_isblocked (edict_t *self, trace_t *trace)
 	edict_t *other;
 	vec3_t	gore_spot;
 
-	if(trace->surface)
+	if (trace->surface)
 	{
-		if(trace->surface->flags & SURF_SKY)
+		if (trace->surface->flags & SURF_SKY)
 		{
 			self->movetype = MOVETYPE_NOCLIP;
 			self->solid = SOLID_NOT;
@@ -950,16 +950,16 @@ void spreader_isblocked (edict_t *self, trace_t *trace)
 
 	other = trace->ent;
 
-	if((other->movetype != MOVETYPE_NONE) && (other->movetype != MOVETYPE_PUSH))
+	if ((other->movetype != MOVETYPE_NONE) && (other->movetype != MOVETYPE_PUSH))
 	{
-		if(other == self->enemy && self->touch_debounce_time > level.time)
+		if (other == self->enemy && self->touch_debounce_time > level.time)
 			return;
 
 		self->enemy = other;
 
 		VectorAdd(other->velocity, self->velocity, other->velocity);
 
-		if(other->takedamage)
+		if (other->takedamage)
 			T_Damage (other, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
 
 		self->touch_debounce_time = level.time + 0.3;
@@ -1026,7 +1026,7 @@ void spreaderTakeOff (edict_t *self)
 	self->velocity[0] = self->velocity[1] = 0;//not realistic, but funnier
 	self->velocity[2]+=150;
 	self->avelocity[YAW] = flrand(-200, -600);
-	if(irand(0,10)<5)
+	if (irand(0,10)<5)
 		self->avelocity[YAW]*=-1;
 
 	self->movetype = MOVETYPE_FLY;
@@ -1044,11 +1044,11 @@ void spreaderSplat (edict_t *self, trace_t *trace)//, edict_s *other, cplane_s *
 	vec3_t dir;
 	float speed = 0;
 
-	if(trace->ent)
+	if (trace->ent)
 	{
-		if(trace->ent->takedamage)
+		if (trace->ent->takedamage)
 		{
-			if(Vec3IsZero(self->velocity))
+			if (Vec3IsZero(self->velocity))
 				VectorSet(dir, 0, 0, 1);
 			else
 			{
@@ -1056,13 +1056,13 @@ void spreaderSplat (edict_t *self, trace_t *trace)//, edict_s *other, cplane_s *
 				speed = VectorNormalize(dir);
 			}
 
-			if(speed<50)
+			if (speed<50)
 				speed = irand(50, 200);
 
 			T_Damage(trace->ent, self, self, dir, trace->endpos, dir, speed, 0, 0,MOD_DIED);
 
-			if(trace->ent->health>0)//else don't gib?
-				if(!Q_stricmp(trace->ent->classname, "player"))
+			if (trace->ent->health>0)//else don't gib?
+				if (!Q_stricmp(trace->ent->classname, "player"))
 					playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 		}
 	}
@@ -1088,9 +1088,9 @@ void spreaderSolidAgain (edict_t *self)
 
 	self->nextthink = level.time + 0.1;
 
-	if(!gi.pointcontents(org))
+	if (!gi.pointcontents(org))
 	{
-		if(self->movetype == MOVETYPE_STEP)
+		if (self->movetype == MOVETYPE_STEP)
 			return;
 
 		self->svflags &= ~SVF_ALWAYS_SEND;
@@ -1102,9 +1102,9 @@ void spreaderSolidAgain (edict_t *self)
 	}
 	else
 	{
-		if(self->velocity[2]>-600)
+		if (self->velocity[2]>-600)
 		{
-			if(VectorLength(self->movedir)>500)
+			if (VectorLength(self->movedir)>500)
 				VectorCopy(self->movedir, self->velocity);
 			else
 				self->velocity[2] -= 50;
@@ -1132,16 +1132,16 @@ void spreaderFly (edict_t *self)
 {
 	vec3_t spraydir, forward;
 
-	if(self->pain_debounce_time <= level.time)
+	if (self->pain_debounce_time <= level.time)
 	{
 		gi.sound(self, CHAN_BODY, sounds[SND_SPRAYLOOP], 1, ATTN_NORM, 0);
 		self->pain_debounce_time = level.time + flrand(0.4, 0.8);
 	}
 
-	if(self->velocity[2]<800)
+	if (self->velocity[2]<800)
 		self->velocity[2] += 100;
 
-	if(self->velocity[2] > 800)
+	if (self->velocity[2] > 800)
 		self->velocity[2] = 800;
 
 	AngleVectors(self->s.angles, forward, NULL, NULL);
@@ -1153,7 +1153,7 @@ void spreaderFly (edict_t *self)
 	spraydir[2] = -self->velocity[2];
 	gi.CreateEffect(NULL, FX_PLAGUEMIST, 0, self->pos1, "vb", spraydir, 41);
 
-	if(self->s.origin[2]>3900)
+	if (self->s.origin[2]>3900)
 	{
 		self->movetype = MOVETYPE_NONE;
 		VectorClear(self->velocity);
@@ -1299,7 +1299,7 @@ NOTE: A value of zero will result in defaults, if you actually want zero as the 
 -------------------------------------------------------------------------*/
 void SP_monster_spreader (edict_t *self)
 {
-	if(self->spawnflags & MSF_WALKING)
+	if (self->spawnflags & MSF_WALKING)
 	{
 		self->spawnflags |= MSF_WANDER;
 		self->spawnflags &= ~MSF_WALKING;
@@ -1354,7 +1354,7 @@ void SP_monster_spreader (edict_t *self)
 	self->min_melee_range = 24;
 
 	//FIXME what else should he spawn doing?
-	if(self->spawnflags & MSF_WANDER)
+	if (self->spawnflags & MSF_WANDER)
 	{
 		G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 	}

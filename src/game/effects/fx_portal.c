@@ -71,7 +71,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		}
 	}
 
-	if(owner->current.effects&EF_DISABLE_EXTRA_FX || (self->SpawnDelay && self->SpawnDelay < fxi.cl->time))
+	if (owner->current.effects&EF_DISABLE_EXTRA_FX || (self->SpawnDelay && self->SpawnDelay < fxi.cl->time))
 	{	// Start disabling it, but give it a couple of seconds to fitz out.
 		self->LifeTime = 1;
 		self->lastThinkTime = fxi.cl->time + 2000;
@@ -85,7 +85,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 	{
 		VectorScale(right, crandk(), vel);
 		VectorMA(vel, crandk(), up, vel);
-		if(Vec3IsZero(vel))
+		if (Vec3IsZero(vel))
 			vel[2] = 1.0;			// Safety in case flrand gens all zeros (VERY unlikely)
 		VectorNormalize(vel);
 		VectorScale(vel, PORTAL_RADIUS, vel);
@@ -101,7 +101,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		ce->scale = flrand(MIN_PART_SCALE, MAX_PART_SCALE);
 		ce->d_scale = -0.2F;
 
-		if(!(self->flags & CEF_NO_DRAW))
+		if (!(self->flags & CEF_NO_DRAW))
 		{
 			ce->color.r = irand(100, 200);
 			ce->color.g = irand(0, 50);
@@ -117,7 +117,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		AddParticleToList(self, ce);
 	}
 
-	if(self->SpawnInfo == 2)
+	if (self->SpawnInfo == 2)
 	{
 		ripple = ClientEntity_new(FX_WATER_ENTRYSPLASH,
 									 0,
@@ -130,7 +130,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_FIXED | RF_TRANS_GHOST;
 		VectorSet(ripple->r.scale, 0.1f, 0.1f, 0.1f);
 		ripple->d_scale = 1.0f;
-		if(!(self->flags & CEF_NO_DRAW))
+		if (!(self->flags & CEF_NO_DRAW))
 		{
 			ripple->r.color.r = irand(10, 100);
 			ripple->r.color.g = irand(0, 50);
@@ -152,11 +152,11 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 	else
 		self->SpawnInfo++;
 
-	if(!(self->flags & CEF_NO_DRAW))
+	if (!(self->flags & CEF_NO_DRAW))
 	{
 		self->alpha += flrand(-0.02, 0.02);
 
-		if(1)
+		if (1)
 		{
 			self->r.verts[0][0] += crandk();
 			self->r.verts[0][1] += crandk();
@@ -171,7 +171,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 			self->r.verts[3][1] += crandk();
 		}
 
-		if(1)
+		if (1)
 		{
 			//FIXME: scroll based on viewangle to camera viewport - but what about alpha channel???
 			self->r.verts[0][2] += crandk() * 0.001;
@@ -190,7 +190,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 
 	//===================================================
 
-	if(r_detail->value > DETAIL_HIGH)
+	if (r_detail->value > DETAIL_HIGH)
 	{//Spawn a hit explosion of lines
 		i = GetScaledCount(16, 0.85);
 
@@ -247,14 +247,14 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorScale(forward, -1, portal->direction);
 	portal->radius = 1000;
 
-	if(special)
+	if (special)
 	{
 		portal->flags |= CEF_ADDITIVE_PARTS | CEF_VIEWSTATUSCHANGED;
 		portal->r.spriteType = SPRITE_DYNAMIC;
 		portal->r.flags |= RF_FIXED|RF_GLOW|RF_TRANSLUCENT|RF_TRANS_ADD_ALPHA|RF_TRANS_ADD;
 		portal->alpha = 0.75;
 
-		if(1)
+		if (1)
 		{
 			//top left
 			portal->r.verts[0][0] = -PICTURE_RADIUS;// + crandk() * 2.0;//x
@@ -270,7 +270,7 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 			portal->r.verts[3][1] = PICTURE_RADIUS;// + crandk() * 2.0;//y
 		}
 
-		if(1)
+		if (1)
 		{
 			//top left
 			portal->r.verts[0][2] = 0;//PORTALPIC_SIZE;// + crandk() * 2.0;//u

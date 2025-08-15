@@ -87,17 +87,17 @@ void imp_blocked (edict_t *self, trace_t *trace)
 	if (!trace->ent)
 		return;
 
-	if(self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP || self->curAnimID == ANIM_DIVE_END)
+	if (self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP || self->curAnimID == ANIM_DIVE_END)
 	{
-		if(!Q_stricmp(trace->ent->classname, "player"))
+		if (!Q_stricmp(trace->ent->classname, "player"))
 		{
-			if(!irand(0,4))
+			if (!irand(0,4))
 				playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 		}
 		damage = irand(IMP_DMG_MIN, IMP_DMG_MAX);
 		T_Damage (trace->ent, self, self, vf, trace->ent->s.origin, trace->plane.normal, damage, damage*2, 0,MOD_DIED);
 		gi.sound(self, CHAN_BODY, sounds[SND_HIT], 1, ATTN_NORM, 0);
-		if(self->curAnimID != ANIM_DIVE_END)
+		if (self->curAnimID != ANIM_DIVE_END)
 			SetAnim(self, ANIM_DIVE_END);
 	}
 }
@@ -221,7 +221,7 @@ void imp_ai_fly (edict_t *self, float fd, float rd, float ud)
 		return;
 	}
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		return;
 
 	//Add in the movements relative to the creature's facing
@@ -279,7 +279,7 @@ void imp_ai_pirch(edict_t *self)
 	if (!M_ValidTarget(self, self->enemy))
 		return;
 
-	if(!visible(self, self->enemy))
+	if (!visible(self, self->enemy))
 		return;
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
@@ -394,7 +394,7 @@ void imp_fix_angles(edict_t *self)
 
 void imp_death_pain (edict_t *self, G_Message_t *msg)
 {
-	if(self->health <= -40) //gib death
+	if (self->health <= -40) //gib death
 	{
 		BecomeDebris(self);
 		return;
@@ -404,7 +404,7 @@ void imp_death_pain (edict_t *self, G_Message_t *msg)
 //receiver for MSG_DEATH
 void imp_die(edict_t *self, G_Message_t *msg)
 {
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		SetAnim(self, ANIM_DIE);
 		return;
@@ -417,7 +417,7 @@ void imp_die(edict_t *self, G_Message_t *msg)
 	VectorSet(self->mins, -16, -16, 0);
 	VectorSet(self->maxs, 16, 16, 16);
 
-	if(self->health <= -40) //gib death
+	if (self->health <= -40) //gib death
 	{
 		BecomeDebris(self);
 		self->think = NULL;
@@ -454,7 +454,7 @@ void imp_pain(edict_t *self, G_Message_t *msg)
 			imp_pain2_noise(self);*/
 
 		self->pain_debounce_time = level.time + 2;
-		if(self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP)
+		if (self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP)
 			SetAnim(self, ANIM_DIVE_END);
 		else
 			SetAnim(self, ANIM_PAIN1);
@@ -798,7 +798,7 @@ void imp_check_dodge(edict_t *self)
 	if (!self->enemy)
 		return;
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		return;
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
@@ -849,7 +849,7 @@ void imp_check_dodge(edict_t *self)
 			if (trace.fraction < 1)//bad dir, try other
 				VectorScale(ddir, -1, ddir);
 
-			if(vert)
+			if (vert)
 			{//ok, better check this new opposite dir
 				trace = gi.trace(self->s.origin, self->mins, self->maxs, goalpos, self, MASK_SHOT|MASK_WATER);
 
@@ -875,9 +875,9 @@ void imp_check_dodge(edict_t *self)
 		//If he is, dodge!
 		if (self->monsterinfo.misc_debounce_time < level.time)
 		{
-			if(self->curAnimID!=ANIM_FIREBALL)
+			if (self->curAnimID!=ANIM_FIREBALL)
 			{
-				if(ddir[2] > 0.1)
+				if (ddir[2] > 0.1)
 					SetAnim(self, ANIM_DUP);
 				else if(ddir[2] < -0.1)
 					SetAnim(self, ANIM_DDOWN);
@@ -1002,13 +1002,13 @@ void move_imp_hover(edict_t *self)
 			}
 
 			//see if he's too close
-			if(enemy_dist < Q_fabs(self->melee_range))
+			if (enemy_dist < Q_fabs(self->melee_range))
 				SetAnim(self, ANIM_FLYBACK1);
 			else if(enemy_dist < self->missile_range)
 			{//see if we can and want to attack him
-				if(enemy_dist > self->min_missile_range)
+				if (enemy_dist > self->min_missile_range)
 				{
-					if(flrand(0, 100) > self->bypass_missile_chance)
+					if (flrand(0, 100) > self->bypass_missile_chance)
 					{
 						SetAnim(self, ANIM_FIREBALL);
 						return;
@@ -1104,7 +1104,7 @@ void imp_flight_model(edict_t *self)
 
 void move_imp_fly(edict_t *self)
 {
-	if(!irand(0,3))
+	if (!irand(0,3))
 		imp_check_dodge(self);
 
 	return;
@@ -1207,22 +1207,22 @@ edict_t *ImpFireballReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 void fireball_blocked( edict_t *self, trace_t *trace )
 {
-	if(trace->surface)
+	if (trace->surface)
 	{
-		if(trace->surface->flags & SURF_SKY)
+		if (trace->surface->flags & SURF_SKY)
 		{
 			SkyFly(self);
 			return;
 		}
 	}
 
-	if(trace->contents&CONTENTS_WATER || trace->contents&CONTENTS_SLIME)
+	if (trace->contents&CONTENTS_WATER || trace->contents&CONTENTS_SLIME)
 	{
 		FireFizzle(self);
 		return;
 	}
 
-	if(trace->ent)
+	if (trace->ent)
 	{
 		if (EntReflecting(trace->ent, true, true) && self->reflect_debounce_time)
 		{
@@ -1239,7 +1239,7 @@ void fireball_blocked( edict_t *self, trace_t *trace )
 		vec3_t	hitDir;
 		float	damage = flrand(2,5);
 
-		if(self->dmg)
+		if (self->dmg)
 			damage += self->dmg;
 		VectorCopy( self->velocity, hitDir );
 		VectorNormalize( hitDir );
@@ -1278,7 +1278,7 @@ void imp_fireball (edict_t *self)
 
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
-	if(self->classID == CID_IMP)
+	if (self->classID == CID_IMP)
 	{
 		VectorMA(self->s.origin, -4*self->monsterinfo.scale, vf, proj->s.origin);
 		VectorMA(proj->s.origin, 16*self->monsterinfo.scale, vr, proj->s.origin);
@@ -1294,7 +1294,7 @@ void imp_fireball (edict_t *self)
 	}
 
 	extrapolateFiredir (self, proj->s.origin, 666, self->enemy, 0.3, check_lead);
-	if(Vec3IsZero(check_lead))
+	if (Vec3IsZero(check_lead))
 	{
 		VectorScale(vf, 666, proj->velocity);
 	}
@@ -1450,21 +1450,21 @@ SP_monster_imp(edict_t *self)
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 	}
 
-	if(!self->melee_range)
+	if (!self->melee_range)
 		self->melee_range = AttackRangesForClass[self->classID * 4 + 0];
 
-	if(!self->missile_range)
+	if (!self->missile_range)
 		self->missile_range = AttackRangesForClass[self->classID * 4 + 1];
 
-	if(!self->min_missile_range)
+	if (!self->min_missile_range)
 		self->min_missile_range = AttackRangesForClass[self->classID * 4 + 2];
 
-	if(!self->bypass_missile_chance)
+	if (!self->bypass_missile_chance)
 		self->bypass_missile_chance = AttackRangesForClass[self->classID * 4 + 3];
 
-	if(!self->jump_chance)
+	if (!self->jump_chance)
 		self->jump_chance = JumpChanceForClass[self->classID];
 
-	if(!self->wakeup_distance)
+	if (!self->wakeup_distance)
 		self->wakeup_distance = MAX_SIGHT_PLAYER_DIST;
 }

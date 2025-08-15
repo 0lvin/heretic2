@@ -328,7 +328,7 @@ void elflord_flymove (edict_t *self, float dist)
 
 	self->velocity[2] = self->enemy->s.origin[2] + 100 - self->absmin[2];
 
-	if(!elfLordCheckAttack(self))
+	if (!elfLordCheckAttack(self))
 		MG_CheckEvade(self);
 }
 
@@ -430,7 +430,7 @@ void elflord_pain (edict_t *self, G_Message_t *msg)
 	if (irand(0,9))
 		return;
 
-	if(!irand(0, 1))
+	if (!irand(0, 1))
 		gi.sound(self, CHAN_VOICE, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
@@ -655,7 +655,7 @@ qboolean elfLordCheckAttack (edict_t *self)
 		beam_chance = 0;
 	}
 
-	if(irand(0,100) < p_chance)
+	if (irand(0,100) < p_chance)
 	{
 		SetAnim(self, ELFLORD_ANIM_ATTACK);
 		return false;

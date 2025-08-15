@@ -34,7 +34,7 @@ static void *player_library;
 
 void P_Freelib()
 {
-	if(!player_library)
+	if (!player_library)
 	{
 		return;
 	}

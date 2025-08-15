@@ -97,7 +97,7 @@ static qboolean FXCWBeamUpdate(struct client_entity_s *self, centity_t *owner)
 		AddEffect(NULL, spawner);
 	}
 
-	if(++self->LifeTime == 8)
+	if (++self->LifeTime == 8)
 	{
 		fxi.S_StartSound(self->r.origin, -1, CHAN_AUTO, fxi.S_RegisterSound("monsters/elflord/weld.wav"), 0.5, ATTN_IDLE, 0);
 		self->LifeTime = 0;

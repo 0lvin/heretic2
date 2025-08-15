@@ -148,7 +148,7 @@ void harpy_head_think (edict_t *self)
 {
 	vec3_t	down;
 
-	if(!self->owner || self->owner->health <= 0)
+	if (!self->owner || self->owner->health <= 0)
 	{
 		self->movetype = MOVETYPE_STEP;
 		self->elasticity = 0.8;
@@ -243,7 +243,7 @@ void harpy_blocked (edict_t *self, trace_t *trace)
 	float dot;
 	int		damage;
 
-	if(!self->enemy && self->spawnflags & MSF_SPECIAL1)
+	if (!self->enemy && self->spawnflags & MSF_SPECIAL1)
 	{
 		SetAnim(self, ANIM_CIRCLING_FLAP);
 		return;
@@ -261,13 +261,13 @@ void harpy_blocked (edict_t *self, trace_t *trace)
 	dot = DotProduct(dir, vf);
 	if (trace->ent->takedamage && (self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP || self->curAnimID == ANIM_DIVE_END || self->curAnimID == ANIM_HIT_LOOP))
 	{
-		if(trace->ent->client || classStatics[trace->ent->classID].msgReceivers[MSG_DISMEMBER])
+		if (trace->ent->client || classStatics[trace->ent->classID].msgReceivers[MSG_DISMEMBER])
 		{
-			if(trace->ent->health < HARPY_DMG_MAX && trace->ent->s.origin[2] < self->s.origin[2])
+			if (trace->ent->health < HARPY_DMG_MAX && trace->ent->s.origin[2] < self->s.origin[2])
 			{//also make this skill dependant
 				give_head_to_harpy = self;
 				take_head_from = trace->ent;
-				if(trace->ent->client)
+				if (trace->ent->client)
 				{
 					trace->ent->health = 1;
 					player_decap(trace->ent, self);
@@ -280,13 +280,13 @@ void harpy_blocked (edict_t *self, trace_t *trace)
 
 		damage = irand(HARPY_DMG_MIN, HARPY_DMG_MAX);
 		T_Damage (trace->ent, self, self, dir, trace->ent->s.origin, trace->plane.normal, damage, damage*2, 0,MOD_DIED);
-		if(trace->ent->health>0)
+		if (trace->ent->health>0)
 		{
-			if(trace->ent->client)
+			if (trace->ent->client)
 			{
-				if(!irand(0, 5))
+				if (!irand(0, 5))
 				{
-					if(trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+					if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 						playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 				}
 			}
@@ -375,10 +375,10 @@ void harpy_ai_circle (edict_t *self, float fd, float rd, float ud)
 
 	self->s.angles[ROLL] += flrand(-1.25, 1);
 
-	if(self->s.angles[ROLL] < -45)
+	if (self->s.angles[ROLL] < -45)
 		self->s.angles[ROLL] = -45;
 
-	if(self->s.angles[ROLL] > 0)
+	if (self->s.angles[ROLL] > 0)
 		self->s.angles[ROLL] = 0;
 
 	self->s.angles[YAW] = anglemod(self->s.angles[YAW] - (HARPY_CIRCLE_AMOUNT + (fd - 32)/4));
@@ -387,7 +387,7 @@ void harpy_ai_circle (edict_t *self, float fd, float rd, float ud)
 	VectorMA(self->velocity, HARPY_CIRCLE_SPEED + fd, vf, self->velocity);
 	Vec3ScaleAssign(0.5, self->velocity);
 
-	if(!irand(0, 150))
+	if (!irand(0, 150))
 		gi.sound(self, CHAN_VOICE, sounds[SND_SCREAM], 1, ATTN_NORM, 0);
 }
 
@@ -526,7 +526,7 @@ void harpy_ai_pirch(edict_t *self)
 	if (!M_ValidTarget(self, self->enemy))
 		return;
 
-	if(!visible(self, self->enemy))
+	if (!visible(self, self->enemy))
 		return;
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
@@ -701,7 +701,7 @@ void harpy_fix_angles(edict_t *self)
 //receiver for MSG_DEATH
 void harpy_dead_pain(edict_t *self, G_Message_t *msg)
 {
-	if(self->health <= -40) //gib death
+	if (self->health <= -40) //gib death
 	{
 		//harpy_throw_wings(self);
 		BecomeDebris(self);
@@ -717,7 +717,7 @@ void harpy_dead_pain(edict_t *self, G_Message_t *msg)
 
 void harpy_die(edict_t *self, G_Message_t *msg)
 {
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		SetAnim(self, ANIM_DIE);
 		return;
@@ -730,7 +730,7 @@ void harpy_die(edict_t *self, G_Message_t *msg)
 	VectorSet(self->mins, -16, -16, 0);
 	VectorSet(self->maxs, 16, 16, 12);
 
-	if(self->health <= -40) //gib death
+	if (self->health <= -40) //gib death
 	{
 		//harpy_throw_wings(self);
 		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
@@ -742,7 +742,7 @@ void harpy_die(edict_t *self, G_Message_t *msg)
 
 	self->msgHandler = DeadMsgHandler;
 
-	if(irand(0, 1))
+	if (irand(0, 1))
 		self->svflags &= ~SVF_TAKE_NO_IMPACT_DMG;
 
 	SetAnim(self, ANIM_DIE);
@@ -755,13 +755,13 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t			gore_spot;
 	qboolean dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation>hl_WingedPoints)
+	if (HitLocation>hl_WingedPoints)
 		return;
 
 	if (HitLocation==hl_backspikes)
@@ -935,7 +935,7 @@ void harpy_hover(edict_t *self, G_Message_t *msg)
 	if ( (self->spawnflags & MSF_PERCHING) || (self->spawnflags & MSF_SPECIAL1) )
 		return;
 
-	if(irand(1, 10) > 3)
+	if (irand(1, 10) > 3)
 	{
 		SetAnim(self, ANIM_HOVER1);
 	}
@@ -955,7 +955,7 @@ void harpy_stand(edict_t *self, G_Message_t *msg)
 	if ( (self->spawnflags & MSF_PERCHING) || (self->spawnflags & MSF_SPECIAL1) )
 		return;
 
-	if(irand(1, 10) > 3)
+	if (irand(1, 10) > 3)
 	{
 		SetAnim(self, ANIM_HOVER1);
 	}
@@ -1017,7 +1017,7 @@ void harpy_pause (edict_t *self)
 		G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
 	else if(self->curAnimID == ANIM_CIRCLING)
 	{
-		if(!irand(0, 6))
+		if (!irand(0, 6))
 			SetAnim(self, ANIM_CIRCLING_FLAP);
 	}
 	else if(self->curAnimID == ANIM_CIRCLING_FLAP && irand(0, 1))
@@ -1698,19 +1698,19 @@ SP_monster_harpy(edict_t *self)
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 	}
 
-	if(irand(0,1))
+	if (irand(0,1))
 		self->s.fmnodeinfo[MESH_HORNS].flags |= FMNI_NO_DRAW;
 
-	if(irand(0,1))
+	if (irand(0,1))
 		self->s.fmnodeinfo[MESH_HORN].flags |= FMNI_NO_DRAW;
 
-	if(irand(0,1))
+	if (irand(0,1))
 		self->s.fmnodeinfo[MESH_BACKSPIKES].flags |= FMNI_NO_DRAW;
 
-	if(irand(0,4))
+	if (irand(0,4))
 		self->s.fmnodeinfo[MESH_NECKSPIKES].flags |= FMNI_NO_DRAW;
 
-	if(irand(0,2))
+	if (irand(0,2))
 		self->s.fmnodeinfo[MESH_TAILSPIKES].flags |= FMNI_NO_DRAW;
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);

@@ -20,7 +20,7 @@ void waterdrip_go(edict_t *self)
 	byte	frame;
 
 	frame = 0;
-	if(self->spawnflags & 1)
+	if (self->spawnflags & 1)
 	{
 		frame = 1;
 	}
@@ -58,7 +58,7 @@ count - drips per minute (default 20)
 void SP_env_water_drip(edict_t *self)
 {
 
-	if(!self->count)
+	if (!self->count)
 	{
 		self->count = 20;
 	}
@@ -190,7 +190,7 @@ void SP_obj_fishhead1 (edict_t *self)
 
 	if (!(self->spawnflags & 1))
 	{
-		if(!self->count)
+		if (!self->count)
 			self->count = 20;
 
 		VectorSet(offset, -20, -60, -50);
@@ -226,7 +226,7 @@ void SP_obj_fishhead2 (edict_t *self)
 
 	if (!(self->spawnflags & 1))
 	{
-		if(!self->count)
+		if (!self->count)
 			self->count = 20;
 
 		VectorSet(offset, -20, -60, -50);
@@ -273,9 +273,9 @@ void SP_obj_stalactite1(edict_t *self)
 {
 	vec3_t	origin;
 
-	if(self->spawnflags & 1)
+	if (self->spawnflags & 1)
 	{
-		if(!self->count)
+		if (!self->count)
 			self->count = 20;
 
 		VectorCopy(self->s.origin, origin);
@@ -310,9 +310,9 @@ void SP_obj_stalactite2(edict_t *self)
 {
 	vec3_t	origin;
 
-	if(self->spawnflags & 1)
+	if (self->spawnflags & 1)
 	{
-		if(!self->count)
+		if (!self->count)
 			self->count = 20;
 
 		VectorCopy(self->s.origin, origin);
@@ -346,9 +346,9 @@ void SP_obj_stalactite3(edict_t *self)
 {
 	vec3_t	origin;
 
-	if(self->spawnflags & 1)
+	if (self->spawnflags & 1)
 	{
-		if(!self->count)
+		if (!self->count)
 			self->count = 20;
 
 		VectorCopy(self->s.origin, origin);
@@ -394,7 +394,7 @@ count - bubbles spawned per minute
 */
 void SP_env_bubbler(edict_t *self)
 {
-	if(!self->count)
+	if (!self->count)
 		self->count = 120;
 	VectorSet(self->mins, -5, -5, -5);
 	VectorSet(self->maxs, 5, 5, 5);

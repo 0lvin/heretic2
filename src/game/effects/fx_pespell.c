@@ -57,7 +57,7 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	self->updateTime = 20;
 
-	if(self->SpawnInfo > 9)
+	if (self->SpawnInfo > 9)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
@@ -118,7 +118,7 @@ void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t ve
 	AnglesFromDir(dir, missile->r.angles);
 
 	missile->radius = 128;
-	if(r_detail->value > DETAIL_NORMAL)
+	if (r_detail->value > DETAIL_NORMAL)
 		missile->dlight = CE_DLight_new(LightColor, lightsize, 0.0f);
 	missile->Update = FXPESpellTrailThink;
 
@@ -146,7 +146,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 	paletteRGBA_t	LightColor;
 	float			lightrad;
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
 	}
@@ -187,7 +187,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 
 		SmokePuff->radius=20.0;
 
-		if(!i)
+		if (!i)
 		{//precache _this?
 			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spellhit.wav"),
 					1, ATTN_NORM, 0);
@@ -214,7 +214,7 @@ FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 
 	self->updateTime = 20;
 
-	if(self->SpawnInfo > 9)
+	if (self->SpawnInfo > 9)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
@@ -277,7 +277,7 @@ void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 	AnglesFromDir(dir, missile->r.angles);
 
 	missile->radius = 128;
-	if(r_detail->value > DETAIL_NORMAL)
+	if (r_detail->value > DETAIL_NORMAL)
 		missile->dlight = CE_DLight_new(LightColor, lightsize, 0.0f);
 	missile->Update = FXPESpell2TrailThink;
 
@@ -305,7 +305,7 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	paletteRGBA_t	LightColor;
 	float			lightrad;
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
 	}
@@ -347,7 +347,7 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 
 		SmokePuff->radius=20.0;
 
-		if(!i)
+		if (!i)
 		{//precache _this?
 			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell2hit.wav"),
 					1, ATTN_NORM, 0);
@@ -374,7 +374,7 @@ FXPESpell3TrailThink(struct client_entity_s *self, centity_t *owner)
 
 	self->updateTime = 20;
 
-	if(self->SpawnInfo > 9)
+	if (self->SpawnInfo > 9)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
@@ -435,7 +435,7 @@ void FXPESpell3Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 	AnglesFromDir(dir, missile->r.angles);
 
 	missile->radius = 128;
-	if(r_detail->value > DETAIL_NORMAL)
+	if (r_detail->value > DETAIL_NORMAL)
 		missile->dlight = CE_DLight_new(LightColor, lightsize, 0.0f);
 	missile->Update = FXPESpell3TrailThink;
 
@@ -463,7 +463,7 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	paletteRGBA_t	LightColor;
 	float			lightrad;
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
 	}
@@ -506,7 +506,7 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 
 		SmokePuff->radius=20.0;
 
-		if(!i)
+		if (!i)
 		{//precache _this?
 			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell3hit.wav"),
 					1, ATTN_NORM, 0);

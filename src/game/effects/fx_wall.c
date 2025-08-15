@@ -405,7 +405,7 @@ FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 		bottom[2] -= FIREWAVE_TRACEDOWN;
 		trace = fxi.Trace(destpt, minmax, minmax, bottom, CONTENTS_SOLID, CEF_CLIP_TO_WORLD);
 
-		if(trace.fraction < .99)
+		if (trace.fraction < .99)
 		{	// Hit the ground, smack it!!!
 			VectorCopy(trace.endpos, destpt);
 			hitground = true;
@@ -524,7 +524,7 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	bottom[2] -= FIREWAVE_TRACEDOWN;
 	trace = fxi.Trace(spawnpt, minmax, minmax, bottom, CONTENTS_SOLID, CEF_CLIP_TO_WORLD);
 
-	if(trace.fraction < .99)
+	if (trace.fraction < .99)
 	{	// Hit the ground, smack it!!!
 		VectorCopy(trace.endpos, spawnpt);
 	}
@@ -699,7 +699,7 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 			VectorScale(newDir, FIREBURST_PART_SPEED + irand(0, 40) - (edgeVal*10) + (j*20), burst->velocity);
 			burst->velocity[2] += j * (90 - (edgeVal*9)) + flrand(0, 10);
 
-			if(i&1)
+			if (i&1)
 			{
 				burst->velocity[2] *= .5;
 			}
@@ -719,7 +719,7 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 
 			AddEffect(NULL,burst);
 
-			if(((i == 0)||(i == numFlameColumns-1))&&(j == 1))
+			if (((i == 0)||(i == numFlameColumns-1))&&(j == 1))
 			{
 				burst->dlight = CE_DLight_new(color, 150.0F, -250.0F);
 			}

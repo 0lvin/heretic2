@@ -276,13 +276,13 @@ SetRespawn(edict_t *ent, float delay)
 
 	ent->solid = SOLID_NOT;
 
-	if(deathmatch->value && game.num_clients > 8)
+	if (deathmatch->value && game.num_clients > 8)
 	{
 		// No less than 1/4th the delay.
 
 		ent->nextthink = level.time + (ent->delay) / 4;
 	}
-	if(deathmatch->value && game.num_clients > 2)
+	if (deathmatch->value && game.num_clients > 2)
 	{
 		// So things respawn faster with a lot of players.
 
@@ -1268,13 +1268,13 @@ Pickup_Puzzle(edict_t *ent, edict_t *other)
 
 qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 {
-	if(!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
+	if (!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
 	{
 		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)]=1;
 
 		// Now decide if we want to swap defenses or not.
 
-		if(player->client->playerinfo.pers.autoweapon )
+		if (player->client->playerinfo.pers.autoweapon )
 		{
 			item->use(player, item);
 		}
@@ -1301,7 +1301,7 @@ qboolean Pickup_Defense (edict_t *ent, edict_t *other)
 		return false;
 	}
 
-	if(AddDefenseToInventory(ent->item,other))
+	if (AddDefenseToInventory(ent->item,other))
 	{
 		G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
 
@@ -1595,10 +1595,10 @@ Pickup_Health(edict_t *ent, edict_t *other)
 
 	other->health += ent->item->quantity;
 
-	if(other->fire_damage_time>level.time)
+	if (other->fire_damage_time>level.time)
 	{
 		other->fire_damage_time -= ent->item->quantity/10;
-		if(other->fire_damage_time<=0)
+		if (other->fire_damage_time<=0)
 		{
 			other->fire_damage_time = 0;
 //			gi.RemoveEffects(other, FX_FIRE_ON_ENTITY);//turn off CFX too
@@ -1614,7 +1614,7 @@ Pickup_Health(edict_t *ent, edict_t *other)
 		}
 	}
 
-	if(other->client)
+	if (other->client)
 		player_repair_skin(other);
 
 	G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
@@ -1886,7 +1886,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 		return;
 	}
 
-	if(strcmp(other->classname,"player"))
+	if (strcmp(other->classname,"player"))
 	{
 		// Only players can touch items.
 
@@ -1901,7 +1901,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 	}
 
 
-	if(!ent->item->pickup)
+	if (!ent->item->pickup)
 	{
 		// Not a grabbable item.
 
@@ -1910,14 +1910,14 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 
 	assert(ent->item->pickup);
 
-	if((other->client->playerinfo.edictflags & FL_CHICKEN) && (ent->item->pickup == Pickup_Health))
+	if ((other->client->playerinfo.edictflags & FL_CHICKEN) && (ent->item->pickup == Pickup_Health))
 	{
 		// chickens can't pickup health
 
 		return;
 	}
 
-		if(!ent->item->pickup(ent, other))
+		if (!ent->item->pickup(ent, other))
 	{
 		// Player can't hold it.
 
@@ -1932,7 +1932,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 
 	// Handle respawn / removal of the item.
 
-	if(((ent->item->pickup==Pickup_Weapon)||(ent->item->pickup==Pickup_Defense)||(ent->item->pickup==Pickup_Puzzle))&&
+	if (((ent->item->pickup==Pickup_Weapon)||(ent->item->pickup==Pickup_Defense)||(ent->item->pickup==Pickup_Puzzle))&&
 	   ((deathmatch->value&&((int)dmflags->value&DF_WEAPONS_STAY))||coop->value))
 	{
 		// The item is a weapon or a defence or a puzzle piece AND (deathmatch rule DF_WEAPONS_STAY
@@ -1942,7 +1942,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 		return;
 	}
 
-	if(ent->flags & FL_RESPAWN)
+	if (ent->flags & FL_RESPAWN)
 	{
 		// The item should respawn.
 
@@ -2230,7 +2230,7 @@ ValidItem(gitem_t *item)
 {
 	// Some items will be prevented in deathmatch.
 
-	if(deathmatch->value)
+	if (deathmatch->value)
 	{
 		if ( (int)dmflags->value & DF_NO_DEFENSIVE_SPELL )
 		{
@@ -2281,7 +2281,7 @@ void
 SpawnItemEffect(edict_t *ent, gitem_t *item)
 {
 
-	if(!ValidItem(item))
+	if (!ValidItem(item))
 	{
 		G_FreeEdict(ent);
 		return;
@@ -2292,7 +2292,7 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
 	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
 		return;
 
-	if(ent->item->flags & IT_PUZZLE)
+	if (ent->item->flags & IT_PUZZLE)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_PUZZLE, CEF_BROADCAST, ent->s.origin, "bv", ent->item->tag,ent->s.angles);
 	}
@@ -2488,7 +2488,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 
 	PrecacheItem(item);
 
-	if(!ValidItem(item))
+	if (!ValidItem(item))
 	{
 		G_FreeEdict(ent);
 		return;
@@ -2548,7 +2548,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	}
 
 	ent->classname = item->classname;
-	if(deathmatch->value)
+	if (deathmatch->value)
 	{
 		ent->flags |= FL_RESPAWN;
 	}

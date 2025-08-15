@@ -35,7 +35,7 @@ void ChickenStepSound(playerinfo_t *playerinfo, float value)
 	{
 		name = (irand(0,1)) ? "monsters/tbeast/step1.wav" : "monsters/tbeast/step2.wav";
 
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID46,
 								 playerinfo->origin,
@@ -75,7 +75,7 @@ void ChickenAssert(playerinfo_t *playerinfo)
 
 void PlayerChickenBite(playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionChickenBite(playerinfo);
 }
 
@@ -86,7 +86,7 @@ void PlayerChickenBite(playerinfo_t *playerinfo)
 
 void PlayerChickenSqueal(playerinfo_t *playerinfo)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID47,
 							 playerinfo->origin,
@@ -128,7 +128,7 @@ void PlayerChickenCluck(playerinfo_t *playerinfo, float force)
 	else
 		soundname = (irand(0,1)) ? "monsters/chicken/cluck1.wav" : "monsters/chicken/cluck2.wav";
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		playerinfo->CL_Sound(SND_PRED_ID48,playerinfo->origin, CHAN_WEAPON, soundname, 1.0, ATTN_NORM, 0);
 	else
 		playerinfo->G_Sound(SND_PRED_ID48,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, playerinfo->G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
@@ -149,7 +149,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin,endpos);
 	endpos[2]+=(playerinfo->mins[2]-2.0);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
@@ -168,7 +168,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 								  MASK_PLAYERSOLID);
 	}
 
-	if((playerinfo->groundentity||trace.fraction<0.2)&&playerinfo->waterlevel<2)
+	if ((playerinfo->groundentity||trace.fraction<0.2)&&playerinfo->waterlevel<2)
 		playerinfo->upvel=200;
 
 	PlayerAnimSetLowerSeq(playerinfo,ASEQ_FALL);
@@ -218,7 +218,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		}
 	}
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		playerinfo->CL_Sound(SND_PRED_ID49,playerinfo->origin, CHAN_WEAPON, soundname, 1.0, ATTN_NORM, 0);
 	else
 		playerinfo->G_Sound(SND_PRED_ID49,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, playerinfo->G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
@@ -241,7 +241,7 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 
 		playerinfo->velocity[2] += CHICKEN_GLIDE;
 
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID13,
 									   playerinfo->self,
 									   FX_CHICKEN_EXPLODE,
@@ -273,7 +273,7 @@ void PlayerChickenFlap (playerinfo_t *playerinfo)
 
 	playerinfo->velocity[2] += CHICKEN_GLIDE;
 
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_CreateEffect(EFFECT_PRED_ID14,
 								   playerinfo->self, // jmarshall: believe this is right.
 								   FX_CHICKEN_EXPLODE,

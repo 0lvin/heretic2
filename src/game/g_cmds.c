@@ -174,7 +174,7 @@ SelectPrevItem(edict_t *ent, int itflags)
 
 	cl = ent->client;
 
-	if(sv_cinematicfreeze->value)
+	if (sv_cinematicfreeze->value)
 	{
 		return;
 	}
@@ -261,73 +261,73 @@ Cmd_Give_f(edict_t *ent)
 	if ((Q_stricmp(name, "level") == 0))
 	{
 
-		if(level.offensive_weapons&4)
+		if (level.offensive_weapons&4)
 		{
 			it = FindItem("hell");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.offensive_weapons&8)
+		if (level.offensive_weapons&8)
 		{
 			it = FindItem("array");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.offensive_weapons&16)
+		if (level.offensive_weapons&16)
 		{
 			it = FindItem("rain");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.offensive_weapons&32)
+		if (level.offensive_weapons&32)
 		{
 			it = FindItem("sphere");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.offensive_weapons&64)
+		if (level.offensive_weapons&64)
 		{
 			it = FindItem("phoen");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.offensive_weapons&128)
+		if (level.offensive_weapons&128)
 		{
 			it = FindItem("mace");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.offensive_weapons&256)
+		if (level.offensive_weapons&256)
 		{
 			it = FindItem("fwall");
 			AddWeaponToInventory(it,ent);
 		}
 
-		if(level.defensive_weapons&1)
+		if (level.defensive_weapons&1)
 		{
 			it = FindItem("ring");
 			AddDefenseToInventory(it,ent);
 		}
 
-		if(level.defensive_weapons&2)
+		if (level.defensive_weapons&2)
 		{
 			it = FindItem("lshield");
 			AddDefenseToInventory(it,ent);
 		}
 
-		if(level.defensive_weapons&4)
+		if (level.defensive_weapons&4)
 		{
 			it = FindItem("tele");
 			AddDefenseToInventory(it,ent);
 		}
 
-		if(level.defensive_weapons&8)
+		if (level.defensive_weapons&8)
 		{
 			it = FindItem("morph");
 			AddDefenseToInventory(it,ent);
 		}
 
-		if(level.defensive_weapons&16)
+		if (level.defensive_weapons&16)
 		{
 			it = FindItem("meteor");
 			AddDefenseToInventory(it,ent);
@@ -360,7 +360,7 @@ Cmd_Give_f(edict_t *ent)
 			ent->health = ent->max_health;
 		}
 
-		if(give_all || ent->health == ent->max_health)
+		if (give_all || ent->health == ent->max_health)
 			ResetPlayerBaseNodes (ent);//put back all your limbs!
 
 		if (!give_all)
@@ -387,7 +387,7 @@ Cmd_Give_f(edict_t *ent)
 
 			ent->client->playerinfo.pers.inventory[i] += 1;
 
-			if((it->playeranimseq == ASEQ_WRRBOW_GO)||(it->playeranimseq == ASEQ_WPHBOW_GO))
+			if ((it->playeranimseq == ASEQ_WRRBOW_GO)||(it->playeranimseq == ASEQ_WPHBOW_GO))
 			{
 				// This is a bow, put the bow on his back.
 
@@ -490,14 +490,23 @@ Cmd_Give_f(edict_t *ent)
 		gitem_armor_t *info;
 
 		it = FindItem("Jacket Armor");
-		ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+		if (it)
+		{
+			ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+		}
 
 		it = FindItem("Combat Armor");
-		ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+		if (it)
+		{
+			ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+		}
 
 		it = FindItem("Body Armor");
-		info = (gitem_armor_t *)it->info;
-		ent->client->pers.inventory[ITEM_INDEX(it)] = info->max_count;
+		if (it)
+		{
+			info = (gitem_armor_t *)it->info;
+			ent->client->pers.inventory[ITEM_INDEX(it)] = info->max_count;
+		}
 
 		if (ent->client->playerinfo.pers.armortype == ARMOR_TYPE_NONE)
 		{
@@ -524,14 +533,17 @@ Cmd_Give_f(edict_t *ent)
 	if (give_all || (Q_stricmp(name, "Power Shield") == 0))
 	{
 		it = FindItem("Power Shield");
-		it_ent = G_Spawn();
-		it_ent->classname = it->classname;
-		SpawnItem(it_ent, it);
-		Touch_Item(it_ent, ent, NULL, NULL);
-
-		if (it_ent->inuse)
+		if (it)
 		{
-			G_FreeEdict(it_ent);
+			it_ent = G_Spawn();
+			it_ent->classname = it->classname;
+			SpawnItem(it_ent, it);
+			Touch_Item(it_ent, ent, NULL, NULL);
+
+			if (it_ent->inuse)
+			{
+				G_FreeEdict(it_ent);
+			}
 		}
 
 		if (!give_all)
@@ -706,7 +718,7 @@ Cmd_Give_f(edict_t *ent)
 		ent->client->playerinfo.pers.inventory[index] += 1;
 	}
 
- 	// if we don't already have a defence item, make this defence item default
+	// if we don't already have a defence item, make this defence item default
 	if ((ent->client->playerinfo.pers.defence == NULL) && (it->flags & IT_DEFENSE))
 			ent->client->playerinfo.pers.defence=it;
 }
@@ -881,7 +893,7 @@ Cmd_Use_f(edict_t *ent)
 
 	it = FindItem(s);
 
-	if(sv_cinematicfreeze->value)
+	if (sv_cinematicfreeze->value)
 		return;
 
 	if (!it)
@@ -918,9 +930,9 @@ Cmd_Use_f(edict_t *ent)
 			if (Defence_CurrentShotsLeft(playerinfo, 1) > 0)
 			{
 				/* Only if there is ammo */
-				it->weaponthink(ent, "");
+				it->weaponthink(ent);
 
-				if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
+				if (playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
 					playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
 				else
 					playerinfo->def_ammo_index=0;
@@ -1085,7 +1097,7 @@ Cmd_DefPrev_f(edict_t *ent)
 	int			selected_defence;
 	int			start_defence;
 
-	if(sv_cinematicfreeze->value)
+	if (sv_cinematicfreeze->value)
 		return;
 
 	cl = ent->client;
@@ -1144,7 +1156,7 @@ Cmd_DefNext_f(edict_t *ent)
 	int			selected_defence;
 	int			start_defence;
 
-	if(sv_cinematicfreeze->value)
+	if (sv_cinematicfreeze->value)
 		return;
 
 	cl = ent->client;
@@ -1194,7 +1206,7 @@ Cmd_WeapLast_f(edict_t *ent)
 	int index;
 	gitem_t *it;
 
-	if(sv_cinematicfreeze->value)
+	if (sv_cinematicfreeze->value)
 		return;
 
 	cl = ent->client;
@@ -1230,7 +1242,7 @@ Cmd_Kill_f(edict_t *ent)
 	}
 	ent->flags &= ~FL_GODMODE;
 
-	if(ent->health > -1)
+	if (ent->health > -1)
 	{
 		// Make sure we gib as we don't want bodies lying around everywhere.
 

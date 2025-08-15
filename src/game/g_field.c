@@ -18,7 +18,7 @@ void InitTrigger(edict_t *self);
 void
 InitField(edict_t *self)
 {
-	if(!Vec3IsZero(self->s.angles))
+	if (!Vec3IsZero(self->s.angles))
 	{
 		G_SetMovedir(self->s.angles, self->movedir);
 	}
@@ -39,7 +39,7 @@ void FogDensity_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 	player_state_t		*ps;
 
 	// Only players can know about fog density changes
-	if(other->client)
+	if (other->client)
 	{
 		ps = &other->client->ps;
 
@@ -113,7 +113,7 @@ NO_PROTECTION	*nothing* stops the Damage
 */
 void SP_trigger_Damage(edict_t *self)
 {
-	if(deathmatch->value && self->dmg > 100)
+	if (deathmatch->value && self->dmg > 100)
 	{
 		self->spawnflags = DEATHMATCH_RANDOM;
 		SP_misc_teleporter(self);
@@ -208,9 +208,9 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 	for(i = 0; i < level.active_buoys; i++)
 	{
 		found_buoy = &level.buoy_list[i];
-		if(found_buoy->targetname)
+		if (found_buoy->targetname)
 		{
-			if(!strcmp(found_buoy->targetname, self->pathtarget))
+			if (!strcmp(found_buoy->targetname, self->pathtarget))
 			{
 				found = true;
 				break;
@@ -218,7 +218,7 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 		}
 	}
 
-	if(!found)
+	if (!found)
 	{
 		vec3_t	org;
 
@@ -227,32 +227,32 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 		return;
 	}
 
-	if(self->spawnflags & TSF_BUOY_TELEPORT_SAFE)
+	if (self->spawnflags & TSF_BUOY_TELEPORT_SAFE)
 	{
-		if(MG_MonsterAttemptTeleport(monster, found_buoy->origin, false))
+		if (MG_MonsterAttemptTeleport(monster, found_buoy->origin, false))
 		{
-			if(showbuoys->value)
+			if (showbuoys->value)
 				gi.dprintf("%s was teleported(safely) to %s by trigger_goto_buoy\n", monster->classname, found_buoy->targetname);
 		}
 		return;
 	}
 	else if(self->spawnflags & TSF_BUOY_TELEPORT_UNSAFE)
 	{
-		if(MG_MonsterAttemptTeleport(monster, found_buoy->origin, true))
+		if (MG_MonsterAttemptTeleport(monster, found_buoy->origin, true))
 		{
-			if(showbuoys->value)
+			if (showbuoys->value)
 				gi.dprintf("%s was teleported(unsafely) to %s by trigger_goto_buoy\n", monster->classname, found_buoy->targetname);
 		}
 		return;
 	}
 
-	if(showbuoys->value)
+	if (showbuoys->value)
 		gi.dprintf("%s forced to go to buoy %s by trigger_goto_buoy\n", monster->classname, self->pathtarget);
 
-	if(self->spawnflags&TSF_BUOY_IGNORE_ENEMY)//make him ignore enemy until gets to dest buoy
+	if (self->spawnflags&TSF_BUOY_IGNORE_ENEMY)//make him ignore enemy until gets to dest buoy
 	{
 		monster->ai_mood_flags|=AI_MOOD_FLAG_IGNORE_ENEMY;
-		if(showbuoys->value)
+		if (showbuoys->value)
 			gi.dprintf("%s forced to ignore enemy by trigger_goto_buoy\n", monster->classname, self->pathtarget);
 	}
 
@@ -261,23 +261,23 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 	monster->forced_buoy = found_buoy->id;
 	monster->ai_mood = AI_MOOD_NAVIGATE;
 
-	if(!monster->enemy)
+	if (!monster->enemy)
 		monster->enemy = activator;
 
 	MG_RemoveBuoyEffects(monster);
 	MG_MakeConnection(monster, NULL, false);
 
-	if(self->spawnflags&TSF_BUOY_FIXED)
+	if (self->spawnflags&TSF_BUOY_FIXED)
 		monster->ai_mood_flags|=AI_MOOD_FLAG_GOTO_FIXED;
 
-	if(self->spawnflags&TSF_BUOY_STAND)
+	if (self->spawnflags&TSF_BUOY_STAND)
 		monster->ai_mood_flags|=AI_MOOD_FLAG_GOTO_STAND;
 
-	if(self->spawnflags&TSF_BUOY_WANDER)
+	if (self->spawnflags&TSF_BUOY_WANDER)
 		monster->ai_mood_flags|=AI_MOOD_FLAG_GOTO_WANDER;
 
 	//make him check mood NOW and get going! Don't wait for current anim to finish!
-	if(classStatics[monster->classID].msgReceivers[MSG_CHECK_MOOD])
+	if (classStatics[monster->classID].msgReceivers[MSG_CHECK_MOOD])
 		G_QPostMessage(monster, MSG_CHECK_MOOD,PRI_DIRECTIVE, "i", monster->ai_mood);
 	else
 	{//no check mood message handler, just send a run and let him wait, i guess!
@@ -289,16 +289,16 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 
 void trigger_goto_buoy_touch_go (edict_t *self)
 {
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
-	if(!(self->enemy->svflags&SVF_MONSTER))
+	if (!(self->enemy->svflags&SVF_MONSTER))
 		return;
 
-	if(self->enemy->health<=0)
+	if (self->enemy->health<=0)
 		return;
 
-	if(!(self->enemy->monsterinfo.aiflags&AI_USING_BUOYS))
+	if (!(self->enemy->monsterinfo.aiflags&AI_USING_BUOYS))
 		return;
 
 	trigger_goto_buoy_execute(self, self->enemy, self->activator);
@@ -306,21 +306,21 @@ void trigger_goto_buoy_touch_go (edict_t *self)
 
 void trigger_goto_buoy_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	if(level.time < self->air_finished)
+	if (level.time < self->air_finished)
 		return;
 
-	if(!(other->svflags & SVF_MONSTER))
+	if (!(other->svflags & SVF_MONSTER))
 		return;
 
-	if(!(other->monsterinfo.aiflags&AI_USING_BUOYS))
+	if (!(other->monsterinfo.aiflags&AI_USING_BUOYS))
 		return;
 
-	if(other->health<=0)
+	if (other->health<=0)
 		return;
 
 	self->activator = other->enemy;
 
-	if(self->delay)
+	if (self->delay)
 	{
 		self->enemy = other;
 		self->think = trigger_goto_buoy_touch_go;
@@ -330,7 +330,7 @@ void trigger_goto_buoy_touch (edict_t *self, edict_t *other, cplane_t *plane, cs
 
 	trigger_goto_buoy_execute(self, other, self->activator);
 
-	if(self->wait == -1)
+	if (self->wait == -1)
 	{
 		self->touch = NULL;
 		self->use = NULL;
@@ -345,20 +345,20 @@ void trigger_goto_buoy_use_go (edict_t *self)
 
 	monster = G_Find(monster, FOFS(targetname), self->target);
 
-	if(!monster)
+	if (!monster)
 	{
-		if(showbuoys->value)
+		if (showbuoys->value)
 			gi.dprintf("ERROR: trigger_goto_buoy can't find it's target monster %s\n", self->pathtarget);
 		return;
 	}
 
-	if(!(monster->svflags&SVF_MONSTER))
+	if (!(monster->svflags&SVF_MONSTER))
 		return;
 
-	if(monster->health<=0)
+	if (monster->health<=0)
 		return;
 
-	if(!(monster->monsterinfo.aiflags&AI_USING_BUOYS))
+	if (!(monster->monsterinfo.aiflags&AI_USING_BUOYS))
 		return;
 
 	trigger_goto_buoy_execute(self, monster, self->activator);
@@ -366,12 +366,12 @@ void trigger_goto_buoy_use_go (edict_t *self)
 
 void trigger_goto_buoy_use (edict_t *self, edict_t *other, edict_t *activator)
 {
-	if(level.time < self->air_finished)
+	if (level.time < self->air_finished)
 		return;
 
 	self->activator = activator;
 
-	if(self->delay)
+	if (self->delay)
 	{
 		self->think = trigger_goto_buoy_use_go;
 		self->nextthink = level.time + self->delay;
@@ -394,14 +394,14 @@ void trigger_goto_buoy_find_target(edict_t *self)
 
 	for(i = 0; i < level.active_buoys; i++)
 	{
-		if(!Q_stricmp(level.buoy_list[i].targetname, self->pathtarget))
+		if (!Q_stricmp(level.buoy_list[i].targetname, self->pathtarget))
 		{
 			found = true;
 			break;
 		}
 	}
 
-	if(!found)
+	if (!found)
 	{
 		vec3_t	org;
 
@@ -445,7 +445,7 @@ void SP_trigger_goto_buoy(edict_t *self)
 {
 	InitField(self);
 
-	if(!self->pathtarget)
+	if (!self->pathtarget)
 	{
 		gi.dprintf("trigger_goto_buoy with no pathtarget!\n");
 		G_FreeEdict(self);
@@ -457,12 +457,12 @@ void SP_trigger_goto_buoy(edict_t *self)
 		self->nextthink = level.time + 0.5;
 	}
 
-	if(self->spawnflags&TSF_BUOY_TOUCH)
+	if (self->spawnflags&TSF_BUOY_TOUCH)
 		self->touch = trigger_goto_buoy_touch;
 
-	if(self->targetname)
+	if (self->targetname)
 	{
-		if(!self->target)
+		if (!self->target)
 			gi.dprintf("targeted trigger_goto_buoy with no monster target!\n");
 		self->use = trigger_goto_buoy_use;
 	}

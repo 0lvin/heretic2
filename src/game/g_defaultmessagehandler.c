@@ -59,13 +59,13 @@ void DefaultMsgHandler(edict_t *self, G_Message_t *msg)
 	G_MsgReceiver_t receiver;
 	char	*o_target;
 
-	if(msg->ID == MSG_PAIN)
+	if (msg->ID == MSG_PAIN)
 	{
 		edict_t *targ, *activator;
 
 		G_ParseMsgParms(msg, "ee", &targ, &activator);
 
-		if(targ->pain_target)
+		if (targ->pain_target)
 		{
 			o_target = targ->target;
 			targ->target = targ->pain_target;
@@ -77,7 +77,7 @@ void DefaultMsgHandler(edict_t *self, G_Message_t *msg)
 
 	receiver = classStatics[self->classID].msgReceivers[msg->ID];
 
-	if(receiver)
+	if (receiver)
 	{
 		receiver(self, msg);
 	}
@@ -88,7 +88,7 @@ void DefaultMsgHandler(edict_t *self, G_Message_t *msg)
 		// do the check
 		receiver = DefaultMessageReceivers[msg->ID];
 
-		if(receiver)
+		if (receiver)
 		{
 			DefaultMessageReceivers[msg->ID](self, msg);
 		}
@@ -107,7 +107,7 @@ void DefaultReceiver_SetAnim(edict_t *self, G_Message_t *msg)
 {
 	int ID;
 
-	if(msg->priority >= PRI_DIRECTIVE)
+	if (msg->priority >= PRI_DIRECTIVE)
 	{
 		G_ParseMsgParms(msg, "i", &ID);
 

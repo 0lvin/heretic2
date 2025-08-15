@@ -168,7 +168,7 @@ void seraph_sound_scold(edict_t *self)
 
 void seraph_sound_scold2(edict_t *self)
 {
-	if(irand(0, 1))//back to work!
+	if (irand(0, 1))//back to work!
 		gi.sound(self, CHAN_VOICE, sounds[SND_SCOLD1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_SCOLD2], 1, ATTN_NORM, 0);
@@ -200,7 +200,7 @@ void seraph_done_startle(edict_t *self)
 //Seraph has finished SERAPH_ANIM_GET2WORK, and must reset its enemy
 void seraph_done_get2work(edict_t *self)
 {
-	if(self->enemy)
+	if (self->enemy)
 		self->enemy->targeted = 0;
 	self->enemy = NULL;
 	self->ai_mood = AI_MOOD_STAND;
@@ -237,7 +237,7 @@ void seraph_pause(edict_t *self)
 {
 	self->mood_think(self);
 
-	if(self->enemy)
+	if (self->enemy)
 		if ((self->ai_mood_flags & AI_MOOD_FLAG_IGNORE)&& self->enemy->classID == CID_OGLE)
 			return;
 
@@ -287,12 +287,12 @@ void seraph_check_mood (edict_t *self, G_Message_t *msg)
 //Targets a specific ogle and puts it back to work
 void seraph_enforce_ogle(edict_t *self)
 {
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	self->enemy->use(self->enemy, self, self);
 
-	if(irand(0, 1))//back to work!
+	if (irand(0, 1))//back to work!
 		gi.sound(self, CHAN_VOICE, sounds[SND_SCOLD1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_SCOLD2], 1, ATTN_NORM, 0);
@@ -605,13 +605,13 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 	if (self->curAnimID == SERAPH_ANIM_ATTACK1_LOOP)
 		return;
 
-	if(self->enemy)
+	if (self->enemy)
 		if ( (self->ai_mood_flags & AI_MOOD_FLAG_IGNORE) && (!Q_stricmp(self->enemy->classname, "monster_ogle")) )
 			return;
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->ai_mood == AI_MOOD_FLEE)
+		if (self->ai_mood == AI_MOOD_FLEE)
 		{
 			SetAnim(self, SERAPH_ANIM_BACKUP2);
 			return;
@@ -650,7 +650,7 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &attacker, &force_pain, &damage, &temp);
 
-	if(self->monsterinfo.awake)
+	if (self->monsterinfo.awake)
 		self->ai_mood_flags &= ~AI_MOOD_FLAG_IGNORE;
 
 	//Weighted random based on health compared to the maximum it was at
@@ -663,15 +663,15 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 		SetAnim(self, SERAPH_ANIM_PAIN);
 	}
 
-	if(attacker)
+	if (attacker)
 	{
-		if(attacker!=self->enemy)
+		if (attacker!=self->enemy)
 		{
-			if(!self->enemy)
+			if (!self->enemy)
 				self->enemy = attacker;
 			else if(M_DistanceToTarget(self, self->enemy) > self->melee_range)
 			{
-				if(self->enemy->client)
+				if (self->enemy->client)
 					self->oldenemy = self->enemy;
 				self->enemy = attacker;
 			}
@@ -682,19 +682,19 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 
 qboolean seraphAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 {
-	if(self->alert_time < level.time)
+	if (self->alert_time < level.time)
 	{//not startled already
-		if(!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
+		if (!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
 		{
-			if(enemy->light_level < flrand(6, 77))
+			if (enemy->light_level < flrand(6, 77))
 			{//too dark, can't see enemy
 				return false;
 			}
 		}
 
-		if(!infront(self,enemy))
+		if (!infront(self,enemy))
 		{
-			if(alerter->lifetime < level.time + 2)
+			if (alerter->lifetime < level.time + 2)
 				self->alert_time = level.time + 2;//be ready for 2 seconds to wake up if alerted again
 			else
 				self->alert_time = alerter->lifetime;//be alert as long as the alert sticks around
@@ -703,7 +703,7 @@ qboolean seraphAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 		}
 	}
 
-	if(enemy->svflags&SVF_MONSTER)
+	if (enemy->svflags&SVF_MONSTER)
 		self->enemy = alerter->enemy;
 	else
 		self->enemy = enemy;
@@ -737,9 +737,9 @@ int Bit_for_MeshNode_so [NUM_MESH_NODES] =
 
 void seraph_back (edict_t *self, float dist)
 {
-	if(!MG_BoolWalkMove(self, self->s.angles[YAW] + 180, dist))
+	if (!MG_BoolWalkMove(self, self->s.angles[YAW] + 180, dist))
 	{
-		if(!irand(0, 1000))
+		if (!irand(0, 1000))
 		{
 			self->monsterinfo.aiflags |= AI_COWARD;
 			SetAnim(self, SERAPH_ANIM_RUN1);
@@ -750,7 +750,7 @@ void seraph_back (edict_t *self, float dist)
 qboolean canthrownode_so (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_so[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -765,7 +765,7 @@ void seraph_dropweapon (edict_t *self)
 {
 	vec3_t handspot, forward, right, up;
 
-	if(!(self->s.fmnodeinfo[MESH__WHIP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[MESH__WHIP].flags & FMNI_NO_DRAW))
 	{
 		VectorClear(handspot);
 		AngleVectors(self->s.angles,forward,right,up);
@@ -786,16 +786,16 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t		gore_spot, right;
 	qboolean	dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 
 
@@ -803,11 +803,11 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__PITHEAD].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__PITHEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__PITHEAD].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__PITHEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				seraph_dropweapon(self);
 				canthrownode_so(self, MESH__PITHEAD,&throw_nodes);
@@ -818,7 +818,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -833,18 +833,18 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH__FRTORSO].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__FRTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage)
+			if ((frandk() * self->health)<damage)
 			{
 				self->s.fmnodeinfo[MESH__FRTORSO].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__FRTORSO].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BKTORSO].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__BKTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health) < damage)
+			if ((frandk() * self->health) < damage)
 			{
 				self->s.fmnodeinfo[MESH__BKTORSO].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BKTORSO].skin = self->s.skinnum+1;
@@ -852,20 +852,20 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_ArmUpperLeft:
-			if((frandk() * self->health)<damage)
+			if ((frandk() * self->health)<damage)
 			{
 				self->s.fmnodeinfo[MESH__LFTUPARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LFTUPARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LHANDBOSS].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_so(self, MESH__LHANDBOSS, &throw_nodes))
+				if (canthrownode_so(self, MESH__LHANDBOSS, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -880,18 +880,18 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_ArmUpperRight:
-			if((frandk() * self->health)<damage)
+			if ((frandk() * self->health)<damage)
 			{
 				self->s.fmnodeinfo[MESH__RTARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RTARM].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
 				break;
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_so(self, MESH__RHAND, &throw_nodes))
+				if (canthrownode_so(self, MESH__RHAND, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -909,28 +909,28 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LFTLEG].flags & FMNI_USE_SKIN)
 				break;
 			self->s.fmnodeinfo[MESH__LFTLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__LFTLEG].skin = self->s.skinnum+1;
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->s.fmnodeinfo[MESH__RTLEG].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__RTLEG].flags & FMNI_USE_SKIN)
 				break;
 			self->s.fmnodeinfo[MESH__RTLEG].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__RTLEG].skin = self->s.skinnum+1;
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__RHAND].flags & FMNI_NO_DRAW)
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 
 //FIXME: when get missile anim
-//	if(self->s.fmnodeinfo[MESH__LHANDGRD].flags & FMNI_NO_DRAW)
+//	if (self->s.fmnodeinfo[MESH__LHANDGRD].flags & FMNI_NO_DRAW)
 //		self->monsterinfo.aiflags |= AI_NO_MISSILE;
 
-	if(self->monsterinfo.aiflags & AI_NO_MELEE)//&&self->monsterinfo.aiflags & AI_NO_MISSILE)
+	if (self->monsterinfo.aiflags & AI_NO_MELEE)//&&self->monsterinfo.aiflags & AI_NO_MISSILE)
 		SetAnim(self, SERAPH_ANIM_BACKUP);
 }
 

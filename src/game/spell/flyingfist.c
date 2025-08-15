@@ -112,11 +112,11 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	qboolean	powerup, wimpy;
 	int			flags;
 
-	if(other == self->owner)
+	if (other == self->owner)
 	{
 		return;
 	}
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -146,7 +146,7 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	// has the target got reflection turned on ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			// scale speed down
@@ -158,11 +158,11 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	}
 
 	AlertMonsters (self, self->owner, 1, false);
-	if(other->takedamage)
+	if (other->takedamage)
 	{
-		if(powerup)		// Check for powered up meteor
+		if (powerup)		// Check for powered up meteor
 		{
-			if(deathmatch->value)
+			if (deathmatch->value)
 				damage = irand(FIREBALL_DAMAGE_MIN_POWER/2, FIREBALL_DAMAGE_MAX_POWER/2);
 			else
 				damage = irand(FIREBALL_DAMAGE_MIN_POWER, FIREBALL_DAMAGE_MAX_POWER);
@@ -182,7 +182,7 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 		}
 		else
 		{
-			if(deathmatch->value)
+			if (deathmatch->value)
 				damage = irand(FIREBALL_DAMAGE_MIN/2, FIREBALL_DAMAGE_MAX/2);
 			else
 				damage = irand(FIREBALL_DAMAGE_MIN, FIREBALL_DAMAGE_MAX);
@@ -197,7 +197,7 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	}
 
 	// Attempt to apply a scorchmark decal to the thing I hit.
-	if(IsDecalApplicable(self, other, self->s.origin, surface, plane, planedir))
+	if (IsDecalApplicable(self, other, self->s.origin, surface, plane, planedir))
 	{
 		flags |= CEF_FLAG6;
 	}
@@ -266,7 +266,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 	AngleVectors(aimangles, forward, NULL, NULL);
 	VectorMA(flyingfist->s.origin, FLYING_FIST_SPEED, forward, endpos);
 	trace = gi.trace(startpos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
-	if(trace.ent && ok_to_autotarget(caster, trace.ent))
+	if (trace.ent && ok_to_autotarget(caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, FLYING_FIST_SPEED, flyingfist->velocity);
 	}

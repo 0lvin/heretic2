@@ -213,7 +213,7 @@ LoadTextFile(char *name, char **addr)
 	char *buffer = NULL;
 
 	length = gi.LoadFile(name, (void **)&buffer);
-	if(length <= 0)
+	if (length <= 0)
 	{
 		Sys_Error("Unable to load %s", name);
 		return(0);
@@ -1347,7 +1347,7 @@ ReadEdict(FILE *f, edict_t *ent)
 	byte *temp;
 	void *s;
 
-	if(ent->s.clientEffects.buf)
+	if (ent->s.clientEffects.buf)
 	{
 		temp = ent->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
 	}
@@ -1508,7 +1508,7 @@ ReadLevel(const char *filename)
 
 		// Force the monsters just loaded to point at the right anim.
 
-		if((ent->classID > 0) && (!Cid_init[ent->classID]) && (ent->classID < NUM_CLASSIDS))	 	// Need to call once per level that item is on
+		if ((ent->classID > 0) && (!Cid_init[ent->classID]) && (ent->classID < NUM_CLASSIDS))	 	// Need to call once per level that item is on
 		{
 			classStaticsInits[ent->classID]();
 			Cid_init[ent->classID] = -1;
@@ -1520,7 +1520,7 @@ ReadLevel(const char *filename)
 
 	LoadScripts(f, false);
 
-  	// Load up all the persistant effects and fire them off.
+	// Load up all the persistant effects and fire them off.
 
 	fread (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
 	gi.ClearPersistantEffects();

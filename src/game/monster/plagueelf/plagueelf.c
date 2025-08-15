@@ -291,7 +291,7 @@ void plagueelf_check_land ( edict_t *self )
 	vec3_t	endpos;
 	trace_t	trace;
 
-	if(self->s.frame == FRAME_death7)
+	if (self->s.frame == FRAME_death7)
 		MG_NoBlocking(self);
 
 	M_ChangeYaw(self);
@@ -320,7 +320,7 @@ void plagueElf_strike (edict_t *self)
 	int			damage;
 
 	//FIXME: Account for weapon being knocked out of hand?
-	if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 		return;
 
 	switch ( self->curAnimID )
@@ -367,7 +367,7 @@ void plagueElf_strike (edict_t *self)
 
 			damage = irand(PLAGUEELF_DMG_MIN, PLAGUEELF_DMG_MAX);
 
-			if(!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
+			if (!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 				damage+=PLAGUEELF_DMG_HOE;
 			else if(!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
 				damage+=PLAGUEELF_DMG_GAFF;
@@ -400,7 +400,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
 
 	// Big enough death to be thrown back
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		if (irand(0,10) < 5)
 			SetAnim(self, PLAGUEELF_ANIM_DIE2);
@@ -412,7 +412,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	self->msgHandler = DeadMsgHandler;
 
 	//Dead but still being hit
-	if(self->deadflag == DEAD_DEAD)
+	if (self->deadflag == DEAD_DEAD)
 		return;
 
 	self->deadflag = DEAD_DEAD;
@@ -447,10 +447,10 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	}
 
 	//regular death
-	if(self->count == 0)
+	if (self->count == 0)
 	{
 		chance = irand(0,3);
-		if(chance == 0)
+		if (chance == 0)
 			SetAnim(self, PLAGUEELF_ANIM_DIE1);
 		else if(chance == 1)
 			SetAnim(self, PLAGUEELF_ANIM_DIE2);
@@ -461,7 +461,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		if(self->count == 1)
+		if (self->count == 1)
 			SetAnim(self, PLAGUEELF_ANIM_DIE1);
 		else if(self->count == 2)
 			SetAnim(self, PLAGUEELF_ANIM_DIE2);
@@ -565,13 +565,13 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 	vec3_t	normal;
 	edict_t	*Spell;
 
-	if(Surface&&(Surface->flags&SURF_SKY))
+	if (Surface&&(Surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
 	}
 
-	if(EntReflecting(Other, true, true))
+	if (EntReflecting(Other, true, true))
 	{
 		Spell = G_Spawn();
 
@@ -626,12 +626,12 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		break;
 	}
 
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		VectorSet(normal, 0, 0, 1);
-		if(Plane)
+		if (Plane)
 		{
-			if(Plane->normal)
+			if (Plane->normal)
 			{
 				VectorCopy(Plane->normal, normal);
 			}
@@ -639,7 +639,7 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		T_Damage(Other,self,self->owner,self->movedir,self->s.origin,normal,self->dmg,0,DAMAGE_SPELL,MOD_DIED);
 	}
 
-	if(self->dmg_radius)
+	if (self->dmg_radius)
 		T_DamageRadius(self, self->owner, self->owner, self->dmg_radius, self->dmg, 0, DAMAGE_SPELL,MOD_DIED);
 
 	VectorClear(self->velocity);
@@ -654,7 +654,7 @@ void plagueElf_spell(edict_t *self)
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
 			return;
 
 //		gi.sound(self, CHAN_WEAPON, Sounds[SND_SPELL], 1, ATTN_NORM, 0);
@@ -690,9 +690,9 @@ void plagueElf_spell(edict_t *self)
 		VectoAngles(Spell->movedir, Spell->s.angles);
 		Spell->s.angles[PITCH] = anglemod(Spell->s.angles[PITCH] * -1);
 
-		if(Q_stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
+		if (Q_stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
 		{
-			if(irand(0, 3) || skill->value < 2 || !Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+			if (irand(0, 3) || skill->value < 2 || !Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 				Spell->red_rain_count = FX_PE_MAKE_SPELL2;
 			else
 				Spell->red_rain_count = FX_PE_MAKE_SPELL3;
@@ -724,7 +724,7 @@ void plagueElf_c_spell(edict_t *self)
 	vec3_t	Forward, right, firedir, holdpos;
 	edict_t	*Spell;
 
-	if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)	// Was his arm lopped off?
+	if (self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)	// Was his arm lopped off?
 		return;
 
 	self->monsterinfo.attack_finished = level.time + 0.4;
@@ -763,9 +763,9 @@ void plagueElf_c_spell(edict_t *self)
 	VectoAngles(Spell->movedir, Spell->s.angles);
 	Spell->s.angles[PITCH] = anglemod(Spell->s.angles[PITCH] * -1);
 
-	if(Q_stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
+	if (Q_stricmp(self->classname, "monster_plagueElf"))//one of the special dudes
 	{
-		if(irand(0, 3))
+		if (irand(0, 3))
 			Spell->red_rain_count = FX_PE_MAKE_SPELL2;
 		else
 			Spell->red_rain_count = FX_PE_MAKE_SPELL3;
@@ -790,7 +790,7 @@ void plagueElf_c_spell(edict_t *self)
 
 void plagueElf_runaway (edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		return;
 
 	self->monsterinfo.aiflags |= AI_FLEE;
@@ -814,7 +814,7 @@ void plagueElf_melee(edict_t *self, G_Message_t *msg)
 
 	if (M_ValidTarget(self, self->enemy))
 	{//A monster in melee will continue too long if the player backs away, this prevents it
-		if(self->spawnflags&MSF_FIXED||self->monsterinfo.aiflags&AI_NO_MELEE)
+		if (self->spawnflags&MSF_FIXED||self->monsterinfo.aiflags&AI_NO_MELEE)
 		{
 			SetAnim(self, PLAGUEELF_ANIM_MISSILE);
 			return;
@@ -825,14 +825,14 @@ void plagueElf_melee(edict_t *self, G_Message_t *msg)
 
 		if (ret)
 		{
-			if(irand(0,10)<5)
+			if (irand(0,10)<5)
 				SetAnim(self, PLAGUEELF_ANIM_MELEE1);
 			else
 				SetAnim(self, PLAGUEELF_ANIM_MELEE2);
 		}
 		else
 		{
-			if(self->spawnflags&MSF_FIXED)
+			if (self->spawnflags&MSF_FIXED)
 				SetAnim(self, PLAGUEELF_ANIM_DELAY);
 			else
 				SetAnim(self, PLAGUEELF_ANIM_RUNATK1);
@@ -848,10 +848,10 @@ void plagueElf_melee(edict_t *self, G_Message_t *msg)
 
 void pelf_dismember_sound(edict_t *self)
 {
-	if(self->health <= 0)
+	if (self->health <= 0)
 		return;
 
-	if(irand(0, 1))
+	if (irand(0, 1))
 		gi.sound(self, CHAN_BODY, sounds[SND_DISMEMBER1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_BODY, sounds[SND_DISMEMBER2], 1, ATTN_NORM, 0);
@@ -860,7 +860,7 @@ void pelf_dismember_sound(edict_t *self)
 qboolean canthrownode_pe (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_pe[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -876,13 +876,13 @@ void plagueElf_chicken (edict_t *self, int coward, int flee, float fleetime)
 
 	chance = flrand(0, 20 + skill->value * 10);
 
-	if(chance<coward)
+	if (chance<coward)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 		return;
 	}
 
-	if(chance<flee)
+	if (chance<flee)
 	{
 		self->monsterinfo.aiflags |= AI_FLEE;
 		self->monsterinfo.flee_finished = level.time + fleetime;
@@ -891,8 +891,8 @@ void plagueElf_chicken (edict_t *self, int coward, int flee, float fleetime)
 
 void plagueElf_dead_pain (edict_t *self, G_Message_t *msg)
 {
-	if(msg)
-		if(!(self->svflags & SVF_PARTS_GIBBED))
+	if (msg)
+		if (!(self->svflags & SVF_PARTS_GIBBED))
 			MG_parse_dismember_msg(self, msg);
 }
 
@@ -902,7 +902,7 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 	vec3_t handspot, forward, right, up;
 	float chance;
 
-	if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 		return false;
 
 	VectorClear(handspot);
@@ -911,13 +911,13 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 	VectorMA(handspot,8,right,handspot);
 	VectorMA(handspot,-6,up,handspot);
 
-	if(self->deadflag == DEAD_DEAD||(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW))
+	if (self->deadflag == DEAD_DEAD||(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW))
 		chance = 0;
 	else
 		chance = 3;
-	if(!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 	{
-		if(irand(0,10)<chance)
+		if (irand(0,10)<chance)
 		{//just take off top
 			ThrowWeapon(self, &handspot, BIT_HOE, 0, FRAME_torsooff);
 			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
@@ -933,9 +933,9 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
-	if(!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
 	{
-		if(irand(0,10)<chance)
+		if (irand(0,10)<chance)
 		{//just take off top
 			ThrowWeapon(self, &handspot, BIT_GAFF, 0, FRAME_partfly);
 			self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
@@ -951,9 +951,9 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return true;
 	}
-	if(!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 	{
-		if(irand(0,10)<chance)
+		if (irand(0,10)<chance)
 		{//just take off top
 			ThrowWeapon(self, &handspot, BIT_HAMMER, 0, FRAME_partfly);
 			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
@@ -972,7 +972,7 @@ qboolean plagueElf_dropweapon (edict_t *self, int damage)
 	ThrowWeapon(self, &handspot, BIT_HANDLE, 0, FRAME_partfly);
 	self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
-	if(self->deadflag != DEAD_DEAD)
+	if (self->deadflag != DEAD_DEAD)
 		plagueElf_chicken(self,6,8,flrand(5,10));
 	return true;
 }
@@ -985,32 +985,32 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 	vec3_t			gore_spot, right;
 	qboolean dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 //	gi.dprintf("HL: %d",HitLocation);
 
-	if(self->curAnimID == PLAGUEELF_ANIM_MELEE1)
+	if (self->curAnimID == PLAGUEELF_ANIM_MELEE1)
 	{
 		/* Hit chest during melee, may have hit arms */
-		if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
+		if (HitLocation == hl_TorsoFront&&irand(0,10)<4)
 		{
-			if(irand(0,10)<7)
+			if (irand(0,10)<7)
 				HitLocation = hl_ArmLowerRight;
 			else
 				HitLocation = hl_ArmLowerLeft;
 		}
 	}
 
-	if(
+	if (
 		(HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW) ||
 		(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)||
 		(
@@ -1025,13 +1025,13 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.25)
+			if ((frandk() * self->health)<damage*0.25)
 				plagueElf_dropweapon (self, (int)damage);
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_pe(self, MESH__HEAD,&throw_nodes);
 
@@ -1042,7 +1042,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -1057,11 +1057,11 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			break;
 		case hl_TorsoFront://split in half?
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__BODY].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__BODY].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if(self->health > 0 && (frandk() * self->health)<damage*0.3 && dismember_ok)
+			if (self->health > 0 && (frandk() * self->health)<damage*0.3 && dismember_ok)
 			{
 				gore_spot[2]+=12;
 				canthrownode_pe(self, MESH__BODY,&throw_nodes);
@@ -1075,7 +1075,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -1084,7 +1084,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				if((frandk() * self->health)<damage*0.5)
+				if ((frandk() * self->health)<damage*0.5)
 					plagueElf_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__BODY].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BODY].skin = self->s.skinnum+1;
@@ -1092,15 +1092,15 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			break;
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.4)
+			if ((frandk() * self->health)<damage*0.4)
 				plagueElf_dropweapon (self, (int)damage);
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_pe(self, MESH__L_ARM, &throw_nodes))
+				if (canthrownode_pe(self, MESH__L_ARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1119,13 +1119,13 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
 			//Knock weapon out of hand?
-			if(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_pe(self, MESH__R_ARM, &throw_nodes))
+				if (canthrownode_pe(self, MESH__R_ARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1137,7 +1137,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			}
 			else
 			{
-				if((frandk() * self->health)<damage*0.75)
+				if ((frandk() * self->health)<damage*0.75)
 					plagueElf_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__R_ARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__R_ARM].skin = self->s.skinnum+1;
@@ -1146,18 +1146,18 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->health>0)
+			if (self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__L_LEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__L_LEG].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__L_LEG].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_pe(self, MESH__L_LEG, &throw_nodes))
+				if (canthrownode_pe(self, MESH__L_LEG, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1169,18 +1169,18 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			break;
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->health>0)
+			if (self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__R_LEG].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__R_LEG].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__R_LEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__R_LEG].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__R_LEG].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__R_LEG].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_pe(self, MESH__R_LEG, &throw_nodes))
+				if (canthrownode_pe(self, MESH__R_LEG, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1192,14 +1192,14 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 			break;
 
 		default:
-			if((frandk() * self->health)<damage*0.25)
+			if ((frandk() * self->health)<damage*0.25)
 				plagueElf_dropweapon (self, (int)damage);
 			break;
 	}
-	if(throw_nodes)
+	if (throw_nodes)
 		self->pain_debounce_time = 0;
 
-	if(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 		self->monsterinfo.aiflags |= AI_NO_MISSILE;
@@ -1207,9 +1207,9 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 	else if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
-		if(self->missile_range)
+		if (self->missile_range)
 		{
-			if(!(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW))
+			if (!(self->s.fmnodeinfo[MESH__R_ARM].flags&FMNI_NO_DRAW))
 			{
 				self->monsterinfo.aiflags &= ~AI_NO_MISSILE;
 				self->melee_range = 0;
@@ -1219,7 +1219,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 		}
 	}
 
-	if(self->monsterinfo.aiflags&AI_NO_MISSILE &&
+	if (self->monsterinfo.aiflags&AI_NO_MISSILE &&
 		self->monsterinfo.aiflags&AI_NO_MELEE)
 		self->monsterinfo.aiflags |= AI_COWARD;
 }
@@ -1235,12 +1235,12 @@ void plagueElf_pain(edict_t *self, G_Message_t *msg)
 
 	pelf_init_phase_in(self);
 
-	if(!(self->monsterinfo.aiflags & AI_COWARD) && !(self->monsterinfo.aiflags & AI_FLEE))
-		if(!force_pain)
-			if((frandk() * self->health)>damage)
+	if (!(self->monsterinfo.aiflags & AI_COWARD) && !(self->monsterinfo.aiflags & AI_FLEE))
+		if (!force_pain)
+			if ((frandk() * self->health)>damage)
 				return;
 
-	if(self->fire_damage_time > level.time)
+	if (self->fire_damage_time > level.time)
 		self->monsterinfo.aiflags |= AI_COWARD;
 
 	if (self->pain_debounce_time < level.time)
@@ -1266,23 +1266,23 @@ void plagueElf_pause (edict_t *self)
 {
 	self->monsterinfo.misc_debounce_time = 0;
 
-	if(self->ai_mood == AI_MOOD_FLEE)
+	if (self->ai_mood == AI_MOOD_FLEE)
 	{
-		if(self->s.color[3] != 255 && self->pre_think!=pelf_phase_in)
+		if (self->s.color[3] != 255 && self->pre_think!=pelf_phase_in)
 			pelf_init_phase_in(self);
 	}
 	else
 	{
-		if(!skill->value)
+		if (!skill->value)
 		{
-			if(self->s.color[3] > 50 && self->pre_think!=pelf_phase_out)
+			if (self->s.color[3] > 50 && self->pre_think!=pelf_phase_out)
 				pelf_init_phase_out(self);
 		}
 		else if(self->s.color[3] && self->pre_think!=pelf_phase_out)
 			pelf_init_phase_out(self);
 	}
 
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == PLAGUEELF_ANIM_DELAY && self->enemy)
+	if (self->spawnflags & MSF_FIXED && self->curAnimID == PLAGUEELF_ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -1293,14 +1293,14 @@ void plagueElf_pause (edict_t *self)
 	switch (self->ai_mood)
 	{
 	case AI_MOOD_ATTACK:
-		if(self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
+		if (self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
 			G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 		else
 			G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 		break;
 
 	case AI_MOOD_PURSUE:
-		if(self->ai_mood_flags&AI_MOOD_FLAG_DUMB_FLEE)
+		if (self->ai_mood_flags&AI_MOOD_FLAG_DUMB_FLEE)
 			SetAnim(self, PLAGUEELF_ANIM_SCARED);
 		else
 			G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
@@ -1315,15 +1315,15 @@ void plagueElf_pause (edict_t *self)
 		break;
 
 	case AI_MOOD_FLEE:
-		if(self->ai_mood_flags&AI_MOOD_FLAG_DUMB_FLEE || (!(self->ai_mood_flags&AI_MOOD_FLAG_FORCED_BUOY) && !irand(0, 20)))
+		if (self->ai_mood_flags&AI_MOOD_FLAG_DUMB_FLEE || (!(self->ai_mood_flags&AI_MOOD_FLAG_FORCED_BUOY) && !irand(0, 20)))
 		{
-			if(self->enemy)
+			if (self->enemy)
 			{
-				if(M_DistanceToTarget(self, self->enemy) < 100)
+				if (M_DistanceToTarget(self, self->enemy) < 100)
 				{
-					if(self->curAnimID == PLAGUEELF_ANIM_SCARED)
+					if (self->curAnimID == PLAGUEELF_ANIM_SCARED)
 						dying_elf_sounds (self, DYING_ELF_PAIN_VOICE);
-					if(irand(0,1))
+					if (irand(0,1))
 						SetAnim(self, PLAGUEELF_ANIM_CRAZY_A);
 					else
 						SetAnim(self, PLAGUEELF_ANIM_CRAZY_B);
@@ -1347,7 +1347,7 @@ void plagueElf_pause (edict_t *self)
 		break;
 
 	case AI_MOOD_WANDER:
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_WALK1);
@@ -1358,7 +1358,7 @@ void plagueElf_pause (edict_t *self)
 		break;
 
 	case AI_MOOD_JUMP:
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_FJUMP);
@@ -1387,7 +1387,7 @@ void pelf_go_inair(edict_t *self)
 
 void pelf_jump (edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else
 		SetAnim(self, PLAGUEELF_ANIM_FJUMP);
@@ -1405,12 +1405,12 @@ void pelf_check_mood (edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void plagueElf_run(edict_t *self, G_Message_t *msg)
 {
-	if(self->curAnimID == PLAGUEELF_ANIM_CURSING || self->curAnimID == PLAGUEELF_ANIM_POINT)
+	if (self->curAnimID == PLAGUEELF_ANIM_CURSING || self->curAnimID == PLAGUEELF_ANIM_POINT)
 		return;
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_RUN1);
@@ -1433,7 +1433,7 @@ void plagueElf_runorder(edict_t *self)
 -------------------------------------------------------------------------*/
 void plagueElfsqueal (edict_t *self)
 {
-	if(self->monsterinfo.aiflags & AI_COWARD || self->monsterinfo.aiflags & AI_FLEE)
+	if (self->monsterinfo.aiflags & AI_COWARD || self->monsterinfo.aiflags & AI_FLEE)
 		dying_elf_sounds (self, DYING_ELF_PAIN_VOICE);
 	else
 	{
@@ -1461,10 +1461,10 @@ void plagueElf_stand(edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void plagueElf_walk(edict_t *self, G_Message_t *msg)
 {
-	if(self->curAnimID == PLAGUEELF_ANIM_CURSING || self->curAnimID == PLAGUEELF_ANIM_POINT)
+	if (self->curAnimID == PLAGUEELF_ANIM_CURSING || self->curAnimID == PLAGUEELF_ANIM_POINT)
 		return;
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else if(irand(0, 1))
 		SetAnim(self, PLAGUEELF_ANIM_WALK1);
@@ -1475,7 +1475,7 @@ void plagueElf_walk(edict_t *self, G_Message_t *msg)
 
 void plagueElf_go_run(edict_t *self)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, PLAGUEELF_ANIM_DELAY);
 	else
 		SetAnim(self, PLAGUEELF_ANIM_RUN1);
@@ -1545,7 +1545,7 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 	byte	sight_type;
 	int		support, sound;
 
-	if(self->targetname || self->monsterinfo.c_mode)
+	if (self->targetname || self->monsterinfo.c_mode)
 		return;//cinematic waiting to be activated, don't do this
 
 	//Have we already said something?
@@ -1558,7 +1558,7 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 	support = self->monsterinfo.supporters = M_FindSupport(self, PLAGUEELF_SUPPORT_RADIUS);
 
 	//See if we are the first to see the player
-	if(M_CheckAlert(self, PLAGUEELF_SUPPORT_RADIUS))
+	if (M_CheckAlert(self, PLAGUEELF_SUPPORT_RADIUS))
 	{
 		//gi.dprintf("pelf_SightSound: elf has %d supporters\n", support);
 
@@ -1584,9 +1584,9 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 			pelf_PollResponse( self, SE_GROUP, sound, self->monsterinfo.sound_finished - flrand(0.5, 0.25) );
 		}
 
-		if(support)
+		if (support)
 		{//FIXME: make sure enemy is far enough away to anim!
-			if(irand(0, 1))
+			if (irand(0, 1))
 				SetAnim(self, PLAGUEELF_ANIM_CURSING);
 			else
 				SetAnim(self, PLAGUEELF_ANIM_POINT);
@@ -1621,7 +1621,7 @@ void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float tim
 		if (ent->health <= 0)
 			continue;
 
-		if(!ok_to_wake(ent, false, false))
+		if (!ok_to_wake(ent, false, false))
 			continue;
 
 		//Save this as valid!
@@ -1631,7 +1631,7 @@ void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float tim
 		if (irand(0,1))
 			continue;
 
-		if(!ent->enemy)
+		if (!ent->enemy)
 		{
 			ent->enemy = self->enemy;
 			FoundTarget(ent, false);
@@ -1657,7 +1657,7 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 	float	time;
 	int		sound_event, sound_id;
 
-	if(self->targetname || self->monsterinfo.c_mode)
+	if (self->targetname || self->monsterinfo.c_mode)
 		return;//cinematic waiting to be activated, don't do this
 
 	//gi.dprintf("pelf_EchoResponse: Echoing alert response\n");
@@ -1671,9 +1671,9 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 		self->monsterinfo.sound_start = time;
 		self->monsterinfo.sound_finished = level.time + pelf_VoiceTimes[self->monsterinfo.sound_pending];
 
-		if(irand(0, 4))
+		if (irand(0, 4))
 		{//FIXME: make sure enemy is far enough away to anim!
-			if(irand(0, 1))
+			if (irand(0, 1))
 				SetAnim(self, PLAGUEELF_ANIM_CURSING);
 			else
 				SetAnim(self, PLAGUEELF_ANIM_POINT);
@@ -1688,9 +1688,9 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 		if (irand(0,2))
 			pelf_PollResponse( self, SE_GROUP, self->monsterinfo.sound_pending, self->monsterinfo.sound_finished );
 
-		if(irand(0, 2))
+		if (irand(0, 2))
 		{//FIXME: make sure enemy is far enough away to anim!
-			if(irand(0, 1))
+			if (irand(0, 1))
 				SetAnim(self, PLAGUEELF_ANIM_CURSING);
 			else
 				SetAnim(self, PLAGUEELF_ANIM_POINT);
@@ -1723,12 +1723,12 @@ void pelf_EchoSound ( edict_t *self, G_Message_t *msg )
 //
 void pelf_check_too_close(edict_t *self)
 {
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
-	if(M_DistanceToTarget(self, self->enemy) < flrand(0, 100))
+	if (M_DistanceToTarget(self, self->enemy) < flrand(0, 100))
 	{
-		if(irand(0,1))
+		if (irand(0,1))
 			SetAnim(self, PLAGUEELF_ANIM_CRAZY_A);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_CRAZY_B);
@@ -1740,7 +1740,7 @@ void pelf_phase_out (edict_t *self)
 {
 	int	interval = 60;
 
-	if(self->s.color[3] > interval)
+	if (self->s.color[3] > interval)
 	{
 		self->s.color[3] -= irand(interval/2, interval);
 		self->pre_think = pelf_phase_out;
@@ -1748,7 +1748,7 @@ void pelf_phase_out (edict_t *self)
 	}
 	else
 	{
-		if(!skill->value)
+		if (!skill->value)
 			self->s.color[3] = 50;
 		else
 			self->s.color[3] = 0;
@@ -1762,7 +1762,7 @@ void pelf_phase_in (edict_t *self)
 {
 	int	interval = 60;
 
-	if(self->s.color[3] < 255 - interval)
+	if (self->s.color[3] < 255 - interval)
 	{
 		self->s.color[3] += irand(interval/2, interval);
 		self->pre_think = pelf_phase_in;
@@ -1777,7 +1777,7 @@ void pelf_phase_in (edict_t *self)
 		self->s.color[2] = 255;
 		self->s.color[3] = 255;
 
-		if(self->health <= 0)
+		if (self->health <= 0)
 		{
 			self->pre_think = NULL;
 			self->next_pre_think = -1;
@@ -1789,7 +1789,7 @@ void pelf_phase_in (edict_t *self)
 
 void pelf_init_phase_out (edict_t *self)
 {
-	if(Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+	if (Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 		return;
 
 //	gi.dprintf("Elf phasing out\n");
@@ -1800,7 +1800,7 @@ void pelf_init_phase_out (edict_t *self)
 
 void pelf_init_phase_in (edict_t *self)
 {
-	if(Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+	if (Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 		return;
 
 //	gi.dprintf("Elf phasing in\n");
@@ -1969,7 +1969,7 @@ void SP_monster_plagueElf (edict_t *self)
 {
 	int chance;//, scale;
 
-	if(self->spawnflags & MSF_WALKING)
+	if (self->spawnflags & MSF_WALKING)
 	{
 		self->spawnflags |= MSF_WANDER;
 		self->spawnflags &= ~MSF_WALKING;
@@ -1998,7 +1998,7 @@ void SP_monster_plagueElf (edict_t *self)
 
 	self->solid=SOLID_BBOX;
 
-	if(irand(0,1))
+	if (irand(0,1))
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 	//FIXME: Hack to account for new origin with old QuakEd header
 	self->s.origin[2] += 32;
@@ -2035,7 +2035,7 @@ void SP_monster_plagueElf (edict_t *self)
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_box";
 
-	if(self->spawnflags & MSF_WANDER)
+	if (self->spawnflags & MSF_WANDER)
 	{
 		G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 	}
@@ -2051,18 +2051,18 @@ void SP_monster_plagueElf (edict_t *self)
 		G_QPostMessage(self,MSG_STAND,PRI_DIRECTIVE, NULL);
 	}
 
-	if(self->spawnflags&MSF_FIXED || self->spawnflags&MSF_PELF_MISSILE)
+	if (self->spawnflags&MSF_FIXED || self->spawnflags&MSF_PELF_MISSILE)
 	{
-//		if(!self->melee_range)
+//		if (!self->melee_range)
 			self->melee_range = 0;
 
-		if(!self->missile_range)
+		if (!self->missile_range)
 			self->missile_range = 512;
 
-//		if(!self->min_missile_range)
+//		if (!self->min_missile_range)
 			self->min_missile_range = 0;
 
-		if(!self->bypass_missile_chance)
+		if (!self->bypass_missile_chance)
 			self->bypass_missile_chance = 60;
 
 		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
@@ -2076,7 +2076,7 @@ void SP_monster_plagueElf (edict_t *self)
 	{
 		//turn on/off the weapons that aren't used
 		chance = irand(0, 3);
-		if(chance < 1)
+		if (chance < 1)
 		{
 			//show the hammer
 			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
@@ -2105,7 +2105,7 @@ void SP_monster_plagueElf (edict_t *self)
 	MG_InitMoods(self);
 	self->svflags |= SVF_WAIT_NOTSOLID;
 
-	if(!Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
+	if (!Q_stricmp(self->classname, "monster_palace_plague_guard_invisible"))
 	{
 		self->melee_range = -64;
 		self->min_missile_range = 30;
@@ -2175,7 +2175,7 @@ NOTE: A value of zero will result in defaults, if you actually want zero as the 
 -------------------------------------------------------------------------*/
 void SP_monster_palace_plague_guard (edict_t *self)
 {
-	if(!self->health)
+	if (!self->health)
 		self->health = PLAGUEELF_HEALTH * 2;
 
 	self->spawnflags |= MSF_PELF_MISSILE;
@@ -2256,7 +2256,7 @@ NOTE: A value of zero will result in defaults, if you actually want zero as the 
 -------------------------------------------------------------------------*/
 void SP_monster_palace_plague_guard_invisible (edict_t *self)
 {
-	if(!self->health)
+	if (!self->health)
 		self->health = PLAGUEELF_HEALTH * 2;
 
 	self->spawnflags |= MSF_PELF_MISSILE;
@@ -2270,7 +2270,7 @@ void SP_monster_palace_plague_guard_invisible (edict_t *self)
 	self->s.color[2] = 255;
 	self->s.color[3] = 255;
 
-	if(!(self->spawnflags&MSF_EXTRA4))//these guys start visible
+	if (!(self->spawnflags&MSF_EXTRA4))//these guys start visible
 		pelf_init_phase_out(self);
 
 }

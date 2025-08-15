@@ -71,7 +71,7 @@ void mssithra_stand(edict_t *self, G_Message_t *msg)
 
 void mssithra_decide_stand(edict_t *self)
 {
-	if(mssithraCheckMood(self))
+	if (mssithraCheckMood(self))
 		return;
 
 	SetAnim(self, ANIM_IDLE1);
@@ -82,26 +82,26 @@ void mssithra_pain(edict_t *self, G_Message_t *msg)
 	int				temp, damage;
 	qboolean		force_pain;
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
+	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
-	if(!force_pain)
+	if (!force_pain)
 	{
-		if(irand(0,10)<5||!self->groundentity)
+		if (irand(0,10)<5||!self->groundentity)
 			return;
 
-		if(self->pain_debounce_time > level.time)
+		if (self->pain_debounce_time > level.time)
 			return;
 	}
 
-	if(self->curAnimID == ANIM_CLAW1)
+	if (self->curAnimID == ANIM_CLAW1)
 		return;
 
 	self->pain_debounce_time = level.time + 2;
 
-	if(irand(0,10)<5)
+	if (irand(0,10)<5)
 		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
@@ -111,19 +111,19 @@ void mssithra_pain(edict_t *self, G_Message_t *msg)
 	else
 		self->flags &= ~FL_SWIM;
 
-	if(irand(0,10)<1)
+	if (irand(0,10)<1)
 		SetAnim(self, ANIM_ROAR1);//make him tougher? more aggressive?
 }
 
 void mssithra_pain_react (edict_t *self)
 {
-	if(!self->enemy)
+	if (!self->enemy)
 	{
 		mssithra_decide_stand(self);
 		return;
 	}
 
-	if(self->enemy->health<=0||self->enemy == self||!self->enemy->takedamage)
+	if (self->enemy->health<=0||self->enemy == self||!self->enemy->takedamage)
 	{
 		self->enemy=NULL;
 		mssithra_decide_stand(self);
@@ -140,7 +140,7 @@ void mssithra_death(edict_t *self, G_Message_t *msg)
 	self->svflags |= SVF_DEADMONSTER;
 	self->msgHandler=DyingMsgHandler;
 
-	if(self->deadflag == DEAD_DEAD)
+	if (self->deadflag == DEAD_DEAD)
 		return;
 
 	self->deadflag = DEAD_DEAD;
@@ -192,10 +192,10 @@ void mssithraKillSelf (edict_t *self)
 void mssithraSound(edict_t *self, float soundnum, float channel, float attenuation)
 {
 	return;
-	if(!channel)
+	if (!channel)
 		channel = CHAN_AUTO;
 
-	if(!attenuation)
+	if (!attenuation)
 		attenuation = ATTN_NORM;
 	else if(attenuation == -1)
 		attenuation = ATTN_NONE;
@@ -212,7 +212,7 @@ void mssithra_melee(edict_t *self, G_Message_t *msg)
 	vec3_t	v;
 	float	len, melee_range, min_seperation;
 
-	if(M_ValidTarget(self, self->enemy))
+	if (M_ValidTarget(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 		len = VectorLength (v);
@@ -230,7 +230,7 @@ void mssithra_melee(edict_t *self, G_Message_t *msg)
 
 void mssithra_missile(edict_t *self, G_Message_t *msg)
 {//NEWSTUFF: jump closer to claw, loop shooting anims
-	if(M_ValidTarget(self, self->enemy))
+	if (M_ValidTarget(self, self->enemy))
 	{
 		if (irand(0,(skill->value+1)*2))
 		{
@@ -269,11 +269,11 @@ void mssithraSwipe (edict_t *self)
 			T_Damage (self->enemy, self, self, dir, org, vec3_origin,
 					MSSITHRA_DMG_SWIPE, 0, DAMAGE_DISMEMBER,MOD_DIED);
 
-			if(self->enemy->health>0)//else don't gib?
+			if (self->enemy->health>0)//else don't gib?
 			{
-				if(!irand(0,5))
+				if (!irand(0,5))
 				{
-					if(!Q_stricmp(self->enemy->classname, "player"))
+					if (!Q_stricmp(self->enemy->classname, "player"))
 						playerExport->KnockDownPlayer(&self->enemy->client->playerinfo);
 				}
 			}
@@ -346,7 +346,7 @@ void mssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csu
 	// are we reflecting ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			Vec3ScaleAssign(MSSITHRA_ARROW_SPEED/2, self->velocity);
@@ -356,7 +356,7 @@ void mssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csu
 		}
 	}
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{
 		if (plane->normal)
 			VectorCopy(plane->normal, self->movedir);
@@ -412,14 +412,14 @@ void mssithraArrow(edict_t *self)
 	if (!self->enemy)
 		return;
 
-	if(self->enemy->health<=0)
+	if (self->enemy->health<=0)
 	{
 		self->enemy=NULL;
 		mssithra_decide_stand(self);
 		return;
 	}
 
-	if(self->monsterinfo.attack_finished>level.time)
+	if (self->monsterinfo.attack_finished>level.time)
 		return;
 
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW],1,ATTN_NORM,0);
@@ -512,18 +512,18 @@ void mssithraCheckLoop (edict_t *self, float frame)
 	vec3_t	v;
 	float	len, melee_range, min_seperation, jump_range;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	ai_charge2(self, 0);
 
-	if(!visible(self, self->enemy))
+	if (!visible(self, self->enemy))
 		return;
 
-	if(!infront(self, self->enemy))
+	if (!infront(self, self->enemy))
 		return;
 
-	if(irand(0,10)<5)
+	if (irand(0,10)<5)
 		return;
 
 	VectorSubtract (self->s.origin, self->enemy->s.origin, v);
@@ -548,7 +548,7 @@ void mssithraCheckLoop (edict_t *self, float frame)
 -------------------------------------------------------------------------*/
 qboolean mssithraCheckMood (edict_t *self)
 {
-	if(self->monsterinfo.aiflags & AI_OVERRIDE_GUIDE)
+	if (self->monsterinfo.aiflags & AI_OVERRIDE_GUIDE)
 		return false;
 
 	self->mood_think(self);
@@ -559,7 +559,7 @@ qboolean mssithraCheckMood (edict_t *self)
 	switch (self->ai_mood)
 	{
 	case AI_MOOD_ATTACK:
-		if(self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
+		if (self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
 			G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 		else
 			G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
@@ -610,7 +610,7 @@ void mssithra_postthink(edict_t *self)
 
 void mmssithraRandomGrowlSound (edict_t *self)
 {
-	if(!irand(0,2))
+	if (!irand(0,2))
 		gi.sound(self, CHAN_VOICE, Sounds[SND_GROWL1], 1, ATTN_NORM, 0);
 	else if(!irand(0,1))
 		gi.sound(self, CHAN_VOICE, Sounds[SND_GROWL2], 1, ATTN_NORM, 0);
@@ -735,12 +735,12 @@ void SP_monster_mssithra (edict_t *self)
 	self->classID = CID_MSSITHRA;
 	self->materialtype = MAT_FLESH;
 	self->flags |= FL_IMMUNE_SLIME;
-	if(self->flags&FL_INWATER||
+	if (self->flags&FL_INWATER||
 		gi.pointcontents(self->s.origin)&CONTENTS_WATER||
 		self->waterlevel >= 3)
 		self->flags|=FL_SWIM;
 
-	if(self->health<=0)
+	if (self->health<=0)
 		self->health = MSSITHRA_HEALTH;
 
 	//Apply to the end result (whether designer set or not)

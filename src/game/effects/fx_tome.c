@@ -95,7 +95,7 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 	// are we waiting for the shrine light to vanish ?
 	if (tome->SpawnInfo)
 	{
-		if(!(--tome->SpawnInfo))
+		if (!(--tome->SpawnInfo))
 			return false;
 	}
 	// no, could either be no light, or light still active
@@ -245,7 +245,7 @@ void FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
 	effect->AddToView = FXROTTorchAddToView;
 	effect->SpawnData = fxi.cl->time;
 	effect->alpha = 0.7;
-  	AddEffect(owner, effect);
+	AddEffect(owner, effect);
 	effect->d_alpha = 0;
 
 }

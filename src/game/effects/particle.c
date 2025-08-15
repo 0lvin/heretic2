@@ -60,7 +60,7 @@ void AddParticleToList(client_entity_t *ce, client_particle_t *fx)
 			i++;
 			p = p->next;
 		}
-		if(i > MAX_PARTS_PER_CE)
+		if (i > MAX_PARTS_PER_CE)
 		{
 			Com_DPrintf("Memory leak due to lack of CEF_VIEWSTATUSCHANGED\n");
 		}
@@ -143,7 +143,7 @@ int AddParticlesToView(client_entity_t *ce)
 		r = &fxi.r_particles[*fxi.r_numparticles];
 
 		//add to additive particle list
-		if((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE))
+		if ((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE))
 		{
 			part_info = 1;
 		}
@@ -156,7 +156,7 @@ int AddParticlesToView(client_entity_t *ce)
 
 		r->color = current->color.c;
 
-		if(alpha > 255 || !((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE)))
+		if (alpha > 255 || !((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE)))
 		{
 			r->alpha = 255;
 		}
@@ -217,11 +217,11 @@ int AddParticlesToView(client_entity_t *ce)
 			}
 		}
 
-		if(cull_parts || (current->type & PFL_NEARCULL))
+		if (cull_parts || (current->type & PFL_NEARCULL))
 		{
 			depth = VectorSeparationSquared(r->origin, fxi.cl->refdef.vieworg);
 
-			if((depth > maxdepth2) || (depth < mindepth2))
+			if ((depth > maxdepth2) || (depth < mindepth2))
 			{
 				part_info = 0;
 			}
@@ -259,7 +259,7 @@ int UpdateParticles(client_entity_t *ce)
 	{
 		d_msec = ParticleUpdateTime - current->startTime;
 
-		if(d_msec > current->duration)
+		if (d_msec > current->duration)
 		{
 			*prev = current->next;
 
@@ -280,7 +280,7 @@ int UpdateParticles(client_entity_t *ce)
 											// based off a dtime from the CREATION of the particle
 		}
 
-		if(alpha <= 0)
+		if (alpha <= 0)
 		{
 			*prev = current->next;
 

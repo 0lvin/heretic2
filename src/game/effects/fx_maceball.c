@@ -248,7 +248,7 @@ FXRipperExplodeLightThink(struct client_entity_s *self, centity_t *owner)
 	if (fxi.cl->time > self->lastThinkTime)
 		return false;
 
-	if(self->dlight->intensity > 0.0F)
+	if (self->dlight->intensity > 0.0F)
 		self->dlight->intensity -= 10.0F;
 
 	return true;

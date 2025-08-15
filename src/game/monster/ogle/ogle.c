@@ -423,10 +423,10 @@ void ogle_mood_think ( edict_t *self )
 		return;
 	}
 
-	if(self->monsterinfo.aiflags & AI_COWARD)
+	if (self->monsterinfo.aiflags & AI_COWARD)
 		self->ai_mood = AI_MOOD_FLEE;
 
-	if(self->enemy)
+	if (self->enemy)
 		path = MG_CheckClearPathToEnemy(self);
 	else
 		path = false;
@@ -440,7 +440,7 @@ void ogle_mood_think ( edict_t *self )
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 
-		if(self->enemy)
+		if (self->enemy)
 		{
 			VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 
@@ -559,7 +559,7 @@ void ogle_sing (edict_t *self)
 {
 	edict_t *ogle = NULL;
 
-	if(self->monsterinfo.awake)
+	if (self->monsterinfo.awake)
 		return;
 
 	switch( self->noise_index )
@@ -567,7 +567,7 @@ void ogle_sing (edict_t *self)
 	case 0:
 		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
-			if(!ogle->monsterinfo.awake)
+			if (!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS1], 0.25, ATTN_NORM, 0);
 		}
 
@@ -582,7 +582,7 @@ void ogle_sing (edict_t *self)
 	case 2:
 		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
-			if(!ogle->monsterinfo.awake)
+			if (!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS2], 0.25, ATTN_NORM, 0);
 		}
 		self->monsterinfo.jump_time = level.time + 3;
@@ -596,7 +596,7 @@ void ogle_sing (edict_t *self)
 	case 4:
 		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
-			if(!ogle->monsterinfo.awake)
+			if (!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS3], 0.25, ATTN_NORM, 0);
 		}
 		self->monsterinfo.jump_time = level.time + 4;
@@ -643,7 +643,7 @@ void ogle_pause(edict_t *self)
 		}
 	}
 
-	if(self->mood_think)
+	if (self->mood_think)
 		self->mood_think(self);
 
 	switch (self->ai_mood)
@@ -969,7 +969,7 @@ void ogle_pain (edict_t *self, G_Message_t *msg)
 			return;
 		}
 		*/
-		if(attacker && !infront(self, attacker))
+		if (attacker && !infront(self, attacker))
 			SetAnim(self, ANIM_PAIN3);
 		else if (chance < 33)
 			SetAnim(self, ANIM_PAIN1);
@@ -988,16 +988,16 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t			gore_spot, right;
 	qboolean dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 
 	VectorCopy(vec3_origin,gore_spot);
@@ -1016,7 +1016,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		break;
 
 	case hl_ArmUpperLeft:
-		if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1051,7 +1051,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		break;
 
 	case hl_ArmLowerLeft:
-		if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1080,7 +1080,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		break;
 
 	case hl_ArmUpperRight:
-		if(self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1130,7 +1130,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 		break;
 
 	case hl_ArmLowerRight:
-		if(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
 			break;
 
 		if (dismember_ok)
@@ -1191,7 +1191,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 
 void ogle_death_pain(edict_t *self, G_Message_t *msg)
 {
-	if(self->health <= -80) //gib death
+	if (self->health <= -80) //gib death
 	{
 		BecomeDebris(self);
 		return;
@@ -1256,7 +1256,7 @@ qboolean ogle_findtarget (edict_t *self)
 	//take down weak overlords
 	while((found = newfindradius(found, self->s.origin, 1024)))
 	{
-		if(found->classID == CID_SERAPH_OVERLORD && found->health > 0 && (found->health<SERAPH_HEALTH/2 || found->ai_mood == AI_MOOD_FLEE))
+		if (found->classID == CID_SERAPH_OVERLORD && found->health > 0 && (found->health<SERAPH_HEALTH/2 || found->ai_mood == AI_MOOD_FLEE))
 		{
 			self->enemy = found;
 			FoundTarget(self, false);
@@ -1269,11 +1269,11 @@ qboolean ogle_findtarget (edict_t *self)
 	//ok, search for utensils of their oppression
 	while(found = newfindradius(found, self->s.origin, 512))
 	{
-		if(found->classID == CID_OBJECT)
+		if (found->classID == CID_OBJECT)
 		{
-			if(found->takedamage && found->health > 0)
+			if (found->takedamage && found->health > 0)
 			{
-				if(!strcmp(found->classname, "obj_minecart1")||
+				if (!strcmp(found->classname, "obj_minecart1")||
 					!strcmp(found->classname, "obj_minecart2")||
 					!strcmp(found->classname, "obj_minecart3")||
 					!strcmp(found->classname, "obj_pick")||
@@ -1289,9 +1289,9 @@ qboolean ogle_findtarget (edict_t *self)
 					!strcmp(found->classname, "obj_wheelbarrow")||
 					!strcmp(found->classname, "obj_wheelbarrowdamaged"))
 				{
-					if(irand(0, 1))
+					if (irand(0, 1))
 					{
-						if(visible(self, found))
+						if (visible(self, found))
 						{
 							self->enemy = found;
 							FoundTarget(self, false);
@@ -1307,14 +1307,14 @@ qboolean ogle_findtarget (edict_t *self)
 	//help out other ogles
 	while((found = newfindradius(found, self->s.origin, 1024)))
 	{
-		if(found->classID == CID_OGLE && found->health > 0 && found != self)
+		if (found->classID == CID_OGLE && found->health > 0 && found != self)
 		{
-			if(found->enemy)
+			if (found->enemy)
 			{
-				if(found->enemy->health > 0)
+				if (found->enemy->health > 0)
 				{
 					{
-						if(found->enemy->client)
+						if (found->enemy->client)
 							found->enemy = NULL;
 						else
 						{
@@ -1339,7 +1339,7 @@ void ogle_melee( edict_t *self, G_Message_t *msg )
 	if (!self->enemy)
 		return;
 
-	if(self->enemy->client)
+	if (self->enemy->client)
 		self->enemy = NULL;
 
 	if (self->enemy->health <= 0)
@@ -1372,7 +1372,7 @@ void ogle_melee( edict_t *self, G_Message_t *msg )
 //do a little dance.. make a little.. oh, sorry
 void ogle_stand1(edict_t *self, G_Message_t *msg)
 {
-	if(self->monsterinfo.awake)
+	if (self->monsterinfo.awake)
 	{
 		int	change = irand(0,4);
 
@@ -1396,7 +1396,7 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 	int			change = irand(0,4);
 	qboolean	ret;
 
-	if(self->enemy && self->enemy->client)
+	if (self->enemy && self->enemy->client)
 		self->enemy = NULL;
 
 	if (self->enemy && self->enemy->health <= 0)
@@ -1442,7 +1442,7 @@ void ogle_run1(edict_t *self, G_Message_t *msg)
 
 			trace = gi.trace(start, mins, self->maxs, end, self, MASK_MONSTERSOLID);
 
-			if(trace.ent==self->enemy)
+			if (trace.ent==self->enemy)
 			{
 				if (irand(0,1))
 					SetAnim(self, ANIM_ATTACK2);
@@ -1497,7 +1497,7 @@ void ogle_check_leadsong (edict_t *self)
 
 	while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 	{
-		if(ogle->monsterinfo.ogleflags & OF_SONG_LEADER)
+		if (ogle->monsterinfo.ogleflags & OF_SONG_LEADER)
 			return;
 	}
 
@@ -1506,7 +1506,7 @@ void ogle_check_leadsong (edict_t *self)
 
 void ogle_start_push (edict_t *self, edict_t *other, edict_t *activator)
 {
-	if(!irand(0, 2))
+	if (!irand(0, 2))
 		SetAnim(self, ANIM_PUSH1);
 	else if(irand(0, 1))
 		SetAnim(self, ANIM_PUSH2);
@@ -1524,19 +1524,19 @@ void ogle_push (edict_t *self, float dist)
 	trace_t	trace;
 	qboolean	done = false;
 
-	if((found = G_Find(found, FOFS(targetname), self->target)))
+	if ((found = G_Find(found, FOFS(targetname), self->target)))
 	{
 		AngleVectors(self->s.angles, forward, NULL, NULL);
 		VectorMA(self->s.origin, 64, forward, endpos);
 		trace = gi.trace(self->s.origin, vec3_origin, vec3_origin, endpos, self, MASK_MONSTERSOLID);
-		if(trace.ent && trace.ent == found)
+		if (trace.ent && trace.ent == found)
 		{
 			yaw = self->s.angles[YAW]*M_PI*2 / 360;
 
 			move[0] = cos(yaw)*dist;
 			move[1] = sin(yaw)*dist;
 			move[2] = 0;
-			if(SV_movestep(found, move, true))
+			if (SV_movestep(found, move, true))
 			{
 				pitch_roll_for_slope(found, NULL);
 				M_walkmove(self, self->s.angles[YAW], dist);
@@ -1546,7 +1546,7 @@ void ogle_push (edict_t *self, float dist)
 		}
 	}
 
-	if(!done)
+	if (!done)
 		SetAnim(self, ANIM_REST4_TRANS);
 	else
 	{
@@ -1776,9 +1776,9 @@ void SP_monster_ogle(edict_t *self)
 	if (self->monsterinfo.ogleflags & OF_PUSHING)
 	{
 		//if (self->monsterinfo.ogleflags & OF_CINEMATIC)
-		if(self->targetname && self->target)
+		if (self->targetname && self->target)
 		{
-			if((found = G_Find(NULL, FOFS(targetname), self->target)))
+			if ((found = G_Find(NULL, FOFS(targetname), self->target)))
 				pitch_roll_for_slope(found, NULL);
 
 			skip_inits = true;
@@ -1869,15 +1869,15 @@ void SP_monster_ogle(edict_t *self)
 
 	self->svflags |= SVF_NO_AUTOTARGET;
 
-	if(!skip_inits)
+	if (!skip_inits)
 	{
 		//Find out who our overlord is
 		self->think = ogle_init_overlord;
 		self->nextthink = level.time + 0.1;
 
-		if(singing_ogles->value)
+		if (singing_ogles->value)
 		{
-			if(!(self->monsterinfo.ogleflags & OF_SONG_LEADER))
+			if (!(self->monsterinfo.ogleflags & OF_SONG_LEADER))
 				ogle_check_leadsong(self);
 		}
 

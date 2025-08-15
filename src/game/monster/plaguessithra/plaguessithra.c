@@ -118,30 +118,30 @@ void ssithra_blocked (edict_t *self, trace_t *trace)
 	vec3_t hitdir;
 	float strength;
 
-	if(trace->ent == NULL)
+	if (trace->ent == NULL)
 		return;
 
-	if(trace->ent->movetype==MOVETYPE_NONE||
+	if (trace->ent->movetype==MOVETYPE_NONE||
 		trace->ent->movetype==MOVETYPE_PUSH)
 		return;
 
 	strength = VectorLength(self->velocity);
 
-	if(strength<50)
+	if (strength<50)
 		return;
 
 //	gi.dprintf("ssithra shove!\n");
 	VectorCopy(self->velocity, hitdir);
 
-//	if(!Q_stricmp(trace->ent->classname, "player"))
+//	if (!Q_stricmp(trace->ent->classname, "player"))
 //		playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
-	if(hitdir[2] < 0)
+	if (hitdir[2] < 0)
 		hitdir[2] = 0;
 	VectorNormalize(hitdir);
 	VectorScale(hitdir, strength, hitdir);
 	VectorAdd(trace->ent->velocity, hitdir, trace->ent->knockbackvel);
 
-	if(!(self->spawnflags & MSF_FIXED))
+	if (!(self->spawnflags & MSF_FIXED))
 		ssithraJump(self, 150, 200, 0);
 }
 
@@ -161,15 +161,15 @@ void ssithra_stand(edict_t *self, G_Message_t *msg)
 
 	inwater = ssithraCheckInWater(self);
 
-	if(inwater)
+	if (inwater)
 	{
 		SetAnim(self, ANIM_WATER_IDLE);
 	}
 	else
 	{
-		if(self->curAnimID == ANIM_STAND1)
+		if (self->curAnimID == ANIM_STAND1)
 		{
-			if((frandk() * 10)<8)//9
+			if ((frandk() * 10)<8)//9
 				SetAnim(self, ANIM_STAND1);
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
@@ -180,7 +180,7 @@ void ssithra_stand(edict_t *self, G_Message_t *msg)
 		}
 		else if(self->curAnimID == ANIM_IDLERIGHT)
 		{
-			if((frandk() * 10)<6)//7
+			if ((frandk() * 10)<6)//7
 				SetAnim(self, ANIM_STAND1);
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
@@ -192,7 +192,7 @@ void ssithra_stand(edict_t *self, G_Message_t *msg)
 
 void ssithra_walk(edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
 	else
 		SetAnim(self, ANIM_WALK1);
@@ -224,37 +224,37 @@ void ssithraLookRight (edict_t *self)
 
 void ssithra_gallop(edict_t *self, G_Message_t *msg)
 {
-	if(self->curAnimID == ANIM_SPINRIGHT)
+	if (self->curAnimID == ANIM_SPINRIGHT)
 	{
 		SetAnim(self, ANIM_SPINRIGHT_GO);
 		return;
 	}
 
-	if(self->curAnimID == ANIM_SPINLEFT)
+	if (self->curAnimID == ANIM_SPINLEFT)
 	{
 		SetAnim(self, ANIM_SPINLEFT_GO);
 		return;
 	}
 
-	if(!self->enemy)
+	if (!self->enemy)
 	{
 		SetAnim(self,ANIM_STAND1);
 		return;
 	}
 
-	if(self->enemy->health<=0)
+	if (self->enemy->health<=0)
 	{
 		SetAnim(self,ANIM_STAND1);
 		return;
 	}
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 	{
 		SetAnim(self, ANIM_DELAY);
 		return;
 	}
 
-	if(self->spawnflags&MSF_SSITHRA_NAMOR)//Namor
+	if (self->spawnflags&MSF_SSITHRA_NAMOR)//Namor
 	{
 		self->spawnflags &= ~MSF_SSITHRA_NAMOR;
 		SetAnim(self,ANIM_NAMOR);
@@ -262,7 +262,7 @@ void ssithra_gallop(edict_t *self, G_Message_t *msg)
 	else if(self->spawnflags&MSF_SSITHRA_SPIN)//Spin
 	{
 		self->spawnflags &= ~MSF_SSITHRA_SPIN;
-		if(irand(0,1))
+		if (irand(0,1))
 		{
 //			gi.dprintf("Spinning right\n");
 			SetAnim(self,ANIM_SPINRIGHT);
@@ -288,15 +288,15 @@ void ssithra_decide_stand(edict_t *self)
 
 	inwater = ssithraCheckInWater(self);
 
-	if(inwater)
+	if (inwater)
 	{
 		SetAnim(self, ANIM_WATER_IDLE);
 	}
 	else
 	{
-		if((self->curAnimID == ANIM_STAND1)||(self->curAnimID == ANIM_IDLEBASIC))
+		if ((self->curAnimID == ANIM_STAND1)||(self->curAnimID == ANIM_IDLEBASIC))
 		{
-			if((frandk() * 10)<7)//9
+			if ((frandk() * 10)<7)//9
 				SetAnim(self, ANIM_STAND1);
 			else if((frandk() * 10)<7)//9
 				SetAnim(self, ANIM_IDLERIGHT);
@@ -309,7 +309,7 @@ void ssithra_decide_stand(edict_t *self)
 			self->curAnimID == ANIM_LOOKLEFT||
 			self->curAnimID == ANIM_LOOKRIGHT)
 		{
-			if((frandk() * 10)<6)//7
+			if ((frandk() * 10)<6)//7
 				SetAnim(self, ANIM_STAND1);
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
@@ -321,7 +321,7 @@ void ssithra_decide_stand(edict_t *self)
 
 void ssithra_decide_gallop(edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 	{
 		SetAnim(self, ANIM_DELAY);
 		return;
@@ -330,7 +330,7 @@ void ssithra_decide_gallop(edict_t *self)
 	VectorClear(self->velocity);
 	self->count = false;
 
-	if(ssithraCheckInWater(self))
+	if (ssithraCheckInWater(self))
 	{
 		SetAnim(self, ANIM_SWIMFORWARD);
 	}
@@ -347,7 +347,7 @@ void ssithra_decide_swimforward(edict_t *self)
 	self->count = false;
 	VectorClear(self->velocity);
 
-	if(!ssithraCheckInWater(self))
+	if (!ssithraCheckInWater(self))
 	{//Not actually in water!
 		SetAnim(self, ANIM_RUN1);
 	}
@@ -380,7 +380,7 @@ void ssithraCheckRipple (edict_t *self)
 
 	trace = gi.trace(top, vec3_origin, vec3_origin, bottom, self, MASK_WATER);
 
-	if(trace.fraction >= 1.0)
+	if (trace.fraction >= 1.0)
 		return;
 
 	AngleVectors(self->s.angles,dir,NULL,NULL);
@@ -399,13 +399,13 @@ qboolean ssithraCheckInWater (edict_t *self)
 {
 	qboolean inwater = false;
 
-	if(self->flags & FL_INWATER)
+	if (self->flags & FL_INWATER)
 	{
-		if(!(self->flags & FL_INLAVA))
+		if (!(self->flags & FL_INLAVA))
 		{
-			if(!(self->flags & FL_INSLIME))
+			if (!(self->flags & FL_INSLIME))
 			{
-				if(self->waterlevel > 2 || !self->groundentity)//???
+				if (self->waterlevel > 2 || !self->groundentity)//???
 				{
 					inwater = true;
 				}
@@ -413,14 +413,14 @@ qboolean ssithraCheckInWater (edict_t *self)
 		}
 	}
 
-	if(inwater)
+	if (inwater)
 	{
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 		return true;
 	}
 	else
 	{
-		if(!(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW))
+		if (!(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW))
 			self->monsterinfo.aiflags &= ~AI_NO_MELEE;
 		return false;
 	}
@@ -450,10 +450,10 @@ qboolean ssithraWaterLedgeNearEnemy (edict_t *self)
 	vec3_t enemy_dir, endpos, targ_org;
 	trace_t trace;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return false;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return false;
 
 	VectorSubtract(targ_org,self->s.origin,enemy_dir);
@@ -461,7 +461,7 @@ qboolean ssithraWaterLedgeNearEnemy (edict_t *self)
 	VectorNormalize(enemy_dir);
 	VectorMA(self->s.origin,128,enemy_dir,endpos);
 	trace = gi.trace(self->s.origin,self->mins,self->maxs,endpos,self,MASK_SOLID);
-	if(trace.fraction<1.0)
+	if (trace.fraction<1.0)
 		return true;
 	//no ledge to jump up on
 	return false;
@@ -472,21 +472,21 @@ void ssithra_check_namor(edict_t *self)
 	qboolean enemy_inwater = false;
 	vec3_t	targ_org;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
 	enemy_inwater = (gi.pointcontents(targ_org)&CONTENTS_WATER);
 
-	if(!enemy_inwater)
+	if (!enemy_inwater)
 	{
-		if(visible_pos(self, targ_org))
+		if (visible_pos(self, targ_org))
 		{
-			if(ssithraWaterLedgeNearEnemy(self))
+			if (ssithraWaterLedgeNearEnemy(self))
 			{
-				if(mgai_debug->value)
+				if (mgai_debug->value)
 					gi.dprintf("Ssithra facing and namor\n");
 				SetAnim(self,ANIM_FACEANDNAMOR);
 			}
@@ -499,15 +499,15 @@ void ssithraWhichJump(edict_t *self)
 	vec3_t	Forward, movedir;
 	vec3_t	targ_org;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
-	if(ssithraCheckInWater(self)&&!(gi.pointcontents(targ_org)&CONTENTS_WATER))
+	if (ssithraCheckInWater(self)&&!(gi.pointcontents(targ_org)&CONTENTS_WATER))
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("Ssithra_whichjump->namor\n");
 		SetAnim(self,ANIM_NAMOR);
 	}
@@ -517,7 +517,7 @@ void ssithraWhichJump(edict_t *self)
 
 		inwater = ssithraCheckInWater(self);
 
-		if(inwater)
+		if (inwater)
 			return;
 
 //		gi.dprintf("Bound\n");
@@ -534,7 +534,7 @@ void ssithraWhichJump(edict_t *self)
 
 void ssithraMsgJump(edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
 	else
 		ssithraWhichJump(self);
@@ -546,14 +546,14 @@ void ssithraBoundCheck (edict_t *self)
 	trace_t trace;
 	int inwater;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
 	inwater = ssithraCheckInWater(self);
 
-	if(inwater)
+	if (inwater)
 	{
-		if(self->curAnimID!=ANIM_SWIMFORWARD)
+		if (self->curAnimID!=ANIM_SWIMFORWARD)
 			SetAnim(self,ANIM_SWIMFORWARD);
 		return;
 	}
@@ -569,13 +569,13 @@ void ssithraBoundCheck (edict_t *self)
 	trace = gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER);
 
 	//If it's a step down or less, no jumpie
-	if(Q_fabs(trace.endpos[2] - self->s.origin[2]) <= 18)
+	if (Q_fabs(trace.endpos[2] - self->s.origin[2]) <= 18)
 		return;
 
-	if(trace.fraction == 1.0 || trace.allsolid || trace.startsolid)
+	if (trace.fraction == 1.0 || trace.allsolid || trace.startsolid)
 		return;//too far to jump down, or in solid
 
-	if(trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)
+	if (trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)
 	{
 		VectorCopy(trace.endpos,startpos);
 		VectorMA(startpos,-64,up,endpos);//down from water surf
@@ -585,7 +585,7 @@ void ssithraBoundCheck (edict_t *self)
 		maxs[2] = 1;
 
 		trace = gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID);
-		if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
+		if (trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 			ssithraWhichJump(self);
 		else
 			SetAnim(self,ANIM_DIVE);
@@ -602,12 +602,12 @@ void ssithraDiveCheck (edict_t *self)
 	int inwater;
 	vec3_t	targ_org, targ_mins;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
 	if (self->monsterinfo.searchType == SEARCH_BUOY)
 	{
-		if(self->buoy_index < 0 || self->buoy_index > level.active_buoys)
+		if (self->buoy_index < 0 || self->buoy_index > level.active_buoys)
 			return;
 
 		VectorCopy(level.buoy_list[self->buoy_index].origin, targ_org);
@@ -616,7 +616,7 @@ void ssithraDiveCheck (edict_t *self)
 	}
 	else
 	{
-		if(!self->goalentity)
+		if (!self->goalentity)
 			return;
 
 		VectorCopy(self->goalentity->s.origin, targ_org);
@@ -625,20 +625,20 @@ void ssithraDiveCheck (edict_t *self)
 
 	inwater = ssithraCheckInWater(self);
 
-	if(inwater)
+	if (inwater)
 	{
 		SetAnim(self,ANIM_SWIMFORWARD);
 		return;
 	}
 
-	if(!infront_pos(self, targ_org))
+	if (!infront_pos(self, targ_org))
 		return;
 
 	//make sure the enemy isn't right here and accessible before diving in
-	if(Vector2Length(targ_org,self->s.origin)<96)//close
-		if(Q_fabs((targ_org[2]+targ_mins[2]) - (self->s.origin[2] + self->mins[2]))<18)//relatively same stephieght
-			if(!(gi.pointcontents(targ_org)&CONTENTS_WATER))
-				if(!(self->monsterinfo.aiflags & AI_FLEE))
+	if (Vector2Length(targ_org,self->s.origin)<96)//close
+		if (Q_fabs((targ_org[2]+targ_mins[2]) - (self->s.origin[2] + self->mins[2]))<18)//relatively same stephieght
+			if (!(gi.pointcontents(targ_org)&CONTENTS_WATER))
+				if (!(self->monsterinfo.aiflags & AI_FLEE))
 					return;
 
 	AngleVectors(self->s.angles,forward,NULL,up);
@@ -651,10 +651,10 @@ void ssithraDiveCheck (edict_t *self)
 	VectorMA(startpos,-128,up,endpos);//down
 	trace = gi.trace(startpos,self->mins,self->maxs,endpos,self,MASK_SOLID|MASK_WATER);
 
-	if(trace.fraction == 1||trace.allsolid||trace.startsolid)
+	if (trace.fraction == 1||trace.allsolid||trace.startsolid)
 		return;//too far to jump down, or in solid
 
-	if(trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)
+	if (trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)
 	{
 		VectorCopy(trace.endpos, startpos);
 		VectorMA(startpos, -64, up, endpos);//down from water surf
@@ -665,7 +665,7 @@ void ssithraDiveCheck (edict_t *self)
 
 		trace = gi.trace(startpos, mins, maxs, endpos, self, MASK_SOLID);
 
-		if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
+		if (trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 			ssithraWhichJump(self);
 		else
 			SetAnim(self, ANIM_DIVE);
@@ -674,7 +674,7 @@ void ssithraDiveCheck (edict_t *self)
 
 void ssithraApplyJump (edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
 	self->jump_time = level.time + 1;
@@ -686,10 +686,10 @@ void ssithraJump (edict_t *self, float upspd,float fwdspd,float rtspd)
 {//fixme: do checks and traces first
 	vec3_t up, forward, right;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
-	if((self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)||
+	if ((self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)||
 		(self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW))
 	{
 		upspd*=2;
@@ -709,13 +709,13 @@ void ssithraNamorJump (edict_t *self)
 	float watersurfdist, enemyzdiff;
 	vec3_t targ_org;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
-	if(mgai_debug->value)
+	if (mgai_debug->value)
 		gi.dprintf("Namor Jump\n");
 
 	//FIXME: jumps too high sometimes?
@@ -751,12 +751,12 @@ void ssithraCheckJump (edict_t *self)
 	qboolean	can_move = false;
 	vec3_t	targ_org, targ_mins;
 
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
 	if (self->monsterinfo.searchType == SEARCH_BUOY)
 	{
-		if(self->buoy_index < 0 || self->buoy_index > level.active_buoys)
+		if (self->buoy_index < 0 || self->buoy_index > level.active_buoys)
 			return;
 
 		VectorCopy(level.buoy_list[self->buoy_index].origin, targ_org);
@@ -765,7 +765,7 @@ void ssithraCheckJump (edict_t *self)
 	}
 	else
 	{
-		if(!self->goalentity)
+		if (!self->goalentity)
 			return;
 
 		VectorCopy(self->goalentity->s.origin, targ_org);
@@ -791,12 +791,12 @@ void ssithraCheckJump (edict_t *self)
 
 		inwater = ssithraCheckInWater(self);
 
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("checking jump down: ");
 
-		if(inwater)
+		if (inwater)
 		{
-			if(mgai_debug->value)
+			if (mgai_debug->value)
 				gi.dprintf("checkdown allsolid\n");
 			return;
 		}
@@ -805,12 +805,12 @@ void ssithraCheckJump (edict_t *self)
 		VectorCopy(self->s.origin, source);
 		AngleVectors(self->s.angles, vf, NULL, NULL);
 
-		if(self->monsterinfo.aiflags&AI_FLEE||self->monsterinfo.aiflags&AI_COWARD)
+		if (self->monsterinfo.aiflags&AI_FLEE||self->monsterinfo.aiflags&AI_COWARD)
 			jump_fdist = 128;
 		else
 			jump_fdist = Vector2Length(targ_org, self->s.origin);
 
-		if(jump_fdist > 128)
+		if (jump_fdist > 128)
 			jump_fdist = 128;
 
 		VectorMA(source, 128, vf, source);
@@ -828,14 +828,14 @@ void ssithraCheckJump (edict_t *self)
 
 			if (trace.allsolid || trace.startsolid)
 			{
-				if(mgai_debug->value)
+				if (mgai_debug->value)
 					gi.dprintf("checkdown allsolid\n");
 				return;
 			}
 
 			if (trace.fraction == 1)
 			{
-				if(mgai_debug->value)
+				if (mgai_debug->value)
 					gi.dprintf("checkdown- too far\n");
 				return;
 			}
@@ -848,7 +848,7 @@ void ssithraCheckJump (edict_t *self)
 
 				if (trace.contents != CONTENTS_SOLID)
 				{
-					if(mgai_debug->value)
+					if (mgai_debug->value)
 						gi.dprintf("checkjump trying to jump into water\n");
 
 					if ((trace.contents&CONTENTS_WATER||trace.contents&CONTENTS_SLIME)||trace.ent == self->enemy)
@@ -868,7 +868,7 @@ void ssithraCheckJump (edict_t *self)
 							maxs[2] = 1;
 
 							trace = gi.trace(source, mins, maxs, source2, self, MASK_SOLID);
-							if(trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
+							if (trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
 								ssithraWhichJump(self);
 							else
 								SetAnim(self,ANIM_DIVE);
@@ -878,7 +878,7 @@ void ssithraCheckJump (edict_t *self)
 				}
 				else
 				{
-					if(mgai_debug->value)
+					if (mgai_debug->value)
 						gi.dprintf("checkjump down->whichjump\n");
 
 					VectorSubtract(trace.endpos, self->s.origin, source2);
@@ -900,18 +900,18 @@ void ssithraCheckJump (edict_t *self)
 	}
 	else
 	{
-		if(Vector2Length(self->s.origin, targ_org)<200)
+		if (Vector2Length(self->s.origin, targ_org)<200)
 			jump_up_check = true;
 		else
 		{
 			VectorCopy(self->s.origin,source);
 			source[2]-=10;
-			if(gi.pointcontents(source)&CONTENTS_WATER)
+			if (gi.pointcontents(source)&CONTENTS_WATER)
 			{//FIXME: swimming can bring origin out of water!  in water
 				AngleVectors(self->s.angles, vf, NULL, NULL);
 				VectorMA(self->s.origin, 72, vf, source);
 				trace = gi.trace(self->s.origin, self->mins, self->maxs, source, self, MASK_SOLID);
-				if(trace.fraction<1.0)
+				if (trace.fraction<1.0)
 					jump_up_check = true;
 				//shore is within 72 units of me
 			}
@@ -923,7 +923,7 @@ void ssithraCheckJump (edict_t *self)
 				VectorCopy(trace.endpos,source);
 				source[2]-=128;
 				trace = gi.trace(trace.endpos, self->mins, self->maxs, source, self, MASK_SOLID|MASK_WATER);
-				if(trace.fraction<1.0&&trace.contents&CONTENTS_WATER)
+				if (trace.fraction<1.0&&trace.contents&CONTENTS_WATER)
 				{
 					VectorCopy(trace.endpos, source);
 					VectorCopy(source, source2);
@@ -934,7 +934,7 @@ void ssithraCheckJump (edict_t *self)
 					maxs[2] = 1;
 
 					trace = gi.trace(source, mins, maxs, source2, self, MASK_SOLID);
-					if(trace.fraction<1.0 || trace.allsolid || trace.startsolid)
+					if (trace.fraction<1.0 || trace.allsolid || trace.startsolid)
 						ssithraWhichJump(self);
 					else
 						SetAnim(self,ANIM_DIVE);
@@ -944,9 +944,9 @@ void ssithraCheckJump (edict_t *self)
 			}
 		}
 
-		if(jump_up_check)
+		if (jump_up_check)
 		{
-			if(targ_org[2] > self->s.origin[2]+28||
+			if (targ_org[2] > self->s.origin[2]+28||
 				!(self->monsterinfo.aiflags & AI_FLEE))//||override_dist)
 			{//jumping up
 				//Setup the trace
@@ -1012,7 +1012,7 @@ void ssithraCheckJump (edict_t *self)
 				can_move = M_walkmove (self, self->s.angles[YAW], 64);
 				VectorCopy(save_org, self->s.origin);
 
-				if(can_move)
+				if (can_move)
 					return;
 
 				AngleVectors(self->s.angles, vf, NULL, NULL);
@@ -1022,10 +1022,10 @@ void ssithraCheckJump (edict_t *self)
 				mins[2]+=24;//can clear it
 				trace = gi.trace(source, mins, self->maxs, source2, self, MASK_SOLID);
 
-				if(trace.allsolid||trace.startsolid)
+				if (trace.allsolid||trace.startsolid)
 					return;
 
-				if(trace.fraction<1 && trace.ent != self->enemy)
+				if (trace.fraction<1 && trace.ent != self->enemy)
 					return;
 
 				//Go for it!
@@ -1043,7 +1043,7 @@ vec3_t forward;
 
 	ssithraCheckInWater(self);
 
-	if(self->groundentity)//on ground
+	if (self->groundentity)//on ground
 	{
 		VectorClear(self->velocity);
 		return;
@@ -1060,18 +1060,18 @@ void ssithraCheckLeaveWaterSplash (edict_t *self)
 	vec3_t dir, endpos;
 	trace_t trace;
 
-	if(self->count)
+	if (self->count)
 		return;
 
 	VectorCopy(self->s.origin,endpos);
 	endpos[2]+=12;
-	if(!ssithraCheckInWater(self))
+	if (!ssithraCheckInWater(self))
 	{
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
 		VectorMA(self->s.origin,-256,dir,endpos);
 		trace = gi.trace(self->s.origin,vec3_origin,vec3_origin,endpos,self,MASK_WATER);
-		if(trace.fraction>=1.0)
+		if (trace.fraction>=1.0)
 			return;//?!
 //		gi.dprintf("Out water splash\n");
 		gi.sound(self,CHAN_BODY,Sounds[SND_NAMOR],1,ATTN_NORM,0);
@@ -1089,15 +1089,15 @@ void ssithraCheckHitWaterSplash (edict_t *self)
 	vec3_t dir, endpos;
 	trace_t trace;
 
-	if(self->count)
+	if (self->count)
 		return;
 
-	if(Q_fabs(self->velocity[0])+Q_fabs(self->velocity[1])<200)
+	if (Q_fabs(self->velocity[0])+Q_fabs(self->velocity[1])<200)
 	{
 		VectorCopy(self->s.origin, endpos);
 		endpos[2] -= 128;
 		trace = gi.trace(self->s.origin,self->mins,self->maxs,endpos,self,MASK_ALL);
-		if(trace.fraction<1&&
+		if (trace.fraction<1&&
 			!trace.allsolid&&
 			!trace.startsolid&&
 			!(trace.contents & CONTENTS_WATER)&&
@@ -1109,14 +1109,14 @@ void ssithraCheckHitWaterSplash (edict_t *self)
 		}
 	}
 
-	if(self->flags&FL_INWATER)
+	if (self->flags&FL_INWATER)
 	{
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
 		VectorMA(self->s.origin,-256,dir,endpos);
 		trace = gi.trace(self->s.origin,vec3_origin,vec3_origin,endpos,self,MASK_WATER);
 		trace = gi.trace(trace.endpos,vec3_origin,vec3_origin,self->s.origin,self,MASK_WATER);
-		if(trace.fraction>=1.0)
+		if (trace.fraction>=1.0)
 			return;//?!
 //		gi.dprintf("In water splash\n");
 		gi.sound(self,CHAN_BODY,Sounds[SND_INWATER],1,ATTN_NORM,0);
@@ -1133,10 +1133,10 @@ void ssithraCheckHitWaterSplash (edict_t *self)
 
 void ssithraCheckFacedNamor (edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED)
+	if (self->spawnflags & MSF_FIXED)
 		return;
 
-	if(Q_fabs(self->ideal_yaw - self->s.angles[YAW])<self->yaw_speed)
+	if (Q_fabs(self->ideal_yaw - self->s.angles[YAW])<self->yaw_speed)
 		SetAnim(self,ANIM_NAMOR);
 }
 
@@ -1146,11 +1146,11 @@ void ssithraCheckFacedNamor (edict_t *self)
 
 void ssithraSlideFall (edict_t *self)
 {
-	if(self->mins[2]<0)
+	if (self->mins[2]<0)
 	{
-//		if(Vec3IsZero(self->velocity))
+//		if (Vec3IsZero(self->velocity))
 //			self->groundentity = NULL;
-		if(self->mins[2]<=-6)
+		if (self->mins[2]<=-6)
 			self->mins[2]+=6;
 		else
 			self->mins[2]=0;
@@ -1226,7 +1226,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	VectorCopy(tophalf->s.origin, tophalf->s.old_origin);
 	VectorCopy(self->s.angles, tophalf->s.angles);
 
-	if(!self->s.frame)//?!?!
+	if (!self->s.frame)//?!?!
 		tophalf->s.frame = FRAME_startle32;
 	else
 		tophalf->s.frame = self->s.frame;
@@ -1257,7 +1257,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	for(whichnode = 1, node_num = 0; whichnode<=16384; whichnode*=2)//bitwise
 	{
 		node_num++;
-		if(!((int)(BodyPart)&(int)(whichnode)))
+		if (!((int)(BodyPart)&(int)(whichnode)))
 		{//turn off this node on top
 			tophalf->s.fmnodeinfo[node_num].flags |= FMNI_NO_DRAW;
 		}
@@ -1297,7 +1297,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 qboolean canthrownode (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -1311,22 +1311,22 @@ int ssithra_convert_hitloc_dead(edict_t *self, int hl)
 {
 	qboolean	fellback = false;
 
-	if(self->curAnimID == ANIM_DEATH_A)
+	if (self->curAnimID == ANIM_DEATH_A)
 		fellback = true;
 
 	switch(hl)
 	{
 		case hl_Head:
-			if(fellback)
+			if (fellback)
 				return hl_TorsoFront;
 			else
 				return hl_TorsoBack;
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(fellback)
+			if (fellback)
 			{
-				if(!irand(0,1))
+				if (!irand(0,1))
 					return hl_LegUpperRight;
 				else
 					return hl_LegUpperLeft;
@@ -1336,11 +1336,11 @@ int ssithra_convert_hitloc_dead(edict_t *self, int hl)
 			break;
 
 		case hl_TorsoBack://split in half?
-			if(fellback)
+			if (fellback)
 				return hl_Head;
 			else
 			{
-				if(!irand(0,1))
+				if (!irand(0,1))
 					return hl_LegUpperRight;
 				else
 					return hl_LegUpperLeft;
@@ -1393,19 +1393,19 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t			gore_spot, right;
 	qboolean dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 
-	if(self->health>0)
+	if (self->health>0)
 	{
 		switch (self->curAnimID)
 		{//Hit front chest during shoot or melee, may have hit arms
@@ -1414,13 +1414,13 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			case ANIM_WATER_SHOOT:
 			case ANIM_HEADLESS:
 			case ANIM_HEADLESSLOOP:
-				if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
+				if (HitLocation == hl_TorsoFront&&irand(0,10)<4)
 					HitLocation = hl_ArmLowerRight;
 				break;
 
 			case ANIM_MELEE:
 			case ANIM_MELEE_STAND:
-				if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
+				if (HitLocation == hl_TorsoFront&&irand(0,10)<4)
 					HitLocation = hl_ArmLowerLeft;
 				break;
 
@@ -1428,7 +1428,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 		}
 
-		if((HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW) ||
+		if ((HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW) ||
 			(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)||
 			((HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
 			(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW) &&
@@ -1443,12 +1443,12 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
 			// Is the pain skin engaged?
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode(self, MESH__HEAD,&throw_nodes);
 				canthrownode(self, MESH__CENTERSPIKE,&throw_nodes);
@@ -1465,7 +1465,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
 
-				if(self->health > 0 && irand(0,10)<3&&!(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW))
+				if (self->health > 0 && irand(0,10)<3&&!(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW))
 				{//shooting blind, headless, FIX: make it so can still chop off arms or legs here
 					SetAnim(self,ANIM_HEADLESS);
 					self->msgHandler=DyingMsgHandler;
@@ -1483,27 +1483,27 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 
-				if(flrand(0,self->health/4)<damage)
+				if (flrand(0,self->health/4)<damage)
 				{//no red spray with these, particles?
 					gore_spot[2]+=18;
-					if(irand(0,10)<3)
+					if (irand(0,10)<3)
 					{
-						if(canthrownode(self, MESH__CENTERSPIKE, &throw_nodes))
+						if (canthrownode(self, MESH__CENTERSPIKE, &throw_nodes))
 							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 					}
-					if(irand(0,10)<3)
+					if (irand(0,10)<3)
 					{
-						if(canthrownode(self, MESH__RIGHT1SPIKE, &throw_nodes))
+						if (canthrownode(self, MESH__RIGHT1SPIKE, &throw_nodes))
 							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 					}
-					if(irand(0,10)<3)
+					if (irand(0,10)<3)
 					{
-						if(canthrownode(self, MESH__RIGHT2SPIKE, &throw_nodes))
+						if (canthrownode(self, MESH__RIGHT2SPIKE, &throw_nodes))
 							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 					}
-					if(irand(0,10)<3)
+					if (irand(0,10)<3)
 					{
-						if(canthrownode(self, MESH__LEFT1SPIKE, &throw_nodes))
+						if (canthrownode(self, MESH__LEFT1SPIKE, &throw_nodes))
 							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 					}
 				}
@@ -1511,11 +1511,11 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 		case hl_TorsoFront://split in half?
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__UPPERTORSO].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 				//seal up the caps left by this split
@@ -1534,7 +1534,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode(self, MESH__RIGHT1SPIKE,&throw_nodes);
 				canthrownode(self, MESH__RIGHT2SPIKE,&throw_nodes);
 
-				if(self->health > 0 && irand(0,10)<3)//Slide off
+				if (self->health > 0 && irand(0,10)<3)//Slide off
 					ssithraSplit(self, throw_nodes);
 				else
 				{
@@ -1555,13 +1555,13 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 		case hl_ArmUpperLeft:
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LEFTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode(self, MESH__LEFTARM, &throw_nodes))
+				if (canthrownode(self, MESH__LEFTARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1578,13 +1578,13 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__RIGHTARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode(self, MESH__RIGHTARM, &throw_nodes))
+				if (canthrownode(self, MESH__RIGHTARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1602,9 +1602,9 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->health>0)
+			if (self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__LEFTLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LEFTLEG].skin = self->s.skinnum+1;
@@ -1612,9 +1612,9 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__LEFTLEG].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode(self, MESH__LEFTLEG, &throw_nodes))
+				if (canthrownode(self, MESH__LEFTLEG, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1625,9 +1625,9 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			}
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->health>0)
+			if (self->health>0)
 			{//still alive
-				if(self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__RIGHTLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RIGHTLEG].skin = self->s.skinnum+1;
@@ -1635,9 +1635,9 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__RIGHTLEG].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode(self, MESH__RIGHTLEG, &throw_nodes))
+				if (canthrownode(self, MESH__RIGHTLEG, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1650,10 +1650,10 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 	}
 
-	if(throw_nodes)
+	if (throw_nodes)
 		self->pain_debounce_time = 0;
 
-	if(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW&&
+	if (self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW&&
 		self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
@@ -1662,12 +1662,12 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 	}
 	else
 	{
-		if(self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__LEFTARM].flags&FMNI_NO_DRAW)
 		{
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 			self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
 		}
-		if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+		if (self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		{
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
 			self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
@@ -1678,8 +1678,8 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 
 void ssithra_dead_pain (edict_t *self, G_Message_t *msg)
 {
-	if(msg)
-		if(!(self->svflags & SVF_PARTS_GIBBED))
+	if (msg)
+		if (!(self->svflags & SVF_PARTS_GIBBED))
 			MG_parse_dismember_msg(self, msg);
 }
 
@@ -1690,18 +1690,18 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 	qboolean		force_pain;
 
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
+	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
-	if(!force_pain)
+	if (!force_pain)
 	{
-		if(self->pain_debounce_time)
-			if(irand(0,10)<5||!self->groundentity)
+		if (self->pain_debounce_time)
+			if (irand(0,10)<5||!self->groundentity)
 				return;
 
-		if(self->pain_debounce_time > level.time)
+		if (self->pain_debounce_time > level.time)
 			return;
 	}
 
@@ -1709,7 +1709,7 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 
 	self->pain_debounce_time = level.time + 2;
 
-	if(irand(0,10)<5)
+	if (irand(0,10)<5)
 		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
@@ -1717,9 +1717,9 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 
 	inwater = ssithraCheckInWater(self);
 
-	if(inwater)
+	if (inwater)
 	{//underwater pain sound?
-		if(self->curAnimID!=ANIM_SWIMFORWARD)
+		if (self->curAnimID!=ANIM_SWIMFORWARD)
 			SetAnim(self, ANIM_WATER_PAIN_A);
 		else//swimming
 			SetAnim(self, ANIM_WATER_PAIN_B);
@@ -1732,9 +1732,9 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 
 void ssithra_pain_react (edict_t *self)
 {
-	if(!self->enemy)
+	if (!self->enemy)
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 		{
 			gi.dprintf("No react to pain\n");
 		}
@@ -1743,9 +1743,9 @@ void ssithra_pain_react (edict_t *self)
 		return;
 	}
 
-	if(self->enemy->health<=0||self->enemy == self||!self->enemy->takedamage)
+	if (self->enemy->health<=0||self->enemy == self||!self->enemy->takedamage)
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("No react to pain\n");
 
 		self->enemy=NULL;
@@ -1754,7 +1754,7 @@ void ssithra_pain_react (edict_t *self)
 	}
 
 	//go get him!
-	if(mgai_debug->value)
+	if (mgai_debug->value)
 		gi.dprintf("pain_react -> run\n");
 
 	ssithra_decide_gallop(self);
@@ -1768,7 +1768,7 @@ void ssithra_death(edict_t *self, G_Message_t *msg)
 {//FIXME: still cut off limbs as dying?
 	int inwater;
 
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		gi.sound(self,CHAN_BODY,Sounds[SND_DIE],1,ATTN_NORM,0);
 		if (irand(0,10) < 5)
@@ -1779,7 +1779,7 @@ void ssithra_death(edict_t *self, G_Message_t *msg)
 	}
 	self->msgHandler=DyingMsgHandler;
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
+	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 	{
 //		gi.dprintf("already dead!\n");
 		return;
@@ -1787,7 +1787,7 @@ void ssithra_death(edict_t *self, G_Message_t *msg)
 
 	self->deadflag = DEAD_DEAD;
 
-	if(self->health <= -80) //gib death
+	if (self->health <= -80) //gib death
 	{
 		int	i, num_limbs;
 
@@ -1804,7 +1804,7 @@ void ssithra_death(edict_t *self, G_Message_t *msg)
 	ssithraUnCrouch(self);
 	inwater = ssithraCheckInWater(self);
 
-	if(inwater)
+	if (inwater)
 	{
 		SetAnim(self, ANIM_WATER_DEATH);
 	}
@@ -1861,7 +1861,7 @@ void ssithraCollapse (edict_t *self)
 {
 	vec3_t gore_spot;
 
-	if(irand(0,10)<5)
+	if (irand(0,10)<5)
 	{
 		self->msgHandler = DefaultMsgHandler;
 		SetAnim(self,ANIM_HEADLESSLOOP);
@@ -1900,16 +1900,16 @@ void ssithraKillSelf (edict_t *self)
 
 void ssithraSound(edict_t *self, float soundnum, float channel, float attenuation)
 {
-	if(!channel)
+	if (!channel)
 		channel = CHAN_AUTO;
 
-	if(!attenuation)
+	if (!attenuation)
 		attenuation = ATTN_NORM;
 	else if(attenuation == -1)
 		attenuation = ATTN_NONE;
 
-	if(soundnum == SND_SWIM)
-		if(irand(0,10)<5)
+	if (soundnum == SND_SWIM)
+		if (irand(0,10)<5)
 			soundnum = SND_SWIM2;
 
 	gi.sound(self,channel,Sounds[(int)(soundnum)],1,attenuation,0);
@@ -1917,7 +1917,7 @@ void ssithraSound(edict_t *self, float soundnum, float channel, float attenuatio
 
 void ssithraGrowlSound(edict_t *self)
 {
-	if(!irand(0, 3))
+	if (!irand(0, 3))
 		gi.sound(self,CHAN_VOICE,Sounds[irand(SND_GROWL1, SND_GROWL3)],1,ATTN_IDLE,0);
 }
 //===========================================
@@ -1928,22 +1928,22 @@ void ssithra_melee(edict_t *self, G_Message_t *msg)
 {
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(ssithraCheckInWater(self))
+		if (ssithraCheckInWater(self))
 		{
 			G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 			return;
 		}
 
-		if(!(self->monsterinfo.aiflags & AI_NO_MISSILE) && !(self->spawnflags&MSF_FIXED))
+		if (!(self->monsterinfo.aiflags & AI_NO_MISSILE) && !(self->spawnflags&MSF_FIXED))
 		{
-			if(Vector2Length(self->enemy->s.origin, self->s.origin) - 16 < flrand(0, self->melee_range))
+			if (Vector2Length(self->enemy->s.origin, self->s.origin) - 16 < flrand(0, self->melee_range))
 			{
 				SetAnim(self, ANIM_BACKPEDAL);
 				return;
 			}
 		}
 
-		if(M_DistanceToTarget(self, self->enemy) > self->melee_range*2 &&!(self->spawnflags&MSF_FIXED))
+		if (M_DistanceToTarget(self, self->enemy) > self->melee_range*2 &&!(self->spawnflags&MSF_FIXED))
 			SetAnim(self, ANIM_MELEE);
 		else
 			SetAnim(self, ANIM_MELEE_STAND);
@@ -1960,9 +1960,9 @@ void ssithra_missile(edict_t *self, G_Message_t *msg)
 	{
 		if (ssithraCheckInWater(self))
 		{
-			if(M_DistanceToTarget(self, self->enemy) < self->melee_range)
+			if (M_DistanceToTarget(self, self->enemy) < self->melee_range)
 			{
-				if(self->curAnimID == ANIM_SWIMFORWARD)
+				if (self->curAnimID == ANIM_SWIMFORWARD)
 					SetAnim(self, ANIM_TRANSUP);
 				else
 					SetAnim(self, ANIM_WATER_SHOOT);
@@ -1972,7 +1972,7 @@ void ssithra_missile(edict_t *self, G_Message_t *msg)
 		}
 		else
 		{
-			if(self->spawnflags & MSF_SSITHRA_CLOTHED)
+			if (self->spawnflags & MSF_SSITHRA_CLOTHED)
 				chance = 20;
 			else
 				chance = 80;
@@ -1993,7 +1993,7 @@ void ssithra_backup(edict_t *self, G_Message_t *msg)
 {
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(self->spawnflags&MSF_FIXED)
+		if (self->spawnflags&MSF_FIXED)
 		{
 			SetAnim(self, ANIM_DELAY);
 			return;
@@ -2042,7 +2042,7 @@ void ssithraSwipe (edict_t *self)
 		{
 			//Hurt whatever we were whacking away at
 			gi.sound(self, CHAN_WEAPON, Sounds[SND_SWIPEHIT], 1, ATTN_NORM, 0);
-			if(self->spawnflags&MSF_SSITHRA_ALPHA)
+			if (self->spawnflags&MSF_SSITHRA_ALPHA)
 				T_Damage(victim, self, self, direction, trace.endpos, bloodDir, irand(SSITHRA_DMG_MIN*1.2, SSITHRA_DMG_MAX*1.2), 10, 0,MOD_DIED);
 			else
 				T_Damage(victim, self, self, direction, trace.endpos, bloodDir, irand(SSITHRA_DMG_MIN, SSITHRA_DMG_MAX), 0, 0,MOD_DIED);
@@ -2085,7 +2085,7 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	edict_t	*arrow;
 
 	// are we reflecting ?
-	if(EntReflecting(other, true, true))
+	if (EntReflecting(other, true, true))
 	{
 		arrow = G_Spawn();
 
@@ -2106,15 +2106,15 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 
 
 	VectorSet(normal, 0, 0, 1);
-	if(plane)
+	if (plane)
 	{
-		if(plane->normal)
+		if (plane->normal)
 		{
 			VectorCopy(plane->normal, normal);
 		}
 	}
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{
 		damage = flrand(SSITHRA_DMG_MIN,SSITHRA_DMG_MAX);
 		T_Damage(other,self,self->owner,self->movedir,self->s.origin,normal,damage,0,0,MOD_DIED);
@@ -2146,13 +2146,13 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 	vec3_t	normal;
 	edict_t	*arrow;
 
-	if(Surface&&(Surface->flags&SURF_SKY))
+	if (Surface&&(Surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
 	}
 
-	if(EntReflecting(Other, true, true))
+	if (EntReflecting(Other, true, true))
 	{
 		arrow = G_Spawn();
 
@@ -2180,12 +2180,12 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 		return;
 	}
 
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		VectorSet(normal, 0, 0, 1);
-		if(Plane)
+		if (Plane)
 		{
-			if(Plane->normal)
+			if (Plane->normal)
 			{
 				VectorCopy(Plane->normal, normal);
 			}
@@ -2239,7 +2239,7 @@ void ssithraArrowExplode(edict_t *self)
 
 void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurface_t *surface)
 {
-	if(surface&&(surface->flags&SURF_SKY))
+	if (surface&&(surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -2247,7 +2247,7 @@ void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurfac
 
 	//NOTENOTE: NO REFLECTION FOR THIS MISSILE!
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{
 		if (plane->normal)
 			VectorCopy(plane->normal, self->movedir);
@@ -2290,7 +2290,7 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 	vec3_t	Forward,check_lead, right, enemy_dir;
 	edict_t	*arrow;
 
-	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		return;
 
 	gi.sound(self,CHAN_WEAPON,Sounds[SND_ARROW1],1,ATTN_NORM,0);
@@ -2299,7 +2299,7 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 
 	create_ssith_arrow(arrow);
 
-	if(self->spawnflags & MSF_SSITHRA_ALPHA)
+	if (self->spawnflags & MSF_SSITHRA_ALPHA)
 		arrow->touch=ssithraArrowTouch;
 	else
 		arrow->touch=ssithraArrowTouch;
@@ -2320,7 +2320,7 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 	VectoAngles(Forward,arrow->s.angles);
 
 	VectorClear(check_lead);
-	if(skill->value > 1)
+	if (skill->value > 1)
 	{
 		extrapolateFiredir(self, arrow->s.origin,
 			SSITHRA_SPOO_SPEED, self->enemy, 0.3, check_lead);
@@ -2329,13 +2329,13 @@ void ssithraDoArrow(edict_t *self, float z_offs)
 	{
 		VectorSubtract(self->enemy->s.origin, arrow->s.origin, enemy_dir);
 		VectorNormalize(enemy_dir);
-		if(DotProduct(enemy_dir, Forward) >= 0.3)
+		if (DotProduct(enemy_dir, Forward) >= 0.3)
 		{
 			Forward[2] = enemy_dir[2];
 		}
 	}
 
-	if(Vec3IsZero(check_lead))
+	if (Vec3IsZero(check_lead))
 	{
 		VectorScale(Forward,SSITHRA_SPOO_SPEED,arrow->velocity);
 	}
@@ -2369,7 +2369,7 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	vec3_t	Forward,check_lead, right, enemy_dir;
 	edict_t	*arrow;
 
-	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 		return;
 
 	gi.sound(self, CHAN_WEAPON, Sounds[SND_ARROW_FIRE] , 1, ATTN_NORM, 0);
@@ -2399,7 +2399,7 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	VectoAngles(Forward,arrow->s.angles);
 
 	VectorClear(check_lead);
-	if(skill->value > 1)
+	if (skill->value > 1)
 	{
 		extrapolateFiredir(self, arrow->s.origin,
 			SSITHRA_SPOO_SPEED, self->enemy, 0.3, check_lead);
@@ -2408,13 +2408,13 @@ void ssithraDoDuckArrow(edict_t *self, float z_offs)
 	{
 		VectorSubtract(self->enemy->s.origin, arrow->s.origin, enemy_dir);
 		VectorNormalize(enemy_dir);
-		if(DotProduct(enemy_dir, Forward) >= 0.3)
+		if (DotProduct(enemy_dir, Forward) >= 0.3)
 		{
 			Forward[2] = enemy_dir[2];
 		}
 	}
 
-	if(Vec3IsZero(check_lead))
+	if (Vec3IsZero(check_lead))
 	{
 		VectorScale(Forward,SSITHRA_SPOO_SPEED*1.5,arrow->velocity);
 	}
@@ -2464,23 +2464,23 @@ void ssithraStartDuckArrow(edict_t *self)
 
 void ssithraArrow(edict_t *self)
 {//fixme; adjust for up/down
-	if(!self->enemy)
+	if (!self->enemy)
 	{
 		ssithra_decide_stand(self);
 		return;
 	}
 
-	if(self->enemy->health<=0)
+	if (self->enemy->health<=0)
 	{
 		self->enemy=NULL;
 		ssithra_decide_stand(self);
 		return;
 	}
 
-	if(self->monsterinfo.attack_finished>level.time)
+	if (self->monsterinfo.attack_finished>level.time)
 		return;
 
-	if(self->spawnflags & MSF_SSITHRA_ALPHA)
+	if (self->spawnflags & MSF_SSITHRA_ALPHA)
 		ssithraDoDuckArrow(self, self->maxs[2] * 0.8);
 	else
 		ssithraDoArrow(self, 8);
@@ -2491,9 +2491,9 @@ void ssithraPanicArrow(edict_t *self)
 	vec3_t	Forward,firedir;//, up;
 	edict_t	*arrow;
 
-	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 	{
-		if(self->curAnimID == ANIM_HEADLESS || self->curAnimID == ANIM_HEADLESSLOOP)
+		if (self->curAnimID == ANIM_HEADLESS || self->curAnimID == ANIM_HEADLESSLOOP)
 			ssithraKillSelf(self);
 		return;
 	}
@@ -2547,16 +2547,16 @@ void ssithraCheckLoop (edict_t *self)
 	vec3_t	v;
 	float	len, melee_range, min_seperation, jump_range;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
-	if(!visible(self, self->enemy))
+	if (!visible(self, self->enemy))
 		return;
 
-	if(!infront(self, self->enemy))
+	if (!infront(self, self->enemy))
 		return;
 
-	if(irand(0, 100) < self->bypass_missile_chance)
+	if (irand(0, 100) < self->bypass_missile_chance)
 		return;
 
 	VectorSubtract (self->enemy->s.origin, self->s.origin, v);
@@ -2589,13 +2589,13 @@ void ssithraCheckLoop (edict_t *self)
 //========================================
 void ssithraCheckDuckArrow (edict_t *self)
 {
-	if(M_ValidTarget(self, self->enemy))
+	if (M_ValidTarget(self, self->enemy))
 	{
-		if(ahead(self, self->enemy))
+		if (ahead(self, self->enemy))
 		{
-//			if(M_DistanceToTarget(self, self->enemy)<self->missile_range)
+//			if (M_DistanceToTarget(self, self->enemy)<self->missile_range)
 //			{
-//				if(clear_visible(self, self->enemy))
+//				if (clear_visible(self, self->enemy))
 //				{
 					ssithraDoDuckArrow(self, -18);
 //				}
@@ -2606,7 +2606,7 @@ void ssithraCheckDuckArrow (edict_t *self)
 
 void ssithraCheckUnDuck (edict_t *self)
 {
-	if(self->evade_debounce_time < level.time)
+	if (self->evade_debounce_time < level.time)
 		SetAnim(self, ANIM_UNDUCK);
 	else
 		SetAnim(self, ANIM_DUCKLOOP);
@@ -2699,10 +2699,10 @@ void ssithra_evade (edict_t *self, G_Message_t *msg)
 		break;
 	}
 
-	if(!(self->spawnflags&MSF_FIXED))
+	if (!(self->spawnflags&MSF_FIXED))
 	{
 		chance = irand(0, 100);
-		if(chance < jump_chance)
+		if (chance < jump_chance)
 		{
 			ssithraJumpEvade(self);
 			return;
@@ -2710,7 +2710,7 @@ void ssithra_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < duck_chance)
+	if (chance < duck_chance)
 	{
 		self->evade_debounce_time = level.time + eta;
 		ssithraCrouch(self);
@@ -2724,7 +2724,7 @@ void ssithra_evade (edict_t *self, G_Message_t *msg)
 //========================================
 qboolean SsithraCheckMood (edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
+	if (self->spawnflags & MSF_FIXED && self->curAnimID == ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -2732,13 +2732,13 @@ qboolean SsithraCheckMood (edict_t *self)
 
 	self->mood_think(self);
 
-	if(self->ai_mood == AI_MOOD_NORMAL)
+	if (self->ai_mood == AI_MOOD_NORMAL)
 		return false;
 
 	switch (self->ai_mood)
 	{
 		case AI_MOOD_ATTACK:
-			if(self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
+			if (self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
 				G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 			else
 				G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
@@ -2760,7 +2760,7 @@ qboolean SsithraCheckMood (edict_t *self)
 			break;
 
 		case AI_MOOD_DELAY:
-			if(mgai_debug->value)
+			if (mgai_debug->value)
 				gi.dprintf("Delay on frame %d\n", self->monsterinfo.currframeindex);
 
 			SetAnim(self, ANIM_DELAY);
@@ -2768,7 +2768,7 @@ qboolean SsithraCheckMood (edict_t *self)
 			break;
 
 		case AI_MOOD_WANDER:
-			if(ssithraCheckInWater(self))
+			if (ssithraCheckInWater(self))
 				SetAnim(self, ANIM_SWIMWANDER);
 			else
 				SetAnim(self, ANIM_WALK1);
@@ -2781,7 +2781,7 @@ qboolean SsithraCheckMood (edict_t *self)
 			break;
 
 		case AI_MOOD_JUMP:
-			if(self->spawnflags&MSF_FIXED)
+			if (self->spawnflags&MSF_FIXED)
 				SetAnim(self, ANIM_DELAY);
 			else
 				SetAnim(self, ANIM_FJUMP);
@@ -2789,7 +2789,7 @@ qboolean SsithraCheckMood (edict_t *self)
 			break;
 
 		default :
-			if(mgai_debug->value)
+			if (mgai_debug->value)
 				gi.dprintf("ssithra: Unusable mood %d!\n", self->ai_mood);
 			break;
 	}
@@ -2819,7 +2819,7 @@ void ssithra_sight (edict_t *self, G_Message_t *msg)
 	byte	sight_type;
 	int		sound;
 
-	if(self->targetname || self->monsterinfo.c_mode)
+	if (self->targetname || self->monsterinfo.c_mode)
 		return;//cinematic waiting to be activated, don't do this
 
 	//Have we already said something?
@@ -2829,7 +2829,7 @@ void ssithra_sight (edict_t *self, G_Message_t *msg)
 	G_ParseMsgParms(msg, "be", &sight_type, &enemy);
 
 	//See if we are the first to see the player
-	if(M_CheckAlert(self, SSITHRA_SUPPORT_RADIUS))
+	if (M_CheckAlert(self, SSITHRA_SUPPORT_RADIUS))
 	{
 		sound = irand(SND_SIGHT1, SND_SIGHT6);
 		gi.sound(self, CHAN_BODY, Sounds[sound], 1, ATTN_NORM, 0);
@@ -2841,11 +2841,11 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 	alertent_t	*checkent = NULL;
 	vec3_t	saveangles;
 
-	if(self->alert_time < level.time)
+	if (self->alert_time < level.time)
 	{//not looking around
-		if(!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
+		if (!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
 		{//not a sound-alert,
-			if(enemy->light_level < flrand(6, 77))
+			if (enemy->light_level < flrand(6, 77))
 			{
 				return false;
 			}
@@ -2853,12 +2853,12 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 	}
 
 	//the alert action happened in front of me, but the enemy is behind or the alert is behind me
-	if(!infront_pos(self, alerter->origin))
+	if (!infront_pos(self, alerter->origin))
 	{
-		if(irand(0, 1)&&self->curAnimID!=ANIM_IDLEBASIC)
+		if (irand(0, 1)&&self->curAnimID!=ANIM_IDLEBASIC)
 		{//50% chance of startling them up if not already in startle anim
 			//startle me, but don't wake up just yet
-			if(alerter->lifetime < level.time + 4)
+			if (alerter->lifetime < level.time + 4)
 				self->alert_time = level.time + 4;//be ready for 4 seconds to wake up if alerted again
 			else
 				self->alert_time = alerter->lifetime;//be alert as long as the alert sticks around
@@ -2866,7 +2866,7 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 			VectorClear(self->v_angle_ofs);
 			self->v_angle_ofs[YAW]=-90;
 
-			if(infront_pos(self, alerter->origin))//fancy way of seeing if explosion was to right
+			if (infront_pos(self, alerter->origin))//fancy way of seeing if explosion was to right
 			{
 				VectorCopy(saveangles,self->v_angle_ofs);
 				ssithraLookRight(self);//fixme: if already looking right, see you
@@ -2883,7 +2883,7 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 	}
 	else if(!infront(self,enemy))
 	{
-		if(irand(0, 1)&&self->curAnimID!=ANIM_IDLEBASIC)
+		if (irand(0, 1)&&self->curAnimID!=ANIM_IDLEBASIC)
 		{//50% chance of startling them up if not already in startle anim
 			//startle me, but don't wake up just yet
 			self->alert_time = level.time + 4;//be ready to wake up for next 4 seconds
@@ -2891,7 +2891,7 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 			VectorClear(self->v_angle_ofs);
 			self->v_angle_ofs[YAW]=-90;
 
-			if(infront(self, enemy))//fancy way of seeing if explosion was to right
+			if (infront(self, enemy))//fancy way of seeing if explosion was to right
 			{
 				VectorCopy(saveangles,self->v_angle_ofs);
 				ssithraLookRight(self);//fixme: if already looking right, see you
@@ -2907,11 +2907,11 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 			self->spawnflags |= MSF_SSITHRA_SPIN;
 	}
 
-	if(checkent)
+	if (checkent)
 	{//enemy of alert is behind me
 	}
 
-	if(enemy->svflags&SVF_MONSTER)
+	if (enemy->svflags&SVF_MONSTER)
 		self->enemy = alerter->enemy;
 	else
 		self->enemy = enemy;
@@ -3036,23 +3036,23 @@ void SP_monster_ssithra (edict_t *self)
 {
 	qboolean alpha = true;
 
-	if(!skill->value)
+	if (!skill->value)
 	{
-		if(!irand(0, 2))//30% - but won't fire explosives
+		if (!irand(0, 2))//30% - but won't fire explosives
 			self->spawnflags |= MSF_SSITHRA_CLOTHED;
 	}
 	else if (skill->value == 1)
 	{
-		if(!irand(0, 3))//25%
+		if (!irand(0, 3))//25%
 			self->spawnflags |= MSF_SSITHRA_CLOTHED;
 	}
 	else
 	{
-		if(irand(0, 1))//50%
+		if (irand(0, 1))//50%
 			self->spawnflags |= MSF_SSITHRA_CLOTHED;
 	}
 
-	if(self->spawnflags&MSF_SSITHRA_NAMOR)
+	if (self->spawnflags&MSF_SSITHRA_NAMOR)
 		self->spawnflags |= MSF_AMBUSH;
 
 	// Generic Monster Initialization
@@ -3073,7 +3073,7 @@ void SP_monster_ssithra (edict_t *self)
 
 	self->isBlocked = ssithra_blocked;
 
-	if(self->health<=0)
+	if (self->health<=0)
 		self->health = SSITHRA_HEALTH;
 
 	//Apply to the end result (whether designer set or not)
@@ -3096,7 +3096,7 @@ void SP_monster_ssithra (edict_t *self)
 
 	self->touch = M_Touch;
 
-	if(self->spawnflags & MSF_SSITHRA_CLOTHED)
+	if (self->spawnflags & MSF_SSITHRA_CLOTHED)
 		self->s.skinnum = 2;
 	else
 		self->s.skinnum = 0;
@@ -3114,11 +3114,11 @@ void SP_monster_ssithra (edict_t *self)
 	self->s.fmnodeinfo[MESH__CAPTOPUPPERTORSO].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__CAPBOTTOMUPPERTORSO].flags |= FMNI_NO_DRAW;
 	self->s.fmnodeinfo[MESH__CAPHEAD].flags |= FMNI_NO_DRAW;
-	if(!(self->spawnflags&MSF_SSITHRA_ALPHA))
+	if (!(self->spawnflags&MSF_SSITHRA_ALPHA))
 	{
-		if(irand(0,10)<6)
+		if (irand(0,10)<6)
 		{
-			if(irand(0,10)<5)
+			if (irand(0,10)<5)
 			{
 				self->s.fmnodeinfo[MESH__CENTERSPIKE].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__CENTERSPIKE].skin = self->s.skinnum+1;
@@ -3127,9 +3127,9 @@ void SP_monster_ssithra (edict_t *self)
 				self->s.fmnodeinfo[MESH__CENTERSPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
-		if(irand(0,10)<6)
+		if (irand(0,10)<6)
 		{
-			if(irand(0,10)<5)
+			if (irand(0,10)<5)
 			{
 				self->s.fmnodeinfo[MESH__LEFT1SPIKE].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LEFT1SPIKE].skin = self->s.skinnum+1;
@@ -3138,9 +3138,9 @@ void SP_monster_ssithra (edict_t *self)
 				self->s.fmnodeinfo[MESH__LEFT1SPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
-		if(irand(0,10)<6)
+		if (irand(0,10)<6)
 		{
-			if(irand(0,10)<5)
+			if (irand(0,10)<5)
 			{
 				self->s.fmnodeinfo[MESH__RIGHT1SPIKE].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RIGHT1SPIKE].skin = self->s.skinnum+1;
@@ -3149,9 +3149,9 @@ void SP_monster_ssithra (edict_t *self)
 				self->s.fmnodeinfo[MESH__RIGHT1SPIKE].flags |= FMNI_NO_DRAW;
 			alpha = false;
 		}
-		if(irand(0,10)<6)
+		if (irand(0,10)<6)
 		{
-			if(irand(0,10)<5)
+			if (irand(0,10)<5)
 			{
 				self->s.fmnodeinfo[MESH__RIGHT2SPIKE].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RIGHT2SPIKE].skin = self->s.skinnum+1;
@@ -3164,7 +3164,7 @@ void SP_monster_ssithra (edict_t *self)
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->s.color[3] = 255;
-	if(alpha)//tough guy!
+	if (alpha)//tough guy!
 	{//TODO: other ssithras won't attack this guy and will follow him
 		self->health += 75;
 
@@ -3190,14 +3190,14 @@ void SP_monster_ssithra (edict_t *self)
 
 	//set up my mood function
 	MG_InitMoods(self);
-	if(!irand(0,2))
+	if (!irand(0,2))
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 	self->svflags |= SVF_WAIT_NOTSOLID;
 	self->flags |= FL_AMPHIBIAN;
 
-//	if(self->spawnflags & MSF_SSITHRA_NAMOR)
+//	if (self->spawnflags & MSF_SSITHRA_NAMOR)
 //		self->use = ssithraNamorTriggered;
 }
 

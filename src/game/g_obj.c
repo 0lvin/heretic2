@@ -716,7 +716,7 @@ void SpawnCorpse(edict_t *self)
 	}
 
 	chance = irand(0, 3);
-	if(chance < 1)
+	if (chance < 1)
 	{
 		//show the hammer
 		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
@@ -857,7 +857,7 @@ void dying_elf_idle(edict_t *self)
 		self->nextthink = level.time + FRAMETIME;
 	}
 
-	if(!irand(0, 50))
+	if (!irand(0, 50))
 		dying_elf_sounds(self, DYING_ELF_IDLE_VOICE);
 
 	self->think = dying_elf_idle;

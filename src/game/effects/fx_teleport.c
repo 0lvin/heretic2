@@ -76,7 +76,7 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorSet(teleport_fx->r.scale, 1.8, 1.8, 1.8);
 	teleport_fx->d_scale = -3.0;
 
-  	AddEffect(owner, teleport_fx);
+	AddEffect(owner, teleport_fx);
 
 	// Use single point particles if we are in software
 	particle_type = PART_4x4_WHITE | PFL_SOFT_MASK;
@@ -141,7 +141,7 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorSet(teleport_fx->r.scale, 0.5, 0.5, 0.5);
 	teleport_fx->d_scale = 3.0;
 
-  	AddEffect(owner, teleport_fx);
+	AddEffect(owner, teleport_fx);
 
 	// Use single point particles if we are in software
 	particle_type = PART_4x4_WHITE | PFL_SOFT_MASK;
@@ -181,7 +181,7 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 	{
 		// Stuff gets sucked to the center
 		color.c = 0xffffffff;
-  		ce = ClientParticle_new(PART_16x16_SPARK_R | PFL_NEARCULL | PFL_MOVE_SPHERE, color, 1000);
+		ce = ClientParticle_new(PART_16x16_SPARK_R | PFL_NEARCULL | PFL_MOVE_SPHERE, color, 1000);
 
 		ce->color.a = 1;
 		ce->d_alpha = 256;
@@ -202,7 +202,7 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 
 		// Stuff comes up from the ground
 		color.c = 0xffffffff;
-  		ce = ClientParticle_new(PART_16x16_LIGHTNING | PFL_NEARCULL | PFL_MOVE_CYL_Z, color, 1000);
+		ce = ClientParticle_new(PART_16x16_LIGHTNING | PFL_NEARCULL | PFL_MOVE_CYL_Z, color, 1000);
 
 		ce->color.a = 1;
 		ce->d_alpha = 512;
@@ -224,7 +224,7 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 	if (irand(0,1) == 0)
 	{
 		color.c = 0xffffffff;
-  		ce = ClientParticle_new(PART_16x16_SPARK_R | PFL_NEARCULL, color, 250);
+		ce = ClientParticle_new(PART_16x16_SPARK_R | PFL_NEARCULL, color, 250);
 		VectorSet(ce->velocity, crandk() * 16.0, crandk() * 16.0, crandk() * 16.0);
 
 		ce->color.a = 255;

@@ -521,7 +521,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 {
 
 	// has the target got reflection turned on ?
-	if(EntReflecting(other, true, true) && self->reflect_debounce_time)
+	if (EntReflecting(other, true, true) && self->reflect_debounce_time)
 	{
 		Create_rand_relect_vect(self->velocity, self->velocity);
 		Vec3ScaleAssign(ARROW_SPEED/2, self->velocity);
@@ -531,7 +531,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	}
 
 	// Turn target into a chicken if monster or player
-	if(((other->svflags & SVF_MONSTER) && !(other->svflags&SVF_BOSS) && !(other->monsterinfo.c_mode)) ||
+	if (((other->svflags & SVF_MONSTER) && !(other->svflags&SVF_BOSS) && !(other->monsterinfo.c_mode)) ||
 				((other->client)&&(deathmatch->value)))
 	{
 		//Don't turn a super chicken back to a player
@@ -592,7 +592,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 	// else we hit a wall / object
 	else
 	{
-		if(plane->normal)
+		if (plane->normal)
 			// Start the explosion
 			gi.CreateEffect(NULL, FX_SPELL_MORPHEXPLODE, 0, self->s.origin, "d", plane->normal);
 		else

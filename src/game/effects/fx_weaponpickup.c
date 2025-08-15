@@ -114,7 +114,7 @@ void FXWeaponPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorCopy(ce->r.origin, ce->origin);
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
 
-	if(!tag)//sorry bob, just temporary...
+	if (!tag)//sorry bob, just temporary...
 	{
 		ce->flags |= CEF_NO_DRAW;
 	}

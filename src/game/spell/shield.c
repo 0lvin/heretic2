@@ -52,7 +52,7 @@ void SpellLightningShieldAttack(edict_t *self)
 			continue;
 
 		// if we have reflection on, then no damage
-		if(EntReflecting(found, true, true))
+		if (EntReflecting(found, true, true))
 			continue;
 
 		if (onefound)

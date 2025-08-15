@@ -60,7 +60,7 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	vec3_t		planedir;
 
 	// did we hit the sky ?
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -69,7 +69,7 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	// are we reflecting ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			Vec3ScaleAssign(PHOENIX_ARROW_SPEED/2,self->velocity);
@@ -87,7 +87,7 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		self->enemy = other;
 	else
 		self->enemy = NULL;
-	if(self->health == 1)
+	if (self->health == 1)
 	{	// must be powered up version - storing in health is not so good, though
 		// Powered up Phoenix will NOT damage the shooter.
 		T_DamageRadius(self, self->owner, NULL, PHOENIX_EXPLODE_RADIUS_POWER,
@@ -107,7 +107,7 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	// Attempt to apply a scorchmark decal to the thing I hit.
 	makeScorch = 0;
-	if(IsDecalApplicable(self, other, self->s.origin, surface, plane, planedir))
+	if (IsDecalApplicable(self, other, self->s.origin, surface, plane, planedir))
 	{
 		makeScorch = CEF_FLAG8;
 	}
@@ -174,7 +174,7 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	AngleVectors(AimAngles, forward, NULL, NULL);
 	VectorMA(StartPos, PHOENIX_ARROW_SPEED, forward, endpos);
 	trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, Caster, MASK_MONSTERSOLID);
-	if(trace.ent && ok_to_autotarget(Caster, trace.ent))
+	if (trace.ent && ok_to_autotarget(Caster, trace.ent))
 	{//already going to hit a valid target at this angle- so don't autotarget
 		VectorScale(forward, PHOENIX_ARROW_SPEED, phoenix->velocity);
 	}
@@ -184,7 +184,7 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	}
 	VectorCopy(AimAngles, phoenix->s.angles);
 	create_phoenix(phoenix);
- 	phoenix->reflect_debounce_time = MAX_REFLECT;
+	phoenix->reflect_debounce_time = MAX_REFLECT;
 
 	phoenix->owner = Caster;
 	G_LinkMissile(phoenix);
@@ -197,13 +197,13 @@ void SpellCastPhoenix(edict_t *Caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	{
 		// We still want the sound on the player.
 		gi.sound(Caster, CHAN_WEAPON, gi.soundindex("weapons/PhoenixPowerFire.wav"), 1, ATTN_NORM, 0);
- 		phoenix->health = 1;
+		phoenix->health = 1;
 	}
 	else
 	{
 		// We still want the sound on the player.
 		gi.sound(Caster, CHAN_WEAPON, gi.soundindex("weapons/PhoenixFire.wav"), 1, ATTN_NORM, 0);
- 		phoenix->health = 0;
+		phoenix->health = 0;
 	}
 
 	// remove the bow ready sound

@@ -44,48 +44,48 @@ static void RipperExplodeBallThink(edict_t *self)
 	trace_t trace;
 	int		numHit = 0;	// can hit no more than 8 guys...
 
-   	VectorCopy(self->s.origin, startpos);
-   	VectorCopy(self->last_org, endpos);
-   	tracebuddy = self;
-   	do
-   	{
-   		trace = gi.trace(startpos, self->mins, self->maxs, endpos, tracebuddy, MASK_SHOT);
-   		// if we hit anything that won't take damage, kill the beam
-   		if (!trace.ent->takedamage)
-   			break;
-   		if(trace.fraction < .99 )
-   		{
-   			// did we hit something that reflects ?
-			if(!EntReflecting(trace.ent, true, true))
+	VectorCopy(self->s.origin, startpos);
+	VectorCopy(self->last_org, endpos);
+	tracebuddy = self;
+	do
+	{
+		trace = gi.trace(startpos, self->mins, self->maxs, endpos, tracebuddy, MASK_SHOT);
+		// if we hit anything that won't take damage, kill the beam
+		if (!trace.ent->takedamage)
+			break;
+		if (trace.fraction < .99 )
+		{
+			// did we hit something that reflects ?
+			if (!EntReflecting(trace.ent, true, true))
 			{
-   				T_Damage(trace.ent, self, self->owner, self->movedir, trace.endpos, vec3_origin,
-   						self->dmg, 0, DAMAGE_SPELL | DAMAGE_EXTRA_BLOOD,MOD_IRONDOOM);
+				T_Damage(trace.ent, self, self->owner, self->movedir, trace.endpos, vec3_origin,
+						self->dmg, 0, DAMAGE_SPELL | DAMAGE_EXTRA_BLOOD,MOD_IRONDOOM);
 
 				if (trace.ent->svflags & SVF_MONSTER)
 				{
-   					// What the hell, let's spawn a big gush of blood in the travelling direction.
-   					VectorScale(self->movedir, RIPPER_EXPLODE_SPEED*0.25, vel);
-					if(trace.ent->materialtype == MAT_INSECT)
+					// What the hell, let's spawn a big gush of blood in the travelling direction.
+					VectorScale(self->movedir, RIPPER_EXPLODE_SPEED*0.25, vel);
+					if (trace.ent->materialtype == MAT_INSECT)
 						gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, self->last_org, "ub", vel, (byte)20);
-   					else
+					else
 						gi.CreateEffect(NULL, FX_BLOOD, 0, self->last_org, "ub", vel, (byte)20);
 
-   					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/RipperDamage.wav"), 1, ATTN_NORM, 0);
+					gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/RipperDamage.wav"), 1, ATTN_NORM, 0);
 				}
 			}
-   			// this seems to alleviate the problem of a trace hitting the same ent multiple times...
-   			VectorCopy(trace.endpos, startpos);
-   			VectorSubtract(endpos, startpos, vect);
-   			if(VectorLength(vect) > 16.0)
-   			{
+			// this seems to alleviate the problem of a trace hitting the same ent multiple times...
+			VectorCopy(trace.endpos, startpos);
+			VectorSubtract(endpos, startpos, vect);
+			if (VectorLength(vect) > 16.0)
+			{
 				VectorSubtract(startpos,endpos,forward);
 				VectorNormalize(forward);
-   				VectorMA(startpos, 16.0, forward, startpos);
-   			}
-   			tracebuddy = trace.ent;
-   			numHit++;
-   		}
-   	} while((trace.fraction < .99) && !(trace.contents & MASK_SOLID) && (numHit < 6) );
+				VectorMA(startpos, 16.0, forward, startpos);
+			}
+			tracebuddy = trace.ent;
+			numHit++;
+		}
+	} while((trace.fraction < .99) && !(trace.contents & MASK_SOLID) && (numHit < 6) );
 
 	// Prevent any further transmission of this entity to clients.
 	self->svflags |= SVF_NOCLIENT;
@@ -119,13 +119,13 @@ static void RipperImpact(edict_t *caster, edict_t *other, vec3_t startpos, vec3_
 	AngleVectors(angles, fwd, NULL, NULL);
 
 	// did we hit someone where reflection is functional ?
-	if(EntReflecting(other, true, true))
+	if (EntReflecting(other, true, true))
 	{
 		// Erg...  Do nothing right now.
 	}
 
 	AlertMonsters (caster, caster, 2, false);
-	if(other && other->takedamage)
+	if (other && other->takedamage)
 	{
 		dmg = irand(RIPPER_DAMAGE_MIN, RIPPER_DAMAGE_MAX);
 		VectorCopy(endpos, hitpos);
@@ -247,11 +247,11 @@ void SpellCastRipper(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t 
 	// Now trace from the starting point to the final destination.
 	VectorMA(StartPos, RIPPER_MAX_DISTANCE, forward, endpos);
 	trace = gi.trace(StartPos, mins, maxs, endpos, caster, MASK_SHOT);
-	if(level.fighting_beast)
+	if (level.fighting_beast)
 	{
 		edict_t *ent;
 
-		if((ent = check_hit_beast(StartPos, trace.endpos)))
+		if ((ent = check_hit_beast(StartPos, trace.endpos)))
 			trace.ent = ent;
 	}
 

@@ -3160,7 +3160,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 	mag = VectorLength(halfsize);
 	magb = Clamp(mag, 1.0, 255.0);
 
-	if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
+	if (self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
 		flags |= CEF_FLAG6;
 
 	if (self->materialtype == MAT_FLESH || self->materialtype == MAT_INSECT)
@@ -3168,7 +3168,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 		if (blood_level)
 			violence = blood_level->value;
 
-		if(violence < VIOLENCE_NORMAL)
+		if (violence < VIOLENCE_NORMAL)
 		{
 			size /= 10;
 			sizeb = Clamp(size, 1.0, 255.0);
@@ -3182,17 +3182,17 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 		}
 		else
 		{
-			if(violence > VIOLENCE_NORMAL)
+			if (violence > VIOLENCE_NORMAL)
 			{
 				sizeb *= (violence - VIOLENCE_NORMAL);
-				if(sizeb > 255)
+				if (sizeb > 255)
 					sizeb = 255;
 			}
 
-			if(self->materialtype == MAT_INSECT)
+			if (self->materialtype == MAT_INSECT)
 				flags |= CEF_FLAG8;
 
-			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
+			if (!Q_stricmp(self->classname, "monster_tcheckrik_male"))
 				flags |= CEF_FLAG7;//use male insect skin on chunks
 
 			gi.CreateEffect(NULL,
@@ -3205,7 +3205,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 	}
 	else
 	{
-		if(self->s.renderfx & RF_REFLECTION)
+		if (self->s.renderfx & RF_REFLECTION)
 			flags |= CEF_FLAG8;
 
 		gi.CreateEffect(NULL,
@@ -3217,8 +3217,8 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 						halfsize, magb);
 	}
 
-	if(self->classID == CID_OBJECT)
-		if(!strcmp(self->classname, "obj_larvabrokenegg") || !strcmp(self->classname, "obj_larvaegg"))
+	if (self->classID == CID_OBJECT)
+		if (!strcmp(self->classname, "obj_larvabrokenegg") || !strcmp(self->classname, "obj_larvaegg"))
 			self->materialtype = MAT_POTTERY;
 
 	if (DebrisSound[self->materialtype].Name)
@@ -3239,20 +3239,20 @@ BecomeDebris2(edict_t *self, float damage)
 
 	if (violence > VIOLENCE_BLOOD)
 	{
-		if(!(self->svflags & SVF_PARTS_GIBBED))
+		if (!(self->svflags & SVF_PARTS_GIBBED))
 		{//haven't yet thrown parts
-			if(self->monsterinfo.dismember)
+			if (self->monsterinfo.dismember)
 			{//FIXME:have a generic GibParts effect that throws flesh and several body parts- much cheaper?
 				int	i, num_limbs;
 
 				num_limbs = irand(3, 10);
 
-				if(violence > VIOLENCE_NORMAL)
+				if (violence > VIOLENCE_NORMAL)
 					num_limbs *= (violence - VIOLENCE_NORMAL);
 
 				for(i = 0; i < num_limbs; i++)
 				{
-					if(self->svflags&SVF_MONSTER)
+					if (self->svflags&SVF_MONSTER)
 						self->monsterinfo.dismember(self, flrand(80, 160), irand(hl_Head, hl_LegLowerRight) | hl_MeleeHit);
 				}
 				self->svflags |= SVF_PARTS_GIBBED;
@@ -3268,7 +3268,7 @@ BecomeDebris2(edict_t *self, float damage)
 	//What the hell is this???
 	if (self->spawnflags & 4 && !(self->svflags&SVF_MONSTER))
 	{   // Need to create an explosion effect for this
-		if(self->owner)
+		if (self->owner)
 		{
 			T_DamageRadius(self, self->owner, self, 60.0,
 						self->dmg, self->dmg/2, DAMAGE_NORMAL|DAMAGE_AVOID_ARMOR,MOD_DIED);
@@ -3287,7 +3287,7 @@ BecomeDebris2(edict_t *self, float damage)
 	// Create a chunk-spitting client effect and remove me now that I've been chunked.
 
 	// This only yields 4, 8, 12, or 16 chunks, generally seems to yield 16
-	if(self->svflags&SVF_MONSTER && self->classID != CID_MOTHER)
+	if (self->svflags&SVF_MONSTER && self->classID != CID_MOTHER)
 	{
 		size = VectorLength(self->size);
 		size *= 100;
@@ -3305,7 +3305,7 @@ BecomeDebris2(edict_t *self, float damage)
 
 		size = VectorLength(self->size) * 3;
 
-		if(self->solid == SOLID_BSP)
+		if (self->solid == SOLID_BSP)
 			size *= 3;
 		else if(self->classID == CID_MOTHER)
 			size *= 10;
@@ -3327,7 +3327,7 @@ BecomeDebris2(edict_t *self, float damage)
 void
 BecomeDebris(edict_t *self)
 {
-	if(self->health<0)
+	if (self->health<0)
 		BecomeDebris2(self, abs(self->health)+10.0f);
 	else
 		BecomeDebris2(self, 10.0f);
@@ -3346,7 +3346,7 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 	mat = (byte)(self->materialtype);
 	magb = Clamp(mag, 1.0, 255.0);
 
-	if(mat == MAT_FLESH || mat == MAT_INSECT)
+	if (mat == MAT_FLESH || mat == MAT_INSECT)
 	{
 		if (blood_level)
 			violence = blood_level->value;
@@ -3358,21 +3358,21 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 		else if(violence > VIOLENCE_NORMAL)
 		{
 			NoOfChunks *= (violence - VIOLENCE_NORMAL);
-			if(NoOfChunks > 255)
+			if (NoOfChunks > 255)
 				NoOfChunks = 255;
 		}
 	}
 
-	if(mat == MAT_FLESH || mat == MAT_INSECT)
+	if (mat == MAT_FLESH || mat == MAT_INSECT)
 	{
-		if(self->materialtype == MAT_INSECT)
+		if (self->materialtype == MAT_INSECT)
 		{
 			flags |= CEF_FLAG8;
-			if(!Q_stricmp(self->classname, "monster_tcheckrik_male"))
+			if (!Q_stricmp(self->classname, "monster_tcheckrik_male"))
 				flags |= CEF_FLAG7;//use male insect skin on chunks
 		}
 
-		if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
+		if (self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
 			flags |= CEF_FLAG6;
 
 		gi.CreateEffect(NULL,
@@ -3429,15 +3429,15 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 
 	VectorAdd(self->s.origin, *spot, spot2);
 
-	if(self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
+	if (self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
 		flags = CEF_FLAG6;
 	else
 		flags = 0;
 
-	if(self->materialtype == MAT_INSECT)
+	if (self->materialtype == MAT_INSECT)
 		flags |= CEF_FLAG8;
 
-	if(give_head_to_harpy && take_head_from == self)
+	if (give_head_to_harpy && take_head_from == self)
 	{
 		harpy_take_head(give_head_to_harpy, self, BodyPart, frame, flags);
 		SprayDebris(self, *spot, 5, damage);
@@ -4300,7 +4300,7 @@ SP_sound_ambient_silverspring(edict_t *self)
 void
 remove_camera(edict_t *self)
 {
-	if(self->spawnflags & 1)
+	if (self->spawnflags & 1)
 	{
 		/* Just for the activator. */
 		self->activator->client->RemoteCameraLockCount--;
@@ -4316,7 +4316,7 @@ remove_camera(edict_t *self)
 
 			cl_ent = g_edicts + 1 + i;
 
-			if(!cl_ent->inuse)
+			if (!cl_ent->inuse)
 			{
 				continue;
 			}
@@ -4325,7 +4325,7 @@ remove_camera(edict_t *self)
 		}
 	}
 
-	if(!(self->spawnflags & 4))
+	if (!(self->spawnflags & 4))
 	{
 		G_FreeEdict(self);
 	}
@@ -4339,15 +4339,15 @@ misc_remote_camera_think(edict_t *self)
 	// position will remain unchanged.
 	// ********************************************************************************************
 
-	if(self->pathtarget)
+	if (self->pathtarget)
 	{
 		self->enemy = G_Find(NULL, FOFS(targetname), self->pathtarget);
 	}
 
-	if(self->enemy || (self->spawnflags & 2))
+	if (self->enemy || (self->spawnflags & 2))
 	{
 		/* I am attatched to another (possibly moving) entity, so update my position. */
-		if(self->enemy)
+		if (self->enemy)
 		{
 			VectorCopy(self->enemy->s.origin, self->s.origin);
 		}
@@ -4357,7 +4357,7 @@ misc_remote_camera_think(edict_t *self)
 	// Find my target entity and then orientate myself to look at it.
 	// ********************************************************************************************
 
-	if((self->teamchain = G_Find(NULL, FOFS(targetname), self->target)))
+	if ((self->teamchain = G_Find(NULL, FOFS(targetname), self->target)))
 	{
 		/* Calculate the angles from myself to my target. */
 		vec3_t	forward;
@@ -4452,11 +4452,11 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 	// static camera so set up my position here (it will remain unchanged hereafter).
 	// ********************************************************************************************
 
-	if(!self->pathtarget)
+	if (!self->pathtarget)
 	{
 		// I am static, so set up my position (which will not change hereafter).
 
-		if(self->spawnflags & 1)
+		if (self->spawnflags & 1)
 		{
 			/* Just for the activator. */
 			self->enemy = NULL;
@@ -4488,7 +4488,7 @@ Use_misc_remote_camera(edict_t *self, edict_t *other, edict_t *activator)
 		if (self->enemy || (self->spawnflags & 2))
 		{
 			/* I am attatched to another (possibly moving) entity, so update my position. */
-			if(self->enemy)
+			if (self->enemy)
 			{
 				VectorCopy(self->enemy->s.origin, self->s.origin);
 			}
@@ -4547,7 +4547,7 @@ SpawnClientAnim(edict_t *self, byte type, char *sound)
 	if (self->spawnflags & 2)	// Animate it
 	{
 		type |= 0x80;
-		if(sound)
+		if (sound)
 		{
 			self->s.sound = gi.soundindex(sound);
 			self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
@@ -4571,30 +4571,30 @@ SpawnClientAnim(edict_t *self, byte type, char *sound)
 qboolean
 EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer)
 {
-	if(!ent)
+	if (!ent)
 	{
 		return false;
 	}
 
-	if(checkmonster)
+	if (checkmonster)
 	{
-		if(ent->svflags & SVF_MONSTER && ent->svflags & SVF_REFLECT)
+		if (ent->svflags & SVF_MONSTER && ent->svflags & SVF_REFLECT)
 		{
 			return true;
 		}
 	}
 
-	if(checkplayer)
+	if (checkplayer)
 	{
-		if(ent->client)
+		if (ent->client)
 		{
-			if(ent->client->playerinfo.reflect_timer > level.time)
+			if (ent->client->playerinfo.reflect_timer > level.time)
 			{
 				return true;
 			}
 			// possibly, we might want to reflect this if the player has gold armor
 			else
-			if((ent->client->playerinfo.pers.armortype == ARMOR_TYPE_GOLD) && (ent->client->playerinfo.pers.armor_count) && (irand(0,100) < 30))
+			if ((ent->client->playerinfo.pers.armortype == ARMOR_TYPE_GOLD) && (ent->client->playerinfo.pers.armor_count) && (irand(0,100) < 30))
 				return true;
 
 		}
@@ -4606,7 +4606,7 @@ EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer)
 void
 SkyFlyCheck(edict_t *self)
 {
-	if(self->s.origin[2] > 3900)
+	if (self->s.origin[2] > 3900)
 		G_FreeEdict(self);
 	else
 		self->nextthink = level.time + 0.1;
@@ -4615,7 +4615,7 @@ SkyFlyCheck(edict_t *self)
 void
 SkyFly(edict_t *self)
 {
-/*	if(deathmatch->value)
+/*	if (deathmatch->value)
 	{*/
 		G_SetToFree(self);
 		return;
@@ -4638,7 +4638,7 @@ SkyFly(edict_t *self)
 void
 fire_spark_think(edict_t *self)
 {
-	if(self->delay && self->delay < level.time)
+	if (self->delay && self->delay < level.time)
 	{
 		G_FreeEdict(self);
 		return;
@@ -4680,7 +4680,7 @@ void
 SP_misc_fire_sparker(edict_t *self)
 {
 
-	if(self->spawnflags & 1)
+	if (self->spawnflags & 1)
 		self->s.effects |= EF_MARCUS_FLAG1;
 
 	self->svflags |= SVF_ALWAYS_SEND;

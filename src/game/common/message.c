@@ -74,7 +74,7 @@ size_t SetParms(SinglyLinkedList_t *_this, const char *format, va_list marker, q
 			assert(0);
 		}
 
-		if(append)
+		if (append)
 		{
 			SLList_InsertAfter(_this, parm);
 			SLList_Increment(_this);
@@ -83,7 +83,7 @@ size_t SetParms(SinglyLinkedList_t *_this, const char *format, va_list marker, q
 		{
 			SLList_ReplaceCurrent(_this, parm);
 
-			if(SLList_AtLast(_this))
+			if (SLList_AtLast(_this))
 			{
 				append = true;
 			}
@@ -112,7 +112,7 @@ int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 
 	assert(format);
 
-	if(!format)
+	if (!format)
 	{
 		Sys_Error("GetParms: null format string");
 		return 0;
@@ -122,7 +122,7 @@ int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 
 	assert(!SLList_AtEnd(_this));
 
-	if(SLList_AtEnd(_this))
+	if (SLList_AtEnd(_this))
 	{
 		Sys_Error("Getthis: empty parameter list");
 		return 0;

@@ -104,7 +104,7 @@ qboolean UsedRightAttack(int instruction, edict_t *attacker, edict_t *projectile
 	switch(instruction)
 	{
 		case NATE_INSTRUCTION_SWIPE:
-			if(sequence == ASEQ_WSWORD_STD1||
+			if (sequence == ASEQ_WSWORD_STD1||
 				sequence == ASEQ_WSWORD_STD2||
 				sequence == ASEQ_WSWORD_STEP2||
 				sequence == ASEQ_WSWORD_STEP)
@@ -112,17 +112,17 @@ qboolean UsedRightAttack(int instruction, edict_t *attacker, edict_t *projectile
 			break;
 
 		case NATE_INSTRUCTION_SPIN:
-			if(sequence == ASEQ_WSWORD_SPIN || sequence == ASEQ_WSWORD_SPIN2)
+			if (sequence == ASEQ_WSWORD_SPIN || sequence == ASEQ_WSWORD_SPIN2)
 				return (true);
 			break;
 
 		case NATE_INSTRUCTION_JUMP_KICK:
-			if(sequence == ASEQ_POLEVAULT2)
+			if (sequence == ASEQ_POLEVAULT2)
 				return (true);
 			break;
 
 		case NATE_INSTRUCTION_FIREBALL:
-			if(!Q_stricmp(projectile->classname, "Spell_FlyingFist"))
+			if (!Q_stricmp(projectile->classname, "Spell_FlyingFist"))
 				return (true);
 			break;
 	}
@@ -137,13 +137,13 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 
 	VectorClear(self->velocity);
 
-	if(self->enemy->use)//still waiting to be triggered
+	if (self->enemy->use)//still waiting to be triggered
 		return false;
 
-	if(!attacker->client)
+	if (!attacker->client)
 		return false;
 
-	if(self->count == NUM_INSTRUCTIONS)
+	if (self->count == NUM_INSTRUCTIONS)
 	{
 		G_CPrintf(attacker, PRINT_HIGH, GM_SIR_NATE_END);
 		self->count++;
@@ -155,11 +155,11 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 	}
 	else if(UsedRightAttack(self->count, attacker, self->activator))
 	{
-		if(self->damage_debounce_time>level.time)
+		if (self->damage_debounce_time>level.time)
 			return false;
 
 		self->count++;
-		if(self->count == NUM_INSTRUCTIONS)
+		if (self->count == NUM_INSTRUCTIONS)
 		{
 			G_CPrintf(attacker, PRINT_HIGH, GM_SIR_NATE_FINISH);
 		}
@@ -179,14 +179,14 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 void sir_nate_of_the_embarassingly_shortshanks_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 
-	if(!activator->client)
+	if (!activator->client)
 		return;
 
 	G_CPrintf(activator, PRINT_HIGH, (short)(self->dmg_radius+GM_SIR_NATE_GREETING));
 
 	self->dmg_radius++;
 
-	if(self->dmg_radius == 2)//last opening message
+	if (self->dmg_radius == 2)//last opening message
 		self->use = NULL;
 }
 
@@ -278,7 +278,7 @@ void rope_end_think2( edict_t *self )
 	mag = VectorNormalize(end_pos);
 	VectorMA(grab->s.origin, (mag*FRAMETIME), end_pos, end_pos);
 
-	if(!CHICKEN_KNOCKBACK)
+	if (!CHICKEN_KNOCKBACK)
 	{//otherwise, done in hanging_chicken_think
 		trace = gi.trace(grab->s.origin, self->teamchain->mins, self->teamchain->maxs, end_pos, self->teamchain, MASK_MONSTERSOLID);
 
@@ -571,12 +571,12 @@ void hanging_chicken_think(edict_t *self)
 	}
 
 	//knockback
-	if(CHICKEN_KNOCKBACK)
+	if (CHICKEN_KNOCKBACK)
 	{
 		trace = gi.trace(self->s.origin, self->mins, self->maxs, self->teamchain->s.origin, self, self->clipmask);
-		if(trace.ent)
+		if (trace.ent)
 		{
-			if(movable(trace.ent))
+			if (movable(trace.ent))
 			{
 				vec3_t	kvel;
 				float	mass, force, upvel;
@@ -619,7 +619,7 @@ void hanging_chicken_think(edict_t *self)
 					// The knockbacktime indicates how long this knockback affects the player.
 					if (force>200 && trace.ent->health>0 && trace.ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN && infront(trace.ent, self))
 					{
-						if(self->evade_debounce_time<level.time)
+						if (self->evade_debounce_time<level.time)
 						{
 							gi.sound(self, CHAN_BODY, gi.soundindex("monsters/pssithra/land.wav") ,1, ATTN_NORM , 0);
 							self->evade_debounce_time = level.time + 3.0;
@@ -639,7 +639,7 @@ void hanging_chicken_think(edict_t *self)
 						trace.ent->client->playerinfo.knockbacktime = knockbacktime;
 				}
 
-				if(force>100)
+				if (force>100)
 				{
 					VectorMA(trace.endpos, -force/5, vec, self->teamchain->s.origin);
 					VectorScale(self->enemy->target_ent->velocity, -0.5 * force/400 , self->enemy->target_ent->velocity);
@@ -803,7 +803,7 @@ void SP_obj_rope(edict_t *self)
 
 	if (self->spawnflags & ROPEFLAG_HANGING_CHICKEN)
 	{
-		if(self->targetname)
+		if (self->targetname)
 			self->use = rope_use;
 		else
 			gi.dprintf("Chicken on a Rope with no targetname...\n");

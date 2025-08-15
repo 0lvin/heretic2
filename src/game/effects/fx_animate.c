@@ -62,7 +62,7 @@ static qboolean FXAnimateGo(struct client_entity_s *self, centity_t *owner)
 {
 
 	self->r.frame++;
-	if(self->r.frame >= self->NoOfAnimFrames)
+	if (self->r.frame >= self->NoOfAnimFrames)
 	{
 		self->r.frame = 0;
 	}
@@ -71,10 +71,10 @@ static qboolean FXAnimateGo(struct client_entity_s *self, centity_t *owner)
 
 static qboolean FXAnimateRandomGo(struct client_entity_s *self, centity_t *owner)
 {
-   	self->updateTime = 100;
+	self->updateTime = 100;
 	self->r.frame++;
 
-	if(self->r.frame == self->NoOfAnimFrames)
+	if (self->r.frame == self->NoOfAnimFrames)
 	{
 		self->r.frame = 0;
 		self->updateTime = irand(500, 5000);
@@ -102,10 +102,10 @@ void FXAnimate(centity_t *owner, int type, int flags, vec3_t origin)
 	self->NoOfAnimFrames = FXAnimModel[atype].numframes;
 	self->r.frame = FXAnimModel[atype].defaultframe;
 
-	if(anim & 0x80)
+	if (anim & 0x80)
 	{
 		// Animate (special animate for cocoon)
-		if(atype == FX_ANIM_COCOON)
+		if (atype == FX_ANIM_COCOON)
 		{
 			self->Update = FXAnimateRandomGo;
 		}

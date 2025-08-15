@@ -173,7 +173,7 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *ow
 	if ( ( self->LifeTime > 0 ) && ( self->LifeTime < fxi.cl->time ) )
 		return (false);
 
-	if(fake_owner->current.effects & EF_DISABLE_EXTRA_FX)
+	if (fake_owner->current.effects & EF_DISABLE_EXTRA_FX)
 		return (false);
 
 //Interpolate- why am I only getting 2 frames of interpolation?
@@ -206,7 +206,7 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *ow
 		return true;
 	}
 
- 	if (self->up[1])
+	if (self->up[1])
 	{
 		if (self->flags & CEF_NO_DRAW)
 			self->flags &= ~CEF_NO_DRAW;
@@ -314,7 +314,7 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	fxi.GetEffect(owner, Flags, clientEffectSpawners[FX_LENSFLARE].formatString, &tint.r, &tint.g, &tint.b, &alpha);
 
 	// no lens flares in low detail
-	if(r_detail->value <= DETAIL_NORMAL)
+	if (r_detail->value <= DETAIL_NORMAL)
 		return;
 
 	if (Flags & CEF_FLAG6)
@@ -435,7 +435,7 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 	Count = 7;
 
 	// no lens flares in low detail
-	if(r_detail->value <= DETAIL_NORMAL)
+	if (r_detail->value <= DETAIL_NORMAL)
 		return;
 
 	if (Flags & CEF_FLAG6)

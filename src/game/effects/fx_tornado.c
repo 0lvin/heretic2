@@ -123,22 +123,22 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 
 	count = GetScaledCount(5, 0.8);
 
-  	for (i=0; i<count; i++)
-  	{
-  		if (irand(0,1))
+	for (i=0; i<count; i++)
+	{
+		if (irand(0,1))
 		{
 			part = PART_16x16_SPARK_B;
 			scale = flrand(6.0, 8.0);
 		}
-  		else
+		else
 		{
-  			part = PART_16x16_LIGHTNING;
+			part = PART_16x16_LIGHTNING;
 			scale = flrand(4.0, 5.0);
 		}
 
-  		ce = ClientParticle_new(part| PFL_NEARCULL | PFL_MOVE_CYL_Z, color, 1750);
+		ce = ClientParticle_new(part| PFL_NEARCULL | PFL_MOVE_CYL_Z, color, 1750);
 
-  		ce->scale = scale;
+		ce->scale = scale;
 		ce->d_scale = (r_detail->value + 1) * 2;
 		if (r_detail->value == DETAIL_LOW)
 			ce->d_alpha = -220;
@@ -162,8 +162,8 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 		ce->acceleration[CYL_YAW] = ANGLE_360*2.5;
 		ce->acceleration[CYL_Z] = flrand(TORN_RADIUS*1.5, TORN_RADIUS*1.75);
 
-  		AddParticleToList(self, ce);
-  	}
+		AddParticleToList(self, ce);
+	}
 
 	FXTornadoBallThink(self, owner);
 
@@ -299,29 +299,29 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 	}
 
 	// should we do a particle stream too ?
-  	if (self->flags & CEF_FLAG7)
-  	{
-  		part = PART_16x16_SPARK_R;
-  	}
-  	else
-  	{
-  		part = PART_16x16_SPARK_G;
-  	}
+	if (self->flags & CEF_FLAG7)
+	{
+		part = PART_16x16_SPARK_R;
+	}
+	else
+	{
+		part = PART_16x16_SPARK_G;
+	}
    color.c = 0x80ffffff;
 
-  	// figure out a direction for _this beam to go in
-  	VectorSet(angles, flrand(0, 6.28), flrand(0, 6.28), 0);
-  	count = GetScaledCount(17, 0.85);
-  	scale_off = 15.0 / count;
-  	color_off = 0x80 / count;
+	// figure out a direction for _this beam to go in
+	VectorSet(angles, flrand(0, 6.28), flrand(0, 6.28), 0);
+	count = GetScaledCount(17, 0.85);
+	scale_off = 15.0 / count;
+	color_off = 0x80 / count;
 	radius_off = TORN_RADIUS / count;
 	radius = 0.0;
 
-  	for (i=0; i<count; i++)
-  	{
-  		ce = ClientParticle_new(part| PFL_NEARCULL | PFL_MOVE_SPHERE, color, 1200);
-  		ce->scale = 8 + ( i * scale_off) ;
-  		ce->acceleration[2] = 0;
+	for (i=0; i<count; i++)
+	{
+		ce = ClientParticle_new(part| PFL_NEARCULL | PFL_MOVE_SPHERE, color, 1200);
+		ce->scale = 8 + ( i * scale_off) ;
+		ce->acceleration[2] = 0;
 
 		ce->origin[SPH_RADIUS] = radius;
 		ce->origin[SPH_YAW] = angles[YAW];
@@ -330,16 +330,16 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 		ce->velocity[SPH_YAW] = self->yaw;
 		ce->velocity[SPH_PITCH] = self->SpawnData;
 
-  		AddParticleToList(self, ce);
+		AddParticleToList(self, ce);
 
-  		radius += radius_off;
-  		color.a += color_off;
-  	}
+		radius += radius_off;
+		color.a += color_off;
+	}
 
-  	count = GetScaledCount(4, 0.85);
-  	for (i=0; i<count; i++)
-   	{
-  		//Spawn a hit explosion of lines
+	count = GetScaledCount(4, 0.85);
+	for (i=0; i<count; i++)
+	{
+		//Spawn a hit explosion of lines
 		TrailEnt=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, self->flags & ~CEF_NO_DRAW, self->origin, 0, 1000);
 
 		TrailEnt->r.model = torn_models[2];
@@ -378,7 +378,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 		VectorMA(TrailEnt->r.startpos, irand(16,32), TrailEnt->velocity, TrailEnt->r.endpos);
 
 		VectorScale(TrailEnt->velocity, irand(200, 250), TrailEnt->velocity);
-  		VectorSet(TrailEnt->acceleration, TrailEnt->velocity[0] * 0.1, TrailEnt->velocity[1] * 0.1, 0);
+		VectorSet(TrailEnt->acceleration, TrailEnt->velocity[0] * 0.1, TrailEnt->velocity[1] * 0.1, 0);
 
 		AddEffect(NULL, TrailEnt);
 	}

@@ -94,7 +94,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 	vec3_t		Origin;
 	int			makeScorch;
 
-	if(Surface&&(Surface->flags&SURF_SKY))
+	if (Surface&&(Surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -103,7 +103,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 	// has the target got reflection turned on ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(Other, true, true))
+		if (EntReflecting(Other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			// scale speed down
@@ -114,7 +114,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 		}
 	}
 
-	if((Other==self->owner)||(!strcmp(self->classname,Other->classname)))
+	if ((Other==self->owner)||(!strcmp(self->classname,Other->classname)))
 	{
 		return;
 	}
@@ -124,7 +124,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 	VectorMA(self->s.origin,-0.02,self->velocity,Origin);
 
 	AlertMonsters (self, self->owner, 1, false);
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		T_Damage(Other,self,self->owner,self->movedir,self->s.origin,Plane->normal,self->dmg,self->dmg,DAMAGE_SPELL,MOD_MMISSILE);
 	}
@@ -146,7 +146,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 
 	// Attempt to apply a scorchmark decal to the thing I hit.
 	makeScorch = 0;
-	if(IsDecalApplicable(self,Other,self->s.origin,Surface,Plane,NULL))
+	if (IsDecalApplicable(self,Other,self->s.origin,Surface,Plane,NULL))
 	{
 		makeScorch = CEF_FLAG6;
 	}
@@ -164,7 +164,7 @@ void create_magic(edict_t *MagicMissile)
 	MagicMissile->solid=SOLID_BBOX;
 	MagicMissile->classname="Spell_MagicMissile";
 	MagicMissile->touch=MagicMissileTouch;
-	if(deathmatch->value)
+	if (deathmatch->value)
 		MagicMissile->dmg=irand(MAGICMISSILE_DAMAGE_MIN/2, MAGICMISSILE_DAMAGE_MAX/2);//15 - 20
 	else
 		MagicMissile->dmg=irand(MAGICMISSILE_DAMAGE_MIN, MAGICMISSILE_DAMAGE_MAX);//30 - 40
@@ -219,7 +219,7 @@ void SpellCastMagicMissile(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec3
 													magicmissile->s.origin,
 													NULL, NULL);
 
-	if(magicmissile->enemy)
+	if (magicmissile->enemy)
 	{
 		VectorCopy(magicmissile->s.origin, TempVec);
 		VectorSubtract(magicmissile->enemy->s.origin, TempVec, TempVec);

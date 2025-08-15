@@ -64,7 +64,7 @@ static qboolean FXDustThink(client_entity_t *dust, centity_t *owner)
 	int				duration;
 
 	dust->LifeTime++;
-	if(dust->LifeTime > dust->SpawnDelay)
+	if (dust->LifeTime > dust->SpawnDelay)
 	{
 		return false;
 	}

@@ -26,13 +26,13 @@ static qboolean FXPlagueMistParticleSpawner(client_entity_t *spawner, centity_t 
 	float				mist_scale, mist_d_scale;
 
 	spawner->LifeTime -= 100;
-	if(spawner->LifeTime < 0)
+	if (spawner->LifeTime < 0)
 		return false;
 
 	count = (spawner->LifeTime - 1600) / 150;
-	if(count > NUM_MIST_PARTS)
+	if (count > NUM_MIST_PARTS)
 		count = NUM_MIST_PARTS;
-	if(count < 1)
+	if (count < 1)
 		return true;
 
 	if (r_detail->value >= DETAIL_HIGH)
@@ -96,7 +96,7 @@ void FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	pm->Update = FXPlagueMistParticleSpawner;
 	pm->flags |= CEF_NO_DRAW | CEF_NOMOVE;
 
-	if(Owner)
+	if (Owner)
 		AddEffect(Owner, pm);
 	else
 		AddEffect(NULL, pm);

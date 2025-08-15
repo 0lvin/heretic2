@@ -97,7 +97,7 @@ FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	scale = flrand(0.8, 1.3);
 	VectorSet(self->r.scale, scale, scale, scale);
-	if((TrailLength=VectorNormalize(Trail))>0.05)
+	if ((TrailLength=VectorNormalize(Trail))>0.05)
 	{
 		PerpendicularVector(Right,Trail);
 		CrossProduct(Trail,Right,Up);
@@ -107,7 +107,7 @@ FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 
 		NoOfIntervals=(int)(TrailLength/DeltaTrailLength);
 
-		if(NoOfIntervals > 40)
+		if (NoOfIntervals > 40)
 			return false;
 
 		Theta=fxi.cl->time*FIST_DELTA_THETA;
@@ -175,7 +175,7 @@ void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 
 	Trail->Update=FXInsectStaffTrailThink;
 
-	if(r_detail->value > DETAIL_NORMAL)
+	if (r_detail->value > DETAIL_NORMAL)
 		Trail->dlight=CE_DLight_new(LightColor,150.0f,0.0f);
 
 	AddEffect(owner,Trail);
@@ -191,7 +191,7 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 	int				I;
 	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 		FXClientScorchmark(origin, Dir);
 
 	VectorScale(Dir,32.0,Dir);
@@ -218,7 +218,7 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 
 		SmokePuff->radius=20.0;
 
-		if(!I)
+		if (!I)
 		{
 			SmokePuff->dlight=CE_DLight_new(LightColor,150.0f,0.0f);
 			VectorClear(SmokePuff->velocity);
@@ -264,7 +264,7 @@ FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
 	VectorCopy(owner->origin,TrailStart);
 	VectorSubtract(owner->lerp_origin,owner->origin,Trail);
 
-	if((TrailLength=VectorNormalize(Trail))<0.001)
+	if ((TrailLength=VectorNormalize(Trail))<0.001)
 	{
 		TrailLength+=2.0;
 	}
@@ -376,10 +376,10 @@ FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*Spark;
 
-	if((owner->current.effects&EF_MARCUS_FLAG1))
+	if ((owner->current.effects&EF_MARCUS_FLAG1))
 		self->color.r++;
 
-	if(self->color.r>3)
+	if (self->color.r>3)
 	{
 		// Create a trailing spark.
 		float scale;
@@ -403,7 +403,7 @@ FXGlobeOfOuchinessGlowballThink(struct client_entity_s *self, centity_t *owner)
 
 	// 'self->extra' refers to the globe's centity_t.
 
-	if(self->color.r<16)
+	if (self->color.r<16)
 	{
 		self->velocity[0]*=3.0;
 		self->velocity[0]+=6.0*(owner->origin[0]-self->r.origin[0]);
@@ -444,7 +444,7 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 
 	// If the spell is still building, create some swirling blue Glowballs.
 
-	if(owner->current.effects&EF_MARCUS_FLAG1)
+	if (owner->current.effects&EF_MARCUS_FLAG1)
 	{
 		// 'self->extra' refers to the caster's centity_t.
 
@@ -468,7 +468,7 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 
 		Matrix3FromAngles(((centity_t *)(self->extra))->lerp_angles,RotationMatrix);
 
-		if(!(self->color.g&1))
+		if (!(self->color.g&1))
 		{
 			Matrix3MultByVec3(RotationMatrix,
 				((centity_t *)(self->extra))->referenceInfo->references[INSECT_STAFF].placement.origin,
@@ -487,12 +487,12 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 
 		Glowball->velocity[0]=Forward2[0]*175.0+flrand(-25.0, 25.0);
 
-		if(self->color.g&1)
+		if (self->color.g&1)
 			Glowball->velocity[0]=-Glowball->velocity[0];
 
 		Glowball->velocity[1]=Forward2[1]*175.0+flrand(-25.0, 25.0);
 
-		if(!(self->color.g&1))
+		if (!(self->color.g&1))
 			Glowball->velocity[1]=-Glowball->velocity[1];
 
 		Glowball->velocity[2]=flrand(-200.0, 100.0);
@@ -596,7 +596,7 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 	VectorCopy(vel, hellbolt->velocity);
 	hellbolt->AddToView = LinkedEntityUpdatePlacement;
 
-	if(r_detail->value > DETAIL_NORMAL)
+	if (r_detail->value > DETAIL_NORMAL)
 		hellbolt->dlight = CE_DLight_new(LightColor, 150.0f, -300.0f);
 
 	AddEffect(owner, hellbolt);
@@ -613,7 +613,7 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 	scale = flrand(0.1, 0.5);
 	VectorSet(self->r.scale, scale, scale, scale);
 
-	if(!VectorCompare(owner->lerp_origin, self->startpos2))
+	if (!VectorCompare(owner->lerp_origin, self->startpos2))
 		VectorCopy(owner->lerp_origin, self->startpos2);
 
 	VectorSubtract(owner->lerp_origin, self->startpos2, dir);
@@ -667,7 +667,7 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->AddToView = LinkedEntityUpdatePlacement;
 	VectorCopy(owner->current.origin, hellbolt->startpos2);
 
-	if(r_detail->value > DETAIL_NORMAL)
+	if (r_detail->value > DETAIL_NORMAL)
 		hellbolt->dlight = CE_DLight_new(LightColor, 150.0f, -300.0f);
 
 	hellbolt->Update = FXISpear2Update;
@@ -701,7 +701,7 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 	int				i;
 	paletteRGBA_t	lightcolor = {{{255, 96, 48, 255}}};
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, Dir);
 	}
@@ -726,7 +726,7 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 		smokepuff->d_scale = -0.5;
 		smokepuff->d_alpha = -2.0;
 
-		if(!i)
+		if (!i)
 		{
 			fxi.S_StartSound(smokepuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/HellHit.wav"), 1, ATTN_NORM, 0);
 			smokepuff->dlight = CE_DLight_new(lightcolor, 150.0f, 0.0f);
@@ -762,7 +762,7 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 		smokepuff->d_scale = -0.7;
 		smokepuff->d_alpha = -2.0;
 
-		if(!i)
+		if (!i)
 		{
 			fxi.S_StartSound(smokepuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/HellHit.wav"), 1, ATTN_NORM, 0);
 			VectorClear(smokepuff->velocity);
@@ -800,12 +800,12 @@ FXStaffElementThink(struct client_entity_s *self, centity_t *owner)
 
 	Frac=(fxi.cl->time-self->startTime)/100.0;
 
-	if(self->AnimSpeed>0.0)
+	if (self->AnimSpeed>0.0)
 	{
 		Frac*=self->AnimSpeed;
 	}
 
-	if((FrameNo=floor(Frac))>=(self->NoOfAnimFrames-1))
+	if ((FrameNo=floor(Frac))>=(self->NoOfAnimFrames-1))
 	{
 		return false;
 	}
@@ -837,7 +837,7 @@ FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 	matrix3_t		RotationMatrix;
 	float			incr;
 
-	if(self->LifeTime < fxi.cl->time)
+	if (self->LifeTime < fxi.cl->time)
 		return (false);
 
 	// This tells if we are wasting our time, because the reference points are culled.
@@ -863,7 +863,7 @@ FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 
 	incr = VectorNormalize(diff)/NoOfIntervals;
@@ -919,14 +919,14 @@ void FXISwordTrail(centity_t *owner,int type,int flags,vec3_t origin)
 
 	Refpoints = (1<<INSECT_SWORD);
 
-	if(!ReferencesInitialized(owner))
+	if (!ReferencesInitialized(owner))
 	{
 		return;
 	}
 
 	for(I=0;I<16;I++)
 	{
-		if(!(Refpoints & (1 << I)))
+		if (!(Refpoints & (1 << I)))
 			continue;
 
 		trail=ClientEntity_new(type,flags,origin,0,17);

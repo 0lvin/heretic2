@@ -150,27 +150,27 @@ void gorgon_blocked (edict_t *self, trace_t *trace)
 {
 	vec3_t dir;
 
-	if(self->velocity[2]>=0)
+	if (self->velocity[2]>=0)
 		return;
 
-	if(trace->ent->s.origin[2] + trace->ent->maxs[2] > self->s.origin[2] + self->mins[2])
+	if (trace->ent->s.origin[2] + trace->ent->maxs[2] > self->s.origin[2] + self->mins[2])
 		return;
 
-	if(!trace->ent->takedamage)
+	if (!trace->ent->takedamage)
 		return;
 
 	VectorCopy(self->velocity,dir);
 	VectorNormalize(dir);
 	T_Damage (trace->ent, self, self, self->velocity, trace->ent->s.origin, dir, flrand(5, 15), 50, DAMAGE_EXTRA_KNOCKBACK,MOD_DIED);
-	if(trace->ent->health>0)
+	if (trace->ent->health>0)
 	{
-		if(trace->ent->client)
+		if (trace->ent->client)
 		{
-			if(!irand(0, 2))
+			if (!irand(0, 2))
 			{
-				if(trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+				if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 				{
-					if(infront(trace->ent, self))
+					if (infront(trace->ent, self))
 					{
 						playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
@@ -201,7 +201,7 @@ void gorgon_roar_response_go (edict_t *self)
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
 
-	if(self->ai_mood == AI_MOOD_EAT)
+	if (self->ai_mood == AI_MOOD_EAT)
 		self->ai_mood = AI_MOOD_PURSUE;
 
 	SetAnim(self, GORGON_ANIM_ROAR2);
@@ -211,7 +211,7 @@ void gorgon_roar_response_go (edict_t *self)
 
 void gorgon_roar_response (edict_t *self, G_Message_t *msg)
 {//respond to call
-	if(!irand(0, 3))
+	if (!irand(0, 3))
 		return;//25% don't roar back
 
 	self->pre_think = gorgon_roar_response_go;
@@ -223,24 +223,24 @@ void gorgonRoar (edict_t *self)
 {//finds gorgons in immediate vicinity and wakes them up
 	edict_t *found = NULL;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	while((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
-		if(found->health>0)
+		if (found->health>0)
 		{
-			if(!found->enemy)
+			if (!found->enemy)
 			{
-				if(found->svflags & SVF_MONSTER)
+				if (found->svflags & SVF_MONSTER)
 				{
-					if(found->classID == CID_GORGON)
+					if (found->classID == CID_GORGON)
 					{
-						if(!found->monsterinfo.roared)
+						if (!found->monsterinfo.roared)
 						{
-							if(gi.inPHS(self->s.origin, found->s.origin))
+							if (gi.inPHS(self->s.origin, found->s.origin))
 							{//make sure they can hear me
-								if(ok_to_wake(found, true, true))
+								if (ok_to_wake(found, true, true))
 								{
 									found->monsterinfo.roared = true;
 									found->enemy = self->enemy;
@@ -264,17 +264,17 @@ qboolean gorgonFindAsleepGorgons (edict_t *self)
 
 	while((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
-		if(found!=self)
+		if (found!=self)
 		{
-			if(found->health>0)
+			if (found->health>0)
 			{
-				if(!found->enemy)
+				if (!found->enemy)
 				{
-					if(found->svflags & SVF_MONSTER)
+					if (found->svflags & SVF_MONSTER)
 					{
-						if(found->classID == CID_GORGON)
+						if (found->classID == CID_GORGON)
 						{
-							if(!found->monsterinfo.roared)
+							if (!found->monsterinfo.roared)
 							{
 								return true;
 							}
@@ -331,7 +331,7 @@ qboolean gorgon_check_attack(edict_t *self)
 	float	dot, dot2, len;
 	int		chance;
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 		return false;
 
 	if (!clear_visible(self, self->enemy))
@@ -405,7 +405,7 @@ void gorgon_stand(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	if(gorgon_check_attack(self))
+	if (gorgon_check_attack(self))
 		return;
 
 	if (self->monsterinfo.aiflags & AI_EATING)
@@ -443,7 +443,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 	float	delta;
 	vec3_t targ_org;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
 
@@ -469,7 +469,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 		}
 	}
 
-	if(clear_visible(self, self->enemy) && infront(self, self->enemy))
+	if (clear_visible(self, self->enemy) && infront(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, targ_org, v);
 		len = VectorLength (v);
@@ -477,7 +477,7 @@ void gorgon_walk(edict_t *self, G_Message_t *msg)
 		if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 18) ||
 			(self->s.origin[2] > targ_org[2] + 18)))
 		{
-			if(gorgon_check_jump(self))
+			if (gorgon_check_jump(self))
 			{
 				SetAnim(self, GORGON_ANIM_FJUMP);
 				return;
@@ -510,10 +510,10 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 	float	len, seperation, melee_range, max_hop_range;
 	float	chance;
 
-	if(self->ai_mood == AI_MOOD_NAVIGATE)
+	if (self->ai_mood == AI_MOOD_NAVIGATE)
 		return;
 
-	if(!ai_have_enemy(self))
+	if (!ai_have_enemy(self))
 		return;
 
 	AngleVectors(self->s.angles,forward, NULL, up);
@@ -544,14 +544,14 @@ void gorgon_melee(edict_t *self, G_Message_t *msg)
 	}
 
 	//ok to attack
-	if(len - seperation < melee_range)
+	if (len - seperation < melee_range)
 	{//melee
 //		gi.dprintf("Biting: ");
 		chance = flrand(0, 1);
 
-		if(!Q_stricmp(self->enemy->classname,"monster_rat"))
+		if (!Q_stricmp(self->enemy->classname,"monster_rat"))
 		{
-			if(self->enemy->s.origin[2] > self->s.origin[2])
+			if (self->enemy->s.origin[2] > self->s.origin[2])
 			{
 //				gi.dprintf(" snatch high\n");
 				SetAnim(self, GORGON_ANIM_SNATCHHI);
@@ -633,13 +633,13 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 	qboolean enemy_vis;
 	vec3_t targ_org;
 
-	if(!ai_have_enemy(self))
+	if (!ai_have_enemy(self))
 		return;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
-	if(self->flags & FL_INWATER)
+	if (self->flags & FL_INWATER)
 	{
 		gorgonGoSwim(self);
 		return;
@@ -647,7 +647,7 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 
 	VectorSubtract (self->s.origin, targ_org, v);
 	len = VectorLength (v);
-	if(self->ai_mood == AI_MOOD_PURSUE)
+	if (self->ai_mood == AI_MOOD_PURSUE)
 	{
 //		gi.dprintf("Running gorgon after player...\n");
 		enemy_vis = clear_visible(self, self->enemy);
@@ -655,13 +655,13 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 	else
 		enemy_vis = clear_visible_pos(self, self->monsterinfo.nav_goal);
 
-	if(enemy_vis)
+	if (enemy_vis)
 	{//JUMP
-		if(self->enemy && irand(0, 4) && self->damage_debounce_time < level.time && !self->monsterinfo.roared)
+		if (self->enemy && irand(0, 4) && self->damage_debounce_time < level.time && !self->monsterinfo.roared)
 		{//should we do this the first time we see player?
-			if(infront(self, self->enemy))
+			if (infront(self, self->enemy))
 			{
-				if(gorgonFindAsleepGorgons(self))
+				if (gorgonFindAsleepGorgons(self))
 				{
 					self->damage_debounce_time = level.time + 10;
 					SetAnim(self, GORGON_ANIM_ROAR);//threaten, brings other monsters
@@ -675,7 +675,7 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 			}
 		}
 		// Enemy is within range and far enough above or below to warrant a jump
-		if(infront_pos(self, targ_org))
+		if (infront_pos(self, targ_org))
 		{
 			if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 24) ||
 				(self->s.origin[2] > targ_org[2] + 24)))
@@ -684,9 +684,9 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 				{
 					if (!irand(0, 2))
 					{
-						if(self->ai_mood == AI_MOOD_PURSUE||!irand(0, 4))
+						if (self->ai_mood == AI_MOOD_PURSUE||!irand(0, 4))
 						{//20% chance to jump at a buoy
-							if(gorgon_check_jump(self))
+							if (gorgon_check_jump(self))
 							{
 								SetAnim(self, GORGON_ANIM_FJUMP);
 								return;
@@ -726,12 +726,12 @@ void gorgon_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &tempent, &tempent, &force_pain, &damage, &temp);
 
-	if(!force_pain)
+	if (!force_pain)
 	{
-		if(!irand(0, 2)||!self->groundentity)
+		if (!irand(0, 2)||!self->groundentity)
 			return;
 
-		if(self->pain_debounce_time > level.time)
+		if (self->pain_debounce_time > level.time)
 			return;
 	}
 
@@ -743,10 +743,10 @@ void gorgon_pain(edict_t *self, G_Message_t *msg)
 	else
 		gi.sound(self, CHAN_VOICE, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
 
-	if(!irand(0, 4))
+	if (!irand(0, 4))
 		self->s.skinnum = GORGON_PAIN_SKIN;
 
-	if(skill->value > 1.0 || !gorgonCheckSlipGo(self, true))
+	if (skill->value > 1.0 || !gorgonCheckSlipGo(self, true))
 	{
 		if (chance < 33)
 			SetAnim(self, GORGON_ANIM_PAIN1);
@@ -774,7 +774,7 @@ void gorgon_death_pain(edict_t *self, G_Message_t *msg)
 
 void gorgon_death(edict_t *self, G_Message_t *msg)
 {
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		gi.sound(self, CHAN_VOICE, sounds[SND_DIE], 1, ATTN_NORM, 0);
 		if (irand(0,10) < 5)  // Big enough death to be thrown back
@@ -877,11 +877,11 @@ void gorgon_mood(edict_t *self)
 			G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 			break;
 		case AI_MOOD_NAVIGATE:
-			if(self->flags & FL_INWATER)
+			if (self->flags & FL_INWATER)
 			{
 				gorgonGoSwim(self);
 			}
-			if(self->curAnimID == GORGON_ANIM_RUN1 ||
+			if (self->curAnimID == GORGON_ANIM_RUN1 ||
 				self->curAnimID == GORGON_ANIM_RUN2||
 				self->curAnimID == GORGON_ANIM_RUN3)
 				return;
@@ -896,11 +896,11 @@ void gorgon_mood(edict_t *self)
 			break;
 		case AI_MOOD_WANDER:
 		case AI_MOOD_FLEE:
-			if(self->flags & FL_INWATER)
+			if (self->flags & FL_INWATER)
 			{
 				gorgonGoSwim(self);
 			}
-			if(self->curAnimID == GORGON_ANIM_RUN1 ||
+			if (self->curAnimID == GORGON_ANIM_RUN1 ||
 				self->curAnimID == GORGON_ANIM_RUN2||
 				self->curAnimID == GORGON_ANIM_RUN3)
 				return;
@@ -908,7 +908,7 @@ void gorgon_mood(edict_t *self)
 				SetAnim(self, GORGON_ANIM_RUN1);
 			break;
 		case AI_MOOD_JUMP:
-			if(self->jump_chance < irand(0, 100))
+			if (self->jump_chance < irand(0, 100))
 				SetAnim(self, GORGON_ANIM_DELAY);
 			else
 				SetAnim(self, GORGON_ANIM_FJUMP);
@@ -940,11 +940,11 @@ void gorgonbite (edict_t *self)
 	vec3_t	temp, forward, up, melee_point, bite_endpos;
 	trace_t trace;
 
-	if(self->ai_mood == AI_MOOD_NAVIGATE)
+	if (self->ai_mood == AI_MOOD_NAVIGATE)
 		return;
 
 	//fixme: do a checkenemy that checks oldenemy & posts messages
-	if(!ai_have_enemy(self))
+	if (!ai_have_enemy(self))
 		return;
 
 	AngleVectors(self->s.angles,forward, NULL, up);
@@ -997,7 +997,7 @@ void gorgon_land(edict_t *self)
 
 void gorgon_eatorder (edict_t *self)
 {
-	if(gorgon_check_attack(self))
+	if (gorgon_check_attack(self))
 		return;
 
 	G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
@@ -1053,7 +1053,7 @@ void gorgon_hop (edict_t *self)
 
 void gorgonApplyJump (edict_t *self)
 {
-	if(Vec3IsZero(self->movedir))
+	if (Vec3IsZero(self->movedir))
 	{
 		vec3_t	forward;
 
@@ -1074,7 +1074,7 @@ void gorgonJumpOutWater (edict_t *self)
 {
 	vec3_t	endpos, forward;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		VectorCopy(self->enemy->s.origin, endpos);
 	else
 	{
@@ -1101,7 +1101,7 @@ void gorgonForward (edict_t *self, float dist)
 
 	dist *= (1 - dot);
 
-	if(dist)
+	if (dist)
 		VectorMA(self->velocity, dist, forward, self->velocity);
 }
 
@@ -1129,9 +1129,9 @@ void gorgonCheckInWater (edict_t *self)
 	endpos[2] -= 32;
 
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
-	if(trace.fraction < 1.0)
+	if (trace.fraction < 1.0)
 	{
-		if(trace.contents & CONTENTS_SOLID || trace.contents & CONTENTS_MONSTER)
+		if (trace.contents & CONTENTS_SOLID || trace.contents & CONTENTS_MONSTER)
 			SetAnim(self, GORGON_ANIM_INAIR);
 	}
 }
@@ -1148,9 +1148,9 @@ void gorgon_check_landed (edict_t *self)
 	MG_ChangeWhichYaw(self, false);//turn toward best_move_yaw, 1/3 as fast as if on ground
 	self->yaw_speed = save_yspeed;
 
-	if(self->groundentity)
+	if (self->groundentity)
 	{
-		if(irand(0, 1))
+		if (irand(0, 1))
 			SetAnim(self, GORGON_ANIM_LAND2);
 		else
 			SetAnim(self, GORGON_ANIM_LAND);
@@ -1161,9 +1161,9 @@ void gorgon_check_landed (edict_t *self)
 		pos[2] += self->mins[2];
 		VectorMA(pos, 0.5, self->velocity, pos);
 		contents = gi.pointcontents(pos);
-		if(contents&CONTENTS_SOLID)
+		if (contents&CONTENTS_SOLID)
 		{
-			if(irand(0, 1))
+			if (irand(0, 1))
 				SetAnim(self, GORGON_ANIM_LAND2);
 			else
 				SetAnim(self, GORGON_ANIM_LAND);
@@ -1187,26 +1187,26 @@ qboolean gorgon_check_jump (edict_t *self)
 	float	len;
 	trace_t	trace;
 
-	if(self->jump_chance < irand(0, 100))
+	if (self->jump_chance < irand(0, 100))
 		return false;
 
-	if(!MG_GetTargOrg(self, landing_spot))
+	if (!MG_GetTargOrg(self, landing_spot))
 	{
 		return false;
 	}
 
-	if(!infront_pos(self, landing_spot))
+	if (!infront_pos(self, landing_spot))
 		return false;
 
 	VectorSubtract(self->s.origin, landing_spot, v);
 	len = VectorLength(v);
 
-	if(len > 400)
+	if (len > 400)
 	{
 		return false;
 	}
 
-	if(self->enemy)
+	if (self->enemy)
 		VectorSet(angles, 0, anglemod(-self->enemy->s.angles[YAW]), 0);
 	else
 		VectorCopy(self->s.angles, angles);
@@ -1242,7 +1242,7 @@ qboolean gorgon_check_jump (edict_t *self)
 
 /*	if (trace.startsolid || trace.allsolid)
 	{
-		if(trace.ent != self->enemy)
+		if (trace.ent != self->enemy)
 			return;
 	}*/
 
@@ -1288,9 +1288,9 @@ void gorgon_jump (edict_t *self)
 	float	len;
 	trace_t	trace;
 
-	if(!MG_GetTargOrg(self, landing_spot))
+	if (!MG_GetTargOrg(self, landing_spot))
 	{
-		if(!irand(0,3))
+		if (!irand(0,3))
 			SetAnim(self, GORGON_ANIM_ROAR2);
 		else
 			SetAnim(self, GORGON_ANIM_RUN1);
@@ -1300,16 +1300,16 @@ void gorgon_jump (edict_t *self)
 	VectorSubtract(self->s.origin, landing_spot, v);
 	len = VectorLength(v);
 
-	if(len > 400)
+	if (len > 400)
 	{
-		if(!irand(0,3))
+		if (!irand(0,3))
 			SetAnim(self, GORGON_ANIM_ROAR2);
 		else
 			SetAnim(self, GORGON_ANIM_RUN1);
 		return;
 	}
 
-	if(self->enemy)
+	if (self->enemy)
 		VectorSet(angles, 0, anglemod(-self->enemy->s.angles[YAW]), 0);
 	else
 		VectorCopy(self->s.angles, angles);
@@ -1345,7 +1345,7 @@ void gorgon_jump (edict_t *self)
 
 /*	if (trace.startsolid || trace.allsolid)
 	{
-		if(trace.ent != self->enemy)
+		if (trace.ent != self->enemy)
 			return;
 	}*/
 
@@ -1393,7 +1393,7 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
 
-	if(eta<0.3)
+	if (eta<0.3)
 		return;//needs a .3 seconds to respond, minimum
 
 	switch(HitLocation)
@@ -1495,20 +1495,20 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 			frontflip_chance = 10;
 		break;
 	}
-	if(self->jump_chance < 0)
+	if (self->jump_chance < 0)
 		jump_chance = -1;
 
 	chance = irand(0, 100);
-	if(chance < frontflip_chance)
+	if (chance < frontflip_chance)
 	{
 		SetAnim(self, GORGON_ANIM_MELEE8);//hop forward
 		return;
 	}
 
 	chance = irand(0, 100);
-	if(chance < backflip_chance)
+	if (chance < backflip_chance)
 	{
-		if(self->curAnimID == GORGON_ANIM_RUN1&&irand(0,10)<8)//running, do the front jump
+		if (self->curAnimID == GORGON_ANIM_RUN1&&irand(0,10)<8)//running, do the front jump
 		{
 			SetAnim(self, GORGON_ANIM_MELEE10);//jump forward
 		}
@@ -1520,28 +1520,28 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < dodgeleft_chance)
+	if (chance < dodgeleft_chance)
 	{
 		SetAnim(self, GORGON_ANIM_MELEE6);//hop left
 		return;
 	}
 
 	chance = irand(0, 100);
-	if(chance < dodgeright_chance)
+	if (chance < dodgeright_chance)
 	{
 		SetAnim(self, GORGON_ANIM_MELEE7);//hop left
 		return;
 	}
 
 	chance = irand(0, 100);
-	if(chance < jump_chance)
+	if (chance < jump_chance)
 	{
 		SetAnim(self, GORGON_ANIM_MELEE10);//jump forward
 		return;
 	}
 
 	chance = irand(0, 100);
-	if(chance < duck_chance)
+	if (chance < duck_chance)
 	{
 		SetAnim(self, GORGON_ANIM_PAIN1);//jump forward
 		return;
@@ -1557,19 +1557,19 @@ void gorgon_ready_catch (edict_t *self)
 {
 	float enemy_zdist, ok_zdist;
 
-	if(!ai_have_enemy(self))
+	if (!ai_have_enemy(self))
 	{
 		SetAnim(self, GORGON_ANIM_CATCH);
 		return;
 	}
 
 	ok_zdist = 128 * (AVG_VEC3T(self->rrs.scale) * 0.5/2.5);
-	if(ok_zdist<48)
+	if (ok_zdist<48)
 		ok_zdist = 48;
 
 	enemy_zdist = self->enemy->absmin[2] - self->absmax[2];
 
-	if(enemy_zdist <= 0 || (enemy_zdist <= ok_zdist && self->enemy->velocity[2] <= -60))
+	if (enemy_zdist <= 0 || (enemy_zdist <= ok_zdist && self->enemy->velocity[2] <= -60))
 		SetAnim(self, GORGON_ANIM_CATCH);
 	else
 		SetAnim(self, GORGON_ANIM_READY_CATCH);
@@ -1577,25 +1577,25 @@ void gorgon_ready_catch (edict_t *self)
 
 void gorgon_throw_toy(edict_t *self)
 {
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	self->enemy->flags &= ~FL_FLY;
 	self->enemy->velocity[0] = self->enemy->velocity[1] = 0;
 	self->enemy->velocity[2] = 500;
-	if(self->enemy->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	if (self->enemy->movetype > MOVETYPE_SCRIPT_ANGULAR)
 	{
 		self->enemy->movetype = MOVETYPE_STEP;
 	}
 
 	VectorRandomCopy(vec3_origin,self->enemy->avelocity,300);
 
-	if(Q_stricmp(self->enemy->classname,"player"))
+	if (Q_stricmp(self->enemy->classname,"player"))
 		G_QPostMessage(self->enemy, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
 	//FIXME: What if I miss?  Set the monster's touch to
 	//	something that restores it's angles and normal thinking (AI_FLEE)
-/*	if(!Q_stricmp(self->enemy->classname,"player"))
+/*	if (!Q_stricmp(self->enemy->classname,"player"))
 	{
 		PlayerAnimSetUpperSeq(self->enemy, 92);
 		PlayerAnimSetLowerSeq(&self->enemy->client->playerinfo, 92);
@@ -1606,7 +1606,7 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 {
 	vec3_t enemy_ofs, forward, right, up, blooddir, enemy_face;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	//adjust for scale
@@ -1647,9 +1647,9 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorClear(self->enemy->velocity);
 	VectorClear(self->enemy->avelocity);
 
-	if(flrand(0,1)<0.5)
+	if (flrand(0,1)<0.5)
 	{
-		if(self->enemy->materialtype == MAT_INSECT)
+		if (self->enemy->materialtype == MAT_INSECT)
 			gi.CreateEffect(self->enemy, FX_BLOOD, CEF_FLAG8, self->enemy->s.origin, "ub", blooddir, 200);
 		else
 			gi.CreateEffect(self->enemy, FX_BLOOD, 0, self->enemy->s.origin, "ub", blooddir, 200);
@@ -1664,7 +1664,7 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	//adjust for scale
 	ok_zdist = 64 * (AVG_VEC3T(self->rrs.scale) * 0.5/2.5);
-	if(ok_zdist<24)
+	if (ok_zdist<24)
 		ok_zdist = 24;
 
 	AngleVectors(self->s.angles,forward,right,up);
@@ -1679,19 +1679,19 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	VectorSubtract(self->enemy->s.origin, endpos, endpos);
 	enemy_dist = VectorLength(endpos);
-	if(enemy_dist>ok_zdist)
+	if (enemy_dist>ok_zdist)
 	{
 //		gi.dprintf("Snatch missed (%4.2f)\n", enemy_dist);
 		self->msgHandler = DefaultMsgHandler;
-		if(!Q_stricmp(self->enemy->classname,"player"))
-			if(self->oldenemy)
-				if(self->oldenemy->health>0)
+		if (!Q_stricmp(self->enemy->classname,"player"))
+			if (self->oldenemy)
+				if (self->oldenemy->health>0)
 				{
 					self->oldenemy = NULL;
 					self->enemy = self->oldenemy;
 				}
 
-		if(self->curAnimID == GORGON_ANIM_SNATCHLOW)
+		if (self->curAnimID == GORGON_ANIM_SNATCHLOW)
 			SetAnim(self, GORGON_ANIM_MISS);
 		else
 			SetAnim(self, GORGON_ANIM_MELEE2);//?
@@ -1700,12 +1700,12 @@ void gorgon_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 //	gi.dprintf("SNAGGED!\n");
 	//FIXME: if health is low, just chomp it now
 	self->enemy->flags |= FL_FLY;
-	if(self->enemy->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	if (self->enemy->movetype > MOVETYPE_SCRIPT_ANGULAR)
 	{
 		self->enemy->movetype = MOVETYPE_FLY;
 	}
 
-	if(Q_stricmp(self->enemy->classname,"player"))
+	if (Q_stricmp(self->enemy->classname,"player"))
 	{
 		self->enemy->monsterinfo.aiflags |= AI_DONT_THINK;
 		self->enemy->count = irand(1,5);
@@ -1723,10 +1723,10 @@ void gorgon_gore_toy(edict_t *self, float jumpht)
 	byte num_chunks;
 	vec3_t dir, forward;
 
-	if(jumpht!=-1)
+	if (jumpht!=-1)
 	{//not getting here
 		self->velocity[2] += jumpht;
-		if(self->groundentity)
+		if (self->groundentity)
 		{
 			AngleVectors(self->s.angles, forward, NULL, NULL);
 			VectorMA(self->velocity, -100, forward, self->velocity);
@@ -1735,34 +1735,34 @@ void gorgon_gore_toy(edict_t *self, float jumpht)
 	else
 		self->count = 0;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
-	if(self->enemy->health<0)
+	if (self->enemy->health<0)
 		return;
 
-	if(self->count)
+	if (self->count)
 		return;
 
 	ok_zdist = 56 * (AVG_VEC3T(self->rrs.scale) * 0.5/2.5);
-	if(ok_zdist<36)
+	if (ok_zdist<36)
 		ok_zdist = 36;
 	enemy_zdist = self->enemy->s.origin[2] - self->s.origin[2];
-	if(enemy_zdist <= self->maxs[2] + ok_zdist || jumpht == -1)
+	if (enemy_zdist <= self->maxs[2] + ok_zdist || jumpht == -1)
 	{
 		gi.sound(self, CHAN_WEAPON, sounds[SND_MELEEMISS2], 1, ATTN_NORM, 0);
-		if(jumpht!=-1)
+		if (jumpht!=-1)
 			self->count = 1;
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
-		if(self->enemy->materialtype != MAT_FLESH)//foo
+		if (self->enemy->materialtype != MAT_FLESH)//foo
 			self->enemy->materialtype = MAT_FLESH;
 		num_chunks = (byte)(self->enemy->health/4);
-		if(num_chunks>15)
+		if (num_chunks>15)
 			num_chunks = 15;
 		SprayDebris(self->enemy, self->enemy->s.origin, num_chunks, self->enemy->health*4);//self->enemy is thingtype wood?!
 
-		if(Q_stricmp(self->enemy->classname,"player"))
+		if (Q_stricmp(self->enemy->classname,"player"))
 		{
 			gi.sound(self->enemy, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 			BecomeDebris(self->enemy);
@@ -1801,7 +1801,7 @@ void gorgon_anger_sound (edict_t *self)
 	else if (chance < 60)
 		gorgon_growl(self);
 
-	if(self->enemy)
+	if (self->enemy)
 	{
 		chance = (byte)irand(1,3);
 
@@ -1819,9 +1819,9 @@ void gorgon_done_gore (edict_t *self)
 {
 	self->msgHandler = DefaultMsgHandler;
 	self->count = 0;
-	if(self->oldenemy)
+	if (self->oldenemy)
 	{
-		if(self->oldenemy->health>0)
+		if (self->oldenemy->health>0)
 		{
 			self->enemy = self->oldenemy;
 			G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
@@ -1854,15 +1854,15 @@ qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain)
 {
 	vec3_t	v, right;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return false;
 
 	VectorSubtract (self->enemy->s.origin, self->s.origin, v);
 	VectorNormalize(v);
 	AngleVectors(self->s.angles, NULL, right, NULL);
-	if(DotProduct(right, v) > 0.3 && irand(0, 1))
+	if (DotProduct(right, v) > 0.3 && irand(0, 1))
 	{//fall down, go boom
-		if(frompain)
+		if (frompain)
 		{
 			SetAnim(self, GORGON_ANIM_SLIP_PAIN);
 			return true;
@@ -1880,13 +1880,13 @@ qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain)
 
 void gorgonCheckSlip (edict_t *self)
 {
-	if(!(self->spawnflags & MSF_GORGON_SPEEDY) && AVG_VEC3T(self->rrs.scale) > 0.75)
+	if (!(self->spawnflags & MSF_GORGON_SPEEDY) && AVG_VEC3T(self->rrs.scale) > 0.75)
 	{
 		gorgonCheckMood(self);
 		return;
 	}
 
-	if(!gorgonCheckSlipGo (self, false))
+	if (!gorgonCheckSlipGo (self, false))
 		gorgonCheckMood(self);
 }
 
@@ -1894,10 +1894,10 @@ void gorgonSlide (edict_t *self, float force)
 {
 	vec3_t right;
 
-	if(!self->groundentity)
+	if (!self->groundentity)
 		return;//already in air
 
-	if(force == 0)
+	if (force == 0)
 	{
 		self->friction = 1.0;
 		return;
@@ -1911,7 +1911,7 @@ void gorgonSlide (edict_t *self, float force)
 
 void gorgonChooseDeath (edict_t *self)
 {
-	if(irand(0, 1))
+	if (irand(0, 1))
 		gorgon_death2twitch(self);
 }
 
@@ -1929,7 +1929,7 @@ void gorgon_ai_swim (edict_t *self, float dist)
 
 	MG_SetNormalizeVelToGoal(self, dir);
 
-	if(Vec3IsZero(dir))
+	if (Vec3IsZero(dir))
 	{
 //		gi.dprintf("swimming gorgon couldn't find a target\n");
 		Vec3ScaleAssign(0.8, self->velocity);
@@ -1939,7 +1939,7 @@ void gorgon_ai_swim (edict_t *self, float dist)
 	self->ideal_yaw = vectoyaw(dir);
 	MG_ChangeYaw(self);
 
-	if(dist == -1)
+	if (dist == -1)
 		Vec3ScaleAssign(150, dir);
 	else
 		Vec3ScaleAssign(dist * 3, dir);
@@ -1948,7 +1948,7 @@ void gorgon_ai_swim (edict_t *self, float dist)
 	VectorNormalize(self->velocity);
 	Vec3ScaleAssign(200, self->velocity);
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
@@ -1957,22 +1957,22 @@ void gorgon_ai_swim (edict_t *self, float dist)
 
 	//MG_ChangePitchForZVel(self, 10, dist * 3, 60);
 
-	if(dist != -1)
+	if (dist != -1)
 	{//-1 = charge
-		if(self->monsterinfo.attack_finished < level.time)
+		if (self->monsterinfo.attack_finished < level.time)
 		{
-			if(M_ValidTarget(self, self->enemy))
+			if (M_ValidTarget(self, self->enemy))
 			{
-				if(clear_visible(self, self->enemy))
+				if (clear_visible(self, self->enemy))
 				{
-					if(infront(self, self->enemy))
+					if (infront(self, self->enemy))
 					{
 						VectorSubtract(self->enemy->s.origin, self->s.origin, dir);
 						dist = VectorLength(dir);
 
-						if(dist < self->melee_range + VectorLength(self->velocity) * 0.1)
+						if (dist < self->melee_range + VectorLength(self->velocity) * 0.1)
 						{
-							if(irand(0, 1))
+							if (irand(0, 1))
 								SetAnim(self, GORGON_ANIM_SWIM_BITE_A);
 							else
 								SetAnim(self, GORGON_ANIM_SWIM_BITE_B);
@@ -1980,9 +1980,9 @@ void gorgon_ai_swim (edict_t *self, float dist)
 						}
 						else if(self->monsterinfo.jump_time < level.time)
 						{
-							if(!(self->enemy->flags & FL_INWATER))
+							if (!(self->enemy->flags & FL_INWATER))
 							{
-								if(dist < GORGON_STD_MAXHOP_RNG * 2)
+								if (dist < GORGON_STD_MAXHOP_RNG * 2)
 									SetAnim(self, GORGON_ANIM_OUT_WATER);
 							}
 						}
@@ -1995,19 +1995,19 @@ void gorgon_ai_swim (edict_t *self, float dist)
 
 void gorgon_prethink (edict_t *self)
 {//also make wake on surface of water?
-	if(self->flags & FL_INWATER)
+	if (self->flags & FL_INWATER)
 	{
 		self->gravity = 0.0f;
 		self->svflags |= SVF_TAKE_NO_IMPACT_DMG | SVF_DO_NO_IMPACT_DMG;
 
-		if(!self->wait)
+		if (!self->wait)
 		{
 			gi.CreateEffect(NULL, FX_WATER_ENTRYSPLASH, CEF_FLAG7,
 				self->s.origin,	"bd", 128|96, vec3_up);
 			self->wait = true;
 		}
 
-		if(self->curAnimID == GORGON_ANIM_INAIR)
+		if (self->curAnimID == GORGON_ANIM_INAIR)
 			SetAnim(self, GORGON_ANIM_TO_SWIM);
 	}
 	else
@@ -2015,19 +2015,19 @@ void gorgon_prethink (edict_t *self)
 		gi.RemoveEffects(self, FX_M_EFFECTS);
 		self->gravity = 1.0f;
 		self->svflags &= ~SVF_TAKE_NO_IMPACT_DMG;
-		if(AVG_VEC3T(self->rrs.scale) > 0.5)
+		if (AVG_VEC3T(self->rrs.scale) > 0.5)
 		{
 			self->svflags &= ~SVF_DO_NO_IMPACT_DMG;
 		}
 
-		if(self->wait)
+		if (self->wait)
 		{
 			gi.CreateEffect(NULL, FX_WATER_ENTRYSPLASH, 0,
 				self->s.origin,	"bd", 128|96, vec3_up);
 			self->wait = false;
 		}
 
-		if(self->curAnimID == GORGON_ANIM_SWIM ||
+		if (self->curAnimID == GORGON_ANIM_SWIM ||
 			self->curAnimID == GORGON_ANIM_SWIM_BITE_A ||
 			self->curAnimID == GORGON_ANIM_SWIM_BITE_B)
 			SetAnim(self, GORGON_ANIM_RUN1);
@@ -2042,13 +2042,13 @@ void gorgon_ai_eat(edict_t *self, float crap)
 	vec3_t	forward, right, v;
 	float	edist, fdot, rdot;
 
-	if(self->enemy)
+	if (self->enemy)
 	{
 		VectorSubtract(self->enemy->s.origin, self->s.origin, v);
 		edist = VectorNormalize(v);
-		if(edist<self->wakeup_distance)
+		if (edist<self->wakeup_distance)
 		{
-			if(visible(self, self->enemy))
+			if (visible(self, self->enemy))
 			{
 				self->spawnflags &= ~MSF_EATING;
 				self->monsterinfo.aiflags &= ~AI_EATING;
@@ -2058,16 +2058,16 @@ void gorgon_ai_eat(edict_t *self, float crap)
 		}
 		else if(self->curAnimID == GORGON_ANIM_EAT_LOOP && !irand(0, 5))
 		{
-			if(visible(self, self->enemy))
+			if (visible(self, self->enemy))
 			{
 				AngleVectors(self->s.angles, forward, right, NULL);
 				fdot = DotProduct(v, forward);
 				rdot = DotProduct(v, right);
-				if(fdot < 0)
+				if (fdot < 0)
 				{
-					if(rdot > 0.3)
+					if (rdot > 0.3)
 						SetAnim(self, GORGON_ANIM_EAT_RIGHT);
-					if(rdot < -0.3)
+					if (rdot < -0.3)
 						SetAnim(self, GORGON_ANIM_EAT_LEFT);
 					else
 						SetAnim(self, GORGON_ANIM_EAT_UP);
@@ -2080,7 +2080,7 @@ void gorgon_ai_eat(edict_t *self, float crap)
 		FindTarget(self);
 
 
-	if(crap != -1)
+	if (crap != -1)
 		return;
 
 	switch(self->curAnimID)
@@ -2094,7 +2094,7 @@ void gorgon_ai_eat(edict_t *self, float crap)
 		break;
 
 	case GORGON_ANIM_EAT_LOOP:
-		if(irand(0, 1))
+		if (irand(0, 1))
 			SetAnim(self, GORGON_ANIM_EAT_LOOP);
 		else if(irand(0, 1))
 			SetAnim(self, GORGON_ANIM_EAT_PULLBACK);
@@ -2142,7 +2142,7 @@ void gorgon_ai_eat(edict_t *self, float crap)
 
 void gorgon_jump_msg (edict_t *self, G_Message_t *msg)
 {
-	if(self->jump_chance < irand(0, 100))
+	if (self->jump_chance < irand(0, 100))
 		return;
 	SetAnim(self, GORGON_ANIM_FJUMP);
 }
@@ -2336,7 +2336,7 @@ void SP_monster_gorgon (edict_t *self)
 	self->touch = M_Touch;
 
 	self->mass = GORGON_MASS;
-	if(self->spawnflags & MSF_GORGON_SPEEDY)
+	if (self->spawnflags & MSF_GORGON_SPEEDY)
 		self->yaw_speed = 30;
 	else
 		self->yaw_speed = 15;
@@ -2346,7 +2346,7 @@ void SP_monster_gorgon (edict_t *self)
 	VectorClear(self->knockbackvel);
 	self->solid=SOLID_BBOX;
 
-	if(irand(0, 1))
+	if (irand(0, 1))
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
@@ -2361,7 +2361,7 @@ void SP_monster_gorgon (edict_t *self)
 
 	if (self->spawnflags & MSF_COWARD)
 	{
-		if(!self->health)
+		if (!self->health)
 		{
 			self->health = GORGON_HEALTH / 2;
 		}
@@ -2391,7 +2391,7 @@ void SP_monster_gorgon (edict_t *self)
 	{
 		self->monsterinfo.aiflags |= AI_EATING;
 		G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
-		if(!self->wakeup_distance)
+		if (!self->wakeup_distance)
 			self->wakeup_distance = 300;
 	}
 	else
@@ -2407,7 +2407,7 @@ void SP_monster_gorgon (edict_t *self)
 
 	self->monsterinfo.roared = false;
 
-	if(!irand(0, 2))//33% chance of not making a wakeup roar
+	if (!irand(0, 2))//33% chance of not making a wakeup roar
 		self->dmg_radius = true;
 	else
 		self->dmg_radius = false;

@@ -417,7 +417,7 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 
 			VectorSet(vel, rad * cos(curAng), rad * sin(curAng), self->SpawnData);
 
-			if(self->flags & CEF_FLAG6)
+			if (self->flags & CEF_FLAG6)
 				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), self->r.color, self->LifeTime);
 			else
 				ce = ClientParticle_new(PART_16x16_SPARK_B, self->r.color, self->LifeTime);
@@ -435,7 +435,7 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 
 			VectorSet(vel, rad * cos(curAng), rad * sin(curAng), new_y);
 
-			if(self->flags & CEF_FLAG6)
+			if (self->flags & CEF_FLAG6)
 				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), self->r.color, self->LifeTime);
 			else
 				ce = ClientParticle_new(PART_16x16_SPARK_B, self->r.color, self->LifeTime);
@@ -470,13 +470,13 @@ void FXShrineStaffEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*glow;
 	int					line_count, particle_life;
 
-	if(r_detail->value >= DETAIL_HIGH)
+	if (r_detail->value >= DETAIL_HIGH)
 	{
 		line_count = NUM_OF_STAFF_PARTS;
 		particle_life = 2400;
 	}
 	else
-	if(r_detail->value >= DETAIL_NORMAL)
+	if (r_detail->value >= DETAIL_NORMAL)
 	{
 		line_count = NUM_OF_STAFF_PARTS - 2;
 		particle_life = 1900;
@@ -740,7 +740,7 @@ FXShrineReflectThink(struct client_entity_s *self, centity_t *owner)
 			AddParticleToList(self, ce);
 		}
 		// put the sparkle on us
-		if(self->SpawnInfo > 10)
+		if (self->SpawnInfo > 10)
 		{
 			count = irand(3,7);
 			for (i=0; i<count; i++)
@@ -896,7 +896,7 @@ FXShrineSpeedThink(struct client_entity_s *self, centity_t *owner)
 	self->Scale += 0.25;
 
 	// put the sparkle on us
-	if(self->SpawnInfo > 10)
+	if (self->SpawnInfo > 10)
 	{
 		count = irand(3,7);
 		for (i=0; i<count; i++)
@@ -979,7 +979,7 @@ FXShrinePowerupThink(struct client_entity_s *self, centity_t *owner)
 		}
 
 		// put the sparkle on us
-		if(self->SpawnInfo > 10)
+		if (self->SpawnInfo > 10)
 		{
 			count = irand(3,7);
 			for (i=0; i<count; i++)
@@ -1089,7 +1089,7 @@ FXShrineBallThink(struct client_entity_s *self, centity_t *owner)
 
 		ce = ClientParticle_new(part, color, 1000);
 
-		if(part != PART_32x32_WFALL && part != PART_16x16_WATERDROP && part != PART_32x32_STEAM)
+		if (part != PART_32x32_WFALL && part != PART_16x16_WATERDROP && part != PART_32x32_STEAM)
 			ce->type |= PFL_ADDITIVE;
 
 		rad[PITCH] = flrand(0, 360.0);
@@ -1118,7 +1118,7 @@ void FXShrineBall(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_BALL].formatString, &offset, &shrinetype);
 
 	// don't put out effects for shrines that don't exist
-	if(shrinetype >= SHRINEBALL_MAX)
+	if (shrinetype >= SHRINEBALL_MAX)
 		return;
 
 	// move our starting point out a bit
@@ -1189,7 +1189,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 		ce = ClientParticle_new(part, color, 1150);
 
-		if(part != PART_32x32_WFALL && part != PART_16x16_WATERDROP)
+		if (part != PART_32x32_WFALL && part != PART_16x16_WATERDROP)
 			ce->type |= PFL_ADDITIVE;
 
 		AngleVectors(rad, fwd, NULL, NULL);

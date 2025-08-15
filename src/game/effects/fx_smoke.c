@@ -81,7 +81,7 @@ FXSmokeSpawner(struct client_entity_s *self, centity_t *owner)
 static qboolean
 FXSmokeSpawner2(struct client_entity_s *self, centity_t *owner)
 {
-	if(self->LifeTime--)
+	if (self->LifeTime--)
 	{
 		FXSmoke(self->r.origin, flrand(0.5, 1.0), flrand(32, 64));
 		self->updateTime = 30;
@@ -105,7 +105,7 @@ void FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
 	flags |= CEF_NO_DRAW | CEF_NOMOVE;
 	self = ClientEntity_new(type, flags, origin, NULL, 17);
 
-	if(flags&CEF_FLAG6)
+	if (flags&CEF_FLAG6)
 	{//just a hiss and steam
 		FXSmoke(origin, flrand(0.5, 1.0), flrand(32, 64));
 		fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("misc/fout.wav"), 1, ATTN_NORM, 0);

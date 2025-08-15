@@ -106,7 +106,7 @@ void GetCollisionPoint(vec3_t velocity, vec3_t origin, vec_t size, vec3_t point)
 	for(i = 0; i < 6; i++)
 	{
 		theta = DotProduct(velocity, BoxNormals[i]);
-		if(theta > max)
+		if (theta > max)
 		{
 			max = theta;
 			maxn = i;
@@ -125,7 +125,7 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 	if (trace->ent && trace->ent->takedamage && trace->ent->health>0)
 	{
 		VectorNormalize2(self->velocity, movevect);
-		if(EntReflecting(trace->ent, true, true))
+		if (EntReflecting(trace->ent, true, true))
 		{
 			// do nothing except bounce if we hit someone who's reflecting
 			// and make whoever it bounced off the owner of the ball now
@@ -161,7 +161,7 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 					Quantity = it->quantity;
 				}
 
-				if(Defence->ammo && Quantity)
+				if (Defence->ammo && Quantity)
 				{
 					// do we have enough mana to teleport ?
 					ManaItem = FindItem(Defence->ammo);

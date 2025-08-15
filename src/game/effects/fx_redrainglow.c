@@ -88,7 +88,7 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 	{
 		// Calc spherical offset around left hand ref point
 		VectorSet(vel, crandk(), crandk(), crandk());
-		if(Vec3IsZero(vel))
+		if (Vec3IsZero(vel))
 			vel[2] = 1.0;			// Safety in case flrand gens all zeros (VERY unlikely)
 		VectorNormalize(vel);
 		VectorScale(vel, CLOUD_GEN_RAD, vel);
@@ -152,10 +152,10 @@ void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 	if (r_detail->value != DETAIL_LOW)
 		glow->dlight = CE_DLight_new(glow->color, 150.0F, 0.0F);
 
-  	if (lifetime > 0)
-  		glow->LifeTime = fxi.cl->time + (lifetime * 100);
-  	else
-  		glow->LifeTime = -1;
+	if (lifetime > 0)
+		glow->LifeTime = fxi.cl->time + (lifetime * 100);
+	else
+		glow->LifeTime = -1;
 
 
 	AddEffect(owner, glow);

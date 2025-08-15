@@ -158,7 +158,7 @@ void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 	spawner->radius = 96.0;
 	spawner->Update = FXFireThink;
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		spawner->dlight = CE_DLight_new(spawner->color, 150.0F, 00.0F);
 	}
@@ -219,7 +219,7 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 				radius = AVG_VEC3T(spawner->r.scale);
 				VectorSet(flame->origin, crandk() * radius, crandk() * radius, flrand(-0.25, 0.75)*radius);
 				// If dead, then move the flame down a tad.
-				if(owner->current.effects&EF_DISABLE_EXTRA_FX)
+				if (owner->current.effects&EF_DISABLE_EXTRA_FX)
 				{
 					spawner->origin[2] -= radius;
 				}
@@ -286,7 +286,7 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 			crandk() * radius,
 			flrand(-8.0F, 0.0F) * AVG_VEC3T(spawner->r.scale));
 		// If dead, then move the flame down a tad.
-		if(owner->current.effects&EF_DISABLE_EXTRA_FX)
+		if (owner->current.effects&EF_DISABLE_EXTRA_FX)
 		{
 			spawner->origin[2] -= radius;
 		}

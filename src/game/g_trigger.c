@@ -70,7 +70,7 @@ void
 multi_wait(edict_t *self)
 {
 	self->think = NULL;
-	if(self->activator)
+	if (self->activator)
 	{
 		self->activator->target_ent = NULL;
 	}
@@ -81,7 +81,7 @@ multi_wait(edict_t *self)
 // so wait for the delay time before firing
 void TriggerActivated(edict_t *self)
 {
-	if(self->think)
+	if (self->think)
 	{
 		return;		// already been triggered
 	}
@@ -90,7 +90,7 @@ void TriggerActivated(edict_t *self)
 
 	self->TriggerActivated(self, self->activator);
 
-	if(self->wait > 0)
+	if (self->wait > 0)
 	{
 		self->think = multi_wait;
 		self->nextthink = level.time + self->wait;
@@ -112,7 +112,7 @@ void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 	// Player cannot trigger it
 	else if(strcmp(other->classname, "player") == 0)
 	{
-		if(self->spawnflags & TRIGGER_NOT_PLAYER)
+		if (self->spawnflags & TRIGGER_NOT_PLAYER)
 		{
 			return;
 		}
@@ -130,13 +130,13 @@ void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 		return;
 	}
 
-	if(!Vec3IsZero(self->movedir))
+	if (!Vec3IsZero(self->movedir))
 	{
 		vec3_t forward;
 
 		AngleVectors(other->s.angles, forward, NULL, NULL);
 
-		if(DotProduct(forward, self->movedir) < 0)
+		if (DotProduct(forward, self->movedir) < 0)
 		{
 			return;
 		}
@@ -152,7 +152,7 @@ void InitTrigger(edict_t *self)
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_TRIGGER;
 
-	if(!self->wait)
+	if (!self->wait)
 	{
 		self->wait = 0.2;
 	}
@@ -162,7 +162,7 @@ void InitTrigger(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->svflags |= SVF_NOCLIENT;
 
-	if(self->spawnflags & TRIGGER_TRIGGERED)
+	if (self->spawnflags & TRIGGER_TRIGGERED)
 	{
 		self->solid = SOLID_NOT;
 		self->use = trigger_enable;
@@ -173,7 +173,7 @@ void InitTrigger(edict_t *self)
 		self->use = Use_Multi;
 	}
 
-	if(!Vec3IsZero(self->s.angles))
+	if (!Vec3IsZero(self->s.angles))
 	{
 		G_SetMovedir(self->s.angles, self->movedir);
 	}
@@ -511,7 +511,7 @@ void trigger_playerusepuzzle(edict_t *self, edict_t *activator)
 {
 	if (!(self->spawnflags & PUZZLE_SHOWNO_INVENTORY))
 	{
-		if(!strcmp(activator->classname, "player"))
+		if (!strcmp(activator->classname, "player"))
 		{
 			activator->target_ent = self;
 			self->activator = activator;
@@ -550,7 +550,7 @@ void SP_trigger_PlayerUsePuzzle(edict_t *self)
 
 void trigger_playerpushbutton(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
 {
-	if(!strcmp(other->classname, "player"))
+	if (!strcmp(other->classname, "player"))
 	{
 		other->target = self->target;
 	}
@@ -662,7 +662,7 @@ void ActivateTrigger_Activated(edict_t *self, edict_t *activator)
 
 void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	if(!other->client)
+	if (!other->client)
 		return;
 
 	gi.AddCommandString ("menu_main\n");
@@ -670,7 +670,7 @@ void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane,
 
 void trigger_quit_to_menu_use (edict_t *self, edict_t *other, edict_t *activator)
 {
-	if(!activator->client)
+	if (!activator->client)
 		return;
 
 	gi.AddCommandString ("menu_main\n");
@@ -692,7 +692,7 @@ void SP_trigger_quit_to_menu(edict_t *self)
 
 	self->solid = SOLID_TRIGGER;
 
-	if(!Vec3IsZero(self->s.angles))
+	if (!Vec3IsZero(self->s.angles))
 	{
 		G_SetMovedir(self->s.angles, self->movedir);
 	}
@@ -896,7 +896,7 @@ void mission_give_use (edict_t *self, edict_t *other)
 			continue;
 
 		ps = &other->client->ps;
-		if((ps->mission_num1 != num) && (ps->mission_num2 != num))
+		if ((ps->mission_num1 != num) && (ps->mission_num2 != num))
 		{
 			if (!ps->mission_num1)
 			{
@@ -1040,7 +1040,7 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 	sv_loopcoop = gi.cvar("sv_loopcoop", "0", 0);
 
-	if(self->count)
+	if (self->count)
 		return;
 
 	self->count++;
@@ -1057,14 +1057,14 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 	// Single player - just end, coop - restart if sv_loopcoop is set.
 
-	if(sv_loopcoop->value && coop->value )
+	if (sv_loopcoop->value && coop->value )
 	{
 		int		i;
 		edict_t	*ent;
 
 		for(i=0;i<maxclients->value;i++)
 		{
-			if((ent=(&g_edicts[i+1]))->inuse)
+			if ((ent=(&g_edicts[i+1]))->inuse)
 				G_CPrintf(ent, PRINT_HIGH, GM_COOP_RESTARTING);
 		}
 
@@ -1085,7 +1085,7 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 
 	sv_loopcoop = gi.cvar("sv_loopcoop", "0", 0);
 
-	if(self->count)
+	if (self->count)
 		return;
 
 	self->count++;
@@ -1097,14 +1097,14 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 
 	// Single player - just end, coop - restart if sv_loopcoop is set.
 
-	if(sv_loopcoop->value && coop->value)
+	if (sv_loopcoop->value && coop->value)
 	{
 		int		i;
 		edict_t *ent;
 
 		for(i=0;i<maxclients->value;i++)
 		{
-			if((ent=(&g_edicts[i+1]))->inuse)
+			if ((ent=(&g_edicts[i+1]))->inuse)
 				G_CPrintf(ent, PRINT_HIGH, GM_COOP_RESTARTING);
 		}
 
@@ -1141,7 +1141,7 @@ SP_trigger_endgame(edict_t *self)
 //void trigger_playerpushlever(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
 void trigger_playerpushlever(edict_t *self, edict_t *other)
 {
-	if(!strcmp(other->classname, "player"))
+	if (!strcmp(other->classname, "player"))
 	{
 		other->target = self->target;
 	}
@@ -1170,7 +1170,7 @@ trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 {
 	vec3_t forward,up;
 
-	if(other->health > 0)
+	if (other->health > 0)
 	{
 		if (other->client)	// A player???
 		{
@@ -1189,7 +1189,7 @@ trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 	G_UseTargets(self, self);
 
-	if(self->spawnflags & FIELD_FORCE_ONCE)
+	if (self->spawnflags & FIELD_FORCE_ONCE)
 	{
 		G_FreeEdict(self);
 	}
@@ -1666,7 +1666,7 @@ SP_choose_cdtrack(edict_t *self)
 	else
 		self->spawnflags = true;
 
-	if(!self->wait)
+	if (!self->wait)
 	{
 		self->wait = 0.2;
 	}

@@ -68,12 +68,12 @@ DeadMsgHandler(edict_t *self, G_Message_t *msg)
 {
 	G_MsgReceiver_t receiver;
 
-	if(msg->ID!=MSG_DEATH_PAIN)
+	if (msg->ID!=MSG_DEATH_PAIN)
 		return;
 
 	receiver = classStatics[self->classID].msgReceivers[msg->ID];
 
-	if(receiver)
+	if (receiver)
 	{
 		receiver(self, msg);
 	}
@@ -84,7 +84,7 @@ DeadMsgHandler(edict_t *self, G_Message_t *msg)
 		// do the check
 		receiver = DefaultMessageReceivers[msg->ID];
 
-		if(receiver)
+		if (receiver)
 		{
 			DefaultMessageReceivers[msg->ID](self, msg);
 		}
@@ -102,12 +102,12 @@ DyingMsgHandler(edict_t *self, G_Message_t *msg)
 {
 	G_MsgReceiver_t receiver;
 
-	if(msg->ID!=MSG_DISMEMBER)
+	if (msg->ID!=MSG_DISMEMBER)
 		return;
 
 	receiver = classStatics[self->classID].msgReceivers[msg->ID];
 
-	if(receiver)
+	if (receiver)
 	{
 		receiver(self, msg);
 	}
@@ -118,7 +118,7 @@ DyingMsgHandler(edict_t *self, G_Message_t *msg)
 		// do the check
 		receiver = DefaultMessageReceivers[msg->ID];
 
-		if(receiver)
+		if (receiver)
 		{
 			DefaultMessageReceivers[msg->ID](self, msg);
 		}
@@ -640,7 +640,7 @@ M_CatagorizePosition(edict_t *ent)
 		return;
 	}
 
-	if(!ent->client)
+	if (!ent->client)
 	{
 		M_MonsterCatPos(ent);
 		return;
@@ -822,10 +822,10 @@ M_droptofloor(edict_t *ent)
 		return;
 	}
 
-	if(Vec3IsZero(ent->mins)&&Vec3IsZero(ent->maxs))
+	if (Vec3IsZero(ent->mins)&&Vec3IsZero(ent->maxs))
 	{
 		gi.dprintf("ERROR : %s at %s called drop to floor before having size set\n", ent->classname, vtos(ent->s.origin));
-		if(ent->think == M_droptofloor)
+		if (ent->think == M_droptofloor)
 			ent->think = NULL;//don't try again
 		return;
 	}
@@ -838,10 +838,10 @@ M_droptofloor(edict_t *ent)
 
 	trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 
-	if(trace.allsolid||trace.startsolid)
+	if (trace.allsolid||trace.startsolid)
 	{
 		gi.dprintf("ERROR : Object (%s) at %s started in solid\n", ent->classname, vtos(ent->s.origin));
-		if(ent->think == M_droptofloor)
+		if (ent->think == M_droptofloor)
 		{
 			ent->think = NULL;//don't try again
 			gi.linkentity(ent);
@@ -856,7 +856,7 @@ M_droptofloor(edict_t *ent)
 		return;
 	}
 
-	if(mgai_debug->value)
+	if (mgai_debug->value)
 		gi.dprintf("%s at %s dropped to floor at %s\n", ent->classname, vtos(ent->s.origin), vtos(trace.endpos));
 
 	VectorCopy(trace.endpos, ent->s.origin);
@@ -1071,9 +1071,9 @@ M_MoveFrame(edict_t *self)
 	//this is consistent with the mmove_t in the monster anims.
 	//currently all of the *real* movement happens in the
 	//"actionfunc" instead of the move func
-	if(!(self->monsterinfo.aiflags & AI_DONT_THINK))
+	if (!(self->monsterinfo.aiflags & AI_DONT_THINK))
 	{
-		if(move->frame[index].movefunc)
+		if (move->frame[index].movefunc)
 		{
 			move->frame[index].movefunc(self, move->frame[index].var1, move->frame[index].var2,
 				move->frame[index].var3);
@@ -1188,7 +1188,7 @@ monster_triggered_spawn(edict_t *self)
 		}
 	}
 
-	if((self->classID == CID_ASSASSIN) && (self->spawnflags & MSF_ASS_TPORTAMBUSH))
+	if ((self->classID == CID_ASSASSIN) && (self->spawnflags & MSF_ASS_TPORTAMBUSH))
 	{
 		FoundTarget (self, true);
 		VectorCopy(self->s.origin, pos);
@@ -1281,7 +1281,7 @@ monster_death_use(edict_t *self)
 void
 MG_CheckInGround(edict_t *self)
 {
-	if(gi.pointcontents(self->s.origin)&CONTENTS_SOLID)
+	if (gi.pointcontents(self->s.origin)&CONTENTS_SOLID)
 	{
 		gi.dprintf("%s's origin at %s in solid!!!\n", self->classname, vtos(self->s.origin));
 	}
@@ -1299,7 +1299,7 @@ MG_CheckInGround(edict_t *self)
 		VectorSet(maxs, self->maxs[0], self->maxs[1], 1);
 
 		trace = gi.trace(top, mins, maxs, bottom, self, MASK_SOLID);
-		if(trace.allsolid || trace.startsolid)//monster in solid, can't be fixed
+		if (trace.allsolid || trace.startsolid)//monster in solid, can't be fixed
 		{
 			gi.dprintf("top of %s at %s in solid architecture(%s)!!!\n", self->classname, vtos(self->s.origin), trace.ent->classname);
 		}
@@ -1307,7 +1307,7 @@ MG_CheckInGround(edict_t *self)
 		{//buoy is in the ground
 			VectorCopy(trace.endpos, bottom);
 			bottom[2] -= self->mins[2];
-			if((int)(trace.endpos[2]) != (int)(self->s.origin[2]))
+			if ((int)(trace.endpos[2]) != (int)(self->s.origin[2]))
 				gi.dprintf("%s at %s was in ground(%s), moved to %s...!!!\n", self->classname, vtos(self->s.origin), trace.ent->classname, vtos(bottom));
 			VectorCopy(bottom, self->s.origin);
 		}
@@ -1372,18 +1372,18 @@ monster_start(edict_t *self)
 	self->touch = M_Touch;
 	self->monsterinfo.alert = defaultMonsterAlerted;//I don't understand why I get a warning here...
 
-	if(!self->max_health)
+	if (!self->max_health)
 	{
 		self->max_health = self->health;
 	}
 
 	self->clipmask = MASK_MONSTERSOLID;
-	if(!self->materialtype)
+	if (!self->materialtype)
 		self->materialtype = MAT_FLESH;
 
 	// Stop the camera clipping with monsters, except the trial beast.
 
-	if(self->classID != CID_TBEAST)
+	if (self->classID != CID_TBEAST)
 	{
 		self->s.effects|=EF_CAMERA_NO_CLIP;
 	}
@@ -1469,11 +1469,11 @@ MG_BBoxAndOriginAdjustForScale (edict_t *self)
 {
 	float	o_mins2;
 
-	if(!self->rrs.scale[0] ||
+	if (!self->rrs.scale[0] ||
 		!self->rrs.scale[1] ||
 		!self->rrs.scale[2])
 	{
-		if(!self->monsterinfo.scale)
+		if (!self->monsterinfo.scale)
 		{
 			self->monsterinfo.scale = 1.0f;
 			VectorSet(self->rrs.scale,
@@ -1518,28 +1518,28 @@ monster_start_go(edict_t *self)
 	MG_BBoxAndOriginAdjustForScale(self);
 	MG_CheckInGround(self);
 
-	if(!self->mass)
+	if (!self->mass)
 		self->mass = 100;
 
-	if(AVG_VEC3T(self->rrs.scale))
+	if (AVG_VEC3T(self->rrs.scale))
 	{
 		self->mass *= AVG_VEC3T(self->rrs.scale);
 	}
 
-	if(self->spawnflags & MSF_COWARD)//start off running away- FIXME: let them specify a flee_time and use AI_FLEE if one is set?  Would anyone ever use this?!?!?
+	if (self->spawnflags & MSF_COWARD)//start off running away- FIXME: let them specify a flee_time and use AI_FLEE if one is set?  Would anyone ever use this?!?!?
 		self->monsterinfo.aiflags |= AI_COWARD;
 
-	if(self->spawnflags&MSF_STALK)//stalks enemies- only approaches and attacks from behind
+	if (self->spawnflags&MSF_STALK)//stalks enemies- only approaches and attacks from behind
 		self->ai_mood_flags |= AI_MOOD_FLAG_BACKSTAB;
 
-	if(self->spawnflags&MSF_MELEE_LEAD)//lead enemies in melee and tries to cut them off
+	if (self->spawnflags&MSF_MELEE_LEAD)//lead enemies in melee and tries to cut them off
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 
-	if(!self->wakeup_distance)
+	if (!self->wakeup_distance)
 		self->wakeup_distance = MAX_SIGHT_PLAYER_DIST;
 
 	volume = VectorLength(self->size);
-	if(volume < 32)
+	if (volume < 32)
 		self->svflags |= SVF_DO_NO_IMPACT_DMG;
 
 	self->jump_time = level.time + 2;//so they don't take damage from the fall after spawning...
@@ -1547,7 +1547,7 @@ monster_start_go(edict_t *self)
 	// check for target to combat_point and change to combattarget
 	self->monsterinfo.coop_check_debounce_time = 0;
 	self->monsterinfo.pausetime = -1;
-	if(self->enemy)
+	if (self->enemy)
 	{//spawned mad
 		FoundTarget(self, false);
 	}
@@ -1614,7 +1614,7 @@ monster_start_go(edict_t *self)
 			}
 			else if (strcmp (self->movetarget->classname, "path_corner") == 0)
 			{
-				if(self->classID != CID_SERAPH_OVERLORD)
+				if (self->classID != CID_SERAPH_OVERLORD)
 				{
 					VectorSubtract (self->goalentity->s.origin, self->s.origin, v);
 					self->ideal_yaw = self->s.angles[YAW] = vectoyaw(v);
@@ -1938,7 +1938,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 	vec3_t	nvf, ovf, ovr, startspot, endspot, new_angles = { 0, 0, 0 };
 	float	pitch, mod, dot;
 
-	if(!pass_slope)
+	if (!pass_slope)
 	{
 		trace_t trace;
 
@@ -1947,13 +1947,13 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 		VectorCopy(startspot, endspot);
 		endspot[2] -= 300;
 		trace = gi.trace(forwhom->s.origin, vec3_origin, vec3_origin, endspot, forwhom, MASK_SOLID);
-//		if(trace_fraction>0.05&&forwhom.movetype==MOVETYPE_STEP)
+//		if (trace_fraction>0.05&&forwhom.movetype==MOVETYPE_STEP)
 //			forwhom.flags(-)FL_ONGROUND;
 
-		if(trace.fraction==1.0)
+		if (trace.fraction==1.0)
 			return;
 
-		if(Vec3IsZero(trace.plane.normal))
+		if (Vec3IsZero(trace.plane.normal))
 			return;
 
 		VectorCopy(trace.plane.normal, slope);
@@ -1975,7 +1975,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 
 	mod = DotProduct(nvf, ovr);
 
-	if(mod<0)
+	if (mod<0)
 		mod = -1;
 	else
 		mod = 1;
@@ -2029,7 +2029,7 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 
 			//Do damage to the thing getting hit based on how hard the collision was
 //			T_Damage (self, other, other, dir, pos2, vec3_origin, 1 + (dropmag/FALLDAMAGE_MODIFIER), 0, DAMAGE_NO_BLOOD | DAMAGE_NO_KNOCKBACK);
-			if(!irand(0, 9))//10% chance
+			if (!irand(0, 9))//10% chance
 			{
 				int damage;
 
@@ -2140,24 +2140,24 @@ edict_t	*M_CheckMeleeLineHit( edict_t *attacker, vec3_t start, vec3_t end, vec3_
 	//make sure line to start of swipe is clear
 	*trace = gi.trace(attacker->s.origin, mins, maxs, startv, attacker, MASK_SHOT);
 
-	if(trace->fraction == 1.0)//line to start of trace not blocked
+	if (trace->fraction == 1.0)//line to start of trace not blocked
 	{
 		*trace = gi.trace(startv, mins, maxs, endv, attacker, MASK_SHOT);//MASK_MONSTERSOLID);
 	}
 
-	if(trace->fraction == 1.0)
+	if (trace->fraction == 1.0)
 	{//hit nothing, trace to middle of line from origin to see if reached too far
 		VectorMA(startv, 0.5, swipedir, midv);
 		*trace = gi.trace(attacker->s.origin, mins, maxs, midv, attacker, MASK_SHOT);
 	}
 
-	if(trace->fraction == 1.0)
+	if (trace->fraction == 1.0)
 	{//Last Chance: trace to end of swipe from origin to see if reached too far
 		*trace = gi.trace(attacker->s.origin, mins, maxs, endv, attacker, MASK_SHOT);
 	}
 
 	VectorNormalize(swipedir);
-	if(direction)
+	if (direction)
 		VectorCopy(swipedir, direction);
 
 	//Check to see if the trace was successful (miss)
@@ -2224,8 +2224,8 @@ qboolean M_ValidOldEnemy (edict_t *self)
 	if (self->oldenemy->health <= 0 || self->oldenemy == self)
 		return false;
 
-	if(self->monsterinfo.last_successful_enemy_tracking_time + MONSTER_SEARCH_TIME < level.time)
-		if(!visible(self, self->oldenemy))
+	if (self->monsterinfo.last_successful_enemy_tracking_time + MONSTER_SEARCH_TIME < level.time)
+		if (!visible(self, self->oldenemy))
 			return false;
 
 	self->monsterinfo.aiflags &= ~AI_STRAIGHT_TO_ENEMY;
@@ -2238,25 +2238,25 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 {
 	qboolean	checkold = false;
 
-	if(self->oldenemy_debounce_time > 0)
+	if (self->oldenemy_debounce_time > 0)
 	{
-		if(self->oldenemy_debounce_time < level.time)
+		if (self->oldenemy_debounce_time < level.time)
 		{
 			self->oldenemy_debounce_time = -1;
-			if(M_ValidOldEnemy(self))
+			if (M_ValidOldEnemy(self))
 				return true;
 		}
 	}
 
-	if(target == self->enemy)
+	if (target == self->enemy)
 		checkold = true;
 
 	if (!target)
 	{
 		self->monsterinfo.aiflags &= ~AI_STRAIGHT_TO_ENEMY;
 
-		if(checkold)
-			if(M_ValidOldEnemy(self))
+		if (checkold)
+			if (M_ValidOldEnemy(self))
 				return true;
 
 		if (!FindTarget(self))
@@ -2265,7 +2265,7 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 		target = self->enemy;
 	}
 
-	if(!target)
+	if (!target)
 		return false;
 
 	//See if the target has died
@@ -2273,24 +2273,24 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 	{
 		self->monsterinfo.aiflags &= ~AI_STRAIGHT_TO_ENEMY;
 		//See if there is another valid target to go after
-		if(checkold)
-			if(M_ValidOldEnemy(self))
+		if (checkold)
+			if (M_ValidOldEnemy(self))
 				return true;
 
 		if (!FindTarget(self))
 		{
-			if(self->enemy)
+			if (self->enemy)
 				self->oldenemy = self->enemy;
 			self->enemy = NULL;
 			return false;
 		}
 	}
 
-	if(coop->value)
+	if (coop->value)
 	{
-		if(self->monsterinfo.awake)
+		if (self->monsterinfo.awake)
 		{
-			if(self->enemy && self->monsterinfo.coop_check_debounce_time < level.time)
+			if (self->enemy && self->monsterinfo.coop_check_debounce_time < level.time)
 			{
 				int		c_dist[MAX_CLIENTS];
 				float	e_dist;
@@ -2308,7 +2308,7 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 					c_dist[i] = INT_MAX;
 
 					client = &g_edicts[i];
-					if(client->client && client->health > 0)
+					if (client->client && client->health > 0)
 					{
 						c_dist[i] = M_DistanceToTarget(self, client);
 					}
@@ -2316,10 +2316,10 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 
 				for(i = 0; i <= game.maxclients; i++)
 				{
-					if(c_dist[i] < e_dist)
+					if (c_dist[i] < e_dist)
 					{
 						client = &g_edicts[i];
-						if(visible(self, client))
+						if (visible(self, client))
 						{
 							newenemy = client;
 							e_dist = c_dist[i];
@@ -2327,9 +2327,9 @@ qboolean M_ValidTarget( edict_t *self, edict_t *target )
 					}
 				}
 
-				if(newenemy)
+				if (newenemy)
 				{
-					if(self->enemy->client && self->enemy->health > 0)
+					if (self->enemy->client && self->enemy->health > 0)
 						self->oldenemy = self->enemy;
 
 					self->enemy = newenemy;
@@ -2458,13 +2458,13 @@ void M_StartDeath( edict_t *self,  int animID)
 	}*/
 
 	//Dead but still being hit
-	if(self->deadflag == DEAD_DEAD)
+	if (self->deadflag == DEAD_DEAD)
 		return;
 
 	self->deadflag = DEAD_DEAD;
 
 	//gib death
-	if(self->health <= -80)
+	if (self->health <= -80)
 	{
 		//The monster much check and play its own sound if a gib occured
 		self->think = BecomeDebris;
@@ -2594,7 +2594,7 @@ void M_jump(edict_t *self, G_Message_t *msg)
 	if (!self->goalentity)
 		return;
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		return;
 
 	dist = M_DistanceToTarget(self, self->goalentity);
@@ -2608,7 +2608,7 @@ void M_jump(edict_t *self, G_Message_t *msg)
 	VectorScale(fwd, 256, jvec);
 	jvec[2] += 101;
 
-	if(classStatics[self->classID].msgReceivers[MSG_CHECK_MOOD])
+	if (classStatics[self->classID].msgReceivers[MSG_CHECK_MOOD])
 	{
 		VectorCopy(jvec, self->movedir);
 		self->ai_mood = AI_MOOD_JUMP;//don't technically need this line
@@ -2627,7 +2627,7 @@ void MG_parse_dismember_msg(edict_t *self, G_Message_t *msg)
 	HitLocation_t	HitLocation;
 	int			damage;
 
-	if(!self->monsterinfo.dismember)
+	if (!self->monsterinfo.dismember)
 	{
 		gi.dprintf("ERROR: %s with dismember message handler but no dismember function\n", self->classname);
 
@@ -2644,23 +2644,23 @@ void MG_parse_dismember_msg(edict_t *self, G_Message_t *msg)
 -----------------------------------------------------------------------*/
 qboolean defaultMonsterAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)//I don't understand why I get a warning here...
 {
-	if(self->alert_time < level.time)
+	if (self->alert_time < level.time)
 	{//not already alerted
-		if(!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
+		if (!(alerter->alert_svflags&SVF_ALERT_NO_SHADE) && skill->value < 3.0 && !(self->monsterinfo.aiflags & AI_NIGHTVISION))
 		{
-			if(enemy->light_level < flrand(6, 77))
+			if (enemy->light_level < flrand(6, 77))
 			{
 				return false;
 			}
 		}
 	}
 
-	if(alerter->lifetime < level.time + 2)
+	if (alerter->lifetime < level.time + 2)
 		self->alert_time = level.time + 2;//be ready for 2 seconds to wake up if alerted again
 	else
 		self->alert_time = alerter->lifetime;//be alert as long as the alert sticks around
 
-	if(enemy->svflags&SVF_MONSTER)
+	if (enemy->svflags&SVF_MONSTER)
 		self->enemy = alerter->enemy;
 	else
 		self->enemy = enemy;
@@ -2719,9 +2719,9 @@ float MG_ChangePitchForZVel(edict_t *self, float speed, float cap_vel, float max
 
 	ideal = self->velocity[PITCH];
 
-	if(fabs(ideal) > cap_vel)
+	if (fabs(ideal) > cap_vel)
 	{
-		if(ideal > 0)
+		if (ideal > 0)
 			ideal = max_angle;
 		else
 			ideal = -max_angle;
@@ -2744,15 +2744,15 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	vec3_t		targVec;
 	qboolean	charge_enemy = false;
 
-	if(self->monsterinfo.aiflags&AI_STRAIGHT_TO_ENEMY && self->enemy)
+	if (self->monsterinfo.aiflags&AI_STRAIGHT_TO_ENEMY && self->enemy)
 		charge_enemy = true;
 
 	if (self->monsterinfo.searchType == SEARCH_BUOY && !charge_enemy)
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("Vec to navgoal!\n");
 
-		if(self->buoy_index < 0 || self->buoy_index > level.active_buoys)
+		if (self->buoy_index < 0 || self->buoy_index > level.active_buoys)
 		{
 			gi.dprintf("Error: SEARCH_BUOY but invalid index!!!\n");
 
@@ -2765,10 +2765,10 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	}
 	else if(self->goalentity && !charge_enemy)
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("Vec to goalentity!\n");
 
-		if(self->goalentity == self->enemy && self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
+		if (self->goalentity == self->enemy && self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
 		{//predict where he's goin
 			M_PredictTargetPosition( self->enemy, self->enemy->velocity, 8, targVec);
 		}
@@ -2781,7 +2781,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	}
 	else if(self->enemy)
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("Vec to enemy!\n");
 
 		if (self->ai_mood_flags & AI_MOOD_FLAG_PREDICT)
@@ -2797,7 +2797,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 	}
 	else
 	{
-		if(mgai_debug->value)
+		if (mgai_debug->value)
 			gi.dprintf("No goal to face!\n");
 
 		VectorClear(vec);

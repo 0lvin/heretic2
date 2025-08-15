@@ -474,7 +474,7 @@ void shrine_restore_player(edict_t *other)
 {
 	// Stop us from being on fire.
 
-	if(other->fire_damage_time>level.time)
+	if (other->fire_damage_time>level.time)
 	{
 		other->fire_damage_time = 0;
 
@@ -590,10 +590,10 @@ void shrine_heal(edict_t *ent)
 	ent->shrine_type = SHRINE_HEAL;
 	ent->classname = health_text;
 
-	if(!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
+	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_heal_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -708,7 +708,7 @@ void shrine_armor (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_armor_silver_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -814,10 +814,10 @@ void shrine_armor_gold (edict_t *ent)
 
 	// No touch if flags say so.
 
-	if(!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
+	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_armor_gold_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -930,10 +930,10 @@ void shrine_staff (edict_t *ent)
 	ent->shrine_type = SHRINE_STAFF;
 	ent->classname = staff_text;
 
-	if(!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
+	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_staff_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1031,10 +1031,10 @@ void shrine_lung (edict_t *ent)
 	ent->shrine_type = SHRINE_LUNGS;
 	ent->classname = lungs_text;
 
-	if(!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
+	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_lung_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1151,7 +1151,7 @@ void shrine_light (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_light_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1169,7 +1169,7 @@ void shrine_light (edict_t *ent)
 
 void player_shrine_mana_effect(edict_t *self)
 {
- 	// Start up the shrine mana effect.
+	// Start up the shrine mana effect.
 
 	gi.CreateEffect(self, FX_SHRINE_MANA, CEF_OWNERS_ORIGIN, NULL, "");
 
@@ -1254,7 +1254,7 @@ void shrine_mana (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_mana_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1364,7 +1364,7 @@ void shrine_ghost (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_ghost_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1477,7 +1477,7 @@ void shrine_reflect (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_reflect_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1593,7 +1593,7 @@ void shrine_powerup (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_powerup_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1710,7 +1710,7 @@ void shrine_speed (edict_t *ent)
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_speed_touch;
 
-	if(deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
+	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS) && !((int)dmflags->value & DF_NO_SHRINE))
 	{
 		ent->shrine_type = SHRINE_RANDOM;
 		ent->touch = shrine_random_touch;
@@ -1747,7 +1747,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	if (!other->client)
 		return;
 
-	if(other->client->playerinfo.flags&PLAYER_FLAG_BLEED||
+	if (other->client->playerinfo.flags&PLAYER_FLAG_BLEED||
 	   other->client->playerinfo.flags&PLAYER_FLAG_NO_LARM||
 	   other->client->playerinfo.flags&PLAYER_FLAG_NO_RARM)
 	{
@@ -1936,7 +1936,7 @@ void shrine_random(edict_t *ent)
 	ent->shrine_type = SHRINE_RANDOM;
 	ent->classname = chaos_text;
 
-	if(!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
+	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_NO_SHRINE)))
 		ent->touch = shrine_random_touch;
 
 	gi.setmodel(ent, ent->model);

@@ -76,7 +76,7 @@ void elflord_mist(edict_t *self, float x, float y, float z)
 	float		yaw;
 	matrix3_t	mat;
 
-	if(self->monsterinfo.aiflags & AI_NO_MELEE)
+	if (self->monsterinfo.aiflags & AI_NO_MELEE)
 		return;//fixme: actually prevent these anims
 
 	mist_yaw = mist_yaw + MIST_ADD;

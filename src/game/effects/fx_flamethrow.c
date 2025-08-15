@@ -60,7 +60,7 @@ qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 		AddParticleToList(self, flame);
 	}
 
-	if(r_detail->value >= DETAIL_NORMAL)
+	if (r_detail->value >= DETAIL_NORMAL)
 	{
 		//Spawn a dynamic light
 		light = ClientEntity_new(FX_FLAMETHROWER, CEF_NO_DRAW, self->origin, 0, 500);
@@ -154,7 +154,7 @@ void FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
 	//Steam?
 	if (flags & CEF_FLAG6)
 	{
-		if(!(flags & CEF_FLAG7))
+		if (!(flags & CEF_FLAG7))
 			fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("objects/steamjet.wav"), 1, ATTN_NORM, 0);
 		else
 			glow->LifeTime = fxi.cl->time + 200;

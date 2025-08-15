@@ -49,7 +49,7 @@ float CL_NormaliseAngle(float Angle)
 
 	Angle=Angle-(Count*360.0);
 
-	if(Angle>180.0)
+	if (Angle>180.0)
 	{
 		Angle+=-360.0;
 	}
@@ -214,7 +214,7 @@ void PlayerActionCheckStrafe (playerinfo_t *playerinfo)
 
 void PlayerActionCheckVaultKick (playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerVaultKick(playerinfo);
 }
 
@@ -242,7 +242,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		trace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		trace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
@@ -255,7 +255,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 			trace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
 			trace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
@@ -297,7 +297,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		trace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		trace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
@@ -310,7 +310,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 			trace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
 			trace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
@@ -345,7 +345,7 @@ void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo)
 {
 	int	sequence;
 
-	if(CheckUncrouch(playerinfo))
+	if (CheckUncrouch(playerinfo))
 	{
 		playerinfo->maxs[2] = 25;
 		return;//ok to finish sequence
@@ -353,7 +353,7 @@ void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo)
 
 //	PlayerActionSetCrouchHeight(playerinfo);
 
-	if(playerinfo->upperseq == ASEQ_NONE)
+	if (playerinfo->upperseq == ASEQ_NONE)
 		sequence = playerinfo->lowerseq;
 	else
 		sequence = playerinfo->upperseq;
@@ -427,7 +427,7 @@ void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo)
 // This is called during the hold ready bow sequence, so that we may interrupt it if necessary.
 void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 {
-	if(playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->pers.newweapon)
+	if (playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->pers.newweapon)
 	{	// Switching weapons is one reason to end the bow refire waiting.
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
@@ -564,7 +564,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 {
 	// Drain mana while charging. If mana depleted, then the branch will set to launch the thing.
 
-	if(playerinfo->seqcmd[ACMDU_ATTACK] &&
+	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
 			((pi.Weapon_CurrentShotsLeft(playerinfo)) ||
 					(playerinfo->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
@@ -604,9 +604,9 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellSphereRelease(playerinfo_t *playerinfo, float value)
 {
-	if(value==1.0)
+	if (value==1.0)
 	{
-		if(playerinfo->seqcmd[ACMDU_ATTACK]==false)
+		if (playerinfo->seqcmd[ACMDU_ATTACK]==false)
 		{
 			playerinfo->chargingspell=false;
 			playerinfo->weaponcharge = 0;
@@ -736,7 +736,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 			break;
 	}
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID0,
 							 playerinfo->origin,
@@ -775,7 +775,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo);
 
-	if(playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->edictflags & FL_CHICKEN)
 	{
 		// Don't allow us to muck about with arrows if we are a chicken.
 
@@ -816,7 +816,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		PlayerUpdateModelAttributes(playerinfo);
 	}
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID1,
 							 playerinfo->origin,
@@ -871,7 +871,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		holdweapon = playerinfo->pers.weaponready;
 
 		playerinfo->pers.weaponready = value;
- 		PlayerUpdateModelAttributes(playerinfo);
+		PlayerUpdateModelAttributes(playerinfo);
 
 		playerinfo->pers.weaponready = holdweapon;
 	}
@@ -892,7 +892,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		{
 		case WEAPON_READY_SWORDSTAFF:
 
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 			{
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID3,
 										   playerinfo->self,
@@ -912,7 +912,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 		case WEAPON_READY_HELLSTAFF:
 
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID4,
 										   playerinfo->self,
 										   FX_STAFF_CREATEPOOF,
@@ -950,7 +950,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
 						PlayerUpdateModelAttributes(playerinfo);
 
-						if(playerinfo->isclient)
+						if (playerinfo->isclient)
 						{
 							playerinfo->CL_Sound(SND_PRED_ID2,
 												 playerinfo->origin,
@@ -979,7 +979,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						if(!playerinfo->isclient)
+						if (!playerinfo->isclient)
 							playerinfo->G_CreateEffect(EFFECT_PRED_ID5,
 													   NULL,
 													   FX_SPELL_CHANGE,
@@ -1010,7 +1010,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
 						PlayerUpdateModelAttributes(playerinfo);
 
-						if(playerinfo->isclient)
+						if (playerinfo->isclient)
 						{
 							playerinfo->CL_Sound(SND_PRED_ID3,
 												 playerinfo->origin,
@@ -1039,7 +1039,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						if(!playerinfo->isclient)
+						if (!playerinfo->isclient)
 							playerinfo->G_CreateEffect(EFFECT_PRED_ID6,
 													   NULL,
 													   FX_SPELL_CHANGE,
@@ -1080,12 +1080,12 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 {
 	int flags = CEF_OWNERS_ORIGIN;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if(playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID5,
 								 playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
@@ -1140,7 +1140,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if(playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->G_Sound(SND_PRED_ID5,
 								playerinfo->leveltime,
@@ -1205,12 +1205,12 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 	int flags = CEF_OWNERS_ORIGIN;
 
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if(playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID9,
 							playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
@@ -1267,7 +1267,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if(playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->G_Sound(SND_PRED_ID9,
 								playerinfo->leveltime,
@@ -1331,7 +1331,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordTrailSound(playerinfo_t *playerinfo, char *name)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID13,
 							 playerinfo->origin,
@@ -1422,7 +1422,7 @@ void PlayerActionRedRainBowTrailStart(playerinfo_t *playerinfo, float value)
 		PlayerSetHandFX(playerinfo, HANDFX_REDRAIN, -1);
 	}
 
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		playerinfo->G_L_Sound(playerinfo->self,playerinfo->G_SoundIndex("weapons/bowReady.wav"));
 	}
@@ -1445,7 +1445,7 @@ void PlayerActionPhoenixBowTrailStart(playerinfo_t *playerinfo, float value)
 		PlayerSetHandFX(playerinfo, HANDFX_PHOENIX, -1);
 	}
 
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		playerinfo->G_L_Sound(playerinfo->self,playerinfo->G_SoundIndex("weapons/PhoenixReady.wav"));
 	}
@@ -1502,7 +1502,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		channel = CHAN_BODY;
 	}
 
-	if(!basestep)
+	if (!basestep)
 		return;
 
 	if (playerinfo->waterlevel)
@@ -1538,7 +1538,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		{
 		case STEP_CREEP:		// Creep
 
-			if(irand(0,1))
+			if (irand(0,1))
 				strcat(WalkSound,"shuffle1.wav");
 			else
 				strcat(WalkSound,"shuffle2.wav");
@@ -1546,7 +1546,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 
 		case STEP_WALK:		// Walk
 
-			if(irand(0,1))
+			if (irand(0,1))
 				strcat(WalkSound,"walk1.wav");
 			else
 				strcat(WalkSound,"walk2.wav");
@@ -1554,7 +1554,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 
 		case STEP_RUN:		// Run
 
-			if(irand(0,1))
+			if (irand(0,1))
 				strcat(WalkSound,"run1.wav");
 			else
 				strcat(WalkSound,"run2.wav");
@@ -1568,7 +1568,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID14,
 							 playerinfo->origin,
@@ -1580,7 +1580,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-  		playerinfo->G_Sound(SND_PRED_ID14,
+		playerinfo->G_Sound(SND_PRED_ID14,
 							playerinfo->leveltime,
 							playerinfo->self,
 							channel,
@@ -1597,7 +1597,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimIdleSound(playerinfo_t *playerinfo, float value)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID15,
 							 playerinfo->origin,
@@ -1652,7 +1652,7 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 		break;
 	}
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID16,
 							 playerinfo->origin,
@@ -1664,7 +1664,7 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-  		playerinfo->G_Sound(SND_PRED_ID16,
+		playerinfo->G_Sound(SND_PRED_ID16,
 							playerinfo->leveltime,
 							playerinfo->self,
 							CHAN_AUTO,
@@ -1681,7 +1681,7 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID17,
 							 playerinfo->origin,
@@ -1710,7 +1710,7 @@ void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID18,
 							 playerinfo->origin,
@@ -1739,7 +1739,7 @@ void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbFinishSound(playerinfo_t *playerinfo, float value)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID19,
 							 playerinfo->origin,
@@ -1771,7 +1771,7 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 	vec3_t	Origin,
 			Dir;
 
-	if(value==1.0)
+	if (value==1.0)
 	{
 		VectorCopy(playerinfo->origin,Origin);
 		Origin[2]+=playerinfo->waterheight;
@@ -1784,7 +1784,7 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 
 		//
 
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID9,
 									   NULL,
 									   FX_WATER_ENTRYSPLASH,
@@ -1868,7 +1868,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	righthand[2] += v_adjust;
 	VectorMA(righthand, GRAB_HAND_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -1892,7 +1892,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	lefthand[2] += v_adjust;
 	VectorMA(lefthand, GRAB_HAND_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -1936,7 +1936,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= vertlength;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -1963,7 +1963,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= vertlength;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -1998,7 +1998,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	playermax[2] = GRAB_HAND_HEIGHT;
 	VectorMA(playerinfo->origin, GRAB_HAND_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2021,7 +2021,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (grabtrace.ent&&!playerinfo->isclient)
 	{
-		if(playerinfo->G_EntIsAButton(grabtrace.ent))
+		if (playerinfo->G_EntIsAButton(grabtrace.ent))
 		{
 			return 0;
 		}
@@ -2047,7 +2047,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	//so we don't start climbing then fall back down- annoying
 	//get the z height
 	VectorCopy(playerinfo->origin, lastcheck_start);
-	if(lefthand[2] > righthand[2])
+	if (lefthand[2] > righthand[2])
 		lastcheck_start[2] = lefthand[2] - playerinfo->mins[2];
 	else
 		lastcheck_start[2] = righthand[2] - playerinfo->mins[2];
@@ -2055,12 +2055,12 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 	//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		lasttrace = playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	else
 		lasttrace = playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
-	if(lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
+	if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		return (false);
 
 	//Now see if the surface is eligible for a overhanging swing vault
@@ -2091,7 +2091,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[1] = grabtrace.endpos[1];
 	endpoint[2] = playerinfo->grabloc[2] - v_adjust;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		grabtrace = playerinfo->CL_Trace(playerinfo->origin,
 							 NULL,
@@ -2173,7 +2173,7 @@ void PlayerActionCheckGrab(playerinfo_t *playerinfo, float value)
 				break;
 		}
 
-		if((type=PlayerActionCheckGrab_(playerinfo,v_adjust)))
+		if ((type=PlayerActionCheckGrab_(playerinfo,v_adjust)))
 		{
 			switch(i)
 			{
@@ -2216,7 +2216,7 @@ void PlayerActionCheckFallingGrab(playerinfo_t *playerinfo, float value)
 
 void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID20,
 							 playerinfo->origin,
@@ -2245,7 +2245,7 @@ void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		return(playerinfo->G_PlayerActionUsePuzzle(playerinfo));
 	}
@@ -2263,7 +2263,7 @@ qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 
 qboolean PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		return(playerinfo->G_PlayerActionCheckPuzzleGrab(playerinfo));
 	}
@@ -2319,7 +2319,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	playermax[2] = GRAB_HAND_HEIGHT;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2344,7 +2344,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	righthand[2] = handheight;
 	VectorMA(righthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2359,7 +2359,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	lefthand[2] = handheight;
 	VectorMA(lefthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2377,7 +2377,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2396,7 +2396,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2424,7 +2424,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	VectorMA(playerinfo->origin, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2443,7 +2443,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 		playermax[2] = (lefthand[2]+righthand[2])*0.5 - playerinfo->origin[2];
 
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 			grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
 			grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2498,7 +2498,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		vec3_t player_facing;
 		vec3_t forward, right;
@@ -2510,7 +2510,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 
 		assert(playerinfo);
 
- 		VectorCopy(playerinfo->angles,player_facing);
+		VectorCopy(playerinfo->angles,player_facing);
 		player_facing[PITCH]=player_facing[ROLL]=0;
 		AngleVectors(player_facing, forward, right, NULL);
 
@@ -2523,7 +2523,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		if ((grabtrace.fraction == 1) || (!grabtrace.ent))
 			return false;
 
-		if(!(playerinfo->G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
+		if (!(playerinfo->G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
 			return false;
 
 		holdent = (void *)grabtrace.ent;
@@ -2605,7 +2605,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 //	start[2] += VAULT_HEIGHT_CHECK;//waist - 16
 	VectorMA(start, VAULT_HAND_HORZONE, forward, end);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(start,vaultcheckmins,vaultcheckmaxs,end,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
@@ -2628,9 +2628,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		return false;
 	}
 
-	if(grabtrace.ent&&!playerinfo->isclient)
+	if (grabtrace.ent&&!playerinfo->isclient)
 	{
-		if(playerinfo->G_EntIsAButton(grabtrace.ent))
+		if (playerinfo->G_EntIsAButton(grabtrace.ent))
 		{
 			return false;
 		}
@@ -2656,7 +2656,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	righthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(righthand, VAULT_HAND_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2672,7 +2672,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	lefthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(lefthand, VAULT_HAND_HORZONE, forward, endpoint);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2691,7 +2691,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2711,7 +2711,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
 		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -2735,7 +2735,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		//so we don't start climbing then fall back down- annoying
 		//get the z height
 		VectorCopy(playerinfo->origin, lastcheck_start);
-		if(lefthand[2] > righthand[2])
+		if (lefthand[2] > righthand[2])
 			lastcheck_start[2] = lefthand[2] - playerinfo->mins[2];
 		else
 			lastcheck_start[2] = righthand[2] - playerinfo->mins[2];
@@ -2743,12 +2743,12 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 		//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 			lasttrace = playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 		else
 			lasttrace = playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
-		if(lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
+		if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		{
 			return (false);
 		}
@@ -2812,7 +2812,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	AngleVectors(playerinfo->angles, pushdir, NULL, NULL);
 	VectorMA(playerinfo->origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 NULL,
 							 NULL,
@@ -2833,7 +2833,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 
 	// Try placing the entity in the new location.
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		trace = playerinfo->CL_Trace(endpos,
 							 playerinfo->mins,
 							 playerinfo->maxs,
@@ -2863,7 +2863,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{	// Check dismemberment before game side rope check.
 		if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 			return false;
@@ -2911,7 +2911,7 @@ void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 
 	Material = GetClientGroundSurfaceMaterialName(playerinfo);
 
-	if(!Material)
+	if (!Material)
 	{
 		return;
 	}
@@ -2920,7 +2920,7 @@ void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 	strcat(VaultSound, Material);
 	strcat(VaultSound,"vault.wav");
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID21,
 							 playerinfo->origin,
@@ -2955,7 +2955,7 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] += (playerinfo->mins[2] - 2);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
@@ -2988,7 +2988,7 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] += (playerinfo->mins[2] - 2);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		trace = playerinfo->CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
@@ -3041,7 +3041,7 @@ void PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, 
 {
 	assert(playerinfo);
 
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
 }
 
@@ -3118,7 +3118,7 @@ void PlayerMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up)
 
 	VectorScale(fwdv, fwd, playerinfo->velocity);
 
-	if(right != 0)
+	if (right != 0)
 		VectorMA(playerinfo->velocity, right, rightv, playerinfo->velocity);
 
 	playerinfo->velocity[2] += up;
@@ -3147,7 +3147,7 @@ void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float
 	VectorScale(fwdv, fwd, playerinfo->velocity);
 
 	//Check to see if we should bother
-	if(right)
+	if (right)
 		VectorMA(playerinfo->velocity, right, rightv, playerinfo->velocity);
 
 	// If the player is strafing, move the player in that direction (diagonal jump)
@@ -3263,7 +3263,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		VectorCopy(playerinfo->grabloc, endpoint);
 		endpoint[2] -= playerinfo->mins[2] + 2;
 
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 			trace = playerinfo->CL_Trace(playerinfo->origin,
 								 playerinfo->mins,
 								 playerinfo->maxs,
@@ -3311,7 +3311,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			VectorCopy(playerinfo->mins, playermin);
 			VectorCopy(playerinfo->maxs, playermax);
 
-			if(playerinfo->isclient)
+			if (playerinfo->isclient)
 				trace = playerinfo->CL_Trace(playerinfo->origin,
 									 playermin,
 									 playermax,
@@ -3339,7 +3339,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 				//playermin[2] -= 2;
 
 				//Move to the correct distance away from the wall
-				if(playerinfo->isclient)
+				if (playerinfo->isclient)
 					trace = playerinfo->CL_Trace(trace.endpos,
 										 playermin,
 										 playermax,
@@ -3381,7 +3381,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 
 qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		return(playerinfo->G_PlayerActionCheckPushButton(playerinfo));
 	else
 		return false;
@@ -3393,7 +3393,7 @@ qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionPushButton(playerinfo);
 }
 
@@ -3403,7 +3403,7 @@ void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		return(playerinfo->G_PlayerActionCheckPushLever(playerinfo));
 	else
 		return false;
@@ -3415,7 +3415,7 @@ qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionPushLever(playerinfo);
 }
 
@@ -3425,7 +3425,7 @@ void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 
 void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionTakePuzzle(playerinfo);
 }
 
@@ -3435,7 +3435,7 @@ void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 
 void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionMoveItem(playerinfo,distance);
 }
 
@@ -3445,7 +3445,7 @@ void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 
 void PlayerActionShrineEffect(playerinfo_t *playerinfo, float value)
 {
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_PlayerActionShrineEffect(playerinfo);
 }
 
@@ -3560,7 +3560,7 @@ void KnockDownPlayer(playerinfo_t *playerinfo)
 	if (playerinfo->flags & EF_CHICKEN)
 		return;
 
-	if(!(playerinfo->flags&PLAYER_FLAG_KNOCKDOWN))
+	if (!(playerinfo->flags&PLAYER_FLAG_KNOCKDOWN))
 		playerinfo->flags|=PLAYER_FLAG_KNOCKDOWN;
 }
 
@@ -3570,7 +3570,7 @@ void KnockDownPlayer(playerinfo_t *playerinfo)
 
 void PlayFly(playerinfo_t *playerinfo, float dist)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID22,
 							 playerinfo->origin,
@@ -3599,7 +3599,7 @@ void PlayFly(playerinfo_t *playerinfo, float dist)
 
 void PlaySlap(playerinfo_t *playerinfo, float dist)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID23,
 							 playerinfo->origin,
@@ -3628,7 +3628,7 @@ void PlaySlap(playerinfo_t *playerinfo, float dist)
 
 void PlaySigh(playerinfo_t *playerinfo, float dist)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID24,
 							 playerinfo->origin,
@@ -3656,7 +3656,7 @@ void PlaySigh(playerinfo_t *playerinfo, float dist)
 
 void PlayScratch(playerinfo_t *playerinfo, float dist)
 {
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID25,
 							 playerinfo->origin,
@@ -3685,9 +3685,9 @@ void PlayScratch(playerinfo_t *playerinfo, float dist)
 
 void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 {
-	if(playerinfo->waterlevel==0)
+	if (playerinfo->waterlevel==0)
 	{
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID10,
 									   playerinfo->self,
 									   FX_DUST_PUFF,
@@ -3849,7 +3849,7 @@ void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if(playerinfo->isclient)
+			if (playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID26, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0 );
 			else
 				playerinfo->G_Sound(SND_PRED_ID26, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
@@ -4326,7 +4326,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 		return;
 	}
 
-   	//Check for a transition to a backward walking or running strafe	[High probability]
+	//Check for a transition to a backward walking or running strafe	[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		if (playerinfo->buttons & BUTTON_CREEP)
@@ -4382,7 +4382,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if(playerinfo->isclient)
+			if (playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID27, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0 );
 			else
 				playerinfo->G_Sound(SND_PRED_ID27, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
@@ -4861,7 +4861,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if(playerinfo->isclient)
+			if (playerinfo->isclient)
 				playerinfo->CL_Sound(SND_PRED_ID28,	playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
 			else
 				playerinfo->G_Sound(SND_PRED_ID28, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
@@ -5024,7 +5024,7 @@ void PlayerActionClimbStartSound(playerinfo_t *playerinfo, float value)
 	if (irand(0,4))
 		return;
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		playerinfo->CL_Sound(SND_PRED_ID29,playerinfo->origin, CHAN_VOICE, "*grab.wav", 0.75, ATTN_NORM, 0);
 	else
 		playerinfo->G_Sound(SND_PRED_ID29, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*grab.wav"), 0.75, ATTN_NORM, 0);
@@ -5034,7 +5034,7 @@ void PlayerPlaySlide(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 		playerinfo->CL_Sound(SND_PRED_ID30,playerinfo->origin, CHAN_VOICE, "player/slope.wav", 0.75, ATTN_NORM, 0);
 	else
 		playerinfo->G_Sound(SND_PRED_ID30, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
@@ -5049,7 +5049,7 @@ void PlayerInterruptAction(playerinfo_t *playerinfo)
 	TurnOffPlayerEffects(playerinfo);
 
 	//Remove weapon sounds from the player (technically looping weapons should do this for us, but better safe than annoyed)
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		playerinfo->CL_Sound(SND_PRED_ID31,
 							 playerinfo->origin,

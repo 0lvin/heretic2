@@ -102,7 +102,7 @@ HitLocation_t GetNearestPoint(vec3_t *work, vec3_t point, int LocType)
 	for(i = 0; i < HitLocTypes[LocType].NumLocs; i++, work++)
 	{
 		dist = VectorSeparation(*work, point);
-		if(dist < mindist)
+		if (dist < mindist)
 		{
 			mindist = dist;
 			minidx = i;
@@ -121,7 +121,7 @@ HitLocation_t T_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoin
 	vec3_t			point;
 
 	// Work out which type of location table to use
-/*	if(target->movetype == MOVETYPE_FLY)
+/*	if (target->movetype == MOVETYPE_FLY)
 	{
 		LocType = LT_WINGED;
 	}
@@ -132,7 +132,7 @@ HitLocation_t T_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoin
 //	}
 
 	// If incoming point is zero, use inflictors origin
-	if(Vec3IsZero(ppoint))
+	if (Vec3IsZero(ppoint))
 		VectorCopy(inflictor->s.origin, point);
 	else
 		VectorCopy(ppoint, point);
@@ -226,7 +226,7 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	HitLocation_t	HitLoc;
 
 //get target forward, right and up
-	if(target->client)
+	if (target->client)
 	{//ignore player's pitch and roll
 		VectorSet(tangles, 0, target->s.angles[YAW], 0);
 	}
@@ -243,18 +243,18 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	tradius = (fabs(target->maxs[0]) + fabs(target->maxs[1]) + fabs(target->mins[0]) + fabs(target->mins[1]))/4;
 
 //get impact point
-	if(ppoint && Vec3NotZero(ppoint))
+	if (ppoint && Vec3NotZero(ppoint))
 		VectorCopy(ppoint, point);
 	else
 		VectorCopy(inflictor->s.origin, point);//this is bad!
 
 //get impact dir
-	if(pdir && Vec3NotZero(pdir))
+	if (pdir && Vec3NotZero(pdir))
 		VectorCopy(pdir, dir);
 	else
 	{//take the inflictor's last origin to current to get dir
 		VectorSubtract(inflictor->s.origin, inflictor->s.old_origin, dir);
-		if(Vec3IsZero(dir))
+		if (Vec3IsZero(dir))
 		{//ok, that didn't work, make dir to target center, ignoring z
 			VectorSubtract(target->s.origin, inflictor->s.origin, dir);
 			dir[2] = 0;
@@ -273,7 +273,7 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 
 	//Get bottom to top (Vertical) position index
 	udot = DotProduct(up, point_dir);
-	if(udot>.666)
+	if (udot>.666)
 		Vertical = 4;
 	else if(udot>.333)
 		Vertical = 3;
@@ -286,7 +286,7 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 
 	//Get back to front (Forward) position index
 	fdot = DotProduct(forward, point_dir);
-	if(fdot>.666)
+	if (fdot>.666)
 		Forward = 4;
 	else if(fdot>.333)
 		Forward = 3;
@@ -299,7 +299,7 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 
 	//Get left to right (Lateral) position index
 	rdot = DotProduct(right, point_dir);
-	if(rdot>.666)
+	if (rdot>.666)
 		Lateral = 4;
 	else if(rdot>.333)
 		Lateral = 3;
@@ -316,67 +316,67 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	switch(HitLoc)
 	{
 		case hl_Half_LLL_LRL://left lower leg and right lower leg:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_LegLowerLeft;
 			else
 				return hl_LegUpperRight;
 			break;
 		case hl_Half_ULL_URL://left upper leg and right upper leg:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_LegUpperLeft;
 			else
 				return hl_LegLowerRight;
 			break;
 		case hl_Half_FT_BT://front and back torso:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoFront;
 			else
 				return hl_TorsoBack;
 			break;
 		case hl_Half_FT_URA://front torso and upper right arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoFront;
 			else
 				return hl_ArmUpperRight;
 			break;
 		case hl_Half_FT_ULA://front torso and upper left arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoFront;
 			else
 				return hl_ArmUpperLeft;
 			break;
 		case hl_Half_FT_LRA://front torso and lower right arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoFront;
 			else
 				return hl_ArmLowerRight;
 			break;
 		case hl_Half_FT_LLA://front torso and lower left arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoFront;
 			else
 				return hl_ArmLowerLeft;
 			break;
 		case hl_Half_BT_URA://back torso and upper right arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoBack;
 			else
 				return hl_ArmUpperRight;
 			break;
 		case hl_Half_BT_ULA://back torso and upper left arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoBack;
 			else
 				return hl_ArmUpperLeft;
 			break;
 		case hl_Half_BT_LRA://back torso and lower right arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoBack;
 			else
 				return hl_ArmLowerRight;
 			break;
 		case hl_Half_BT_LLA://back torso and lower left arm:
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_TorsoBack;
 			else
 				return hl_ArmLowerLeft;

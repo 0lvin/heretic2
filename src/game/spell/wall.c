@@ -32,8 +32,8 @@ edict_t *CreateFireBlast(vec3_t startpos, vec3_t angles, edict_t *owner, int hea
 
 	wall = G_Spawn();
 
-   	VectorSet(wall->mins, -FIREBLAST_PROJ_RADIUS, -FIREBLAST_PROJ_RADIUS, -FIREBLAST_PROJ_RADIUS);
-   	VectorSet(wall->maxs, FIREBLAST_PROJ_RADIUS, FIREBLAST_PROJ_RADIUS, FIREBLAST_PROJ_RADIUS);
+	VectorSet(wall->mins, -FIREBLAST_PROJ_RADIUS, -FIREBLAST_PROJ_RADIUS, -FIREBLAST_PROJ_RADIUS);
+	VectorSet(wall->maxs, FIREBLAST_PROJ_RADIUS, FIREBLAST_PROJ_RADIUS, FIREBLAST_PROJ_RADIUS);
 
 	VectorCopy(startpos, wall->s.origin);
 	VectorCopy(angles, wall->s.angles);
@@ -88,9 +88,9 @@ void FireBlastBlocked(edict_t *self, trace_t *trace)
 	if (trace->ent && trace->ent->takedamage && self->fire_timestamp > trace->ent->fire_timestamp)
 	{
 		// if we have reflection on, then no damage
-		if(!EntReflecting(trace->ent, true, true))
+		if (!EntReflecting(trace->ent, true, true))
 		{
-			if(trace->ent != self->owner)		// No damage to casting player
+			if (trace->ent != self->owner)		// No damage to casting player
 			{
 				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
@@ -150,7 +150,7 @@ void FireBlastThink(edict_t *self)
 	while((ent = findinbounds(ent, min, max)))
 	{
 //		if ((!(ent->svflags & SVF_MONSTER) && !(ent->client && deathmatch->value)) || (ent->svflags & SVF_DEADMONSTER))
-		if(!ent->takedamage)
+		if (!ent->takedamage)
 		{	// Anything that takes damage now.
 			continue;
 		}
@@ -159,10 +159,10 @@ void FireBlastThink(edict_t *self)
 			continue;
 
 		// if we have reflection on, then no damage
-		if(EntReflecting(ent, true, true))
+		if (EntReflecting(ent, true, true))
 			continue;
 
-		if(ent != self->owner)		// No damage to casting player
+		if (ent != self->owner)		// No damage to casting player
 		{
 			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
@@ -329,9 +329,9 @@ void WallMissileBlocked(edict_t *self, trace_t *trace)
 	if (trace->ent && trace->ent->takedamage && self->fire_timestamp > trace->ent->fire_timestamp)
 	{
 		// if we have reflection on, then no damage
-		if(!EntReflecting(trace->ent, true, true))
+		if (!EntReflecting(trace->ent, true, true))
 		{
-			if(trace->ent != self->owner)		// No damage to casting player
+			if (trace->ent != self->owner)		// No damage to casting player
 			{
 				T_Damage(trace->ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 						self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);
@@ -401,7 +401,7 @@ void WallMissileThink(edict_t *self)
 	while((ent = findinbounds(ent, min, max)))
 	{
 //		if ((!(ent->svflags & SVF_MONSTER) && !(ent->client && deathmatch->value)) || (ent->svflags & SVF_DEADMONSTER))
-		if(!ent->takedamage)
+		if (!ent->takedamage)
 		{	// Anything that takes damage now.
 			continue;
 		}
@@ -410,10 +410,10 @@ void WallMissileThink(edict_t *self)
 			continue;
 
 		// if we have reflection on, then no damage
-		if(EntReflecting(ent, true, true))
+		if (EntReflecting(ent, true, true))
 			continue;
 
-		if(ent != self->owner)		// No damage to casting player
+		if (ent != self->owner)		// No damage to casting player
 		{
 			T_Damage(ent, self, self->owner, self->movedir, self->s.origin, vec3_origin,
 					self->dmg, self->dmg, DAMAGE_FIRE | DAMAGE_FIRE_LINGER, MOD_FIREWALL);

@@ -413,7 +413,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 
 	// Do we already have this weapon?
 
-	if(!player->client->playerinfo.pers.inventory[index])
+	if (!player->client->playerinfo.pers.inventory[index])
 	{
 		// We don't already have it, so get the weapon and some ammo.
 
@@ -438,7 +438,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 
 		player->client->playerinfo.pers.inventory[index] = 1;
 
-		if(count)
+		if (count)
 		{
 			newitem = FindItem(item->ammo);
 			Add_Ammo(player, newitem,count);
@@ -463,7 +463,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 	{
 		// We already have it...
 
-		if(!((deathmatch->value&&((int)dmflags->value&DF_WEAPONS_STAY))||coop->value))
+		if (!((deathmatch->value&&((int)dmflags->value&DF_WEAPONS_STAY))||coop->value))
 		{
 			// ...and DF_WEPONS_STAY is off and we're not in coop, so just try to up the ammo counts.
 
@@ -488,7 +488,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 				count = AMMO_COUNT_MOST;
 			}
 
-			if(Add_Ammo(player, newitem,count))
+			if (Add_Ammo(player, newitem,count))
 			{
 				// Have space in our inventory, so add ammo.
 
@@ -518,7 +518,7 @@ Pickup_Weapon(edict_t *ent, edict_t *other)
 		return false;
 	}
 
-	if(AddWeaponToInventory(ent->item,other))
+	if (AddWeaponToInventory(ent->item,other))
 	{
 		G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
 
@@ -724,7 +724,7 @@ Think_Weapon(edict_t *ent)
 			is_silenced = 0;
 		}
 
-		ent->client->pers.weapon->weaponthink(ent, "");
+		ent->client->pers.weapon->weaponthink(ent);
 	}
 }
 
@@ -3772,7 +3772,7 @@ int sworddamage[STAFF_LEVEL_MAX][2] =
 };
 
 void
-WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
+WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 {
 	va_list Marker;
 	char CurrentChar;
@@ -3843,11 +3843,11 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 	caster->client->laststaffuse = level.time;
 
 	trace = gi.trace(startpos, mins, maxs, endpos, caster, MASK_PLAYERSOLID|CONTENTS_DEADMONSTER);
-	if(level.fighting_beast)
+	if (level.fighting_beast)
 	{
 		edict_t *ent;
 
-		if((ent = check_hit_beast(startpos, trace.endpos)))
+		if ((ent = check_hit_beast(startpos, trace.endpos)))
 			trace.ent = ent;
 	}
 
@@ -4054,9 +4054,9 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 					break;
 				}
 
-				if(caster->client)
+				if (caster->client)
 				{
-					if(playerinfo->flags & PLAYER_FLAG_NO_LARM)
+					if (playerinfo->flags & PLAYER_FLAG_NO_LARM)
 					{
 						damage = ceil(damage/3);//only one arm 1/3 the damage
 					}
@@ -4082,7 +4082,7 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 				// If we hit a monster, stick a trail of blood on the staff...
 				if (trace.ent->svflags & SVF_MONSTER)
 				{
-					if(trace.ent->materialtype == MAT_INSECT)//yellow blood
+					if (trace.ent->materialtype == MAT_INSECT)//yellow blood
 						gi.CreateEffect(caster, FX_LINKEDBLOOD, CEF_FLAG8|CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
 					else
 						gi.CreateEffect(caster, FX_LINKEDBLOOD, CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
@@ -4163,12 +4163,18 @@ WeaponThink_SwordStaff(edict_t *caster, char *Format, ...)
 	}
 }
 
+void
+WeaponThink_SwordStaff(edict_t *caster)
+{
+	WeaponThink_SwordStaffEx(caster, "");
+}
+
 // ************************************************************************************************
 // WeaponThink_FlyingFist
 // ----------------------
 // ************************************************************************************************
 void
-WeaponThink_FlyingFist(edict_t *caster, char *Format, ...)
+WeaponThink_FlyingFist(edict_t *caster)
 {
 	vec3_t	OriginToLowerJoint={0.945585,2.26076,0.571354},
 			OriginToUpperJoint={1.80845,2.98912,3.27800},
@@ -4201,7 +4207,7 @@ WeaponThink_FlyingFist(edict_t *caster, char *Format, ...)
 // ************************************************************************************************
 
 void
-WeaponThink_Maceballs(edict_t *caster, char *format,...)
+WeaponThink_Maceballs(edict_t *caster)
 {
 	vec3_t	OriginToLowerJoint={0.945585,2.26076,0.571354},
 			OriginToUpperJoint={1.80845,2.98912,3.27800},
@@ -4249,7 +4255,7 @@ WeaponThink_Maceballs(edict_t *caster, char *format,...)
 #define MISSILE_PITCH 2.0
 #define MISSILE_SEP	4.0
 void
-WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
+WeaponThink_MagicMissileSpreadEx(edict_t *caster,char *format,...)
 {
 	va_list marker;
 	int		missilepos;
@@ -4293,13 +4299,19 @@ WeaponThink_MagicMissileSpread(edict_t *caster,char *format,...)
 		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index]--;
 }
 
+void
+WeaponThink_MagicMissileSpread(edict_t *caster)
+{
+	WeaponThink_MagicMissileSpreadEx(caster, "");
+}
+
 // ************************************************************************************************
 // WeaponThink_SphereOfAnnihilation
 // -------------------------------
 // ************************************************************************************************
 
 void
-WeaponThink_SphereOfAnnihilation(edict_t *caster, char *Format, ...)
+WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
 {
 	va_list		Marker;
 	float	*ReleaseFlagsPtr;
@@ -4332,13 +4344,19 @@ WeaponThink_SphereOfAnnihilation(edict_t *caster, char *Format, ...)
 		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
 }
 
+void
+WeaponThink_SphereOfAnnihilation(edict_t *caster, char *Format, ...)
+{
+	WeaponThink_SphereOfAnnihilationEx(caster, "");
+}
+
 // ************************************************************************************************
 // WeaponThink_Firewall
 // -------------------------------
 // ************************************************************************************************
 
 void
-WeaponThink_Firewall(edict_t *caster, char *format,...)
+WeaponThink_Firewall(edict_t *caster)
 {
 	SpellCastWall(caster, caster->s.origin, caster->client->aimangles, NULL, 0.0);
 
@@ -4352,7 +4370,7 @@ WeaponThink_Firewall(edict_t *caster, char *format,...)
 // ************************************************************************************************
 
 void
-WeaponThink_RedRainBow(edict_t *caster,char *Format,...)
+WeaponThink_RedRainBow(edict_t *caster)
 {
 	vec3_t	StartPos, Forward, Right;
 
@@ -4373,7 +4391,7 @@ WeaponThink_RedRainBow(edict_t *caster,char *Format,...)
 // ************************************************************************************************
 
 void
-WeaponThink_PhoenixBow(edict_t *caster,char *Format,...)
+WeaponThink_PhoenixBow(edict_t *caster)
 {
 	vec3_t	StartPos, Forward, Right;
 
@@ -4393,7 +4411,7 @@ WeaponThink_PhoenixBow(edict_t *caster,char *Format,...)
 // ---------------------
 // ************************************************************************************************
 
-void WeaponThink_HellStaff(edict_t *caster,char *Format,...)
+void WeaponThink_HellStaff(edict_t *caster)
 {
 	vec3_t	StartPos;	//, off;
 	vec3_t	fwd, right;
@@ -4432,7 +4450,7 @@ void WeaponThink_HellStaff(edict_t *caster,char *Format,...)
 // ************************************************************************************************
 
 void
-WeaponThink_Blast(edict_t *caster,char *Format,...)
+WeaponThink_Blast(edict_t *caster)
 {
 	vec3_t	startpos;
 	vec3_t	fwd, right;
@@ -4482,7 +4500,7 @@ Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 	assert(Weapon);
 
 	// See if we're already using the weapon.
-	if(Weapon==playerinfo->pers.weapon)
+	if (Weapon==playerinfo->pers.weapon)
 		return;
 
 	//Make sure we have an arm to do it
@@ -4493,7 +4511,7 @@ Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
 	playerinfo->pers.lastweapon=playerinfo->pers.weapon;
 	playerinfo->pers.weapon=Weapon;
 
-	if(playerinfo->pers.weapon && playerinfo->pers.weapon->ammo)
+	if (playerinfo->pers.weapon && playerinfo->pers.weapon->ammo)
 		playerinfo->weap_ammo_index = ITEM_INDEX(FindItem(playerinfo->pers.weapon->ammo));
 	else
 		playerinfo->weap_ammo_index = 0;
@@ -4510,11 +4528,11 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using the sword-staff.
-	if(Weapon==playerinfo->pers.weapon)
+	if (Weapon==playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
-	if(playerinfo->pers.newweapon != NULL)
+	if (playerinfo->pers.newweapon != NULL)
 		return;
 
 	//Make sure we have an arm to do it
@@ -4540,11 +4558,11 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using this particular spell.
-	if(Weapon==playerinfo->pers.weapon)
+	if (Weapon==playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
-	if(playerinfo->pers.newweapon != NULL)
+	if (playerinfo->pers.newweapon != NULL)
 	{
 		if (playerinfo->switchtoweapon != WEAPON_READY_HANDS)
 			return;
@@ -4557,7 +4575,7 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 
 	// In blade only DM, don't put away the staff and change weapons.
 
-	if(playerinfo->dmflags&DF_NO_OFFENSIVE_SPELL)
+	if (playerinfo->dmflags&DF_NO_OFFENSIVE_SPELL)
 		if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
 			return;
 
@@ -4589,11 +4607,11 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using the hell-staff.
-	if(Weapon==playerinfo->pers.weapon)
+	if (Weapon==playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
-	if(playerinfo->pers.newweapon != NULL)
+	if (playerinfo->pers.newweapon != NULL)
 		return;
 
 	//Make sure we have an arm to do it
@@ -4631,11 +4649,11 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using the bow.
-	if(Weapon==playerinfo->pers.weapon)
+	if (Weapon==playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
-	if(playerinfo->pers.newweapon != NULL)
+	if (playerinfo->pers.newweapon != NULL)
 	{
 		if (playerinfo->switchtoweapon != WEAPON_READY_BOW)
 			return;
@@ -4680,7 +4698,7 @@ int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 
 	// If the weapon uses ammo, return the number of shots left, else return -1 (e.g. Sword-staff).
 
-	if(Weapon->ammo&&(Weapon->quantity))
+	if (Weapon->ammo&&(Weapon->quantity))
 	{
 		AmmoItem = FindItem(Weapon->ammo);
 		AmmoIndex = ITEM_INDEX(AmmoItem);
@@ -4711,7 +4729,7 @@ int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 
 	// If the weapon uses ammo, return the number of shots left, else return -1 (e.g. Sword-staff).
 
-	if(Defence->ammo && Defence->quantity)
+	if (Defence->ammo && Defence->quantity)
 	{
 		ManaItem = FindItem(Defence->ammo);
 		ManaIndex = ITEM_INDEX(ManaItem);

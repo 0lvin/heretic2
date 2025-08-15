@@ -24,7 +24,7 @@ void Use_Defence(struct edict_s *ent, gitem_t *defence)
 	playerinfo->pers.lastdefence = playerinfo->pers.defence;
 	playerinfo->pers.defence=defence;
 
-	if(playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
+	if (playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
 		playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
 	else
 		playerinfo->def_ammo_index=0;
@@ -35,7 +35,7 @@ void Use_Defence(struct edict_s *ent, gitem_t *defence)
 // ----------------------
 // ************************************************************************************************
 
-void DefenceThink_Tornado(edict_t *Caster,char *Format,...)
+void DefenceThink_Tornado(edict_t *Caster)
 {
 
 	// Set up the Tornado's starting position and aiming angles then cast the spell.
@@ -50,7 +50,7 @@ void DefenceThink_Tornado(edict_t *Caster,char *Format,...)
 
 // ************************************************************************************************
 
-void DefenceThink_Powerup(edict_t *Caster, char *Format,...)
+void DefenceThink_Powerup(edict_t *Caster)
 {
 	playerinfo_t *playerinfo;
 	playerinfo = &Caster->client->playerinfo;
@@ -65,7 +65,7 @@ void DefenceThink_Powerup(edict_t *Caster, char *Format,...)
 
 // ************************************************************************************************
 
-void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format,...)
+void DefenceThink_RingOfRepulsion(edict_t *Caster)
 {
 	playerinfo_t *playerinfo;
 	playerinfo = &Caster->client->playerinfo;
@@ -80,7 +80,7 @@ void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format,...)
 
 // ************************************************************************************************
 
-void DefenceThink_MeteorBarrier(edict_t *Caster, char *Format,...)
+void DefenceThink_MeteorBarrier(edict_t *Caster)
 {
 	playerinfo_t *playerinfo;
 
@@ -95,7 +95,7 @@ void DefenceThink_MeteorBarrier(edict_t *Caster, char *Format,...)
 
 // ************************************************************************************************
 
-void DefenceThink_Morph(edict_t *Caster, char *Format,...)
+void DefenceThink_Morph(edict_t *Caster)
 {
 	playerinfo_t *playerinfo;
 	playerinfo = &Caster->client->playerinfo;
@@ -110,7 +110,7 @@ void DefenceThink_Morph(edict_t *Caster, char *Format,...)
 }
 
 // ************************************************************************************************
-void DefenceThink_Teleport(edict_t *Caster, char *Format,...)
+void DefenceThink_Teleport(edict_t *Caster)
 {
 	playerinfo_t *playerinfo;
 	playerinfo = &Caster->client->playerinfo;
@@ -125,7 +125,7 @@ void DefenceThink_Teleport(edict_t *Caster, char *Format,...)
 }
 
 // ************************************************************************************************
-void DefenceThink_Shield(edict_t *Caster, char *Format,...)
+void DefenceThink_Shield(edict_t *Caster)
 {
 	playerinfo_t *playerinfo;
 	assert(Caster->client);

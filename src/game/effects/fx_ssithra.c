@@ -54,7 +54,7 @@ FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	self->r.angles[ROLL] += 10;
 
-	if(self->SpawnInfo > 9)
+	if (self->SpawnInfo > 9)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
@@ -224,7 +224,7 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 
 		SmokePuff->radius=20.0;
 
-		if(!i)
+		if (!i)
 		{
 			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/SsithraArrowImpact.wav"),
 					1, ATTN_NORM, 0);
@@ -275,7 +275,7 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 
 		SmokePuff->radius=20.0;
 
-		if(!i)
+		if (!i)
 		{
 			fxi.S_StartSound(SmokePuff->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/FireballPowerImpact.wav"),
 					1, ATTN_NORM, 0);

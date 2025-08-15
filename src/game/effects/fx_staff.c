@@ -250,12 +250,12 @@ FXStaffElementThink(struct client_entity_s *Self, centity_t *owner)
 
 	Frac=(fxi.cl->time-Self->startTime)/100.0;
 
-	if(Self->AnimSpeed>0.0)
+	if (Self->AnimSpeed>0.0)
 	{
 		Frac*=Self->AnimSpeed;
 	}
 
-	if((FrameNo=floor(Frac))>=(Self->NoOfAnimFrames-1))
+	if ((FrameNo=floor(Frac))>=(Self->NoOfAnimFrames-1))
 	{
 		return false;
 	}
@@ -314,7 +314,7 @@ FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 	NoOfIntervals = GetScaledCount(NoOfIntervals, 1.0);
 
@@ -330,7 +330,7 @@ FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 
 	//FIXME: The above assumption isn't working!
 	VectorNormalize(adjnormal);
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 
 	while (NoOfIntervals >= 0)
@@ -481,7 +481,7 @@ FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
 		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.5);
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 	NoOfIntervals = GetScaledCount(NoOfIntervals, 1.0);
 
@@ -499,7 +499,7 @@ FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
 
 	//FIXME: The above assumption isn't working!
 	VectorNormalize(adjnormal);
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 
 	while (NoOfIntervals >= 0)
@@ -595,7 +595,7 @@ FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 		return true;
 
 	NoOfIntervals=(int)(VectorLength(diff)*.75);
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 	NoOfIntervals = GetScaledCount(NoOfIntervals, 1.0);
 
@@ -677,7 +677,7 @@ void FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	fxi.GetEffect(owner,Flags,clientEffectSpawners[FX_STAFF].formatString, &powerlevel, &lifetime);
 	Refpoints = (1<<CORVUS_BLADE);
 
-	if(!ReferencesInitialized(owner))
+	if (!ReferencesInitialized(owner))
 	{
 		return;
 	}
@@ -685,7 +685,7 @@ void FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	// Add a fiery trail effect to the player's hands / feet etc.
 	for(I=0;I<16;I++)
 	{
-		if(!(Refpoints & (1 << I)))
+		if (!(Refpoints & (1 << I)))
 			continue;
 
 		trail=ClientEntity_new(Type, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, Origin, 0, 17);
@@ -770,7 +770,7 @@ FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 	VectorScale(diff, 1.0/NoOfIntervals, diff);
 	VectorCopy(startpt, curpt);  // This rides on the assumption that the normal given is already a unit norm.
 
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 
 	while (NoOfIntervals >= 0)
@@ -781,7 +781,7 @@ FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 		TrailEnt->alpha=0.8 - (Self->NoOfAnimFrames*0.1);
 		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
-		if(Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
+		if (Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
 		{
 			TrailEnt->r.frame=1;
 			TrailEnt->d_scale=-0.25;
@@ -888,7 +888,7 @@ void FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	stafffx = ClientEntity_new(Type, Flags, Origin, 0, 17);
 
-	if(Flags & CEF_FLAG7)//blue
+	if (Flags & CEF_FLAG7)//blue
 		stafffx->classID = STAFF_TRAIL3;
 	else if(Flags & CEF_FLAG8)//flames
 		stafffx->classID = STAFF_TRAIL2;
@@ -920,7 +920,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	if (!RefPointsValid(owner))
 		return;		// Remove the effect in _this case.
 
-	if(Flags & CEF_FLAG6)
+	if (Flags & CEF_FLAG6)
 	{
 		VectorCopy(owner->referenceInfo->references[CORVUS_HELL_HEAD].placement.origin, spawnpt);
 	}
@@ -949,7 +949,7 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	FXStaffElementThink(stafffx,owner);
 
 
-	if(!(Flags & CEF_FLAG6))	// Just for the sword staff
+	if (!(Flags & CEF_FLAG6))	// Just for the sword staff
 	{
 		VectorCopy(owner->referenceInfo->references[CORVUS_STAFF].placement.origin, spawnpt);
 
@@ -1019,7 +1019,7 @@ FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 	VectorScale(diff, 1.0/NoOfIntervals, diff);
 	VectorCopy(startpt, curpt);  // This rides on the assumption that the normal given is already a unit norm.
 
-	if(NoOfIntervals > 40)
+	if (NoOfIntervals > 40)
 		return false;
 
 	while (NoOfIntervals >= 0)
@@ -1030,7 +1030,7 @@ FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 		TrailEnt->alpha=0.6 - (Self->NoOfAnimFrames*0.1);
 		TrailEnt->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
-		if(Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
+		if (Self->classID == STAFF_TRAIL || Self->refPoint == STAFF_TYPE_HELL)
 		{
 			float scale;
 
@@ -1131,14 +1131,14 @@ void FXStaffRemove(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	else
 		fxtype = STAFF_TYPE_SWORD;
 
-	if(!ReferencesInitialized(owner))
+	if (!ReferencesInitialized(owner))
 	{
 		return;
 	}
 
 	stafffx = ClientEntity_new(Type, Flags, Origin, 0, 17);
 
-	if(Flags & CEF_FLAG7)//blue
+	if (Flags & CEF_FLAG7)//blue
 		stafffx->classID = STAFF_TRAIL3;
 	else if(Flags & CEF_FLAG8)//flames
 		stafffx->classID = STAFF_TRAIL2;

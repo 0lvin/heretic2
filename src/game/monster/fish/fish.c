@@ -337,12 +337,12 @@ void fish_think (edict_t *self)
 
 	self->nextthink = level.time + FRAMETIME;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		FindTarget(self);
 
-	if(self->enemy)
+	if (self->enemy)
 	{//let's not hunt things out of water!
-		if(!self->enemy->waterlevel)
+		if (!self->enemy->waterlevel)
 			self->enemy = NULL;
 	}
 	// determine if we are too far from the camera to warrant animating or ai
@@ -386,7 +386,7 @@ void fish_think (edict_t *self)
 
 			trace = gi.trace(top, vec3_origin, vec3_origin, bottom, self, MASK_WATER);
 
-			if(trace.fraction <= 1.0)
+			if (trace.fraction <= 1.0)
 			{
 				AngleVectors(self->s.angles,dir,NULL,NULL);
 				VectorScale(dir,200,dir);
@@ -455,22 +455,22 @@ void fish_under_water_wake (edict_t *self)
 
 void fish_swim_sound (edict_t *self, float fast)
 {
-	if(fast)
+	if (fast)
 	{
-		if(irand(0, 1))
+		if (irand(0, 1))
 			return;
 
-		if(irand(0,1))
+		if (irand(0,1))
 			gi.sound(self, CHAN_BODY, sounds[SND_FAST_SWIM1], 0.75, ATTN_IDLE, 0);
 		else
 			gi.sound(self, CHAN_BODY, sounds[SND_FAST_SWIM2], 0.75, ATTN_IDLE, 0);
 	}
 	else
 	{
-		if(irand(0, 4))
+		if (irand(0, 4))
 			return;
 
-		if(irand(0,1))
+		if (irand(0,1))
 			gi.sound(self, CHAN_BODY, sounds[SND_SLOW_SWIM1], 0.5, ATTN_IDLE, 0);
 		else
 			gi.sound(self, CHAN_BODY, sounds[SND_SLOW_SWIM2], 0.5, ATTN_IDLE, 0);
@@ -489,7 +489,7 @@ void fish_blocked(edict_t *self, trace_t *trace)
 		return;
 
 	// did we hit a monster or player ?
-	if(trace->ent && ((trace->ent->svflags & SVF_MONSTER) || (trace->ent->client)))
+	if (trace->ent && ((trace->ent->svflags & SVF_MONSTER) || (trace->ent->client)))
 	{
 		// hit another fish - send us on our way
 		if (trace->ent->classID == CID_FISH)
@@ -587,7 +587,7 @@ void finished_fish_pain(edict_t *self)
 	self->ai_mood = AI_MOOD_WANDER;
 	self->deadflag = DEAD_NO;
 
-	if(self->waterlevel == 3)
+	if (self->waterlevel == 3)
 		fish_hunt(self);
 }
 
@@ -646,7 +646,7 @@ void fish_idle(edict_t *self)
 //----------------------------------------------------------------------
 void fish_dead_pain(edict_t *self, G_Message_t *msg)
 {
-	if(self->health<-60)
+	if (self->health<-60)
 		BecomeDebris(self);
 }
 
@@ -654,7 +654,7 @@ void fish_death(edict_t *self, G_Message_t *msg)
 {
 	VectorClear(self->velocity);
 	self->deadflag = DEAD_DEAD;
-	if(self->health<-60)
+	if (self->health<-60)
 	{
 		gi.sound(self, CHAN_BODY, sounds[SND_GIB], 1, ATTN_NORM, 0);
 		BecomeDebris(self);
@@ -663,7 +663,7 @@ void fish_death(edict_t *self, G_Message_t *msg)
 
 	gi.sound(self, CHAN_WEAPON, sounds[SND_DIE], 1, ATTN_NORM, 0);
 
-	if(self->s.skinnum == FISH_SKIN1 || self->s.skinnum == FISH_SKIN2)
+	if (self->s.skinnum == FISH_SKIN1 || self->s.skinnum == FISH_SKIN2)
 		self->s.skinnum += 1;
 
 	SetAnim(self, ANIM_DEATH1);
@@ -679,8 +679,8 @@ void fish_pain(edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
 
-	if(!force_pain)
-		if(!flrand(0,3))
+	if (!force_pain)
+		if (!flrand(0,3))
 			return;
 
 
@@ -688,8 +688,8 @@ void fish_pain(edict_t *self, G_Message_t *msg)
 	VectorClear(self->velocity);
 	self->deadflag = DEAD_DYING;
 
-	if(!irand(0,2))
-		if(self->s.skinnum == FISH_SKIN1 || self->s.skinnum == FISH_SKIN2)
+	if (!irand(0,2))
+		if (self->s.skinnum == FISH_SKIN1 || self->s.skinnum == FISH_SKIN2)
 			self->s.skinnum += 1;
 
 	if (irand(0, 1))
@@ -762,16 +762,16 @@ void fish_deadfloat(edict_t *self)
 
 	M_CatagorizePosition(self);
 
-	if(self->waterlevel == 3)
+	if (self->waterlevel == 3)
 	{
-		if(self->velocity[2]<10)
+		if (self->velocity[2]<10)
 			self->velocity[2]+=10;
 		else
 			self->velocity[2] = 20;	// Just in case somethimg blocked it going up
 	}
 	else if(self->waterlevel < 2)
 	{
-		if(self->velocity[2] > -150)
+		if (self->velocity[2] > -150)
 			self->velocity[2] -= 50;	// Fall back in now!
 		else
 			self->velocity[2] = -200;
@@ -900,7 +900,7 @@ void fish_target(edict_t *self)
 		VectorSubtract(self->enemy->s.origin, self->s.origin, dir);
 		// normalise it
 		Vec3Normalize(dir);
-		if(Vec3IsZero(dir))
+		if (Vec3IsZero(dir))
 			return;
 		// figure out the angles we want
 		AnglesFromDir(dir, self->movedir);
@@ -919,7 +919,7 @@ void fish_hunt(edict_t *self)
 		// if we can't find one, let him just swim on alone..
 		if (!self->enemy)
 		{
-			if(self->curAnimID == ANIM_PAIN1)
+			if (self->curAnimID == ANIM_PAIN1)
 			{
 				self->speed = 20;
 				self->ai_mood = AI_MOOD_STAND;
@@ -1124,7 +1124,7 @@ void SP_monster_fish (edict_t *self)
 	self->s.effects|=EF_CAMERA_NO_CLIP;
 
 	// random skin of three
-	if(irand(0, 1))
+	if (irand(0, 1))
 		self->s.skinnum = FISH_SKIN1;
 	else
 		self->s.skinnum = FISH_SKIN2;

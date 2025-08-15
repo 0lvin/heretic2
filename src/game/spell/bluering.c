@@ -230,7 +230,7 @@ void RingThink(edict_t *self)
 				VectorMA(ent->velocity, -2.0*scale, vel, vel);
 			else	// Jes' double the speed away
 				VectorMA(ent->velocity, scale, vel, vel);
-			if(reflect)
+			if (reflect)
 			{
 				if (Vec3IsZero(vel))	// Reflect needs a non-zero vel.  If zeroed, throw it straight up.
 					VectorSet(vel, 0, 0, 200.0);

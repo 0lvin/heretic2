@@ -222,13 +222,13 @@ void assassinDaggerBlocked (edict_t *self, trace_t *trace)
 	edict_t *Other;
 	Other = trace->ent;
 
-	if(Other==self->owner||Other->owner == self->owner)
+	if (Other==self->owner||Other->owner == self->owner)
 	{
 		return;
 	}
 
 	// are we reflecting ?
-	if(EntReflecting(trace->ent, true, true))
+	if (EntReflecting(trace->ent, true, true))
 	{
 		Create_rand_relect_vect(self->velocity, self->velocity);
 		Vec3ScaleAssign(ASSASSIN_DAGGER_SPEED / 2, self->velocity);
@@ -237,32 +237,32 @@ void assassinDaggerBlocked (edict_t *self, trace_t *trace)
 		return;
 	}
 
-	if(trace->surface&&(trace->surface->flags&SURF_SKY))
+	if (trace->surface&&(trace->surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
 	}
 
 //take into account if angle is within 45 of 0?
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
-		if(Other->materialtype == MAT_FLESH||Other->client)
+		if (Other->materialtype == MAT_FLESH||Other->client)
 			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITF],1,ATTN_NORM,0);
 		else
 			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITW],1,ATTN_NORM,0);
-		if(skill->value < 2)
+		if (skill->value < 2)
 			damage = flrand(ASSASSIN_MIN_DAMAGE * 0.5, ASSASSIN_MAX_DAMAGE * 0.5);
 		else
 		{
 			damage = flrand(ASSASSIN_MIN_DAMAGE,ASSASSIN_MAX_DAMAGE);
-			if(Q_fabs(self->s.angles[PITCH])<45)//up to extra 10 pts damage if pointed correctly
+			if (Q_fabs(self->s.angles[PITCH])<45)//up to extra 10 pts damage if pointed correctly
 				damage += 45/(45 - Q_fabs(self->s.angles[PITCH])) * 10;
 		}
 		T_Damage(Other,self,self->owner,self->movedir,self->s.origin,trace->plane.normal, damage, 0, 0,MOD_DIED);
 	}
 	else//spark
 	{
-		if(Vec3NotZero(trace->plane.normal))
+		if (Vec3NotZero(trace->plane.normal))
 			VectoAngles(trace->plane.normal, hitangles);
 		else
 			VectorSet(hitangles, 0, 0, 90);
@@ -279,13 +279,13 @@ void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	float damage;
 	vec3_t	hitangles, normal;
 
-	if(other==self->owner||other->owner == self->owner)
+	if (other==self->owner||other->owner == self->owner)
 	{
 		return;
 	}
 
 	// are we reflecting ?
-	if(EntReflecting(other, true, true) && self->reflect_debounce_time)
+	if (EntReflecting(other, true, true) && self->reflect_debounce_time)
 	{
 		Create_rand_relect_vect(self->velocity, self->velocity);
 		Vec3ScaleAssign(ASSASSIN_DAGGER_SPEED / 2, self->velocity);
@@ -294,7 +294,7 @@ void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 		return;
 	}
 
-	if(surface&&(surface->flags&SURF_SKY))
+	if (surface&&(surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -302,29 +302,29 @@ void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 //take into account if angle is within 45 of 0?
 	VectorSet(normal, 0, 0, 1);
-	if(plane)
+	if (plane)
 	{
-		if(plane->normal)
+		if (plane->normal)
 		{
 			VectorCopy(plane->normal, normal);
 		}
 	}
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{
-		if(other->materialtype == MAT_FLESH||other->client)
+		if (other->materialtype == MAT_FLESH||other->client)
 			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITF],1,ATTN_NORM,0);
 		else
 			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITW],1,ATTN_NORM,0);
 		damage = flrand(ASSASSIN_MIN_DAMAGE,ASSASSIN_MAX_DAMAGE);
-		if(skill->value >= 2 && Q_fabs(self->s.angles[PITCH])<45)//up to extra 10 pts damage if pointed correctly AND on hard skill
+		if (skill->value >= 2 && Q_fabs(self->s.angles[PITCH])<45)//up to extra 10 pts damage if pointed correctly AND on hard skill
 			damage += 45/(45 - Q_fabs(self->s.angles[PITCH])) * 10;
 
 		T_Damage(other,self,self->owner,self->movedir,self->s.origin,normal, damage, 0, 0,MOD_DIED);
 	}
 	else//spark
 	{
-		if(Vec3NotZero(normal))
+		if (Vec3NotZero(normal))
 			VectoAngles(normal, hitangles);
 		else
 			VectorSet(hitangles, 0, 0, 90);
@@ -360,7 +360,7 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 	float	enemy_dist, eta;//, spoo_arc;
 
 
-//	if(self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
+//	if (self->s.fmnodeinfo[MESH__RIGHTARM].flags&FMNI_NO_DRAW)
 //		return;
 
 
@@ -389,9 +389,9 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 
 	VectorSubtract(enemy_pos, arrow->s.origin, enemy_dir);
 	enemy_dist = VectorNormalize(enemy_dir);
-	if(Vec3IsZero(check_lead))
+	if (Vec3IsZero(check_lead))
 	{
-		if(DotProduct(enemy_dir, Forward)>0.3)
+		if (DotProduct(enemy_dir, Forward)>0.3)
 			VectorScale(enemy_dir, ASSASSIN_DAGGER_SPEED, arrow->velocity);
 		else
 			VectorScale(Forward, ASSASSIN_DAGGER_SPEED, arrow->velocity);
@@ -417,7 +417,7 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 
 /*
 //doesn't make desired effect
-	if(right_ofs>0)
+	if (right_ofs>0)
 		arrow->s.angles[ROLL] = flrand(0, 35);
 	else if(right_ofs<0)
 		arrow->s.angles[ROLL] = flrand(-35, 0);
@@ -444,13 +444,13 @@ void assassindagger (edict_t *self, float right_ofs)
 	int		damage;
 	int		thrownum = 0;
 
-	if(!self->enemy)
+	if (!self->enemy)
 	{
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 		return;
 	}
 
-	if(self->enemy->health<0)
+	if (self->enemy->health<0)
 	{
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 		return;
@@ -476,17 +476,17 @@ void assassindagger (edict_t *self, float right_ofs)
 			//4 to 8
 			damage = irand(ASSASSIN_MIN_DAMAGE, ASSASSIN_MAX_DAMAGE);
 
-			if(skill->value >= 2)
+			if (skill->value >= 2)
 			{
-				if(!infront(self->enemy, self))
+				if (!infront(self->enemy, self))
 				{//backstab!
 					damage = self->enemy->health + irand(-20, 10);
-					if(damage<ASSASSIN_MAX_DAMAGE)
+					if (damage<ASSASSIN_MAX_DAMAGE)
 						damage = ASSASSIN_MAX_DAMAGE;
 				}
 			}
 
-			/*			if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+			/*			if (self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 				damage-=5;
 			else if(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW)
 				damage+=5;
@@ -500,20 +500,20 @@ void assassindagger (edict_t *self, float right_ofs)
 	}
 	else			// A misssss
 	{
-		if((int)right_ofs & BIT_RKNIFE)
+		if ((int)right_ofs & BIT_RKNIFE)
 		{//turn off dagger
 			thrownum++;
-			if(!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW))
+			if (!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW))
 			{
 				self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 				assassinThrowDagger(self, 12);
 			}
 		}
 
-		if((int)right_ofs & BIT_LKNIFE)
+		if ((int)right_ofs & BIT_LKNIFE)
 		{
 			thrownum++;
-			if(!(self->s.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW))
+			if (!(self->s.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW))
 			{
 				self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 				assassinThrowDagger(self, -12);
@@ -522,7 +522,7 @@ void assassindagger (edict_t *self, float right_ofs)
 
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
-		if(thrownum>1)
+		if (thrownum>1)
 			gi.sound(self, CHAN_WEAPON, Sounds[SND_THROW2], 1, ATTN_NORM, 0);
 		else if(thrownum>0)
 			gi.sound(self, CHAN_WEAPON, Sounds[SND_THROW1], 1, ATTN_NORM, 0);
@@ -538,31 +538,31 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 
 	other = trace->ent;
 
-	if(self->health <= 0)
+	if (self->health <= 0)
 		return;
 
-	if(!trace)
+	if (!trace)
 		return;
 
-	if((!self->groundentity||self->groundentity==other) && Vec3NotZero(self->velocity))
+	if ((!self->groundentity||self->groundentity==other) && Vec3NotZero(self->velocity))
 	{
 		strength = VectorLength(self->velocity);
 
-		if(strength > 50)
+		if (strength > 50)
 		{
-			if(movable(other) && (other->svflags&SVF_MONSTER || other->client))
+			if (movable(other) && (other->svflags&SVF_MONSTER || other->client))
 			{
 
 				VectorCopy(self->velocity, dir);
-				if(dir[2] < 0)
+				if (dir[2] < 0)
 					dir[2] = 0;
 				VectorNormalize(dir);
 
 	//			VectorAdd(other->velocity, dir, other->knockbackvel);
 
-				if(self->s.origin[2]+self->mins[2] > other->s.origin[2] + other->maxs[2] * 0.8)
+				if (self->s.origin[2]+self->mins[2] > other->s.origin[2] + other->maxs[2] * 0.8)
 				{
-					if(other->client)
+					if (other->client)
 						playerExport->KnockDownPlayer(&other->client->playerinfo);
 
 					gi.sound(self, CHAN_BODY, Sounds[SND_LANDF], 1, ATTN_NORM, 0);
@@ -572,9 +572,9 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 					other->velocity[2] = 101;
 	*/
 
-					if(other->takedamage)
+					if (other->takedamage)
 					{
-						if(strength>5)
+						if (strength>5)
 							strength = 5;
 						T_Damage(other, self, self, dir, trace->endpos, dir, strength, strength*4, 0,MOD_DIED);
 					}
@@ -587,13 +587,13 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 		//backflip off walls!  Too late to implement
 		else if(trace->plane)
 		{
-			if(Vec3NotZero(trace->plane.normal))
+			if (Vec3NotZero(trace->plane.normal))
 			{
-				if(trace->plane.normal[2] < 0.75)
+				if (trace->plane.normal[2] < 0.75)
 				{
 					VectorCopy(self->velocity, dir);
 					VectorNormalize(dir);
-					if(DotProduct(dir, trace->plane.normal) < -0.3)
+					if (DotProduct(dir, trace->plane.normal) < -0.3)
 					{
 						SetAnim(self, ASSASSIN_ANIM_EVBACKFLIP);
 					}
@@ -627,7 +627,7 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 {
 	int chance;
 
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		if (irand(0,10) < 5)  // Big enough death to be thrown back
 			SetAnim(self, ASSASSIN_ANIM_DEATHB);//gib?
@@ -639,7 +639,7 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 //	gi.dprintf("Dead\n");
 	self->msgHandler = DeadMsgHandler;
 
-	if(self->deadflag == DEAD_DEAD) //Dead but still being hit
+	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
 	self->isBlocked = self->bounced = NULL;
@@ -648,10 +648,10 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 
 	assassin_dropweapon (self, BIT_LKNIFE|BIT_RKNIFE);
 
-	if(self->health <= -80) //gib death
+	if (self->health <= -80) //gib death
 	{
 		gi.sound(self, CHAN_BODY, Sounds[SND_GIB], 1, ATTN_NORM, 0);
-		if(irand(0,10)<5)
+		if (irand(0,10)<5)
 		{
 			self->s.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_NO_DRAW;
 			self->s.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_NO_DRAW;
@@ -682,7 +682,7 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 
 
 	chance = irand(0,10);
-	if(chance < 5 && self->health <= -80)
+	if (chance < 5 && self->health <= -80)
 		SetAnim(self, ASSASSIN_ANIM_DEATHA);
 	else
 		SetAnim(self, ASSASSIN_ANIM_DEATHB);
@@ -690,8 +690,8 @@ void assassin_death(edict_t *self, G_Message_t *msg)
 	self->pre_think = NULL;
 	self->next_pre_think = -1;
 
-	if(self->s.renderfx & RF_ALPHA_TEXTURE)
-		if(self->pre_think != assassinDeCloak)
+	if (self->s.renderfx & RF_ALPHA_TEXTURE)
+		if (self->pre_think != assassinDeCloak)
 			assassinInitDeCloak(self);
 }
 
@@ -722,7 +722,7 @@ void assassin_random_attack(edict_t *self)
 	chance = irand(0,3);
 
 
-	if((chance < 1&&!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) ||
+	if ((chance < 1&&!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) ||
 		(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW&&!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW)) )
 	{
 		SetAnim(self, ASSASSIN_ANIM_DAGGERL);
@@ -730,7 +730,7 @@ void assassin_random_attack(edict_t *self)
 	else if((chance < 2&&!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)) ||
 		(!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW) )
 	{
-		if(irand(0, 1))
+		if (irand(0, 1))
 			SetAnim(self, ASSASSIN_ANIM_DAGGERR);
 		else
 			SetAnim(self, ASSASSIN_ANIM_NEWDAGGER);
@@ -738,7 +738,7 @@ void assassin_random_attack(edict_t *self)
 	else if(!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&
 		!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW))
 	{
-		if(irand(0, 1))
+		if (irand(0, 1))
 			SetAnim(self, ASSASSIN_ANIM_DAGGERB);
 		else
 			SetAnim(self, ASSASSIN_ANIM_NEWDAGGERB);
@@ -758,11 +758,11 @@ void assassin_melee(edict_t *self, G_Message_t *msg)
 {
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(!irand(0,7))
+		if (!irand(0,7))
 		{
 			/*if(self->s.renderfx & RF_ALPHA_TEXTURE)
 			{
-				if(self->pre_think != assassinDeCloak)
+				if (self->pre_think != assassinDeCloak)
 				{
 					gi.sound(self,CHAN_AUTO,Sounds[SND_DECLOAK],1,ATTN_NORM,0);
 					self->pre_think = assassinDeCloak;
@@ -772,7 +772,7 @@ void assassin_melee(edict_t *self, G_Message_t *msg)
 				}
 			}*/
 
-			if(assassinCheckTeleport(self, ASS_TP_OFF))
+			if (assassinCheckTeleport(self, ASS_TP_OFF))
 			{
 //				gi.dprintf("melee->teleport\n");
 				return;//try to get away
@@ -788,11 +788,11 @@ void assassin_missile(edict_t *self, G_Message_t *msg)
 {
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(!irand(0, 10))
+		if (!irand(0, 10))
 		{//10% chance try special action
-			if(!irand(0, 2))
+			if (!irand(0, 2))
 			{//25% chance teleport
-				if(assassinCheckTeleport(self, ASS_TP_OFF))
+				if (assassinCheckTeleport(self, ASS_TP_OFF))
 				{
 //					gi.dprintf("missile->teleport\n");
 					return;
@@ -800,7 +800,7 @@ void assassin_missile(edict_t *self, G_Message_t *msg)
 			}
 			else if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
 			{//75% cloak
-				if(!(self->spawnflags&MSF_ASS_NOSHADOW))
+				if (!(self->spawnflags&MSF_ASS_NOSHADOW))
 				{
 					SetAnim(self, ASSASSIN_ANIM_CLOAK);
 					return;
@@ -820,9 +820,9 @@ void assassin_post_pain (edict_t *self)
 {
 	/*if(self->s.renderfx & RF_ALPHA_TEXTURE)
 	{
-		if(!irand(0,4))
+		if (!irand(0,4))
 		{
-			if(self->pre_think != assassinDeCloak)
+			if (self->pre_think != assassinDeCloak)
 			{
 				gi.sound(self,CHAN_AUTO,Sounds[SND_DECLOAK],1,ATTN_NORM,0);
 				self->pre_think = assassinDeCloak;
@@ -832,9 +832,9 @@ void assassin_post_pain (edict_t *self)
 			}
 		}
 	}*/
-	if(self->fire_damage_time < level.time)//don't teleport if burning
+	if (self->fire_damage_time < level.time)//don't teleport if burning
 	{
-		if(assassinCheckTeleport(self, ASS_TP_ANY))
+		if (assassinCheckTeleport(self, ASS_TP_ANY))
 		{
 //			gi.dprintf("pain->teleport\n");
 			return;
@@ -867,7 +867,7 @@ int Bit_for_MeshNode_as [16] =
 qboolean canthrownode_as (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_as[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -884,14 +884,14 @@ void assassin_dropweapon (edict_t *self, int whichknives)
 
 	AngleVectors(self->s.angles,NULL,right,NULL);
 
-	if(!(self->s.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_LKNIFE)
+	if (!(self->s.fmnodeinfo[MESH__LKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_LKNIFE)
 	{
 		VectorClear(handspot);
 		VectorMA(handspot, -12, right, handspot);
 		ThrowWeapon(self, &handspot, BIT_LKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
 		self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 	}
-	if(!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_RKNIFE)
+	if (!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_RKNIFE)
 	{
 		VectorClear(handspot);
 		VectorMA(handspot, 12, right, handspot);
@@ -911,7 +911,7 @@ int assassin_convert_hitloc_dead(int hl)
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(!irand(0,1))
+			if (!irand(0,1))
 				return hl_LegUpperRight;
 			else
 				return hl_LegUpperLeft;
@@ -966,45 +966,45 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t		gore_spot, right;
 	qboolean	dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 //	gi.dprintf("HL: %d",HitLocation);
 
-	if(self->health>0)
+	if (self->health>0)
 	{
-		if((self->curAnimID == ASSASSIN_ANIM_DAGGERL) ||
+		if ((self->curAnimID == ASSASSIN_ANIM_DAGGERL) ||
 			(self->curAnimID == ASSASSIN_ANIM_DAGGERB && irand(0,2) < 1))
 		{//Hit chest during melee, may have hit arms
-			if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
+			if (HitLocation == hl_TorsoFront&&irand(0,10)<4)
 			{
-				if(irand(0,10)<7)
+				if (irand(0,10)<7)
 					HitLocation = hl_ArmLowerRight;
 				else
 					HitLocation = hl_ArmLowerLeft;
 			}
 		}
 
-		if(self->curAnimID == ASSASSIN_ANIM_DAGGERR||self->curAnimID == ASSASSIN_ANIM_DAGGERC||(self->curAnimID == ASSASSIN_ANIM_DAGGERB&&irand(0,2)<1))
+		if (self->curAnimID == ASSASSIN_ANIM_DAGGERR||self->curAnimID == ASSASSIN_ANIM_DAGGERC||(self->curAnimID == ASSASSIN_ANIM_DAGGERB&&irand(0,2)<1))
 		{//Hit chest during melee, may have hit arms
-			if(HitLocation == hl_TorsoFront&&irand(0,10)<4)
+			if (HitLocation == hl_TorsoFront&&irand(0,10)<4)
 			{
-				if(irand(0,10)<7)
+				if (irand(0,10)<7)
 					HitLocation = hl_ArmLowerRight;
 				else
 					HitLocation = hl_ArmLowerLeft;
 			}
 		}
 
-		if(
+		if (
 			(HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW) ||
 			(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)||
 			(
@@ -1022,11 +1022,11 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				canthrownode_as(self, MESH__HEAD,&throw_nodes);
 
@@ -1036,7 +1036,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -1051,11 +1051,11 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__TORSOFT].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 
@@ -1073,7 +1073,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -1082,18 +1082,18 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.5)
+//				if ((frandk() * self->health)<damage*0.5)
 //					assassin_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__TORSOFT].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__TORSOFT].skin = self->s.skinnum+1;
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__TORSOBK].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.3&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.3&&dismember_ok)
 			{
 				gore_spot[2]+=12;
 
@@ -1111,7 +1111,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
-				if(self->health>0)
+				if (self->health>0)
 				{
 					self->health = 1;
 					T_Damage (self, self, self, vec3_origin, vec3_origin, vec3_origin, 10, 20,0,MOD_DIED);
@@ -1120,7 +1120,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-//				if((frandk() * self->health)<damage*0.5)
+//				if ((frandk() * self->health)<damage*0.5)
 //					assassin_dropweapon (self, (int)damage);
 				self->s.fmnodeinfo[MESH__TORSOBK].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__TORSOBK].skin = self->s.skinnum+1;
@@ -1128,16 +1128,16 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_ArmUpperLeft:
-			if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LUPARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-//			if((frandk() * self->health)<damage*0.4)
+//			if ((frandk() * self->health)<damage*0.4)
 //				assassin_dropweapon (self, (int)damage);
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				canthrownode_as(self, MESH__L4ARM, &throw_nodes);
-				if(canthrownode_as(self, MESH__LUPARM, &throw_nodes))
+				if (canthrownode_as(self, MESH__LUPARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1153,13 +1153,13 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_ArmLowerLeft://left arm
-			if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__L4ARM].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_as(self, MESH__L4ARM, &throw_nodes))
+				if (canthrownode_as(self, MESH__L4ARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1175,12 +1175,12 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_ArmUpperRight:
-			if(self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__RUPARM].flags & FMNI_NO_DRAW)
 				break;
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				canthrownode_as(self, MESH__R4ARM, &throw_nodes);
-				if(canthrownode_as(self, MESH__RUPARM, &throw_nodes))
+				if (canthrownode_as(self, MESH__RUPARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1196,11 +1196,11 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__R4ARM].flags & FMNI_NO_DRAW)
 				break;
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_as(self, MESH__R4ARM, &throw_nodes))
+				if (canthrownode_as(self, MESH__R4ARM, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1217,9 +1217,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 
 		case hl_LegUpperLeft:
-			if(self->health>0)
+			if (self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__LTHIGH].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__LTHIGH].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__LTHIGH].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LTHIGH].skin = self->s.skinnum+1;
@@ -1227,10 +1227,10 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LTHIGH].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__LTHIGH].flags & FMNI_NO_DRAW)
 					break;
 				canthrownode_as(self, MESH__LCALF, &throw_nodes);
-				if(canthrownode_as(self, MESH__LTHIGH, &throw_nodes))
+				if (canthrownode_as(self, MESH__LTHIGH, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1240,9 +1240,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			}
 		case hl_LegLowerLeft://left leg
-			if(self->health>0)
+			if (self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__LCALF].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__LCALF].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__LCALF].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LCALF].skin = self->s.skinnum+1;
@@ -1250,9 +1250,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LCALF].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__LCALF].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_as(self, MESH__LCALF, &throw_nodes))
+				if (canthrownode_as(self, MESH__LCALF, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1263,9 +1263,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 
 		case hl_LegUpperRight:
-			if(self->health>0)
+			if (self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__RTHIGH].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__RTHIGH].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__RTHIGH].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RTHIGH].skin = self->s.skinnum+1;
@@ -1273,10 +1273,10 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RTHIGH].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__RTHIGH].flags & FMNI_NO_DRAW)
 					break;
 				canthrownode_as(self, MESH__RCALF, &throw_nodes);
-				if(canthrownode_as(self, MESH__RTHIGH, &throw_nodes))
+				if (canthrownode_as(self, MESH__RTHIGH, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1286,9 +1286,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				break;
 			}
 		case hl_LegLowerRight://right leg
-			if(self->health>0)
+			if (self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__RCALF].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__RCALF].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__RCALF].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RCALF].skin = self->s.skinnum+1;
@@ -1296,9 +1296,9 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RCALF].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__RCALF].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_as(self, MESH__RCALF, &throw_nodes))
+				if (canthrownode_as(self, MESH__RCALF, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -1309,12 +1309,12 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 			}
 
 		default:
-			if((frandk() * self->health)<damage*0.25)
+			if ((frandk() * self->health)<damage*0.25)
 				assassin_dropweapon (self, (int)damage);
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW &&
+	if (self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW &&
 		self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
@@ -1337,14 +1337,14 @@ void assassin_dismember_msg(edict_t *self, G_Message_t *msg)
 
 void assassin_dead_pain (edict_t *self, G_Message_t *msg)
 {
-	if(msg)
-		if(!(self->svflags & SVF_PARTS_GIBBED))
+	if (msg)
+		if (!(self->svflags & SVF_PARTS_GIBBED))
 			assassin_dismember_msg(self, msg);
 }
 
 void assassin_random_pain_sound (edict_t *self)
 {
-	if(irand(0,1))
+	if (irand(0,1))
 		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
@@ -1356,29 +1356,29 @@ void assassin_pain(edict_t *self, G_Message_t *msg)
 	int				damage, temp;
 	qboolean		force_pain;
 
-	if(self->curAnimID == ASSASSIN_ANIM_TELEPORT)
+	if (self->curAnimID == ASSASSIN_ANIM_TELEPORT)
 		return;
 
 	G_ParseMsgParms(msg, "eeiii", &inflictor, &attacker, &force_pain, &damage, &temp);
 
-	if(inflictor == attacker || !Q_stricmp(inflictor->classname, "Spell_RedRain")||!Q_stricmp(inflictor->classname, "Spell_Hellbolt"))
+	if (inflictor == attacker || !Q_stricmp(inflictor->classname, "Spell_RedRain")||!Q_stricmp(inflictor->classname, "Spell_Hellbolt"))
 	{//melee hit or contant effect, don't stick around!
-		if(!(self->spawnflags&MSF_ASS_NOTELEPORT)&&
+		if (!(self->spawnflags&MSF_ASS_NOTELEPORT)&&
 			!(self->spawnflags&MSF_FIXED)&&
 			self->groundentity)
 		{
-			if(assassinChooseTeleportDestination(self, ASS_TP_ANY, true, false))
+			if (assassinChooseTeleportDestination(self, ASS_TP_ANY, true, false))
 				return;
 		}
 	}
 
-	if(!force_pain)
-		if((frandk() * self->health)>damage)
+	if (!force_pain)
+		if ((frandk() * self->health)>damage)
 			return;
 
 	self->monsterinfo.aiflags &= ~AI_OVERRIDE_GUIDE;
 
-	if(!self->maxs[2])
+	if (!self->maxs[2])
 		assassinUndoCrouched (self);
 
 	assassin_random_pain_sound(self);
@@ -1387,7 +1387,7 @@ void assassin_pain(edict_t *self, G_Message_t *msg)
 	{
 		self->pain_debounce_time = level.time + skill->value + 2;
 		SetAnim(self, ASSASSIN_ANIM_PAIN2);
-		if(irand(0, 10) > skill->value)
+		if (irand(0, 10) > skill->value)
 		{
 			self->monsterinfo.misc_debounce_time = level.time + 3;//3 seconds before can re-cloak
 			assassinInitDeCloak(self);
@@ -1397,7 +1397,7 @@ void assassin_pain(edict_t *self, G_Message_t *msg)
 
 void assassinSkipFrameSkillCheck (edict_t *self)
 {
-	if(irand(0, 3) < skill->value)
+	if (irand(0, 3) < skill->value)
 		self->s.frame++;
 }
 
@@ -1414,10 +1414,10 @@ void assassin_pause (edict_t *self)
 	self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
-	if(self->monsterinfo.aiflags&AI_OVERRIDE_GUIDE)
+	if (self->monsterinfo.aiflags&AI_OVERRIDE_GUIDE)
 		return;
 
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == ASSASSIN_ANIM_DELAY && self->enemy)
+	if (self->spawnflags & MSF_FIXED && self->curAnimID == ASSASSIN_ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -1429,7 +1429,7 @@ void assassin_pause (edict_t *self)
 	{
 		FindTarget(self);
 
-		if(self->enemy)
+		if (self->enemy)
 		{
 			VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 			len = VectorLength (v);
@@ -1449,7 +1449,7 @@ void assassin_pause (edict_t *self)
 		switch (self->ai_mood)
 		{
 		case AI_MOOD_ATTACK:
-			if(self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
+			if (self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
 				G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 			else
 				G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
@@ -1471,7 +1471,7 @@ void assassin_pause (edict_t *self)
 			break;
 
 		case AI_MOOD_WANDER:
-			if(self->spawnflags&MSF_FIXED)
+			if (self->spawnflags&MSF_FIXED)
 			{
 				SetAnim(self, ASSASSIN_ANIM_DELAY);
 				return;
@@ -1480,7 +1480,7 @@ void assassin_pause (edict_t *self)
 			break;
 
 		case AI_MOOD_JUMP:
-			if(self->spawnflags&MSF_FIXED)
+			if (self->spawnflags&MSF_FIXED)
 				SetAnim(self, ASSASSIN_ANIM_DELAY);
 			else
 				SetAnim(self, ASSASSIN_ANIM_FJUMP);//fjump will apply the movedir when he's ready
@@ -1498,9 +1498,9 @@ void assassinChooseJumpAmbush(edict_t *self)
 	float	dot;
 	vec3_t	forward, enemy_dir;
 
-	if(!self->enemy)
+	if (!self->enemy)
 	{
-		if(irand(0, 10)<4)
+		if (irand(0, 10)<4)
 			SetAnim(self, ASSASSIN_ANIM_JUMP);
 		else
 			SetAnim(self, ASSASSIN_ANIM_FRONTFLIP);
@@ -1511,13 +1511,13 @@ void assassinChooseJumpAmbush(edict_t *self)
 	VectorSubtract(self->enemy->s.origin, self->s.origin, enemy_dir);
 	VectorNormalize(enemy_dir);
 	dot = DotProduct(forward, enemy_dir);
-	if(dot<0)
+	if (dot<0)
 	{//behind
 		SetAnim(self, ASSASSIN_ANIM_BACKFLIP);
 		return;
 	}
 
-	if(!irand(0, 3))
+	if (!irand(0, 3))
 		SetAnim(self, ASSASSIN_ANIM_JUMP);
 	else
 		SetAnim(self, ASSASSIN_ANIM_FRONTFLIP);
@@ -1529,7 +1529,7 @@ qboolean assassinChooseSideJumpAmbush(edict_t *self)
 	float	dot;
 	vec3_t	right, enemy_dir;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return false;
 
 	AngleVectors(self->s.angles, NULL, right, NULL);
@@ -1537,7 +1537,7 @@ qboolean assassinChooseSideJumpAmbush(edict_t *self)
 	VectorNormalize(enemy_dir);
 
 	dot = DotProduct(right, enemy_dir);
-	if(dot>0)
+	if (dot>0)
 		VectorScale(right, 300, self->movedir);
 	else
 		VectorScale(right, -300, self->movedir);
@@ -1551,36 +1551,36 @@ qboolean assassinChooseSideJumpAmbush(edict_t *self)
 -------------------------------------------------------------------------*/
 void assassin_run(edict_t *self, G_Message_t *msg)
 {
-	if(!self->enemy&&self->spawnflags&MSF_WANDER)
+	if (!self->enemy&&self->spawnflags&MSF_WANDER)
 	{
 		SetAnim(self, ASSASSIN_ANIM_RUN);
 		return;
 	}
 
-	if(self->spawnflags&MSF_ASS_STARTSHADOW)//decloak
+	if (self->spawnflags&MSF_ASS_STARTSHADOW)//decloak
 	{//FIXME: should I wait until infront of enemy and visible to him?
 		self->spawnflags &= ~MSF_ASS_STARTSHADOW;
 		assassinInitCloak(self);
 	}
 
-	if(!(self->spawnflags&MSF_FIXED))
+	if (!(self->spawnflags&MSF_FIXED))
 	{
-		if(self->spawnflags&MSF_ASS_JUMPAMBUSH)//jump out
+		if (self->spawnflags&MSF_ASS_JUMPAMBUSH)//jump out
 		{
 			self->spawnflags &= ~MSF_ASS_JUMPAMBUSH;
 			assassinChooseJumpAmbush(self);
 			return;
 		}
 
-		if(self->spawnflags&MSF_ASS_SIDEJUMPAMBUSH)//side-jump out
+		if (self->spawnflags&MSF_ASS_SIDEJUMPAMBUSH)//side-jump out
 		{
 			self->spawnflags &= ~MSF_ASS_SIDEJUMPAMBUSH;
-			if(assassinChooseSideJumpAmbush(self))
+			if (assassinChooseSideJumpAmbush(self))
 				return;
 		}
 	}
 
-	if(self->curAnimID >= ASSASSIN_ANIM_CROUCH_IDLE && self->curAnimID < ASSASSIN_ANIM_CROUCH_END)
+	if (self->curAnimID >= ASSASSIN_ANIM_CROUCH_IDLE && self->curAnimID < ASSASSIN_ANIM_CROUCH_END)
 	{
 		SetAnim(self, ASSASSIN_ANIM_CROUCH_END);
 		return;
@@ -1588,18 +1588,18 @@ void assassin_run(edict_t *self, G_Message_t *msg)
 
 	if (M_ValidTarget(self, self->enemy))
 	{
-		if(!irand(0, 7))
+		if (!irand(0, 7))
 		{
-			if(assassinCheckTeleport(self, ASS_TP_OFF))
+			if (assassinCheckTeleport(self, ASS_TP_OFF))
 			{
 //				gi.dprintf("run->teleport\n");
 				return;
 			}
 			else if(!irand(0, 3))
 			{
-				if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
+				if (!(self->s.renderfx & RF_ALPHA_TEXTURE))
 				{
-					if(!(self->spawnflags&MSF_ASS_NOSHADOW))
+					if (!(self->spawnflags&MSF_ASS_NOSHADOW))
 					{
 						SetAnim(self, ASSASSIN_ANIM_CLOAK);
 						return;
@@ -1607,7 +1607,7 @@ void assassin_run(edict_t *self, G_Message_t *msg)
 				}//else uncloak - unncloak when die
 			}
 		}
-		if(!(self->spawnflags&MSF_FIXED))
+		if (!(self->spawnflags&MSF_FIXED))
 			SetAnim(self, ASSASSIN_ANIM_RUN);
 		else
 			SetAnim(self, ASSASSIN_ANIM_DELAY);
@@ -1619,10 +1619,10 @@ void assassin_run(edict_t *self, G_Message_t *msg)
 
 void assassin_go_run(edict_t *self, float dist)
 {
-	if(!self->maxs[2])
+	if (!self->maxs[2])
 		assassinUndoCrouched (self);
 
-	if(self->enemy)
+	if (self->enemy)
 		ai_run(self, dist);
 	else
 		ai_walk(self, dist);
@@ -1642,7 +1642,7 @@ void assassin_runorder(edict_t *self)
 void assassinsqueal (edict_t *self)
 {
 /*
-	if(irand(0, 1))
+	if (irand(0, 1))
 		gi.sound(self, CHAN_WEAPON, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_WEAPON, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
@@ -1658,9 +1658,9 @@ void assassin_stand(edict_t *self, G_Message_t *msg)
 		SetAnim(self, ASSASSIN_ANIM_DELAY);
 	else
 	{
-		if(self->s.renderfx & RF_ALPHA_TEXTURE)
+		if (self->s.renderfx & RF_ALPHA_TEXTURE)
 		{
-			if(self->pre_think != assassinDeCloak)
+			if (self->pre_think != assassinDeCloak)
 				assassinInitDeCloak(self);
 		}
 		SetAnim(self, ASSASSIN_ANIM_STAND);
@@ -1681,7 +1681,7 @@ void assassin_crouch_idle_decision (edict_t *self)
 	switch(self->curAnimID)
 	{
 	case ASSASSIN_ANIM_CROUCH_IDLE:
-		if(chance < 55)
+		if (chance < 55)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_IDLE);
 		else if(chance < 75)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_POKE);
@@ -1696,7 +1696,7 @@ void assassin_crouch_idle_decision (edict_t *self)
 	case ASSASSIN_ANIM_CROUCH_LOOK_RIGHT:
 	case ASSASSIN_ANIM_CROUCH_LOOK_RIGHT_IDLE:
 	case ASSASSIN_ANIM_CROUCH_LOOK_L2R:
-		if(chance < 60)
+		if (chance < 60)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_RIGHT_IDLE);
 		else if(chance < 85)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_R2C);
@@ -1707,7 +1707,7 @@ void assassin_crouch_idle_decision (edict_t *self)
 	case ASSASSIN_ANIM_CROUCH_LOOK_LEFT:
 	case ASSASSIN_ANIM_CROUCH_LOOK_LEFT_IDLE:
 	case ASSASSIN_ANIM_CROUCH_LOOK_R2L:
-		if(chance < 60)
+		if (chance < 60)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_LEFT_IDLE);
 		else if(chance < 85)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_L2C);
@@ -1740,11 +1740,11 @@ void assassin_crouch_idle_decision (edict_t *self)
 
 void assassin_ai_walk (edict_t *self, float dist)
 {
-	if(self->damage_debounce_time < level.time)
+	if (self->damage_debounce_time < level.time)
 	{
-		if(self->enemy)
+		if (self->enemy)
 		{
-			if(Vector2Length(self->s.origin, self->enemy->s.origin) < 48 && infront(self, self->enemy))
+			if (Vector2Length(self->s.origin, self->enemy->s.origin) < 48 && infront(self, self->enemy))
 			{
 				assassinNodeOn (self, MESH__LKNIFE);
 				SetAnim(self, ASSASSIN_ANIM_CROUCH_TRANS);
@@ -1753,7 +1753,7 @@ void assassin_ai_walk (edict_t *self, float dist)
 		}
 		else if(self->oldenemy)
 		{
-			if(Vector2Length(self->s.origin, self->oldenemy->s.origin) < 48 && infront(self, self->oldenemy))
+			if (Vector2Length(self->s.origin, self->oldenemy->s.origin) < 48 && infront(self, self->oldenemy))
 			{
 				assassinNodeOn (self, MESH__LKNIFE);
 				SetAnim(self, ASSASSIN_ANIM_CROUCH_TRANS);
@@ -1766,12 +1766,12 @@ void assassin_ai_walk (edict_t *self, float dist)
 
 void assassin_walk(edict_t *self, G_Message_t *msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 	{
 		SetAnim(self, ASSASSIN_ANIM_DELAY);
 		return;
 	}
-	if(self->curAnimID == ASSASSIN_ANIM_WALK_LOOP)
+	if (self->curAnimID == ASSASSIN_ANIM_WALK_LOOP)
 		SetAnim(self, ASSASSIN_ANIM_WALK_LOOP);
 	else
 		SetAnim(self, ASSASSIN_ANIM_WALK);
@@ -1836,24 +1836,24 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	int chance;
 	float eta;
 
-	if(!self->groundentity)
+	if (!self->groundentity)
 		return;
 
 	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
 
-	if(eta < 2)
+	if (eta < 2)
 		self->evade_debounce_time = level.time + eta;
 	else
 		self->evade_debounce_time = level.time + 2;
 
-	if(skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
+	if (skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
 	{//Pussies were complaining about assassins teleporting away from certain death, so don't do that unless in hard
-		if(!Q_stricmp(projectile->classname, "Spell_PhoenixArrow") ||
+		if (!Q_stricmp(projectile->classname, "Spell_PhoenixArrow") ||
 			!Q_stricmp(projectile->classname, "Spell_FireWall") ||
 			!Q_stricmp(projectile->classname, "Spell_SphereOfAnnihilation") ||
 			!Q_stricmp(projectile->classname, "Spell_Maceball"))
 		{
-			if(assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
+			if (assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
 				return;
 		}
 	}
@@ -1958,17 +1958,17 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 		break;
 	}
 
-	if(irand(0, 100) < skill->value * 10)
+	if (irand(0, 100) < skill->value * 10)
 	{
-		if(self->pre_think != assassinCloak)
+		if (self->pre_think != assassinCloak)
 			assassinInitCloak(self);
 	}
 
 	chance = irand(0, 10);
-	if(skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
+	if (skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
 	{//Pussies were complaining about assassins teleporting away from certain death, so don't do that unless in hard
-		if(chance > 8 && !(self->spawnflags&MSF_ASS_NOTELEPORT))
-			if(assassinChooseTeleportDestination(self, ASS_TP_DEF, false, false))
+		if (chance > 8 && !(self->spawnflags&MSF_ASS_NOTELEPORT))
+			if (assassinChooseTeleportDestination(self, ASS_TP_DEF, false, false))
 			{
 //				gi.dprintf("Assassin teleport evade\n");
 				return;
@@ -1976,7 +1976,7 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < frontflip_chance)
+	if (chance < frontflip_chance)
 	{
 //		gi.dprintf("Assassin fflip evade\n");
 		assassinFrontFlip(self);
@@ -1984,16 +1984,16 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < backflip_chance)
+	if (chance < backflip_chance)
 	{
-		if(self->curAnimID == ASSASSIN_ANIM_RUN && irand(0, 3))//running, do the front flip
+		if (self->curAnimID == ASSASSIN_ANIM_RUN && irand(0, 3))//running, do the front flip
 		{
 //			gi.dprintf("Assassin fflip evade\n");
 			assassinFrontFlip(self);
 		}
 		else
 		{
-			if(irand(0, 1))
+			if (irand(0, 1))
 			{
 //				gi.dprintf("Assassin bspring evade\n");
 				assassinBackSprings(self);
@@ -2008,7 +2008,7 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < duck_chance)
+	if (chance < duck_chance)
 	{
 		self->evade_debounce_time = level.time + eta + 2 - skill->value;
 //		gi.dprintf("Assassin crouch evade\n");
@@ -2017,7 +2017,7 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < dodgeleft_chance)
+	if (chance < dodgeleft_chance)
 	{
 //		gi.dprintf("Assassin dleft evade\n");
 		assassinDodgeLeft(self);
@@ -2025,7 +2025,7 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < dodgeright_chance)
+	if (chance < dodgeright_chance)
 	{
 //		gi.dprintf("Assassin dright evade\n");
 		assassinDodgeRight(self);
@@ -2033,9 +2033,9 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	}
 
 	chance = irand(0, 100);
-	if(chance < jump_chance)
+	if (chance < jump_chance)
 	{
-		if(self->curAnimID == ASSASSIN_ANIM_RUN && irand(0, 4))//running, do the front flip
+		if (self->curAnimID == ASSASSIN_ANIM_RUN && irand(0, 4))//running, do the front flip
 		{
 //			gi.dprintf("Assassin fflip evade\n");
 			assassinFrontFlip(self);
@@ -2048,10 +2048,10 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	if(skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
+	if (skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
 	{//Pussies were complaining about assassins teleporting away from certain death, so don't do that unless in hard
-		if(!(self->spawnflags&MSF_ASS_NOTELEPORT))
-			if(assassinChooseTeleportDestination(self, ASS_TP_DEF, false, false))
+		if (!(self->spawnflags&MSF_ASS_NOTELEPORT))
+			if (assassinChooseTeleportDestination(self, ASS_TP_DEF, false, false))
 			{
 //				gi.dprintf("Assassin tport(desperate) evade\n");
 				return;
@@ -2064,16 +2064,16 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 
 void assassinCrouchedCheckAttack (edict_t *self, float attack)
 {
-	if(!clear_visible(self, self->enemy))
+	if (!clear_visible(self, self->enemy))
 		return;
 
-	if(!infront(self, self->enemy))
+	if (!infront(self, self->enemy))
 		return;
 
-	if(irand(0,10)<5)
+	if (irand(0,10)<5)
 		return;
 
-	if(attack)
+	if (attack)
 		assassindagger(self, BIT_RKNIFE);
 	else if(attack == 2)//start crouched attack anim
 		SetAnim(self, ASSASSIN_ANIM_DAGGERC);
@@ -2089,7 +2089,7 @@ void assassinNodeOn (edict_t *self, float node)
 
 void assassinStop (edict_t *self)
 {
-	if(self->evade_debounce_time - level.time> 0.1f)
+	if (self->evade_debounce_time - level.time> 0.1f)
 		self->nextthink = level.time + (self->evade_debounce_time - level.time);
 }
 
@@ -2148,24 +2148,24 @@ void assassinCheckLoop (edict_t *self, float frame)
 	vec3_t	v;
 	float	len, melee_range, min_seperation, jump_range;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	ai_charge2(self, 0);
 
-	if(!clear_visible(self, self->enemy))
+	if (!clear_visible(self, self->enemy))
 		return;
 
-	if(!infront(self, self->enemy))
+	if (!infront(self, self->enemy))
 		return;
 
-	if(irand(0, 100) < self->bypass_missile_chance)
+	if (irand(0, 100) < self->bypass_missile_chance)
 	{
 		self->monsterinfo.attack_finished = level.time + 3 - skill->value;
 		return;
 	}
 
-	if(self->ai_mood_flags&AI_MOOD_FLAG_BACKSTAB)
+	if (self->ai_mood_flags&AI_MOOD_FLAG_BACKSTAB)
 		return;
 
 	VectorSubtract (self->s.origin, self->enemy->s.origin, v);
@@ -2198,12 +2198,12 @@ void assassinGone(edict_t *self)
 {
 	vec3_t enemy_dir;
 
-	if(self->placeholder)
+	if (self->placeholder)
 		G_FreeEdict(self->placeholder);
 
 	VectorCopy(self->pos2, self->s.origin);
 
-	if(self->enemy)
+	if (self->enemy)
 	{//face enemy
 		VectorSubtract(self->enemy->s.origin, self->s.origin, enemy_dir);
 		self->s.angles[YAW] = anglemod(vectoyaw(enemy_dir));
@@ -2213,7 +2213,7 @@ void assassinGone(edict_t *self)
 
 	VectorCopy(self->pos2, enemy_dir);//reuse
 	enemy_dir[2] += 100;
-	if(gi.pointcontents(enemy_dir) == CONTENTS_EMPTY&&!irand(0,3))
+	if (gi.pointcontents(enemy_dir) == CONTENTS_EMPTY&&!irand(0,3))
 		assassinFrontFlip(self);
 	else
 		SetAnim(self, ASSASSIN_ANIM_UNCROUCH);
@@ -2231,9 +2231,9 @@ void assassinGone(edict_t *self)
 
 void assassinPrepareTeleportDest(edict_t *self, vec3_t spot, qboolean instant)
 {
-	if(self->s.renderfx & RF_ALPHA_TEXTURE)
+	if (self->s.renderfx & RF_ALPHA_TEXTURE)
 	{
-		if(self->pre_think != assassinDeCloak)
+		if (self->pre_think != assassinDeCloak)
 		{
 			assassinInitDeCloak(self);
 			self->monsterinfo.misc_debounce_time = level.time + 3;
@@ -2251,7 +2251,7 @@ void assassinPrepareTeleportDest(edict_t *self, vec3_t spot, qboolean instant)
 	self->placeholder->nextthink = level.time + 2;//just in case
 
 	//dumbed down
-	if(instant && skill->value > 1)
+	if (instant && skill->value > 1)
 	{
 		assassinReadyTeleport(self);
 		assassinGone(self);
@@ -2272,13 +2272,13 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 
 	//Instead of chance, do around self if evade, around other if ambush
 
-	if(!self->enemy)//fixme- choose my spot?
+	if (!self->enemy)//fixme- choose my spot?
 		return false;
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		return false;
 
-	if(imperative)
+	if (imperative)
 		num_tries = (skill->value + 1) * 10;
 	else
 		num_tries = 1;
@@ -2298,7 +2298,7 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 			break;
 		}
 
-		if(chance<33)
+		if (chance<33)
 		{//ANY, OFF to behind enemy
 			VectorSet(teleport_angles, 0, anglemod(self->enemy->s.angles[YAW] + crandk() * 90.0), 0);
 			AngleVectors(teleport_angles, forward, NULL, NULL);
@@ -2332,19 +2332,19 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 
 		trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
 
-		if(trace.fraction*tracedist < 100)//min origin lerp dist
+		if (trace.fraction*tracedist < 100)//min origin lerp dist
 			continue;
 
-		if(trace.allsolid || trace.startsolid)
+		if (trace.allsolid || trace.startsolid)
 			continue;
 
-		if(Vector2Length(trace.endpos, self->enemy->s.origin)>=self->min_missile_range)
+		if (Vector2Length(trace.endpos, self->enemy->s.origin)>=self->min_missile_range)
 		{
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);
 			endpos[2] -=64;
 			trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
-			if(trace.fraction<1.0 && !trace.allsolid && !trace.startsolid)//the last two should be false if trace.fraction is < 1.0 but doesn't hurt to check
+			if (trace.fraction<1.0 && !trace.allsolid && !trace.startsolid)//the last two should be false if trace.fraction is < 1.0 but doesn't hurt to check
 			{
 				assassinPrepareTeleportDest(self, trace.endpos, instant);
 				return true;
@@ -2362,22 +2362,22 @@ void assassinReadyTeleport (edict_t *self)
 
 qboolean assassinCheckTeleport (edict_t *self, int type)
 {
-	if(self->spawnflags&MSF_ASS_NOTELEPORT)
+	if (self->spawnflags&MSF_ASS_NOTELEPORT)
 		return false;
 
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		return false;
 
-	if(!self->groundentity)
+	if (!self->groundentity)
 		return false;
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 		return false;
 
-/*	if(!infront(self->enemy, self))
+/*	if (!infront(self->enemy, self))
 		return false;
 
-	if(!visible(self->enemy, self))
+	if (!visible(self->enemy, self))
 		return false;*/
 
 	return assassinChooseTeleportDestination(self, type, false, false);
@@ -2392,25 +2392,25 @@ qboolean assassinCheckCloak (edict_t *self)
 {
 	int	chance = 0;
 
-	if(!self->monsterinfo.awake)
+	if (!self->monsterinfo.awake)
 		return (false);
 
-	if(self->monsterinfo.misc_debounce_time > level.time)//cloak debounce time
+	if (self->monsterinfo.misc_debounce_time > level.time)//cloak debounce time
 		return (false);
 
-	if(self->spawnflags & MSF_ASS_NOSHADOW)
+	if (self->spawnflags & MSF_ASS_NOSHADOW)
 		return (false);
 
-	if(self->ai_mood == AI_MOOD_FLEE)
+	if (self->ai_mood == AI_MOOD_FLEE)
 		return (true);
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return (false);
 
-	if(infront(self->enemy, self))
+	if (infront(self->enemy, self))
 		chance = -3;
 
-	if(irand(0, 10 - skill->value + chance) <= 0)
+	if (irand(0, 10 - skill->value + chance) <= 0)
 		return (true);
 
 	return (false);
@@ -2421,27 +2421,27 @@ qboolean assassinCheckDeCloak (edict_t *self)
 	float	dist;
 	int		chance = 0;
 
-	if(!self->monsterinfo.awake)
+	if (!self->monsterinfo.awake)
 		return (false);
 
-	if(self->monsterinfo.misc_debounce_time > level.time)//cloak debounce time
+	if (self->monsterinfo.misc_debounce_time > level.time)//cloak debounce time
 		return (false);
 
-	if(!self->enemy)
+	if (!self->enemy)
 	{
-		if(!(self->spawnflags & MSF_ASS_STARTSHADOW))
+		if (!(self->spawnflags & MSF_ASS_STARTSHADOW))
 			return (true);
 		return (false);
 	}
 
 	dist = M_DistanceToTarget(self, self->enemy);
-	if(dist<ASSASSIN_MIN_CLOAK_RANGE)
+	if (dist<ASSASSIN_MIN_CLOAK_RANGE)
 		return (true);
 
-	if(!infront(self->enemy, self))
+	if (!infront(self->enemy, self))
 		chance = -3;
 
-	if(irand(0, 10 + skill->value * 2 + chance) <= 0)
+	if (irand(0, 10 + skill->value * 2 + chance) <= 0)
 		return (true);
 
 	return (false);
@@ -2457,9 +2457,9 @@ void assassinCloakThink (edict_t *self)
 	self->pre_think = assassinCloakThink;
 	self->next_pre_think = level.time + FRAMETIME;
 //check cloak or decloak
-	if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
+	if (!(self->s.renderfx & RF_ALPHA_TEXTURE))
 	{//not cloaked
-		if(assassinCheckCloak(self))
+		if (assassinCheckCloak(self))
 		{
 			self->monsterinfo.misc_debounce_time = level.time + 7;//10 seconds before will willingly uncloak
 			assassinInitCloak(self);
@@ -2467,26 +2467,26 @@ void assassinCloakThink (edict_t *self)
 	}
 	else
 	{//cloaked
-		if(assassinCheckDeCloak(self))
+		if (assassinCheckDeCloak(self))
 			assassinInitDeCloak(self);
 	}
 //check to teleport
 
 	//dumbed down
-	if(!skill->value)//was < 2
+	if (!skill->value)//was < 2
 	{
-		if(self->touch_debounce_time > level.time)
+		if (self->touch_debounce_time > level.time)
 		{
 			return;
 		}
 	}
 
-	if(self->waterlevel == 3 && self->air_finished <= level.time)//going to drown!
+	if (self->waterlevel == 3 && self->air_finished <= level.time)//going to drown!
 	{//pick either last buoy or my startspot
 		VectorCopy(self->pos1, tport_dest);
-		if(self->lastbuoy>NULL_BUOY)
+		if (self->lastbuoy>NULL_BUOY)
 		{
-			if(!(gi.pointcontents(level.buoy_list[self->lastbuoy].origin) & MASK_WATER))
+			if (!(gi.pointcontents(level.buoy_list[self->lastbuoy].origin) & MASK_WATER))
 				VectorCopy(level.buoy_list[self->lastbuoy].origin, tport_dest);
 		}
 
@@ -2498,13 +2498,13 @@ void assassinCloakThink (edict_t *self)
 		startpos[2] -= self->size[2];
 
 		trace = gi.trace(startpos, mins, maxs, endpos, self, MASK_MONSTERSOLID);
-		if(!trace.allsolid && !trace.startsolid)
+		if (!trace.allsolid && !trace.startsolid)
 		{
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);
 			startpos[2] +=self->size[2];
 			trace = gi.trace(startpos, self->mins, self->maxs, endpos, self, MASK_MONSTERSOLID);
-			if(trace.fraction == 1.0 && !trace.allsolid && !trace.startsolid)
+			if (trace.fraction == 1.0 && !trace.allsolid && !trace.startsolid)
 			{
 				assassinPrepareTeleportDest(self, trace.endpos, false);
 				return;
@@ -2512,50 +2512,50 @@ void assassinCloakThink (edict_t *self)
 		}
 	}
 
-	if(skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
+	if (skill->value || self->spawnflags & MSF_ASS_TELEPORTDODGE)
 	{//Pussies were complaining about assassins teleporting away from certain death, so don't do that unless in hard
-		if(!(self->spawnflags & MSF_ASS_NOTELEPORT) && !(self->spawnflags&MSF_FIXED) && self->groundentity)
+		if (!(self->spawnflags & MSF_ASS_NOTELEPORT) && !(self->spawnflags&MSF_FIXED) && self->groundentity)
 		{
-			if(irand(0, 4 - skill->value) <= 0)
+			if (irand(0, 4 - skill->value) <= 0)
 			{//easy is 40% chance per second, hard is 60% chance to check per second
 				while((found = newfindradius(found, self->s.origin, 200 + skill->value * 50)))
 				{
-					if(!Q_stricmp(found->classname, "Spell_Maceball"))
+					if (!Q_stricmp(found->classname, "Spell_Maceball"))
 					{
-						if(!self->enemy)
+						if (!self->enemy)
 						{
-							if(found->owner)
+							if (found->owner)
 							{
 								self->enemy = found->owner;
 								FoundTarget(self, false);
 							}
 						}
-						if(assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
+						if (assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
 							return;
 					}
 
-					if(!Q_stricmp(found->classname, "Spell_RedRain") ||
+					if (!Q_stricmp(found->classname, "Spell_RedRain") ||
 						!Q_stricmp(found->classname, "Spell_PhoenixArrow") ||
 						!Q_stricmp(found->classname, "Spell_FireWall") ||
 						!Q_stricmp(found->classname, "Spell_SphereOfAnnihilation"))
 					{
-						if(!self->enemy)
+						if (!self->enemy)
 						{
-							if(found->owner)
+							if (found->owner)
 							{
 								self->enemy = found->owner;
 								FoundTarget(self, false);
 							}
 						}
-						if(assassinChooseTeleportDestination(self, ASS_TP_ANY, true, false))
+						if (assassinChooseTeleportDestination(self, ASS_TP_ANY, true, false))
 							return;
 					}
 
-					if(found==self->enemy && found->client)
+					if (found==self->enemy && found->client)
 					{
-						if(M_DistanceToTarget(self, self->enemy) < 128)
+						if (M_DistanceToTarget(self, self->enemy) < 128)
 						{
-							if(infront(self->enemy, self))
+							if (infront(self->enemy, self))
 							{
 								//is he using his staff or jumping into me?
 								lowerseq = found->client->playerinfo.lowerseq;
@@ -2568,7 +2568,7 @@ void assassinCloakThink (edict_t *self)
 								case ASEQ_POLEVAULT2:
 								case ASEQ_POLEVAULT1_W:
 								case ASEQ_POLEVAULT1_R:
-									if(assassinChooseTeleportDestination(self, ASS_TP_ANY, true, true))
+									if (assassinChooseTeleportDestination(self, ASS_TP_ANY, true, true))
 										return;
 									break;
 								default:
@@ -2585,7 +2585,7 @@ void assassinCloakThink (edict_t *self)
 								case ASEQ_POLEVAULT2:
 								case ASEQ_POLEVAULT1_W:
 								case ASEQ_POLEVAULT1_R:
-									if(assassinChooseTeleportDestination(self, ASS_TP_ANY, true, true))
+									if (assassinChooseTeleportDestination(self, ASS_TP_ANY, true, true))
 										return;
 									break;
 								default:
@@ -2593,9 +2593,9 @@ void assassinCloakThink (edict_t *self)
 								}
 							}
 
-							if(found->client->playerinfo.shield_timer > level.time)
+							if (found->client->playerinfo.shield_timer > level.time)
 							{
-								if(assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
+								if (assassinChooseTeleportDestination(self, ASS_TP_OFF, true, true))
 									return;
 							}
 						}
@@ -2606,7 +2606,7 @@ void assassinCloakThink (edict_t *self)
 		}
 	}
 
-	if(self->evade_debounce_time < level.time)
+	if (self->evade_debounce_time < level.time)
 		MG_CheckEvade(self);
 }
 
@@ -2614,17 +2614,17 @@ void assassinCloak (edict_t *self)
 {
 	int	interval = 15;
 
-	if(self->s.color[0] > 50)
+	if (self->s.color[0] > 50)
 		self->s.color[0] += irand(-interval*3, 0);
-	if(self->s.color[1] > 50)
+	if (self->s.color[1] > 50)
 		self->s.color[1] += irand(-interval*3, 0);
-	if(self->s.color[2] > 50)
+	if (self->s.color[2] > 50)
 		self->s.color[2] += irand(-interval*3, 0);
 
-	if(self->s.color[3] > 150)
+	if (self->s.color[3] > 150)
 		self->s.color[3] += irand(-interval, 0);
 
-	if(self->s.color[0] > 50||
+	if (self->s.color[0] > 50||
 		self->s.color[1] > 50||
 		self->s.color[2] > 50||
 		self->s.color[3] > 150)
@@ -2638,43 +2638,43 @@ void assassinCloak (edict_t *self)
 		self->next_pre_think = level.time + FRAMETIME;
 	}
 
-	if(self->evade_debounce_time < level.time)
+	if (self->evade_debounce_time < level.time)
 		MG_CheckEvade(self);
 }
 
 void assassinDeCloak (edict_t *self)
 {
-	if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
+	if (!(self->s.renderfx & RF_ALPHA_TEXTURE))
 		return;
 
-	if(self->s.color[0]<255 - 10)
+	if (self->s.color[0]<255 - 10)
 		self->s.color[0] += 10;
 	else
 		self->s.color[0] = 255;
 
-	if(self->s.color[1]<255 - 10)
+	if (self->s.color[1]<255 - 10)
 		self->s.color[1] += 10;
 	else
 		self->s.color[1] = 255;
 
-	if(self->s.color[2]<255 - 10)
+	if (self->s.color[2]<255 - 10)
 		self->s.color[2] += 10;
 	else
 		self->s.color[2] = 255;
 
-	if(self->s.color[3]<255 - 5)
+	if (self->s.color[3]<255 - 5)
 		self->s.color[3] += 5;
 	else
 		self->s.color[3] = 255;
 
-	if(self->s.color[0] == 255&&
+	if (self->s.color[0] == 255&&
 		self->s.color[1] == 255&&
 		self->s.color[2] == 255&&
 		self->s.color[3] == 255)
 	{
 		self->svflags &= ~SVF_NO_AUTOTARGET;
 		self->s.renderfx &= ~RF_ALPHA_TEXTURE;
-		if(self->health > 0)
+		if (self->health > 0)
 		{
 			self->pre_think = assassinCloakThink;
 			self->next_pre_think = level.time + FRAMETIME;
@@ -2691,7 +2691,7 @@ void assassinDeCloak (edict_t *self)
 		self->next_pre_think = level.time + FRAMETIME;
 	}
 
-	if(self->evade_debounce_time < level.time)
+	if (self->evade_debounce_time < level.time)
 		MG_CheckEvade(self);
 }
 
@@ -2783,14 +2783,14 @@ void AssassinStaticsInit()
 
 void assassinCheckDefense(edict_t *self, float enemydist, qboolean enemyvis, qboolean enemyinfront)
 {
-	if(!enemyinfront&&enemyvis&&enemydist<self->melee_range)
+	if (!enemyinfront&&enemyvis&&enemydist<self->melee_range)
 	{
-		if(assassinCheckTeleport(self, ASS_TP_DEF))
+		if (assassinCheckTeleport(self, ASS_TP_DEF))
 			gi.dprintf("defense->teleport\n");
 	}
 	else if(!enemyvis && self->monsterinfo.last_successful_enemy_tracking_time + 6 - skill->value < level.time)
 	{
-		if(irand(0, 10) > 10 - (3 * (skill->value + 1)))//hard = 90%, med is 40%, easy is 30%
+		if (irand(0, 10) > 10 - (3 * (skill->value + 1)))//hard = 90%, med is 40%, easy is 30%
 		{
 			gi.dprintf("Assassin trying to teleport to %s since can't find them...\n", self->classname, self->enemy->classname);
 			assassinCheckTeleport(self, ASS_TP_OFF);
@@ -2878,18 +2878,18 @@ NOTE: A value of zero will result in defaults, if you actually want zero as the 
 -------------------------------------------------------------------------*/
 void SP_monster_assassin (edict_t *self)
 {
-	if(self->spawnflags & MSF_WALKING)
+	if (self->spawnflags & MSF_WALKING)
 	{
 		self->spawnflags |= MSF_WANDER;
 		self->spawnflags &= ~MSF_WALKING;
 	}
 
-	if(self->spawnflags&MSF_ASS_JUMPAMBUSH||
+	if (self->spawnflags&MSF_ASS_JUMPAMBUSH||
 		self->spawnflags&MSF_ASS_SIDEJUMPAMBUSH||
 		self->spawnflags&MSF_ASS_STARTSHADOW)
 		self->spawnflags |= MSF_AMBUSH;
 
-	if(self->spawnflags & MSF_ASS_TPORTAMBUSH)
+	if (self->spawnflags & MSF_ASS_TPORTAMBUSH)
 		self->spawnflags|=MSF_ASLEEP;
 
 	walkmonster_start(self);
@@ -2898,7 +2898,7 @@ void SP_monster_assassin (edict_t *self)
 	self->classID = CID_ASSASSIN;
 	self->monsterinfo.dismember = assassin_dismember;
 
-	if(!self->health)
+	if (!self->health)
 		self->health = ASSASSIN_HEALTH * (skill->value + 1)/3;
 
 	self->mass = ASSASSIN_MASS;
@@ -2924,13 +2924,13 @@ void SP_monster_assassin (edict_t *self)
 
 	//set up my mood function
 	MG_InitMoods(self);
-	if(!irand(0,2))
+	if (!irand(0,2))
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 	self->cant_attack_think = assassinCheckDefense;
 
 	self->monsterinfo.aiflags |= AI_NIGHTVISION;
 
-	if(self->spawnflags & MSF_WANDER)
+	if (self->spawnflags & MSF_WANDER)
 	{
 		G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 	}
@@ -2941,7 +2941,7 @@ void SP_monster_assassin (edict_t *self)
 	}
 	else
 	{
-		if(self->spawnflags&MSF_ASS_STARTSHADOW)
+		if (self->spawnflags&MSF_ASS_STARTSHADOW)
 			assassinInitCloak (self);
 
 		self->pre_think = assassinCloakThink;

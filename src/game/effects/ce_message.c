@@ -34,7 +34,7 @@ void QPostMessage(client_entity_t *to, CE_MsgID_t ID, char *format, ...)
 	SinglyLinkedList_t *parms;
 	va_list marker;
 
-	if(!to->msgHandler)	// everything should really have one, but at _this point everything
+	if (!to->msgHandler)	// everything should really have one, but at _this point everything
 						// doesn't so, the messages will never get popped of the queue
 						// so don't push them on in the first place
 	{
@@ -51,7 +51,7 @@ void QPostMessage(client_entity_t *to, CE_MsgID_t ID, char *format, ...)
 
 	newMsg->ID = ID;
 
-	if(format)
+	if (format)
 	{
 		va_start(marker, format);
 
@@ -100,7 +100,7 @@ void ProcessMessages(client_entity_t *_this)
 
 		parms = &msg->parms;
 
-		if(!SLList_AtLast(parms) && !SLList_AtEnd(parms))
+		if (!SLList_AtLast(parms) && !SLList_AtEnd(parms))
 		{
 			SLList_Chop(parms);
 		}

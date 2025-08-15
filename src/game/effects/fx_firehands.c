@@ -128,7 +128,7 @@ void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 
 	for(i=0;i<16;i++)
 	{
-		if(!(refpoints & (1 << i)))
+		if (!(refpoints & (1 << i)))
 			continue;
 
 		trail=ClientEntity_new(type,flags,origin,0,flame_dur);

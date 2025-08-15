@@ -31,7 +31,7 @@ static void InsectStaffThink(edict_t *self)
 
 	// Do autotargeting.
 
-	if(self->enemy)
+	if (self->enemy)
 	{
 		// I have a target (pointed at by self->enemy) so aim myself at it.
 
@@ -69,13 +69,13 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 	byte		makescorch;
 	edict_t	*InsectStaff;
 
-	if(Surface&&(Surface->flags&SURF_SKY))
+	if (Surface&&(Surface->flags&SURF_SKY))
 	{
 		SkyFly(self);
 		return;
 	}
 
-	if(EntReflecting(Other, true, true))
+	if (EntReflecting(Other, true, true))
 	{
 		InsectStaff=G_Spawn();
 
@@ -111,7 +111,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 	VectorMA(self->s.origin,-0.02,self->velocity,Origin);
 
 
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		T_Damage(Other, self, self->owner, self->movedir, self->s.origin, Plane->normal, self->dmg, 0, DAMAGE_SPELL, MOD_DIED);
 	}
@@ -124,12 +124,12 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 
 	// Attempt to apply a scorchmark decal to the thing I hit.
 	makescorch = 0;
-	if(IsDecalApplicable(self,Other,self->s.origin,Surface,Plane,NULL))
+	if (IsDecalApplicable(self,Other,self->s.origin,Surface,Plane,NULL))
 	{
 		makescorch = CEF_FLAG6;
 	}
 
-	if(!self->count)
+	if (!self->count)
 	{
 		gi.CreateEffect(NULL,
 					FX_I_EFFECTS,
@@ -198,7 +198,7 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 
 	G_LinkMissile(InsectStaff);
 
-	if(power)
+	if (power)
 	{
 		Vec3ScaleAssign(2, InsectStaff->velocity);
 		InsectStaff->dmg *= 2;
@@ -240,7 +240,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 {
 	vec3_t	Forward,Up;
 
-	if(self->owner->s.effects&EF_DISABLE_EXTRA_FX)
+	if (self->owner->s.effects&EF_DISABLE_EXTRA_FX)
 	{
 		gi.RemoveEffects(self,0);
 		G_FreeEdict(self);
@@ -255,15 +255,15 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
 	// is unlikely to happen, sooooo...
 
-	if(!self->owner->damage_debounce_time)
+	if (!self->owner->damage_debounce_time)
 	{
 //		self->svflags |= SVF_NOCLIENT;
 
 		self->count+=irand(1,2);
 
-		if((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < GLOBE_MAX_SCALE))
+		if ((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < GLOBE_MAX_SCALE))
 		{
-			if(self->count > 20)
+			if (self->count > 20)
 			{
 				self->rrs.scale[0] -= 0.01;
 				self->rrs.scale[1] -= 0.01;
@@ -276,7 +276,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 				self->rrs.scale[2] += 0.1;
 			}
 
-			if(self->count>25)
+			if (self->count>25)
 			{
 				self->count&=3;
 			}
@@ -384,7 +384,7 @@ void create_spearproj(edict_t *spearproj)
 	spearproj->clipmask = MASK_SHOT;
 	spearproj->touch = SpearProjTouch;
 
-	if(spearproj->count)
+	if (spearproj->count)
 		spearproj->dmg = irand(TC_DMG_YSPEAR_MIN, TC_DMG_YSPEAR_MAX);
 	else if(skill->value > 1)
 		spearproj->dmg = TC_DMG_SPEAR_MAX;
@@ -459,7 +459,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 	byte	makeScorch = 0;
 
 	// did we hit the sky ?
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -468,7 +468,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 	// did we hit someone where reflection is functional ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			Vec3ScaleAssign(SPEARPROJ_SPEED/2, self->velocity);
@@ -478,13 +478,13 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 		}
 	}
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{
-		if(level.fighting_beast)
+		if (level.fighting_beast)
 		{
-			if(other->classID == CID_TBEAST)
+			if (other->classID == CID_TBEAST)
 			{
-				if(other->enemy != self->owner)
+				if (other->enemy != self->owner)
 				{
 					other->enemy = self->owner;
 				}
@@ -496,7 +496,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 			}
 		}
 
-		if(self->dmg)//HACK = so can't collapse trial beast bridge
+		if (self->dmg)//HACK = so can't collapse trial beast bridge
 			T_Damage(other, self, self->owner, self->movedir, self->s.origin, plane->normal, self->dmg, 0, DAMAGE_SPELL,MOD_SPEAR);
 	}
 	else
@@ -507,12 +507,12 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 	}
 
 	makeScorch = 0;
-	if(IsDecalApplicable(self, other, self->s.origin, surface, plane, NULL))
+	if (IsDecalApplicable(self, other, self->s.origin, surface, plane, NULL))
 	{
 		makeScorch = CEF_FLAG6;
 	}
 
-	if(self->count)
+	if (self->count)
 	{
 		gi.CreateEffect(self,
 			FX_I_EFFECTS,
@@ -570,12 +570,12 @@ void yellowjacket_proj_think (edict_t *self)
 	VectorSubtract(self->enemy->s.origin, self->s.origin, edir);
 	VectorNormalize(edir);
 
-	if(DotProduct(edir, vdir) > 0 && irand(2, 24) > self->count)
+	if (DotProduct(edir, vdir) > 0 && irand(2, 24) > self->count)
 		projectile_homethink(self);
 
 	self->count++;
 
-	if(self->random < 100)
+	if (self->random < 100)
 		self->random += 10;
 
 	self->nextthink = level.time + 0.1;
@@ -594,7 +594,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 
 	// Spawn the magic-missile.
 
-	if(!caster->enemy)
+	if (!caster->enemy)
 		return;
 
 	spearproj = G_Spawn();
@@ -603,7 +603,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 	VectorSubtract(caster->enemy->s.origin, StartPos, dir);
 	dist = VectorLength(dir);
 
-	if(offset && dist > 128)
+	if (offset && dist > 128)
 	{
 		AngleVectors(AimAngles, forward, right, up);
 		switch(offset)
@@ -630,7 +630,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 		AngleVectors(AimAngles, forward, NULL, NULL);
 		VectorMA(StartPos, SPEARPROJ_SPEED, forward, endpos);
 		trace = gi.trace(StartPos, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
-		if(trace.ent && ok_to_autotarget(caster, trace.ent))
+		if (trace.ent && ok_to_autotarget(caster, trace.ent))
 		{//already going to hit a valid target at this angle- so don't autotarget
 			VectorScale(forward, SPEARPROJ_SPEED, spearproj->velocity);
 		}
@@ -654,7 +654,7 @@ void SpellCastInsectSpear(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, in
 		return;
 	}
 
-	if(caster->spawnflags & MSF_INSECT_YELLOWJACKET)
+	if (caster->spawnflags & MSF_INSECT_YELLOWJACKET)
 	{
 		spearproj->think = yellowjacket_proj_think;
 		spearproj->nextthink = level.time + 0.1;

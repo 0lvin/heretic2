@@ -114,7 +114,7 @@ void rat_pain(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void rat_death(edict_t *self, G_Message_t *msg)
 {
-	if(self->monsterinfo.aiflags&AI_DONT_THINK)
+	if (self->monsterinfo.aiflags&AI_DONT_THINK)
 	{
 		// Big enough death to be thrown back
 		if (irand(0,10) < 5)
@@ -133,7 +133,7 @@ void rat_death(edict_t *self, G_Message_t *msg)
 	}
 	else
 	{
-		if(!strcmp(self->classname, "monster_rat_giant"))
+		if (!strcmp(self->classname, "monster_rat_giant"))
 			self->s.skinnum = 1;
 
 		// Big enough death to be thrown back
@@ -162,7 +162,7 @@ void rat_run(edict_t *self, G_Message_t *msg)
 		self->ideal_yaw = vectoyaw(vec);
 		delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 
-		if(self->monsterinfo.attack_finished < level.time)
+		if (self->monsterinfo.attack_finished < level.time)
 		{
 			len = VectorLength(vec);
 
@@ -265,7 +265,7 @@ void rat_stand(edict_t *self, G_Message_t *msg)
 
 		break;
 	case RAT_ANIM_STAND2:
-		if(chance < 75)
+		if (chance < 75)
 			SetAnim(self, RAT_ANIM_STAND3);
 		else
 			SetAnim(self, RAT_ANIM_STAND4 + irand(0, 4));
@@ -280,7 +280,7 @@ void rat_stand(edict_t *self, G_Message_t *msg)
 		SetAnim(self, RAT_ANIM_STAND1);
 		break;
 	default:
-		if(chance < 75)
+		if (chance < 75)
 			SetAnim(self, RAT_ANIM_STAND3);
 		else
 			SetAnim(self, RAT_ANIM_STAND4 + irand(0, 4));
@@ -395,7 +395,7 @@ void ratbite (edict_t *self)
 	vec3_t	dir, endpos, normal, forward, startpos;
 	trace_t	trace;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	self->monsterinfo.attack_finished = level.time + 3 - skill->value + flrand(0.5, 1);
@@ -424,7 +424,7 @@ void ratbite (edict_t *self)
 			VectorMA(trace.endpos, flrand(0, 8), dir, endpos);
 			VectorScale(dir, -1, normal);
 			// do 1 point.
-			if(AVG_VEC3T(self->rrs.scale) > 1.5)
+			if (AVG_VEC3T(self->rrs.scale) > 1.5)
 				T_Damage (trace.ent, self, self, dir, endpos, normal, RAT_DMG_BITE * irand(2, 4), 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 			else
 				T_Damage (trace.ent, self, self, dir, endpos, normal, RAT_DMG_BITE, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
@@ -626,13 +626,13 @@ void rat_ai_run (edict_t *self, float dist)
 
 	if (self->monsterinfo.aiflags & AI_FLEE||self->monsterinfo.aiflags & AI_COWARD)
 	{
-		if(!self->count)
+		if (!self->count)
 			self->count = 180;
 		VectorSubtract (self->enemy->s.origin, self->s.origin, vec);
 		self->ideal_yaw = vectoyaw(vec);
 		self->ideal_yaw = anglemod(self->ideal_yaw + self->count);
 		M_ChangeYaw(self);
-		if(!M_walkmove(self, self->s.angles[YAW], dist) && EqualAngle(self->s.angles[YAW], self->ideal_yaw, 5))
+		if (!M_walkmove(self, self->s.angles[YAW], dist) && EqualAngle(self->s.angles[YAW], self->ideal_yaw, 5))
 			self->count = flrand(60, 300);
 	}
 	else
@@ -756,7 +756,7 @@ void SP_monster_rat (edict_t *self)
 	{
 		//self->monsterinfo.aiflags |= AI_EATING;
 		G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
-		if(!self->wakeup_distance)
+		if (!self->wakeup_distance)
 			self->wakeup_distance = 300;
 	}
 	else
@@ -839,7 +839,7 @@ void SP_monster_rat_giant (edict_t *self)
 	{
 		self->monsterinfo.aiflags |= AI_EATING;
 		G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
-		if(!self->wakeup_distance)
+		if (!self->wakeup_distance)
 			self->wakeup_distance = 300;
 	}
 	else

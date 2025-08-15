@@ -196,7 +196,7 @@ void MSG_ReadShortYawPitch(sizebuf_t *sb, vec3_t dir)
 {
 	vec3_t	angles;
 
-	if(sb->readcount+4 > sb->cursize)
+	if (sb->readcount+4 > sb->cursize)
 	{
 		assert(0);
 	}
@@ -237,18 +237,18 @@ void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf)
 
 	assert(fxBuf->numEffects >= 0);
 
-	if(fxBuf->numEffects < 0)
+	if (fxBuf->numEffects < 0)
 	{
 		fxi.Com_Error(ERR_DROP, "MSG_ReadEffects: number of effects < 0");
 		return;
 	}
 
-	if(fxBuf->numEffects == 0)
+	if (fxBuf->numEffects == 0)
 	{
 		return;
 	}
 
-	if(fxBuf->numEffects & 0x80)
+	if (fxBuf->numEffects & 0x80)
 	{
 		fxBuf->numEffects &= ~0x80;
 		len = fxi.MSG_ReadShort(msg_read);
@@ -260,7 +260,7 @@ void MSG_ReadEffects(sizebuf_t *msg_read, EffectsBuffer_t *fxBuf)
 
 	assert(len > 0);
 
-	if(fxBuf->numEffects <= 0)
+	if (fxBuf->numEffects <= 0)
 	{
 		fxi.Com_Error (ERR_DROP, "MSG_ReadEffects: bufSize not > 0");
 		return;

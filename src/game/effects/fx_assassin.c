@@ -80,7 +80,7 @@ static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t
 {
 	vec3_t sight_vec, endpos;
 
-	if(owner->entity->skinnum != 100)
+	if (owner->entity->skinnum != 100)
 	{
 		return false;
 	}

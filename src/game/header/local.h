@@ -315,7 +315,7 @@ typedef struct gitem_s
 	qboolean (*pickup)(struct edict_s *ent, struct edict_s *other);
 	void (*use)(struct edict_s *ent, struct gitem_s *item);
 	void (*drop)(struct edict_s *ent, struct gitem_s *item);
-	void (*weaponthink)(struct edict_s *ent, char *Format,...);
+	void (*weaponthink)(struct edict_s *ent);
 	char *pickup_sound;
 	char *world_model;
 	int world_model_flags;
@@ -3377,13 +3377,13 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon);
 qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurface_t *surface,cplane_t *plane, vec3_t planeDir);
 
 void Use_Defence(struct edict_s *ent, gitem_t *defence);
-void DefenceThink_Powerup(edict_t *Caster, char *Format, ...);
-void DefenceThink_RingOfRepulsion(edict_t *Caster, char *Format, ...);
-void DefenceThink_MeteorBarrier(edict_t *Caster, char *Format, ...);
-void DefenceThink_Teleport(edict_t *Caster, char *Format, ...);
-void DefenceThink_Morph(edict_t *Caster, char *Format, ...);
-void DefenceThink_Shield(edict_t *Caster, char *Format, ...);
-void DefenceThink_Tornado(edict_t *Caster, char *Format, ...);
+void DefenceThink_Powerup(edict_t *Caster);
+void DefenceThink_RingOfRepulsion(edict_t *Caster);
+void DefenceThink_MeteorBarrier(edict_t *Caster);
+void DefenceThink_Teleport(edict_t *Caster);
+void DefenceThink_Morph(edict_t *Caster);
+void DefenceThink_Shield(edict_t *Caster);
+void DefenceThink_Tornado(edict_t *Caster);
 
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
 #define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of

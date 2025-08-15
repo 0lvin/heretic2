@@ -42,7 +42,7 @@ FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner)
 
 	// Have enough ripples been created yet? If not, create one, else free myself.
 
-	if(Self->NoOfAnimFrames>0)
+	if (Self->NoOfAnimFrames>0)
 	{
 		// Create a water entry ripple.
 
@@ -104,7 +104,7 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		NoOfRipples = 1;
 
 
-	if(Flags&CEF_FLAG6)
+	if (Flags&CEF_FLAG6)
 	{//they want a sound too
 		fxi.S_StartSound(Origin, -1, CHAN_AUTO,
 				fxi.S_RegisterSound(va("misc/splish%c.wav", irand('2', '3'))), 1, ATTN_STATIC, 0);

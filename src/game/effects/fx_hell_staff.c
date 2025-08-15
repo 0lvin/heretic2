@@ -105,7 +105,7 @@ void FXHellboltExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	Vec3ScaleAssign(32.0, Dir);
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, Dir);
 	}

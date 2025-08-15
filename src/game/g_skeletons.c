@@ -27,12 +27,12 @@ static int GetRootIndex(int max, int numJoints)
 
 	for(i = 0; i < max; ++i)
 	{
-		if(!skeletalJoints[i].inUse)
+		if (!skeletalJoints[i].inUse)
 		{
 			max2 = i + numJoints;
 
 			// check the size of the array
-			if(max2 > max)
+			if (max2 > max)
 			{
 				assert(0);
 				return -1;
@@ -41,7 +41,7 @@ static int GetRootIndex(int max, int numJoints)
 			// check for a big enough unused block
 			for(j = i + 1; j < max2; ++j)
 			{
-				if(skeletalJoints[j].inUse)
+				if (skeletalJoints[j].inUse)
 				{
 					i = j;
 					cont = true;
@@ -49,7 +49,7 @@ static int GetRootIndex(int max, int numJoints)
 				}
 			}
 
-			if(cont) // not a big enough block, so continue searching
+			if (cont) // not a big enough block, so continue searching
 			{
 				cont = false;
 				continue;
@@ -104,7 +104,7 @@ void UpdateSkeletons()
 		G_SkeletalJoint_t *joint;
 		joint = &skeletalJoints[i];
 
-		if(joint->inUse)
+		if (joint->inUse)
 		{
 			for(j = 0; j < 3; ++j)
 			{
@@ -114,20 +114,20 @@ void UpdateSkeletons()
 				destAngle = joint->destAngles[j];
 				angle = joint->angles + j;
 
-				if(*angle != destAngle)
+				if (*angle != destAngle)
 				{
 					*angle += joint->angVels[j]*FRAMETIME;
 
-					if(joint->angVels[j] > 0)
+					if (joint->angVels[j] > 0)
 					{
-						if(*angle > destAngle)
+						if (*angle > destAngle)
 						{
 							*angle = destAngle;
 						}
 					}
 					else if(joint->angVels[j] < 0)
 					{
-						if(*angle < destAngle)
+						if (*angle < destAngle)
 						{
 							*angle = destAngle;
 						}
@@ -155,7 +155,7 @@ qboolean SetJointAngVel(int jointIndex, int angleIndex, float destAngle, float a
 
 	joint = &skeletalJoints[jointIndex];
 
-	if(destAngle < joint->destAngles[angleIndex])
+	if (destAngle < joint->destAngles[angleIndex])
 	{
 		skeletalJoints[jointIndex].destAngles[angleIndex] = destAngle;
 		skeletalJoints[jointIndex].angVels[angleIndex] = -angSpeed;

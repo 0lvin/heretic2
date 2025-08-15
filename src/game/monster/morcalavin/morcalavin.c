@@ -315,7 +315,7 @@ void morcalavin_proj2_blocked( edict_t *self, trace_t *trace )
 		return;
 
 	//Reflection stuff
-	if(EntReflecting(trace->ent, true, true))
+	if (EntReflecting(trace->ent, true, true))
 	{
 		proj = G_Spawn();
 
@@ -378,7 +378,7 @@ void morcalavin_proj3_blocked( edict_t *self, trace_t *trace )
 		return;
 
 	//Reflection stuff
-	if(EntReflecting(trace->ent, true, true))
+	if (EntReflecting(trace->ent, true, true))
 	{
 		proj = G_Spawn();
 
@@ -638,7 +638,7 @@ void morcalavin_proj1_blocked( edict_t *self, trace_t *trace )
 		return;
 
 	//Reflection stuff
-	if(EntReflecting(trace->ent, true, true))
+	if (EntReflecting(trace->ent, true, true))
 	{
 		proj = G_Spawn();
 
@@ -781,7 +781,7 @@ void morcalavin_phase_out (edict_t *self)
 {
 	int	interval = 40;
 
-	if(self->s.color[3] > interval)
+	if (self->s.color[3] > interval)
 	{
 		self->s.color[3] -= irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_out;
@@ -799,7 +799,7 @@ void morcalavin_phase_in (edict_t *self)
 {
 	int	interval = 12;
 
-	if(self->s.color[3] < 255 - interval)
+	if (self->s.color[3] < 255 - interval)
 	{
 		self->s.color[3] += irand(interval/2, interval);
 		self->pre_think = morcalavin_phase_in;
@@ -814,7 +814,7 @@ void morcalavin_phase_in (edict_t *self)
 		self->s.color[2] = 255;
 		self->s.color[3] = 255;
 
-		if(self->health <= 0 || self->monsterinfo.lefty >= 6)
+		if (self->health <= 0 || self->monsterinfo.lefty >= 6)
 		{
 			self->pre_think = NULL;
 			self->next_pre_think = -1;
@@ -854,7 +854,7 @@ void mork_laugh (edict_t *self)
 
 void mork_check_killed_enemy(edict_t *attacker)
 {
-	if(attacker->enemy && attacker->enemy->health<=0)
+	if (attacker->enemy && attacker->enemy->health<=0)
 	{
 		attacker->post_think = mork_laugh;
 		attacker->next_post_think = level.time + flrand(1.3, 2.3);
@@ -886,7 +886,7 @@ void projectile_homethink (edict_t *self)
 	float oldvelmult , newveldiv, speed_mod;
 	float turnspeed;
 
-	if(self->delay)
+	if (self->delay)
 		turnspeed = self->delay;
 	else
 		turnspeed = 1.3;
@@ -917,7 +917,7 @@ void projectile_homethink (edict_t *self)
 
 	VectorCopy(newdir, self->velocity);
 
-	if(self->random)
+	if (self->random)
 		projectile_veer(self, self->random);
 }
 
@@ -933,7 +933,7 @@ void projectile_homethink (edict_t *self)
 
 void morcalavin_proj1_think( edict_t *self )
 {
-	if(clear_visible(self, self->enemy))
+	if (clear_visible(self, self->enemy))
 		projectile_homethink(self);
 
 	self->nextthink = level.time + 0.1;
@@ -948,7 +948,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 //	edict_t	*proj;
 
 	/*
-	if(EntReflecting(trace->ent, true, true) && self->reflect_debounce_time)
+	if (EntReflecting(trace->ent, true, true) && self->reflect_debounce_time)
 	{
 		proj = G_Spawn();
 
@@ -984,7 +984,7 @@ void beam_blocked( edict_t *self, trace_t *trace )
 		vec3_t	hitDir;
 		float	damage = flrand(MORK_DMG_PROJ1_MIN, MORK_DMG_PROJ1_MAX);
 
-		if(self->dmg)
+		if (self->dmg)
 			damage += self->dmg;
 		VectorCopy( self->velocity, hitDir );
 		VectorNormalize( hitDir );
@@ -1216,7 +1216,7 @@ void morcalavin_pause( edict_t *self )
 	switch (self->ai_mood)
 	{
 		case AI_MOOD_ATTACK:
-			if(self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
+			if (self->ai_mood_flags & AI_MOOD_FLAG_MISSILE)
 				G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 			else
 				G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
@@ -1325,22 +1325,22 @@ void mork_ai_hover (edict_t *self, float dist)
 	if (self->health <= 0)
 		return;
 
-	if(self->enemy)
+	if (self->enemy)
 		ai_charge(self, 0);
 	else
 		ai_stand(self, 0);
 
-	if(dist)
+	if (dist)
 	{
 		VectorCopy(self->s.origin, bottom);
 		bottom[2] -= dist;
 		trace = gi.trace(self->s.origin, self->mins, self->maxs, bottom, self, MASK_SOLID);
 
-		if(trace.fraction<1.0)
+		if (trace.fraction<1.0)
 		{
 			desired_vel = (1 - trace.fraction) * dist;
 
-			if(self->velocity[2] < desired_vel)
+			if (self->velocity[2] < desired_vel)
 				self->velocity[2] = desired_vel;
 
 			return;
@@ -1355,12 +1355,12 @@ void mork_ai_run (edict_t *self, float dist)
 	if (self->health <= 0)
 		return;
 
-	if(self->curAnimID!=ANIM_FLY)
+	if (self->curAnimID!=ANIM_FLY)
 	{
 		ai_run(self, dist);
-		if(!self->groundentity)
+		if (!self->groundentity)
 		{
-			if(self->curAnimID == ANIM_WALK)
+			if (self->curAnimID == ANIM_WALK)
 			{
 				AngleVectors(self->s.angles, forward, NULL, NULL);
 				VectorScale(forward, 250, self->velocity);
@@ -1393,13 +1393,13 @@ void morcalavin_run(edict_t *self, G_Message_t *msg)
 	if (self->health <= 0)
 		return;
 
-	if(!self->enemy)
+	if (!self->enemy)
 	{
 		SetAnim(self, ANIM_FLOAT);
 		return;
 	}
 
-	if(self->enemy->health<=0)
+	if (self->enemy->health<=0)
 	{
 		mork_check_killed_enemy(self->enemy);
 		SetAnim(self, ANIM_FLOAT);
@@ -1418,7 +1418,7 @@ void morcalavin_run(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	if(!self->groundentity)
+	if (!self->groundentity)
 		SetAnim(self, ANIM_GLIDE);
 	else
 		SetAnim(self, ANIM_WALK);
@@ -1571,7 +1571,7 @@ qboolean morcalavin_choose_teleport_destination(edict_t *self)
 	float	tracedist;
 
 	//Instead of chance, do around self if evade, around other if ambush
-	if(!self->enemy)
+	if (!self->enemy)
 	{
 		//Phase in and become tangible again
 		morcalavin_init_phase_in(self);
@@ -1595,19 +1595,19 @@ qboolean morcalavin_choose_teleport_destination(edict_t *self)
 
 		trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
 
-		if(trace.fraction*tracedist < 100)//min origin lerp dist
+		if (trace.fraction*tracedist < 100)//min origin lerp dist
 			continue;
 
-		if(trace.allsolid || trace.startsolid)
+		if (trace.allsolid || trace.startsolid)
 			continue;
 
-		if(Vector2Length(trace.endpos, self->enemy->s.origin)>=128)
+		if (Vector2Length(trace.endpos, self->enemy->s.origin)>=128)
 		{
 			VectorCopy(trace.endpos, startpos);
 			VectorCopy(trace.endpos, endpos);
 			endpos[2] -=64;
 			trace = gi.trace(startpos, self->mins, self->maxs, endpos, noblockent, MASK_MONSTERSOLID);
-			if(trace.fraction<1.0 && !trace.allsolid && !trace.startsolid)//the last two should be false if trace.fraction is < 1.0 but doesn't hurt to check
+			if (trace.fraction<1.0 && !trace.allsolid && !trace.startsolid)//the last two should be false if trace.fraction is < 1.0 but doesn't hurt to check
 			{
 				VectorCopy(trace.endpos, self->s.origin);
 				gi.linkentity(self);

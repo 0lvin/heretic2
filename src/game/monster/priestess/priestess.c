@@ -447,7 +447,7 @@ void priestess_proj1_blocked( edict_t *self, trace_t *trace )
 		return;
 
 	//Reflection stuff
-	if(EntReflecting(trace->ent, true, true))
+	if (EntReflecting(trace->ent, true, true))
 	{
 		proj = G_Spawn();
 
@@ -1464,7 +1464,7 @@ void priestess_death( edict_t *self, G_Message_t *msg )
 {
 	self->msgHandler = DeadMsgHandler;
 
-	if(self->deadflag == DEAD_DEAD)
+	if (self->deadflag == DEAD_DEAD)
 		return;
 
 	self->deadflag = DEAD_DEAD;

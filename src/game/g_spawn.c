@@ -265,24 +265,24 @@ DynamicSpawnSearch(const char *name)
 static qboolean
 Spawn_CheckCoop_MapHacks(edict_t *ent)
 {
-	if(!coop->value || !ent)
+	if (!coop->value || !ent)
 	{
 		return false;
 	}
 
-	if(!Q_stricmp(level.mapname, "xsewer1"))
+	if (!Q_stricmp(level.mapname, "xsewer1"))
 	{
-		if(ent->classname && !Q_stricmp(ent->classname, "trigger_relay") && ent->target && !Q_stricmp(ent->target, "t3") && ent->targetname && !Q_stricmp(ent->targetname, "t2"))
+		if (ent->classname && !Q_stricmp(ent->classname, "trigger_relay") && ent->target && !Q_stricmp(ent->target, "t3") && ent->targetname && !Q_stricmp(ent->targetname, "t2"))
 		{
 			return true;
 		}
-		if(ent->classname && !Q_stricmp(ent->classname, "func_button") && ent->target && !Q_stricmp(ent->target, "t16") && ent->model && !Q_stricmp(ent->model, "*71"))
+		if (ent->classname && !Q_stricmp(ent->classname, "func_button") && ent->target && !Q_stricmp(ent->target, "t16") && ent->model && !Q_stricmp(ent->model, "*71"))
 		{
 			ent->message = "Overflow valve maintenance\nhatch A opened.";
 			return false;
 		}
 
-		if(ent->classname && !Q_stricmp(ent->classname, "trigger_once") && ent->model && !Q_stricmp(ent->model, "*3"))
+		if (ent->classname && !Q_stricmp(ent->classname, "trigger_once") && ent->model && !Q_stricmp(ent->model, "*3"))
 		{
 			ent->message = "Overflow valve maintenance\nhatch B opened.";
 			return false;
@@ -723,7 +723,7 @@ ED_CallSpawn(edict_t *ent)
 		s_sid = GetCIDForName(ent->classname);
 
 		// found it
-		if((s_sid != -1) && !Cid_init[s_sid])		// Need to call once per level that item is on
+		if ((s_sid != -1) && !Cid_init[s_sid])		// Need to call once per level that item is on
 		{
 			classStaticsInits[s_sid]();
 			Cid_init[s_sid] = -1;
@@ -731,7 +731,7 @@ ED_CallSpawn(edict_t *ent)
 		}
 
 		ent->classID = 0;
-		if(s_sid != -1)
+		if (s_sid != -1)
 		{
 			ent->classID = s_sid;
 		}
@@ -755,7 +755,7 @@ ED_CallSpawn(edict_t *ent)
 		const char *ext;
 
 		ext = COM_FileExtension(ent->model);
-		if(!strcmp(ext, "def"))
+		if (!strcmp(ext, "def"))
 		{
 			dynamicentity_t self = {0};
 
@@ -1753,7 +1753,7 @@ SP_worldspawn(edict_t *ent)
 		}
 	}
 
-	if((ent->spawnflags & 1) && (deathmatch->value || coop->value))
+	if ((ent->spawnflags & 1) && (deathmatch->value || coop->value))
 	{
 		level.body_que = -1;
 	}

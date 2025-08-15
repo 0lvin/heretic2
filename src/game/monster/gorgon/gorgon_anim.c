@@ -44,10 +44,10 @@ void gorgon_ai_run (edict_t *self, float dist)
 
 	MG_FaceGoal(self, false);
 
-	if(self->monsterinfo.idle_time != -1 && self->monsterinfo.idle_time < level.time)
+	if (self->monsterinfo.idle_time != -1 && self->monsterinfo.idle_time < level.time)
 	{
 		self->dmg++;
-		if(self->dmg<GORGON_STEPS_INT1)//<5
+		if (self->dmg<GORGON_STEPS_INT1)//<5
 			offset = (float)(self->dmg) * GORGON_SWERVE_MULT;//0->5 * 4 = 0->20
 		else if(self->dmg<GORGON_STEPS_INT2)
 			offset = GORGON_SWERVE - (((float)(self->dmg) - GORGON_SWERVE_INT1) * GORGON_SWERVE_MULT);//20 - ((0->10 - 5) * 4) = 20->0
@@ -58,13 +58,13 @@ void gorgon_ai_run (edict_t *self, float dist)
 		else
 			self->dmg = 0;
 
-		if(self->dmg)
+		if (self->dmg)
 		{
 			self->ideal_yaw = anglemod(self->ideal_yaw + offset);
 		}
 	}
 
-	if(self->spawnflags & MSF_GORGON_SPEEDY)
+	if (self->spawnflags & MSF_GORGON_SPEEDY)
 		ai_run(self, dist*1.25);
 	else
 		ai_run(self, dist*0.75);
@@ -207,7 +207,7 @@ void gorgon_melee5check (edict_t *self)
 
 void gorgon_ai_charge2 (edict_t *self, float dist)
 {
-	if(!visible(self, self->enemy))
+	if (!visible(self, self->enemy))
 		return;
 
 	ai_charge2(self, dist);

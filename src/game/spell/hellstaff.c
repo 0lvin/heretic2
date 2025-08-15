@@ -44,24 +44,24 @@ edict_t *HellboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	hellbolt = G_Spawn();
 
-   	VectorCopy(self->s.origin, hellbolt->s.origin);
-   	create_hellbolt(hellbolt);
+	VectorCopy(self->s.origin, hellbolt->s.origin);
+	create_hellbolt(hellbolt);
 	VectorCopy(vel, hellbolt->velocity);
-   	hellbolt->owner = other;
-   	hellbolt->reflect_debounce_time = self->reflect_debounce_time -1;
+	hellbolt->owner = other;
+	hellbolt->reflect_debounce_time = self->reflect_debounce_time -1;
 	hellbolt->reflected_time=self->reflected_time;
 	VectorNormalize2(vel, hellbolt->movedir);
 	VectoAngles(hellbolt->movedir, hellbolt->s.angles);
-   	G_LinkMissile(hellbolt);
-   	gi.CreateEffect(hellbolt, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "t", hellbolt->velocity);
+	G_LinkMissile(hellbolt);
+	gi.CreateEffect(hellbolt, FX_WEAPON_HELLBOLT, CEF_OWNERS_ORIGIN|CEF_FLAG6, NULL, "t", hellbolt->velocity);
 
-   	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
-   	G_SetToFree(self);
+	// kill the existing missile, since its a pain in the ass to modify it so the physics won't screw it.
+	G_SetToFree(self);
 
-   	// Do a nasty looking blast at the impact point
-   	// only do this rarely, since we hit alot.
-   	if (!(irand(0,10)))
-   		gi.CreateEffect(hellbolt, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", hellbolt->velocity);
+	// Do a nasty looking blast at the impact point
+	// only do this rarely, since we hit alot.
+	if (!(irand(0,10)))
+		gi.CreateEffect(hellbolt, FX_LIGHTNING_HIT, CEF_OWNERS_ORIGIN, NULL, "t", hellbolt->velocity);
 
 	return(hellbolt);
 }
@@ -75,7 +75,7 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	byte	makeScorch = 0;
 
 	// did we hit the sky ?
-	if(surface && (surface->flags & SURF_SKY))
+	if (surface && (surface->flags & SURF_SKY))
 	{
 		SkyFly(self);
 		return;
@@ -84,7 +84,7 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	// did we hit someone where reflection is functional ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(other, true, true))
+		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			Vec3ScaleAssign(HELLBOLT_SPEED/2,self->velocity);
@@ -94,9 +94,9 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 		}
 	}
 
-   	VectorNormalize2(self->velocity, self->movedir);
+	VectorNormalize2(self->velocity, self->movedir);
 
-	if(other->takedamage)
+	if (other->takedamage)
 	{
 		T_Damage(other, self, self->owner, self->movedir, self->s.origin, plane->normal, self->dmg, self->dmg*2,
 					DAMAGE_SPELL, MOD_HELLSTAFF);
@@ -110,7 +110,7 @@ static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	}
 
 	makeScorch = 0;
-	if(IsDecalApplicable(self, other, self->s.origin, surface, plane, NULL))
+	if (IsDecalApplicable(self, other, self->s.origin, surface, plane, NULL))
 	{
 		makeScorch = CEF_FLAG6;
 	}
@@ -156,11 +156,11 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		tracebuddy = caster;
 		VectorCopy(loc, startpos);
 		trace = gi.trace(caster->s.origin, min, max, startpos, caster, MASK_SHOT);
-		if(level.fighting_beast)
+		if (level.fighting_beast)
 		{
 			edict_t *ent;
 
-			if((ent = check_hit_beast(caster->s.origin, trace.endpos)))
+			if ((ent = check_hit_beast(caster->s.origin, trace.endpos)))
 				trace.ent = ent;
 		}
 		if ((trace.fraction > .99) || !(trace.contents & MASK_SOLID))
@@ -169,27 +169,27 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 			if (trace.ent && trace.ent->takedamage)
 			{
 				// did we hit something that reflects ?
-  				if(EntReflecting(trace.ent, true, true))
-  				{
-  					// reflect it off into space - powerless now, so it won't hurt anyone it hits
+				if (EntReflecting(trace.ent, true, true))
+				{
+					// reflect it off into space - powerless now, so it won't hurt anyone it hits
 
-  					// draw line to this point
-  					VectorSubtract(trace.endpos, startpos, vect);
-  					blen = (byte)(VectorLength(vect)/8.0);
+					// draw line to this point
+					VectorSubtract(trace.endpos, startpos, vect);
+					blen = (byte)(VectorLength(vect)/8.0);
 
-  					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb",
-  						forward, blen);
-  					// re-constitute aimangle
-  					aimangles[1] += flrand(160,200);
-  					aimangles[0] += crandk() * 20;
-  				}
-  				else
-  				{
-  					T_Damage(trace.ent, caster, caster, forward, trace.endpos, forward,
-  							irand(HELLLASER_DAMAGE_MIN, HELLLASER_DAMAGE_MAX), 0, DAMAGE_SPELL,MOD_P_HELLSTAFF);
-  					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t",
-  							forward);
-  				}
+					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb",
+						forward, blen);
+					// re-constitute aimangle
+					aimangles[1] += flrand(160,200);
+					aimangles[0] += crandk() * 20;
+				}
+				else
+				{
+					T_Damage(trace.ent, caster, caster, forward, trace.endpos, forward,
+							irand(HELLLASER_DAMAGE_MIN, HELLLASER_DAMAGE_MAX), 0, DAMAGE_SPELL,MOD_P_HELLSTAFF);
+					gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t",
+							forward);
+				}
 				tracebuddy = trace.ent;
 			}	// Don't trace again since there really should only be one thing between the player and startpos
 
@@ -201,15 +201,15 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 				AngleVectors(aimangles, forward, NULL, NULL);
 				VectorMA(startpos, laser_dist, forward, endpos);
 				trace = gi.trace(startpos, min, max, endpos, tracebuddy, MASK_SHOT);
-				if(level.fighting_beast)
+				if (level.fighting_beast)
 				{
 					edict_t *ent;
 
-					if((ent = check_hit_beast(caster->s.origin, trace.endpos)))
+					if ((ent = check_hit_beast(caster->s.origin, trace.endpos)))
 						trace.ent = ent;
 				}
 
-				if(trace.fraction < .99 )
+				if (trace.fraction < .99 )
 				{
 					// if we hit anything that won't take damage, kill the beam
 					if (!trace.ent->takedamage)
@@ -219,27 +219,27 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 					if (trace.ent != caster)
 					{
 						// did we hit something that reflects ?
-  						if(EntReflecting(trace.ent, true, true))
-  						{
-  							// reflect it off into space - powerless now, so it won't hurt anyone it hits
+						if (EntReflecting(trace.ent, true, true))
+						{
+							// reflect it off into space - powerless now, so it won't hurt anyone it hits
 
-  							// draw line to this point
-  							VectorSubtract(trace.endpos, startpos, vect);
-  							blen = (byte)(VectorLength(vect)/8.0);
+							// draw line to this point
+							VectorSubtract(trace.endpos, startpos, vect);
+							blen = (byte)(VectorLength(vect)/8.0);
 
-  							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb",
-  								forward, blen);
-  							// re-constitute aimangle
-  							aimangles[1] += flrand(160,200);
-  							aimangles[0] += crandk() * 20;
-  						}
-  						else
-  						{
-  							T_Damage(trace.ent, caster, caster, forward, trace.endpos, forward,
-  									irand(HELLLASER_DAMAGE_MIN, HELLLASER_DAMAGE_MAX), 0, DAMAGE_SPELL,MOD_P_HELLSTAFF);
-  							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t",
-  									forward);
-  						}
+							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, 0, startpos, "tb",
+								forward, blen);
+							// re-constitute aimangle
+							aimangles[1] += flrand(160,200);
+							aimangles[0] += crandk() * 20;
+						}
+						else
+						{
+							T_Damage(trace.ent, caster, caster, forward, trace.endpos, forward,
+									irand(HELLLASER_DAMAGE_MIN, HELLLASER_DAMAGE_MAX), 0, DAMAGE_SPELL,MOD_P_HELLSTAFF);
+							gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER_BURN, CEF_FLAG6, trace.endpos, "t",
+									forward);
+						}
 					}
 					// this seems to alleviate the problem of a trace hitting the same ent multiple times...
 					VectorSubtract(trace.endpos, startpos, vect);
@@ -247,7 +247,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 
 					VectorCopy(trace.endpos, startpos);
 					VectorSubtract(endpos, startpos, vect);
-					if(VectorLength(vect) > 16.0)
+					if (VectorLength(vect) > 16.0)
 					{
 						VectorMA(startpos, 16.0, forward, startpos);
 					}
@@ -274,7 +274,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		blen = (byte)(VectorLength(vect)/8.0);
 
 		// decide if we need a scorch mark or not
-		if(IsDecalApplicable(caster, trace.ent, caster->s.origin, trace.surface, &trace.plane, planedir))
+		if (IsDecalApplicable(caster, trace.ent, caster->s.origin, trace.surface, &trace.plane, planedir))
 			gi.CreateEffect(NULL, FX_WEAPON_HELLSTAFF_POWER, CEF_FLAG6|CEF_FLAG7, startpos, "tb",
 					forward, blen);
 		else
@@ -290,7 +290,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 
 		//Check ahead first to see if it's going to hit anything at this angle
 		AngleVectors(aimangles, forward, NULL, NULL);
-		if(caster->client->playerinfo.flags & PLAYER_FLAG_NO_LARM)
+		if (caster->client->playerinfo.flags & PLAYER_FLAG_NO_LARM)
 		{
 			VectorScale(forward, HELLBOLT_SPEED, hellbolt->velocity);
 		}
@@ -298,7 +298,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 		{
 			VectorMA(loc, HELLBOLT_SPEED, forward, endpos);
 			trace = gi.trace(loc, vec3_origin, vec3_origin, endpos, caster, MASK_MONSTERSOLID);
-			if(trace.ent && ok_to_autotarget(caster, trace.ent))
+			if (trace.ent && ok_to_autotarget(caster, trace.ent))
 			{//already going to hit a valid target at this angle- so don't autotarget
 				VectorScale(forward, HELLBOLT_SPEED, hellbolt->velocity);
 			}

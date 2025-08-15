@@ -330,7 +330,7 @@ ShutdownGame(void)
 
 	ShutdownScripts(true);
 
-	if(game.entitiesSpawned)
+	if (game.entitiesSpawned)
 	{
 		G_ClearMessageQueues();
 
@@ -656,12 +656,12 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 	edict_t *damager;
 	vec3_t	checkpoint;
 
-	if(self->fire_damage_time > level.time)
+	if (self->fire_damage_time > level.time)
 	{
 		VectorCopy(self->s.origin, checkpoint);
 		checkpoint[2] += self->mins[2];
 		checkpoint[2] += self->size[2] * 0.5;
-		if(gi.pointcontents(checkpoint) & (CONTENTS_WATER|CONTENTS_SLIME))			// Not lava
+		if (gi.pointcontents(checkpoint) & (CONTENTS_WATER|CONTENTS_SLIME))			// Not lava
 		{//FIXME: make hiss and smoke too
 			gi.dprintf("%s fire doused\n", self->classname);
 			self->fire_damage_time = 0;
@@ -675,10 +675,10 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 			return;
 		}
 
-		if(self->health <= 0)
+		if (self->health <= 0)
 			return;
 
-		if(self->fire_damage_enemy)
+		if (self->fire_damage_enemy)
 			damager = self->fire_damage_enemy;
 		else
 			damager = world;
@@ -701,9 +701,9 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 			//tint it darker brown as goes on?  How to get back? no, scorched art would look better
 		}
 
-		if(self->client)
+		if (self->client)
 		{
-			if(self->client->playerinfo.lowerseq == ASEQ_ROLLDIVEF_W || self->client->playerinfo.lowerseq == ASEQ_ROLLDIVEF_R || self->client->playerinfo.lowerseq == ASEQ_ROLL_FROM_FFLIP ||
+			if (self->client->playerinfo.lowerseq == ASEQ_ROLLDIVEF_W || self->client->playerinfo.lowerseq == ASEQ_ROLLDIVEF_R || self->client->playerinfo.lowerseq == ASEQ_ROLL_FROM_FFLIP ||
 				self->client->playerinfo.upperseq == ASEQ_ROLLDIVEF_W || self->client->playerinfo.upperseq == ASEQ_ROLLDIVEF_R || self->client->playerinfo.upperseq == ASEQ_ROLL_FROM_FFLIP ||
 				self->client->playerinfo.lowerseq == ASEQ_ROLL_L || self->client->playerinfo.lowerseq == ASEQ_ROLL_R || self->client->playerinfo.lowerseq == ASEQ_ROLL_B ||
 				self->client->playerinfo.upperseq == ASEQ_ROLL_L || self->client->playerinfo.upperseq == ASEQ_ROLL_R || self->client->playerinfo.upperseq == ASEQ_ROLL_B)
@@ -732,13 +732,13 @@ static void EntityThink(edict_t *self)
 	//see if anything is happening to us we need to update...
 	CheckContinuousAutomaticEffects(self);
 
-	if(self->pre_think && self->next_pre_think > 0.0f && self->next_pre_think < level.time)
+	if (self->pre_think && self->next_pre_think > 0.0f && self->next_pre_think < level.time)
 	{//not used for guides anymore, but nice for effects
 		//like tinting/fading, etc that should continue
 		//while the entity is doing other stuff
 		self->pre_think(self);
 	}
-	if(!ThinkTime(self))
+	if (!ThinkTime(self))
 	{
 		return;
 	}
@@ -747,7 +747,7 @@ static void EntityThink(edict_t *self)
 
 static void EntityPostThink(edict_t *self)
 {
-	if(self->post_think && self->next_post_think > 0.0f && self->next_post_think < level.time)
+	if (self->post_think && self->next_post_think > 0.0f && self->next_post_think < level.time)
 	{//for effects that rely on accurate physics info
 		self->post_think (self);
 	}
@@ -762,9 +762,9 @@ static void SetNumPlayers (void)
 	game.num_clients = 0;
 	for(i = 0; i < MAX_CLIENTS; i++, ent++)
 	{//If player hasn't moved, don't clear this
-		if(ent)
+		if (ent)
 		{
-			if(ent->client)
+			if (ent->client)
 			{
 				game.num_clients++;
 			}
@@ -782,15 +782,15 @@ UpdatePlayerBuoys(void)
 
 	for(i = 0; i<MAX_CLIENTS; i++)
 	{
-		if(level.player_buoy[i] > NULL_BUOY)
+		if (level.player_buoy[i] > NULL_BUOY)
 		{
 			ent = g_edicts;
 			for(j = 0; j < globals.num_edicts; j++, ent++)
 			{//If player hasn't moved, don't clear this
-				if(ent->s.number - 1 == i)
+				if (ent->s.number - 1 == i)
 				{
 					VectorSubtract(level.buoy_list[level.player_buoy[i]].origin, ent->s.origin, v);
-					if(VectorLengthSquared(v) > 576)//24 squared
+					if (VectorLengthSquared(v) > 576)//24 squared
 						dont_null = false;
 					else
 						dont_null = true;
@@ -799,7 +799,7 @@ UpdatePlayerBuoys(void)
 			}
 		}
 
-		if(!dont_null)
+		if (!dont_null)
 		{
 			level.player_last_buoy[i] = level.player_buoy[i];//save it so monsters can check this first- FIXME: should this expire?
 			level.player_buoy[i] = NULL_BUOY;//this is for monsters following buoys- only the first monster who's searching for the player has to do a buoy connection to him this frame, the rest can use this- reset each frame
@@ -817,7 +817,7 @@ G_RunFrame(void)
 	int i;
 	edict_t *ent;
 
-	if(deathmatch->value || coop->value)
+	if (deathmatch->value || coop->value)
 	{
 		blood_level->value = Clamp(blood_level->value, VIOLENCE_NONE, VIOLENCE_NORMAL);
 	}
@@ -843,7 +843,7 @@ G_RunFrame(void)
 	UpdateSkeletons();
 
 	//Keep track of player buoys
-	if(!deathmatch->value)
+	if (!deathmatch->value)
 		UpdatePlayerBuoys();
 	else
 		SetNumPlayers();//for shrines and pick-ups
@@ -914,7 +914,7 @@ G_RunFrame(void)
 		VectorCopy(ent->s.origin, ent->s.old_origin);
 
 		// Make sure the entity still has something to stand on
-		if(ent->groundentity)
+		if (ent->groundentity)
 		{
 			// check for the groundentity being freed
 			if (!ent->groundentity->inuse)
@@ -925,7 +925,7 @@ G_RunFrame(void)
 			{	// if the ground entity moved, make sure we are still on it
 				ent->groundentity = NULL;
 
-				if(ent->svflags & SVF_MONSTER)
+				if (ent->svflags & SVF_MONSTER)
 				{
 					CheckEntityOn(ent);
 				}

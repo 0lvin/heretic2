@@ -40,21 +40,21 @@ qboolean KeepSelfAI(client_entity_t *_this, centity_t *owner)
 
 qboolean AttemptRemoveSelf(client_entity_t *self, centity_t *owner)
 {
-	if(self->flags & (CEF_NO_DRAW|CEF_DISAPPEARED|CEF_DROPPED))
+	if (self->flags & (CEF_NO_DRAW|CEF_DISAPPEARED|CEF_DROPPED))
 	{
 		return false;
 	}
 
-	if(self->flags & CEF_CULLED)
+	if (self->flags & CEF_CULLED)
 	{
-		if(self->r.depth > CFX_CULLING_DIST)
+		if (self->r.depth > CFX_CULLING_DIST)
 		{
 			return false;
 		}
 	}
 	else
 	{
-		if(self->r.depth > r_farclipdist->value)
+		if (self->r.depth > r_farclipdist->value)
 		{
 			return false;
 		}
@@ -74,7 +74,7 @@ qboolean LinkedEntityUpdatePlacement(client_entity_t *current, centity_t *owner)
 	matrix3_t rotation;
 	vec3_t up, direction;
 
-	if(current->r.flags & RF_FIXED)
+	if (current->r.flags & RF_FIXED)
 	{
 		Matrix3FromAngles(owner->lerp_angles, rotation);
 
@@ -102,7 +102,7 @@ qboolean OffsetLinkedEntityUpdatePlacement(client_entity_t *current, centity_t *
 
 	Matrix3MultByVec3(rotation, current->origin, origin);
 
-	if(current->r.flags & RF_FIXED)
+	if (current->r.flags & RF_FIXED)
 	{
 		VectorAdd(current->origin, current->direction, direction);
 		VectorAdd(current->origin, current->up, up);
@@ -140,7 +140,7 @@ qboolean ReferenceLinkedEntityUpdatePlacement(struct client_entity_s *self, cent
 
 	Matrix3MultByVec3(rotation, self->origin, origin);
 
-	if(self->r.flags & RF_FIXED)
+	if (self->r.flags & RF_FIXED)
 	{
 		VectorAdd(self->origin, self->direction, direction);
 		VectorAdd(self->origin, self->up, up);
@@ -193,7 +193,7 @@ int GetSolidDist(vec3_t origin, vec_t radius, float maxdist, vec_t *dist)
 	end[2] += maxdist;
 	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
 
-	if(trace.fraction == 1.0F)
+	if (trace.fraction == 1.0F)
 	{
 		*dist = maxdist;
 		return false;
@@ -235,7 +235,7 @@ int GetWaterNormal(vec3_t origin, float radius, float maxdist, vec3_t normal, ve
 	end[2] -= maxdist;
 
 	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
-	if((trace.fraction == 1.0F) || (trace.contents & MASK_SOLID))
+	if ((trace.fraction == 1.0F) || (trace.contents & MASK_SOLID))
 		return false;
 
 	VectorCopy(trace.plane.normal, normal);
@@ -256,12 +256,12 @@ void FizzleEffect (client_entity_t *self, vec3_t surface_top, vec3_t normal)
 	vec3_t spot;
 	int	num_puffs, i;
 
-	if(self)
+	if (self)
 	{
-		if(self->dlight)
+		if (self->dlight)
 			self->dlight->intensity = 0;//lights out
 	}
-	if(irand(0, 3))
+	if (irand(0, 3))
 	{
 		fxi.S_StartSound(surface_top, -1, CHAN_AUTO,
 			fxi.S_RegisterSound(va("ambient/lavadrop%c.wav", irand('1', '3'))), 1, ATTN_STATIC, 0);
@@ -292,14 +292,14 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 	entity_t	*r = &self->r;
 	qboolean	do_effect = false;
 
-	if(Vec3IsZero(self->velocity))
+	if (Vec3IsZero(self->velocity))
 		return false;
 
-	if(Vec3IsZero(self->acceleration))
+	if (Vec3IsZero(self->acceleration))
 		return false;
 
 	//BTW, make more debris leave particle trails, like dust for wood, pebbles for rock, etc.
-	if(self->SpawnInfo&SIF_INWATER)
+	if (self->SpawnInfo&SIF_INWATER)
 	{
 		//leave several bubbles?
 		d_time*=0.5;
@@ -329,9 +329,9 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 
 	*trace = fxi.Trace(r->origin, mins, maxs, end, MASK_SHOT|MASK_WATER, self->flags);
 
-	if((trace->fraction < 1.0) && !trace->allsolid && !trace->startsolid && !Vec3IsZeroEpsilon(trace->plane.normal))
+	if ((trace->fraction < 1.0) && !trace->allsolid && !trace->startsolid && !Vec3IsZeroEpsilon(trace->plane.normal))
 	{
-		if(trace->surface->flags&SURF_SKY)
+		if (trace->surface->flags&SURF_SKY)
 		{//remove it
 			self->Update = FXDebris_Remove;
 			self->updateTime = fxi.cl->time + 0.1;
@@ -355,12 +355,12 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 
 		hit_angle = DotProduct(dir, trace->plane.normal);
 
-		if(r_detail->value < DETAIL_UBERHIGH || !irand(0, 1))
+		if (r_detail->value < DETAIL_UBERHIGH || !irand(0, 1))
 			do_effect = true;
 
-		if(trace->contents & CONTENTS_WATER && !(self->SpawnInfo&SIF_INWATER))
+		if (trace->contents & CONTENTS_WATER && !(self->SpawnInfo&SIF_INWATER))
 		{
-			if(self->flags&CEF_FLAG6)
+			if (self->flags&CEF_FLAG6)
 			{
 				self->flags &= ~CEF_FLAG6;
 				FizzleEffect(self, surface_top, trace->plane.normal);
@@ -368,15 +368,15 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 
 			self->SpawnInfo |= SIF_INWATER;//in water now, sink a little slower
 			//spawn ripples, splash
-			if(do_effect)
+			if (do_effect)
 			{
 				FXDoWaterEntrySplash(NULL, FX_WATER_ENTRYSPLASH, 0, surface_top, 64, trace->plane.normal);
 			}
 
 
-			if(flrand(-0.5, 0) < hit_angle)
+			if (flrand(-0.5, 0) < hit_angle)
 			{//splash sound
-				if(do_effect)
+				if (do_effect)
 				{
 					fxi.S_StartSound(r->origin, -1, CHAN_AUTO,
 							fxi.S_RegisterSound(va("misc/splish%c.wav", irand('2', '3'))), 1, ATTN_STATIC, 0);
@@ -386,16 +386,16 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 			}
 
 			material = self->SpawnInfo & SIF_FLAG_MASK;
-			if(material!=MAT_WOOD)//wood floats, everything else can keep sinking
+			if (material!=MAT_WOOD)//wood floats, everything else can keep sinking
 			{//bubbles and blurp sound
-				if(do_effect)
+				if (do_effect)
 				{
 					FXBubble(NULL, FX_BUBBLE, 0, surface_top);
 					fxi.S_StartSound(r->origin, -1, CHAN_AUTO,
 							fxi.S_RegisterSound("misc/splish1.wav"), 1, ATTN_STATIC, 0);
 				}
 				*trace = fxi.Trace(trace->endpos, mins, maxs, end, MASK_SHOT, self->flags);
-				if(trace->fraction < 1.0)
+				if (trace->fraction < 1.0)
 				{
 					d_time *= trace->fraction;
 
@@ -418,7 +418,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 			}
 			else//sit on surface
 			{//splash sound
-				if(do_effect)
+				if (do_effect)
 				{
 					fxi.S_StartSound(r->origin, -1, CHAN_AUTO,
 							fxi.S_RegisterSound(va("player/waterrun%c.wav", irand('1', '2'))), 1, ATTN_STATIC, 0);
@@ -434,10 +434,10 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 		}
 		else if(trace->contents & CONTENTS_SLIME&& !(self->SpawnInfo&SIF_INMUCK))
 		{
-			if(self->flags&CEF_FLAG6)
+			if (self->flags&CEF_FLAG6)
 			{
 				self->flags &= ~CEF_FLAG6;
-				if(do_effect)
+				if (do_effect)
 				{
 					FizzleEffect(self, surface_top, trace->plane.normal);
 				}
@@ -445,14 +445,14 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 
 			self->SpawnInfo |= SIF_INMUCK;//in muck, sink really really slowly
 			//spawn ripples, splash
-			if(do_effect)
+			if (do_effect)
 			{
 				FXDoWaterEntrySplash(NULL, FX_WATER_ENTRYSPLASH, 0, surface_top, 64, trace->plane.normal);
 			}
 
-			if(flrand(-0.75, 0) < hit_angle)
+			if (flrand(-0.75, 0) < hit_angle)
 			{//splash sound
-				if(do_effect)
+				if (do_effect)
 				{
 					fxi.S_StartSound(r->origin, -1, CHAN_AUTO,
 						fxi.S_RegisterSound(va("player/waterrun%c.wav", irand('1', '2'))), 1, ATTN_STATIC, 0);
@@ -462,7 +462,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 			}
 
 			//bubbles and blurp sound
-			if(do_effect)
+			if (do_effect)
 			{
 				FXBubble(NULL, FX_BUBBLE, 0, surface_top);
 				fxi.S_StartSound(r->origin, -1, CHAN_AUTO,
@@ -480,7 +480,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 			self->flags &= ~CEF_FLAG6;
 			self->SpawnInfo |= SIF_INLAVA;//in lava now, continue to burn
 			//smoke puffs and sizzle here
-			if(do_effect)
+			if (do_effect)
 			{
 				FizzleEffect(self, surface_top, trace->plane.normal);
 			}
@@ -529,7 +529,7 @@ int GetScaledCount(int count, float refdepend)
 	if (r_detail->value == DETAIL_LOW)
 		work = work * 0.5;
 
-	if(work < 1.0)
+	if (work < 1.0)
 	{
 		work = 1.0;
 	}
@@ -570,7 +570,7 @@ qboolean RefPointsValid(centity_t *owner)
 // FIXME Obsolete
 qboolean ReferencesInitialized(centity_t *owner)
 {
-	if(!owner->referenceInfo)
+	if (!owner->referenceInfo)
 	{	// _this probably shouldn't happen, if it does, let me know, JKH
 //		assert(0);
 		return false;
@@ -601,12 +601,12 @@ void InsertInCircularList(client_entity_t *self)
 	root = &clientEnts;
 
 	// if we have an entry already - delete it
-	if(CircularList[CurrentCirclePointer])
+	if (CircularList[CurrentCirclePointer])
 	{
 		// search for _this client entities entry in the client entity list
 		for(prev = root, current = *root; current; current = current->next)
 		{
-			if(current == CircularList[CurrentCirclePointer])
+			if (current == CircularList[CurrentCirclePointer])
 			{
 				RemoveEffectFromList(prev,NULL);
 				break;

@@ -280,12 +280,12 @@ float NormalizeAngle(float angle)
 	angle = fmod(angle, ANGLE_360);
 
 	// Makes the angle signed
-	if(angle >= ANGLE_180)
+	if (angle >= ANGLE_180)
 	{
 		angle -= ANGLE_360;
 	}
 
-	if(angle <= -ANGLE_180)
+	if (angle <= -ANGLE_180)
 	{
 		angle += ANGLE_360;
 	}

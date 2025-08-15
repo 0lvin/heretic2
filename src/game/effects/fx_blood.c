@@ -75,7 +75,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 			{
 				if (r_detail->value != DETAIL_HIGH)
 				{
-					if(yellow_blood)
+					if (yellow_blood)
 						bpart = PART_4x4_GREENBLOOD1;
 					else
 						bpart = PART_4x4_BLOOD1;
@@ -83,7 +83,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 				}
 				else
 				{
-					if(yellow_blood)
+					if (yellow_blood)
 						bpart = irand(PART_4x4_GREENBLOOD1, PART_4x4_GREENBLOOD2);
 					else
 						bpart = irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2);
@@ -101,7 +101,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 			{
 				if (r_detail->value != DETAIL_HIGH)
 				{
-					if(yellow_blood)
+					if (yellow_blood)
 						bpart = PART_8x8_GLOBBIT1;
 					else
 						bpart = PART_8x8_BLOOD;
@@ -109,7 +109,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 				}
 				else
 				{
-					if(yellow_blood)
+					if (yellow_blood)
 						bpart = irand(PART_8x8_GLOBBIT1, PART_8x8_GLOBBIT2);
 					else
 						bpart = PART_8x8_BLOOD;
@@ -126,7 +126,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 		case 2:	// Some big blobs
 			for (j=0; j<2; j++)
 			{
-				if(yellow_blood)
+				if (yellow_blood)
 					bpart = PART_16x16_GREENBLOOD;
 				else
 					bpart = PART_16x16_BLOOD;
@@ -140,7 +140,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 			}
 			break;
 		case 3:	// A big splash
-			if(yellow_blood)
+			if (yellow_blood)
 				bpart = PART_32x32_GREENBLOOD;
 			else
 				bpart = PART_32x32_BLOOD;
@@ -168,10 +168,10 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 	int					size;
 	qboolean			yellow_blood = false;
 
-	if((spawner->SpawnInfo&SIF_FLAG_MASK) == MAT_INSECT)//insect blood is yellow-green
+	if ((spawner->SpawnInfo&SIF_FLAG_MASK) == MAT_INSECT)//insect blood is yellow-green
 		yellow_blood = true;
 
-	if(amount == -1)
+	if (amount == -1)
 		speed = 0;
 	else
 		speed = 8 + 4*amount;
@@ -191,14 +191,14 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 			{
 				if (r_detail->value != DETAIL_HIGH)
 				{
-					if(yellow_blood)
+					if (yellow_blood)
 						drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)] | PFL_SOFT_MASK, pal2, 800);
 					else
 						drop = ClientParticle_new(PART_4x4_BLOOD1 | PFL_SOFT_MASK, pal2, 800);
 				}
 				else
 				{
-					if(yellow_blood)
+					if (yellow_blood)
 						drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)], pal, 800);
 					else
 						drop = ClientParticle_new(irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2), pal, 800);
@@ -214,7 +214,7 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 			}
 			break;
 		case 1:	// Some larger globs
-			if(yellow_blood)
+			if (yellow_blood)
 				drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)], pal, 800);
 			else
 				drop = ClientParticle_new(PART_8x8_BLOOD, pal, 800);
@@ -247,7 +247,7 @@ static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
 	VectorMA(origin, 16.0, direction, end);
 
 	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
-	if(trace.fraction != 1.0)
+	if (trace.fraction != 1.0)
 	{
 		// Set the new endpos and plane (should be exact)
 		VectorCopy(trace.endpos, origin);
@@ -268,7 +268,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 	qboolean			yellow_blood = false;
 	int					bpart;
 
-	if(self->flags&CEF_FLAG8)
+	if (self->flags&CEF_FLAG8)
 		yellow_blood = true;
 
 	if (self->SpawnInfo>500)
@@ -277,7 +277,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 	{
 		if (r_detail->value != DETAIL_HIGH)
 		{
-			if(yellow_blood)
+			if (yellow_blood)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = PART_4x4_BLOOD1;
@@ -285,7 +285,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 		}
 		else
 		{
-			if(yellow_blood)
+			if (yellow_blood)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2);
@@ -303,7 +303,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 	fxi.S_StartSound(p->origin, -1, CHAN_AUTO,
 		fxi.S_RegisterSound(va("ambient/waterdrop%c.wav", irand('1', '3'))), flrand(0.5, 0.8), ATTN_STATIC, 0);
 
-	if(!irand(0, 2))
+	if (!irand(0, 2))
 		VectorSet(self->startpos, crandk(), crandk(), 0);
 
 	self->Update = BloodSplatDripUpdate;
@@ -321,10 +321,10 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 	qboolean			yellow_blood = false;
 	int					bpart;
 
-	if(!AttemptRemoveSelf(self, owner))
+	if (!AttemptRemoveSelf(self, owner))
 		return (false);
 
-	if(self->flags&CEF_FLAG8)
+	if (self->flags&CEF_FLAG8)
 		yellow_blood = true;
 
 	//drip- fiXME: make p duration based on self->radius?
@@ -335,7 +335,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 	{
 		if (r_detail->value != DETAIL_HIGH)
 		{
-			if(yellow_blood)
+			if (yellow_blood)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = PART_4x4_BLOOD1;
@@ -343,7 +343,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 		}
 		else
 		{
-			if(yellow_blood)
+			if (yellow_blood)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2);
@@ -359,21 +359,21 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 
 		AddParticleToList(self, p);
 
-		if(driptime >= 17)
+		if (driptime >= 17)
 		{
 			p->duration = driptime * 3 * grav_mod;
 			self->SpawnInfo++;
 		}
 	}
 
-	if(self->SpawnInfo && driptime >= 17)
+	if (self->SpawnInfo && driptime >= 17)
 	{//splash
 		self->Update = BloodSplatSplishUpdate;
 		self->updateTime = driptime;
 	}
 	else
 	{
-		if(!irand(0, 3))
+		if (!irand(0, 3))
 			VectorSet(self->startpos, crandk(), crandk(), 0);
 
 		self->updateTime = irand(400, 1600);
@@ -391,7 +391,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 	VectorCopy(tnormal, normal);
 	VectorScale(normal, -1, normal);
 
-	if(trueplane || GetTruePlane(origin, normal))
+	if (trueplane || GetTruePlane(origin, normal))
 	{
 		float scale;
 
@@ -399,7 +399,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 
 		bloodmark->r.angles[ROLL] = flrand(0, ANGLE_360);
 
-		if(yellow)
+		if (yellow)
 			bloodmark->r.model = splat_models[1];
 		else
 			bloodmark->r.model = splat_models[0];
@@ -407,7 +407,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		bloodmark->r.flags |= RF_FIXED | RF_ALPHA_TEXTURE;
 		bloodmark->r.frame = irand(0,4);
 
-		if(dark)
+		if (dark)
 		{
 			brightness = irand(32, 72);
 			bloodmark->r.color.r = brightness;
@@ -428,16 +428,16 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		scale = flrand(0.2, 0.45);
 		VectorSet(bloodmark->r.scale, scale, scale, scale);
 
-		if(tnormal[2] <= -0.7 && !irand(0, 2) && bloodmark->r.frame != 2 && bloodmark->r.frame != 4)
+		if (tnormal[2] <= -0.7 && !irand(0, 2) && bloodmark->r.frame != 2 && bloodmark->r.frame != 4)
 		{
 			trace_t		extratrace;
 			vec3_t		endpos;
 
 			VectorMA(origin, 256, tnormal, endpos);
 			extratrace = fxi.Trace(origin, vec3_origin, vec3_origin, endpos, MASK_DRIP, CEF_CLIP_TO_WORLD);
-			if(extratrace.fraction<1.0 && extratrace.fraction > 0.0625)//bewteen 16 and 256
+			if (extratrace.fraction<1.0 && extratrace.fraction > 0.0625)//bewteen 16 and 256
 			{
-				if(extratrace.plane.normal[2] >= 0.7)
+				if (extratrace.plane.normal[2] >= 0.7)
 				{
 					bloodmark->radius = extratrace.fraction * 256;
 					VectorSubtract(extratrace.endpos, origin, bloodmark->startpos2);
@@ -448,7 +448,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 
 			VectorClear(bloodmark->startpos);
 			bloodmark->LifeTime = 0;
-			if(yellow)
+			if (yellow)
 				bloodmark->flags |= CEF_FLAG8;
 			bloodmark->Update = BloodSplatDripUpdate;
 		}
@@ -482,7 +482,7 @@ void FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BLOOD].formatString, &velocity, &amount);
 
-	if(flags&CEF_FLAG8)
+	if (flags&CEF_FLAG8)
 		yellow_blood = true;
 
 	// lets add level of detail here to the amount we pump out
@@ -524,13 +524,13 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 	spawner->updateTime = irand(40, 60);
 
 	spawner->LifeTime -= 50;
-	if(spawner->LifeTime < 0)					// Effect finished
+	if (spawner->LifeTime < 0)					// Effect finished
 		return false;
 
-	if(spawner->LifeTime < 800)					// Effect needs to stay alive until particles die
+	if (spawner->LifeTime < 800)					// Effect needs to stay alive until particles die
 		return true;
 
-	if(spawner->flags&CEF_FLAG8)//yellow
+	if (spawner->flags&CEF_FLAG8)//yellow
 		yellow_blood = true;
 
 	// This tells if we are wasting our time, because the reference points are culled.
@@ -548,7 +548,7 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 
 	for(i = 0; i < NUM_BLOOD_PARTS; i++)
 	{
-		if(yellow_blood)
+		if (yellow_blood)
 			bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 		else
 			bpart = irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2);
@@ -574,11 +574,11 @@ void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_LINKEDBLOOD].formatString, &life, &refpointidx);
 	count = 1;
-	if(life > 1600)
+	if (life > 1600)
 	{
 		count = (life - 1600) / 100;
 		life = 1600;
-		if(count > 10)				// Max out saftey check
+		if (count > 10)				// Max out saftey check
 			count = 10;
 	}
 
@@ -605,7 +605,7 @@ void FXTrailBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				velocity;
 	qboolean			yellow_blood = false;
 
-	if(flags&CEF_FLAG8)
+	if (flags&CEF_FLAG8)
 		yellow_blood = true;
 
 	spawner = DoBloodSplash(origin, amount, yellow_blood);

@@ -93,7 +93,7 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 
 	// Set / reset flag that says I am movelocked.
 
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		if (seqdata->lockmove)
 			playerinfo->pm_flags |= PMF_LOCKMOVE;
@@ -123,7 +123,7 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. reset torso twisting.
 
-	if(!(playerinfo->edictflags&FL_CHICKEN))
+	if (!(playerinfo->edictflags&FL_CHICKEN))
 		playerinfo->ResetJointAngles(playerinfo);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
@@ -155,7 +155,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. no torso aiming.
 
-	if(!(playerinfo->edictflags&FL_CHICKEN))
+	if (!(playerinfo->edictflags&FL_CHICKEN))
 		playerinfo->ResetJointAngles(playerinfo);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
@@ -388,7 +388,7 @@ void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 
 	// Now check for idles.  If the upper half has an idle, then the upper half is copied.
 
-	if(newseq == ASEQ_NONE)
+	if (newseq == ASEQ_NONE)
 	{
 		if (playerinfo->lowerseq == ASEQ_NONE)
 		{
@@ -476,7 +476,7 @@ void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 	playerinfo->pm_flags |= PMF_LOCKMOVE;
 	VectorClear(playerinfo->velocity);
 
-	if(playerinfo->waterlevel>1)
+	if (playerinfo->waterlevel>1)
 		playerinfo->waterlevel = 1;
 }
 
@@ -484,7 +484,7 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 {
 	int chance = irand(0,100);
 
-	if(playerinfo->isclient)
+	if (playerinfo->isclient)
 	{
 		if (!(playerinfo->edictflags & FL_CHICKEN))
 		{	// Chicken plays no pain sound.
@@ -493,7 +493,7 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 				// Normal.
 
 				case 0:
-					if(chance < 50)
+					if (chance < 50)
 						playerinfo->CL_Sound(SND_PRED_ID40,playerinfo->origin, CHAN_VOICE, "*pain1.wav", 1.0,	ATTN_NORM, 0);
 					else
 						playerinfo->CL_Sound(SND_PRED_ID41,playerinfo->origin, CHAN_VOICE, "*pain2.wav", 1.0, ATTN_NORM, 0);
@@ -503,7 +503,7 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 				// Gas.
 
 				case 1:
-					if(chance < 33)
+					if (chance < 33)
 						playerinfo->CL_Sound(SND_PRED_ID42,playerinfo->origin, CHAN_VOICE, "*cough1.wav", 1.0,	ATTN_NORM, 0);
 					else if (chance < 66)
 						playerinfo->CL_Sound(SND_PRED_ID43,playerinfo->origin, CHAN_VOICE, "*cough2.wav", 1.0, ATTN_NORM, 0);
@@ -530,7 +530,7 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 				// Normal.
 
 				case 0:
-					if(chance < 50)
+					if (chance < 50)
 						playerinfo->G_Sound(SND_PRED_ID40,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
 					else
 						playerinfo->G_Sound(SND_PRED_ID41,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
@@ -540,7 +540,7 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 				// Gas.
 
 				case 1:
-					if(chance < 33)
+					if (chance < 33)
 						playerinfo->G_Sound(SND_PRED_ID42,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
 					else if (chance < 66)
 						playerinfo->G_Sound(SND_PRED_ID43,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);

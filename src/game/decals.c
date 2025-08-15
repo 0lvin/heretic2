@@ -18,15 +18,15 @@ qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurf
 	int		contents;
 
 
-	if(!plane)
+	if (!plane)
 	{
 		return false;
 	}
-	if(!surface)
+	if (!surface)
 	{
 		return false;
 	}
-	if(!Vec3NotZero(plane->normal))
+	if (!Vec3NotZero(plane->normal))
 	{
 		return false;
 	}
@@ -36,31 +36,31 @@ qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurf
 		return false;
 	}
 	// target is damageable
-	if(target->takedamage)
+	if (target->takedamage)
 	{
 		return false;
 	}
-	if(surface->flags & SURF_SKY)
+	if (surface->flags & SURF_SKY)
 	{
 		return false;
 	}
-	if(!target)
+	if (!target)
 	{
 		return false;
 	}
 	contents = gi.pointcontents(origin);
-	if(contents & MASK_WATER)
+	if (contents & MASK_WATER)
 	{
 		return false;
 	}
-	if(target->solid == SOLID_BSP)
+	if (target->solid == SOLID_BSP)
 	{
-		if(contents & CONTENTS_TRANSLUCENT)
+		if (contents & CONTENTS_TRANSLUCENT)
 		{
 			return false;
 		}
 	}
-	if(planeDir)
+	if (planeDir)
 	{
 		VectorCopy(plane->normal, planeDir);
 	}

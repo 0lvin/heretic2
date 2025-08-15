@@ -87,7 +87,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner
 
 	// Allow us adequate time to set up valid 'old' data because the reference points lag behind by
 	// a frame.
-	if((Self->AnimSpeed+=1.0)<2.0)
+	if ((Self->AnimSpeed+=1.0)<2.0)
 		return true;
 
 	// Create a rotation matrix
@@ -115,7 +115,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner
 		part_type = PART_16x16_SPARK_I;
 
 	// ensure the particles are completely drawn
-   	color.c = 0xffffffff;
+	color.c = 0xffffffff;
 
 	// Now draw the trail.
 	while(TrailLength-->0.0f)
@@ -163,7 +163,7 @@ void FXSpellHands(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	for(I=0;I<16;I++)
 	{
-		if(!(Refpoints & (1 << I)))
+		if (!(Refpoints & (1 << I)))
 			continue;
 
 		Trail=ClientEntity_new(Type,Flags|CEF_NO_DRAW|CEF_ADDITIVE_PARTS,Origin,0,cast_speed);

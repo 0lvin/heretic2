@@ -205,7 +205,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	paletteRGBA_t	lightcolor = {{{0, 128, 128, 255}}};
 
 	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_MAGICMISSILEEXPLODE].formatString, dir);
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
 	}

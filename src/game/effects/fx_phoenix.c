@@ -214,7 +214,7 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	missile->NoOfAnimFrames = 7;					// End on frame number 7.
 	missile->Scale = 1;								// Positive frame count
 	VectorSet(missile->r.scale, .8, .8, .8);
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{
 		missile->Update = FXPhoenixMissilePowerThink;
 	}
@@ -249,7 +249,7 @@ qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owne
 	explosion->r.angles[YAW] += explosion->velocity2[YAW] * velfactor;
 	explosion->r.angles[PITCH] += explosion->velocity2[PITCH] * velfactor;
 
-	if(explosion->dlight->intensity > 0.0F)
+	if (explosion->dlight->intensity > 0.0F)
 		explosion->dlight->intensity -= 5.0F;
 
 	return true;
@@ -288,10 +288,10 @@ FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *owner)
 		return false;
 	}
 
-	if(r_detail->value == DETAIL_LOW)
+	if (r_detail->value == DETAIL_LOW)
 		dur = 175;
 	else
-	if(r_detail->value == DETAIL_NORMAL)
+	if (r_detail->value == DETAIL_NORMAL)
 		dur = 210;
 	else
 		dur = 250;
@@ -352,10 +352,10 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_PHOENIXEXPLODE].formatString,dir,sdir);
 
 	// make the scorch mark if we should
-	if(flags & CEF_FLAG8)
+	if (flags & CEF_FLAG8)
 		FXClientScorchmark(origin, sdir);
 
-	if(flags & CEF_FLAG6)
+	if (flags & CEF_FLAG6)
 	{	// powered up version
 		FXPhoenixExplodePower(owner, type, flags, origin, dir);
 		return;
@@ -363,10 +363,10 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 	flags |= CEF_OWNERS_ORIGIN;
 
-	if(r_detail->value != DETAIL_LOW)
+	if (r_detail->value != DETAIL_LOW)
 	{
 		count =	EXPLODE_NUM_SMALLBALLS;
-		if(r_detail->value == DETAIL_NORMAL)
+		if (r_detail->value == DETAIL_NORMAL)
 			count =	EXPLODE_NUM_SMALLBALLS - 1;
 
 		// Create three smaller explosion spheres.
@@ -436,10 +436,10 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	explosion->d_scale=-4.0;
 	AddEffect(NULL, explosion);
 
-	if(r_detail->value == DETAIL_LOW)
+	if (r_detail->value == DETAIL_LOW)
 		dur = 150;
 	else
-	if(r_detail->value == DETAIL_NORMAL)
+	if (r_detail->value == DETAIL_NORMAL)
 		dur = 125;
 	else
 		dur = 100;
@@ -536,7 +536,7 @@ void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin,
 
 		trace = fxi.Trace(phOrg, minmax, minmax, endPos, CONTENTS_SOLID, CEF_CLIP_TO_WORLD);
 
-		if(trace.fraction > .99)
+		if (trace.fraction > .99)
 		{	// Burst in the air, no ground found.
 			subexplosion = ClientEntity_new(-1, flags, phOrg, NULL, 1000);
 			subexplosion->r.model = phoen_models[2];

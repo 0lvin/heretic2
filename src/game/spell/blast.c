@@ -36,17 +36,17 @@ void SpellCastBlast(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimd
 		AngleVectors(angles, fwd, NULL, NULL);
 		VectorMA(startpos, BLAST_DISTANCE, fwd, endpos);
 		trace = gi.trace(startpos, mins, maxs, endpos, caster, MASK_SHOT);
-		if(level.fighting_beast)
+		if (level.fighting_beast)
 		{
 			edict_t *ent;
 
-			if((ent = check_hit_beast(startpos, trace.endpos)))
+			if ((ent = check_hit_beast(startpos, trace.endpos)))
 				trace.ent = ent;
 		}
 
 		if (trace.ent && trace.ent->takedamage && !(EntReflecting(trace.ent, true, true)))
 		{
-			if(deathmatch->value)
+			if (deathmatch->value)
 				damage = irand(BLAST_DMG_MIN*0.75, BLAST_DMG_MAX*0.75);
 			else
 				damage = irand(BLAST_DMG_MIN, BLAST_DMG_MAX);

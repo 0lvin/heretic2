@@ -249,13 +249,13 @@ float AddNormalizedAngles(float angle1, float angle2)
 {
 	float sum;
 
-	if(angle1 >= 0)
+	if (angle1 >= 0)
 	{
-		if(angle2 >= 0)
+		if (angle2 >= 0)
 		{
 			sum = angle1 + angle2;
 
-			if(sum >= ANGLE_180)
+			if (sum >= ANGLE_180)
 			{
 				return (sum - ANGLE_360);
 			}
@@ -267,11 +267,11 @@ float AddNormalizedAngles(float angle1, float angle2)
 	}
 	else
 	{
-		if(angle2 < 0)
+		if (angle2 < 0)
 		{
 			sum = angle1 + angle2;
 
-			if(sum < -ANGLE_180)
+			if (sum < -ANGLE_180)
 			{
 				return (sum + ANGLE_360);
 			}
@@ -287,7 +287,7 @@ float AddNormalizedAngles(float angle1, float angle2)
 
 qboolean ok_to_autotarget(edict_t *shooter, edict_t *target)
 {
-	if((!target->inuse)||(target->solid==SOLID_NOT)||(target->health<=0)||(target==shooter)||(target->svflags&SVF_NO_AUTOTARGET))
+	if ((!target->inuse)||(target->solid==SOLID_NOT)||(target->health<=0)||(target==shooter)||(target->svflags&SVF_NO_AUTOTARGET))
 		return false;
 
 	// Don't allow us to find our caster , if there is one.
@@ -300,26 +300,26 @@ qboolean ok_to_autotarget(edict_t *shooter, edict_t *target)
 
 	// Now test against single player / deathmatch / coop specifics.
 
-	if(deathmatch->value)
+	if (deathmatch->value)
 	{
 		// Only want to find other clients in deathmatch.
 
-		if(!target->client)
+		if (!target->client)
 			return false;
 	}
 	else
 	if (coop->value)
 	{
-		if(target->client && ((int)dmflags->value & DF_HURT_FRIENDS))
+		if (target->client && ((int)dmflags->value & DF_HURT_FRIENDS))
 			return true;
 		else
-		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
+		if ((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
 			return false;
 	}
 	else
 	{
 		// Find just monsters in single player / coop. - unless the hurt friends flag is set
-		if((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
+		if ((!(target->svflags&SVF_MONSTER))&&(!(target->svflags&SVF_ALLOW_AUTO_TARGET)))
 			return false;
 	}
 
@@ -360,14 +360,14 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 
 	assert(nearDist>=0.0);
 
-	if(LOSStartPos)
+	if (LOSStartPos)
 	{
-		if(!BBMin)
+		if (!BBMin)
 			VectorClear(_BBMin);
 		else
 			VectorCopy(BBMin,_BBMin);
 
-		if(!BBMax)
+		if (!BBMax)
 			VectorClear(_BBMax);
 		else
 			VectorCopy(BBMax,_BBMax);
@@ -390,7 +390,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 	for(ent = g_edicts + 1; ent < end; ent++)
 	{
 		// Ignore certain entities altogether.
-		if(!ok_to_autotarget(Finder, ent))
+		if (!ok_to_autotarget(Finder, ent))
 			continue;
 
 		// don't target ghosting players.
@@ -409,7 +409,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 		distTemp = distVect[1] * distVect[1] + distVect[0] * distVect[0];
 		curDist = distTemp + distVect[2] * distVect[2];
 
-		if((curDist >= nearDist2) && (curDist <= bestDist))
+		if ((curDist >= nearDist2) && (curDist <= bestDist))
 		{
 			mag = sqrt(distTemp);
 
@@ -417,20 +417,20 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 
 			curYaw = AddNormalizedAngles(curYaw,-baseYaw);
 
-			if((curYaw>=minHFOV)&&(curYaw<=maxHFOV))
+			if ((curYaw>=minHFOV)&&(curYaw<=maxHFOV))
 			{
 				mag=sqrt(distVect[1]*distVect[1]+distVect[2]*distVect[2]);
 
 				curPitch=asin(distVect[2]/mag);
 
-				if((curPitch>=minVFOV)&&(curPitch<=maxVFOV))
+				if ((curPitch>=minVFOV)&&(curPitch<=maxVFOV))
 				{
 					// If LOSStartPos is not NULL, we need a line of sight to the entity (see above), else
 					// skip to the next entity.
 
-					if(LOSStartPos)
+					if (LOSStartPos)
 					{
-						if(gi.inPVS(LOSStartPos, TempVec))
+						if (gi.inPVS(LOSStartPos, TempVec))
 						{//cheaper than a trace
 							Trace = gi.trace(LOSStartPos,				// Start pos.
 										   _BBMin,					// Bounding box min.
@@ -439,7 +439,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 										   Finder,					// Ignore this edict.
 										   CONTENTS_SOLID);			// Contents mask.
 
-							if((Trace.fraction!=1.0)||(Trace.startsolid))
+							if ((Trace.fraction!=1.0)||(Trace.startsolid))
 							{
 								continue;
 							}
@@ -506,14 +506,14 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 
 	assert(nearDist>=0.0);
 
-	if(LOSStartPos)
+	if (LOSStartPos)
 	{
-		if(!BBMin)
+		if (!BBMin)
 			VectorClear(_BBMin);
 		else
 			VectorCopy(BBMin,_BBMin);
 
-		if(!BBMax)
+		if (!BBMax)
 			VectorClear(_BBMax);
 		else
 			VectorCopy(BBMax,_BBMax);
@@ -546,7 +546,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 	{
 		ent=touchlist[i];
 		// Ignore certain entities altogether.
-		if(!ok_to_autotarget(Finder, ent))
+		if (!ok_to_autotarget(Finder, ent))
 			continue;
 
 		// Get the center (in world terms) of the entity (actually the center according to it's
@@ -561,7 +561,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 		distTemp = distVect[1] * distVect[1] + distVect[0] * distVect[0];
 		curDist = distTemp + distVect[2] * distVect[2];
 
-		if((curDist >= nearDist2) && (curDist <= bestDist))
+		if ((curDist >= nearDist2) && (curDist <= bestDist))
 		{
 			mag = sqrt(distTemp);
 
@@ -569,18 +569,18 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 
 			curYaw = AddNormalizedAngles(curYaw,-baseYaw);
 
-			if((curYaw>=minHFOV)&&(curYaw<=maxHFOV))
+			if ((curYaw>=minHFOV)&&(curYaw<=maxHFOV))
 			{
 				mag=sqrt(distVect[1]*distVect[1]+distVect[2]*distVect[2]);
 
 				curPitch=asin(distVect[2]/mag);
 
-				if((curPitch>=minVFOV)&&(curPitch<=maxVFOV))
+				if ((curPitch>=minVFOV)&&(curPitch<=maxVFOV))
 				{
 					// If LOSStartPos is not NULL, we need a line of sight to the entity (see above), else
 					// skip to the next entity.
 
-					if(LOSStartPos)
+					if (LOSStartPos)
 					{
 							Trace = gi.trace(LOSStartPos,				// Start pos.
 										   _BBMin,					// Bounding box min.
@@ -589,7 +589,7 @@ edict_t *FindNearestVisibleActorInFrustum(edict_t *Finder,vec3_t FinderAngles,
 										   Finder,					// Ignore this edict.
 										   CONTENTS_SOLID);			// Contents mask.
 
-							if((Trace.fraction!=1.0)||(Trace.startsolid))
+							if ((Trace.fraction!=1.0)||(Trace.startsolid))
 							{
 								continue;
 							}
@@ -623,12 +623,12 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 	assert(radius>=0.0);
 	assert(searchpos);
 
-	if(!mins)
+	if (!mins)
 		VectorClear(_mins);
 	else
 		VectorCopy(mins, _mins);
 
-	if(!maxs)
+	if (!maxs)
 		VectorClear(_maxs);
 	else
 		VectorCopy(maxs, _maxs);
@@ -646,7 +646,7 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 		if (!ent->takedamage && ent->health <= 0)
 			continue;
 
-		if(!ok_to_autotarget(searchent, ent))
+		if (!ok_to_autotarget(searchent, ent))
 			continue;
 
 		// don't target ghosting players, or target players in coop.
@@ -671,9 +671,9 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 
 		curDist = distVect[1] * distVect[1] + distVect[0] * distVect[0] + distVect[2] * distVect[2];
 
-		if(curDist <= bestDist)
+		if (curDist <= bestDist)
 		{
-			if(gi.inPVS(searchpos, entpos))
+			if (gi.inPVS(searchpos, entpos))
 			{//cheaper than a trace
 				Trace = gi.trace(searchpos,						// Start pos.
 							   _mins,					// Bounding box min.
@@ -682,7 +682,7 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 							   searchent,				// Ignore this edict.
 							   CONTENTS_SOLID);			// Contents mask.
 
-				if((Trace.fraction!=1.0)||(Trace.startsolid))
+				if ((Trace.fraction!=1.0)||(Trace.startsolid))
 				{
 					continue;
 				}
@@ -722,7 +722,7 @@ void CalculatePIV(edict_t *player)
 	int			frameidx, playeridx;
 
 	// if we have no names on through deathmatch flags, don't send them down
-	if(deathmatch->value && ((int)dmflags->value & DF_NONAMES))
+	if (deathmatch->value && ((int)dmflags->value & DF_NONAMES))
 	{
 		player->client->ps.PIV = 0;
 		return;
@@ -731,7 +731,7 @@ void CalculatePIV(edict_t *player)
 	// Only update data once every 8 frames
 	frameidx = level.framenum & 7;
 	playeridx = (player->s.number - 1) & 7;
-	if(frameidx != playeridx)
+	if (frameidx != playeridx)
 	{
 		return;
 	}
@@ -759,11 +759,11 @@ void CalculatePIV(edict_t *player)
 	{
 		assert(target->client);
 		// Don`t do an in view check on yourself
-		if(player == target)
+		if (player == target)
 		{
 			continue;
 		}
-		if(!target->inuse)
+		if (!target->inuse)
 		{
 			continue;
 		}
@@ -780,21 +780,21 @@ void CalculatePIV(edict_t *player)
 		VectorSubtract(endpos, org, dist);
 
 		// Check range to other player
-		if(VectorNormalize(dist) > MAX_PLAYER_VIEW)
+		if (VectorNormalize(dist) > MAX_PLAYER_VIEW)
 		{
 			continue;
 		}
 		// Check in players FOV
-		if(DotProduct(dist, movedir) < FOV)
+		if (DotProduct(dist, movedir) < FOV)
 		{
 			continue;
 		}
-		if(!gi.inPVS(org, endpos))
+		if (!gi.inPVS(org, endpos))
 		{
 			continue;
 		}
 		trace = gi.trace(org, mins, maxs, endpos, player, MASK_PLAYERSOLID);
-		if(trace.ent == target)
+		if (trace.ent == target)
 		{
 			PIV |= 1 << i;
 		}
@@ -822,14 +822,14 @@ void QPlaySound(edict_t *self, int sound, int channel)
 
 void CalculateKnockBack(vec3_t dir, float knockback, int flags, float mass, vec3_t vel)
 {
-	if(flags & DAMAGE_EXTRA_KNOCKBACK)
+	if (flags & DAMAGE_EXTRA_KNOCKBACK)
 	{
 		knockback *= EXTRA_KNOCKBACK_PRE_MULT;
 	}
 
 	VectorScale(dir, (KNOCK_BACK_MULTIPLIER * (float)knockback) / mass, vel);
 
-	if(flags & DAMAGE_EXTRA_KNOCKBACK)
+	if (flags & DAMAGE_EXTRA_KNOCKBACK)
 	{
 		vel[2] *= EXTRA_KNOCKBACK_POST_Z_MULT;
 	}
@@ -851,11 +851,11 @@ void GetAimVelocity(edict_t *enemy, vec3_t org, vec_t speed, vec3_t AimAngles, v
 {
 	float	h_offs, v_offs;
 
-	if(enemy)
+	if (enemy)
 	{
 		VectorAverage(enemy->mins, enemy->maxs, out);		// Get center of model
 
-		if(skill->value)
+		if (skill->value)
 		{//if skill = 0, aim for center of chest, otherwise, offset it some
 			h_offs = enemy->maxs[0] * 0.75;
 			v_offs = enemy->maxs[2] * 0.5;
@@ -888,7 +888,7 @@ void SetAnim(edict_t *self, int anim)
 
 	//only reset the anim index if the new anim is diff. from your
 	//current anim
-	if(self->curAnimID != anim)
+	if (self->curAnimID != anim)
 	{
 		monsterinfo->currframeindex = 0;
 		monsterinfo->nextframeindex = 0;
@@ -902,17 +902,17 @@ void SetAnim(edict_t *self, int anim)
 // Returns true if it is time to think
 qboolean ThinkTime(edict_t *self)
 {
-	if(!self->think)
+	if (!self->think)
 	{
 		return false;
 	}
-	if(self->nextthink <= TIME_EPSILON)
+	if (self->nextthink <= TIME_EPSILON)
 	{
 		return false;
 	}
 	// Need an epsilon value to account for floating point error
 	// The epsilon can be large because level.time goes up in increments of 0.1
-	if((self->nextthink - level.time) > TIME_EPSILON)
+	if ((self->nextthink - level.time) > TIME_EPSILON)
 	{
 		return false;
 	}

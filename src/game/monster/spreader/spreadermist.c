@@ -28,17 +28,17 @@ static void spreader_grenade_think(edict_t *self);
 -------------------------------------------------------------------------*/
 void GenericRadiusDamageEntThink(edict_t *self)
 {
-	if(self->air_finished<level.time)
+	if (self->air_finished<level.time)
 	{
 		G_SetToFree(self);
 		return;
 	}
 
-	if(self->yaw_speed)
+	if (self->yaw_speed)
 	{//apply my offset
-		if(self->activator)
+		if (self->activator)
 		{
-			if(Vec3NotZero(self->activator->s.origin))
+			if (Vec3NotZero(self->activator->s.origin))
 			{
 				vec3_t	forward, right, up;
 
@@ -54,14 +54,14 @@ void GenericRadiusDamageEntThink(edict_t *self)
 	T_DamageRadius(self, self->owner, self->owner, self->dmg_radius, self->dmg, 1, self->bloodType,MOD_DIED);
 
 	self->dmg_radius -= self->speed;
-	if(self->dmg_radius <= 0)
+	if (self->dmg_radius <= 0)
 	{
 		G_SetToFree(self);
 		return;
 	}
 
 	self->dmg -= self->damage_debounce_time;
-	if(self->dmg <= 0)
+	if (self->dmg <= 0)
 	{
 		G_SetToFree(self);
 		return;
@@ -99,7 +99,7 @@ edict_t *RadiusDamageEnt(	edict_t *posowner,//for position
 
 	self->air_finished = level.time + lifetime;//when to die out
 
-	if(thinkIncrement <= 0)
+	if (thinkIncrement <= 0)
 		self->wait = 0.1;//default to 10 fps
 	else
 		self->wait = thinkIncrement;//how oftern to think
@@ -108,7 +108,7 @@ edict_t *RadiusDamageEnt(	edict_t *posowner,//for position
 	self->nextthink = level.time + self->wait;//next think
 
 	self->activator = posowner;//for offsetting
-	if(attach)
+	if (attach)
 	{
 		vec3_t	forward, right, up;
 
@@ -179,7 +179,7 @@ static void spreader_grenade_think(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 
-	if(self->monsterinfo.pausetime < level.time)
+	if (self->monsterinfo.pausetime < level.time)
 	{
 		self->think = spreader_grenade_die;
 	}
@@ -190,10 +190,10 @@ static void spreader_grenade_think(edict_t *self)
 		{
 			VectorCopy(ent->s.origin, temp);
 			temp[2] += 5;
-			if(!Q_stricmp(ent->classname, "monster_spreader"))
+			if (!Q_stricmp(ent->classname, "monster_spreader"))
 				continue;
 
-			if(!gi.inPVS(self->s.origin, ent->s.origin))
+			if (!gi.inPVS(self->s.origin, ent->s.origin))
 				continue;
 
 			T_Damage(ent,self, self->owner, temp, self->s.origin, vec3_origin,self->dmg,
@@ -306,7 +306,7 @@ void spreader_mist(edict_t *self, float x, float y, float z)
 	float		yaw;
 	matrix3_t	mat;
 
-	if(self->monsterinfo.aiflags & AI_NO_MELEE)
+	if (self->monsterinfo.aiflags & AI_NO_MELEE)
 		return;//fixme: actually prevent these anims
 
 	// Converts degrees to radians for use with trig and matrix functions
@@ -421,7 +421,7 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	vec3_t	predPos;
 	float	distance;
 
-	if(self->monsterinfo.aiflags & AI_NO_MISSILE)
+	if (self->monsterinfo.aiflags & AI_NO_MISSILE)
 		return;//fixme: actually prevent these anims
 
 	AngleVectors(self->s.angles, forward, right, NULL);

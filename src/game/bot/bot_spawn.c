@@ -78,11 +78,11 @@ BOT_FindFreeClient(void)
 	bot = NULL;
 	for( i = 0, ent = g_edicts + 1; i < game.maxclients; i++, ent++ )
 	{
-		if( !ent->inuse && bot == NULL )
+		if ( !ent->inuse && bot == NULL )
 			bot = ent;
 
 		//count bots for bot names
-		if( ent->count > max_count )
+		if ( ent->count > max_count )
 			max_count = ent->count;
 	}
 
@@ -130,7 +130,7 @@ BOT_SetName(edict_t *bot, char *name, char *skin, char *team)
 
 	// Set the name for the bot.
 	// name
-	if(strlen(name) == 0)
+	if (strlen(name) == 0)
 	{
 		snprintf(bot_name, sizeof(bot_name), "Bot%d", bot->count);
 	}
@@ -140,7 +140,7 @@ BOT_SetName(edict_t *bot, char *name, char *skin, char *team)
 	}
 
 	// skin
-	if(strlen(skin) == 0)
+	if (strlen(skin) == 0)
 	{
 		int rnd;
 
@@ -319,7 +319,7 @@ void BOT_SpawnBot (char *team, char *name, char *skin, char *userinfo)
 {
 	edict_t *bot;
 
-	if(!nav.loaded)
+	if (!nav.loaded)
 	{
 		Com_Printf("Can't spawn bots without a valid navigation file\n");
 		return;
@@ -338,7 +338,7 @@ void BOT_SpawnBot (char *team, char *name, char *skin, char *userinfo)
 	bot->yaw_speed = 100;
 
 	/* To allow bots to respawn */
-	if(userinfo == NULL)
+	if (userinfo == NULL)
 	{
 		BOT_SetName(bot, name, skin, team);
 	}
@@ -373,7 +373,7 @@ void BOT_SpawnBot (char *team, char *name, char *skin, char *userinfo)
 
 	bot->think = BOT_JoinGame;
 	bot->nextthink = level.time + (int)(random() * 6.0);
-	if(ctf->value && team != NULL)
+	if (ctf->value && team != NULL)
 	{
 		if (!Q_stricmp(team, "blue"))
 		{

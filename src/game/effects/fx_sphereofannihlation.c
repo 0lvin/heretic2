@@ -58,10 +58,10 @@ FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner
 {
 	float		detail_scale, scale;
 
-	if(r_detail->value == DETAIL_LOW)
+	if (r_detail->value == DETAIL_LOW)
 		detail_scale = 0.7;
 	else
-	if(r_detail->value == DETAIL_NORMAL)
+	if (r_detail->value == DETAIL_NORMAL)
 		detail_scale = 0.85;
 	else
 		detail_scale = 1.0;
@@ -88,7 +88,7 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 
 	//
 	// no aura trail on low level
-	if(r_detail->value == DETAIL_LOW)
+	if (r_detail->value == DETAIL_LOW)
 		return true;
 
 	VectorCopy(Owner->origin,TrailStart);
@@ -97,7 +97,7 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 	// copy the real origin to the entity origin, so the light will follow us
 	VectorCopy(Self->r.origin, Self->origin);
 
-	if((TrailLength=VectorNormalize(Trail))<0.001)
+	if ((TrailLength=VectorNormalize(Trail))<0.001)
 	{
 		TrailLength+=2.0;
 	}
@@ -108,7 +108,7 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 	DeltaTrailLength=FX_SPHERE_FLY_SPEED;
 	VectorScale(Trail,FX_SPHERE_FLY_SPEED,Trail);
 
-	if(r_detail->value == DETAIL_NORMAL)
+	if (r_detail->value == DETAIL_NORMAL)
 		dur = 400;
 	else
 		dur = 500;
@@ -213,19 +213,19 @@ FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Own
 	client_entity_t	*Spark;
 	int			dur;
 
-	if((Owner->current.effects&EF_MARCUS_FLAG1))
+	if ((Owner->current.effects&EF_MARCUS_FLAG1))
 		Self->color.r++;
 
-	if(r_detail->value == DETAIL_LOW)
+	if (r_detail->value == DETAIL_LOW)
 		dur = 300;
 	else
-	if(r_detail->value == DETAIL_NORMAL)
+	if (r_detail->value == DETAIL_NORMAL)
 		dur = 400;
 	else
 		dur = 500;
 
 
-	if(Self->color.r>3)
+	if (Self->color.r>3)
 	{
 		// Create a trailing spark.
 
@@ -249,7 +249,7 @@ FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Own
 
 	// 'Self->extra' refers to the sphere's centity_t.
 
-	if(Self->color.r<16)
+	if (Self->color.r<16)
 	{
 		Self->velocity[0]*=3.0;
 		Self->velocity[0]+=6.0*(Owner->origin[0]-Self->r.origin[0]);
@@ -292,7 +292,7 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 
 	// If the spell is still building, create some swirling blue Glowballs.
 
-	if(Owner->current.effects&EF_MARCUS_FLAG1)
+	if (Owner->current.effects&EF_MARCUS_FLAG1)
 	{
 		// 'Self->extra' refers to the caster's centity_t.
 
@@ -320,9 +320,9 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 
 			Matrix3FromAngles(controller->lerp_angles,RotationMatrix);
 
-			if(Self->SpawnInfo)
+			if (Self->SpawnInfo)
 			{
-				if(!(Self->color.g&1))
+				if (!(Self->color.g&1))
 					Matrix3MultByVec3(RotationMatrix,
 									  controller->referenceInfo->references[CORVUS_LEFTHAND].placement.origin,
 									  Glowball->r.origin);
@@ -364,12 +364,12 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 
 		Glowball->velocity[0]=Forward2[0]*175.0+flrand(-25.0, 25.0);
 
-		if(Self->color.g&1)
+		if (Self->color.g&1)
 			Glowball->velocity[0]=-Glowball->velocity[0];
 
 		Glowball->velocity[1]=Forward2[1]*175.0+flrand(-25.0, 25.0);
 
-		if(!(Self->color.g&1))
+		if (!(Self->color.g&1))
 			Glowball->velocity[1]=-Glowball->velocity[1];
 
 		Glowball->velocity[2]=flrand(-200.0, 100.0);
@@ -426,7 +426,7 @@ void FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t 
 	GlowballSpawner->Update = FXSphereOfAnnihilationGlowballSpawnerThink;
 	GlowballSpawner->AddToView = LinkedEntityUpdatePlacement;
 
-	if(Flags&CEF_FLAG6)
+	if (Flags&CEF_FLAG6)
 		GlowballSpawner->SpawnInfo = false;
 	else
 		GlowballSpawner->SpawnInfo = true;
@@ -451,12 +451,12 @@ FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s *Self, centity_t
 	int		FrameNo;
 
 	Frac=(fxi.cl->time-Self->startTime)/100.0;
-	if(Self->AnimSpeed>0.0)
+	if (Self->AnimSpeed>0.0)
 	{
 		Frac*=Self->AnimSpeed;
 	}
 
-	if((FrameNo=floor(Frac))>=(Self->NoOfAnimFrames-1))
+	if ((FrameNo=floor(Frac))>=(Self->NoOfAnimFrames-1))
 	{
 		return false;
 	}
@@ -499,7 +499,7 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 	client_particle_t	*ce;
 
 	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREEXPLODE].formatString,Dir,&Size);
-	if(Flags & CEF_FLAG6)
+	if (Flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(Origin, Dir);
 	}

@@ -40,11 +40,11 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 	VectorClear(playerinfo->targetjointangles);
 
-	if(playerinfo->enemystate==NULL)
+	if (playerinfo->enemystate==NULL)
 	{
 		// No target to be seen...
 
-		if(playerinfo->pm_w_flags)
+		if (playerinfo->pm_w_flags)
 		{
 			// ...and we're swimming...
 
@@ -52,17 +52,17 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			playerinfo->targetjointangles[PITCH]=-(playerinfo->aimangles[PITCH]-playerinfo->angles[PITCH])*ANGLE_TO_RAD;
 
-			if(playerinfo->targetjointangles[PITCH]>ANGLE_90)
+			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=ANGLE_90;
 			else if(playerinfo->targetjointangles[PITCH]<-ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=-ANGLE_90;
 
-			if(playerinfo->targetjointangles[PITCH]>=0)
+			if (playerinfo->targetjointangles[PITCH]>=0)
 				playerinfo->targetjointangles[PITCH]/=3.0;
 			else
 				playerinfo->targetjointangles[PITCH]/=1.5;
 
-			if(playerinfo->pm_w_flags&(WF_DIVING|WF_SWIMFREE))
+			if (playerinfo->pm_w_flags&(WF_DIVING|WF_SWIMFREE))
 			{
 				// ...and we're below the surface, so just allow the head to PITCH. Of course,
 				// we need invert the angle too.
@@ -92,7 +92,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			playerinfo->targetjointangles[YAW]=((playerinfo->aimangles[YAW]-playerinfo->angles[YAW])*ANGLE_TO_RAD);
 
-			if(playerinfo->targetjointangles[YAW]<-ANGLE_180)
+			if (playerinfo->targetjointangles[YAW]<-ANGLE_180)
 				playerinfo->targetjointangles[YAW]+=ANGLE_360;
 			else if(playerinfo->targetjointangles[YAW]>ANGLE_180)
 				playerinfo->targetjointangles[YAW]-=ANGLE_360;
@@ -125,7 +125,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 	{
 		// We have a target...
 
-		if(!playerinfo->pm_w_flags)
+		if (!playerinfo->pm_w_flags)
 		{
 			// ...and we aren't swimming, so calculate angles to target.
 
@@ -173,9 +173,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 		case HANDFX_SPHERE:
 		case HANDFX_MACEBALL:
 
-			if(playerinfo->effects)
+			if (playerinfo->effects)
 			{
-				if(!playerinfo->isclient)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID26,
 												playerinfo->self,
 												FX_SPELLHANDS);
@@ -189,9 +189,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 		case HANDFX_REDRAIN:
 		case HANDFX_POWERREDRAIN:
 
-			if(playerinfo->effects)
+			if (playerinfo->effects)
 			{
-				if(!playerinfo->isclient)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID27,
 												playerinfo->self,
 												FX_WEAPON_REDRAINGLOW);
@@ -206,9 +206,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 		case HANDFX_POWERPHOENIX:
 		case HANDFX_FIREWALL:
 
-			if(playerinfo->effects)
+			if (playerinfo->effects)
 			{
-				if(!playerinfo->isclient)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID28,
 												playerinfo->self,
 												FX_FIREHANDS);
@@ -223,9 +223,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 		case HANDFX_STAFF2:
 		case HANDFX_STAFF3:
 
-			if(playerinfo->effects)
+			if (playerinfo->effects)
 			{
-				if(!playerinfo->isclient)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID29,
 												playerinfo->self,
 												FX_STAFF);
@@ -273,9 +273,9 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Handle teleporting (and chicken morphing) only on game side.
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
-		if(playerinfo->G_HandleTeleport(playerinfo))
+		if (playerinfo->G_HandleTeleport(playerinfo))
 			return;
 	}
 
@@ -304,7 +304,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			playerinfo->flags &= ~PLAYER_FLAG_RELEASEROPE;
 			playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
 
-			if(!(playerinfo->edictflags & FL_CHICKEN))
+			if (!(playerinfo->edictflags & FL_CHICKEN))
 			{
 				if (((edict_t *)playerinfo->self)->health <= 0)
 				{
@@ -332,7 +332,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 4;
 		playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID37,
 								 playerinfo->origin,
@@ -358,7 +358,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Think rate handled different on client.
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->nextthink=playerinfo->leveltime+0.1;//FRAMETIME;
 
 	if (!(playerinfo->edictflags & FL_CHICKEN) && (!(playerinfo->deadflag)))
@@ -369,7 +369,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		{
 			if (playerinfo->velocity[2] < PLAYER_SCREAM_THRESHOLD)
 			{
-				if(playerinfo->isclient)
+				if (playerinfo->isclient)
 					playerinfo->CL_Sound(playerinfo->origin, CHAN_VOICE, "player/falldeath1.wav", 0.75, ATTN_NORM, 0);
 				else
 					playerinfo->G_Sound(playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/falldeath1.wav"), 0.75, ATTN_NORM, 0);
@@ -402,7 +402,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 								playerinfo->upvel += 225;
 								PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-								if(playerinfo->isclient)
+								if (playerinfo->isclient)
 									playerinfo->CL_Sound(SND_PRED_ID38,playerinfo->origin, CHAN_VOICE, "*offwall.wav", 0.75, ATTN_NORM, 0);
 								else
 									playerinfo->G_Sound(SND_PRED_ID38,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
@@ -462,7 +462,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 						playerinfo->upvel += 225;
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-						if(playerinfo->isclient)
+						if (playerinfo->isclient)
 							playerinfo->CL_Sound(SND_PRED_ID39,playerinfo->origin, CHAN_VOICE, "*offwall.wav", 0.75, ATTN_NORM, 0);
 						else
 							playerinfo->G_Sound(SND_PRED_ID39,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
@@ -538,7 +538,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				case ASEQ_STAND:
 					PlayerAnimSetLowerSeq(playerinfo, BranchLwrStanding(playerinfo));
 					break;
-   			}
+			}
 		}
 	}
 
@@ -560,7 +560,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			assert(move);
 
 			// Check for death.
-			if(playerinfo->deadflag == DEAD_DEAD)
+			if (playerinfo->deadflag == DEAD_DEAD)
 				return;
 		}
 	}
@@ -637,7 +637,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 
 				// Check for death.
 
-				if(playerinfo->deadflag==DEAD_DEAD)
+				if (playerinfo->deadflag==DEAD_DEAD)
 					return;
 			}
 		}
@@ -679,12 +679,12 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 
 			// Check if the lower frame is idle, if so, force ours.
 
-			if((playerinfo->loweridle)&&(!(PlayerSeqData[playerinfo->upperseq].playerflags&PLAYER_FLAG_LEAVELOWER)))
+			if ((playerinfo->loweridle)&&(!(PlayerSeqData[playerinfo->upperseq].playerflags&PLAYER_FLAG_LEAVELOWER)))
 			{
 				playerinfo->frame = playerinfo->swapFrame;
 			}
 
-			if((PlayerSeqData2[playerinfo->upperseq].nosplit)&&(!(playerinfo->edictflags&FL_CHICKEN)))
+			if ((PlayerSeqData2[playerinfo->upperseq].nosplit)&&(!(playerinfo->edictflags&FL_CHICKEN)))
 			{
 				// Straighten out joints, i.e. no torso aiming.
 
@@ -711,7 +711,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Handle torso twisting (but only when we are in Elven form).
-	if(!(playerinfo->edictflags&FL_CHICKEN))
+	if (!(playerinfo->edictflags&FL_CHICKEN))
 	{
 		// Calculate joint angle values.
 
@@ -730,14 +730,14 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 
 	delta=playerinfo->velocity[2]-playerinfo->oldvelocity[2];//falling -200 to standstill 0 gives a delta of 200
 
-	if(!playerinfo->groundentity)
+	if (!playerinfo->groundentity)
 	{
 		// If we were falling, and we're now underwater, we should STOP FALLING, capiche?
 
 		VectorCopy(playerinfo->origin,endpos);
 		endpos[2]+=playerinfo->mins[2];
 
-		if((playerinfo->flags&PLAYER_FLAG_FALLING)&&
+		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
 		   (playerinfo->PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
 		   (playerinfo->waterlevel==1))
 		{
@@ -753,7 +753,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		return;
 	}
 
-	if((playerinfo->flags&PLAYER_FLAG_FALLING)&&(playerinfo->waterlevel<=2))
+	if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&(playerinfo->waterlevel<=2))
 	{
 		PlayerIntLand(playerinfo,delta);
 	}
@@ -762,24 +762,24 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 
 	// Never take falling damage if completely underwater.
 
-	if(playerinfo->waterlevel==3)
+	if (playerinfo->waterlevel==3)
 		return;
-	if(playerinfo->waterlevel==2)
+	if (playerinfo->waterlevel==2)
 		delta*=0.25;
-	if(playerinfo->waterlevel==1)
+	if (playerinfo->waterlevel==1)
 		delta*=0.5;
 
-	if(playerinfo->seqcmd[ACMDL_CROUCH])
+	if (playerinfo->seqcmd[ACMDL_CROUCH])
 		delta*=0.75;//rolling absorbs some
 
-	if(delta<1.0)
+	if (delta<1.0)
 		return;
 
-	if(delta<15.0)
+	if (delta<15.0)
 	{
 		// Unimplemented.
 
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID11,
 									   playerinfo->self,
 									   FX_FOOTSTEP,
@@ -797,18 +797,18 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		return;
 	}
 
-	if(delta > 30.0)
+	if (delta > 30.0)
 	{
 		// Apply damage to player entity if we are running server (game) side.
 
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 			playerinfo->G_PlayerFallingDamage(playerinfo,delta);
 	}
 	else
 	{
 		// Unimplemented.
 
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 			playerinfo->G_CreateEffect(EFFECT_PRED_ID12,
 									   playerinfo->self,
 									   FX_FALLSHORT,

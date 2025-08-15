@@ -133,7 +133,7 @@ qboolean FireSparkSpawnerUpdate(client_entity_t *spawner, centity_t *owner)
 
 	spawner->LifeTime++;
 
-	if(spawner->LifeTime >= 5)
+	if (spawner->LifeTime >= 5)
 	{
 		FireSparks(NULL, FX_SPARKS, spawner->SpawnInfo, pos, spawner->direction);
 		spawner->LifeTime = 1;
@@ -154,7 +154,7 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 	byte				count;
 	int					i;
 
-	if(owner && flags & CEF_FLAG8)
+	if (owner && flags & CEF_FLAG8)
 	{//spawn a continuous thingy - fixme- dalay 100 so can get a valid origin?
 		flags &= ~CEF_FLAG8;
 		effect = ClientEntity_new(type, flags | CEF_NO_DRAW, origin, NULL, 20);
@@ -165,7 +165,7 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 		VectorCopy(dir, effect->direction);
 		effect->SpawnInfo = flags;
 		effect->Update = FireSparkSpawnerUpdate;
-		if(owner->current.effects & EF_MARCUS_FLAG1)
+		if (owner->current.effects & EF_MARCUS_FLAG1)
 			effect->SpawnInfo |= CEF_FLAG7;
 
 		AddEffect(owner, effect);
@@ -174,7 +174,7 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 
 	if (flags & CEF_FLAG6)
 	{//sound
-		if(irand(0, 3))
+		if (irand(0, 3))
 		{
 			fxi.S_StartSound(origin, -1, CHAN_AUTO,
 				fxi.S_RegisterSound(va("ambient/lavadrop%c.wav", irand('1', '3'))), 1, ATTN_NORM, 0);
@@ -197,7 +197,7 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 
 		VectorRandomCopy(dir, work, 0.5);
 
-		if(flags&CEF_FLAG7)//fireball poofy effect
+		if (flags&CEF_FLAG7)//fireball poofy effect
 		{
 			flame->scale = flrand(5, 10);
 			VectorScale(work, 20.0, flame->velocity);

@@ -39,9 +39,9 @@ static void MeteorBarrierDie(edict_t *self, int Flags)
 	// If required, create an explode client effect and make an explosion noise.
 	VectorScale(self->movedir, -1.0, ExplodeDir);
 
-	if(Flags & METEOR_BARRIER_DIE_EXPLODE)
+	if (Flags & METEOR_BARRIER_DIE_EXPLODE)
 	{
-		if(Flags & METEOR_BARRIER_DIE_EXPLODEIMPACT)
+		if (Flags & METEOR_BARRIER_DIE_EXPLODEIMPACT)
 		{
 			flag = CEF_FLAG6;
 		}
@@ -94,7 +94,7 @@ static void MeteorBarrierHuntThink(edict_t *self)
 //	self->svflags &= ~SVF_ALWAYS_SEND;
 	if (deathmatch->value == 0 || self->accel == 0.0)			// These don't home in on an enemy in deathmatch... too powerful.
 	{
-		if((self->enemy->health > 0) && (self->targetname && !strcmp(self->enemy->classname, self->targetname)) && self->enemy->inuse)
+		if ((self->enemy->health > 0) && (self->targetname && !strcmp(self->enemy->classname, self->targetname)) && self->enemy->inuse)
 		{
 			VectorCopy(self->enemy->s.origin, Dest);
 
@@ -146,7 +146,7 @@ static void MeteorBarrierHuntThink(edict_t *self)
 static void MeteorBarrierBounceThink(edict_t *self)
 {
 	self->random += 20;			// Lifetime
-	if((self->enemy->health > 0) && (self->random < (5000 + (self->health * 200.0))))
+	if ((self->enemy->health > 0) && (self->random < (5000 + (self->health * 200.0))))
 	{
 		self->nextthink = level.time + 0.1;
 	}
@@ -232,7 +232,7 @@ static void MeteorBarrierTouch(edict_t *self, trace_t *trace)
 	// has the target got reflection turned on ?
 	if (self->reflect_debounce_time)
 	{
-		if(EntReflecting(Other, true, true))
+		if (EntReflecting(Other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			Vec3ScaleAssign(METEOR_HUNT_SPEED/2,self->velocity);
@@ -242,14 +242,14 @@ static void MeteorBarrierTouch(edict_t *self, trace_t *trace)
 		}
 	}
 
-	if(Surface && (Surface->flags & SURF_SKY))
+	if (Surface && (Surface->flags & SURF_SKY))
 	{
 		MeteorBarrierDie(self, METEOR_BARRIER_DIE_EXPLODE);
 		return;
 	}
 
 	AlertMonsters (self, self->owner, 1, false);
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		T_Damage(Other, self, self->owner, self->movedir, self->s.origin, Plane->normal, self->dmg, 0, DAMAGE_SPELL,MOD_METEORS);
 	}
@@ -278,12 +278,12 @@ static void MeteorBarrierSearchThink(edict_t *self)
 	// cooler.
 	// (using self->owner->enemy as the target would be much quicker...but not 360 degrees)
 
-	if(!irand(0, METEOR_SEARCH_CHANCE))
+	if (!irand(0, METEOR_SEARCH_CHANCE))
 	{
 		NewTarg = FindSpellTargetInRadius(self, METEOR_SEARCH_RADIUS, self->s.origin, BBMin, BBMax);
 
 		// we found something to shoot at, lets go get it
-		if(NewTarg)
+		if (NewTarg)
 		{
 			self->enemy = NewTarg;
 			self->solid = SOLID_BBOX;
@@ -300,7 +300,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 
 			// did we start up inside someone ? - check and see
 			tr = gi.trace(self->s.origin, self->mins, self->maxs, self->s.origin, self, MASK_MONSTERSOLID);
-			if(tr.startsolid)
+			if (tr.startsolid)
 			{
 				MeteorBarrierTouch(self,&tr);
 				return;
@@ -327,7 +327,7 @@ static void MeteorBarrierSearchThink(edict_t *self)
 
 	self->random += 20;			// Lifetime
 
-	if((self->owner->health > 0) && (self->random < (5000 + (self->health * 200.0))))
+	if ((self->owner->health > 0) && (self->random < (5000 + (self->health * 200.0))))
 	{
 		float Angle;
 
@@ -351,7 +351,7 @@ static void MeteorBarrierSearchInitThink(edict_t *self)
 {
 	float	Angle;
 
-	if(self->owner->health > 0)
+	if (self->owner->health > 0)
 	{
 		Angle = ((level.time * 150.0) + (90.0 * self->health)) * ANGLE_TO_RAD;
 		VectorCopy(self->owner->s.origin, self->s.origin);
@@ -359,7 +359,7 @@ static void MeteorBarrierSearchInitThink(edict_t *self)
 		self->s.origin[1] += sin(Angle) * 30.0 * (self->count / 5.0);
 		self->s.origin[2] += cos(Angle / (M_PI / 5)) * 10.0;
 
-		if(self->count++ > 5)
+		if (self->count++ > 5)
 		{
 			self->random = self->health * 90.0;
 			self->think = MeteorBarrierSearchThink;
@@ -375,17 +375,17 @@ static void MeteorBarrierSearchInitThink(edict_t *self)
 
 void create_meteor(edict_t *Meteor)
 {
-   	Meteor->movetype = MOVETYPE_NOCLIP;
-   	Meteor->classname = "Spell_MeteorBarrier";
-   	Meteor->isBlocked = MeteorBarrierTouch;
-   	Meteor->isBlocking = MeteorBarrierTouch;
-   	Meteor->dmg = irand(METEOR_DAMAGE_MIN, METEOR_DAMAGE_MAX);
+	Meteor->movetype = MOVETYPE_NOCLIP;
+	Meteor->classname = "Spell_MeteorBarrier";
+	Meteor->isBlocked = MeteorBarrierTouch;
+	Meteor->isBlocking = MeteorBarrierTouch;
+	Meteor->dmg = irand(METEOR_DAMAGE_MIN, METEOR_DAMAGE_MAX);
 	if (deathmatch->value)
 		Meteor->dmg *= 0.5;		// These badasses do half damage in deathmatch.
-   	Meteor->clipmask = MASK_SHOT;
-   	VectorSet(Meteor->mins, -METEOR_RADIUS, -METEOR_RADIUS, -METEOR_RADIUS);
-   	VectorSet(Meteor->maxs, METEOR_RADIUS, METEOR_RADIUS, METEOR_RADIUS);
-   	Meteor->nextthink = level.time+0.1;
+	Meteor->clipmask = MASK_SHOT;
+	VectorSet(Meteor->mins, -METEOR_RADIUS, -METEOR_RADIUS, -METEOR_RADIUS);
+	VectorSet(Meteor->maxs, METEOR_RADIUS, METEOR_RADIUS, METEOR_RADIUS);
+	Meteor->nextthink = level.time+0.1;
 	Meteor->takedamage = DAMAGE_NO;
 	// no gravity
 	Meteor->gravity = 0;
@@ -404,9 +404,9 @@ void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec
 	for(I = 0; I < 4; I++)
 	{
 		// If my caster is a player, then make sure they only have one instance of me active, then
-		if(caster->client)
+		if (caster->client)
 		{
-			if(caster->client->Meteors[I])
+			if (caster->client->Meteors[I])
 				continue;
 		}
 
@@ -422,7 +422,7 @@ void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec
 		Meteor = G_Spawn();
 		Meteor->svflags |= SVF_NOCLIENT;
 
-		if(caster->client)
+		if (caster->client)
 		{
 			caster->client->Meteors[I] = Meteor;
 		}
@@ -443,7 +443,7 @@ void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec
 		Meteor->PersistantCFX = gi.CreatePersistantEffect(caster, FX_SPELL_METEORBARRIER+I, CEF_BROADCAST|CEF_OWNERS_ORIGIN|(I<<5), NULL, "" );
 
 	}
-	if(cast)
+	if (cast)
 	{
 		gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/MeteorBarrierCast.wav"), 1, ATTN_NORM, 0);
 		caster->s.sound = gi.soundindex("weapons/MeteorBarrierAmbient.wav");

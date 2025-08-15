@@ -25,7 +25,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	strcpy(LandSound,"player/");
 
-	if(material)
+	if (material)
 	{
 		// Okay, lame, but if a material is not found, then it ignores the string being set up.
 
@@ -79,7 +79,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		playerinfo->upperseq == ASEQ_FORWARD_FLIP_R)
 	{
 		PlayerInterruptAction(playerinfo);
-		if(playerinfo->maxs[2] == 25)//fixme!  have a global CROUCHING_MAX_Z and STANDING_MAX_Z
+		if (playerinfo->maxs[2] == 25)//fixme!  have a global CROUCHING_MAX_Z and STANDING_MAX_Z
 		{//already ready to stand up
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_CROUCH_GO);
 			strcat(LandSound,"land1.wav");
@@ -187,9 +187,9 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 		// Play the appropriate landing sound.
 
-	if(material)
+	if (material)
 	{
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID51,
 								 playerinfo->origin,
@@ -214,7 +214,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	if (hardfall)
 	{	// Grunt.
-		if(playerinfo->isclient)
+		if (playerinfo->isclient)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID52,
 								 playerinfo->origin,
@@ -241,9 +241,9 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	// Don't do dust in the water!
 
-	if(playerinfo->waterlevel == 0)
+	if (playerinfo->waterlevel == 0)
 	{
-		if(!playerinfo->isclient)
+		if (!playerinfo->isclient)
 		{
 			playerinfo->G_CreateEffect(
 				EFFECT_PRED_ID15,

@@ -807,7 +807,7 @@ plat_blocked(edict_t *self, edict_t *other)
 		T_Damage(other, self, self, vec3_origin, other->s.origin,
 				vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR, MOD_CRUSH);
 		/* if it's still there, nuke it */
-		if(other->health > 0)
+		if (other->health > 0)
 			BecomeDebris(other);
 		return;
 	}
@@ -867,7 +867,7 @@ wait_and_change(edict_t* ent, void (*afterwaitfunc)(edict_t *))
 	float waittime = coop_elevator_delay->value;
 	if (coop->value && waittime > 0.0f)
 	{
-		if(ent->nextthink == 0)
+		if (ent->nextthink == 0)
 		{
 			ent->moveinfo.endfunc = afterwaitfunc;
 			ent->think = wait_and_change_think;
@@ -2662,13 +2662,13 @@ door_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 		return;
 	}
 
-	if(Vec3IsZero(self->avelocity))
+	if (Vec3IsZero(self->avelocity))
 	{
 		if (strcmp(self->classname, "func_door_rotating") == 0)
 		{
-			if(self->spawnflags & DSF_SWINGAWAY)
+			if (self->spawnflags & DSF_SWINGAWAY)
 			{
-				if(smart_door_side_check(self, activator))
+				if (smart_door_side_check(self, activator))
 				{
 					VectorNegate(self->movedir, self->movedir);
 					VectorNegate(self->moveinfo.end_angles, self->moveinfo.end_angles);
@@ -3594,7 +3594,7 @@ train_blocked(edict_t *self, edict_t *other)
 		// give it a chance to go away on it's own terms (like gibs)
 		T_Damage (other, self, self, vec3_origin, other->s.origin, vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR,MOD_CRUSH);
 		// if it's still there, nuke it
-		if(other->health > 0)
+		if (other->health > 0)
 			BecomeDebris(other);
 		return;
 	}
@@ -4443,7 +4443,7 @@ door_secret_blocked(edict_t *self, edict_t *other)
 		T_Damage(other, self, self, vec3_origin, other->s.origin,
 				vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR,MOD_CRUSH);
 		/* if it's still there, nuke it */
-		if(other->health > 0)
+		if (other->health > 0)
 			BecomeDebris(other);
 		return;
 	}
@@ -4856,7 +4856,7 @@ void monsterspawner_go(edict_t *self)
 
 	/* copy my designer-modified fields to the monster to overrride defaults */
 	monster->classID = CIDForSpawnerStyle[self->style];
-	if(self->mintel)
+	if (self->mintel)
 		monster->mintel = self->mintel;
 	else
 		monster->mintel = MaxBuoysForClass[monster->classID];
@@ -4882,18 +4882,18 @@ void monsterspawner_go(edict_t *self)
 	else if(self->spawnflags & 2)//randombuoy
 	{
 		//STEP 0: who are we after?
-		if(self->enemy)
+		if (self->enemy)
 		{
-			if(self->enemy->client)
+			if (self->enemy->client)
 			{
 				victim = self->enemy;
 			}
 		}
 
-		if(!victim)
+		if (!victim)
 			victim = level.sight_client;
 
-		if(!victim)//no players
+		if (!victim)//no players
 		{
 			G_FreeEdict(monster);
 			return;
@@ -4901,7 +4901,7 @@ void monsterspawner_go(edict_t *self)
 
 pickbuoy:
 		num_attempts++;//avoid infinite loops
-		if(num_attempts>100)
+		if (num_attempts>100)
 		{
 			G_FreeEdict(monster);
 			return;//can't find any buoys close enough
@@ -4914,22 +4914,22 @@ pickbuoy:
 
 		VectorSubtract(start_buoy->origin, victim->s.origin, buoydist);
 
-		if(VectorLengthSquared(buoydist) >  250000)//more than 500 away
+		if (VectorLengthSquared(buoydist) >  250000)//more than 500 away
 			goto pickbuoy;
 
 		//step3: make sure the buoy is not visible to the player (unless assassin)
-		if(monster->classID != CID_ASSASSIN)
+		if (monster->classID != CID_ASSASSIN)
 		{
-			if(visible_pos(victim, start_buoy->origin))
+			if (visible_pos(victim, start_buoy->origin))
 				goto pickbuoy;
 		}
 		//step4: if the player_buoy is defined, pick it, if not, find player's buoy
-		if(level.player_buoy[victim->s.number] > NULL_BUOY)//could use player_last_buoy, but may not be reliable, and don't want to spend the time checking
+		if (level.player_buoy[victim->s.number] > NULL_BUOY)//could use player_last_buoy, but may not be reliable, and don't want to spend the time checking
 			end_buoy = &level.buoy_list[level.player_buoy[victim->s.number]];
 		else
 		{
 			end_buoy_index = MG_SetFirstBuoy(victim);
-			if(end_buoy_index == NULL_BUOY)
+			if (end_buoy_index == NULL_BUOY)
 			{
 				G_FreeEdict(monster);
 				return;//can't find a buoy for player
@@ -4941,7 +4941,7 @@ pickbuoy:
 		//step5: make sure the buoy is within 1/2 the mintel (no more than 10) buoys of the player's buoy
 		monster->lastbuoy = NULL_BUOY;
 
-		if(monster->mintel > 7)
+		if (monster->mintel > 7)
 			o_mintel = 7;
 		else if(monster->mintel < 3)
 			o_mintel = 3;
@@ -4949,7 +4949,7 @@ pickbuoy:
 			o_mintel = monster->mintel;
 
 		monster->mintel = ceil(monster->mintel * 0.5);
-		if(!find_next_buoy(monster, start_buoy->id, end_buoy->id))
+		if (!find_next_buoy(monster, start_buoy->id, end_buoy->id))
 		{
 			monster->mintel = o_mintel;
 			goto pickbuoy;//can't make connection within 1/2 mintel steps
@@ -4958,10 +4958,10 @@ pickbuoy:
 
 		//step6: make sure nothing blocking is standing there
 		monster->clipmask = MASK_MONSTERSOLID;
-		if(!MG_MonsterAttemptTeleport(monster, start_buoy->origin, true))//ignorLOS since we checked above and can't see smonster at this point yet
+		if (!MG_MonsterAttemptTeleport(monster, start_buoy->origin, true))//ignorLOS since we checked above and can't see smonster at this point yet
 			goto pickbuoy;//can't teleport there, there's something obstructing that spot- try another
 
-		if(showbuoys->value)
+		if (showbuoys->value)
 			gi.dprintf("%s monsterspawn-teleported to buoy %s\n", monster->classname, start_buoy->targetname);
 		//step7: ok, put them there, let's continue
 	}
@@ -4975,9 +4975,9 @@ pickbuoy:
 	if (self->count > 0)
 		monster->owner = self;
 
-	if(self->enemy && !(self->spawnflags & 1))
+	if (self->enemy && !(self->spawnflags & 1))
 	{//was activated
-		if(self->enemy->client)
+		if (self->enemy->client)
 		{//monster_start_go will check their enemy and do a FoundTarget
 			monster->enemy = self->enemy;
 		}

@@ -55,12 +55,12 @@ FXMistThink(client_entity_t *mist, centity_t *owner)
 	VectorSet(mist->r.scale, scale, scale, scale);
 
 	mod = (AVG_VEC3T(mist->r.scale) / mist->SpawnData) * MIST_ALPHA;
-	if(mist->r.depth > MIST_FAR)
+	if (mist->r.depth > MIST_FAR)
 	{
 		mist->alpha = mod;
 		return true;
 	}
-	if(mist->r.depth > MIST_NEAR)
+	if (mist->r.depth > MIST_NEAR)
 	{
 		mist->alpha = mod * (mist->r.depth - MIST_NEAR) * (1.0F / (MIST_FAR - MIST_NEAR));
 		return true;

@@ -182,7 +182,7 @@ qboolean Create_Bubble(client_entity_t *self, centity_t *owner)
 	// random time till next bubble
 	self->updateTime = irand(50,500);
 	// Never kill _this
-  	return true;
+	return true;
 }
 
 // create a constant client effect attached to something in water that releases bubbles

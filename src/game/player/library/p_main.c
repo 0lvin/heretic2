@@ -20,7 +20,7 @@ void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
 void
 PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 {
-	if(!complete_reset)
+	if (!complete_reset)
 		PlayerBasicAnimReset(playerinfo);
 	else
 		PlayerAnimReset(playerinfo);
@@ -32,7 +32,7 @@ void
 PlayerClearEffects(playerinfo_t *playerinfo)
 {
 	// Remove all special effects from the player.
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 		playerinfo->G_RemoveEffects(EFFECT_PRED_ID30,
 									playerinfo->self,
 									FX_REMOVE_EFFECTS);
@@ -97,11 +97,11 @@ PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 	}
 
 	// Look for the turn left / turn right buttons being pressed.
-	if(Q_fabs(playerinfo->turncmd) > 2)
+	if (Q_fabs(playerinfo->turncmd) > 2)
 	{
 		if (playerinfo->turncmd < -2)
 		{
-			if(playerinfo->loweridle)
+			if (playerinfo->loweridle)
 				playerinfo->seqcmd[ACMDL_ROTATE_R] = true;
 			else
 				playerinfo->seqcmd[ACMDL_ROTATE_R] = false;
@@ -109,7 +109,7 @@ PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
 		}
 		else if (playerinfo->turncmd > 2)
 		{
-			if(playerinfo->loweridle)
+			if (playerinfo->loweridle)
 				playerinfo->seqcmd[ACMDL_ROTATE_L] = true;
 			else
 				playerinfo->seqcmd[ACMDL_ROTATE_L] = false;
@@ -280,7 +280,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	{
 		// Not a chicken, so...
 
-		if(!playerinfo->isclient && playerinfo->pers.defence)
+		if (!playerinfo->isclient && playerinfo->pers.defence)
 		{
 			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
@@ -289,7 +289,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 			else
 			{
 				//Play a sound to tell the player they're out of mana
-				if(playerinfo->isclient)
+				if (playerinfo->isclient)
 					playerinfo->CL_Sound(SND_PRED_ID50,playerinfo->origin, CHAN_VOICE, "*nomana.wav", 0.75, ATTN_NORM, 0);
 				else
 					playerinfo->G_Sound(SND_PRED_ID50,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*nomana.wav"), 0.75, ATTN_NORM, 0);
@@ -299,7 +299,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 		playerinfo->remember_buttons &= ~BUTTON_DEFEND;
 	}
 
-	if(!playerinfo->isclient)
+	if (!playerinfo->isclient)
 	{
 		// Check to see if the lightning shield is engaged.
 
@@ -324,7 +324,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	// if we are chicken, we shouldn't be doing any of this stuff
-	if(playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->edictflags & FL_CHICKEN)
 		return;
 
 	// Start by setting all the attached weapon types.
@@ -592,7 +592,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 /*
 				if (playerinfo->leveltime > 1.0)
 				{
-					if(!playerinfo->isclient)
+					if (!playerinfo->isclient)
 						playerinfo->G_CreateEffect(playerinfo->G_GetEntityStatePtr(playerinfo->self),
 												   FX_STAFF_CREATEPOOF,
 												   CEF_OWNERS_ORIGIN,
@@ -618,7 +618,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 /*
 				if (playerinfo->leveltime > 1.0)
 				{
-					if(!playerinfo->isclient)
+					if (!playerinfo->isclient)
 						playerinfo->G_CreateEffect(playerinfo->G_GetEntityStatePtr(playerinfo->self),
 												   FX_STAFF_CREATEPOOF,
 												   CEF_OWNERS_ORIGIN|CEF_FLAG6,
@@ -668,7 +668,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 /*
 	// FIXME: This could be bad...
 
-	if(playerinfo->handfxtype==handfx)
+	if (playerinfo->handfxtype==handfx)
 	{
 		// There should be nothing to do.
 
@@ -690,8 +690,8 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			break;
 
 		case HANDFX_SPHERE:
-			if(playerinfo->effects)
-				if(!playerinfo->isclient)
+			if (playerinfo->effects)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID31,
 												playerinfo->G_GetEntityStatePtr(playerinfo->self),
 												FX_SPELLHANDS);
@@ -704,8 +704,8 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 		case HANDFX_REDRAIN:
 		case HANDFX_POWERREDRAIN:
 
-			if(playerinfo->effects)
-				if(!playerinfo->isclient)
+			if (playerinfo->effects)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID32,
 												playerinfo->G_GetEntityStatePtr(playerinfo->self),
 												FX_WEAPON_REDRAINGLOW);
@@ -718,8 +718,8 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 		case HANDFX_PHOENIX:
 		case HANDFX_POWERPHOENIX:
 
-			if(playerinfo->effects)
-				if(!playerinfo->isclient)
+			if (playerinfo->effects)
+				if (!playerinfo->isclient)
 					playerinfo->G_RemoveEffects(EFFECT_PRED_ID33,
 												playerinfo->G_GetEntityStatePtr(playerinfo->self),
 												FX_FIREHANDS);
@@ -754,7 +754,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Red effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 4;		// .4 seconds is normal fireball throw time.
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID16,
 										   playerinfo->self,
 										   FX_SPELLHANDS,
@@ -776,7 +776,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Green effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 6;		// .6 seconds is normal fireball throw time
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID17,
 										   playerinfo->self,
 										   FX_SPELLHANDS,
@@ -797,7 +797,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 		case HANDFX_FIREWALL:
 			if (lifetime == 0)
 				lifetime = 11;		// 1.1 seconds is normal fireball throw time
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID19,
 										   playerinfo->self,
 										   FX_FIREHANDS,
@@ -828,7 +828,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (powerlevel >= STAFF_LEVEL_MAX)
 				powerlevel = STAFF_LEVEL_MAX-1;
 
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 			{
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID20,
 										   playerinfo->self,
@@ -857,7 +857,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (lifetime == 0)
 				lifetime = 8;
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID18,
 										   playerinfo->self,
 										   FX_SPELLHANDS,
@@ -877,7 +877,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_REDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 			{
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID21,
 										   playerinfo->self,
@@ -901,7 +901,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_POWERREDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID22,
 										   playerinfo->self,
 										   FX_WEAPON_REDRAINGLOW,
@@ -922,7 +922,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_PHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID23,
 										   playerinfo->self,
 										   FX_FIREHANDS,
@@ -942,7 +942,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_POWERPHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if(!playerinfo->isclient)
+			if (!playerinfo->isclient)
 				playerinfo->G_CreateEffect(EFFECT_PRED_ID24,
 										   playerinfo->self,
 										   FX_FIREHANDS,

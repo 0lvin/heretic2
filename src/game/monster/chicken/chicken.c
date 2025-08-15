@@ -136,7 +136,7 @@ void SP_monster_chicken (edict_t *self)
 //	self->guide = AI_SpawnGuide(self);
 	MG_InitMoods(self);
 
- 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
+	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 
 	gi.linkentity(self);
 
@@ -268,7 +268,7 @@ void chicken_bite (edict_t *self)
 		// cause us some damage.
 	 	T_Damage (self->enemy, self, self, dir, org, vec3_origin, 1, 0, 0,MOD_DIED);
 
-		if(!irand(0,1))
+		if (!irand(0,1))
 			gi.sound(self, CHAN_VOICE, sounds[SND_BITE1], 1, ATTN_NORM, 0);
 		else
 			gi.sound(self, CHAN_VOICE, sounds[SND_BITE2], 1, ATTN_NORM, 0);
@@ -290,7 +290,7 @@ void chicken_pause (edict_t *self)
 	{
 		FindTarget(self);
 
-		if(self->enemy)
+		if (self->enemy)
 		{
 			VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 			len = VectorLength (v);
@@ -379,7 +379,7 @@ void chicken_attack(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void chicken_jump(edict_t *self, G_Message_t *msg)
 {
-	if(!irand(0,2))
+	if (!irand(0,2))
 		gi.sound(self, CHAN_VOICE, sounds[SND_JUMP1], 1, ATTN_NORM, 0);
 	else if (!irand(0, 1))
 		gi.sound(self, CHAN_VOICE, sounds[SND_JUMP2], 1, ATTN_NORM, 0);
@@ -439,7 +439,7 @@ void chicken_stand(edict_t *self, G_Message_t *msg)
 
 void chickensqueal (edict_t *self)
 {
-	if(!irand(0, 1))
+	if (!irand(0, 1))
 		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);

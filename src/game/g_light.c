@@ -251,9 +251,9 @@ SP_env_fire(edict_t *self)
 	{
 		self->use = fire_use;
 		controller = G_Find(NULL, FOFS(target), self->targetname);
-		if(controller)
+		if (controller)
 		{//set it up to throw firey chunks
-			if(controller->materialtype == MAT_WOOD)
+			if (controller->materialtype == MAT_WOOD)
 			{
 				controller->svflags |= SVF_ONFIRE;
 			}

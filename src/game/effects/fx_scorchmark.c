@@ -50,7 +50,7 @@ GetTruePlane(vec3_t origin, vec3_t direction)
 	VectorMA(origin, 64.0, direction, end);
 
 	trace = fxi.Trace(origin, mins, maxs, end, MASK_DRIP, CEF_CLIP_TO_WORLD);
-	if(trace.fraction != 1.0)
+	if (trace.fraction != 1.0)
 	{
 		// Set the new endpos and plane (should be exact)
 		VectorCopy(trace.endpos, origin);
@@ -70,7 +70,7 @@ void FXClientScorchmark(vec3_t origin, vec3_t dir)
 	if (r_detail->value == DETAIL_LOW)
 		return;
 
-	if(GetTruePlane(origin, dir))
+	if (GetTruePlane(origin, dir))
 	{
 		scorchmark = ClientEntity_new(FX_SCORCHMARK, CEF_NOMOVE, origin, dir, 1000);
 
@@ -98,7 +98,7 @@ void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 	if (r_detail->value == DETAIL_LOW)
 		return;
 
-	if(GetTruePlane(origin, dir))
+	if (GetTruePlane(origin, dir))
 	{
 		scorchmark = ClientEntity_new(type, flags | CEF_NOMOVE, origin, dir, 1000);
 

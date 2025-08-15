@@ -11,7 +11,7 @@ GetFreeNode(ArrayedListNode_t *nodeArray, int max)
 
 	for(i = 0; i < max; ++i)
 	{
-		if(!nodeArray[i].inUse)
+		if (!nodeArray[i].inUse)
 		{
 			nodeArray[i].inUse = 1;
 			return i;

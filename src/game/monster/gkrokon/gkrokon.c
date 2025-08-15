@@ -129,7 +129,7 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 {
 	vec3_t	Origin, ScorchOrigin, planeDir;
 
-	if(Surface&&(Surface->flags&SURF_SKY))
+	if (Surface&&(Surface->flags&SURF_SKY))
 	{
 		G_FreeEdict(self);
 		return;
@@ -147,7 +147,7 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 	// Calculate the position for the explosion entity.
 	VectorMA(self->s.origin,-16,self->velocity,Origin);
 
-	if(Other->takedamage)
+	if (Other->takedamage)
 	{
 		self->dmg = irand(GKROKON_DMG_SPOO_MIN, GKROKON_DMG_SPOO_MAX);
 		T_Damage(Other,self,self->owner,self->movedir,Other->s.origin,Plane->normal,self->dmg,self->dmg,0,MOD_DIED);
@@ -162,7 +162,7 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 
 	gi.RemoveEffects(self, 0);
 
-	if(IsDecalApplicable(self, Other, self->s.origin, Surface, Plane, planeDir))
+	if (IsDecalApplicable(self, Other, self->s.origin, Surface, Plane, planeDir))
 	{
 		VectorCopy(self->s.origin, ScorchOrigin);
 		gi.CreateEffect(NULL,
@@ -197,7 +197,7 @@ void GkrokonSpoo(edict_t *self)
 	edict_t	*Spoo;
 	float	edist;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	// Spawn the spoo globbit.
@@ -344,7 +344,7 @@ void gkrokonRandomWalkSound (edict_t *self)
 	if (irand(0,3))
 		return;
 
-	if(!irand(0,1))
+	if (!irand(0,1))
 		gkrokonSound(self, CHAN_BODY, SND_WALK1, ATTN_NORM);
 	else
 		gkrokonSound(self, CHAN_BODY, SND_WALK2, ATTN_NORM);
@@ -406,7 +406,7 @@ void beetle_idle_sound(edict_t *self)
 
 void beetle_skitter(edict_t *self, G_Message_t *Msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, GKROKON_ANIM_DELAY);
 	else
 		SkitterAway(self);
@@ -429,7 +429,7 @@ void beetle_check_mood (edict_t *self, G_Message_t *msg)
 
 void beetle_walk(edict_t *self,G_Message_t *Msg)
 {
-	if(self->spawnflags&MSF_FIXED)
+	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, GKROKON_ANIM_STAND3);
 	else
 		SetAnim(self, GKROKON_ANIM_WALK1);
@@ -445,9 +445,9 @@ void beetle_run(edict_t *self, G_Message_t *Msg)
 	float	dist;
 
 	//Make sure we're not getting up from laying down without the proper animations
-	if(self->ai_mood == AI_MOOD_FLEE)
+	if (self->ai_mood == AI_MOOD_FLEE)
 	{
-		if(irand(0,1))
+		if (irand(0,1))
 			SetAnim(self, GKROKON_ANIM_RUN1);
 		else
 			SetAnim(self, GKROKON_ANIM_RUN2);
@@ -511,13 +511,13 @@ void beetle_missile(edict_t *self,G_Message_t *Msg)
 
 	chance = irand(0,100);
 
-	if(self->enemy)
+	if (self->enemy)
 	{
-		if(self->monsterinfo.misc_debounce_time < level.time)
+		if (self->monsterinfo.misc_debounce_time < level.time)
 		{
 			dist = M_DistanceToTarget(self, self->enemy);
 
-			if(self->spawnflags&MSF_FIXED)
+			if (self->spawnflags&MSF_FIXED)
 			{
 				if (dist < self->missile_range)
 					SetAnim(self, GKROKON_ANIM_MISSILE1);
@@ -574,7 +574,7 @@ void beetle_missile(edict_t *self,G_Message_t *Msg)
 		}
 		else
 		{
-			if(self->spawnflags&MSF_FIXED)
+			if (self->spawnflags&MSF_FIXED)
 				SetAnim(self, GKROKON_ANIM_DELAY);
 			else
 				SkitterAway(self);
@@ -603,7 +603,7 @@ void beetle_pain(edict_t *self,G_Message_t *Msg)
 	//Weighted random based on health compared to the maximum it was at
 	if (force_damage||((flrand(0, self->max_health+50) > self->health) && irand(0,2)))
 	{
-		if(irand(0,1))
+		if (irand(0,1))
 			gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN1], 1, ATTN_NORM, 0);
 		else
 			gi.sound(self, CHAN_WEAPON, sounds[SND_PAIN2], 1, ATTN_NORM, 0);
@@ -660,7 +660,7 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 	}
 	else
 	{
-		if(self->health < -10)
+		if (self->health < -10)
 		{
 			vec3_t	forward;
 			int	i, num_limbs;
@@ -668,7 +668,7 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 			num_limbs = irand(3, 10);
 			for(i = 0; i < num_limbs; i++)
 			{
-				if(self->svflags&SVF_MONSTER)
+				if (self->svflags&SVF_MONSTER)
 					self->monsterinfo.dismember(self, flrand(80, 160), irand(hl_Head, hl_LegLowerRight) | hl_MeleeHit);
 			}
 			AngleVectors(self->s.angles, forward, NULL, NULL);
@@ -702,7 +702,7 @@ int Bit_for_MeshNode_gk [NUM_MESH_NODES] =
 qboolean canthrownode_gk (edict_t *self, int BP, int *throw_nodes)
 {//see if it's on, if so, add it to throw_nodes
 	//turn it off on thrower
-	if(!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
+	if (!(self->s.fmnodeinfo[BP].flags & FMNI_NO_DRAW))
 	{
 		*throw_nodes |= Bit_for_MeshNode_gk[BP];
 		self->s.fmnodeinfo[BP].flags |= FMNI_NO_DRAW;
@@ -718,32 +718,32 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 	vec3_t		gore_spot, right;
 	qboolean	dismember_ok = false;
 
-	if(HitLocation & hl_MeleeHit)
+	if (HitLocation & hl_MeleeHit)
 	{
 		dismember_ok = true;
 		HitLocation &= ~hl_MeleeHit;
 	}
 
-	if(HitLocation<1)
+	if (HitLocation<1)
 		return;
 
-	if(HitLocation>hl_Max)
+	if (HitLocation>hl_Max)
 		return;
 
 	VectorClear(gore_spot);
 	switch(HitLocation)
 	{
 		case hl_Head:
-			if(self->s.fmnodeinfo[MESH__SHELLB_P1].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__SHELLB_P1].flags & FMNI_NO_DRAW)
 				break;
 			self->s.fmnodeinfo[MESH__SHELLB_P1].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__SHELLB_P1].skin = self->s.skinnum + 1;
 			break;
 
 		case hl_TorsoFront://split in half?
-			if(!(self->s.fmnodeinfo[MESH__HEAD_P1].flags & FMNI_USE_SKIN))
+			if (!(self->s.fmnodeinfo[MESH__HEAD_P1].flags & FMNI_USE_SKIN))
 			{
-				if(irand(0, 4))
+				if (irand(0, 4))
 				{
 					self->s.fmnodeinfo[MESH__HEAD_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__HEAD_P1].skin = self->s.skinnum+1;
@@ -759,9 +759,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				return;
 			}
 
-			if(!(self->s.fmnodeinfo[MESH__SPIKE_P1].flags & FMNI_USE_SKIN))
+			if (!(self->s.fmnodeinfo[MESH__SPIKE_P1].flags & FMNI_USE_SKIN))
 			{
-				if(irand(0, 4))
+				if (irand(0, 4))
 				{
 					self->s.fmnodeinfo[MESH__SPIKE_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__SPIKE_P1].skin = self->s.skinnum+1;
@@ -775,9 +775,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
 
-			if(!(self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags & FMNI_USE_SKIN))
+			if (!(self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags & FMNI_USE_SKIN))
 			{
-				if(irand(0, 4))
+				if (irand(0, 4))
 				{
 					self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__RPINCHERA_P1].skin = self->s.skinnum+1;
@@ -791,9 +791,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
 
-			if(!(self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags & FMNI_USE_SKIN))
+			if (!(self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags & FMNI_USE_SKIN))
 			{
-				if(irand(0, 4))
+				if (irand(0, 4))
 				{
 					self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__LPINCHERA_P1].skin = self->s.skinnum+1;
@@ -807,9 +807,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
 
-			if(!(self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags & FMNI_USE_SKIN))
+			if (!(self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags & FMNI_USE_SKIN))
 			{
-				if(irand(0, 4))
+				if (irand(0, 4))
 				{
 					self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__RPINCHERB_P1].skin = self->s.skinnum+1;
@@ -823,9 +823,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
 			}
 
-			if(!(self->s.fmnodeinfo[MESH__LPINCHERB_P1].flags & FMNI_USE_SKIN))
+			if (!(self->s.fmnodeinfo[MESH__LPINCHERB_P1].flags & FMNI_USE_SKIN))
 			{
-				if(irand(0, 4))
+				if (irand(0, 4))
 				{
 					self->s.fmnodeinfo[MESH__LPINCHERB_P1].flags |= FMNI_USE_SKIN;
 					self->s.fmnodeinfo[MESH__LPINCHERB_P1].skin = self->s.skinnum+1;
@@ -840,7 +840,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			break;
 		case hl_TorsoBack://split in half?
-			if(self->s.fmnodeinfo[MESH__ABDOMEN_P1].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__ABDOMEN_P1].flags & FMNI_NO_DRAW)
 				break;
 			self->s.fmnodeinfo[MESH__ABDOMEN_P1].flags |= FMNI_USE_SKIN;
 			self->s.fmnodeinfo[MESH__ABDOMEN_P1].skin = self->s.skinnum+1;
@@ -848,13 +848,13 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_ArmLowerLeft://left arm
 		case hl_ArmUpperLeft:
-			if(self->s.fmnodeinfo[MESH__LARM_P1].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__LARM_P1].flags & FMNI_NO_DRAW)
 				break;
-			if(self->s.fmnodeinfo[MESH__LARM_P1].flags & FMNI_USE_SKIN)
+			if (self->s.fmnodeinfo[MESH__LARM_P1].flags & FMNI_USE_SKIN)
 				damage*=1.5;//greater chance to cut off if previously damaged
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
-				if(canthrownode_gk(self, MESH__LARM_P1, &throw_nodes))
+				if (canthrownode_gk(self, MESH__LARM_P1, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -871,12 +871,12 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_ArmUpperRight:
 		case hl_ArmLowerRight://right arm
-			if(self->s.fmnodeinfo[MESH__RARM_P1].flags & FMNI_NO_DRAW)
+			if (self->s.fmnodeinfo[MESH__RARM_P1].flags & FMNI_NO_DRAW)
 				break;
-			if((frandk() * self->health)<damage*0.75&&dismember_ok)
+			if ((frandk() * self->health)<damage*0.75&&dismember_ok)
 			{
 				canthrownode_gk(self, MESH__RARM_P1, &throw_nodes);
-				if(canthrownode_gk(self, MESH__RARM_P1, &throw_nodes))
+				if (canthrownode_gk(self, MESH__RARM_P1, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -893,9 +893,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 
 		case hl_LegUpperLeft:
 		case hl_LegLowerLeft://left leg
-			if(self->health>0)
+			if (self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__LTHIGH_P1].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__LTHIGH_P1].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__LTHIGH_P1].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LTHIGH_P1].skin = self->s.skinnum+1;
@@ -903,9 +903,9 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__LTHIGH_P1].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__LTHIGH_P1].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_gk(self, MESH__LTHIGH_P1, &throw_nodes))
+				if (canthrownode_gk(self, MESH__LTHIGH_P1, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -916,18 +916,18 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			}
 		case hl_LegUpperRight:
 		case hl_LegLowerRight://right leg
-			if(self->health>0)
+			if (self->health>0)
 			{
-				if(self->s.fmnodeinfo[MESH__RTHIGH_P1].flags & FMNI_USE_SKIN)
+				if (self->s.fmnodeinfo[MESH__RTHIGH_P1].flags & FMNI_USE_SKIN)
 					break;
 				self->s.fmnodeinfo[MESH__RTHIGH_P1].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RTHIGH_P1].skin = self->s.skinnum+1;
 			}
 			else
 			{
-				if(self->s.fmnodeinfo[MESH__RTHIGH_P1].flags & FMNI_NO_DRAW)
+				if (self->s.fmnodeinfo[MESH__RTHIGH_P1].flags & FMNI_NO_DRAW)
 					break;
-				if(canthrownode_gk(self, MESH__RTHIGH_P1, &throw_nodes))
+				if (canthrownode_gk(self, MESH__RTHIGH_P1, &throw_nodes))
 				{
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
@@ -940,7 +940,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 			break;
 	}
 
-	if(self->s.fmnodeinfo[MESH__SPIKE_P1].flags&FMNI_NO_DRAW)
+	if (self->s.fmnodeinfo[MESH__SPIKE_P1].flags&FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_COWARD;
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
@@ -950,7 +950,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 
 void beetle_dead_pain (edict_t *self, G_Message_t *msg)
 {
-	if(self->health<=-80)
+	if (self->health<=-80)
 	{
 		// We get gibbed.
 		gi.sound(self,CHAN_BODY,sounds[SND_GIB],1,ATTN_NORM,0);
@@ -961,8 +961,8 @@ void beetle_dead_pain (edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	if(msg)
-		if(!(self->svflags & SVF_PARTS_GIBBED))
+	if (msg)
+		if (!(self->svflags & SVF_PARTS_GIBBED))
 			MG_parse_dismember_msg(self, msg);
 }
 
@@ -1112,7 +1112,7 @@ SP_Monster_Gkrokon(edict_t *self)
 	MG_InitMoods(self);
 
 	// Check our spawnflags to see what our initial behaviour should be.
-	if(self->spawnflags & MSF_EATING)
+	if (self->spawnflags & MSF_EATING)
 	{
 		self->monsterinfo.aiflags|=AI_EATING;
 		G_QPostMessage(self,MSG_EAT,PRI_DIRECTIVE,NULL);
@@ -1126,7 +1126,7 @@ SP_Monster_Gkrokon(edict_t *self)
 
 void GkrokonPause(edict_t *self)
 {
-	if(self->spawnflags & MSF_FIXED && self->curAnimID == GKROKON_ANIM_DELAY && self->enemy)
+	if (self->spawnflags & MSF_FIXED && self->curAnimID == GKROKON_ANIM_DELAY && self->enemy)
 	{
 		self->monsterinfo.searchType = SEARCH_COMMON;
 		MG_FaceGoal(self, true);
@@ -1160,7 +1160,7 @@ void GkrokonPause(edict_t *self)
 		break;
 
 	case AI_MOOD_JUMP:
-		if(self->spawnflags&MSF_FIXED || self->jump_chance<=0)
+		if (self->spawnflags&MSF_FIXED || self->jump_chance<=0)
 			SetAnim(self, GKROKON_ANIM_DELAY);
 		else
 			SetAnim(self, GKROKON_ANIM_FJUMP);

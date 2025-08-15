@@ -758,7 +758,7 @@ G_Spawn(void)
 	{
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if(!e->inuse && e->freetime <= level.time)
+		if (!e->inuse && e->freetime <= level.time)
 		{
 			G_InitEdict(e);
 
@@ -814,12 +814,12 @@ G_FreeEdict(edict_t *ed)
 			gi.SetAreaPortalState (ed->style, true);
 	}
 
-	if(ed->s.effects & EF_JOINTED)
+	if (ed->s.effects & EF_JOINTED)
 	{
 		FreeSkeleton(ed->s.rootJoint);
 	}
 
-	if(ed->s.clientEffects.buf)
+	if (ed->s.clientEffects.buf)
 	{
 		temp = (char *)ed->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
 	}
@@ -965,11 +965,11 @@ KillBox(edict_t *ent)
 		current = findinbounds(current, mins, maxs);
 
 		// don't allow us to kill the player
-		if(current == ent)
+		if (current == ent)
 			continue;
 
 		// we've checked everything
-		if(!current)
+		if (!current)
 			break;
 
 		// nail it
@@ -998,10 +998,10 @@ qboolean ClearBBox (edict_t *self)
 	VectorSet(top, self->s.origin[0], self->s.origin[1], self->absmax[2] - 1);
 
 	trace = gi.trace(top, mins, maxs, bottom, self, self->clipmask);
-	if(trace.startsolid || trace.allsolid)
+	if (trace.startsolid || trace.allsolid)
 		return false;
 
-	if(trace.fraction == 1.0)
+	if (trace.fraction == 1.0)
 		return true;
 
 	return false;
@@ -1028,7 +1028,7 @@ void G_LinkMissile(edict_t *ed)
 
 void G_SetToFree(edict_t *self)
 {
-	if(self->PersistantCFX)
+	if (self->PersistantCFX)
 	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_ENTITY);
 		self->PersistantCFX = 0;
@@ -1059,7 +1059,7 @@ qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
 {
 	edict_t	*t;
 
-	if(!ent->target_ent)
+	if (!ent->target_ent)
 	{
 		return false;
 	}
@@ -1072,7 +1072,7 @@ qboolean PossessCorrectItem(edict_t *ent, gitem_t *item)
 			(!Q_stricmp(ent->classname, "func_door") || !Q_stricmp(ent->classname, "func_door_rotating")))
 			continue;
 
-		if(t->item == item)
+		if (t->item == item)
 		{
 			return true;
 		}

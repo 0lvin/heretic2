@@ -108,7 +108,7 @@ mmove_t plagueElf_move_death4 = {14, plagueElf_frames_death4, M_EndDeath};
 
 /*----------------------------------------------------------------------
   plagueElf Pain - plagueElf gets hit <<-- FIXME
-  	this is not a real animation, this is recycling other anims
+	this is not a real animation, this is recycling other anims
 -----------------------------------------------------------------------*/
 static mframe_t plagueElf_frames_pain1 [] =
 {
@@ -932,7 +932,7 @@ mmove_t plagueElf_move_c_death4 = {13, plagueElf_frames_c_death4,ai_c_cycleend};
 
 /*----------------------------------------------------------------------
   plagueElf Pain - plagueElf gets hit <<-- FIXME
-  	this is not a real animation, this is recycling other anims
+	this is not a real animation, this is recycling other anims
 -----------------------------------------------------------------------*/
 static mframe_t plagueElf_frames_c_pain1 [] =
 {

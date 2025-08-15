@@ -133,7 +133,7 @@ qboolean visible_to_client (edict_t *self)
 	{
 		ent = &g_edicts[i];
 
-		if(ent->client)
+		if (ent->client)
 		{
 			edict_t	*temp;
 
@@ -149,7 +149,7 @@ qboolean visible_to_client (edict_t *self)
 				SHORT2ANGLE(ent->client->playerinfo.camera_viewangles[1]),
 				SHORT2ANGLE(ent->client->playerinfo.camera_viewangles[2]));
 
-			if(infront_pos(temp, self->s.origin) && gi.inPVS(temp->s.origin, self->s.origin))
+			if (infront_pos(temp, self->s.origin) && gi.inPVS(temp->s.origin, self->s.origin))
 			{
 				G_FreeEdict(temp);
 				return true;
@@ -176,7 +176,7 @@ qboolean shoulder_room_ahead (edict_t *self)
 
 	trace = gi.trace(self->s.origin, mins, maxs, endpos, self, MASK_SOLID);
 
-	if(trace.allsolid || trace.startsolid || trace.fraction < 1.0)
+	if (trace.allsolid || trace.startsolid || trace.fraction < 1.0)
 	{
 //		gi.dprintf("No shoulder room ahead for beast to charge!\n");
 		return (false);
@@ -193,30 +193,30 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 	qboolean	stop = false;
 	edict_t		*pillar = NULL;
 
-	if(self->curAnimID == BEAST_ANIM_CHARGE || (self->curAnimID == BEAST_ANIM_QUICK_CHARGE && self->s.frame >= FRAME_charge1 && self->s.frame <= FRAME_charge10))
+	if (self->curAnimID == BEAST_ANIM_CHARGE || (self->curAnimID == BEAST_ANIM_QUICK_CHARGE && self->s.frame >= FRAME_charge1 && self->s.frame <= FRAME_charge10))
 	{
-		if(trace->ent == world)
+		if (trace->ent == world)
 		{
-			if(!Vec3IsZero(trace->plane.normal))
+			if (!Vec3IsZero(trace->plane.normal))
 			{
-				if(trace->plane.normal[2]>0.7)
+				if (trace->plane.normal[2]>0.7)
 				{//it's just a slope
 					playsound = false;
 				}
 			}
 		}
 
-		if(playsound)
+		if (playsound)
 		{
 			gi.sound(self, CHAN_ITEM, sounds[SND_SLAM], 1, ATTN_NORM, 0);
-			if(trace->ent)
+			if (trace->ent)
 			{
-				if(!movable(trace->ent)&&!trace->ent->takedamage && trace->plane.normal[2] < 0.5)
+				if (!movable(trace->ent)&&!trace->ent->takedamage && trace->plane.normal[2] < 0.5)
 					stop = true;
 			}
 		}
 
-		if(trace->ent && trace->ent->targetname && !Q_stricmp(trace->ent->targetname, "pillar"))
+		if (trace->ent && trace->ent->targetname && !Q_stricmp(trace->ent->targetname, "pillar"))
 			pillar = trace->ent;
 		else
 		{
@@ -229,21 +229,21 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 			VectorSet(mins, -24, -24, -1);
 			VectorSet(maxs, 24, 24, 1);
 			tr = gi.trace(start, mins, maxs, end, self, MASK_SOLID);
-			if(tr.fraction<1.0 && tr.ent && tr.ent->targetname)
+			if (tr.fraction<1.0 && tr.ent && tr.ent->targetname)
 			{
-				if(!Q_stricmp(tr.ent->targetname, "pillar"))
+				if (!Q_stricmp(tr.ent->targetname, "pillar"))
 					pillar = tr.ent;
 			}
 		}
 
-		if(pillar)
+		if (pillar)
 		{//FIXME: In higher skills, less chance of breaking it?  Or debounce time?
 //			gi.dprintf("Hit a Pillar!\n");
 
-			if(visible_to_client(self))
+			if (visible_to_client(self))
 			{
 				self->red_rain_count++;
-				if(self->red_rain_count >= 2)//got both pillars, now die
+				if (self->red_rain_count >= 2)//got both pillars, now die
 				{
 					//self->clipmask = 0;
 					self->solid = SOLID_NOT;
@@ -259,7 +259,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 			stop = true;
 		}
 
-		if(stop)
+		if (stop)
 		{
 			gi.CreateEffect(self,
 							FX_QUAKE,
@@ -272,7 +272,7 @@ void tbeast_blocked (edict_t *self, trace_t *trace)
 
 			self->velocity[0] = self->velocity[1] = 0;
 			self->sounds++;
-			if(self->sounds!=2 && irand(0, 1))
+			if (self->sounds!=2 && irand(0, 1))
 				SetAnim(self, BEAST_ANIM_STUN);
 		}
 	}
@@ -283,7 +283,7 @@ void tbeast_charge (edict_t *self, float force)
 	vec3_t	forward, enemy_dir;
 	float	save_v2;
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 	{
 		SetAnim(self, BEAST_ANIM_WALK);
 		return;
@@ -293,13 +293,13 @@ void tbeast_charge (edict_t *self, float force)
 	VectorSubtract(self->enemy->s.origin, self->s.origin, enemy_dir);
 	VectorNormalize(enemy_dir);
 
-	if(DotProduct(forward, enemy_dir) < 0.75)//enemy not generally ahead
+	if (DotProduct(forward, enemy_dir) < 0.75)//enemy not generally ahead
 		ai_charge(self, 0);
 
 	qboolean trace_succeeded = false;
 	MG_WalkMove (self, self->s.angles[YAW], force, &trace_succeeded);
 
-	if(self->groundentity)
+	if (self->groundentity)
 	{
 		save_v2 = self->velocity[2];
 		VectorScale(forward, force * 10 * 2, self->velocity);
@@ -312,10 +312,10 @@ void tbeast_charge (edict_t *self, float force)
 //----------------------------------------------------------------------
 void tbeast_eat(edict_t *self, G_Message_t *msg)
 {
-	if(FindTarget(self))
+	if (FindTarget(self))
 		return;
 
-	if(!irand(0,1))
+	if (!irand(0,1))
 		SetAnim(self, BEAST_ANIM_EATING_TWITCH);
 	else
 		SetAnim(self, BEAST_ANIM_EATING);
@@ -395,7 +395,7 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 	float	delta;
 	vec3_t targ_org;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
 
@@ -405,7 +405,7 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-/*	if(clear_visible(self, self->enemy) && ahead(self, self->enemy))
+/*	if (clear_visible(self, self->enemy) && ahead(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, targ_org, v);
 		len = VectorLength (v);
@@ -437,7 +437,7 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 void tbeast_init_charge (edict_t *self)
 {
 //	gi.dprintf("Beast CHARGE!\n");
-	if(!ahead(self, self->enemy) || !irand(0,3))
+	if (!ahead(self, self->enemy) || !irand(0,3))
 		SetAnim(self, BEAST_ANIM_QUICK_CHARGE);
 	else
 		SetAnim(self, BEAST_ANIM_CHARGE);
@@ -451,7 +451,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	vec3_t	v, melee_point, forward, up;
 	float	len, seperation;
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 	{
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 		return;
@@ -477,11 +477,11 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 	}
 
 	//ok to attack
-	if(len - seperation < 100)
+	if (len - seperation < 100)
 	{//melee
 //		gi.dprintf("Biting: ");
 
-		if(self->enemy->absmin[2] > melee_point[2] + 128)
+		if (self->enemy->absmin[2] > melee_point[2] + 128)
 		{
 //			gi.dprintf(" snatch extra high\n");
 			SetAnim(self, BEAST_ANIM_BITEUP2);
@@ -517,7 +517,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 void tbeast_start_charge(edict_t *self, G_Message_t *msg)
 {
 	MG_ChangeYaw(self);
-	if(self->enemy->classID != CID_TCHECKRIK && ((irand(0, 1) && infront(self, self->enemy)) || ahead(self, self->enemy)) && shoulder_room_ahead(self))
+	if (self->enemy->classID != CID_TCHECKRIK && ((irand(0, 1) && infront(self, self->enemy)) || ahead(self, self->enemy)) && shoulder_room_ahead(self))
 	{
 		tbeast_init_charge(self);
 	}
@@ -536,13 +536,13 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 	qboolean enemy_vis;
 	vec3_t targ_org;
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 		return;
 
-	if(!MG_GetTargOrg(self, targ_org))
+	if (!MG_GetTargOrg(self, targ_org))
 		return;
 
-	if(!self->dmg)
+	if (!self->dmg)
 	{
 		self->dmg = true;
 		SetAnim(self, BEAST_ANIM_CHARGE);
@@ -550,7 +550,7 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 	}
 
 	enemy_vis = clear_visible(self, self->enemy);
-/*	if(enemy_vis && ahead(self, self->enemy))
+/*	if (enemy_vis && ahead(self, self->enemy))
 	{
 		// Enemy is within range and far enough above or below to warrant a jump
 		if ((len > 40) && (len < 600) && ((self->s.origin[2] < self->enemy->s.origin[2] - 40) ||
@@ -607,18 +607,18 @@ void tbeast_pain(edict_t *self, G_Message_t *msg)
 	int			temp, damage;
 	qboolean	force_pain;
 
-	if(self->health < 1000)
+	if (self->health < 1000)
 		return;
 
-	if(!self->groundentity)
+	if (!self->groundentity)
 		return;
 
-	if(self->pain_debounce_time > level.time)
+	if (self->pain_debounce_time > level.time)
 		return;
 
 	G_ParseMsgParms(msg, "eeiii", &tempent, &tempent, &force_pain, &damage, &temp);
 
-	if(damage < irand(100, 200))
+	if (damage < irand(100, 200))
 		return;
 
 	self->pain_debounce_time = level.time + 10;
@@ -690,14 +690,14 @@ void tbeast_go_die (edict_t *self, edict_t *other, edict_t *activator)
 
 void tbeast_standorder (edict_t *self)
 {
-	if(tbeastCheckMood(self))
+	if (tbeastCheckMood(self))
 		return;
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 }
 
 void tbeast_walkorder (edict_t *self)
 {
-	if(tbeastCheckMood(self))
+	if (tbeastCheckMood(self))
 		return;
 	G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 }
@@ -712,10 +712,10 @@ void tbeast_footstep (edict_t *self)
 
 	leg_check_index = tbeast_inwalkframes(self);
 
-	if(leg_check_index > -1)
+	if (leg_check_index > -1)
 	{//set up leg checks - only if in these frames
 	//left leg
-		if(leg_check_index < 6 || leg_check_index > 14)
+		if (leg_check_index < 6 || leg_check_index > 14)
 		{
 			VectorCopy(GetLeftFootOffsetForFrameIndex[leg_check_index], lfootoffset);
 			VectorMA(self->s.origin, lfootoffset[0] + TB_FWD_OFFSET, forward, pos);
@@ -736,7 +736,7 @@ void tbeast_footstep (edict_t *self)
 		VectorMA(pos, self->maxs[0], forward, pos);
 		pos[2] += self->mins[2];
 
-		if(self->monsterinfo.currframeindex  == FRAME_walk11 ||
+		if (self->monsterinfo.currframeindex  == FRAME_walk11 ||
 			self->monsterinfo.currframeindex  == FRAME_wlkrt11 ||
 			self->monsterinfo.currframeindex  == FRAME_wlklft11)
 		{
@@ -751,7 +751,7 @@ void tbeast_footstep (edict_t *self)
 	VectorCopy(pos, bottom);
 	bottom[2]-=128;
 	trace = gi.trace(pos, vec3_origin, vec3_origin, bottom, self, MASK_SOLID);
-	if(trace.fraction < 1.0)
+	if (trace.fraction < 1.0)
 		VectorCopy(trace.endpos, pos);
 
 	pos[2] += 10;
@@ -802,7 +802,7 @@ void tbeast_snort (edict_t *self)
 	chance = irand(0, 20);
 	if (chance < 2)
 	{
-		if(!irand(0,1))
+		if (!irand(0,1))
 			gi.sound(self, CHAN_WEAPON, sounds[SND_SNORT1], 1, ATTN_NORM, 0);
 		else
 			gi.sound(self, CHAN_WEAPON, sounds[SND_SNORT2], 1, ATTN_NORM, 0);
@@ -840,7 +840,7 @@ void tbeast_mood(edict_t *self)
 	switch (self->ai_mood)
 	{
 		case AI_MOOD_ATTACK:
-			if(self->ai_mood_flags&AI_MOOD_FLAG_MISSILE)
+			if (self->ai_mood_flags&AI_MOOD_FLAG_MISSILE)
 				G_QPostMessage(self, MSG_MISSILE, PRI_DIRECTIVE, NULL);
 			else
 				G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
@@ -893,19 +893,19 @@ void tbeast_pause (edict_t *self)
 	vec3_t	v;
 	float	len;
 
-	if(self->enemy && self->enemy->classID != CID_TCHECKRIK && self->curAnimID == BEAST_ANIM_STUN && self->pain_debounce_time > level.time + 7 && ahead(self, self->enemy))
+	if (self->enemy && self->enemy->classID != CID_TCHECKRIK && self->curAnimID == BEAST_ANIM_STUN && self->pain_debounce_time > level.time + 7 && ahead(self, self->enemy))
 	{
 		tbeast_init_charge(self);
 		return;
 	}
 
-	if(tbeastCheckMood(self))
+	if (tbeastCheckMood(self))
 		return;
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 		return;
 
-	if(clear_visible(self, self->enemy))
+	if (clear_visible(self, self->enemy))
 	{
 		VectorSubtract (self->s.origin, self->enemy->s.origin, v);
 		len = VectorLength (v);
@@ -926,7 +926,7 @@ void tbeast_pause (edict_t *self)
 
 void tbeast_runorder (edict_t *self)
 {
-	if(tbeastCheckMood(self))
+	if (tbeastCheckMood(self))
 		return;
 
 	G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
@@ -940,11 +940,11 @@ void tbeastbite (edict_t *self, float ofsf, float ofsr, float ofsu)
 	vec3_t	temp, forward, right, up, melee_point, bite_endpos;
 	trace_t trace;
 
-	if(self->ai_mood == AI_MOOD_NAVIGATE)
+	if (self->ai_mood == AI_MOOD_NAVIGATE)
 		return;
 
 	//fixme: do a checkenemy that checks oldenemy & posts messages
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 		return;
 
 	AngleVectors(self->s.angles,forward, right, up);
@@ -1030,11 +1030,11 @@ void tbeast_land(edict_t *self)
 
 	while((found = newfindradius(found, self->s.origin, 512)))
 	{
-		if(found->client)
+		if (found->client)
 		{
-			if(found->health > 0 && found->groundentity)
+			if (found->health > 0 && found->groundentity)
 			{
-				if(found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+				if (found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 				{
 					playerExport->KnockDownPlayer(&found->client->playerinfo);
 				}
@@ -1048,16 +1048,16 @@ void tbeast_roar_knockdown(edict_t *self)
 {
 	edict_t *found = NULL;
 
-	if(irand(0, 2))
+	if (irand(0, 2))
 		return;
 
 	while((found = newfindradius(found, self->s.origin, 512)))
 	{
-		if(found->client && ahead(self, found))
+		if (found->client && ahead(self, found))
 		{
-			if(found->health > 0 && found->groundentity)
+			if (found->health > 0 && found->groundentity)
 			{
-				if(found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+				if (found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 				{
 					playerExport->KnockDownPlayer(&found->client->playerinfo);
 				}
@@ -1078,7 +1078,7 @@ void tbeast_roar(edict_t *self)
 
 void tbeast_roar_short(edict_t *self)
 {
-	if(!self->delay)
+	if (!self->delay)
 	{
 		self->monsterinfo.currframeindex = 25;
 		self->monsterinfo.nextframeindex = 26;
@@ -1091,7 +1091,7 @@ void tbeast_roar_short(edict_t *self)
 
 void tbeast_eatorder (edict_t *self)
 {
-	if(tbeastCheckMood(self))
+	if (tbeastCheckMood(self))
 		return;
 
 	G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
@@ -1116,9 +1116,9 @@ qboolean CheckMoveFoot (edict_t *self, edict_t *foot, vec3_t dest)
 
 	trace = gi.trace(foot->s.origin, foot->mins, foot->maxs, dest, foot, MASK_MONSTERSOLID);
 
-	if(trace.ent)
+	if (trace.ent)
 	{
-		if(trace.ent->takedamage)
+		if (trace.ent->takedamage)
 		{
 			T_Damage(trace.ent, self, self, dir, trace.endpos, dir, 1000, 250, DAMAGE_DISMEMBER,MOD_DIED);
 			VectorCopy(foot->s.origin, foot->last_org);
@@ -1130,10 +1130,10 @@ qboolean CheckMoveFoot (edict_t *self, edict_t *foot, vec3_t dest)
 //			return false;
 	}
 
-//	if(trace.allsolid||trace.startsolid)
+//	if (trace.allsolid||trace.startsolid)
 //		return false;
 
-//	if(trace.fraction<0.9)
+//	if (trace.fraction<0.9)
 //		return false;
 
 	VectorCopy(foot->s.origin, foot->last_org);
@@ -1153,9 +1153,9 @@ qboolean TB_CheckBottom (edict_t *self)
 	end[2] -= 1;
 	trace = gi.trace(self->s.origin, self->mins, self->maxs, end, self, MASK_ALL);
 
-	if(trace.ent && Q_stricmp(trace.ent->classname, "worldspawn"))
+	if (trace.ent && Q_stricmp(trace.ent->classname, "worldspawn"))
 	{
-		if(trace.ent->takedamage)
+		if (trace.ent->takedamage)
 		{
 			VectorCopy(trace.ent->s.origin, other_top);
 			other_top[2] += trace.ent->maxs[2];
@@ -1166,13 +1166,13 @@ qboolean TB_CheckBottom (edict_t *self)
 		}
 	}
 
-	if(trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
+	if (trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
 	{
 		/*if(&trace.plane)
 		{
-			if(!Vec3IsZero(trace.plane.normal))
+			if (!Vec3IsZero(trace.plane.normal))
 			{
-				if(trace.plane.normal[2]>=0.5&&trace.plane.normal[2]<=1)//not a slope can go up
+				if (trace.plane.normal[2]>=0.5&&trace.plane.normal[2]<=1)//not a slope can go up
 				{//raise him up if on flat ground, lower is on slope - to keep feet on ground;
 					self->mins[2] = (1 - trace.plane.normal[2]) * 72 - 8 + TB_UP_OFFSET;
 				}
@@ -1191,15 +1191,15 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 	float	z_diff;
 	qboolean	skiplow = false;
 
-	if(self->enemy)
+	if (self->enemy)
 	{
-		if(!ahead(self, self->enemy))
+		if (!ahead(self, self->enemy))
 			return false;
 
-		if(Vector2Length(self->enemy->s.origin, self->s.origin)<200)
+		if (Vector2Length(self->enemy->s.origin, self->s.origin)<200)
 		{
 			z_diff = self->s.origin[2] + TB_HIBITE_U + TB_UP_OFFSET - self->enemy->s.origin[2];
-			if(z_diff < -128)
+			if (z_diff < -128)
 			{
 				SetAnim(self, BEAST_ANIM_BITEUP2);
 				return true;
@@ -1218,11 +1218,11 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 			}
 		}
 
-		if(self->enemy->s.origin[2] < self->s.origin[2])
+		if (self->enemy->s.origin[2] < self->s.origin[2])
 			return false;
 	}
 
-	if(self->monsterinfo.jump_time > level.time)
+	if (self->monsterinfo.jump_time > level.time)
 		return false;
 
 	VectorCopy(self->s.origin, start);
@@ -1231,11 +1231,11 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 //try a jump of 186
 	end[2] += self->size[2];
 
-	if(!skiplow)
+	if (!skiplow)
 	{
 		trace = gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID);
 
-		if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
+		if (trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 		{
 			AngleVectors(self->s.angles, forward, NULL, NULL);
 
@@ -1246,7 +1246,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 			mins[0]*=0.5;
 			mins[1]*=0.5;
 			trace = gi.trace(start2, self->mins, self->maxs, end2, self, MASK_SOLID);
-			if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
+			if (trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 			{
 //				gi.dprintf("Beast blocked low jump!\n");
 				VectorScale(forward, 250, self->movedir);
@@ -1263,7 +1263,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 
 	trace = gi.trace(start, self->mins, self->maxs, end, self, MASK_SOLID);
 
-	if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
+	if (trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 	{
 		AngleVectors(self->s.angles, forward, NULL, NULL);
 
@@ -1274,7 +1274,7 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 		mins[0]*=0.5;
 		mins[1]*=0.5;
 		trace = gi.trace(start2, self->mins, self->maxs, end2, self, MASK_SOLID);
-		if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
+		if (trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 		{
 //			gi.dprintf("Beast blocked high jump!\n");
 			VectorScale(forward, 300, self->movedir);
@@ -1298,7 +1298,7 @@ void tbeast_run_think (edict_t *self, float dist)
 	vec3_t		save_lf_org, save_rf_org, save_my_org;
 	float		save_yaw;*/
 
-	if(!M_ValidTarget(self, self->enemy))
+	if (!M_ValidTarget(self, self->enemy))
 	{
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 		return;
@@ -1307,10 +1307,10 @@ void tbeast_run_think (edict_t *self, float dist)
 //see if I'm on ground
 	TB_CheckBottom(self);
 
-	if(self->monsterinfo.aiflags &AI_USING_BUOYS)
+	if (self->monsterinfo.aiflags &AI_USING_BUOYS)
 		MG_Pathfind(self, false);
 
-	if(!MG_MoveToGoal (self, dist))
+	if (!MG_MoveToGoal (self, dist))
 	{
 		VectorSet(angles, 0, self->s.angles[YAW], 0);
 		AngleVectors(angles, forward, NULL, NULL);
@@ -1320,17 +1320,17 @@ void tbeast_run_think (edict_t *self, float dist)
 		VectorCopy(self->mins, mins);
 		mins[2]+=54;//his step height
 		trace = gi.trace(start, mins, self->maxs, end, self, MASK_SOLID);
-		if(trace.ent)
+		if (trace.ent)
 		{
-			if(movable(trace.ent) || trace.ent->solid!=SOLID_BSP)
+			if (movable(trace.ent) || trace.ent->solid!=SOLID_BSP)
 			{
 				return;
 			}
 		}
-		if(trace.fraction == 1.0 || //nothing there - ledge
+		if (trace.fraction == 1.0 || //nothing there - ledge
 			(!Vec3IsZero(trace.plane.normal) && trace.plane.normal[2]<0.7))//not a slope can go up
 		{
-			if(TB_CheckJump(self))
+			if (TB_CheckJump(self))
 				gi.dprintf("Enemy was ahead!\n");
 		}
 	}
@@ -1344,15 +1344,15 @@ void tbeast_ready_catch (edict_t *self)
 {
 	float enemy_zdist, ok_zdist;
 
-	if(!self->teamchain)
+	if (!self->teamchain)
 		return;
 
 	ok_zdist = 128;
-	if(ok_zdist<48)
+	if (ok_zdist<48)
 		ok_zdist = 48;
 
 	enemy_zdist = (self->teamchain->s.origin[2] + self->teamchain->mins[2]) - self->s.origin[2];
-	if(enemy_zdist<=self->maxs[2] + ok_zdist && self->teamchain->velocity[2]<=-60)
+	if (enemy_zdist<=self->maxs[2] + ok_zdist && self->teamchain->velocity[2]<=-60)
 		SetAnim(self, BEAST_ANIM_CATCH);
 	else
 		SetAnim(self, BEAST_ANIM_READY_CATCH);
@@ -1360,23 +1360,23 @@ void tbeast_ready_catch (edict_t *self)
 
 void tbeast_throw_toy(edict_t *self)
 {
-	if(!self->teamchain)
+	if (!self->teamchain)
 		return;
 
 	self->teamchain->flags &= ~FL_FLY;
 	self->teamchain->velocity[0] = self->teamchain->velocity[1] = 0;
 	self->teamchain->velocity[2] = 500;
-	if(self->teamchain->movetype > MOVETYPE_SCRIPT_ANGULAR)
+	if (self->teamchain->movetype > MOVETYPE_SCRIPT_ANGULAR)
 	{
 		self->teamchain->movetype = MOVETYPE_STEP;
 	}
 
 	VectorRandomCopy(vec3_origin,self->teamchain->avelocity,300);
 
-	if(Q_stricmp(self->teamchain->classname,"player"))
+	if (Q_stricmp(self->teamchain->classname,"player"))
 		G_QPostMessage(self->teamchain, MSG_DEATH, PRI_DIRECTIVE, NULL);
 
-	if(self->teamchain->client)
+	if (self->teamchain->client)
 		gi.sound(self->teamchain, CHAN_VOICE, sounds[SND_CORVUS_DIE], 1, ATTN_NORM, 0);
 }
 
@@ -1384,7 +1384,7 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 {
 	vec3_t enemy_ofs, forward, right, up, blooddir, enemy_face;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	AngleVectors(self->s.angles, forward, right, up);
@@ -1419,9 +1419,9 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorClear(self->teamchain->velocity);
 	VectorClear(self->teamchain->avelocity);
 
-	if(flrand(0,1)<0.5)
+	if (flrand(0,1)<0.5)
 	{
-		if(self->teamchain->materialtype == MAT_INSECT)
+		if (self->teamchain->materialtype == MAT_INSECT)
 			gi.CreateEffect(self->teamchain, FX_BLOOD, CEF_FLAG8, self->teamchain->s.origin, "ub", blooddir, 200);
 		else
 			gi.CreateEffect(self->teamchain, FX_BLOOD, 0, self->teamchain->s.origin, "ub", blooddir, 200);
@@ -1435,7 +1435,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	edict_t	*found = NULL;
 //	trace_t trace;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	ok_dist = 64;
@@ -1448,29 +1448,29 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorSubtract(self->enemy->s.origin, startpos, endpos);
 
 	enemy_dist = VectorLength(endpos);
-	if(enemy_dist>ok_dist || flrand(0, 50)>self->enemy->health)
+	if (enemy_dist>ok_dist || flrand(0, 50)>self->enemy->health)
 	{//if missed or health is low, just chomp it now
 		while((found = newfindradius(found, startpos, ok_dist)))
 		{
-			if(found->takedamage&&movable(found))
+			if (found->takedamage&&movable(found))
 			{
-				if(found->health<=0)
+				if (found->health<=0)
 					T_Damage (found, self, self, endpos, found->s.origin, endpos, 2000, 300, DAMAGE_DISMEMBER,MOD_DIED);
 				else
 					break;
 			}
 		}
 
-		if(!found)
+		if (!found)
 		{
 //			gi.dprintf("Snatch missed by %4.2f!\n", enemy_dist - ok_dist);
 			self->msgHandler = DefaultMsgHandler;
 			/*
-			if(!Q_stricmp(self->enemy->classname,"player"))
+			if (!Q_stricmp(self->enemy->classname,"player"))
 			{
-				if(self->oldenemy)
+				if (self->oldenemy)
 				{
-					if(self->oldenemy->health>0)
+					if (self->oldenemy->health>0)
 					{
 						self->oldenemy = NULL;
 						self->enemy = self->oldenemy;
@@ -1486,7 +1486,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	self->msgHandler = DeadMsgHandler;
 //	gi.dprintf("SNAGGED!\n");
 
-	if(ofsu == TB_HIBITE_U + 128)
+	if (ofsu == TB_HIBITE_U + 128)
 		SetAnim(self, BEAST_ANIM_BITEUP2_SFIN);
 	else if(ofsu == TB_HIBITE_U)
 		SetAnim(self, BEAST_ANIM_BITEUP_SFIN);
@@ -1497,16 +1497,16 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	self->teamchain->flags |= FL_FLY;
 	self->teamchain->movetype = MOVETYPE_FLY;
 
-	if(!found->client)
+	if (!found->client)
 	{
 		found->monsterinfo.aiflags |= AI_DONT_THINK;
 	}
 	else
 	{
 		found->nextthink = level.time + 10;//stuck for 10 seconds.
-		if(found->health > 0)
+		if (found->health > 0)
 		{
-			if(found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+			if (found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 			{
 				playerExport->KnockDownPlayer(&found->client->playerinfo);
 			}
@@ -1529,10 +1529,10 @@ void tbeast_gore_toy(edict_t *self, float jumpht)
 	byte num_chunks;
 	vec3_t dir, forward;
 
-	if(jumpht!=-1)
+	if (jumpht!=-1)
 	{
 		self->velocity[2] += jumpht;
-		if(self->groundentity)
+		if (self->groundentity)
 		{
 			AngleVectors(self->s.angles, forward, NULL, NULL);
 			VectorMA(self->velocity, -100, forward, self->velocity);
@@ -1541,32 +1541,32 @@ void tbeast_gore_toy(edict_t *self, float jumpht)
 	else
 		self->count = 0;
 
-	if(!self->teamchain)
+	if (!self->teamchain)
 		return;
 
-	if(self->teamchain->health<0)
+	if (self->teamchain->health<0)
 		return;
 
-	if(self->count)
+	if (self->count)
 		return;
 
 	ok_zdist = 128;
 	enemy_zdist = self->teamchain->s.origin[2] - self->s.origin[2];
-	if(enemy_zdist <= self->maxs[2] + ok_zdist || jumpht == -1)
+	if (enemy_zdist <= self->maxs[2] + ok_zdist || jumpht == -1)
 	{//FIXME: waits grabs it too low, waits too long
 		self->wait = self->teamchain->materialtype;
 
 		gi.sound(self, CHAN_WEAPON, sounds[SND_SNATCH], 1, ATTN_NORM, 0);
-		if(jumpht!=-1)
+		if (jumpht!=-1)
 			self->count = 1;
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
 		num_chunks = (byte)(self->teamchain->health/4);
-		if(num_chunks>15)
+		if (num_chunks>15)
 			num_chunks = 15;
 		SprayDebris(self->teamchain, self->teamchain->s.origin, num_chunks, self->teamchain->health*4);//self->enemy is thingtype wood?!
 
-		if(Q_stricmp(self->teamchain->classname,"player"))
+		if (Q_stricmp(self->teamchain->classname,"player"))
 		{
 			gi.sound(self->teamchain, CHAN_WEAPON, sounds[SND_CATCH], 1, ATTN_NORM, 0);
 			BecomeDebris(self->teamchain);
@@ -1576,7 +1576,7 @@ void tbeast_gore_toy(edict_t *self, float jumpht)
 			self->teamchain->nextthink = level.time;
 			T_Damage (self->teamchain, self, self, self->velocity, self->teamchain->s.origin, dir, 2000, 300, DAMAGE_DISMEMBER|DAMAGE_NO_PROTECTION,MOD_DIED);
 		}
-		if(self->enemy == self->teamchain)
+		if (self->enemy == self->teamchain)
 			self->enemy = NULL;
 		self->teamchain = NULL;
 	}
@@ -1605,12 +1605,12 @@ void tbeast_anger_sound (edict_t *self)
 	else if (chance < 60)
 		tbeast_growl(self);
 
-	if(self->teamchain)
+	if (self->teamchain)
 	{
 		chance = (byte)irand(1,3);
 
 		SprayDebris(self->teamchain, self->teamchain->s.origin, chance, 100);
-		if(!self->teamchain->client)
+		if (!self->teamchain->client)
 		{
 			G_QPostMessage(self->teamchain, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", self->teamchain->health*0.5, irand(1,13));//do I need last three if not sending them?
 			G_QPostMessage(self->teamchain, MSG_PAIN, PRI_DIRECTIVE, "eeiii", self, self, true, 200, 0);
@@ -1624,14 +1624,14 @@ void tbeast_gibs(edict_t *self)
 	byte		numchunks;
 	int			flags = 0;
 
-	if(!self->wait)
+	if (!self->wait)
 		return;
 
 	AngleVectors(self->s.angles, forward, NULL, NULL);
 	VectorMA(self->s.origin, 56, forward, spot);
 	spot[2] -= 8;
 
-	if(self->wait == MAT_INSECT)
+	if (self->wait == MAT_INSECT)
 	{
 		flags |= CEF_FLAG8;
 		flags |= CEF_FLAG7;//use male insect skin on chunks
@@ -1640,10 +1640,10 @@ void tbeast_gibs(edict_t *self)
 	numchunks = (byte)(irand(3, 7));
 	gi.CreateEffect(NULL,
 					FX_FLESH_DEBRIS,
-   					flags,
-   					spot,
-   					"bdb",
-   					numchunks, self->mins, 16);
+					flags,
+					spot,
+					"bdb",
+					numchunks, self->mins, 16);
 
 	tbeast_anger_sound (self);
 }
@@ -1665,7 +1665,7 @@ void tbeast_inair (edict_t *self)
 
 void tbeast_check_landed (edict_t *self)
 {
-	if(TB_CheckBottom(self))
+	if (TB_CheckBottom(self))
 		SetAnim(self, BEAST_ANIM_LAND);
 }
 
@@ -1676,7 +1676,7 @@ void tbeast_ginair (edict_t *self)
 
 void tbeast_gcheck_landed (edict_t *self)
 {
-	if(TB_CheckBottom(self))
+	if (TB_CheckBottom(self))
 		SetAnim(self, BEAST_ANIM_GLAND);
 }
 
@@ -1685,7 +1685,7 @@ void tbeast_chomp(edict_t *self, float ofsf, float ofsr, float ofsu)
 	float enemy_dist, ok_dist, damage;
 	vec3_t forward, right, up, startpos, endpos, v;
 
-	if(!self->enemy)
+	if (!self->enemy)
 		return;
 
 	ok_dist = 64;
@@ -1698,10 +1698,10 @@ void tbeast_chomp(edict_t *self, float ofsf, float ofsr, float ofsu)
 	VectorSubtract(self->enemy->s.origin, startpos, endpos);
 
 	enemy_dist = VectorLength(endpos);
-	if(enemy_dist>ok_dist)
+	if (enemy_dist>ok_dist)
 	{//if missed or health is low, just chomp it now
 //		gi.dprintf("Chomp missed by %4.2f!\n", enemy_dist - ok_dist);
-		if(enemy_dist - ok_dist < 64)
+		if (enemy_dist - ok_dist < 64)
 		{//let them know it was close and we tried - spittle effect?
 			gi.sound(self, CHAN_WEAPON, sounds[SND_SNATCH], 1, ATTN_NORM, 0);
 		}
@@ -1718,13 +1718,13 @@ void tbeast_leap (edict_t *self, float fwdf, float rghtf, float upf)
 {
 	vec3_t	forward, right, up, angles;
 
-	if(!self->groundentity)
+	if (!self->groundentity)
 	{
-		if(!TB_CheckBottom(self))
+		if (!TB_CheckBottom(self))
 			return;
 	}
 
-	if(self->s.frame == FRAME_jumpb7)
+	if (self->s.frame == FRAME_jumpb7)
 		tbeast_chomp(self, 36, 0, 232);
 
 //	self->gravity = TB_JUMP_GRAV;
@@ -1754,29 +1754,29 @@ float LerpAngleChange (float curangle, float endangle, float step)
 	curangle = anglemod(curangle);
 	endangle = anglemod(endangle);
 
-	if(curangle>180)
+	if (curangle>180)
 		curangle-=360;
 	else if(curangle<-180)
 		curangle+=360;
 
-	if(endangle>180)
+	if (endangle>180)
 		endangle-=360;
 	else if(endangle<-180)
 		endangle+=360;
 
-	if(curangle == endangle)
+	if (curangle == endangle)
 		return 0;
 
 	diff = endangle - curangle;
 
-	if(diff > 180)
+	if (diff > 180)
 		diff -= 360;
 	else if(diff < -180)
 		diff += 360;
 
 	final = anglemod(curangle + diff/step);
 
-	if(final>180)
+	if (final>180)
 		final-=360;
 	else if(final<-180)
 		final+=360;
@@ -1786,7 +1786,7 @@ float LerpAngleChange (float curangle, float endangle, float step)
 
 int tbeast_inwalkframes(edict_t *self)
 {
-	if((self->curAnimID == BEAST_ANIM_CHARGE) ||
+	if ((self->curAnimID == BEAST_ANIM_CHARGE) ||
 		(self->curAnimID == BEAST_ANIM_QUICK_CHARGE))
 	{
 		switch(self->s.frame)
@@ -1827,19 +1827,19 @@ int tbeast_inwalkframes(edict_t *self)
 		}
 	}
 
-	if(self->s.frame>=FRAME_walk1 && self->s.frame<=FRAME_walk18)
+	if (self->s.frame>=FRAME_walk1 && self->s.frame<=FRAME_walk18)
 		return self->monsterinfo.currframeindex;
 
-	if(self->s.frame>=FRAME_wlklft1 && self->s.frame<=FRAME_wlklft18)
+	if (self->s.frame>=FRAME_wlklft1 && self->s.frame<=FRAME_wlklft18)
 		return self->monsterinfo.currframeindex;
 
-	if(self->s.frame>=FRAME_wlkrt1 && self->s.frame<=FRAME_wlkrt18)
+	if (self->s.frame>=FRAME_wlkrt1 && self->s.frame<=FRAME_wlkrt18)
 		return self->monsterinfo.currframeindex;
 
-	if(self->s.frame>=FRAME_wlkatk1 && self->s.frame<=FRAME_wlkatk18)
+	if (self->s.frame>=FRAME_wlkatk1 && self->s.frame<=FRAME_wlkatk18)
 		return self->monsterinfo.currframeindex;
 
-	if(self->s.frame>=FRAME_wait1 && self->s.frame<=FRAME_wait14)
+	if (self->s.frame>=FRAME_wait1 && self->s.frame<=FRAME_wait14)
 		return 16;
 
 	return -1;
@@ -1865,9 +1865,9 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 
 	leg_check_index = tbeast_inwalkframes(self);
 
-	if(leg_check_index > -1)
+	if (leg_check_index > -1)
 	{//set up leg checks - only if in these frames
-		if(leg_check_index > 5 && leg_check_index < 15)
+		if (leg_check_index > 5 && leg_check_index < 15)
 			right_front = true;
 		else
 			right_front = false;
@@ -1884,7 +1884,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 		VectorMA(rightpos, rfootoffset[1] + TB_RT_OFFSET, right, rightpos);
 		VectorMA(rightpos, rfootoffset[2] + TB_UP_OFFSET, up, rightpos);
 
-		if(right_front)
+		if (right_front)
 		{//this is also the front check
 			VectorCopy(rightpos, frontpos);
 			VectorCopy(leftpos, backpos);
@@ -1913,7 +1913,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 	VectorCopy(frontpos, bottom1);
 	bottom1[2] -= self->size[2] * 2;
 	trace = gi.trace(frontpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID);
-	if(trace.fraction == 1.0)
+	if (trace.fraction == 1.0)
 	{
 		self->s.angles[PITCH] = LerpAngleChange (self->s.angles[PITCH], 0, 8);
 	}
@@ -1924,7 +1924,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 		VectorCopy(backpos, bottom2);
 		bottom2[2] -= self->size[2] * 2;
 		trace = gi.trace(backpos, vec3_origin, vec3_origin, bottom2, self, MASK_SOLID);
-		if(trace.fraction == 1.0)
+		if (trace.fraction == 1.0)
 		{
 			self->s.angles[PITCH] = LerpAngleChange (self->s.angles[PITCH], 0, 8);
 		}
@@ -1942,7 +1942,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 	VectorCopy(rightpos, bottom1);
 	bottom1[2] -= self->size[2] * 2;
 	trace = gi.trace(rightpos, vec3_origin, vec3_origin, bottom1, self, MASK_SOLID);
-	if(trace.fraction == 1.0)
+	if (trace.fraction == 1.0)
 	{
 		self->s.angles[ROLL] = LerpAngleChange (self->s.angles[ROLL], 0, 8);
 	}
@@ -1953,7 +1953,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 		VectorCopy(leftpos, bottom2);
 		bottom2[2] -= self->size[2] * 2;
 		trace = gi.trace(leftpos, vec3_origin, vec3_origin, bottom2, self, MASK_SOLID);
-		if(trace.fraction == 1.0)
+		if (trace.fraction == 1.0)
 		{
 			self->s.angles[ROLL] = LerpAngleChange (self->s.angles[ROLL], 0, 8);
 		}
@@ -1969,9 +1969,9 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 	}
 
 	/*
-	if(z_adjust)
+	if (z_adjust)
 	{
-		if((gi.pointcontents(rightpos) & MASK_SOLID) ||	(gi.pointcontents(leftpos) & MASK_SOLID))
+		if ((gi.pointcontents(rightpos) & MASK_SOLID) ||	(gi.pointcontents(leftpos) & MASK_SOLID))
 		{
 			gi.dprintf("Beast feet in ground, raising up\n");
 			while(((gi.pointcontents(rightpos) & MASK_SOLID) ||
@@ -1989,7 +1989,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 		{
 			leftpos[2] -= 4;
 			rightpos[2] -= 4;
-			if(!(gi.pointcontents(rightpos) & MASK_SOLID) && !(gi.pointcontents(leftpos) & MASK_SOLID))
+			if (!(gi.pointcontents(rightpos) & MASK_SOLID) && !(gi.pointcontents(leftpos) & MASK_SOLID))
 			{
 				gi.dprintf("Beast feet not on ground, lowering\n");
 				while(!(gi.pointcontents(rightpos) & MASK_SOLID) &&
@@ -2014,23 +2014,23 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 	vec3_t	dir, bottom;
 	qboolean	throwthem = true;
 
-	if(trace->ent->svflags & SVF_TOUCHED_BEAST)
+	if (trace->ent->svflags & SVF_TOUCHED_BEAST)
 		return;
 
-	if(trace->ent == self->teamchain)
+	if (trace->ent == self->teamchain)
 		return;
 
-	if(trace->ent->classID == CID_FUNC_DOOR)
+	if (trace->ent->classID == CID_FUNC_DOOR)
 		return;
 
-	if(trace->ent->classID == CID_TCHECKRIK)
+	if (trace->ent->classID == CID_TCHECKRIK)
 		return;//we want to pick up and eat insects
 
-	if(trace->ent  && trace->ent->movetype && trace->ent !=world && Q_stricmp(trace->ent->classname, "worldspawn"))
+	if (trace->ent  && trace->ent->movetype && trace->ent !=world && Q_stricmp(trace->ent->classname, "worldspawn"))
 	{
-		if(trace->ent->client||trace->ent->svflags&SVF_MONSTER)
+		if (trace->ent->client||trace->ent->svflags&SVF_MONSTER)
 		{
-			if(trace->ent->s.origin[2] > self->absmax[2] - 10)
+			if (trace->ent->s.origin[2] > self->absmax[2] - 10)
 			{//FIXME: chance of throwing them off
 				trace->ent->s.origin[2] = self->absmax[2];
 				trace->ent->velocity[2] = 0;
@@ -2038,7 +2038,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 				throwthem = false;
 			}
 		}
-		if(throwthem)
+		if (throwthem)
 		{
 			VectorCopy(self->s.origin, bottom);
 			bottom[2] += self->mins[2];
@@ -2046,19 +2046,19 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 			VectorNormalize(dir);
 		}
 
-		if(movable(trace->ent) || trace->ent->takedamage)
+		if (movable(trace->ent) || trace->ent->takedamage)
 		{
-			if(throwthem)
+			if (throwthem)
 				VectorScale(dir, 200, trace->ent->velocity);
 		}
 		else if(Vec3NotZero(self->velocity) && trace->fraction < 0.7)
 		{
-			if(infront(self, trace->ent))
+			if (infront(self, trace->ent))
 			{
-				if(trace->ent->targetname && !Q_stricmp(trace->ent->targetname, "pillar"))
+				if (trace->ent->targetname && !Q_stricmp(trace->ent->targetname, "pillar"))
 				{//FIXME: In higher skills, less chance of breaking it?  Or debounce time?
 
-					if(visible_to_client(self))
+					if (visible_to_client(self))
 					{
 //						gi.dprintf("Beast hit pillar!\n");
 						G_UseTargets (trace->ent, self);
@@ -2071,7 +2071,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 
 						self->red_rain_count++;
 
-						if(self->red_rain_count >= 2)//got both pillars, now die
+						if (self->red_rain_count >= 2)//got both pillars, now die
 						{
 							//self->clipmask = 0;
 							self->solid = SOLID_NOT;
@@ -2087,36 +2087,36 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 						3,
 						7);
 
-					if(self->sounds!=2 && irand(0, 1))
+					if (self->sounds!=2 && irand(0, 1))
 						SetAnim(self, BEAST_ANIM_STUN);
 				}
 			}
 		}
 
-		if(trace->ent->touch&&trace->ent->solid!=SOLID_NOT)
+		if (trace->ent->touch&&trace->ent->solid!=SOLID_NOT)
 			trace->ent->touch (trace->ent, self, &trace->plane, trace->surface);
 
-		if(trace->ent->isBlocked&&trace->ent->solid!=SOLID_NOT)
+		if (trace->ent->isBlocked&&trace->ent->solid!=SOLID_NOT)
 		{
 			tr = *trace;
 			tr.ent = self;
 			trace->ent->isBlocked(trace->ent, &tr);
 		}
 
-		if(throwthem && trace->ent->takedamage)
+		if (throwthem && trace->ent->takedamage)
 		{
 			float	damage;
 
-			if(Vec3NotZero(self->velocity))
+			if (Vec3NotZero(self->velocity))
 			{
-				if(trace->ent->client)
+				if (trace->ent->client)
 				{
-					if(trace->ent->health > 30)
+					if (trace->ent->health > 30)
 						DoImpactDamage(self, trace);
 
-					if(trace->ent->groundentity && trace->ent->health)
+					if (trace->ent->groundentity && trace->ent->health)
 					{
-						if(trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+						if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 						{
 							playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 						}
@@ -2127,27 +2127,27 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 			}
 			else
 			{
-				if(trace->ent->client)
+				if (trace->ent->client)
 				{
-					if(crush)
+					if (crush)
 						damage = flrand(20, 100);
 					else if(trace->ent->health > 30)
 						damage = flrand(10, 30) * skill->value/2;
 					else
 						damage = 0;
 
-					if(!irand(0, 5) || (crush && !irand(0,1)))
+					if (!irand(0, 5) || (crush && !irand(0,1)))
 					{
-						if(trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+						if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 							playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
-					if(damage)
+					if (damage)
 						T_Damage(trace->ent, self, self, dir, trace->endpos, dir,
 								flrand(TB_DMG_IMPACT_MIN, TB_DMG_IMPACT_MAX), TB_DMG_IMPACT_KB, 0,MOD_DIED);
 				}
 				else
 				{
-					if(crush)
+					if (crush)
 						damage = flrand(1000, 3000);
 					else
 						damage = flrand(20, 100);
@@ -2157,11 +2157,11 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 		}
 		else
 		{
-			if(trace->ent->client)
+			if (trace->ent->client)
 			{
-				if(trace->ent->groundentity && trace->ent->health)
+				if (trace->ent->groundentity && trace->ent->health)
 				{
-					if(trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
+					if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 					{
 						playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
@@ -2173,22 +2173,22 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 
 qboolean boxes_overlap(vec3_t mins1, vec3_t maxs1, vec3_t mins2, vec3_t maxs2)
 {
-	if(mins1[0]>maxs2[0])
+	if (mins1[0]>maxs2[0])
 		return false;
 
-	if(mins1[1]>maxs2[1])
+	if (mins1[1]>maxs2[1])
 		return false;
 
-	if(mins1[2]>maxs2[2])
+	if (mins1[2]>maxs2[2])
 		return false;
 
-	if(maxs1[0]<mins2[0])
+	if (maxs1[0]<mins2[0])
 		return false;
 
-	if(maxs1[1]<mins2[1])
+	if (maxs1[1]<mins2[1])
 		return false;
 
-	if(maxs1[2]<mins2[2])
+	if (maxs1[2]<mins2[2])
 		return false;
 
 	return true;
@@ -2215,7 +2215,7 @@ void tbeast_check_impacts(edict_t *self)
 
 	leg_check_index = tbeast_inwalkframes(self);
 
-	if(leg_check_index > -1)
+	if (leg_check_index > -1)
 	{//set up leg checks - FIXME: trace from last footpos to current one
 		VectorSet(fmins, -8, -8, 0);
 		VectorSet(fmaxs, 8, 8, 1);
@@ -2251,7 +2251,7 @@ void tbeast_check_impacts(edict_t *self)
 	//Hey!  Check and see if they're close to my mouth and chomp 'em!
 	tbeast_fake_impact(self, &trace, false);
 
-	if(leg_check_index == -1)
+	if (leg_check_index == -1)
 	{
 		VectorCopy(self->s.origin, end);
 		end[2] += self->mins[2];
@@ -2296,14 +2296,14 @@ void tbeast_fake_touch(edict_t *self)
 	// be careful, it is possible to have an entity in this
 	// list removed before we get to it (killtriggered)
 
-	if(!touch[0])
+	if (!touch[0])
 		goto finish;
 
 	AngleVectors(self->s.angles, forward, right, up);
 
 	leg_check_index = tbeast_inwalkframes(self);
 
-	if(leg_check_index > -1)
+	if (leg_check_index > -1)
 	{//set up leg checks - FIXME: trace from last footpos to current one
 
 		//Walking, Check melee point in front
@@ -2352,20 +2352,20 @@ void tbeast_fake_touch(edict_t *self)
 		if (!other->inuse)
 			continue;
 
-		if(other==self)
+		if (other==self)
 			continue;
 
-		if(!Q_stricmp(other->classname, "worldspawn"))
+		if (!Q_stricmp(other->classname, "worldspawn"))
 			continue;
 
-		if(other == self->teamchain)
+		if (other == self->teamchain)
 			continue;
 
-		if(self->curAnimID != BEAST_ANIM_CHARGE && self->curAnimID != BEAST_ANIM_QUICK_CHARGE)
+		if (self->curAnimID != BEAST_ANIM_CHARGE && self->curAnimID != BEAST_ANIM_QUICK_CHARGE)
 		{
-			if(leg_check_index > -1 && other->takedamage && movable(other))
+			if (leg_check_index > -1 && other->takedamage && movable(other))
 			{//Hey!  Check and see if they're close to my mouth and chomp 'em!
-				if(Vector2Length (other->s.origin, melee_point) < 100)
+				if (Vector2Length (other->s.origin, melee_point) < 100)
 				{
 					self->oldenemy = self->enemy;
 					self->enemy = other;
@@ -2375,13 +2375,13 @@ void tbeast_fake_touch(edict_t *self)
 			}
 		}
 
-		if(other->classID == CID_TCHECKRIK)
+		if (other->classID == CID_TCHECKRIK)
 			continue;//we want to pick up and eat insects
 
 		//make other solid and size temp for trace
 		ocm = other->clipmask;
 		osolid = other->solid;
-		if(!Vec3IsZero(other->mins))
+		if (!Vec3IsZero(other->mins))
 			VectorCopy(other->mins, omins);
 		else
 		{
@@ -2389,7 +2389,7 @@ void tbeast_fake_touch(edict_t *self)
 			VectorSet(other->mins, -1, -1, -1);
 		}
 
-		if(!Vec3IsZero(other->maxs))
+		if (!Vec3IsZero(other->maxs))
 			VectorCopy(other->maxs, omaxs);
 		else
 		{
@@ -2408,12 +2408,12 @@ void tbeast_fake_touch(edict_t *self)
 		VectorCopy(omins, other->mins);
 		VectorCopy(omaxs, other->maxs);
 
-		if(trace.ent==other)//hit something with BODY , touch it
+		if (trace.ent==other)//hit something with BODY , touch it
 			hitother = true;//hit other!
 
-		if(!hitother && other->absmin[2]>self->absmax[2] - 10)
+		if (!hitother && other->absmin[2]>self->absmax[2] - 10)
 		{
-			if(!irand(0,10))
+			if (!irand(0,10))
 			{
 //				gi.dprintf("Jump to throw off something\n");
 				SetAnim(self, BEAST_ANIM_JUMP);
@@ -2425,39 +2425,39 @@ void tbeast_fake_touch(edict_t *self)
 		}
 		else
 		{
-			if(hitother)
+			if (hitother)
 				hitme = true;
 			else
 			{
 				hitme = false;
-				if(leg_check_index > -1)
+				if (leg_check_index > -1)
 				{
 					VectorAdd(other->s.origin, other->mins, omins);
 					VectorAdd(other->s.origin, other->maxs, omaxs);
-					if(boxes_overlap(omins, omaxs, lfootmins, lfootmaxs))
+					if (boxes_overlap(omins, omaxs, lfootmins, lfootmaxs))
 						hitme = true;
 					else if(boxes_overlap(omins, omaxs, rfootmins, rfootmaxs))
 						hitme = true;
 				}
 			}
 
-			if(hitme)
+			if (hitme)
 			{
-				if(other->isBlocked&&other->solid!=SOLID_NOT)
+				if (other->isBlocked&&other->solid!=SOLID_NOT)
 				{
 					trace = gi.trace(other->s.origin, vec3_origin, vec3_origin, self->s.origin, other, MASK_ALL);
 					trace.ent = self;
 					VectorCopy(other->s.origin, trace.endpos);
 					other->isBlocked(other, &trace);
 				}
-				if(other->touch&&other->solid!=SOLID_NOT)
+				if (other->touch&&other->solid!=SOLID_NOT)
 				{
 					trace = gi.trace(other->s.origin, vec3_origin, vec3_origin, self->s.origin, other, MASK_ALL);
 					trace.ent = self;
 					VectorCopy(other->s.origin, trace.endpos);
 					other->touch (other, self, &trace.plane, trace.surface);
 				}
-				if(other && other == trace.ent)
+				if (other && other == trace.ent)
 				{//if other still valid, do my impact with it
 					tbeast_fake_impact(self, &trace, false);
 					other->svflags |= SVF_TOUCHED_BEAST;//so check_impacts doesn't do anything with it
@@ -2488,9 +2488,9 @@ void tbeast_post_think (edict_t *self)
 	float		omins2;
 	qboolean	go_jump = false;
 
-	if(self->monsterinfo.awake)
+	if (self->monsterinfo.awake)
 	{
-		if(self->volume < (float)(self->max_health))
+		if (self->volume < (float)(self->max_health))
 		{
 			M_ShowLifeMeter(self, (int)(ceil(self->volume/self->max_health*TBEAST_SBAR_SIZE)), (int)(ceil(self->volume/self->max_health*TBEAST_SBAR_SIZE)));
 			self->volume += (float)(self->max_health) / 10;
@@ -2501,22 +2501,22 @@ void tbeast_post_think (edict_t *self)
 		}
 	}
 
-	if(self->s.origin[0] != self->s.old_origin[0] || self->s.origin[1] != self->s.old_origin[1])
+	if (self->s.origin[0] != self->s.old_origin[0] || self->s.origin[1] != self->s.old_origin[1])
 		LevelToGround(self, 0.5, 0.25, true);
 
-	if(Q_fabs(self->s.angles[PITCH])>45 || Q_fabs(self->s.angles[ROLL])>45)
+	if (Q_fabs(self->s.angles[PITCH])>45 || Q_fabs(self->s.angles[ROLL])>45)
 		go_jump = true;
 	else
 	{
 		//raise him up if on flat ground, lower is on slope - to keep feet on ground!
 		//FIXME - use checkbottom plane instead?
 
-		if(self->s.origin[0] != self->s.old_origin[0] || self->s.origin[1] != self->s.old_origin[1])
+		if (self->s.origin[0] != self->s.old_origin[0] || self->s.origin[1] != self->s.old_origin[1])
 		{
 			omins2 = self->mins[2];
 			self->mins[2] = ((Q_fabs(self->s.angles[PITCH]) + Q_fabs(self->s.angles[ROLL]))*0.5)/45 * 144 - 6 + TB_UP_OFFSET;
 			omins2 -= self->mins[2];
-			if(omins2)
+			if (omins2)
 			{
 				VectorCopy(self->s.origin, end);
 				end[2] += omins2;
@@ -2528,15 +2528,15 @@ void tbeast_post_think (edict_t *self)
 	}
 
 	VectorCopy(self->s.origin, self->s.old_origin);
-//	if(!TB_CheckBottom(self))
+//	if (!TB_CheckBottom(self))
 //	{
 //		gi.dprintf("Beast not on ground jump!\n");
 //		SetAnim(self, BEAST_ANIM_JUMP);
 //	}
 
-	if(!irand(0, 10))
+	if (!irand(0, 10))
 	{
-		if(self->curAnimID == BEAST_ANIM_WALK ||
+		if (self->curAnimID == BEAST_ANIM_WALK ||
 			self->curAnimID == BEAST_ANIM_WALKLEFT ||
 			self->curAnimID == BEAST_ANIM_WALKRT ||
 			self->curAnimID == BEAST_ANIM_WALKATK)
@@ -2548,12 +2548,12 @@ void tbeast_post_think (edict_t *self)
 			VectorSet(maxs, 8, 8, 2);
 
 			trace = gi.trace(self->s.origin, mins, maxs, end, self, MASK_SOLID);
-			if(trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
+			if (trace.fraction == 1.0 && !trace.startsolid && !trace.allsolid)
 				go_jump = true;
 		}
 	}
 
-	if(go_jump)
+	if (go_jump)
 	{
 //		gi.dprintf("Beast not on ground jump!\n");
 		TB_CheckJump (self);
@@ -2580,7 +2580,7 @@ edict_t *check_hit_beast(vec3_t start, vec3_t end)
 		VectorSubtract(found->s.origin, start, beast_dir);
 		diff2 = VectorLength(beast_dir) - 128;
 
-		if(diff2 > diff1)
+		if (diff2 > diff1)
 			continue;
 
 		//beast closer than trace endpos, let's do an incremental check
@@ -2591,7 +2591,7 @@ edict_t *check_hit_beast(vec3_t start, vec3_t end)
 		{
 			VectorMA(checkpos, 16, shot_dir, checkpos);
 			VectorSubtract(checkpos, found->s.origin, diffvec);
-			if(VectorLengthSquared(diffvec) < 16384)//128 squared
+			if (VectorLengthSquared(diffvec) < 16384)//128 squared
 			{//this spot is within 128 of beast origin, so you hit him, ok?
 				VectorCopy(checkpos, end);
 				return found;
@@ -2745,7 +2745,7 @@ void SP_monster_trial_beast (edict_t *self)
 	//Big guy can be stood on top of perhaps?
 	//self->touch = M_Touch;
 
-	if(!self->wakeup_distance)
+	if (!self->wakeup_distance)
 		self->wakeup_distance = 3000;
 
 	MG_InitMoods(self);
@@ -2758,7 +2758,7 @@ void SP_monster_trial_beast (edict_t *self)
 
 //	self->monsterinfo.aiflags &= ~AI_USING_BUOYS;
 
-	if(!irand(0,1))
+	if (!irand(0,1))
 		self->ai_mood_flags |= AI_MOOD_FLAG_PREDICT;
 
 	self->monsterinfo.aiflags |= AI_NIGHTVISION;
