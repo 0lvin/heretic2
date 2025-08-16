@@ -131,10 +131,21 @@ SelectNextItem(edict_t *ent, int itflags)
 		return;
 	}
 
+	if (cl->menu)
+	{
+		PMenu_Next(ent);
+		return;
+	}
+	else if (cl->chase_target)
+	{
+		ChaseNext(ent);
+		return;
+	}
+
 	/* scan  for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
 	{
-		index = (cl->playerinfo.pers.selected_item + i)%MAX_ITEMS;
+		index = (cl->playerinfo.pers.selected_item + i) % MAX_ITEMS;
 
 		if (!cl->playerinfo.pers.inventory[index])
 		{
@@ -176,6 +187,17 @@ SelectPrevItem(edict_t *ent, int itflags)
 
 	if (sv_cinematicfreeze->value)
 	{
+		return;
+	}
+
+	if (cl->menu)
+	{
+		PMenu_Prev(ent);
+		return;
+	}
+	else if (cl->chase_target)
+	{
+		ChasePrev(ent);
 		return;
 	}
 
@@ -264,7 +286,7 @@ Cmd_Give_f(edict_t *ent)
 		if (level.offensive_weapons&4)
 		{
 			it = FindItem("hell");
-			AddWeaponToInventory(it,ent);
+			AddWeaponToInventory(it, ent);
 		}
 
 		if (level.offensive_weapons&8)
@@ -832,7 +854,7 @@ Cmd_Powerup_f
 argv(0) powerup
 ==================
 */
-void
+static void
 Cmd_Powerup_f(edict_t *ent)
 {
 	char	*msg;
@@ -906,6 +928,7 @@ Cmd_Use_f(edict_t *ent)
 		G_CPrintf(ent, PRINT_HIGH, GM_NOTUSABLE);
 		return;
 	}
+
 	index = ITEM_INDEX(it);
 
 	if (!playerinfo->pers.inventory[index])
@@ -957,6 +980,114 @@ Cmd_Use_f(edict_t *ent)
 }
 
 /*
+ * Drop an inventory item
+ */
+static void
+Cmd_Drop_f(edict_t *ent)
+{
+	int index;
+	gitem_t *it;
+	char *s;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if ((Q_stricmp(gi.args(), "tech") == 0) && ((it = CTFWhat_Tech(ent)) != NULL))
+	{
+		it->drop(ent, it);
+		return;
+	}
+
+	s = gi.args();
+	it = FindItem(s);
+
+	if (!it)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "unknown item: %s\n", s);
+		return;
+	}
+
+	if (!it->drop)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Item is not dropable.\n");
+		return;
+	}
+
+	index = ITEM_INDEX(it);
+
+	if (!ent->client->pers.inventory[index])
+	{
+		if (strcmp(it->pickup_name, "HyperBlaster") == 0)
+		{
+			it = FindItem("Ionripper");
+			index = ITEM_INDEX(it);
+
+			if (!ent->client->pers.inventory[index])
+			{
+				gi.cprintf(ent, PRINT_HIGH, "Out of item: %s\n", s);
+				return;
+			}
+		}
+		else if (strcmp(it->pickup_name, "Railgun") == 0)
+		{
+			it = FindItem("Phalanx");
+			index = ITEM_INDEX(it);
+
+			if (!ent->client->pers.inventory[index])
+			{
+				gi.cprintf(ent, PRINT_HIGH, "Out of item: %s\n", s);
+				return;
+			}
+		}
+		else
+		{
+			gi.cprintf(ent, PRINT_HIGH, "Out of item: %s\n", s);
+			return;
+		}
+	}
+
+	it->drop(ent, it);
+}
+
+/*
+ * Display the scoreboard
+ */
+static void
+Cmd_Score_f(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->client->showinventory = false;
+	ent->client->showhelp = false;
+
+	if (ent->client->menu)
+	{
+		PMenu_Close(ent);
+	}
+
+	if (!deathmatch->value && !coop->value)
+	{
+		return;
+	}
+
+	if (ent->client->showscores)
+	{
+		ent->client->showscores = false;
+		ent->client->update_chase = true;
+		return;
+	}
+
+	ent->client->showscores = true;
+	DeathmatchScoreboardMessage(ent, ent->enemy);
+	gi.unicast(ent, true);
+}
+
+/*
  * Display the current help message
  */
 void
@@ -990,39 +1121,128 @@ Cmd_Help_f(edict_t *ent)
 	gi.unicast(ent, true);
 }
 
-/*
-=================
-Cmd_WeapPrev_f
-=================
-*/
+static void
+Cmd_Inven_f(edict_t *ent)
+{
+	gclient_t *cl;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	cl = ent->client;
+
+	cl->showscores = false;
+	cl->showhelp = false;
+
+	if (ent->client->menu)
+	{
+		PMenu_Close(ent);
+		ent->client->update_chase = true;
+		return;
+	}
+
+	if (cl->showinventory)
+	{
+		cl->showinventory = false;
+		return;
+	}
+
+	if (ctf->value && (cl->resp.ctf_team == CTF_NOTEAM))
+	{
+		CTFOpenJoinMenu(ent);
+		return;
+	}
+
+	cl->showinventory = true;
+
+	InventoryMessage(ent);
+	gi.unicast(ent, true);
+}
+
+static void
+Cmd_InvUse_f(edict_t *ent)
+{
+	gitem_t *it;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->client->menu)
+	{
+		PMenu_Select(ent);
+		return;
+	}
+
+	ValidateSelectedItem(ent);
+
+	if (ent->client->pers.selected_item == -1)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "No item to use.\n");
+		return;
+	}
+
+	it = &itemlist[ent->client->pers.selected_item];
+
+	if (!it->use)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Item is not usable.\n");
+		return;
+	}
+
+	it->use(ent, it);
+}
+
 void
 Cmd_WeapPrev_f(edict_t *ent)
 {
-	gclient_t	*cl;
-	int			i, index;
-	gitem_t		*it;
-	int			selected_weapon;
+	gclient_t *cl;
+	int i, index;
+	gitem_t *it;
+	int selected_weapon;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	cl = ent->client;
 
 	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
-		return;
-
-	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
-
-	// scan  for the next valid one
-	for (i=1 ; i<=MAX_ITEMS ; i++)
 	{
-		index = (selected_weapon + (MAX_ITEMS -i))%MAX_ITEMS;
+		return;
+	}
+
+	if (cl->playerinfo.pers.weapon)
+	{
+		it = cl->playerinfo.pers.weapon;
+	}
+	else
+	{
+		return;
+	}
+
+	selected_weapon = ITEM_INDEX(it);
+
+	/* scan for the next valid one */
+	for (i = 1; i <= MAX_ITEMS; i++)
+	{
+		index = (selected_weapon + MAX_ITEMS - i) % MAX_ITEMS;
 
 		if (!cl->playerinfo.pers.inventory[index])
+		{
 			continue;
+		}
 
-		it = itemlist + index;
-		if (!it->use)
+		it = &itemlist[index];
+
+		if (!it->use || !(it->flags & IT_WEAPON))
+		{
 			continue;
-		if (! (it->flags & IT_WEAPON) )
-			continue;
+		}
 
 		// if we are in water, don't select any weapon that requires ammo
 		if ((ent->waterlevel >= 2) &&
@@ -1032,23 +1252,26 @@ Cmd_WeapPrev_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
+
 		if (ent->client->playerinfo.pers.newweapon == it)
-			return;	// successful
+		{
+			return; /* successful */
+		}
 	}
 }
 
-/*
-=================
-Cmd_WeapNext_f
-=================
-*/
-static void
+void
 Cmd_WeapNext_f(edict_t *ent)
 {
-	gclient_t	*cl;
-	int			i, index;
-	gitem_t		*it;
-	int			selected_weapon;
+	gclient_t *cl;
+	int i, index;
+	gitem_t *it;
+	int selected_weapon;
+
+	if (!ent)
+	{
+		return;
+	}
 
 	cl = ent->client;
 
@@ -1057,8 +1280,8 @@ Cmd_WeapNext_f(edict_t *ent)
 
 	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
 
-	// scan  for the next valid one
-	for (i=1 ; i<=MAX_ITEMS ; i++)
+	/* scan  for the next valid one */
+	for (i = 1; i <= MAX_ITEMS; i++)
 	{
 		index = (selected_weapon + i)%MAX_ITEMS;
 
@@ -1207,24 +1430,71 @@ Cmd_WeapLast_f(edict_t *ent)
 	gitem_t *it;
 
 	if (sv_cinematicfreeze->value)
+	{
 		return;
+	}
+
+	if (!ent)
+	{
+		return;
+	}
 
 	cl = ent->client;
 
 	if (!cl->playerinfo.pers.weapon || !cl->playerinfo.pers.lastweapon)
+	{
 		return;
+	}
 
 	index = ITEM_INDEX(cl->playerinfo.pers.lastweapon);
-	if (!cl->playerinfo.pers.inventory[index])
-		return;
 
-	it = itemlist + index;
+	if (!cl->playerinfo.pers.inventory[index])
+	{
+		return;
+	}
+
+	it = &itemlist[index];
+
 	if (!it->use)
+	{
 		return;
-	if (! (it->flags & IT_WEAPON) )
+	}
+
+	if (!(it->flags & IT_WEAPON))
+	{
 		return;
+	}
 
 	it->use(ent, it);
+}
+
+static void
+Cmd_InvDrop_f(edict_t *ent)
+{
+	gitem_t *it;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	ValidateSelectedItem(ent);
+
+	if (ent->client->pers.selected_item == -1)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "No item to drop.\n");
+		return;
+	}
+
+	it = &itemlist[ent->client->pers.selected_item];
+
+	if (!it->drop)
+	{
+		gi.cprintf(ent, PRINT_HIGH, "Item is not dropable.\n");
+		return;
+	}
+
+	it->drop(ent, it);
 }
 
 static void
@@ -1262,6 +1532,26 @@ Cmd_Kill_f(edict_t *ent)
 
 		ent->client->flood_nextkill = level.time + flood_killdelay->value;
 	}
+}
+
+static void
+Cmd_PutAway_f(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->client->showscores = false;
+	ent->client->showhelp = false;
+	ent->client->showinventory = false;
+
+	if (ent->client->menu)
+	{
+		PMenu_Close(ent);
+	}
+
+	ent->client->update_chase = true;
 }
 
 static int
@@ -1341,6 +1631,62 @@ Cmd_Players_f(edict_t *ent)
 	}
 
 	gi.cprintf(ent, PRINT_HIGH, "%s\n%i players\n", large, count);
+}
+
+static void
+Cmd_Wave_f(edict_t *ent)
+{
+	int i;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	i = (int)strtol(gi.argv(1), (char **)NULL, 10);
+
+	/* can't wave when ducked */
+	if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+	{
+		return;
+	}
+
+	if (ent->client->anim_priority > ANIM_WAVE)
+	{
+		return;
+	}
+
+	ent->client->anim_priority = ANIM_WAVE;
+
+	switch (i)
+	{
+		case GESTURE_FLIP_OFF:
+			gi.cprintf(ent, PRINT_HIGH, "flipoff\n");
+			ent->s.frame = FRAME_flip01 - 1;
+			ent->client->anim_end = FRAME_flip12;
+			break;
+		case GESTURE_SALUTE:
+			gi.cprintf(ent, PRINT_HIGH, "salute\n");
+			ent->s.frame = FRAME_salute01 - 1;
+			ent->client->anim_end = FRAME_salute11;
+			break;
+		case GESTURE_TAUNT:
+			gi.cprintf(ent, PRINT_HIGH, "taunt\n");
+			ent->s.frame = FRAME_taunt01 - 1;
+			ent->client->anim_end = FRAME_taunt17;
+			break;
+		case GESTURE_WAVE:
+			gi.cprintf(ent, PRINT_HIGH, "wave\n");
+			ent->s.frame = FRAME_wave01 - 1;
+			ent->client->anim_end = FRAME_wave11;
+			break;
+		case GESTURE_POINT:
+		default:
+			gi.cprintf(ent, PRINT_HIGH, "point\n");
+			ent->s.frame = FRAME_point01 - 1;
+			ent->client->anim_end = FRAME_point12;
+			break;
+	}
 }
 
 void
@@ -1958,7 +2304,6 @@ Cmd_ListEntities_f(edict_t *ent)
 	}
 }
 
-#if 0
 static int
 get_ammo_usage(gitem_t *weap)
 {
@@ -2240,7 +2585,6 @@ Cmd_PrefWeap_f(edict_t *ent)
 		}
 	}
 }
-#endif
 
 void
 Cmd_ShowCoords_f(edict_t *ent)
@@ -2326,6 +2670,10 @@ ClientCommand(edict_t *ent)
 	{
 		Cmd_Use_f(ent);
 	}
+	else if (Q_stricmp(cmd, "drop") == 0)
+	{
+		Cmd_Drop_f(ent);
+	}
 	else if (Q_stricmp(cmd, "toggleinventory") == 0)
 	{
 		Cmd_ToggleInventory_f(ent);
@@ -2346,6 +2694,18 @@ ClientCommand(edict_t *ent)
 	{
 		Cmd_Noclip_f(ent);
 	}
+	else if (Q_stricmp(cmd, "inven") == 0)
+	{
+		Cmd_Inven_f(ent);
+	}
+	else if (Q_stricmp(cmd, "invnext") == 0)
+	{
+		SelectNextItem(ent, -1);
+	}
+	else if (Q_stricmp(cmd, "invprev") == 0)
+	{
+		SelectPrevItem(ent, -1);
+	}
 	else if (Q_stricmp(cmd, "invnextw") == 0)
 	{
 		SelectNextItem(ent, IT_WEAPON);
@@ -2361,6 +2721,14 @@ ClientCommand(edict_t *ent)
 	else if (Q_stricmp(cmd, "invprevp") == 0)
 	{
 		SelectPrevItem(ent, IT_DEFENSE);
+	}
+	else if (Q_stricmp(cmd, "invuse") == 0)
+	{
+		Cmd_InvUse_f(ent);
+	}
+	else if (Q_stricmp(cmd, "invdrop") == 0)
+	{
+		Cmd_InvDrop_f(ent);
 	}
 	else if (Q_stricmp(cmd, "weapprev") == 0)
 	{
@@ -2430,13 +2798,77 @@ ClientCommand(edict_t *ent)
 		else if (ent->client->ps.fov > 160)
 			ent->client->ps.fov = 160;
 	}
+	else if (Q_stricmp(cmd, "putaway") == 0)
+	{
+		Cmd_PutAway_f(ent);
+	}
+	else if (Q_stricmp(cmd, "wave") == 0)
+	{
+		Cmd_Wave_f(ent);
+	}
+	/* ZOID */
+	else if (Q_stricmp(cmd, "team") == 0)
+	{
+		CTFTeam_f(ent);
+	}
+	else if (Q_stricmp(cmd, "id") == 0)
+	{
+		CTFID_f(ent);
+	}
+	else if (Q_stricmp(cmd, "yes") == 0)
+	{
+		CTFVoteYes(ent);
+	}
+	else if (Q_stricmp(cmd, "no") == 0)
+	{
+		CTFVoteNo(ent);
+	}
+	else if (Q_stricmp(cmd, "ready") == 0)
+	{
+		CTFReady(ent);
+	}
+	else if (Q_stricmp(cmd, "notready") == 0)
+	{
+		CTFNotReady(ent);
+	}
+	else if (Q_stricmp(cmd, "ghost") == 0)
+	{
+		CTFGhost(ent);
+	}
+	else if (Q_stricmp(cmd, "admin") == 0)
+	{
+		CTFAdmin(ent);
+	}
+	else if (Q_stricmp(cmd, "stats") == 0)
+	{
+		CTFStats(ent);
+	}
+	else if (Q_stricmp(cmd, "warp") == 0)
+	{
+		CTFWarp(ent);
+	}
+	else if (Q_stricmp(cmd, "boot") == 0)
+	{
+		CTFBoot(ent);
+	}
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 	{
-		Cmd_PlayerList_f(ent);
+		if (ctf->value)
+		{
+			CTFPlayerList(ent);
+		}
+		else
+		{
+			Cmd_PlayerList_f(ent);
+		}
 	}
 	else if (Q_stricmp(cmd, "entcount") == 0)
 	{
 		Cmd_Ent_Count_f(ent);
+	}
+	else if (Q_stricmp(cmd, "disguise") == 0)
+	{
+		ent->flags |= FL_DISGUISED;
 	}
 	else if (Q_stricmp(cmd, "teleport") == 0)
 	{
@@ -2453,6 +2885,18 @@ ClientCommand(edict_t *ent)
 	else if (Q_stricmp(cmd, "listentities") == 0)
 	{
 		Cmd_ListEntities_f(ent);
+	}
+	else if (Q_stricmp(cmd, "cycleweap") == 0)
+	{
+		Cmd_CycleWeap_f(ent);
+	}
+	else if (Q_stricmp(cmd, "prefweap") == 0)
+	{
+		Cmd_PrefWeap_f(ent);
+	}
+	else if (Q_stricmp(cmd, "observer") == 0)
+	{
+		CTFObserver(ent);
 	}
 	else if (Q_stricmp(cmd, "thirdperson") == 0)
 	{

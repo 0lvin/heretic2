@@ -1658,7 +1658,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 			// If player died in a deathmatch or coop, show scores.
 
-			Cmd_Score_f(self);
+			Cmd_Help_f(self);
 
 			// Check if a chicken?
 
