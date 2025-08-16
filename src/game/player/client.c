@@ -3174,6 +3174,20 @@ PutClientInServer(edict_t *ent)
 	VectorCopy(ent->s.angles, client->ps.viewangles);
 	VectorCopy(ent->s.angles, client->v_angle);
 
+#if 0
+	//JABot[start]
+	if (ent->ai && ent->ai->is_bot)
+	{
+		return;
+	}
+	//JABot[end]
+#endif
+
+	if (CTFStartClient(ent))
+	{
+		return;
+	}
+
 	/* spawn a spectator */
 	if (client->playerinfo.pers.spectator)
 	{
