@@ -16,7 +16,6 @@ void create_magic(edict_t *MagicMissile);
 
 static void MagicMissileThink2(edict_t *self);
 static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 // static void MagicMissileThink1(edict_t *self);
 
 

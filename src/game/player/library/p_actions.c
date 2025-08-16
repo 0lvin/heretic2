@@ -502,7 +502,7 @@ void PlayerActionSphereTrailEnd(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordAttack(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSwordAttack(playerinfo,(int)value);
+	playerinfo->PlayerActionSwordAttack(playerinfo->self, (int)value);
 }
 
 /*-----------------------------------------------
@@ -511,7 +511,7 @@ void PlayerActionSwordAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellFireball(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellFireball(playerinfo);
+	playerinfo->PlayerActionSpellFireball(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -520,7 +520,7 @@ void PlayerActionSpellFireball(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellBlast(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellBlast(playerinfo);
+	playerinfo->PlayerActionSpellBlast(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -540,7 +540,7 @@ void PlayerActionSpellArray(playerinfo_t *playerinfo, float value)
 	else if (value==1.0 && shotsleft <= 1)
 		return;		// Only one shot, use the center projectile slot.
 
-	playerinfo->PlayerActionSpellArray(playerinfo,(int)value);
+	playerinfo->PlayerActionSpellArray(playerinfo->self, (int)value);
 }
 
 /*-----------------------------------------------
@@ -553,7 +553,7 @@ void PlayerActionSpellSphereCreate(playerinfo_t *playerinfo, float value)
 
 	playerinfo->chargingspell=true;
 	playerinfo->weaponcharge = 1;
-	playerinfo->PlayerActionSpellSphereCreate(playerinfo,&playerinfo->chargingspell);
+	playerinfo->PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
 }
 
 /*-----------------------------------------------
@@ -625,7 +625,7 @@ void PlayerActionSpellSphereRelease(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellBigBall(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellBigBall(playerinfo);
+	playerinfo->PlayerActionSpellBigBall(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -634,7 +634,7 @@ void PlayerActionSpellBigBall(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellFirewall(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellFirewall(playerinfo);
+	playerinfo->PlayerActionSpellFirewall(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -646,7 +646,7 @@ void PlayerActionRedRainBowAttack(playerinfo_t *playerinfo, float value)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
-	playerinfo->PlayerActionRedRainBowAttack(playerinfo);
+	playerinfo->PlayerActionRedRainBowAttack(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -658,7 +658,7 @@ void PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo, float value)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
-	playerinfo->PlayerActionPhoenixBowAttack(playerinfo);
+	playerinfo->PlayerActionPhoenixBowAttack(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -669,7 +669,7 @@ void PlayerActionHellstaffAttack(playerinfo_t *playerinfo, float value)
 {
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
-	playerinfo->PlayerActionHellstaffAttack(playerinfo);
+	playerinfo->PlayerActionHellstaffAttack(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -5074,16 +5074,16 @@ void PlayerInterruptAction(playerinfo_t *playerinfo)
 	//Release any held weapons
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
 	{
-		playerinfo->PlayerActionRedRainBowAttack(playerinfo);
+		playerinfo->PlayerActionRedRainBowAttack(playerinfo->self);
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
 	{
-		playerinfo->PlayerActionPhoenixBowAttack(playerinfo);
+		playerinfo->PlayerActionPhoenixBowAttack(playerinfo->self);
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
 	{
 		playerinfo->chargingspell=false;
-		playerinfo->PlayerActionSpellSphereCreate(playerinfo, &playerinfo->chargingspell);
+		playerinfo->PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
 	}
 
 	//Clear out any pending animations

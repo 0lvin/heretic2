@@ -20,7 +20,6 @@ static void MeteorBarrierSearchInitThink(edict_t *self);
 static void MeteorBarrierSearchThink(edict_t *self);
 static void MeteorBarrierHuntThink(edict_t *self);
 static void MeteorBarrierTouch(edict_t *self, trace_t *trace);
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 void create_meteor(edict_t *Meteor);
 vec3_t	BBMin = {-5.0,-5.0,-5.0};

@@ -17,7 +17,6 @@
 #include "../header/g_teleport.h"
 #include "../common/angles.h"
 #include "../common/h2rand.h"
-#include "../header/g_weapon.h"
 
 // ************************************************************************************************
 // G_GetEntityStatePtr
@@ -887,21 +886,21 @@ void G_PlayerActionPushLever(playerinfo_t *playerinfo)
 // ----------------
 // ************************************************************************************************
 
-qboolean G_HandleTeleport(playerinfo_t *playerinfo)
+qboolean
+G_HandleTeleport(edict_t *self)
 {
 	// Are we teleporting or morphing?
-
-	if (playerinfo->flags & (PLAYER_FLAG_TELEPORT | PLAYER_FLAG_MORPHING))
+	if (self->client->playerinfo.flags & (PLAYER_FLAG_TELEPORT | PLAYER_FLAG_MORPHING))
 	{
 		// Are we doing de-materialiZe or...
 
-		if ((playerinfo->self)->client->tele_dest[0]!=-1)
+		if (self->client->tele_dest[0]!=-1)
 		{
 			// Are we done dematerialiZing? Or still fading?
 
-			if ((playerinfo->self)->client->tele_count--)
+			if (self->client->tele_count--)
 			{
-				(playerinfo->self)->s.color[3] -= TELE_FADE_OUT;
+				self->s.color[3] -= TELE_FADE_OUT;
 
 				return true;
 			}
@@ -909,21 +908,21 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 			{
 				// We have finished dematerialiZing, let's move the character.
 
-				if (playerinfo->flags & PLAYER_FLAG_TELEPORT)
+				if (self->client->playerinfo.flags & PLAYER_FLAG_TELEPORT)
 				{
-					Perform_Teleport(playerinfo->self);
+					Perform_Teleport(self);
 				}
 				else
 				{
-					if (playerinfo->edictflags & FL_CHICKEN)
+					if (self->client->playerinfo.edictflags & FL_CHICKEN)
 					{
 						// We're set as a chicken.
 
-						reset_morph_to_elf(playerinfo->self);
+						reset_morph_to_elf(self);
 					}
 					else
 					{
-						Perform_Morph(playerinfo->self);
+						Perform_Morph(self);
 					}
 				}
 
@@ -934,18 +933,18 @@ qboolean G_HandleTeleport(playerinfo_t *playerinfo)
 		{
 			// Are we done dematerialiZing? Or still fading?
 
-			if ((playerinfo->self)->client->tele_count--)
+			if (self->client->tele_count--)
 			{
-				(playerinfo->self)->s.color[3] += TELE_FADE;
+				self->s.color[3] += TELE_FADE;
 			}
 			else
 			{
 				// We are done re-materialiZing, let's kill all this BS and get back to the game.
 
-				if (playerinfo->flags & PLAYER_FLAG_TELEPORT)
-					CleanUpTeleport(playerinfo->self);
+				if (self->client->playerinfo.flags & PLAYER_FLAG_TELEPORT)
+					CleanUpTeleport(self);
 				else
-					CleanUpMorph(playerinfo->self);
+					CleanUpMorph(self);
 			}
 		}
 
@@ -1014,28 +1013,30 @@ void PlayerChickenDeath(edict_t *self)
 // Set the player model's joint angles.
 // ************************************************************************************************
 
-void G_SetJointAngles(playerinfo_t *playerinfo)
+void G_SetJointAngles(edict_t *self)
 {
-	edict_t *self;
+	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,PITCH,
+		self->client->playerinfo.targetjointangles[PITCH],M_PI / 4.0);
+	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,ROLL,
+		self->client->playerinfo.targetjointangles[YAW],M_PI / 4.0);
 
-	self=(edict_t *)playerinfo->self;
-
-	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,PITCH,playerinfo->targetjointangles[PITCH],M_PI / 4.0);
-	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,ROLL,playerinfo->targetjointangles[YAW],M_PI / 4.0);
-
-	if (!playerinfo->headjointonly)
+	if (!self->client->playerinfo.headjointonly)
 	{
-		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,PITCH,playerinfo->targetjointangles[PITCH],M_PI / 4.0);
-		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,PITCH,playerinfo->targetjointangles[PITCH],M_PI / 4.0);
-		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,ROLL,playerinfo->targetjointangles[YAW],M_PI / 4.0);
-		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,ROLL,playerinfo->targetjointangles[YAW],M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,PITCH,
+			self->client->playerinfo.targetjointangles[PITCH],M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,PITCH,
+			self->client->playerinfo.targetjointangles[PITCH],M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,ROLL,
+			self->client->playerinfo.targetjointangles[YAW],M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,ROLL,
+			self->client->playerinfo.targetjointangles[YAW],M_PI / 4.0);
 	}
 	else
 	{
-		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,PITCH,0,M_PI / 4.0);
-		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,PITCH,0,M_PI / 4.0);
-		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,ROLL,0,M_PI / 4.0);
-		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,ROLL,0,M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK, PITCH, 0, M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK, PITCH, 0, M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK, ROLL, 0, M_PI / 4.0);
+		SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK, ROLL, 0, M_PI / 4.0);
 	}
 }
 
@@ -1045,12 +1046,8 @@ void G_SetJointAngles(playerinfo_t *playerinfo)
 // Reset the player model's joint angles.
 // ************************************************************************************************
 
-void G_ResetJointAngles(playerinfo_t *playerinfo)
+void G_ResetJointAngles(edict_t *self)
 {
-	edict_t *self;
-
-	self=(edict_t *)playerinfo->self;
-
 	SetJointAngVel(self->s.rootJoint + CORVUS_HEAD,PITCH, 0, M_PI / 4.0);
 	SetJointAngVel(self->s.rootJoint + CORVUS_UPPERBACK,PITCH, 0, M_PI / 4.0);
 	SetJointAngVel(self->s.rootJoint + CORVUS_LOWERBACK,PITCH, 0, M_PI / 4.0);
@@ -1240,18 +1237,15 @@ void G_PlayerVaultKick(playerinfo_t *playerinfo)
 // *******************************************************
 
 extern void SpellLightningShieldAttack(edict_t *self);
-void G_PlayerSpellShieldAttack(playerinfo_t *playerinfo)
+void G_PlayerSpellShieldAttack(edict_t *self)
 {
 	if (irand(0, (SHIELD_ATTACK_CHANCE-1)) == 0)
-		SpellLightningShieldAttack(playerinfo->self);
+		SpellLightningShieldAttack(self);
 }
 
 // stop the attack and remove the persistant effect
-void G_PlayerSpellStopShieldAttack(playerinfo_t *playerinfo)
+void G_PlayerSpellStopShieldAttack(edict_t *self)
 {
-	edict_t	*self;
-
-	self = (edict_t*)playerinfo->self;
 	if (self->PersistantCFX)
 	{
 		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_SHIELD);
@@ -1267,29 +1261,9 @@ void G_PlayerSpellStopShieldAttack(playerinfo_t *playerinfo)
 // -------------------------
 // ************************************************************************************************
 
-void G_PlayerActionSwordAttack(playerinfo_t *playerinfo,int value)
+void G_PlayerActionSwordAttack(edict_t *self, int value)
 {
-	WeaponThink_SwordStaffEx(playerinfo->self,"i",value);
-}
-
-// ************************************************************************************************
-// G_PlayerActionSpellFireball
-// ---------------------------
-// ************************************************************************************************
-
-void G_PlayerActionSpellFireball(playerinfo_t *playerinfo)
-{
-	WeaponThink_FlyingFist(playerinfo->self);
-}
-
-// ************************************************************************************************
-// G_PlayerActionSpellBlast
-// ------------------------
-// ************************************************************************************************
-
-void G_PlayerActionSpellBlast(playerinfo_t *playerinfo)
-{
-	WeaponThink_Blast(playerinfo->self);
+	WeaponThink_SwordStaffEx(self, "i", value);
 }
 
 // ************************************************************************************************
@@ -1297,9 +1271,9 @@ void G_PlayerActionSpellBlast(playerinfo_t *playerinfo)
 // ------------------------
 // ************************************************************************************************
 
-void G_PlayerActionSpellArray(playerinfo_t *playerinfo,int value)
+void G_PlayerActionSpellArray(edict_t *self, int value)
 {
-	WeaponThink_MagicMissileSpreadEx(playerinfo->self,"i",value);
+	WeaponThink_MagicMissileSpreadEx(self,"i",value);
 }
 
 // ************************************************************************************************
@@ -1307,60 +1281,10 @@ void G_PlayerActionSpellArray(playerinfo_t *playerinfo,int value)
 // -------------------------------
 // ************************************************************************************************
 
-void G_PlayerActionSpellSphereCreate(playerinfo_t *playerinfo,qboolean *Charging)
+void G_PlayerActionSpellSphereCreate(edict_t *self, qboolean *Charging)
 {
 	// Start a glow effect.
-	WeaponThink_SphereOfAnnihilationEx(playerinfo->self, "g", Charging);
-}
-
-// ************************************************************************************************
-// G_PlayerActionSpellBigBall
-// --------------------------
-// ************************************************************************************************
-
-void G_PlayerActionSpellBigBall(playerinfo_t *playerinfo)
-{
-	WeaponThink_Maceballs(playerinfo->self);
-}
-
-// ************************************************************************************************
-// G_PlayerActionSpellFirewall
-// ---------------------------
-// ************************************************************************************************
-
-void G_PlayerActionSpellFirewall(playerinfo_t *playerinfo)
-{
-	WeaponThink_Firewall(playerinfo->self);
-}
-
-// ************************************************************************************************
-// G_PlayerActionRedRainBowAttack
-// ------------------------------
-// ************************************************************************************************
-
-void G_PlayerActionRedRainBowAttack(playerinfo_t *playerinfo)
-{
-	WeaponThink_RedRainBow(playerinfo->self);
-}
-
-// ************************************************************************************************
-// G_PlayerActionPhoenixBowAttack
-// ------------------------------
-// ************************************************************************************************
-
-void G_PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo)
-{
-	WeaponThink_PhoenixBow(playerinfo->self);
-}
-
-// ************************************************************************************************
-// G_PlayerActionHellstaffAttack
-// -----------------------------
-// ************************************************************************************************
-
-void G_PlayerActionHellstaffAttack(playerinfo_t *playerinfo)
-{
-	WeaponThink_HellStaff(playerinfo->self);
+	WeaponThink_SphereOfAnnihilationEx(self, "g", Charging);
 }
 
 // ************************************************************************************************
@@ -1368,23 +1292,24 @@ void G_PlayerActionHellstaffAttack(playerinfo_t *playerinfo)
 // ----------------------------
 // ************************************************************************************************
 
-void G_PlayerActionSpellDefensive(playerinfo_t *playerinfo)
+void G_PlayerActionSpellDefensive(edict_t *self)
 {
 	int			index;
 	gitem_t	*it;
 
-	if (playerinfo->leveltime > playerinfo->defensive_debounce)
+	if (self->client->playerinfo.leveltime > self->client->playerinfo.defensive_debounce)
 	{
 //		playerinfo->pers.defence->use(playerinfo,playerinfo->pers.defence);
-		playerinfo->pers.defence->weaponthink(playerinfo->self);
-		playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
+		self->client->playerinfo.pers.defence->weaponthink(self);
+		self->client->playerinfo.defensive_debounce = self->client->playerinfo.leveltime + DEFENSE_DEBOUNCE;
 
 		// if we've run out of defence shots, and we have the ring of repulsion - switch to that.
 		it = FindItem("ring");
 		index = ITEM_INDEX(it);
-		if ((Defence_CurrentShotsLeft(playerinfo, 1) <=0) && playerinfo->pers.inventory[index])
+		if ((Defence_CurrentShotsLeft(&(self->client->playerinfo), 1) <=0)
+			&& self->client->playerinfo.pers.inventory[index])
 		{
-			playerinfo->G_UseItem((edict_t*)playerinfo->self);
+			self->client->playerinfo.G_UseItem(self);
 		}
 	}
 }

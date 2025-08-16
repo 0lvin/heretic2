@@ -284,15 +284,15 @@ PlayerUpdate(playerinfo_t *playerinfo)
 		{
 			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
-				playerinfo->PlayerActionSpellDefensive(playerinfo);
+				playerinfo->PlayerActionSpellDefensive(playerinfo->self);
 			}
 			else
 			{
 				//Play a sound to tell the player they're out of mana
 				if (playerinfo->isclient)
-					playerinfo->CL_Sound(SND_PRED_ID50,playerinfo->origin, CHAN_VOICE, "*nomana.wav", 0.75, ATTN_NORM, 0);
+					playerinfo->CL_Sound(SND_PRED_ID50, playerinfo->origin, CHAN_VOICE, "*nomana.wav", 0.75, ATTN_NORM, 0);
 				else
-					playerinfo->G_Sound(SND_PRED_ID50,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*nomana.wav"), 0.75, ATTN_NORM, 0);
+					playerinfo->G_Sound(SND_PRED_ID50, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*nomana.wav"), 0.75, ATTN_NORM, 0);
 			}
 		}
 
@@ -304,9 +304,9 @@ PlayerUpdate(playerinfo_t *playerinfo)
 		// Check to see if the lightning shield is engaged.
 
 		if (playerinfo->shield_timer > playerinfo->leveltime)
-			playerinfo->G_PlayerSpellShieldAttack(playerinfo);
+			playerinfo->G_PlayerSpellShieldAttack(playerinfo->self);
 		else
-			playerinfo->G_PlayerSpellStopShieldAttack(playerinfo);
+			playerinfo->G_PlayerSpellStopShieldAttack(playerinfo->self);
 	}
 }
 

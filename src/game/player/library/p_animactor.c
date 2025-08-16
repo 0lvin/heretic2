@@ -275,8 +275,10 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	// Handle teleporting (and chicken morphing) only on game side.
 	if (!playerinfo->isclient)
 	{
-		if (playerinfo->G_HandleTeleport(playerinfo))
+		if (playerinfo->G_HandleTeleport(playerinfo->self))
+		{
 			return;
+		}
 	}
 
 	//Handle a dive request
@@ -604,7 +606,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	{
 		// Straighten out joints, i.e. no torso aiming.
 
-		playerinfo->ResetJointAngles(playerinfo);
+		playerinfo->ResetJointAngles(playerinfo->self);
 
 		playerinfo->swapFrame = playerinfo->frame;
 
@@ -688,7 +690,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			{
 				// Straighten out joints, i.e. no torso aiming.
 
-				playerinfo->ResetJointAngles(playerinfo);
+				playerinfo->ResetJointAngles(playerinfo->self);
 
 				return;
 			}
@@ -719,7 +721,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 
 		// Now set joints in motion.
 
-		playerinfo->SetJointAngles(playerinfo);
+		playerinfo->SetJointAngles(playerinfo->self);
 	}
 }
 

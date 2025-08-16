@@ -310,7 +310,6 @@ void SP_obj_banneronpole (edict_t *self)
 /*-----------------------------------------------
 	exploding barrel
 -----------------------------------------------*/
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 void barrel_explode_think(edict_t *self)
 {
 	vec3_t loc;

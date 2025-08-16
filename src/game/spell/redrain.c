@@ -11,8 +11,6 @@
 #define ARROW_RADIUS			2.0F
 #define ARROW_BACKUP			(45.0F - ARROW_RADIUS)
 
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
-
 void create_redarrow(edict_t *redarrow);
 
 void RedRainRemove(edict_t *self)

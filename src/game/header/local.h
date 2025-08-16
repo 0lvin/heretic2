@@ -2115,12 +2115,12 @@ typedef struct playerinfo_s
 	void (*G_PlayerActionPushButton)(playerinfo_t *playerinfo);
 	qboolean (*G_PlayerActionCheckPushLever)(playerinfo_t *playerinfo);
 	void (*G_PlayerActionPushLever)(playerinfo_t *playerinfo);
-	qboolean (*G_HandleTeleport)(playerinfo_t *playerinfo);
+	qboolean (*G_HandleTeleport)(edict_t *self);
 	void (*G_PlayerActionShrineEffect)(playerinfo_t *playerinfo);
 	void (*G_PlayerActionChickenBite)(playerinfo_t *playerinfo);
 	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo,float delta);
-	void (*G_PlayerSpellShieldAttack)(playerinfo_t *playerinfo);
-	void (*G_PlayerSpellStopShieldAttack)(playerinfo_t *playerinfo);
+	void (*G_PlayerSpellShieldAttack)(edict_t *self);
+	void (*G_PlayerSpellStopShieldAttack)(edict_t *self);
 	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
 	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
 	void (*G_cprintf)(edict_t *ent, int printlevel, short stringid);
@@ -2130,19 +2130,19 @@ typedef struct playerinfo_s
 	// Common client & server (game) function callbacks.
 
 	int (*PointContents)(vec3_t point);
-	void (*SetJointAngles)(playerinfo_t *playerinfo);
-	void (*ResetJointAngles)(playerinfo_t *playerinfo);
-	void (*PlayerActionSwordAttack)(playerinfo_t *playerinfo,int value);
-	void (*PlayerActionSpellFireball)(playerinfo_t *playerinfo);
-	void (*PlayerActionSpellBlast)(playerinfo_t *playerinfo);
-	void (*PlayerActionSpellArray)(playerinfo_t *playerinfo,int value);
-	void (*PlayerActionSpellSphereCreate)(playerinfo_t *playerinfo,qboolean *Charging);
-	void (*PlayerActionSpellFirewall)(playerinfo_t *playerinfo);
-	void (*PlayerActionSpellBigBall)(playerinfo_t *playerinfo);
-	void (*PlayerActionRedRainBowAttack)(playerinfo_t *playerinfo);
-	void (*PlayerActionPhoenixBowAttack)(playerinfo_t *playerinfo);
-	void (*PlayerActionHellstaffAttack)(playerinfo_t *playerinfo);
-	void (*PlayerActionSpellDefensive)(playerinfo_t *playerinfo);
+	void (*SetJointAngles)(edict_t *self);
+	void (*ResetJointAngles)(edict_t *self);
+	void (*PlayerActionSwordAttack)(edict_t *self, int value);
+	void (*PlayerActionSpellFireball)(edict_t *self);
+	void (*PlayerActionSpellBlast)(edict_t *self);
+	void (*PlayerActionSpellArray)(edict_t *self, int value);
+	void (*PlayerActionSpellSphereCreate)(edict_t *self, qboolean *Charging);
+	void (*PlayerActionSpellFirewall)(edict_t *self);
+	void (*PlayerActionSpellBigBall)(edict_t *self);
+	void (*PlayerActionRedRainBowAttack)(edict_t *self);
+	void (*PlayerActionPhoenixBowAttack)(edict_t *self);
+	void (*PlayerActionHellstaffAttack)(edict_t *self);
+	void (*PlayerActionSpellDefensive)(edict_t *self);
 	qboolean (*G_EntIsAButton)(edict_t *ent);
 	int (*irand)(playerinfo_t *playerinfo,int mn,int mx);
 
@@ -3383,6 +3383,28 @@ void DefenceThink_Teleport(edict_t *Caster);
 void DefenceThink_Morph(edict_t *Caster);
 void DefenceThink_Shield(edict_t *Caster);
 void DefenceThink_Tornado(edict_t *Caster);
+
+// ************************************************************************************************
+// WeaponThink_XXX
+// ---------------
+// Player-weapon think functions, each corresponding to one weapon type. Made visible here so that
+// they can be referenced from 'g_items.c'.
+// ************************************************************************************************
+
+void WeaponThink_SwordStaff(edict_t *Caster);
+void WeaponThink_SwordStaffEx(edict_t *Caster,char *Format,...);
+void WeaponThink_FlyingFist(edict_t *Caster);
+void WeaponThink_MagicMissileSpread(edict_t *Caster);
+void WeaponThink_MagicMissileSpreadEx(edict_t *Caster,char *Format,...);
+void WeaponThink_SphereOfAnnihilation(edict_t *Caster);
+void WeaponThink_SphereOfAnnihilationEx(edict_t *Caster, char *Format,...);
+void WeaponThink_Maceballs(edict_t *Caster);
+void WeaponThink_Firewall(edict_t *Caster);
+void WeaponThink_Blast(edict_t *Caster);
+void WeaponThink_RedRainBow(edict_t *Caster);
+void WeaponThink_PhoenixBow(edict_t *Caster);
+void WeaponThink_HellStaff(edict_t *Caster);
+extern void AlertMonsters(edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 #define	SVF_INUSE				0x00000008	// Used to replace the inuse field.
 #define SVF_ALWAYS_SEND			0x00000010	// Always send the ent to all the clients, regardless of

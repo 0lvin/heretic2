@@ -33,7 +33,6 @@ static void SphereOfAnnihilationTouch(edict_t *self,edict_t *Other,cplane_t *Pla
 static void SphereWatcherGrowThink(edict_t *self);
 static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, csurface_t *surface);
 
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 void create_sphere(edict_t *Sphere);
 
 // ****************************************************************************

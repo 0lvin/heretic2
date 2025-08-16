@@ -41,7 +41,6 @@ gitem_armor_t gold_armor_info	= {MAX_GOLD_ARMOR, GOLD_HIT_MULT, GOLD_SPELL_MULT}
 
 void pitch_roll_for_slope (edict_t *forwhom, vec3_t *slope);
 void MG_PostDeathThink (edict_t *self);
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 
 /*

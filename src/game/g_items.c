@@ -28,7 +28,6 @@
 #include "header/local.h"
 #include "header/g_items.h"
 #include "header/g_itemstats.h"
-#include "header/g_weapon.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_anim_data.h"
 #include "player/library/p_items.h"

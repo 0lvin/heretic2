@@ -8,7 +8,6 @@
 #include "../header/g_volume_effect.h"
 
 #define ARROW_RADIUS			4.0F
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 void create_phoenix(edict_t *phoenix);
 

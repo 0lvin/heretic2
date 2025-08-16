@@ -54,7 +54,6 @@ extern void SpellCastHellstaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 
 static void Weapon_CalcStartPos(vec3_t OriginToLowerJoint,vec3_t OriginToUpperJoint,
 								vec3_t DefaultStartPos,vec3_t ActualStartPos, edict_t *caster);
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
 
 #define PLAYER_NOISE_SELF 0
 #define PLAYER_NOISE_IMPACT 1
@@ -4345,7 +4344,7 @@ WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
 }
 
 void
-WeaponThink_SphereOfAnnihilation(edict_t *caster, char *Format, ...)
+WeaponThink_SphereOfAnnihilation(edict_t *caster)
 {
 	WeaponThink_SphereOfAnnihilationEx(caster, "");
 }

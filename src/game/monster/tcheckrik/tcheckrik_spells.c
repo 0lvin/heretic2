@@ -11,7 +11,6 @@
 #include "../stats/stats.h"
 
 
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean sound_alert);
 static void InsectStaffThink(edict_t *self);
 static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
 

@@ -124,7 +124,7 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 	// Straighten out joints, i.e. reset torso twisting.
 
 	if (!(playerinfo->edictflags&FL_CHICKEN))
-		playerinfo->ResetJointAngles(playerinfo);
+		playerinfo->ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
 }
@@ -156,7 +156,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	// Straighten out joints, i.e. no torso aiming.
 
 	if (!(playerinfo->edictflags&FL_CHICKEN))
-		playerinfo->ResetJointAngles(playerinfo);
+		playerinfo->ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
 }

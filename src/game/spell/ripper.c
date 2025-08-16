@@ -19,8 +19,6 @@
 
 void RipperThink(edict_t *Self);
 
-extern void AlertMonsters (edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_shadows);
-
 
 
 //---------------------
