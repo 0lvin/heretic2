@@ -115,10 +115,10 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 
 	PlayerSetHandFX(playerinfo, HANDFX_NONE, -1);
 
-	if (playerinfo->pers.weaponready == WEAPON_READY_NONE)		// Just in case we die with WEAPON_READY_NONE
-		playerinfo->pers.weaponready = WEAPON_READY_HANDS;
+	if (playerinfo->self->client->pers.weaponready == WEAPON_READY_NONE)		// Just in case we die with WEAPON_READY_NONE
+		playerinfo->self->client->pers.weaponready = WEAPON_READY_HANDS;
 
-	playerinfo->switchtoweapon = playerinfo->pers.weaponready;
+	playerinfo->switchtoweapon = playerinfo->self->client->pers.weaponready;
 	playerinfo->self->client->newweapon = NULL;
 
 	// Straighten out joints, i.e. reset torso twisting.
@@ -137,16 +137,16 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	PlayerAnimSetUpperSeq(playerinfo, ASEQ_NONE);
 	playerinfo->upperframeptr = playerinfo->uppermove->frame;
 
-	playerinfo->pers.armortype = ARMOR_TYPE_NONE;
-	playerinfo->pers.bowtype = BOW_TYPE_NONE;
-	playerinfo->pers.stafflevel = STAFF_LEVEL_BASIC;
-	playerinfo->pers.helltype = HELL_TYPE_BASIC;
-	playerinfo->pers.altparts = 0;
-	playerinfo->pers.weaponready = WEAPON_READY_HANDS;
+	playerinfo->self->client->pers.armortype = ARMOR_TYPE_NONE;
+	playerinfo->self->client->pers.bowtype = BOW_TYPE_NONE;
+	playerinfo->self->client->pers.stafflevel = STAFF_LEVEL_BASIC;
+	playerinfo->self->client->pers.helltype = HELL_TYPE_BASIC;
+	playerinfo->self->client->pers.altparts = 0;
+	playerinfo->self->client->pers.weaponready = WEAPON_READY_HANDS;
 	playerinfo->switchtoweapon = WEAPON_READY_HANDS;
 	playerinfo->self->client->newweapon = NULL;
 	PlayerUpdateModelAttributes(playerinfo);
-	playerinfo->pers.handfxtype = HANDFX_NONE;
+	playerinfo->self->client->pers.handfxtype = HANDFX_NONE;
 
 	PlayerSetHandFX(playerinfo, HANDFX_NONE, -1);
 
@@ -171,12 +171,12 @@ int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
 
 	// See if we have the arm to do that magic.
 
-	if (playerinfo->switchtoweapon != playerinfo->pers.weaponready)
+	if (playerinfo->switchtoweapon != playerinfo->self->client->pers.weaponready)
 	{
 		if (!BranchCheckDismemberAction(playerinfo, playerinfo->switchtoweapon))
 			return ASEQ_NONE;
 
-		newseq = PlayerAnimWeaponSwitchSeq[playerinfo->pers.weaponready][playerinfo->switchtoweapon];
+		newseq = PlayerAnimWeaponSwitchSeq[playerinfo->self->client->pers.weaponready][playerinfo->switchtoweapon];
 		if (newseq)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, newseq);
@@ -188,7 +188,7 @@ int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
 		if (!BranchCheckDismemberAction(playerinfo, playerinfo->self->client->newweapon->tag))
 			return ASEQ_NONE;
 
-		newseq = PlayerAnimWeaponSwitchSeq[playerinfo->pers.weaponready][playerinfo->pers.weaponready];
+		newseq = PlayerAnimWeaponSwitchSeq[playerinfo->self->client->pers.weaponready][playerinfo->self->client->pers.weaponready];
 		if (newseq)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, newseq);
@@ -269,7 +269,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			else
 			if (playerinfo->sv_cinematicfreeze)
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_LOOKBACK);
-			else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
+			else if ((playerinfo->self->client->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
 			{
 				// Because the bow doesn't look right in some idles.
 
@@ -286,7 +286,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 						break;
 				}
 			}
-			else if ((playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF))
+			else if ((playerinfo->self->client->pers.weaponready == WEAPON_READY_SWORDSTAFF))
 			{
 				// Because the staff doesn't look right in some idles.
 

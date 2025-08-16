@@ -1222,13 +1222,13 @@ ClientEndServerFrame(edict_t *ent)
 
 	for(index = 0;index < MAX_ITEMS;index++)
 	{
-		if (current_client->playerinfo.pers.inventory[index] != current_client->playerinfo.pers.old_inventory[index])
+		if (current_client->pers.inventory[index] != current_client->pers.old_inventory[index])
 		{
 			current_client->ps.inventory_changes[i] = index;
 
-			current_client->ps.inventory_remaining[i] = current_client->playerinfo.pers.inventory[index];
+			current_client->ps.inventory_remaining[i] = current_client->pers.inventory[index];
 
-			current_client->playerinfo.pers.old_inventory[index] = current_client->playerinfo.pers.inventory[index];
+			current_client->pers.old_inventory[index] = current_client->pers.inventory[index];
 
 			i++;
 		}
@@ -1282,25 +1282,25 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.uppermove_index = current_client->playerinfo.uppermove_index;
 	current_client->ps.lowermove_index = current_client->playerinfo.lowermove_index;
 
-	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.weapon);
-	current_client->ps.defense = (byte)ITEM_INDEX(current_client->playerinfo.pers.defence);
-	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastweapon);
-	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastdefence);
-	current_client->ps.weaponready = (byte)current_client->playerinfo.pers.weaponready;
+	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->pers.weapon);
+	current_client->ps.defense = (byte)ITEM_INDEX(current_client->pers.defence);
+	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->pers.lastweapon);
+	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->pers.lastdefence);
+	current_client->ps.weaponready = (byte)current_client->pers.weaponready;
 	current_client->ps.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
 	current_client->ps.newweapon = (byte)ITEM_INDEX(current_client->newweapon);
 	current_client->ps.weap_ammo_index = (byte)current_client->playerinfo.weap_ammo_index;
 	current_client->ps.def_ammo_index = (byte)current_client->playerinfo.def_ammo_index;
 	current_client->ps.weaponcharge = (byte)current_client->playerinfo.weaponcharge;
-	current_client->ps.armortype = (byte)current_client->playerinfo.pers.armortype;
-	current_client->ps.bowtype = (byte)current_client->playerinfo.pers.bowtype;
-	current_client->ps.stafflevel = (byte)current_client->playerinfo.pers.stafflevel;
-	current_client->ps.helltype = (byte)current_client->playerinfo.pers.helltype;
+	current_client->ps.armortype = (byte)current_client->pers.armortype;
+	current_client->ps.bowtype = (byte)current_client->pers.bowtype;
+	current_client->ps.stafflevel = (byte)current_client->pers.stafflevel;
+	current_client->ps.helltype = (byte)current_client->pers.helltype;
 	current_client->ps.meteor_count = (byte)current_client->playerinfo.meteor_count;
-	current_client->ps.handfxtype = (byte)current_client->playerinfo.pers.handfxtype;
+	current_client->ps.handfxtype = (byte)current_client->pers.handfxtype;
 	current_client->ps.plaguelevel = (byte)current_client->playerinfo.plaguelevel;
-	current_client->ps.skintype = (byte)current_client->playerinfo.pers.skintype;
-	current_client->ps.altparts = (byte)current_client->playerinfo.pers.altparts;
+	current_client->ps.skintype = (byte)current_client->pers.skintype;
+	current_client->ps.altparts = (byte)current_client->pers.altparts;
 	current_client->ps.deadflag = current_client->playerinfo.deadflag;
 	current_client->ps.ideal_yaw = ent->ideal_yaw;
 	current_client->ps.leveltime = level.time;

@@ -467,7 +467,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 
 	if (playerinfo->advancedstaff &&			// Special move
 			playerinfo->seqcmd[ACMDL_ACTION] &&
-			playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF &&
+			playerinfo->self->client->pers.weaponready == WEAPON_READY_SWORDSTAFF &&
 			playerinfo->seqcmd[ACMDU_ATTACK] &&
 			BranchCheckDismemberAction(playerinfo, ITEM_WEAPON_SWORDSTAFF))
 	{
@@ -813,7 +813,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 			{
 				if (playerinfo->seqcmd[ACMDL_FWD])
 				{
-					if (	(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
+					if (	(playerinfo->self->client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 							(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) )
 						return ASEQ_POLEVAULT1_W;
 					else
@@ -1714,7 +1714,7 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 
 	assert(playerinfo);
 
-	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
+	if ((playerinfo->self->client->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
 	{
 		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
@@ -1815,7 +1815,7 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 
 	assert(playerinfo);
 
-	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
+	if ((playerinfo->self->client->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
 	{
 		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
@@ -1914,7 +1914,7 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	//See if we have the arm to do that magic
-	if (!BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, playerinfo->self->client->pers.weapon->tag))
 		return ASEQ_NONE;
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] && !(playerinfo->edictflags & FL_CHICKEN))	// Not a chicken
@@ -1922,13 +1922,13 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 		playerinfo->idletime=playerinfo->leveltime;
 
 		// Check Offensive mana.
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || pi.Weapon_CurrentShotsLeft(playerinfo))
+		if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || pi.Weapon_CurrentShotsLeft(playerinfo))
 		{
 			// Fireballs have free mana, but if powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
-				return playerinfo->pers.weapon->altanimseq;
+				return playerinfo->self->client->pers.weapon->altanimseq;
 			else
-				return playerinfo->pers.weapon->playeranimseq;
+				return playerinfo->self->client->pers.weapon->playeranimseq;
 		}
 	}
 	else
@@ -1957,7 +1957,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK])	// Not a chicken
 	{
-		if (!strcmp(playerinfo->pers.weapon->classname, "Weapon_SwordStaff"))
+		if (!strcmp(playerinfo->self->client->pers.weapon->classname, "Weapon_SwordStaff"))
 		{
 			playerinfo->idletime=playerinfo->leveltime;
 
@@ -2015,13 +2015,13 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
-		if (!strcmp(playerinfo->pers.weapon->classname, "item_weapon_hellstaff"))
+		if (!strcmp(playerinfo->self->client->pers.weapon->classname, "item_weapon_hellstaff"))
 		{
 			// If powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
-				return playerinfo->pers.weapon->altanimseq;
+				return playerinfo->self->client->pers.weapon->altanimseq;
 			else
-				return playerinfo->pers.weapon->playeranimseq;
+				return playerinfo->self->client->pers.weapon->playeranimseq;
 		}
 	}
 	else
@@ -2050,9 +2050,9 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 		// If powered up, use the alternate animation sequence.
 		if (playerinfo->powerup_timer > playerinfo->leveltime)
-			return(playerinfo->pers.weapon->altanimseq);
+			return(playerinfo->self->client->pers.weapon->altanimseq);
 		else
-			return(playerinfo->pers.weapon->playeranimseq);
+			return(playerinfo->self->client->pers.weapon->playeranimseq);
 	}
 	else
 	{
@@ -2074,7 +2074,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 		return(ASEQ_NONE);
 
 	playerinfo->G_WeapNext(playerinfo->self);
-	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
+	if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
 		return(ASEQ_WRRBOW_END);
@@ -2111,7 +2111,8 @@ int BranchUprReady(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if ((playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->self->client->newweapon)&&
+	if ((playerinfo->switchtoweapon != playerinfo->self->client->pers.weaponready ||
+		 playerinfo->self->client->newweapon) &&
 		!(playerinfo->edictflags&FL_CHICKEN))
 	{
 		// Not a chicken, so switch weapons.
@@ -2120,7 +2121,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 		return(PlayerAnimWeaponSwitch(playerinfo));
 	}
 
-	switch(playerinfo->pers.weaponready)
+	switch(playerinfo->self->client->pers.weaponready)
 	{
 		case WEAPON_READY_SWORDSTAFF:
 			return BranchUprReadySwordStaff(playerinfo);
@@ -2135,7 +2136,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 			return BranchUprReadyHands(playerinfo);
 			break;
 		default:		// In case Weapon_ready_none
-			playerinfo->pers.weaponready = WEAPON_READY_HANDS;
+			playerinfo->self->client->pers.weaponready = WEAPON_READY_HANDS;
 			return BranchUprReadyHands(playerinfo);
 			break;
 	}
@@ -2187,7 +2188,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 				break;
 			}
 		}
-		else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
+		else if ((playerinfo->self->client->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
 		{
 			// Because the bow doesn't look right in some idles.
 			switch(playerinfo->irand(playerinfo, 0, 10))
@@ -2208,7 +2209,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 					break;
 			}
 		}
-		else if ( (playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) || (playerinfo->pers.weaponready == WEAPON_READY_HELLSTAFF))
+		else if ( (playerinfo->self->client->pers.weaponready == WEAPON_READY_SWORDSTAFF) || (playerinfo->self->client->pers.weaponready == WEAPON_READY_HELLSTAFF))
 		{
 			// Because the staff doesn't look right in some idles.
 			switch(playerinfo->irand(playerinfo, 0, 10))

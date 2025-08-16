@@ -427,14 +427,14 @@ void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo)
 // This is called during the hold ready bow sequence, so that we may interrupt it if necessary.
 void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 {
-	if (playerinfo->switchtoweapon != playerinfo->pers.weaponready ||
+	if (playerinfo->switchtoweapon!=playerinfo->self->client->pers.weaponready ||
 		playerinfo->self->client->newweapon)
 	{	// Switching weapons is one reason to end the bow refire waiting.
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
+		if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
 		}
-		else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
+		else if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_END);
 		}
@@ -444,11 +444,11 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 		!(playerinfo->edictflags & FL_CHICKEN) &&
 		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{	// Shooting is the other!
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
+		if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_DRAW);
 		}
-		else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
+		else if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_DRAW);
 		}
@@ -568,11 +568,11 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
 			((pi.Weapon_CurrentShotsLeft(playerinfo)) ||
-					(playerinfo->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
+					(playerinfo->self->client->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
 	{
 		if (!(playerinfo->dmflags & DF_INFINITE_MANA))
 		{
-			playerinfo->pers.inventory[playerinfo->weap_ammo_index] -= SPHERE_MANA_PER_CHARGE;
+			playerinfo->self->client->pers.inventory[playerinfo->weap_ammo_index] -= SPHERE_MANA_PER_CHARGE;
 			playerinfo->weaponcharge++;
 
 			return;
@@ -710,7 +710,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-	switch(playerinfo->pers.weapon->tag)
+	switch(playerinfo->self->client->pers.weapon->tag)
 	{
 		case ITEM_WEAPON_FLYINGFIST:
 			color=1;
@@ -795,7 +795,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-	weapon = playerinfo->pers.weapon;
+	weapon = playerinfo->self->client->pers.weapon;
 
 	if (weapon)
 	{
@@ -803,14 +803,14 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		{
 			// Set the bow type to phoenix.
 
-			playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
+			playerinfo->self->client->pers.bowtype = BOW_TYPE_PHOENIX;
 			color=6;
 		}
 		else
 		{
 			// Set the bow type to red-rain.
 
-			playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
+			playerinfo->self->client->pers.bowtype = BOW_TYPE_REDRAIN;
 			color=7;
 		}
 
@@ -869,18 +869,18 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	if (value)
 	{
 		// Don't REALLY change the weaponready, since the value indicates a cosmetic weapon change only (the real change is later)
-		holdweapon = playerinfo->pers.weaponready;
+		holdweapon = playerinfo->self->client->pers.weaponready;
 
-		playerinfo->pers.weaponready = value;
+		playerinfo->self->client->pers.weaponready = value;
 		PlayerUpdateModelAttributes(playerinfo);
 
-		playerinfo->pers.weaponready = holdweapon;
+		playerinfo->self->client->pers.weaponready = holdweapon;
 	}
 	else
 	{
 		assert(playerinfo->self->client->newweapon);
 		pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
-		playerinfo->pers.weaponready = playerinfo->switchtoweapon;
+		playerinfo->self->client->pers.weaponready = playerinfo->switchtoweapon;
 		PlayerUpdateModelAttributes(playerinfo);
 		playerinfo->self->client->newweapon = NULL;
 	}
@@ -889,7 +889,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	{
 		// Weapon Changing effects.
 
-		switch(playerinfo->pers.weaponready)
+		switch(playerinfo->self->client->pers.weaponready)
 		{
 		case WEAPON_READY_SWORDSTAFF:
 
@@ -934,7 +934,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 			// Make sure we have the right bow color
 
-			weapon = playerinfo->pers.weapon;
+			weapon = playerinfo->self->client->pers.weapon;
 
 			if (weapon)
 			{
@@ -944,11 +944,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 				{
 					// Make sure we have the redrain visible.
 
-					if (playerinfo->pers.bowtype == BOW_TYPE_PHOENIX)
+					if (playerinfo->self->client->pers.bowtype == BOW_TYPE_PHOENIX)
 					{
 						// Uh oh, change the phoenix into a red rain.
 
-						playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
+						playerinfo->self->client->pers.bowtype = BOW_TYPE_REDRAIN;
 						PlayerUpdateModelAttributes(playerinfo);
 
 						if (playerinfo->isclient)
@@ -1004,11 +1004,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 				{
 					// Make sure we have the phoenix visible.
 
-					if (playerinfo->pers.bowtype == BOW_TYPE_REDRAIN)
+					if (playerinfo->self->client->pers.bowtype == BOW_TYPE_REDRAIN)
 					{
 						// Uh oh, change the red rain to a phoenix.
 
-						playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
+						playerinfo->self->client->pers.bowtype = BOW_TYPE_PHOENIX;
 						PlayerUpdateModelAttributes(playerinfo);
 
 						if (playerinfo->isclient)
@@ -1086,7 +1086,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID5,
 								 playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
@@ -1096,7 +1096,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 								 ATTN_NORM,
 								 0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 		{
 			flags |= CEF_FLAG7;
 
@@ -1108,7 +1108,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 								 ATTN_NORM,
 								 0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 		{
 			flags |= CEF_FLAG8;
 
@@ -1141,7 +1141,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->G_Sound(SND_PRED_ID5,
 								playerinfo->leveltime,
@@ -1152,7 +1152,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 								ATTN_NORM,
 								0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 		{
 			flags |= CEF_FLAG7;
 
@@ -1165,7 +1165,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 								ATTN_NORM,
 								0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 		{
 			flags |= CEF_FLAG8;
 
@@ -1211,7 +1211,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->CL_Sound(SND_PRED_ID9,
 							playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
@@ -1221,7 +1221,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 		{
 			flags |= CEF_FLAG7;
 
@@ -1233,7 +1233,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 		{
 			flags |= CEF_FLAG8;
 
@@ -1268,7 +1268,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 		if (value == WEAPON_READY_HELLSTAFF)
 			flags |= CEF_FLAG6;
 
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+		if (playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 		{
 			playerinfo->G_Sound(SND_PRED_ID9,
 								playerinfo->leveltime,
@@ -1279,7 +1279,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 								ATTN_NORM,
 								0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 		{
 			flags |= CEF_FLAG7;
 
@@ -1292,7 +1292,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 								ATTN_NORM,
 								0);
 		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+		else if(playerinfo->self->client->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 		{
 			flags |= CEF_FLAG8;
 
@@ -1363,9 +1363,9 @@ void PlayerActionSwordTrailStart(playerinfo_t *playerinfo, float value)
 
 	// Add a trail effect to the staff.
 	if (playerinfo->powerup_timer > playerinfo->leveltime)
-		powerlevel = playerinfo->pers.stafflevel + 1;
+		powerlevel = playerinfo->self->client->pers.stafflevel + 1;
 	else
-		powerlevel = playerinfo->pers.stafflevel;
+		powerlevel = playerinfo->self->client->pers.stafflevel;
 
 	if (powerlevel >= STAFF_LEVEL_MAX)
 		powerlevel = STAFF_LEVEL_MAX-1;
@@ -4709,7 +4709,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	//Check for an upper sequence interruption due to a staff attack
 	if ((	playerinfo->seqcmd[ACMDU_ATTACK] &&
 			playerinfo->seqcmd[ACMDL_RUN_F]) &&
-			(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
+			(playerinfo->self->client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 			(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) &&
 			!(playerinfo->edictflags & FL_CHICKEN))
 	{
@@ -4792,7 +4792,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		{
 			if (playerinfo->seqcmd[ACMDL_FWD])
 			{
-				if (	(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
+				if (	(playerinfo->self->client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 						(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) )
 				{
 					PlayerAnimSetLowerSeq(playerinfo,  ASEQ_POLEVAULT1_W);
@@ -5073,15 +5073,15 @@ void PlayerInterruptAction(playerinfo_t *playerinfo)
 	}
 
 	//Release any held weapons
-	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
+	if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
 	{
 		playerinfo->PlayerActionRedRainBowAttack(playerinfo->self);
 	}
-	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
+	else if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
 	{
 		playerinfo->PlayerActionPhoenixBowAttack(playerinfo->self);
 	}
-	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
+	else if (playerinfo->self->client->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
 	{
 		playerinfo->chargingspell=false;
 		playerinfo->PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
