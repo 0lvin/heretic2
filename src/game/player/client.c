@@ -2801,7 +2801,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
 			}
 		}
@@ -2815,7 +2815,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_HANDS;
 			}
 		}
@@ -2829,7 +2829,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_HELLSTAFF;
 			}
 		}
@@ -2843,7 +2843,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_HANDS;
 			}
 		}
@@ -2857,7 +2857,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_BOW;
 			}
 		}
@@ -2871,7 +2871,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_HANDS;
 			}
 		}
@@ -2885,7 +2885,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_BOW;
 			}
 		}
@@ -2899,7 +2899,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_HANDS;
 			}
 		}
@@ -2913,7 +2913,7 @@ GiveLevelItems(edict_t *player)
 			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
 			{
 				weapon=item;
-				client->playerinfo.pers.newweapon=item;
+				client->newweapon = item;
 				client->playerinfo.switchtoweapon=WEAPON_READY_HANDS;
 			}
 		}
@@ -3291,7 +3291,7 @@ PutClientInServer(edict_t *ent)
 		gitem_t *item;
 
 		item=FindItem("staff");
-		client->playerinfo.pers.newweapon=item;
+		client->newweapon = item;
 		client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
 	}
 }

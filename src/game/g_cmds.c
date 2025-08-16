@@ -1253,7 +1253,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 
 		it->use(ent, it);
 
-		if (ent->client->playerinfo.pers.newweapon == it)
+		if (ent->client->newweapon == it)
 		{
 			return; /* successful */
 		}
@@ -1299,11 +1299,15 @@ Cmd_WeapNext_f(edict_t *ent)
 			((it->tag == ITEM_WEAPON_HELLSTAFF) ||
 			(it->tag == ITEM_WEAPON_REDRAINBOW) ||
 			(it->tag == ITEM_WEAPON_PHOENIXBOW)))
+		{
 			continue;
+		}
 
 		it->use(ent, it);
-		if (ent->client->playerinfo.pers.newweapon == it)
+		if (ent->client->newweapon == it)
+		{
 			return;	// successful
+		}
 	}
 }
 /*

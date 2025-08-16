@@ -2111,7 +2111,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if ((playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->pers.newweapon)&&
+	if ((playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->self->client->newweapon)&&
 		!(playerinfo->edictflags&FL_CHICKEN))
 	{
 		// Not a chicken, so switch weapons.

@@ -4531,7 +4531,7 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
 		return;
 
 	// See if we're already switching...
-	if (playerinfo->pers.newweapon != NULL)
+	if (ent->client->newweapon != NULL)
 		return;
 
 	//Make sure we have an arm to do it
@@ -4541,7 +4541,7 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
 	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
 		return;
 
-	playerinfo->pers.newweapon = Weapon;
+	ent->client->newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_SWORDSTAFF;
 }
 
@@ -4561,7 +4561,7 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 		return;
 
 	// See if we're already switching...
-	if (playerinfo->pers.newweapon != NULL)
+	if (ent->client->newweapon != NULL)
 	{
 		if (playerinfo->switchtoweapon != WEAPON_READY_HANDS)
 			return;
@@ -4588,7 +4588,7 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 		}
 	}
 
-	playerinfo->pers.newweapon = Weapon;
+	ent->client->newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_HANDS;
 }
 
@@ -4610,7 +4610,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 		return;
 
 	// See if we're already switching...
-	if (playerinfo->pers.newweapon != NULL)
+	if (ent->client->newweapon != NULL)
 		return;
 
 	//Make sure we have an arm to do it
@@ -4630,7 +4630,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 		return;
 	}
 
-	playerinfo->pers.newweapon = Weapon;
+	ent->client->newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_HELLSTAFF;
 }
 
@@ -4652,7 +4652,7 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 		return;
 
 	// See if we're already switching...
-	if (playerinfo->pers.newweapon != NULL)
+	if (ent->client->newweapon != NULL)
 	{
 		if (playerinfo->switchtoweapon != WEAPON_READY_BOW)
 			return;
@@ -4676,7 +4676,7 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 	}
 
 
-	playerinfo->pers.newweapon = Weapon;
+	ent->client->newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_BOW;
 }
 

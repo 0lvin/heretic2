@@ -427,7 +427,8 @@ void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo)
 // This is called during the hold ready bow sequence, so that we may interrupt it if necessary.
 void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 {
-	if (playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->pers.newweapon)
+	if (playerinfo->switchtoweapon != playerinfo->pers.weaponready ||
+		playerinfo->self->client->newweapon)
 	{	// Switching weapons is one reason to end the bow refire waiting.
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
@@ -697,10 +698,10 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 		return;
 	}
 
-	assert(playerinfo->pers.newweapon);
+	assert(playerinfo->self->client->newweapon);
 
-	pi.Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
-	playerinfo->pers.newweapon = NULL;
+	pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
+	playerinfo->self->client->newweapon = NULL;
 
 	// Do some fancy effect.
 
@@ -782,10 +783,10 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		return;
 	}
 
-	assert(playerinfo->pers.newweapon);
+	assert(playerinfo->self->client->newweapon);
 
-	pi.Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
-	playerinfo->pers.newweapon = NULL;
+	pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
+	playerinfo->self->client->newweapon = NULL;
 
 	// Do some fancy effect.
 
@@ -877,11 +878,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-		assert(playerinfo->pers.newweapon);
-		pi.Weapon_Ready(playerinfo, playerinfo->pers.newweapon);
+		assert(playerinfo->self->client->newweapon);
+		pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
 		playerinfo->pers.weaponready = playerinfo->switchtoweapon;
 		PlayerUpdateModelAttributes(playerinfo);
-		playerinfo->pers.newweapon = NULL;
+		playerinfo->self->client->newweapon = NULL;
 	}
 
 	if (playerinfo->leveltime > 1.0)

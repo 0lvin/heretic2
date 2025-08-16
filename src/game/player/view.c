@@ -1288,7 +1288,7 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastdefence);
 	current_client->ps.weaponready = (byte)current_client->playerinfo.pers.weaponready;
 	current_client->ps.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
-	current_client->ps.newweapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.newweapon);
+	current_client->ps.newweapon = (byte)ITEM_INDEX(current_client->newweapon);
 	current_client->ps.weap_ammo_index = (byte)current_client->playerinfo.weap_ammo_index;
 	current_client->ps.def_ammo_index = (byte)current_client->playerinfo.def_ammo_index;
 	current_client->ps.weaponcharge = (byte)current_client->playerinfo.weaponcharge;

@@ -119,7 +119,7 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 		playerinfo->pers.weaponready = WEAPON_READY_HANDS;
 
 	playerinfo->switchtoweapon = playerinfo->pers.weaponready;
-	playerinfo->pers.newweapon = NULL;
+	playerinfo->self->client->newweapon = NULL;
 
 	// Straighten out joints, i.e. reset torso twisting.
 
@@ -144,7 +144,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	playerinfo->pers.altparts = 0;
 	playerinfo->pers.weaponready = WEAPON_READY_HANDS;
 	playerinfo->switchtoweapon = WEAPON_READY_HANDS;
-	playerinfo->pers.newweapon = NULL;
+	playerinfo->self->client->newweapon = NULL;
 	PlayerUpdateModelAttributes(playerinfo);
 	playerinfo->pers.handfxtype = HANDFX_NONE;
 
@@ -183,9 +183,9 @@ int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
 			return newseq;
 		}
 	}
-	else if (playerinfo->pers.newweapon)
+	else if (playerinfo->self->client->newweapon)
 	{
-		if (!BranchCheckDismemberAction(playerinfo, playerinfo->pers.newweapon->tag))
+		if (!BranchCheckDismemberAction(playerinfo, playerinfo->self->client->newweapon->tag))
 			return ASEQ_NONE;
 
 		newseq = PlayerAnimWeaponSwitchSeq[playerinfo->pers.weaponready][playerinfo->pers.weaponready];

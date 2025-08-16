@@ -2065,8 +2065,7 @@ typedef struct
 
 	// Offenses and defenses.
 
-	gitem_t *defence, *lastdefence,
-				*newweapon;
+	gitem_t *defence, *lastdefence;
 } client_persistant_t;
 
 // ************************************************************************************************
