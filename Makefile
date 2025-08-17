@@ -1354,7 +1354,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/item_effects.o \
 	src/game/effects/main.o \
 	src/game/effects/motion.o \
-	src/game/effects/netmsg_read.o \
 	src/game/effects/particle.o \
 	src/game/effects/player_effects.o \
 	src/game/effects/test_effect.o \

@@ -35,8 +35,6 @@ cvar_t	*cl_timedemo;
 cvar_t	*crosshair;
 cvar_t	*compass;
 
-static qboolean cl_effectpredict;
-
 int	numprocessedparticles;
 int	numrenderedparticles;
 
@@ -245,109 +243,6 @@ PostRenderUpdate(void)
 	}
 }
 
-static EffectsBuffer_t clientPredEffects;
-
-int DummyEffectParams(centity_t *ent, int flags, int effect)
-{
-	char			current;
-	int				count = 0;
-	vec3_t			v;
-	sizebuf_t		*msg_read;
-	sizebuf_t		tempBuf;
-	EffectsBuffer_t *fxBuf = NULL;
-	char			*format;
-
-	format = clientEffectSpawners[effect].formatString;
-
-	if (!format)
-		return 0;
-
-	if (ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
-	{
-		if (!cl_effectpredict)
-			fxBuf = &ent->current.clientEffects;
-		else
-			fxBuf = &clientPredEffects;
-
-		msg_read = &tempBuf;
-
-		memset (msg_read, 0, sizeof(*msg_read));
-
-		msg_read->data = fxBuf->buf;
-		msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
-		msg_read->readcount = fxBuf->freeBlock;
-	}
-	else
-	{
-		msg_read = fxi.net_message;
-	}
-
-	assert(format);
-	assert(format[0]);
-
-	if (!format)
-	{
-		fxi.Com_Error(ERR_DROP, "CL_ReadEffect: null format string");
-		return 0;
-	}
-
-	while((current = format[count]))
-	{
-		switch(current)
-		{
-		case 'b':
-			fxi.MSG_ReadByte(msg_read);
-			break;
-
-		case 's':
-			fxi.MSG_ReadShort(msg_read);
-			break;
-
-		case 'i':
-			fxi.MSG_ReadLong(msg_read);
-			break;
-
-		case 'f':
-			fxi.MSG_ReadFloat(msg_read);
-			break;
-
-		case 'p':
-		case 'v':
-			fxi.MSG_ReadPos(msg_read, v);
-			break;
-
-		case 'u':
-			MSG_ReadDirMag(msg_read, v);
-			break;
-
-		case 'd':
-			fxi.MSG_ReadDir(msg_read, v);
-			break;
-
-		case 'x':
-			MSG_ReadYawPitch(msg_read, v);
-			break;
-
-		case 't':
-			MSG_ReadShortYawPitch(msg_read, v);
-			break;
-
-		default:
-			assert(0);
-			return 0;
-		}
-
-		++count;
-	}
-
-	if (ent && !(flags&(CEF_BROADCAST|CEF_MULTICAST)))
-	{
-		fxBuf->freeBlock = msg_read->readcount;
-	}
-
-	return count;
-}
-
 /*
 ==============
 ParseClientEffects
@@ -376,23 +271,8 @@ ParseEffects(centity_t *owner)
 	{
 		// Where do we pull the effect from?
 
-		//if(!cl_effectpredict)
-		{
-			// Effects received as part of entity_state_t from server.
-
-			fxBuf = &owner->current.clientEffects;
-		}
-		//else
-		//{
-		//	// Predicted effects are pulled from here...
-		//
-		//	fxBuf = &clientPredEffects;
-		//
-		//	// We are dealing with preicted effects, so reset freeblock for reading, as writing
-		//	// will have left it at the end of the written data.
-		//
-		//	fxBuf->freeBlock=0;
-		//}
+		// Effects received as part of entity_state_t from server.
+		fxBuf = &owner->current.clientEffects;
 
 		num = fxBuf->numEffects;
 
@@ -491,28 +371,14 @@ ParseEffects(centity_t *owner)
 			return;
 		}
 
-		if (owner && !(flags & (CEF_BROADCAST|CEF_MULTICAST)))
+		if (owner && !(flags & (CEF_BROADCAST | CEF_MULTICAST)))
 		{
 			fxBuf->freeBlock = msg_read->readcount;
-		}
-
-		// Do we want to start _this client-effect if client-prediction has already started it?
-
-		if ((!cl_effectpredict) && fxi.cl_predict->value&&EffectIsFromServer&&
-		   (EffectEventIdTimeArray[eventId]<=*fxi.leveltime)&&(EffectEventIdTimeArray[eventId]!=0.0))
-		{
-			// The client-effect has already been started by client-prediction, so just skip it.
-
-			DummyEffectParams(owner,flags,effect);
-
-			goto SkipEffect;
 		}
 
 		// Start the client-effect.
 
 		clientEffectSpawners[effect].SpawnCFX(tempOwner, effect, flags, position);
-
-SkipEffect:
 
 		if ((EffectIsFromServer)&&(EffectEventIdTimeArray[eventId]<=*fxi.leveltime))
 			EffectEventIdTimeArray[eventId]=0.0;
@@ -585,10 +451,9 @@ AddServerEntities(frame_t *frame)
 
 		cent = fxi.server_entities + s1->number;
 
-		if ((fxi.cl_predict->value)&&(s1->number==fxi.cl->playernum+1))
+		if ((fxi.cl_predict->value) && (s1->number == fxi.cl->playernum+1))
 		{
 			// We are dealing with the client's model under prediction.
-
 			isPredictedPlayer=true;
 		}
 		else
@@ -823,7 +688,6 @@ AddServerEntities(frame_t *frame)
 
 		if (cent->current.clientEffects.numEffects)
 		{
-			cl_effectpredict = false;
 			ParseEffects(cent);
 		}
 
@@ -832,13 +696,6 @@ AddServerEntities(frame_t *frame)
 
 		if (s1->number == fxi.cl->playernum + 1)
 		{
-			if ((fxi.cl_predict->value) && (clientPredEffects.numEffects))
-			{
-				cl_effectpredict = true;
-				ParseEffects(cent);
-				cl_effectpredict = false;
-			}
-
 			// This is the player.
 
 			if (PlayerAlpha < 1.0)
