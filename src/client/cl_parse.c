@@ -1673,7 +1673,7 @@ CL_ParseServerMessage(void)
 			case svc_client_effect:
 				if (fxe && fxe->ParseClientEffects)
 				{
-					fxe->ParseClientEffects(&net_message, MSG_ReadByte(&net_message));
+					fxe->ParseClientEffects(&net_message, MSG_ReadShort(&net_message));
 				}
 				break;
 
