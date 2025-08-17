@@ -148,7 +148,7 @@ void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 
 	spawner = ClientEntity_new(type, flags, origin, NULL, 17);
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FIRE].formatString, &scale);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_FIRE].formatString, &scale);
 	VectorSet(spawner->r.scale,
 		scale / 32.0, scale / 32.0, scale / 32.0);
 
@@ -315,7 +315,7 @@ void FXFireOnEntity(centity_t *owner, int type, int flags, vec3_t origin)
 	byte lifetime;
 	byte style;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FIRE_ON_ENTITY].formatString, &scale, &lifetime, &style);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_FIRE_ON_ENTITY].formatString, &scale, &lifetime, &style);
 
 	spawner = ClientEntity_new(type, flags, origin, NULL, 17);
 

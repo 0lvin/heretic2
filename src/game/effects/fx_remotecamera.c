@@ -31,7 +31,7 @@ void FXRemoteCamera(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 					Angles;
 	client_entity_t	*RemoteCamera;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_REMOTE_CAMERA].formatString,&TargetEntNum);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_REMOTE_CAMERA].formatString,&TargetEntNum);
 
 	TargetEnt=(&fxi.server_entities[TargetEntNum]);
 

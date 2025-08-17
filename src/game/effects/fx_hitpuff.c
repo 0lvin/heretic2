@@ -41,7 +41,7 @@ void FXLightningHit(centity_t *owner, int type, int flags, vec3_t origin)
 	client_particle_t	*spark;
 	int				i;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_LIGHTNING_HIT].formatString, dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_LIGHTNING_HIT].formatString, dir);
 
 	Vec3ScaleAssign(LIGHTNING_VEL*0.25, dir);
 

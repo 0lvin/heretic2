@@ -319,7 +319,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	byte			model_type;
 	int				i;
 
-	fxi.GetEffect(owner, CEF_BROADCAST, clientEffectSpawners[FX_ROPE].formatString, &grab_id, &end_id, &model_type, &top, &grab_pos, &end_pos);
+	FXGetEffect(owner, CEF_BROADCAST, clientEffectSpawners[FX_ROPE].formatString, &grab_id, &end_id, &model_type, &top, &grab_pos, &end_pos);
 
 	//This is set if the effect should be attached to something
 	attached = (Flags & CEF_FLAG6);

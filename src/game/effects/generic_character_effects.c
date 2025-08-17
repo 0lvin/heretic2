@@ -117,7 +117,7 @@ void FXOgleHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	int					i, chance ;
 	float speed;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_OGLE_HITPUFF].formatString, dir);			// normalized direction vector
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_OGLE_HITPUFF].formatString, dir);			// normalized direction vector
 
 	speed = VectorNormalize(dir);
 	if (speed>1.0f)
@@ -245,7 +245,7 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 	byte				count;
 	int					i;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_HITPUFF].formatString, dir, &count);			// normalized direction vector
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_HITPUFF].formatString, dir, &count);			// normalized direction vector
 
 	if (count>40)
 		count=40;

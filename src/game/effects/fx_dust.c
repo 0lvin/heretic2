@@ -96,7 +96,7 @@ void FXDust(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t 				size;
 	client_entity_t		*ce;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_DUST].formatString, &num, size, &mag);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_DUST].formatString, &num, size, &mag);
 
 	ce = ClientEntity_new(-1, CEF_NOMOVE | CEF_NO_DRAW, origin, NULL, 100);
 	VectorScale(size, mag, ce->startpos);

@@ -528,7 +528,7 @@ void FXPESpell(centity_t *owner, int type, int flags, vec3_t origin)
 	byte			whicheffect = 0;
 	vec3_t			vel;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_PE_SPELL].formatString, &whicheffect, vel);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_PE_SPELL].formatString, &whicheffect, vel);
 
 	switch(whicheffect)
 	{

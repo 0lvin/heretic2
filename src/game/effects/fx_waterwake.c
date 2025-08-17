@@ -39,7 +39,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 	client_particle_t *part;
 	paletteRGBA_t	color = {{{0xff, 0xff, 0xff, 0xff}}};
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WATER_WAKE].formatString, &CreatorEntNum, &blah, Velocity);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WATER_WAKE].formatString, &CreatorEntNum, &blah, Velocity);
 
 	YawAngle = (blah /255.0) * 6.283185;
 

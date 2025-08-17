@@ -121,7 +121,7 @@ void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 	paletteRGBA_t	LightColor;
 	float			lightsize;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FLYINGFIST].formatString, vel);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FLYINGFIST].formatString, vel);
 	if (flags & CEF_FLAG6)
 		Vec3ScaleAssign(FLYING_FIST_SPEED/2,vel);
 	else
@@ -181,7 +181,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	float			blastvel;
 	float			volume=1.0;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FLYINGFISTEXPLODE].formatString, dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FLYINGFISTEXPLODE].formatString, dir);
 
 	if (flags & CEF_FLAG6)
 	{
@@ -199,7 +199,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 		volume=0.75;
 	}
 
-//	fxi.GetEffect(owner, flags, "xb", dir, &powerup);
+//	FXGetEffect(owner, flags, "xb", dir, &powerup);
 	Vec3ScaleAssign(32.0, dir);
 
 	if (powerup)

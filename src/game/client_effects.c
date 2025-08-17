@@ -26,72 +26,6 @@ static void *effects_library = NULL;
 
 void CL_ClearLightStyles(void);
 
-static int
-CL_GetEffect(centity_t* ent, int flags, char* format, ...)
-{
-	sizebuf_t* msg;
-	va_list args;
-
-	if (!ent)
-	{
-		msg = &net_message;
-	}
-	else
-	{
-		msg = fxe->fxMsgBuf;
-	}
-
-	va_start(args, format);
-
-	int len = strlen(format);
-	for (int i = 0; i < len; i++)
-	{
-		switch (format[i])
-		{
-		case 'b':
-		{
-			byte* b = va_arg(args, byte*);
-			*b = MSG_ReadByte(msg);
-		}
-			break;
-		case 'd':
-			MSG_ReadDir(msg, va_arg(args, float*));
-			break;
-		case 'f':
-		{
-			float* f = va_arg(args, float*);
-			*f = MSG_ReadFloat(msg);
-		}
-			break;
-		case 'i':
-		{
-			long* l = va_arg(args, long*);
-			*l = MSG_ReadLong(msg);
-		}
-			break;
-		case 'p':
-		case 'v':
-			MSG_ReadPos(msg, va_arg(args, float*), cls.serverProtocol);
-			break;
-		case 's':
-		{
-			short* s = va_arg(args, short*);
-			*s = MSG_ReadShort(msg);
-		}
-			break;
-		case 't':
-		case 'u':
-		case 'x':
-			MSG_ReadPos(msg, va_arg(args, float*), cls.serverProtocol);
-			break;
-		default:
-			break;
-		}
-	}
-
-	return len;
-}
-
 static qboolean
 InCameraPVS(vec3_t point)
 {
@@ -358,7 +292,6 @@ E_Load(void)
 	cl_game_import.S_StartSound = S_StartSound;
 	cl_game_import.S_RegisterSound = S_RegisterSound;
 	cl_game_import.RegisterModel = re.RegisterModel;
-	cl_game_import.GetEffect = CL_GetEffect;
 	cl_game_import.TagMalloc = Z_TagMalloc;
 	cl_game_import.TagFree = Z_Free;
 	cl_game_import.FreeTags = Z_FreeTags;

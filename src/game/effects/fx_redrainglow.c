@@ -132,7 +132,7 @@ void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 
 	VectorClear(org);
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_REDRAINGLOW].formatString, &lifetime);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_REDRAINGLOW].formatString, &lifetime);
 
 	glow = ClientEntity_new(type, flags | CEF_NO_DRAW, org, 0, Q_ftol(fxi.cls->rframetime * 2000.0));
 	glow->flags|=CEF_NO_DRAW | CEF_OWNERS_ORIGIN | CEF_ADDITIVE_PARTS;

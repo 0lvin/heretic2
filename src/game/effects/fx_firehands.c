@@ -109,7 +109,7 @@ void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 
 	refpoints=0;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FIREHANDS].formatString, &lifetime);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_FIREHANDS].formatString, &lifetime);
 
 	if (flags & CEF_FLAG6)
 		refpoints=(1 << CORVUS_LEFTHAND) | (1 << CORVUS_RIGHTHAND);

@@ -311,7 +311,7 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	Count = 7;
 
-	fxi.GetEffect(owner, Flags, clientEffectSpawners[FX_LENSFLARE].formatString, &tint.r, &tint.g, &tint.b, &alpha);
+	FXGetEffect(owner, Flags, clientEffectSpawners[FX_LENSFLARE].formatString, &tint.r, &tint.g, &tint.b, &alpha);
 
 	// no lens flares in low detail
 	if (r_detail->value <= DETAIL_NORMAL)

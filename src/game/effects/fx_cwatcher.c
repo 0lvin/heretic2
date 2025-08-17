@@ -156,7 +156,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 	byte				fxID;
 	int					i;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_CWATCHER].formatString, &fxID, &vel);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_CWATCHER].formatString, &fxID, &vel);
 
 	switch (fxID)
 	{

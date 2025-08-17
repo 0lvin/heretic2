@@ -115,7 +115,7 @@ void FXMorphMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	byte				blah,pitch;
 
 	// get the initial Yaw
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPELL_MORPHMISSILE].formatString, &blah,&pitch);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SPELL_MORPHMISSILE].formatString, &blah,&pitch);
 
 	// create the client effect with the light on it
 	missile = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 100);
@@ -152,7 +152,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 	int					i;
 
 	// get the initial Yaw
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPELL_MORPHMISSILE_INITIAL].formatString,
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SPELL_MORPHMISSILE_INITIAL].formatString,
 			&yaw,
 			&morpharray[0],
 			&morpharray[1],
@@ -218,7 +218,7 @@ void FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	int					i, count, dur;
 	float				max_rand;
 
-	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_SPELL_MORPHEXPLODE].formatString,Dir);
+	FXGetEffect(owner,flags,clientEffectSpawners[FX_SPELL_MORPHEXPLODE].formatString,Dir);
 
 	// make a bunch of small particles explode out the wall / object
 	VectorScale(Dir,SMOKE_SPEED,Dir);

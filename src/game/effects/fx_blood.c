@@ -466,7 +466,7 @@ void FXBloodTrail(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			normal;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BLOOD_TRAIL].formatString, &normal);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_BLOOD_TRAIL].formatString, &normal);
 
 	VectorMA(origin, 0.25, normal, origin);
 	ThrowBlood(origin, normal, flags&CEF_FLAG7, flags&CEF_FLAG6, true);
@@ -480,7 +480,7 @@ void FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				velocity;
 	qboolean			yellow_blood = false;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BLOOD].formatString, &velocity, &amount);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_BLOOD].formatString, &velocity, &amount);
 
 	if (flags&CEF_FLAG8)
 		yellow_blood = true;
@@ -572,7 +572,7 @@ void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	int					life;
 	int					count, i;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_LINKEDBLOOD].formatString, &life, &refpointidx);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_LINKEDBLOOD].formatString, &life, &refpointidx);
 	count = 1;
 	if (life > 1600)
 	{

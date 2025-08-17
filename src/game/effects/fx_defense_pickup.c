@@ -86,7 +86,7 @@ void FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*ce;
 	byte				tag;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_PICKUP_DEFENSE].formatString, &tag);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_PICKUP_DEFENSE].formatString, &tag);
 
 	flags &= ~CEF_OWNERS_ORIGIN;
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED, origin, NULL, 50);

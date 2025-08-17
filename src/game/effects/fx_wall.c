@@ -454,7 +454,7 @@ void FXFireWave(centity_t *owner, int type, int flags, vec3_t origin)
 
 	wall = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_DONT_LINK, origin, NULL, 150);
 
-	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_FIREWAVE].formatString, &shortyaw, &shortpitch);
+	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_FIREWAVE].formatString, &shortyaw, &shortpitch);
 
 	wall->r.angles[YAW]=(float)shortyaw * (360.0/65536.0);
 	wall->r.angles[PITCH]=(float)shortpitch * (360.0/65536.0);
@@ -514,7 +514,7 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 		break;
 	}
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FIREWAVEWORM].formatString, fwd);		// Gets the movedir of the wall.
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_FIREWAVEWORM].formatString, fwd);		// Gets the movedir of the wall.
 
 	// Trace back half a second and get the proper spawn location.
 	VectorMA(origin, -0.5*FIREWORM_LIFETIME*FIREWAVE_SPEED, fwd, spawnpt);
@@ -740,7 +740,7 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	short				shortyaw,shortpitch;
 
 	wall = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_DONT_LINK, origin, NULL, 150);
-	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_FIREBURST].formatString, &shortyaw, &shortpitch);
+	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_FIREBURST].formatString, &shortyaw, &shortpitch);
 
 	wall->r.angles[YAW]=(float)shortyaw * (360.0/65536.0);
 	wall->r.angles[PITCH]=(float)shortpitch * (360.0/65536.0);

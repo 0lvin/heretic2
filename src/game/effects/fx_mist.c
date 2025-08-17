@@ -74,7 +74,7 @@ void FXMist(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*mist;
 	byte				scale;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_MIST].formatString, &scale);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_MIST].formatString, &scale);
 	mist = ClientEntity_new(type, flags, origin, NULL, 100);
 
 	mist->SpawnData = scale * 0.1;

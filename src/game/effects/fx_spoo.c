@@ -108,7 +108,7 @@ void FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
 	vec3_t			dir;
 	int				count;
 
-	fxi.GetEffect(owner, Flags, clientEffectSpawners[FX_SPOO_SPLAT].formatString, &dir);
+	FXGetEffect(owner, Flags, clientEffectSpawners[FX_SPOO_SPLAT].formatString, &dir);
 
 	count = GetScaledCount(16, 0.85);
 

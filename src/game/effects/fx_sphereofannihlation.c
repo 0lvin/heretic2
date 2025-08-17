@@ -167,7 +167,7 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	int				caster_update;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHERE].formatString,&CasterEntnum);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHERE].formatString,&CasterEntnum);
 
 	// Create a fiery blue aura around the sphere.
 
@@ -410,7 +410,7 @@ void FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t 
 
 	// Get the caster's centity_t.
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREGLOWBALLS].formatString,&CasterEntnum);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREGLOWBALLS].formatString,&CasterEntnum);
 
 	// Create a spawner that will create the glowballs.
 
@@ -498,7 +498,7 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 	int					I, count;
 	client_particle_t	*ce;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREEXPLODE].formatString,Dir,&Size);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREEXPLODE].formatString,Dir,&Size);
 	if (Flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(Origin, Dir);
@@ -566,7 +566,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 	int					count;
 	float scale;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREPOWER].formatString,dir,&size, &len2);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREPOWER].formatString,dir,&size, &len2);
 
 	len = len2*8;// shrunk down so range can be up to 2048
 
@@ -756,7 +756,7 @@ void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	int					I, count;
 	vec3_t				angvect;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREPLAYEREXPLODE].formatString,Dir,&Size);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHEREPLAYEREXPLODE].formatString,Dir,&Size);
 
 	// Create an expanding ball of blue fire.
 	explosion=ClientEntity_new(Type,Flags | CEF_ADDITIVE_PARTS,Origin,NULL,50);

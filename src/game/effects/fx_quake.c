@@ -16,7 +16,7 @@ void FXQuake(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte count,time,dir;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_QUAKE].formatString, &count,&time,&dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_QUAKE].formatString, &count,&time,&dir);
 
 	fxi.Activate_Screen_Shake(count,(time * 100), fxi.cl->time, dir);
 

@@ -106,7 +106,7 @@ void FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	time = GetTimeToReachDistance(0, 100, fabs(dist));
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_BUBBLER].formatString, &bubblespermin );
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_BUBBLER].formatString, &bubblespermin );
 
 	Flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_VIEWSTATUSCHANGED |CEF_CHECK_OWNER;
 	self = ClientEntity_new(Type, Flags, Origin, NULL, 1000);

@@ -97,7 +97,7 @@ void FXSsithraArrowMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				temp;
 
 	missile = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 100);
-	fxi.GetEffect(owner, flags, "v", missile->velocity);
+	FXGetEffect(owner, flags, "v", missile->velocity);
 
 	VectorCopy(missile->velocity, temp);
 	VectorNormalize(temp);

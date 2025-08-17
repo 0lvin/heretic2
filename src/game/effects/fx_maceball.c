@@ -88,7 +88,7 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				norm, up, right, lastvel;
 	float				curyaw;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_MACEBALLBOUNCE].formatString, norm);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_MACEBALLBOUNCE].formatString, norm);
 
 	color.c = 0xffffffff;
 
@@ -189,7 +189,7 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	int				i;
 	vec3_t			mins={BALL_RADIUS, BALL_RADIUS, BALL_RADIUS};
 
-	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_MACEBALLEXPLODE].formatString,dir);
+	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_MACEBALLEXPLODE].formatString,dir);
 
 	// Create an expanding ball of gre.
 
@@ -306,7 +306,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	client_particle_t *spark;
 
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_RIPPEREXPLODE].formatString,
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_RIPPEREXPLODE].formatString,
 			casterpos,
 			&byaw,
 			&ballarray[0],

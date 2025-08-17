@@ -101,7 +101,7 @@ void FXPlagueMistExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	Flags = (Flags & ~CEF_OWNERS_ORIGIN) | CEF_NOMOVE | CEF_NO_DRAW;
 	spawner = ClientEntity_new(Type, Flags, Origin, NULL, mist_think_time);
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_PLAGUEMISTEXPLODE].formatString, &lifetime);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_PLAGUEMISTEXPLODE].formatString, &lifetime);
 	spawner->LifeTime = lifetime * mist_life;
 	spawner->radius = 20.0F;
 	spawner->Update = FXPlagueMistExplodeSpawn;

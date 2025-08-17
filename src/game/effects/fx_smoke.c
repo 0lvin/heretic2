@@ -117,7 +117,7 @@ void FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
 	{
 		float fscale;
 
-		fxi.GetEffect(owner,flags,clientEffectSpawners[FX_ENVSMOKE].formatString, &scale, &dir, &speed, &wait, &maxrange);
+		FXGetEffect(owner,flags,clientEffectSpawners[FX_ENVSMOKE].formatString, &scale, &dir, &speed, &wait, &maxrange);
 		AnglesFromDir(dir, self->r.angles);
 		self->velocity[0] = speed * 10;
 		self->Scale = maxrange;

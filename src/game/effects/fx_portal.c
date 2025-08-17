@@ -240,7 +240,7 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 	byte				color, duration;
 	qboolean			special = false;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_MAGIC_PORTAL].formatString, dir, &color, &duration);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_MAGIC_PORTAL].formatString, dir, &color, &duration);
 
 	AngleVectors(dir, forward, NULL, NULL);
 	portal = ClientEntity_new(type, (flags) & ~CEF_NOMOVE , origin, forward, 110);

@@ -158,7 +158,7 @@ void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*self;
 	float				scale;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHADOW].formatString, &scale);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SHADOW].formatString, &scale);
 
 	if (r_detail->value < DETAIL_UBERHIGH)
 		return;

@@ -70,7 +70,7 @@ void FXWaterfallBase(centity_t *owner, int type, int flags, vec3_t origin)
 	byte			xs, ys, yaw;
 	client_entity_t	*wfb;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WATERFALLBASE].formatString, &xs, &ys, &yaw);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WATERFALLBASE].formatString, &xs, &ys, &yaw);
 
 	flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_VIEWSTATUSCHANGED;
 	wfb = ClientEntity_new(type, flags, origin, NULL, 100);
@@ -153,7 +153,7 @@ void FXFountain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	else
 		fountain = ClientEntity_new(Type, Flags, Origin, NULL, 90);
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_FOUNTAIN].formatString, &fountain->direction, &drop, &frame);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_FOUNTAIN].formatString, &fountain->direction, &drop, &frame);
 
 	fountain->r.frame = frame;
 

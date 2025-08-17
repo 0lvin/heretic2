@@ -694,7 +694,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	int				bends, i, bolts, j;
 
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_HP_MISSILE].formatString, &vel, &effectType);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_HP_MISSILE].formatString, &vel, &effectType);
 
 	switch ( effectType )
 	{
@@ -1199,7 +1199,7 @@ void FXHPStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	short				entID;
 	byte				type;
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_HP_STAFF].formatString, &type, &entID);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_HP_STAFF].formatString, &type, &entID);
 
 	switch (type)
 	{

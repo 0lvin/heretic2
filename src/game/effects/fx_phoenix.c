@@ -195,7 +195,7 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				temp;
 
 	missile = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 25);
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_PHOENIXMISSILE].formatString, missile->velocity);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_PHOENIXMISSILE].formatString, missile->velocity);
 
 	if (flags & CEF_FLAG8)
 		Vec3ScaleAssign(PHOENIX_ARROW_SPEED/2,missile->velocity);
@@ -349,7 +349,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	float				ballnum;
 	int					count, dur;
 
-	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_PHOENIXEXPLODE].formatString,dir,sdir);
+	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_PHOENIXEXPLODE].formatString,dir,sdir);
 
 	// make the scorch mark if we should
 	if (flags & CEF_FLAG8)

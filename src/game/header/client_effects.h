@@ -94,8 +94,6 @@ typedef struct
 	struct sfx_s	*(*S_RegisterSound)(const char *name);
 	struct model_s *(*RegisterModel) (const char *name);
 
-	int		(*GetEffect)(centity_t *ent, int flags, char *format, ...);
-
 	void	*(*TagMalloc)(int size, int tag);
 	void	(*TagFree)(void *block);
 	void	(*FreeTags)(int tag);

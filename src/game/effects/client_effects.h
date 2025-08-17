@@ -204,6 +204,7 @@ void FXFeetTrail(centity_t *owner, int type, int flags, vec3_t origin);
 // client effect used by another client effect - needs its own wrapper
 void FXClientScorchmark(vec3_t origin, vec3_t dir);
 void FXCrosshair(centity_t *owner, int type, int flags, vec3_t origin);
+int FXGetEffect(centity_t* ent, int flags, char* format, ...);
 
 void PreCacheDebris(void);
 void PreCacheHalos(void);

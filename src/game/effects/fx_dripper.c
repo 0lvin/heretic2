@@ -167,7 +167,7 @@ void FXDripper(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	byte				dripspermin, frame;
 	trace_t				trace;
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_DRIPPER].formatString, &dripspermin, &frame);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_DRIPPER].formatString, &dripspermin, &frame);
 
 	Flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_VIEWSTATUSCHANGED;
 	dripper = ClientEntity_new(Type, Flags, Origin, NULL, 1000);

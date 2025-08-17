@@ -32,7 +32,7 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	vec3_t			dir;
 	int				i;
 
-	fxi.GetEffect(owner,Flags,clientEffectSpawners[FX_ARMOR_HIT].formatString, &dir);
+	FXGetEffect(owner,Flags,clientEffectSpawners[FX_ARMOR_HIT].formatString, &dir);
 
 	//Spawn a hit explosion of lines
 	i = GetScaledCount(6, 0.85);

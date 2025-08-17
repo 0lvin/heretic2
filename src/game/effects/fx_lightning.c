@@ -197,7 +197,7 @@ void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	byte				width, duration;
 	client_entity_t		*lightning;
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_LIGHTNING].formatString, target, &width, &duration);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_LIGHTNING].formatString, target, &width, &duration);
 
 	if (duration > 1)	// duration is in 1/10 of a second
 	{	// Create a client effect to zap over time.
@@ -240,7 +240,7 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	float				curang, degreeinc;
 	vec3_t				lastvel, upvel;
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_POWER_LIGHTNING].formatString, target, &width);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_POWER_LIGHTNING].formatString, target, &width);
 
 	VectorSubtract(target, Origin, diffpos);
 	length = VectorLength(diffpos);

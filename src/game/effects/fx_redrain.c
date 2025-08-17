@@ -289,7 +289,7 @@ void FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		dur = 100;
 
 	missile = ClientEntity_new(Type, Flags | CEF_DONT_LINK, Origin, NULL, dur);
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_WEAPON_REDRAINMISSILE].formatString, missile->velocity);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_WEAPON_REDRAINMISSILE].formatString, missile->velocity);
 
 	if (Flags & CEF_FLAG7)
 	{

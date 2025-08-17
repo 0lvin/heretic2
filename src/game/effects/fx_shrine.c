@@ -125,7 +125,7 @@ void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// no longer used - causes really hard to find crashes.
 	return;
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_PLAYER].formatString, &shrine_type);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_PLAYER].formatString, &shrine_type);
 
 	// push the model slightly up,since we create the model at a larger scale than the original
 	origin[2] += 60.0;
@@ -1115,7 +1115,7 @@ void FXShrineBall(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t				offset;
 	byte				shrinetype;
 	// go get the normalised direction of the shrine object
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_BALL].formatString, &offset, &shrinetype);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_BALL].formatString, &offset, &shrinetype);
 
 	// don't put out effects for shrines that don't exist
 	if (shrinetype >= SHRINEBALL_MAX)
@@ -1159,7 +1159,7 @@ void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	color.c = 0xffffffff;
 
 	// go get the normalised direction of the shrine object
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_BALL_EXPLODE].formatString, &offset, &shrinetype);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_BALL_EXPLODE].formatString, &offset, &shrinetype);
 
 	// move our starting point out a bit
 	Vec3ScaleAssign(25,offset);

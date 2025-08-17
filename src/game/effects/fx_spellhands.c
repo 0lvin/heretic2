@@ -147,7 +147,7 @@ void FXSpellHands(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	int				I;
 	int				cast_speed;
 
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_SPELLHANDS].formatString, &lifetime);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_SPELLHANDS].formatString, &lifetime);
 
 	if (Flags & CEF_FLAG6)
 		Refpoints=(1 << CORVUS_LEFTHAND) | (1 << CORVUS_RIGHTHAND);

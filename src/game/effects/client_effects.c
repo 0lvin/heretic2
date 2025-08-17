@@ -178,7 +178,7 @@ void RemoveEffects(centity_t *owner, int type, int flags, vec3_t origin)
 	assert(owner);
 //	assert(owner->effects);		// FIXME:  This assert fires, but it should not.  We shouldn't be here anyway.
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_REMOVE_EFFECTS].formatString, &fx);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_REMOVE_EFFECTS].formatString, &fx);
 	RemoveEffectTypeList(&owner->effects, fx, owner);
 }
 

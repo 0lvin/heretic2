@@ -247,7 +247,7 @@ void FXWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	byte			SplashSize;
 	vec3_t			Dir;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WATER_ENTRYSPLASH].formatString,&SplashSize,Dir);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WATER_ENTRYSPLASH].formatString,&SplashSize,Dir);
 
 	FXDoWaterEntrySplash(Owner, Type, Flags, Origin, SplashSize, Dir);
 }

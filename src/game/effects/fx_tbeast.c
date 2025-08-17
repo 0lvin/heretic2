@@ -91,7 +91,7 @@ void FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
 	vec3_t			vel;
 	byte			fx_index;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_TB_EFFECTS].formatString, &fx_index, &vel);//fixme- make _this 1 dir and 1 float
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_TB_EFFECTS].formatString, &fx_index, &vel);//fixme- make _this 1 dir and 1 float
 
 	switch (fx_index)
 	{

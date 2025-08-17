@@ -280,7 +280,7 @@ void FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
 	float			ke;
 
 	//increase count on owner so that can have multiple effects?
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_BODYPART].formatString, &frame, &BodyPart, &damage, &modelindex, &OwnerEntnum);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_BODYPART].formatString, &frame, &BodyPart, &damage, &modelindex, &OwnerEntnum);
 
 	realowner = &fxi.server_entities[OwnerEntnum];
 
@@ -684,7 +684,7 @@ void FXDebris(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t			dir, mins;
 	float			ke, scale;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_DEBRIS].formatString, &size, &material, mins, &mag);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_DEBRIS].formatString, &size, &material, mins, &mag);
 
 	scale = size * 10;
 	VectorSet(dir, 0.0, 0.0, 1.0);
@@ -726,7 +726,7 @@ void FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
 	else
 		material = MAT_FLESH;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FLESH_DEBRIS].formatString, &size, mins, &mag);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_FLESH_DEBRIS].formatString, &size, mins, &mag);
 
 	VectorSet(dir, 0.0, 0.0, 1.0);
 	Vec3ScaleAssign(mag, mins);

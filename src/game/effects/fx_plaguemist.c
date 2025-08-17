@@ -90,7 +90,7 @@ void FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		mist_think_time = 150;
 
 	pm = ClientEntity_new(Type, Flags, Origin, NULL, mist_think_time);
-	fxi.GetEffect(Owner, Flags, clientEffectSpawners[FX_PLAGUEMIST].formatString, pm->direction, &lifetime);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_PLAGUEMIST].formatString, pm->direction, &lifetime);
 
 	pm->LifeTime = lifetime * 50;
 	pm->Update = FXPlagueMistParticleSpawner;

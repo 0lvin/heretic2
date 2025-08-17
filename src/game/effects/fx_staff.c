@@ -68,7 +68,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	int				i, white;
 	float scale;
 
-	fxi.GetEffect(owner,Flags,clientEffectSpawners[FX_WEAPON_STAFF_STRIKE].formatString, &dir, &powerlevel);
+	FXGetEffect(owner,Flags,clientEffectSpawners[FX_WEAPON_STAFF_STRIKE].formatString, &dir, &powerlevel);
 
 	switch( powerlevel)
 	{
@@ -674,7 +674,7 @@ void FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	Refpoints=0;
 
-	fxi.GetEffect(owner,Flags,clientEffectSpawners[FX_STAFF].formatString, &powerlevel, &lifetime);
+	FXGetEffect(owner,Flags,clientEffectSpawners[FX_STAFF].formatString, &powerlevel, &lifetime);
 	Refpoints = (1<<CORVUS_BLADE);
 
 	if (!ReferencesInitialized(owner))

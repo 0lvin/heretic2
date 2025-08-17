@@ -37,7 +37,7 @@ void WaterSplash(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t		*effect;
 	paletteRGBA_t		color;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPLASH].formatString, &cnt);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SPLASH].formatString, &cnt);
 
 	effect = ClientEntity_new(type, flags, origin, NULL, 500);
 	effect->flags |= CEF_NO_DRAW | CEF_NOMOVE;

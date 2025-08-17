@@ -164,7 +164,7 @@ void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin
 	int				count;
 	client_particle_t	*ce;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPELL_METEORBARRIEREXPLODE].formatString, dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SPELL_METEORBARRIEREXPLODE].formatString, dir);
 	Vec3ScaleAssign(32.0, dir);
 
 	if (flags&CEF_FLAG6)

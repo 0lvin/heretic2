@@ -154,7 +154,7 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	vec3_t			fwd, up, right;
 	short			shortyaw, shortpitch;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_MAGICMISSILE].formatString, &shortyaw, &shortpitch);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_MAGICMISSILE].formatString, &shortyaw, &shortpitch);
 
 	ang[YAW]=(float)shortyaw * (360.0/65536.0);
 	ang[PITCH]=(float)shortpitch * (360.0/65536.0);
@@ -204,7 +204,7 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	int				i;
 	paletteRGBA_t	lightcolor = {{{0, 128, 128, 255}}};
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_MAGICMISSILEEXPLODE].formatString, dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_MAGICMISSILEEXPLODE].formatString, dir);
 	if (flags & CEF_FLAG6)
 	{
 		FXClientScorchmark(origin, dir);
@@ -275,7 +275,7 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// Sends over the network 7 shorts and an origin.
 	// Note that _this is a vast improvement over five seperate effects with a vector each (60 bytes+origins)
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_BLAST].formatString, &syaw, &spitch, &slength[0], &slength[1], &slength[2], &slength[3], &slength[4]);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_BLAST].formatString, &syaw, &spitch, &slength[0], &slength[1], &slength[2], &slength[3], &slength[4]);
 
 	// Compress the angles into two shorts.
 	angles[YAW] = (float)syaw*(360.0/65536.0);

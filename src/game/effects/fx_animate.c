@@ -89,7 +89,7 @@ void FXAnimate(centity_t *owner, int type, int flags, vec3_t origin)
 
 	self = ClientEntity_new(type, flags, origin, 0, 100);
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_ANIMATE].formatString, &anim, &scale, &skinnum, self->r.angles);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_ANIMATE].formatString, &anim, &scale, &skinnum, self->r.angles);
 	VectorDegreesToRadians(self->r.angles, self->r.angles);
 	atype = anim & 0x7f;
 

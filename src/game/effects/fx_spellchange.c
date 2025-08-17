@@ -52,7 +52,7 @@ void FXSpellChange(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	paletteRGBA_t	color;
 	int				part;
 
-	fxi.GetEffect(Owner,Flags,clientEffectSpawners[FX_SPELL_CHANGE].formatString,dir,&spelltype);
+	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_SPELL_CHANGE].formatString,dir,&spelltype);
 
 	switch(spelltype)
 	{

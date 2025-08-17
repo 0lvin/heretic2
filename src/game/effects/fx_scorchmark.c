@@ -92,7 +92,7 @@ void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t			dir;
 	client_entity_t	*scorchmark;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SCORCHMARK].formatString, dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SCORCHMARK].formatString, dir);
 
 	// no scorchmarks in low detail mode
 	if (r_detail->value == DETAIL_LOW)

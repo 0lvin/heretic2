@@ -39,7 +39,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 	client_entity_t	*hellbolt;
 	paletteRGBA_t	lightcolor = {{{255, 128, 64, 255}}};
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLBOLT].formatString, vel);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLBOLT].formatString, vel);
 
 	if (flags & CEF_FLAG6)
 		Vec3ScaleAssign(HELLBOLT_SPEED/2,vel);
@@ -101,7 +101,7 @@ void FXHellboltExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			Dir;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLBOLTEXPLODE].formatString, Dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLBOLTEXPLODE].formatString, Dir);
 
 	Vec3ScaleAssign(32.0, Dir);
 
@@ -159,7 +159,7 @@ void FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t angles, fwd, right, up, dir;
 
 	VectorClear(angles);
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER_BURN].formatString, &dir);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER_BURN].formatString, &dir);
 	VectoAngles(dir, angles);
 	angles[PITCH] *= -1;// something's broken with angle signs somewhere ;(
 
@@ -184,7 +184,7 @@ FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	byte blen;
 
 	VectorClear(angles);
-	fxi.GetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER].formatString, &dir, &blen);
+	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_HELLSTAFF_POWER].formatString, &dir, &blen);
 	VectoAngles(dir, angles);
 	angles[PITCH] *= -1;// something's broken with angle signs somewhere ;(
 	len = (float)blen * 8.0;

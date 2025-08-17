@@ -356,6 +356,72 @@ ParseEffectsEx(sizebuf_t *msg_read, int num)
 	}
 }
 
+int
+FXGetEffect(centity_t* ent, int flags, char* format, ...)
+{
+	sizebuf_t* msg;
+	va_list args;
+
+	if (!ent)
+	{
+		msg = fxi.net_message;
+	}
+	else
+	{
+		msg = effectsExport.fxMsgBuf;
+	}
+
+	va_start(args, format);
+
+	int len = strlen(format);
+	for (int i = 0; i < len; i++)
+	{
+		switch (format[i])
+		{
+		case 'b':
+		{
+			byte* b = va_arg(args, byte*);
+			*b = fxi.MSG_ReadByte(msg);
+		}
+			break;
+		case 'd':
+			fxi.MSG_ReadDir(msg, va_arg(args, float*));
+			break;
+		case 'f':
+		{
+			float* f = va_arg(args, float*);
+			*f = fxi.MSG_ReadFloat(msg);
+		}
+			break;
+		case 'i':
+		{
+			long* l = va_arg(args, long*);
+			*l = fxi.MSG_ReadLong(msg);
+		}
+			break;
+		case 'p':
+		case 'v':
+			fxi.MSG_ReadPos(msg, va_arg(args, float*));
+			break;
+		case 's':
+		{
+			short* s = va_arg(args, short*);
+			*s = fxi.MSG_ReadShort(msg);
+		}
+			break;
+		case 't':
+		case 'u':
+		case 'x':
+			fxi.MSG_ReadPos(msg, va_arg(args, float*));
+			break;
+		default:
+			break;
+		}
+	}
+
+	return len;
+}
+
 static void
 ParseEffects(centity_t *owner)
 {

@@ -120,7 +120,7 @@ void FXGenericSparks(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t				dir;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_SPARKS].formatString, dir );			// normalized direction vector
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SPARKS].formatString, dir );			// normalized direction vector
 	GenericSparks(owner, type, flags, origin, dir);
 }
 

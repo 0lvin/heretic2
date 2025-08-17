@@ -19,7 +19,7 @@ void FXTestBBox(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t	loc[8];
 	int	i, partid, max;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_TEST_BBOX].formatString, &radius, &bottom, &top);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_TEST_BBOX].formatString, &radius, &bottom, &top);
 
 	cent = ClientEntity_new(type, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, origin, NULL, 15000);
 

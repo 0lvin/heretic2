@@ -82,7 +82,7 @@ void FXPuzzlePickup(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t angles;
 	float scale;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_PICKUP_PUZZLE].formatString, &tag,&angles);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_PICKUP_PUZZLE].formatString, &tag,&angles);
 
 	flags &= ~CEF_OWNERS_ORIGIN;
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 50);

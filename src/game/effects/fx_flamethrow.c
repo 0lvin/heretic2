@@ -142,7 +142,7 @@ void FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t			dir;
 	client_entity_t	*glow;
 
-	fxi.GetEffect(owner, flags, clientEffectSpawners[FX_FLAMETHROWER].formatString, &dir, &distance);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_FLAMETHROWER].formatString, &dir, &distance);
 
 	// create the dummy entity, so particles can be attached
 	glow = ClientEntity_new(type, (flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS) , origin, 0, 17);
