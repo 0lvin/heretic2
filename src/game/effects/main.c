@@ -251,42 +251,16 @@ ParseClientEffects
 */
 
 static void
-ParseEffects(centity_t *owner)
+ParseEffectsEx(sizebuf_t *msg_read, int num)
 {
 	int				i;
-	int				num,flags = 0;
+	int				flags = 0;
 	unsigned		short effect;
 	vec3_t			position;
-	sizebuf_t		*msg_read;
-	sizebuf_t		tempBuf;
-	EffectsBuffer_t *fxBuf = NULL;
 	centity_t		*tempOwner;
 	int				last_effect = -1;
 	int				eventId = 0;
 	qboolean		EffectIsFromServer;
-
-	tempOwner = owner;
-
-	if (owner)
-	{
-		// Where do we pull the effect from?
-
-		// Effects received as part of entity_state_t from server.
-		fxBuf = &owner->current.clientEffects;
-
-		num = fxBuf->numEffects;
-
-		effectsExport.fxMsgBuf = msg_read = &tempBuf;
-		memset (msg_read, 0, sizeof(*msg_read));
-		msg_read->data = fxBuf->buf;
-		msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
-	}
-	else
-	{
-		msg_read = fxi.net_message;
-
-		num = fxi.MSG_ReadByte(msg_read);
-	}
 
 	assert(num >= 0);
 
@@ -300,12 +274,7 @@ ParseEffects(centity_t *owner)
 	{
 		int index = 0;
 
-		EffectIsFromServer=false;
-
-		if (owner)
-		{
-			msg_read->readcount = fxBuf->freeBlock;
-		}
+		EffectIsFromServer = false;
 
 		effect = fxi.MSG_ReadShort(msg_read);
 
@@ -371,11 +340,6 @@ ParseEffects(centity_t *owner)
 			return;
 		}
 
-		if (owner && !(flags & (CEF_BROADCAST | CEF_MULTICAST)))
-		{
-			fxBuf->freeBlock = msg_read->readcount;
-		}
-
 		// Start the client-effect.
 
 		clientEffectSpawners[effect].SpawnCFX(tempOwner, effect, flags, position);
@@ -387,8 +351,41 @@ ParseEffects(centity_t *owner)
 		{
 			tempOwner = NULL;
 		}
+
 		last_effect = effect;
 	}
+}
+
+static void
+ParseEffects(centity_t *owner)
+{
+	sizebuf_t		*msg_read;
+	sizebuf_t		tempBuf;
+	EffectsBuffer_t *fxBuf = NULL;
+	int num;
+
+	if (owner)
+	{
+		// Where do we pull the effect from?
+
+		// Effects received as part of entity_state_t from server.
+		fxBuf = &owner->current.clientEffects;
+
+		num = fxBuf->numEffects;
+
+		effectsExport.fxMsgBuf = msg_read = &tempBuf;
+		memset (msg_read, 0, sizeof(*msg_read));
+		msg_read->data = fxBuf->buf;
+		msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
+	}
+	else
+	{
+		msg_read = fxi.net_message;
+
+		num = fxi.MSG_ReadByte(msg_read);
+	}
+
+	ParseEffectsEx(msg_read, num);
 
 	if (owner) // free the buffer allocated in CL_ParseDelta and passed onto owner->current
 	{
@@ -398,10 +395,8 @@ ParseEffects(centity_t *owner)
 		fxBuf->numEffects = 0;
 		fxBuf->bufSize = 0;
 	}
-
 	effectsExport.fxMsgBuf = NULL;
 }
-
 static entity_t		sv_ents[MAX_ENTITIES];
 
 static void
