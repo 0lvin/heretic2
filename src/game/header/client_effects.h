@@ -23,14 +23,12 @@ typedef struct
 
 	void (*RegisterModels)();
 
-	void (*ParseClientEffects)(centity_t *cent);
+	void (*ParseClientEffects)(sizebuf_t *msg_read, int num);
 	void (*RemoveClientEffects)(centity_t *cent);
 
 	void (*AddPacketEntities)(frame_t *frame);
 	void (*AddEffects)(void);
 	void (*UpdateEffects)();
-
-	sizebuf_t	*fxMsgBuf;
 } client_fx_export_t;
 
 extern client_fx_export_t *fxe;

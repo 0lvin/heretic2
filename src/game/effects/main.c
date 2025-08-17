@@ -18,6 +18,7 @@
 
 client_fx_import_t fxi;
 static client_fx_export_t effectsExport;
+static sizebuf_t *fxMsgBuf;
 
 cvar_t	*cl_camera_under_surface;
 cvar_t	*r_farclipdist;
@@ -257,7 +258,7 @@ ParseEffectsEx(sizebuf_t *msg_read, int num)
 	int				flags = 0;
 	unsigned		short effect;
 	vec3_t			position;
-	centity_t		*tempOwner;
+	centity_t		*tempOwner = NULL;
 	int				last_effect = -1;
 	int				eventId = 0;
 	qboolean		EffectIsFromServer;
@@ -354,6 +355,8 @@ ParseEffectsEx(sizebuf_t *msg_read, int num)
 
 		last_effect = effect;
 	}
+
+	fxMsgBuf = NULL;
 }
 
 int
@@ -368,7 +371,7 @@ FXGetEffect(centity_t* ent, int flags, char* format, ...)
 	}
 	else
 	{
-		msg = effectsExport.fxMsgBuf;
+		msg = fxMsgBuf;
 	}
 
 	va_start(args, format);
@@ -430,39 +433,28 @@ ParseEffects(centity_t *owner)
 	EffectsBuffer_t *fxBuf = NULL;
 	int num;
 
-	if (owner)
-	{
-		// Where do we pull the effect from?
+	// Where do we pull the effect from?
 
-		// Effects received as part of entity_state_t from server.
-		fxBuf = &owner->current.clientEffects;
+	// Effects received as part of entity_state_t from server.
+	fxBuf = &owner->current.clientEffects;
 
-		num = fxBuf->numEffects;
+	num = fxBuf->numEffects;
 
-		effectsExport.fxMsgBuf = msg_read = &tempBuf;
-		memset (msg_read, 0, sizeof(*msg_read));
-		msg_read->data = fxBuf->buf;
-		msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
-	}
-	else
-	{
-		msg_read = fxi.net_message;
-
-		num = fxi.MSG_ReadByte(msg_read);
-	}
+	fxMsgBuf = msg_read = &tempBuf;
+	memset (msg_read, 0, sizeof(*msg_read));
+	msg_read->data = fxBuf->buf;
+	msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
 
 	ParseEffectsEx(msg_read, num);
 
-	if (owner) // free the buffer allocated in CL_ParseDelta and passed onto owner->current
-	{
-		fxBuf->freeBlock = 0;
-		fxi.TagFree(fxBuf->buf);
-		fxBuf->buf = NULL;
-		fxBuf->numEffects = 0;
-		fxBuf->bufSize = 0;
-	}
-	effectsExport.fxMsgBuf = NULL;
+	// free the buffer allocated in CL_ParseDelta and passed onto owner->current
+	fxBuf->freeBlock = 0;
+	fxi.TagFree(fxBuf->buf);
+	fxBuf->buf = NULL;
+	fxBuf->numEffects = 0;
+	fxBuf->bufSize = 0;
 }
+
 static entity_t		sv_ents[MAX_ENTITIES];
 
 static void
@@ -838,13 +830,13 @@ GetFXAPI(client_fx_import_t import)
 	effectsExport.AddEffects = AddEffects;
 
 	// Thirdly (if any independent effects exist).
-	effectsExport.ParseClientEffects = ParseEffects;
+	effectsExport.ParseClientEffects = ParseEffectsEx;
 
 	// Lastly.
 	effectsExport.UpdateEffects = PostRenderUpdate;
 
 	effectsExport.RemoveClientEffects = RemoveEffectsFromCent;
-	effectsExport.fxMsgBuf = NULL;
+	fxMsgBuf = NULL;
 
 	return &effectsExport;
 }
