@@ -649,9 +649,9 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 
 	MSG_WriteShort(&msg, testflags);
 
-	if ((testflags & CEF_BROADCAST) != 0 && enta >= 0)
+	if ((testflags & CEF_BROADCAST) != 0)
 	{
-		MSG_WriteShort(&msg, enta);
+		MSG_WriteShort(&msg, enta >= 0 ? enta : 0);
 	}
 
 	if ((testflags & CEF_OWNERS_ORIGIN) == 0)
@@ -741,9 +741,9 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 
 	MSG_WriteShort(&msg, testflags);
 
-	if ((testflags & CEF_BROADCAST) != 0 && enta >= 0)
+	if ((testflags & CEF_BROADCAST) != 0)
 	{
-		MSG_WriteShort(&msg, enta);
+		MSG_WriteShort(&msg, enta >= 0 ? enta : 0);
 	}
 
 	if ((testflags & CEF_OWNERS_ORIGIN) == 0) {

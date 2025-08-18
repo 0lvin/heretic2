@@ -264,7 +264,8 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 	else if (spawner->nextEventTime - fxi.cl->time < 1000)
 		return (true);	// Let the flames finish.
 
-	if (!(owner->current.effects & EF_ON_FIRE) && spawner->nextEventTime-fxi.cl->time >= 1000)
+	if (!(owner && owner->current.effects & EF_ON_FIRE) &&
+		(spawner->nextEventTime - fxi.cl->time) >= 1000)
 	{
 		spawner->nextEventTime = fxi.cl->time + 999;
 		spawner->dlight->d_intensity = -200;
@@ -272,10 +273,15 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 
 	// For framerate-sensitive effect spawning
 	count = GetScaledCount(FLAME_COUNT, 0.9);
-	if (count>FLAME_COUNT)		// Don't go over flame count
-		count=FLAME_COUNT;
-	VectorCopy(owner->origin, spawner->origin);
-	VectorCopy(owner->origin, spawner->r.origin);
+	if (count > FLAME_COUNT)		// Don't go over flame count
+		count= FLAME_COUNT;
+
+	if (owner)
+	{
+		VectorCopy(owner->origin, spawner->origin);
+		VectorCopy(owner->origin, spawner->r.origin);
+	}
+
 	for(i = 0; i < count; i++)
 	{
 		flame = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2) | PFL_NEARCULL, spawner->color, 1000);
@@ -286,7 +292,7 @@ qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 			crandk() * radius,
 			flrand(-8.0F, 0.0F) * AVG_VEC3T(spawner->r.scale));
 		// If dead, then move the flame down a tad.
-		if (owner->current.effects&EF_DISABLE_EXTRA_FX)
+		if (owner && owner->current.effects & EF_DISABLE_EXTRA_FX)
 		{
 			spawner->origin[2] -= radius;
 		}

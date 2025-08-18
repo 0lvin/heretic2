@@ -284,11 +284,12 @@ ParseEffects(sizebuf_t *msg_read, int num)
 		{
 			index = fxi.MSG_ReadShort(msg_read);
 
-			if (index)	// 0 should indicate the world
+			if (index) // 0 should indicate the world
 			{
 				if (index < 0)
 				{
-					fxi.Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+					fxi.Com_Error(ERR_DROP, "%s: unexpected message end for %d",
+						__func__, effect);
 					return;
 				}
 
