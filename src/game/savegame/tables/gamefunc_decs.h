@@ -1125,7 +1125,7 @@ extern void plat_go_up ( edict_t * ent ) ;
 extern void plat_hit_bottom ( edict_t * ent ) ;
 extern void plat_hit_top ( edict_t * ent ) ;
 extern void player_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
-// extern void player_pain ( edict_t * self , edict_t * other , float kick , int damage ) ;
+extern void player_pain ( edict_t * self , edict_t * other , float kick , int damage ) ;
 extern void point_combat_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void prox_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void prox_land ( edict_t * ent , edict_t * other , cplane_t * plane , csurface_t * surf ) ;

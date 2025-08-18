@@ -413,6 +413,8 @@ FXGetEffect(centity_t* ent, int flags, char* format, ...)
 		}
 	}
 
+	va_end(args);
+
 	return len;
 }
 

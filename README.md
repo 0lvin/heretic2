@@ -35,14 +35,12 @@ It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
 Drawbacks:
-* huge amount of possibly dead code
-* no menu implementations
-* no books implementations
-* code is little bit mess
-* only gl1 has full support render
-* need to rewrite RF_TRANS_ADD to use quake2 logic
-
-To check:
+ * [ ] huge amount of possibly dead code
+ * [ ] no menu implementations
+ * [ ] no books implementations
+ * [ ] code is little bit mess
+ * [ ] only gl1 has full support render
+ * [ ] need to rewrite RF_TRANS_ADD to use quake2 logic
  * [x] code use different angles values to quake2,
  * [ ] fix attack angle direction,
  * [ ] unsupported foodstep with unsupported player ground surface,
