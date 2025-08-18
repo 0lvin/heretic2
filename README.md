@@ -51,12 +51,13 @@ To check:
  * [ ] effects protocol is different to quake 2,
  * [ ] progress bars has custom implementation,
  * [ ] color type/paticles,
- * [ ] ANGLE_1 usage in client code,
- * [ ] different move code and noclip,
- * [ ] implement books as sprite,
+ * [x] ANGLE_1 usage in client code,
+ * [x] different move code and noclip,
+ * [x] implement books as sprite,
  * [x] Incorrect 16 bit frame flag unset,
  * [x] MAX_MODELS/MAX_SOUND define hardcode,
  * [ ] no action on button press,
+ * [ ] save code broken as not all callbacks registered
  * [x] soft,gl3,vk render has incorrect angles (used same angle in all renders).
  * [ ] correctly implement misc_remote_camera.
 
