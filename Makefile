@@ -1373,9 +1373,6 @@ CLIENT_OBJS_ := \
 	src/client/cl_input.o \
 	src/client/cl_inventory.o \
 	src/client/cl_keyboard.o \
-	src/game/common/h2singlylinkedlist.o \
-	src/game/common/resource_manager.o \
-	src/game/client_effects.o \
 	src/client/cl_lights.o \
 	src/client/cl_main.o \
 	src/client/cl_network.o \
@@ -1438,6 +1435,7 @@ CLIENT_OBJS_ := \
 	src/common/unzip/miniz/miniz.o \
 	src/common/unzip/miniz/miniz_tdef.o \
 	src/common/unzip/miniz/miniz_tinfl.o \
+	src/game/client_effects.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
@@ -1731,8 +1729,6 @@ SERVER_OBJS_ := \
 	src/common/unzip/miniz/miniz.o \
 	src/common/unzip/miniz/miniz_tdef.o \
 	src/common/unzip/miniz/miniz_tinfl.o \
-	src/game/common/h2singlylinkedlist.o \
-	src/game/common/resource_manager.o \
 	src/server/sv_cmd.o \
 	src/server/sv_conless.o \
 	src/server/sv_entities.o \
