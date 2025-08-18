@@ -215,7 +215,7 @@ void PlayerActionCheckStrafe (playerinfo_t *playerinfo)
 void PlayerActionCheckVaultKick (playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerVaultKick(playerinfo);
+		pi.G_PlayerVaultKick(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -243,9 +243,9 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 
 	//Trace forward to see if the path is clear
 	if (playerinfo->isclient)
-		trace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		trace = pi.CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		trace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -256,9 +256,9 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 
 		//Trace down
 		if (playerinfo->isclient)
-			trace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+			trace = pi.CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			trace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+			trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -298,9 +298,9 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 
 	//Trace forward to see if the path is clear
 	if (playerinfo->isclient)
-		trace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		trace = pi.CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		trace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -311,9 +311,9 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 
 		//Trace down
 		if (playerinfo->isclient)
-			trace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+			trace = pi.CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			trace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+			trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -455,7 +455,7 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 	}
 	else
 	if (!playerinfo->isclient&&!(pi.Weapon_CurrentShotsLeft(playerinfo)))
-		playerinfo->G_WeapNext(playerinfo->self);
+		pi.G_WeapNext(playerinfo->self);
 
 }
 
@@ -503,7 +503,7 @@ void PlayerActionSphereTrailEnd(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordAttack(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSwordAttack(playerinfo->self, (int)value);
+	pi.PlayerActionSwordAttack(playerinfo->self, (int)value);
 }
 
 /*-----------------------------------------------
@@ -512,7 +512,7 @@ void PlayerActionSwordAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellFireball(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellFireball(playerinfo->self);
+	pi.PlayerActionSpellFireball(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -521,7 +521,7 @@ void PlayerActionSpellFireball(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellBlast(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellBlast(playerinfo->self);
+	pi.PlayerActionSpellBlast(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -541,7 +541,7 @@ void PlayerActionSpellArray(playerinfo_t *playerinfo, float value)
 	else if (value==1.0 && shotsleft <= 1)
 		return;		// Only one shot, use the center projectile slot.
 
-	playerinfo->PlayerActionSpellArray(playerinfo->self, (int)value);
+	pi.PlayerActionSpellArray(playerinfo->self, (int)value);
 }
 
 /*-----------------------------------------------
@@ -554,7 +554,7 @@ void PlayerActionSpellSphereCreate(playerinfo_t *playerinfo, float value)
 
 	playerinfo->chargingspell=true;
 	playerinfo->weaponcharge = 1;
-	playerinfo->PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
+	pi.PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
 }
 
 /*-----------------------------------------------
@@ -626,7 +626,7 @@ void PlayerActionSpellSphereRelease(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellBigBall(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellBigBall(playerinfo->self);
+	pi.PlayerActionSpellBigBall(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -635,7 +635,7 @@ void PlayerActionSpellBigBall(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellFirewall(playerinfo_t *playerinfo, float value)
 {
-	playerinfo->PlayerActionSpellFirewall(playerinfo->self);
+	pi.PlayerActionSpellFirewall(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -647,7 +647,7 @@ void PlayerActionRedRainBowAttack(playerinfo_t *playerinfo, float value)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
-	playerinfo->PlayerActionRedRainBowAttack(playerinfo->self);
+	pi.PlayerActionRedRainBowAttack(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -659,7 +659,7 @@ void PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo, float value)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
-	playerinfo->PlayerActionPhoenixBowAttack(playerinfo->self);
+	pi.PlayerActionPhoenixBowAttack(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -670,7 +670,7 @@ void PlayerActionHellstaffAttack(playerinfo_t *playerinfo, float value)
 {
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
-	playerinfo->PlayerActionHellstaffAttack(playerinfo->self);
+	pi.PlayerActionHellstaffAttack(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -737,31 +737,16 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 			break;
 	}
 
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID0,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 "Weapons/SpellChange.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
+	pi.G_Sound(SND_PRED_ID0,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex("Weapons/SpellChange.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 
-		playerinfo->CL_CreateEffect(EFFECT_PRED_ID1,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID0,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex("Weapons/SpellChange.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-
-		playerinfo->G_CreateEffect(EFFECT_PRED_ID1,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
-	}
+	pi.G_CreateEffect(EFFECT_PRED_ID1,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
 }
 
 /*-----------------------------------------------
@@ -817,31 +802,16 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		PlayerUpdateModelAttributes(playerinfo);
 	}
 
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID1,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 "Weapons/SpellChange.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
+	pi.G_Sound(SND_PRED_ID1,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex("Weapons/SpellChange.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 
-		playerinfo->CL_CreateEffect(EFFECT_PRED_ID2,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID1,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex("Weapons/SpellChange.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-
-		playerinfo->G_CreateEffect(EFFECT_PRED_ID2,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
-	}
+	pi.G_CreateEffect(EFFECT_PRED_ID2,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
 }
 
 /*-----------------------------------------------
@@ -895,7 +865,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 			if (!playerinfo->isclient)
 			{
-				playerinfo->G_CreateEffect(EFFECT_PRED_ID3,
+				pi.G_CreateEffect(EFFECT_PRED_ID3,
 										   playerinfo->self,
 										   FX_STAFF_CREATEPOOF,
 										   CEF_OWNERS_ORIGIN,
@@ -903,7 +873,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 										   "");
 			}
 			else
-				playerinfo->CL_CreateEffect(EFFECT_PRED_ID3,
+				pi.CL_CreateEffect(EFFECT_PRED_ID3,
 											playerinfo->self,
 											FX_STAFF_CREATEPOOF,
 										    CEF_OWNERS_ORIGIN,
@@ -914,14 +884,14 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		case WEAPON_READY_HELLSTAFF:
 
 			if (!playerinfo->isclient)
-				playerinfo->G_CreateEffect(EFFECT_PRED_ID4,
+				pi.G_CreateEffect(EFFECT_PRED_ID4,
 										   playerinfo->self,
 										   FX_STAFF_CREATEPOOF,
 										   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 										   NULL,
 										   "");
 			else
-				playerinfo->CL_CreateEffect(EFFECT_PRED_ID4,
+				pi.CL_CreateEffect(EFFECT_PRED_ID4,
 											playerinfo->self,
 											FX_STAFF_CREATEPOOF,
 											CEF_OWNERS_ORIGIN|CEF_FLAG6,
@@ -951,27 +921,14 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
 						PlayerUpdateModelAttributes(playerinfo);
 
-						if (playerinfo->isclient)
-						{
-							playerinfo->CL_Sound(SND_PRED_ID2,
-												 playerinfo->origin,
-												 CHAN_WEAPON,
-												 "Weapons/SpellChange.wav",
-												 1.0,
-												 ATTN_NORM,
-												 0);
-						}
-						else
-						{
-							playerinfo->G_Sound(SND_PRED_ID2,
-												playerinfo->leveltime,
-												playerinfo->self,
-												CHAN_WEAPON,
-												playerinfo->G_SoundIndex("Weapons/SpellChange.wav"),
-												1.0,
-												ATTN_NORM,
-												0);
-						}
+						pi.G_Sound(SND_PRED_ID2,
+											playerinfo->leveltime,
+											playerinfo->self,
+											CHAN_WEAPON,
+											pi.G_SoundIndex("Weapons/SpellChange.wav"),
+											1.0,
+											ATTN_NORM,
+											0);
 
 						// Do some fancy effect.
 
@@ -981,7 +938,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
 						if (!playerinfo->isclient)
-							playerinfo->G_CreateEffect(EFFECT_PRED_ID5,
+							pi.G_CreateEffect(EFFECT_PRED_ID5,
 													   NULL,
 													   FX_SPELL_CHANGE,
 													   0,
@@ -990,7 +947,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 													   right,
 													   6);
 						else
-							playerinfo->CL_CreateEffect(EFFECT_PRED_ID5,
+							pi.CL_CreateEffect(EFFECT_PRED_ID5,
 														NULL,
 														FX_SPELL_CHANGE,
 														0,
@@ -1011,27 +968,14 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
 						PlayerUpdateModelAttributes(playerinfo);
 
-						if (playerinfo->isclient)
-						{
-							playerinfo->CL_Sound(SND_PRED_ID3,
-												 playerinfo->origin,
-												 CHAN_WEAPON,
-												 "Weapons/SpellChange.wav",
-												 1.0,
-												 ATTN_NORM,
-												 0);
-						}
-						else
-						{
-							playerinfo->G_Sound(SND_PRED_ID3,
-												playerinfo->leveltime,
-												playerinfo->self,
-												CHAN_WEAPON,
-												playerinfo->G_SoundIndex("Weapons/SpellChange.wav"),
-												1.0,
-												ATTN_NORM,
-												0);
-						}
+						pi.G_Sound(SND_PRED_ID3,
+											playerinfo->leveltime,
+											playerinfo->self,
+											CHAN_WEAPON,
+											pi.G_SoundIndex("Weapons/SpellChange.wav"),
+											1.0,
+											ATTN_NORM,
+											0);
 
 						// Do some fancy effect.
 
@@ -1041,7 +985,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
 						if (!playerinfo->isclient)
-							playerinfo->G_CreateEffect(EFFECT_PRED_ID6,
+							pi.G_CreateEffect(EFFECT_PRED_ID6,
 													   NULL,
 													   FX_SPELL_CHANGE,
 													   0,
@@ -1050,7 +994,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 													   right,
 													   7);
 						else
-							playerinfo->CL_CreateEffect(EFFECT_PRED_ID6,
+							pi.CL_CreateEffect(EFFECT_PRED_ID6,
 														NULL,
 														FX_SPELL_CHANGE,
 														0,
@@ -1081,120 +1025,62 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 {
 	int flags = CEF_OWNERS_ORIGIN;
 
-	if (playerinfo->isclient)
+	if (value == WEAPON_READY_HELLSTAFF)
+		flags |= CEF_FLAG6;
+
+	if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 	{
-		if (value == WEAPON_READY_HELLSTAFF)
-			flags |= CEF_FLAG6;
+		pi.G_Sound(SND_PRED_ID5,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_WEAPON,
+							pi.G_SoundIndex("weapons/Staff Ready.wav"),
+							1.0,
+							ATTN_NORM,
+							0);
+	}
+	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+	{
+		flags |= CEF_FLAG7;
 
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
-		{
-			playerinfo->CL_Sound(SND_PRED_ID5,
-								 playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
-								 CHAN_WEAPON,
-								 "weapons/Staff Ready.wav",
-								 1.0,
-								 ATTN_NORM,
-								 0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
-		{
-			flags |= CEF_FLAG7;
+		pi.G_Sound(SND_PRED_ID6,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_WEAPON,
+							pi.G_SoundIndex("weapons/Staff2Ready.wav"),
+							1.0,
+							ATTN_NORM,
+							0);
+	}
+	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+	{
+		flags |= CEF_FLAG8;
 
-			playerinfo->CL_Sound(SND_PRED_ID6,
-								 playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
-								 CHAN_WEAPON,
-								 "weapons/Staff2Ready.wav",
-								 1.0,
-								 ATTN_NORM,
-								 0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
-		{
-			flags |= CEF_FLAG8;
-
-			playerinfo->CL_Sound(SND_PRED_ID7,
-								playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
-								 CHAN_WEAPON,
-								 "weapons/Staff3Ready.wav",
-								 1.0,
-								 ATTN_NORM,
-								 0);
-		}
-		else
-			playerinfo->CL_Sound(SND_PRED_ID8,
-								playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
-								 CHAN_WEAPON,
-								 "weapons/Staff Ready.wav",
-								 1.0,
-								 ATTN_NORM,
-								 0);
-
-		playerinfo->CL_CreateEffect(EFFECT_PRED_ID7,
-									playerinfo->self,
-									FX_STAFF_CREATE,
-									flags,
-									NULL,
-									"");
+		pi.G_Sound(SND_PRED_ID7,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_WEAPON,
+							pi.G_SoundIndex("weapons/Staff3Ready.wav"),
+							1.0,
+							ATTN_NORM,
+							0);
 	}
 	else
-	{
-		if (value == WEAPON_READY_HELLSTAFF)
-			flags |= CEF_FLAG6;
+		pi.G_Sound(SND_PRED_ID8,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_WEAPON,
+							pi.G_SoundIndex("weapons/Staff Ready.wav"),
+							1.0,
+							ATTN_NORM,
+							0);
 
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
-		{
-			playerinfo->G_Sound(SND_PRED_ID5,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff Ready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
-		{
-			flags |= CEF_FLAG7;
-
-			playerinfo->G_Sound(SND_PRED_ID6,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff2Ready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
-		{
-			flags |= CEF_FLAG8;
-
-			playerinfo->G_Sound(SND_PRED_ID7,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff3Ready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-		else
-			playerinfo->G_Sound(SND_PRED_ID8,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff Ready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-
-		playerinfo->G_CreateEffect(EFFECT_PRED_ID7,
-								   playerinfo->self, // jmarshall: I think this is right.
-								   FX_STAFF_CREATE,
-								   flags,
-								   NULL,
-								   "");
-	}
+	pi.G_CreateEffect(EFFECT_PRED_ID7,
+							   playerinfo->self, // jmarshall: I think this is right.
+							   FX_STAFF_CREATE,
+							   flags,
+							   NULL,
+							   "");
 }
 
 /*-----------------------------------------------
@@ -1205,125 +1091,64 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 {
 	int flags = CEF_OWNERS_ORIGIN;
 
+	if (value == WEAPON_READY_HELLSTAFF)
+		flags |= CEF_FLAG6;
 
-	if (playerinfo->isclient)
+	if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 	{
-		if (value == WEAPON_READY_HELLSTAFF)
-			flags |= CEF_FLAG6;
-
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
-		{
-			playerinfo->CL_Sound(SND_PRED_ID9,
-							playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
+		pi.G_Sound(SND_PRED_ID9,
+							playerinfo->leveltime,
+							playerinfo->self,
 							CHAN_WEAPON,
-							"weapons/Staff Unready.wav",
+							pi.G_SoundIndex("weapons/Staff Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
-		{
-			flags |= CEF_FLAG7;
+	}
+	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+	{
+		flags |= CEF_FLAG7;
 
-			playerinfo->CL_Sound(SND_PRED_ID10,
-							playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.,
+		pi.G_Sound(SND_PRED_ID10,
+							playerinfo->leveltime,
+							playerinfo->self,
 							CHAN_WEAPON,
-							"weapons/Staff2Unready.wav",
+							pi.G_SoundIndex("weapons/Staff2Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
-		{
-			flags |= CEF_FLAG8;
+	}
+	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+	{
+		flags |= CEF_FLAG8;
 
-			playerinfo->CL_Sound(SND_PRED_ID11,
-							playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
+		pi.G_Sound(SND_PRED_ID11,
+							playerinfo->leveltime,
+							playerinfo->self,
 							CHAN_WEAPON,
-							"weapons/Staff3Unready.wav",
+							pi.G_SoundIndex("weapons/Staff3Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
-		}
-		else
-		{
-			playerinfo->CL_Sound(SND_PRED_ID12,
-							playerinfo->origin, // jmarshall: was playerinfo->self, which is wierd.
-							CHAN_WEAPON,
-							"weapons/Staff Unready.wav",
-							1.0,
-							ATTN_NORM,
-							0);
-		}
-
-		playerinfo->CL_CreateEffect(EFFECT_PRED_ID8,
-									playerinfo->self,
-									FX_STAFF_REMOVE,
-									flags,
-									NULL,
-									"");
 	}
 	else
 	{
-		if (value == WEAPON_READY_HELLSTAFF)
-			flags |= CEF_FLAG6;
-
-		if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
-		{
-			playerinfo->G_Sound(SND_PRED_ID9,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff Unready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
-		{
-			flags |= CEF_FLAG7;
-
-			playerinfo->G_Sound(SND_PRED_ID10,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff2Unready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-		else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
-		{
-			flags |= CEF_FLAG8;
-
-			playerinfo->G_Sound(SND_PRED_ID11,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff3Unready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-		else
-		{
-			playerinfo->G_Sound(SND_PRED_ID12,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex("weapons/Staff Unready.wav"),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
-
-		playerinfo->G_CreateEffect(EFFECT_PRED_ID8,
-								   playerinfo->self,
-								   FX_STAFF_REMOVE,
-								   flags,
-								   NULL,
-								   "");
+		pi.G_Sound(SND_PRED_ID12,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_WEAPON,
+							pi.G_SoundIndex("weapons/Staff Unready.wav"),
+							1.0,
+							ATTN_NORM,
+							0);
 	}
+
+	pi.G_CreateEffect(EFFECT_PRED_ID8,
+							   playerinfo->self,
+							   FX_STAFF_REMOVE,
+							   flags,
+							   NULL,
+							   "");
 }
 
 /*-----------------------------------------------
@@ -1332,27 +1157,14 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordTrailSound(playerinfo_t *playerinfo, char *name)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID13,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 name,
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID13,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex(name),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID13,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex(name),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 void PlayerActionSwordTrailStart(playerinfo_t *playerinfo, float value)
@@ -1425,7 +1237,7 @@ void PlayerActionRedRainBowTrailStart(playerinfo_t *playerinfo, float value)
 
 	if (!playerinfo->isclient)
 	{
-		playerinfo->G_L_Sound(playerinfo->self,playerinfo->G_SoundIndex("weapons/bowReady.wav"));
+		pi.G_L_Sound(playerinfo->self,pi.G_SoundIndex("weapons/bowReady.wav"));
 	}
 }
 
@@ -1448,7 +1260,7 @@ void PlayerActionPhoenixBowTrailStart(playerinfo_t *playerinfo, float value)
 
 	if (!playerinfo->isclient)
 	{
-		playerinfo->G_L_Sound(playerinfo->self,playerinfo->G_SoundIndex("weapons/PhoenixReady.wav"));
+		pi.G_L_Sound(playerinfo->self, pi.G_SoundIndex("weapons/PhoenixReady.wav"));
 	}
 }
 
@@ -1468,7 +1280,7 @@ GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo)
 #if 0
 	csurface_t *groundSurface;
 
-	groundSurface = playerinfo->GroundSurface;
+	groundSurface = pi.GroundSurface;
 	if (groundSurface && groundSurface->material[0])
 	{
 		return groundSurface->material;
@@ -1569,27 +1381,14 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID14,
-							 playerinfo->origin,
-							 channel,
-							 WalkSound,
-							 0.75,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID14,
-							playerinfo->leveltime,
-							playerinfo->self,
-							channel,
-							playerinfo->G_SoundIndex(WalkSound),
-							0.75,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID14,
+						playerinfo->leveltime,
+						playerinfo->self,
+						channel,
+						pi.G_SoundIndex(WalkSound),
+						0.75,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -1598,27 +1397,14 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimIdleSound(playerinfo_t *playerinfo, float value)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID15,
-							 playerinfo->origin,
-							 CHAN_VOICE,
-							 "player/swim idle.wav",
-							 0.4,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID15,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_VOICE,
-							playerinfo->G_SoundIndex("player/swim idle.wav"),
-							0.4,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID15,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_VOICE,
+						pi.G_SoundIndex("player/swim idle.wav"),
+						0.4,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -1653,27 +1439,14 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 		break;
 	}
 
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID16,
-							 playerinfo->origin,
-							 CHAN_AUTO,
-							 name,
-							 0.6,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID16,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_AUTO,
-							playerinfo->G_SoundIndex(name),
-							0.6,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID16,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_AUTO,
+						pi.G_SoundIndex(name),
+						0.6,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -1682,27 +1455,14 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID17,
-							 playerinfo->origin,
-							 CHAN_VOICE,
-							 "swim backward.wav",
-							 0.6,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID17,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_VOICE,
-							playerinfo->G_SoundIndex("swim backward.wav"),
-							0.6,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID17,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_VOICE,
+						pi.G_SoundIndex("swim backward.wav"),
+						0.6,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -1711,27 +1471,14 @@ void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID18,
-							 playerinfo->origin,
-							 CHAN_VOICE,
-							 "player/pullup 1.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID18,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_VOICE,
-							playerinfo->G_SoundIndex("player/pullup 1.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID18,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_VOICE,
+						pi.G_SoundIndex("player/pullup 1.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -1740,27 +1487,14 @@ void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbFinishSound(playerinfo_t *playerinfo, float value)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID19,
-							 playerinfo->origin,
-							 CHAN_VOICE,
-							 "player/pullup 2.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID19,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_VOICE,
-							playerinfo->G_SoundIndex("player/pullup 2.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID19,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_VOICE,
+						pi.G_SoundIndex("player/pullup 2.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -1786,7 +1520,7 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 		//
 
 		if (!playerinfo->isclient)
-			playerinfo->G_CreateEffect(EFFECT_PRED_ID9,
+			pi.G_CreateEffect(EFFECT_PRED_ID9,
 									   NULL,
 									   FX_WATER_ENTRYSPLASH,
 									   0,
@@ -1795,7 +1529,7 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 									   32,
 									   Dir);
 		else
-			playerinfo->CL_CreateEffect(EFFECT_PRED_ID9,
+			pi.CL_CreateEffect(EFFECT_PRED_ID9,
 										NULL,
 										FX_WATER_ENTRYSPLASH,
 										0,
@@ -1870,9 +1604,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(righthand, GRAB_HAND_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1894,9 +1628,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(lefthand, GRAB_HAND_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1938,9 +1672,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[2] -= vertlength;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1965,9 +1699,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[2] -= vertlength;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -2000,9 +1734,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(playerinfo->origin, GRAB_HAND_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1)
 		return 0;
@@ -2022,7 +1756,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (grabtrace.ent&&!playerinfo->isclient)
 	{
-		if (playerinfo->G_EntIsAButton(grabtrace.ent))
+		if (pi.G_EntIsAButton(grabtrace.ent))
 		{
 			return 0;
 		}
@@ -2057,9 +1791,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
 	if (playerinfo->isclient)
-		lasttrace = playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
+		lasttrace = pi.CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	else
-		lasttrace = playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+		lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		return (false);
@@ -2074,9 +1808,9 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(playerinfo->origin, 32, forward, endpoint);
 
 	if (playerinfo->isclient)
-		swingtrace = playerinfo->CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		swingtrace = pi.CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		swingtrace = playerinfo->G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		swingtrace = pi.G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	//Did we hit a wall underneath?
 	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
@@ -2094,7 +1828,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (playerinfo->isclient)
 	{
-		grabtrace = playerinfo->CL_Trace(playerinfo->origin,
+		grabtrace = pi.CL_Trace(playerinfo->origin,
 							 NULL,
 							 NULL,
 							 endpoint,
@@ -2103,7 +1837,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	}
 	else
 	{
-		grabtrace = playerinfo->G_Trace(playerinfo->origin,
+		grabtrace = pi.G_Trace(playerinfo->origin,
 									  NULL,
 									  NULL,
 									  endpoint,
@@ -2217,27 +1951,14 @@ void PlayerActionCheckFallingGrab(playerinfo_t *playerinfo, float value)
 
 void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID20,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 "weapons/bowdraw2.Wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID20,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex("weapons/bowdraw2.Wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID20,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex("weapons/bowdraw2.Wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -2248,7 +1969,7 @@ qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
 	{
-		return(playerinfo->G_PlayerActionUsePuzzle(playerinfo));
+		return(pi.G_PlayerActionUsePuzzle(playerinfo));
 	}
 	else
 	{
@@ -2266,7 +1987,7 @@ qboolean PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
 	{
-		return(playerinfo->G_PlayerActionCheckPuzzleGrab(playerinfo));
+		return(pi.G_PlayerActionCheckPuzzleGrab(playerinfo));
 	}
 	else
 	{
@@ -2321,9 +2042,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	playermax[2] = GRAB_HAND_HEIGHT;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// There's no room to jump.
@@ -2346,9 +2067,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(righthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0)
@@ -2361,9 +2082,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(lefthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0)
@@ -2379,9 +2100,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -2398,9 +2119,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -2426,9 +2147,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, GRAB_JUMP_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	// Now, if the player is grabbing an overhang, this will not hit anything.
 
@@ -2445,9 +2166,9 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 		playermax[2] = (lefthand[2]+righthand[2])*0.5 - playerinfo->origin[2];
 
 		if (playerinfo->isclient)
-			grabtrace = playerinfo->CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+			grabtrace = pi.CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			grabtrace = playerinfo->G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+			grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		if (grabtrace.fraction >= 1.0)
 		{
@@ -2519,12 +2240,12 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		righthand[2] += PUSH_HAND_HEIGHT;
 		VectorMA(righthand, PUSH_HAND_HORZONE, forward, endpoint);
 
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		if ((grabtrace.fraction == 1) || (!grabtrace.ent))
 			return false;
 
-		if (!(playerinfo->G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
+		if (!(pi.G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
 			return false;
 
 		holdent = (void *)grabtrace.ent;
@@ -2533,7 +2254,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 		lefthand[2] += PUSH_HAND_HEIGHT;
 		VectorMA(lefthand, PUSH_HAND_HORZONE, forward, endpoint);
 
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		VectorCopy(grabtrace.endpos, lefthand);
 
@@ -2607,9 +2328,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(start, VAULT_HAND_HORZONE, forward, end);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(start,vaultcheckmins,vaultcheckmaxs,end,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(start,vaultcheckmins,vaultcheckmaxs,end,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1.0)
 	{
@@ -2631,7 +2352,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	if (grabtrace.ent&&!playerinfo->isclient)
 	{
-		if (playerinfo->G_EntIsAButton(grabtrace.ent))
+		if (pi.G_EntIsAButton(grabtrace.ent))
 		{
 			return false;
 		}
@@ -2658,9 +2379,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(righthand, VAULT_HAND_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2674,9 +2395,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorMA(lefthand, VAULT_HAND_HORZONE, forward, endpoint);
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2693,9 +2414,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2713,9 +2434,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
 	if (playerinfo->isclient)
-		grabtrace = playerinfo->CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		grabtrace = playerinfo->G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2745,9 +2466,9 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 		//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
 		if (playerinfo->isclient)
-			lasttrace = playerinfo->CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
+			lasttrace = pi.CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 		else
-			lasttrace = playerinfo->G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+			lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		{
@@ -2814,14 +2535,14 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	VectorMA(playerinfo->origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
 
 	if (playerinfo->isclient)
-		trace = playerinfo->CL_Trace(playerinfo->origin,
+		trace = pi.CL_Trace(playerinfo->origin,
 							 NULL,
 							 NULL,
 							 endpos,
 							 CEF_CLIP_TO_WORLD,
 							 MASK_PLAYERSOLID);
 	else
-		trace = playerinfo->G_Trace(playerinfo->origin,
+		trace = pi.G_Trace(playerinfo->origin,
 								  NULL,
 								  NULL,
 								  endpos,
@@ -2835,14 +2556,14 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	// Try placing the entity in the new location.
 
 	if (playerinfo->isclient)
-		trace = playerinfo->CL_Trace(endpos,
+		trace = pi.CL_Trace(endpos,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
 							 MASK_PLAYERSOLID,
 							 CEF_CLIP_TO_WORLD);
 	else
-		trace = playerinfo->G_Trace(endpos,
+		trace = pi.G_Trace(endpos,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
@@ -2869,7 +2590,7 @@ qboolean PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 		if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 			return false;
 		else
-			return(playerinfo->G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
+			return(pi.G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
 	}
 	else
 	{
@@ -2921,27 +2642,14 @@ void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 	strcat(VaultSound, Material);
 	strcat(VaultSound,"vault.wav");
 
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID21,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 VaultSound,
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID21,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex(VaultSound),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID21,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex(VaultSound),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -2957,14 +2665,14 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 	endpos[2] += (playerinfo->mins[2] - 2);
 
 	if (playerinfo->isclient)
-		trace = playerinfo->CL_Trace(playerinfo->origin,
+		trace = pi.CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
 							 CEF_CLIP_TO_WORLD,
 							 MASK_PLAYERSOLID);
 	else
-		trace = playerinfo->G_Trace(playerinfo->origin,
+		trace = pi.G_Trace(playerinfo->origin,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
@@ -2991,7 +2699,7 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 
 	if (playerinfo->isclient)
 	{
-		trace = playerinfo->CL_Trace(playerinfo->origin,
+		trace = pi.CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
@@ -3000,7 +2708,7 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-		trace = playerinfo->G_Trace(playerinfo->origin,
+		trace = pi.G_Trace(playerinfo->origin,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
@@ -3043,7 +2751,7 @@ void PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, 
 	assert(playerinfo);
 
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
+		pi.G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
 }
 
 /*-----------------------------------------------
@@ -3265,14 +2973,14 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		endpoint[2] -= playerinfo->mins[2] + 2;
 
 		if (playerinfo->isclient)
-			trace = playerinfo->CL_Trace(playerinfo->origin,
+			trace = pi.CL_Trace(playerinfo->origin,
 								 playerinfo->mins,
 								 playerinfo->maxs,
 								 endpoint,
 								 MASK_PLAYERSOLID,
 								 CEF_CLIP_TO_WORLD);
 		else
-			trace = playerinfo->G_Trace(playerinfo->origin,
+			trace = pi.G_Trace(playerinfo->origin,
 									  playerinfo->mins,
 									  playerinfo->maxs,
 									  endpoint,
@@ -3313,14 +3021,14 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			VectorCopy(playerinfo->maxs, playermax);
 
 			if (playerinfo->isclient)
-				trace = playerinfo->CL_Trace(playerinfo->origin,
+				trace = pi.CL_Trace(playerinfo->origin,
 									 playermin,
 									 playermax,
 									 endpoint,
 									 MASK_PLAYERSOLID,
 									 CEF_CLIP_TO_WORLD);
 			else
-				trace = playerinfo->G_Trace(playerinfo->origin,
+				trace = pi.G_Trace(playerinfo->origin,
 										  playermin,
 										  playermax,
 										  endpoint,
@@ -3341,14 +3049,14 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 
 				//Move to the correct distance away from the wall
 				if (playerinfo->isclient)
-					trace = playerinfo->CL_Trace(trace.endpos,
+					trace = pi.CL_Trace(trace.endpos,
 										 playermin,
 										 playermax,
 										 endpoint,
 										 MASK_PLAYERSOLID,
 										 CEF_CLIP_TO_WORLD);
 				else
-					trace = playerinfo->G_Trace(trace.endpos,
+					trace = pi.G_Trace(trace.endpos,
 											  playermin,
 											  playermax,
 											  endpoint,
@@ -3383,7 +3091,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
-		return(playerinfo->G_PlayerActionCheckPushButton(playerinfo));
+		return(pi.G_PlayerActionCheckPushButton(playerinfo));
 	else
 		return false;
 }
@@ -3395,7 +3103,7 @@ qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionPushButton(playerinfo);
+		pi.G_PlayerActionPushButton(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3405,7 +3113,7 @@ void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
-		return(playerinfo->G_PlayerActionCheckPushLever(playerinfo));
+		return(pi.G_PlayerActionCheckPushLever(playerinfo));
 	else
 		return false;
 }
@@ -3417,7 +3125,7 @@ qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionPushLever(playerinfo);
+		pi.G_PlayerActionPushLever(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3427,7 +3135,7 @@ void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionTakePuzzle(playerinfo);
+		pi.G_PlayerActionTakePuzzle(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3437,7 +3145,7 @@ void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionMoveItem(playerinfo,distance);
+		pi.G_PlayerActionMoveItem(playerinfo,distance);
 }
 
 /*-----------------------------------------------
@@ -3447,7 +3155,7 @@ void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 void PlayerActionShrineEffect(playerinfo_t *playerinfo, float value)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionShrineEffect(playerinfo);
+		pi.G_PlayerActionShrineEffect(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3534,7 +3242,7 @@ void PlayerActionCheckDive(playerinfo_t *playerinfo)
 void PlayerActionCheckRopeMove(playerinfo_t *playerinfo, float foo )
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionCheckRopeMove(playerinfo);
+		pi.G_PlayerActionCheckRopeMove(playerinfo);
 	else
 		return;
 }
@@ -3571,27 +3279,14 @@ void KnockDownPlayer(playerinfo_t *playerinfo)
 
 void PlayFly(playerinfo_t *playerinfo, float dist)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID22,
-							 playerinfo->origin,
-							 CHAN_BODY,
-							 "player/idle buzz.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID22,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_BODY,
-							playerinfo->G_SoundIndex("player/idle buzz.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID22,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_BODY,
+						pi.G_SoundIndex("player/idle buzz.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -3600,27 +3295,14 @@ void PlayFly(playerinfo_t *playerinfo, float dist)
 
 void PlaySlap(playerinfo_t *playerinfo, float dist)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID23,
-							 playerinfo->origin,
-							 CHAN_BODY,
-							 "player/idle slap.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID23,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_BODY,
-							playerinfo->G_SoundIndex("player/idle slap.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID23,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_BODY,
+						pi.G_SoundIndex("player/idle slap.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -3629,27 +3311,14 @@ void PlaySlap(playerinfo_t *playerinfo, float dist)
 
 void PlaySigh(playerinfo_t *playerinfo, float dist)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID24,
-							 playerinfo->origin,
-							 CHAN_BODY,
-							 "*phew.wav",
-							 0.75,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID24,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_BODY,
-							playerinfo->G_SoundIndex("*phew.wav"),
-							0.75,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID24,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_BODY,
+						pi.G_SoundIndex("*phew.wav"),
+						0.75,
+						ATTN_NORM,
+						0);
 }
 /*-----------------------------------------------
 	PlayScratch
@@ -3657,27 +3326,14 @@ void PlaySigh(playerinfo_t *playerinfo, float dist)
 
 void PlayScratch(playerinfo_t *playerinfo, float dist)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID25,
-							 playerinfo->origin,
-							 CHAN_BODY,
-							 "player/scratch.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID25,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_BODY,
-							playerinfo->G_SoundIndex("player/scratch.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID25,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_BODY,
+						pi.G_SoundIndex("player/scratch.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 /*-----------------------------------------------
@@ -3689,14 +3345,14 @@ void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 	if (playerinfo->waterlevel==0)
 	{
 		if (!playerinfo->isclient)
-			playerinfo->G_CreateEffect(EFFECT_PRED_ID10,
+			pi.G_CreateEffect(EFFECT_PRED_ID10,
 									   playerinfo->self,
 									   FX_DUST_PUFF,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,
 									   "");
 		else
-			playerinfo->CL_CreateEffect(EFFECT_PRED_ID10,
+			pi.CL_CreateEffect(EFFECT_PRED_ID10,
 										playerinfo->self,
 										FX_DUST_PUFF,
 										CEF_OWNERS_ORIGIN,
@@ -3850,10 +3506,7 @@ void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID26, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0 );
-			else
-				playerinfo->G_Sound(SND_PRED_ID26, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
+			pi.G_Sound(SND_PRED_ID26, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -4383,10 +4036,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID27, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0 );
-			else
-				playerinfo->G_Sound(SND_PRED_ID27, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
+			pi.G_Sound(SND_PRED_ID27, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -4722,7 +4372,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		}
 		else
 		{	// Not advanced staff
-			if (playerinfo->irand(playerinfo,0,1))
+			if (pi.irand(playerinfo,0,1))
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPIN2);
 			else
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPIN);
@@ -4862,10 +4512,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID28,	playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound(SND_PRED_ID28, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound(SND_PRED_ID28, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -5025,20 +4672,14 @@ void PlayerActionClimbStartSound(playerinfo_t *playerinfo, float value)
 	if (irand(0,4))
 		return;
 
-	if (playerinfo->isclient)
-		playerinfo->CL_Sound(SND_PRED_ID29,playerinfo->origin, CHAN_VOICE, "*grab.wav", 0.75, ATTN_NORM, 0);
-	else
-		playerinfo->G_Sound(SND_PRED_ID29, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*grab.wav"), 0.75, ATTN_NORM, 0);
+	pi.G_Sound(SND_PRED_ID29, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*grab.wav"), 0.75, ATTN_NORM, 0);
 }
 
 void PlayerPlaySlide(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if (playerinfo->isclient)
-		playerinfo->CL_Sound(SND_PRED_ID30,playerinfo->origin, CHAN_VOICE, "player/slope.wav", 0.75, ATTN_NORM, 0);
-	else
-		playerinfo->G_Sound(SND_PRED_ID30, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
+	pi.G_Sound(SND_PRED_ID30, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
 }
 
 
@@ -5050,41 +4691,28 @@ void PlayerInterruptAction(playerinfo_t *playerinfo)
 	TurnOffPlayerEffects(playerinfo);
 
 	//Remove weapon sounds from the player (technically looping weapons should do this for us, but better safe than annoyed)
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID31,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 "misc/null.wav",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID31,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex("misc/null.wav"),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID31,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex("misc/null.wav"),
+						1.0,
+						ATTN_NORM,
+						0);
 
 	//Release any held weapons
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
 	{
-		playerinfo->PlayerActionRedRainBowAttack(playerinfo->self);
+		pi.PlayerActionRedRainBowAttack(playerinfo->self);
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
 	{
-		playerinfo->PlayerActionPhoenixBowAttack(playerinfo->self);
+		pi.PlayerActionPhoenixBowAttack(playerinfo->self);
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
 	{
 		playerinfo->chargingspell=false;
-		playerinfo->PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
+		pi.PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
 	}
 
 	//Clear out any pending animations

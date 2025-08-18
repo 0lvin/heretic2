@@ -63,5 +63,6 @@ void info_buoy_link(edict_t *self);
 int info_buoy_find_dir(edict_t *self, edict_t *pos1, edict_t *pos2);
 void SP_info_buoy(edict_t *self);
 void MG_RemoveBuoyEffects(edict_t *self);
+void PrintLocalBuoyInfo(vec3_t org);
 
 #endif // G_BUOY_H

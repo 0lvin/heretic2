@@ -33,7 +33,6 @@
 #include "player/library/p_actions.h"
 #include "player/library/p_anims.h"
 #include "player/library/p_main.h"
-#include "header/p_funcs.h"
 #include "header/g_itemstats.h"
 #include "common/cl_strings.h"
 
@@ -1359,11 +1358,11 @@ Cmd_DefPrev_f(edict_t *ent)
 	}
 
 	if ((selected_defence != 1) && (start_defence != selected_defence))
-		cl->playerinfo.G_Sound(SND_PRED_NULL,
+		G_SoundEvent(SND_PRED_NULL,
 							   level.time,
 							   ent,
 							   CHAN_AUTO,
-							   cl->playerinfo.G_SoundIndex("Weapons/DefenseSelect.wav"),
+							   gi.soundindex("Weapons/DefenseSelect.wav"),
 							   1,
 							   ATTN_NORM,
 							   0);
@@ -1416,11 +1415,11 @@ Cmd_DefNext_f(edict_t *ent)
 	}
 
 	if ((selected_defence != 1) && (start_defence != selected_defence))
-		cl->playerinfo.G_Sound(SND_PRED_NULL,
+		G_SoundEvent(SND_PRED_NULL,
 							   level.time,
 							   ent,
 							   CHAN_AUTO,
-							   cl->playerinfo.G_SoundIndex("Weapons/DefenseSelect.wav"),
+							   gi.soundindex("Weapons/DefenseSelect.wav"),
 							   1,
 							   ATTN_NORM,
 							   0);

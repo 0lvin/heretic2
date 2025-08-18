@@ -41,9 +41,9 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 	endpos[2] -= FALL_MINHEIGHT;
 
 	if (playerinfo->isclient)
-		checktrace = playerinfo->CL_Trace(playerinfo->origin,playerinfo->mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		checktrace = pi.CL_Trace(playerinfo->origin,playerinfo->mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		checktrace = playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		checktrace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (checktrace.fraction >= 1)
 	{
@@ -66,9 +66,9 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 	v[2]+=25.0 - playerinfo->maxs[2];//was 25
 
 	if (playerinfo->isclient)
-		trace = playerinfo->CL_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		trace = pi.CL_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		trace = playerinfo->G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 		return false;
@@ -104,9 +104,9 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 
 	//Trace forward to see if the path is clear
 	if (playerinfo->isclient)
-		checktrace = playerinfo->CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+		checktrace = pi.CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 	else
-		checktrace = playerinfo->G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+		checktrace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (checktrace.fraction == 1)
@@ -117,9 +117,9 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 
 		//Trace down
 		if (playerinfo->isclient)
-			checktrace = playerinfo->CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
+			checktrace = pi.CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
 		else
-			checktrace = playerinfo->G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+			checktrace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (checktrace.fraction == 1 || (checktrace.startsolid || checktrace.allsolid))
 		{
@@ -182,20 +182,20 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 
 	if (playerinfo->isclient)
 	{
-		leftfoot = playerinfo->CL_Trace(lspotmax, footmins, footmaxs, lspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
+		leftfoot = pi.CL_Trace(lspotmax, footmins, footmaxs, lspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	}
 	else
 	{
-		leftfoot = playerinfo->G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
+		leftfoot = pi.G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
 	}
 
 	if (playerinfo->isclient)
 	{
-		rightfoot = playerinfo->CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
+		rightfoot = pi.CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
 	}
 	else
 	{
-		rightfoot = playerinfo->G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
+		rightfoot = pi.G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
 	}
 
 	if ((rightfoot.fraction == 1.0) && !rightfoot.startsolid && !rightfoot.allsolid)
@@ -340,7 +340,7 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 
 // OK NOW?	if (!playerinfo->isclient)
 	{
-		temp = (playerinfo->irand(playerinfo,0,5));
+		temp = (pi.irand(playerinfo,0,5));
 
 		if (!temp)
 			return ASEQ_IDLE_LOOKR;
@@ -617,10 +617,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		}
 		else if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID32, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound(SND_PRED_ID32, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound(SND_PRED_ID32, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -959,10 +956,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID33,playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound(SND_PRED_ID33, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound(SND_PRED_ID33, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1123,10 +1117,7 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound( playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound( playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//On the rope
 			return ASEQ_CLIMB_ON;
@@ -1257,10 +1248,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID34, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound(SND_PRED_ID34, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound(SND_PRED_ID34, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//On a rope
 			return ASEQ_CLIMB_ON;
@@ -1296,10 +1284,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID35,playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound(SND_PRED_ID35, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound(SND_PRED_ID35, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1409,10 +1394,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			if (playerinfo->isclient)
-				playerinfo->CL_Sound(SND_PRED_ID36, playerinfo->origin, CHAN_VOICE, "player/ropegrab.wav", 0.75, ATTN_NORM, 0);
-			else
-				playerinfo->G_Sound(SND_PRED_ID36, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound(SND_PRED_ID36, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1899,7 +1881,7 @@ int BranchLwrHanging(playerinfo_t *playerinfo)
 int BranchLwrClimbing(playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
-		return(playerinfo->G_BranchLwrClimbing(playerinfo));
+		return(pi.G_BranchLwrClimbing(playerinfo));
 	else
 		return(ASEQ_NONE);
 }
@@ -1981,7 +1963,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			{
 				return ASEQ_WSWORD_DOWNSTAB;
 			}
-			else if(!playerinfo->irand(playerinfo,0, 4))
+			else if(!pi.irand(playerinfo,0, 4))
 			{
 				return(ASEQ_WSWORD_STEP);
 			}
@@ -2073,7 +2055,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
 		return(ASEQ_NONE);
 
-	playerinfo->G_WeapNext(playerinfo->self);
+	pi.G_WeapNext(playerinfo->self);
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
@@ -2097,7 +2079,7 @@ int BranchCheckHellAmmo(playerinfo_t *playerinfo)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
 		return(ASEQ_NONE);
 
-	playerinfo->G_WeapNext(playerinfo->self);
+	pi.G_WeapNext(playerinfo->self);
 	PlayerAnimSetUpperSeq(playerinfo, ASEQ_WHELL_END);
 	return(ASEQ_WHELL_END);
 }
@@ -2149,7 +2131,7 @@ int BranchCheckMana(playerinfo_t *playerinfo)
 	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
 		return(BranchUprReady(playerinfo));
 
-	playerinfo->G_WeapNext(playerinfo->self);
+	pi.G_WeapNext(playerinfo->self);
 
 	return(ASEQ_NONE);
 }
@@ -2171,7 +2153,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 			playerinfo->lowerseq == ASEQ_IDLE_LOOKR ||
 			playerinfo->lowerseq == ASEQ_IDLE_LOOKL)
 		{
-			switch(playerinfo->irand(playerinfo, 0, 6))
+			switch(pi.irand(playerinfo, 0, 6))
 			{
 			case 0:
 				return ASEQ_IDLE_LOOKR;
@@ -2190,13 +2172,13 @@ int BranchIdle(playerinfo_t *playerinfo)
 		else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
 		{
 			// Because the bow doesn't look right in some idles.
-			switch(playerinfo->irand(playerinfo, 0, 10))
+			switch(pi.irand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_WIPE_BROW;
 					break;
 				case 1:
-					if (playerinfo->irand(playerinfo, 0, 1) == 1)
+					if (pi.irand(playerinfo, 0, 1) == 1)
 						return ASEQ_IDLE_SCRATCH_ASS;
 
 					break;
@@ -2211,7 +2193,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 		else if ( (playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) || (playerinfo->pers.weaponready == WEAPON_READY_HELLSTAFF))
 		{
 			// Because the staff doesn't look right in some idles.
-			switch(playerinfo->irand(playerinfo, 0, 10))
+			switch(pi.irand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_FLY1;
@@ -2229,7 +2211,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 		}
 		else
 		{
-			switch(playerinfo->irand(playerinfo, 0, 10))
+			switch(pi.irand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_FLY1;
@@ -2238,7 +2220,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 					return ASEQ_IDLE_FLY2;
 					break;
 				case 2:
-					if (playerinfo->irand(playerinfo, 0, 1) == 1)
+					if (pi.irand(playerinfo, 0, 1) == 1)
 						return ASEQ_IDLE_SCRATCH_ASS;
 
 					break;

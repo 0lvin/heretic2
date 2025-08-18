@@ -35,27 +35,14 @@ void ChickenStepSound(playerinfo_t *playerinfo, float value)
 	{
 		name = (irand(0,1)) ? "monsters/tbeast/step1.wav" : "monsters/tbeast/step2.wav";
 
-		if (playerinfo->isclient)
-		{
-			playerinfo->CL_Sound(SND_PRED_ID46,
-								 playerinfo->origin,
-								 CHAN_WEAPON,
-								 name,
-								 1.0,
-								 ATTN_NORM,
-								 0);
-		}
-		else
-		{
-			playerinfo->G_Sound(SND_PRED_ID46,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_WEAPON,
-								playerinfo->G_SoundIndex(name),
-								1.0,
-								ATTN_NORM,
-								0);
-		}
+		pi.G_Sound(SND_PRED_ID46,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_WEAPON,
+							pi.G_SoundIndex(name),
+							1.0,
+							ATTN_NORM,
+							0);
 	}
 }
 
@@ -76,7 +63,7 @@ void ChickenAssert(playerinfo_t *playerinfo)
 void PlayerChickenBite(playerinfo_t *playerinfo)
 {
 	if (!playerinfo->isclient)
-		playerinfo->G_PlayerActionChickenBite(playerinfo);
+		pi.G_PlayerActionChickenBite(playerinfo);
 }
 
 // ***********************************************************************************************
@@ -86,27 +73,14 @@ void PlayerChickenBite(playerinfo_t *playerinfo)
 
 void PlayerChickenSqueal(playerinfo_t *playerinfo)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(SND_PRED_ID47,
-							 playerinfo->origin,
-							 CHAN_WEAPON,
-							 "",
-							 1.0,
-							 ATTN_NORM,
-							 0);
-	}
-	else
-	{
-		playerinfo->G_Sound(SND_PRED_ID47,
-							playerinfo->leveltime,
-							playerinfo->self,
-							CHAN_WEAPON,
-							playerinfo->G_SoundIndex(""),
-							1.0,
-							ATTN_NORM,
-							0);
-	}
+	pi.G_Sound(SND_PRED_ID47,
+						playerinfo->leveltime,
+						playerinfo->self,
+						CHAN_WEAPON,
+						pi.G_SoundIndex(""),
+						1.0,
+						ATTN_NORM,
+						0);
 }
 
 // ***********************************************************************************************
@@ -128,10 +102,7 @@ void PlayerChickenCluck(playerinfo_t *playerinfo, float force)
 	else
 		soundname = (irand(0,1)) ? "monsters/chicken/cluck1.wav" : "monsters/chicken/cluck2.wav";
 
-	if (playerinfo->isclient)
-		playerinfo->CL_Sound(SND_PRED_ID48,playerinfo->origin, CHAN_WEAPON, soundname, 1.0, ATTN_NORM, 0);
-	else
-		playerinfo->G_Sound(SND_PRED_ID48,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, playerinfo->G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
+	pi.G_Sound(SND_PRED_ID48,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
 }
 
 // ***********************************************************************************************
@@ -151,7 +122,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 
 	if (playerinfo->isclient)
 	{
-		trace = playerinfo->CL_Trace(playerinfo->origin,
+		trace = pi.CL_Trace(playerinfo->origin,
 							 playerinfo->mins,
 							 playerinfo->maxs,
 							 endpos,
@@ -160,7 +131,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	}
 	else
 	{
-		trace = playerinfo->G_Trace(playerinfo->origin,
+		trace = pi.G_Trace(playerinfo->origin,
 								  playerinfo->mins,
 								  playerinfo->maxs,
 								  endpos,
@@ -218,10 +189,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		}
 	}
 
-	if (playerinfo->isclient)
-		playerinfo->CL_Sound(SND_PRED_ID49,playerinfo->origin, CHAN_WEAPON, soundname, 1.0, ATTN_NORM, 0);
-	else
-		playerinfo->G_Sound(SND_PRED_ID49,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, playerinfo->G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
+	pi.G_Sound(SND_PRED_ID49,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
 
 	return ASEQ_FALL;
 }
@@ -242,14 +210,14 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 		playerinfo->velocity[2] += CHICKEN_GLIDE;
 
 		if (!playerinfo->isclient)
-			playerinfo->G_CreateEffect(EFFECT_PRED_ID13,
+			pi.G_CreateEffect(EFFECT_PRED_ID13,
 									   playerinfo->self,
 									   FX_CHICKEN_EXPLODE,
 									   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 									   NULL,
 									   "");
 		else
-			playerinfo->CL_CreateEffect(EFFECT_PRED_ID13,
+			pi.CL_CreateEffect(EFFECT_PRED_ID13,
 										playerinfo->self,
 									    FX_CHICKEN_EXPLODE,
 									    CEF_OWNERS_ORIGIN | CEF_FLAG6,
@@ -274,14 +242,14 @@ void PlayerChickenFlap (playerinfo_t *playerinfo)
 	playerinfo->velocity[2] += CHICKEN_GLIDE;
 
 	if (!playerinfo->isclient)
-		playerinfo->G_CreateEffect(EFFECT_PRED_ID14,
+		pi.G_CreateEffect(EFFECT_PRED_ID14,
 								   playerinfo->self, // jmarshall: believe this is right.
 								   FX_CHICKEN_EXPLODE,
 								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								   NULL,
 								   "");
 	else
-		playerinfo->CL_CreateEffect(EFFECT_PRED_ID14,
+		pi.CL_CreateEffect(EFFECT_PRED_ID14,
 									playerinfo->self,
 								    FX_CHICKEN_EXPLODE,
 								    CEF_OWNERS_ORIGIN | CEF_FLAG6,

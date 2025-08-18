@@ -32,7 +32,6 @@
 #include "../player/library/p_animactor.h"
 #include "../player/library/p_anims.h"
 #include "../player/library/p_ctrl.h"
-#include "../header/p_funcs.h"
 #include "../player/library/p_main.h"
 #include "../common/h2rand.h"
 
@@ -346,100 +345,9 @@ SV_CalcViewOffset(edict_t *ent)
 	VectorCopy(v, ent->client->ps.viewoffset);
 }
 
-extern void Cmd_WeapPrev_f(edict_t *ent);
-extern void Cmd_Use_f(edict_t *ent);
-extern void PrintLocalBuoyInfo(vec3_t org);
-
-
-// ** setup a looping sound on the client
-void
-G_set_looping_sound(edict_t *self, int sound_num)
-{
-	self->s.sound = sound_num;
-	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
-}
-
-static int
-ClientServerRand(playerinfo_t *playerinfo,int mn, int mx)
-{
-	int t;
-
-	if (mn >= mx)
-		return(mn);
-
-	t = (int)(playerinfo->leveltime*10.0f);
-	t = (t>>7)^(t>>10)^(t>>5);
-	t %= (1+mx-mn);
-
-	return(t+mn);
-}
-
 void
 InitPlayerinfo(edict_t *ent)
 {
-	// Client side function callbacks (approximating functionality of server function callbacks).
-
-	ent->client->playerinfo.CL_Sound = NULL;
-	ent->client->playerinfo.CL_Trace = NULL;
-	ent->client->playerinfo.CL_CreateEffect = NULL;
-
-	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
-
-	ent->client->playerinfo.G_L_Sound = G_set_looping_sound;
-	ent->client->playerinfo.G_Sound = G_SoundEvent;
-	ent->client->playerinfo.G_Trace = gi.trace;
-	ent->client->playerinfo.G_CreateEffect = gi.CreateEffectEvent;
-	ent->client->playerinfo.G_RemoveEffects = gi.RemoveEffectsEvent;
-
-	// Server (game) function callbacks that have no client side equivalent.
-
-	ent->client->playerinfo.G_SoundIndex = gi.soundindex;
-	ent->client->playerinfo.G_SoundRemove = G_SoundRemove;
-	ent->client->playerinfo.G_UseTargets = G_UseTargets;
-	ent->client->playerinfo.G_GetEntityStatePtr = G_GetEntityStatePtr;
-	ent->client->playerinfo.G_BranchLwrClimbing = G_BranchLwrClimbing;
-	ent->client->playerinfo.G_PlayerActionCheckRopeGrab = G_PlayerActionCheckRopeGrab;
-	ent->client->playerinfo.G_PlayerClimbingMoveFunc = G_PlayerClimbingMoveFunc;
-	ent->client->playerinfo.G_PlayerActionUsePuzzle = G_PlayerActionUsePuzzle;
-	ent->client->playerinfo.G_PlayerActionCheckPuzzleGrab = G_PlayerActionCheckPuzzleGrab;
-	ent->client->playerinfo.G_PlayerActionTakePuzzle = G_PlayerActionTakePuzzle;
-	ent->client->playerinfo.G_PlayerActionCheckPushPull_Ent = G_PlayerActionCheckPushPull_Ent;
-	ent->client->playerinfo.G_PlayerActionMoveItem = G_PlayerActionMoveItem;
-	ent->client->playerinfo.G_PlayerActionCheckPushButton = G_PlayerActionCheckPushButton;
-	ent->client->playerinfo.G_PlayerActionPushButton = G_PlayerActionPushButton;
-	ent->client->playerinfo.G_PlayerActionCheckPushLever = G_PlayerActionCheckPushLever;
-	ent->client->playerinfo.G_PlayerActionPushLever = G_PlayerActionPushLever;
-	ent->client->playerinfo.G_HandleTeleport = G_HandleTeleport;
-	ent->client->playerinfo.G_PlayerActionShrineEffect = G_PlayerActionShrineEffect;
-	ent->client->playerinfo.G_PlayerActionChickenBite = G_PlayerActionChickenBite;
-	ent->client->playerinfo.G_PlayerFallingDamage = G_PlayerFallingDamage;
-	ent->client->playerinfo.G_PlayerSpellShieldAttack = G_PlayerSpellShieldAttack;
-	ent->client->playerinfo.G_PlayerSpellStopShieldAttack = G_PlayerSpellStopShieldAttack;
-	ent->client->playerinfo.G_PlayerVaultKick = G_PlayerVaultKick;
-	ent->client->playerinfo.G_PlayerActionCheckRopeMove = G_PlayerActionCheckRopeMove;
-	ent->client->playerinfo.G_cprintf = G_CPrintf;
-	ent->client->playerinfo.G_WeapNext = Cmd_WeapPrev_f;
-	ent->client->playerinfo.G_UseItem = Cmd_Use_f;
-
-	// Common client & server (game) function callbacks.
-
-	ent->client->playerinfo.PointContents = gi.pointcontents;
-	ent->client->playerinfo.SetJointAngles = G_SetJointAngles;
-	ent->client->playerinfo.ResetJointAngles = G_ResetJointAngles;
-	ent->client->playerinfo.PlayerActionSwordAttack = G_PlayerActionSwordAttack;
-	ent->client->playerinfo.PlayerActionSpellFireball = WeaponThink_FlyingFist;
-	ent->client->playerinfo.PlayerActionSpellBlast = WeaponThink_Blast;
-	ent->client->playerinfo.PlayerActionSpellArray = G_PlayerActionSpellArray;
-	ent->client->playerinfo.PlayerActionSpellSphereCreate = G_PlayerActionSpellSphereCreate;
-	ent->client->playerinfo.PlayerActionSpellBigBall = WeaponThink_Maceballs;
-	ent->client->playerinfo.PlayerActionSpellFirewall = WeaponThink_Firewall;
-	ent->client->playerinfo.PlayerActionRedRainBowAttack = WeaponThink_RedRainBow;
-	ent->client->playerinfo.PlayerActionPhoenixBowAttack = WeaponThink_PhoenixBow;
-	ent->client->playerinfo.PlayerActionHellstaffAttack = WeaponThink_HellStaff;
-	ent->client->playerinfo.PlayerActionSpellDefensive = G_PlayerActionSpellDefensive;
-	ent->client->playerinfo.G_EntIsAButton = G_EntIsAButton;
-	ent->client->playerinfo.irand = ClientServerRand;
-
 	// So we know we are server (game) side.
 
 	ent->client->playerinfo.isclient = false;

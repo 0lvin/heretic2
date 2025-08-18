@@ -124,7 +124,7 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 	// Straighten out joints, i.e. reset torso twisting.
 
 	if (!(playerinfo->edictflags&FL_CHICKEN))
-		playerinfo->ResetJointAngles(playerinfo->self);
+		pi.ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
 }
@@ -156,7 +156,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	// Straighten out joints, i.e. no torso aiming.
 
 	if (!(playerinfo->edictflags&FL_CHICKEN))
-		playerinfo->ResetJointAngles(playerinfo->self);
+		pi.ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
 }
@@ -249,7 +249,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			{
 				// Only certain idle should be called out of here.
 
-				switch(playerinfo->irand(playerinfo, 0, 3))
+				switch(pi.irand(playerinfo, 0, 3))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_LOOKL);
@@ -273,7 +273,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			{
 				// Because the bow doesn't look right in some idles.
 
-				switch(playerinfo->irand(playerinfo, 0, 2))
+				switch(pi.irand(playerinfo, 0, 2))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_SCRATCH_ASS);
@@ -290,7 +290,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			{
 				// Because the staff doesn't look right in some idles.
 
-				switch(playerinfo->irand(playerinfo, 0, 3))
+				switch(pi.irand(playerinfo, 0, 3))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_FLY1);
@@ -308,7 +308,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			}
 			else
 			{
-				switch(playerinfo->irand(playerinfo, 0, 6))
+				switch(pi.irand(playerinfo, 0, 6))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_FLY1);
@@ -484,77 +484,38 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 {
 	int chance = irand(0,100);
 
-	if (playerinfo->isclient)
+	if (!(playerinfo->edictflags & FL_CHICKEN))
 	{
-		if (!(playerinfo->edictflags & FL_CHICKEN))
-		{	// Chicken plays no pain sound.
-			switch (type)
-			{
-				// Normal.
-
-				case 0:
-					if (chance < 50)
-						playerinfo->CL_Sound(SND_PRED_ID40,playerinfo->origin, CHAN_VOICE, "*pain1.wav", 1.0,	ATTN_NORM, 0);
-					else
-						playerinfo->CL_Sound(SND_PRED_ID41,playerinfo->origin, CHAN_VOICE, "*pain2.wav", 1.0, ATTN_NORM, 0);
-
-					break;
-
-				// Gas.
-
-				case 1:
-					if (chance < 33)
-						playerinfo->CL_Sound(SND_PRED_ID42,playerinfo->origin, CHAN_VOICE, "*cough1.wav", 1.0,	ATTN_NORM, 0);
-					else if (chance < 66)
-						playerinfo->CL_Sound(SND_PRED_ID43,playerinfo->origin, CHAN_VOICE, "*cough2.wav", 1.0, ATTN_NORM, 0);
-					else
-						playerinfo->CL_Sound(SND_PRED_ID44,playerinfo->origin, CHAN_VOICE, "*cough3.wav", 1.0, ATTN_NORM, 0);
-
-					break;
-
-				// Small
-
-				case 2:
-					playerinfo->CL_Sound(SND_PRED_ID45,playerinfo->origin, CHAN_VOICE, "*ow.wav", 1.0, ATTN_NORM, 0);
-					break;
-			}
-		}
-	}
-	else
-	{
-		if (!(playerinfo->edictflags & FL_CHICKEN))
+		// Chicken plays no pain sound.
+		switch (type)
 		{
-			// Chicken plays no pain sound.
-			switch (type)
-			{
-				// Normal.
+			// Normal.
 
-				case 0:
-					if (chance < 50)
-						playerinfo->G_Sound(SND_PRED_ID40,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
-					else
-						playerinfo->G_Sound(SND_PRED_ID41,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
+			case 0:
+				if (chance < 50)
+					pi.G_Sound(SND_PRED_ID40,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
+				else
+					pi.G_Sound(SND_PRED_ID41,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
 
-					break;
+				break;
 
-				// Gas.
+			// Gas.
 
-				case 1:
-					if (chance < 33)
-						playerinfo->G_Sound(SND_PRED_ID42,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
-					else if (chance < 66)
-						playerinfo->G_Sound(SND_PRED_ID43,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);
-					else
-						playerinfo->G_Sound(SND_PRED_ID44,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*cough3.wav"), 1.0, ATTN_NORM, 0);
+			case 1:
+				if (chance < 33)
+					pi.G_Sound(SND_PRED_ID42,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
+				else if (chance < 66)
+					pi.G_Sound(SND_PRED_ID43,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);
+				else
+					pi.G_Sound(SND_PRED_ID44,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough3.wav"), 1.0, ATTN_NORM, 0);
 
-					break;
+				break;
 
-				// Small.
+			// Small.
 
-				case 2:
-					playerinfo->G_Sound(SND_PRED_ID45,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*ow.wav"), 1.0, ATTN_NORM, 0);
-					break;
-			}
+			case 2:
+				pi.G_Sound(SND_PRED_ID45,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*ow.wav"), 1.0, ATTN_NORM, 0);
+				break;
 		}
 	}
 }

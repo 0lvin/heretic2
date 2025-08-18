@@ -8,7 +8,6 @@
 //
 
 #include "../header/local.h"
-#include "../header/p_funcs.h"
 #include "../player/library/p_animactor.h"
 #include "../player/library/p_anims.h"
 #include "../player/library/p_ctrl.h"
@@ -30,27 +29,14 @@ entity_state_t *G_GetEntityStatePtr(edict_t *entity)
 
 void PlayerClimbSound(playerinfo_t *playerinfo, char *name)
 {
-	if (playerinfo->isclient)
-	{
-		playerinfo->CL_Sound(	SND_PRED_ID53,
-								playerinfo->origin,
-								CHAN_VOICE,
-								name,
-								0.75,
-								ATTN_NORM,
-								0);
-	}
-	else
-	{
-		playerinfo->G_Sound(	SND_PRED_ID53,
-								playerinfo->leveltime,
-								(edict_t *)playerinfo->self,
-								CHAN_VOICE,
-								playerinfo->G_SoundIndex(name),
-								0.75,
-								ATTN_NORM,
-								0);
-	}
+	G_SoundEvent(SND_PRED_ID53,
+				playerinfo->leveltime,
+				(edict_t *)playerinfo->self,
+				CHAN_VOICE,
+				gi.soundindex(name),
+				0.75,
+				ATTN_NORM,
+				0);
 }
 
 // ************************************************************************************************
@@ -251,7 +237,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		VectorCopy(playerinfo->mins, playermin);
 		VectorCopy(playerinfo->maxs, playermax);
 
-		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
+		trace = gi.trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0)
 		{
@@ -354,7 +340,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		VectorCopy(playerinfo->mins, playermin);
 		VectorCopy(playerinfo->maxs, playermax);
 
-		trace = playerinfo->G_Trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
+		trace = gi.trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0 || trace.endpos[2] < (playerinfo->self)->teamchain->target_ent->s.origin[2])
 		{
@@ -578,7 +564,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 		}
 		else
 		{
-			trace = playerinfo->G_Trace(playerinfo->origin,
+			trace = gi.trace(playerinfo->origin,
 									  playerinfo->mins,
 									  playerinfo->maxs,
 									  ((edict_t *)playerinfo->targetEnt)->teamchain->s.origin,
@@ -1309,7 +1295,7 @@ void G_PlayerActionSpellDefensive(edict_t *self)
 		if ((Defence_CurrentShotsLeft(&(self->client->playerinfo), 1) <=0)
 			&& self->client->playerinfo.pers.inventory[index])
 		{
-			self->client->playerinfo.G_UseItem(self);
+			Cmd_Use_f(self);
 		}
 	}
 }

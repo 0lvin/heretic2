@@ -1511,6 +1511,8 @@ void ClientThink(edict_t *ent, usercmd_t *cmd);
 qboolean CheckFlood(edict_t *ent);
 void Cmd_Help_f(edict_t *ent);
 void ClientCommand(edict_t *ent);
+void Cmd_WeapPrev_f(edict_t *ent);
+void Cmd_Use_f(edict_t *ent);
 
 /* g_items.c */
 void droptofloor(edict_t *ent);
@@ -2076,75 +2078,6 @@ typedef struct
 
 typedef struct playerinfo_s
 {
-	// ********************************************************************************************
-	// Inputs only.
-	// ********************************************************************************************
-
-	// Client side function callbacks (approximating functionality of server function callbacks).
-
-	void (*CL_Sound)(byte EventId,vec3_t origin,int channel,char *soundname,float fvol,int attenuation,float timeofs);
-	trace_t (*CL_Trace)(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,int brushmask,int flags);
-	int (*CL_CreateEffect)(byte EventId,void *owner,unsigned short type,int flags,vec3_t position,char *format,...);
-	void (*CL_RemoveEffects)(byte EventId,void *owner,int fx);
-
-	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
-
-	void (*G_L_Sound)(edict_t *entity,int sound_num);
-	void (*G_Sound)(byte EventId,float leveltime, edict_t *entity,int channel,int sound_num,float volume,float attenuation,float timeofs);
-	trace_t (*G_Trace)(const vec3_t start, const vec3_t mins, const vec3_t maxs,
-			const vec3_t end, const edict_t *passent, int contentmask);
-	void (*G_CreateEffect)(byte EventId, edict_t *state, int type, int flags, vec3_t origin, char *format,...);
-	void (*G_RemoveEffects)(byte Eventid, edict_t *state, int type);
-
-	// Server (game) function callbacks that have no client side equivalent.
-
-	int (*G_SoundIndex)(const char *name);
-	void (*G_SoundRemove)(char *name);
-	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
-	entity_state_t *(*G_GetEntityStatePtr)(edict_t *entity);
-	int (*G_BranchLwrClimbing)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionCheckRopeGrab)(playerinfo_t *playerinfo, float stomp_org);
-	void (*G_PlayerClimbingMoveFunc)(playerinfo_t *playerinfo, float height, float var2, float var3);
-	qboolean (*G_PlayerActionCheckPuzzleGrab)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionTakePuzzle)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionUsePuzzle)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionCheckPushPull_Ent)(edict_t *ent);
-	void (*G_PlayerActionMoveItem)(playerinfo_t *playerinfo,float distance);
-	qboolean (*G_PlayerActionCheckPushButton)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionPushButton)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionCheckPushLever)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionPushLever)(playerinfo_t *playerinfo);
-	qboolean (*G_HandleTeleport)(edict_t *self);
-	void (*G_PlayerActionShrineEffect)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionChickenBite)(playerinfo_t *playerinfo);
-	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo,float delta);
-	void (*G_PlayerSpellShieldAttack)(edict_t *self);
-	void (*G_PlayerSpellStopShieldAttack)(edict_t *self);
-	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
-	void (*G_cprintf)(edict_t *ent, int printlevel, short stringid);
-	void (*G_WeapNext)(edict_t *ent);
-	void (*G_UseItem)(edict_t *ent);
-
-	// Common client & server (game) function callbacks.
-
-	int (*PointContents)(vec3_t point);
-	void (*SetJointAngles)(edict_t *self);
-	void (*ResetJointAngles)(edict_t *self);
-	void (*PlayerActionSwordAttack)(edict_t *self, int value);
-	void (*PlayerActionSpellFireball)(edict_t *self);
-	void (*PlayerActionSpellBlast)(edict_t *self);
-	void (*PlayerActionSpellArray)(edict_t *self, int value);
-	void (*PlayerActionSpellSphereCreate)(edict_t *self, qboolean *Charging);
-	void (*PlayerActionSpellFirewall)(edict_t *self);
-	void (*PlayerActionSpellBigBall)(edict_t *self);
-	void (*PlayerActionRedRainBowAttack)(edict_t *self);
-	void (*PlayerActionPhoenixBowAttack)(edict_t *self);
-	void (*PlayerActionHellstaffAttack)(edict_t *self);
-	void (*PlayerActionSpellDefensive)(edict_t *self);
-	qboolean (*G_EntIsAButton)(edict_t *ent);
-	int (*irand)(playerinfo_t *playerinfo,int mn,int mx);
-
 	// Indicates whether this playerinfo_t is held on the client or server.
 
 	qboolean			isclient;
@@ -2350,6 +2283,40 @@ typedef struct
 	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
 } player_export_t;
 
+// p_funcs
+extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);
+extern entity_state_t *G_GetEntityStatePtr(edict_t *entity);
+extern int G_BranchLwrClimbing(playerinfo_t *playerinfo);
+extern qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org);
+extern void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, float var3);
+extern qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo);
+extern void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo);
+extern qboolean G_PlayerActionUsePuzzle(playerinfo_t *playerinfo);
+extern qboolean G_PlayerActionCheckPushPull_Ent(edict_t *ent);
+extern void PushPull_stop(edict_t *self);
+extern void G_PlayerActionMoveItem(playerinfo_t *playerinfo,float distance);
+extern qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo);
+extern void G_PlayerActionPushButton(playerinfo_t *playerinfo);
+extern qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo);
+extern void G_PlayerActionPushLever(playerinfo_t *playerinfo);
+extern qboolean G_HandleTeleport(edict_t *self);
+extern void G_SetJointAngles(edict_t *self);
+extern void G_ResetJointAngles(edict_t *self);
+extern void G_PlayerActionChickenBite(playerinfo_t *playerinfo);
+extern void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta);
+extern void G_PlayerActionSwordAttack(edict_t *self, int value);
+extern void G_PlayerActionSpellArray(edict_t *self, int value);
+extern void G_PlayerActionSpellSphereCreate(edict_t *self, qboolean *Charging);
+extern void G_PlayerActionSpellDefensive(edict_t *self);
+extern void G_PlayerActionChickenBite(playerinfo_t *playerinfo);
+extern void G_PlayerSpellShieldAttack(edict_t *self);
+extern void G_PlayerSpellStopShieldAttack(edict_t *self);
+extern void G_PlayerVaultKick(playerinfo_t *playerinfo);
+extern void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo);
+extern qboolean G_EntIsAButton(edict_t *ent);
+void Updatefmnodeinfo(edict_t *ent);
+void Setfmnodeinfo(edict_t *ent);
+
 typedef struct
 {
 	void (*dprintf)(const char *fmt, ...);
@@ -2358,6 +2325,73 @@ typedef struct
 	void (*Weapon_Ready)(playerinfo_t *playerinfo, gitem_t *Weapon);
 	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
 	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
+	// ********************************************************************************************
+	// Inputs only.
+	// ********************************************************************************************
+
+	// Client side function callbacks (approximating functionality of server function callbacks).
+
+	trace_t (*CL_Trace)(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,int brushmask,int flags);
+	int (*CL_CreateEffect)(byte EventId,void *owner,unsigned short type,int flags,vec3_t position,char *format,...);
+	void (*CL_RemoveEffects)(byte EventId,void *owner,int fx);
+
+	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
+
+	void (*G_L_Sound)(edict_t *entity,int sound_num);
+	void (*G_Sound)(byte EventId,float leveltime, edict_t *entity,int channel,int sound_num,float volume,float attenuation,float timeofs);
+	trace_t (*G_Trace)(const vec3_t start, const vec3_t mins, const vec3_t maxs,
+			const vec3_t end, const edict_t *passent, int contentmask);
+	void (*G_CreateEffect)(byte EventId, edict_t *state, int type, int flags, vec3_t origin, char *format,...);
+	void (*G_RemoveEffects)(byte Eventid, edict_t *state, int type);
+
+	// Server (game) function callbacks that have no client side equivalent.
+
+	int (*G_SoundIndex)(const char *name);
+	void (*G_SoundRemove)(char *name);
+	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
+	entity_state_t *(*G_GetEntityStatePtr)(edict_t *entity);
+	int (*G_BranchLwrClimbing)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionCheckRopeGrab)(playerinfo_t *playerinfo, float stomp_org);
+	void (*G_PlayerClimbingMoveFunc)(playerinfo_t *playerinfo, float height, float var2, float var3);
+	qboolean (*G_PlayerActionCheckPuzzleGrab)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionTakePuzzle)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionUsePuzzle)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionCheckPushPull_Ent)(edict_t *ent);
+	void (*G_PlayerActionMoveItem)(playerinfo_t *playerinfo,float distance);
+	qboolean (*G_PlayerActionCheckPushButton)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionPushButton)(playerinfo_t *playerinfo);
+	qboolean (*G_PlayerActionCheckPushLever)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionPushLever)(playerinfo_t *playerinfo);
+	qboolean (*G_HandleTeleport)(edict_t *self);
+	void (*G_PlayerActionShrineEffect)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionChickenBite)(playerinfo_t *playerinfo);
+	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo,float delta);
+	void (*G_PlayerSpellShieldAttack)(edict_t *self);
+	void (*G_PlayerSpellStopShieldAttack)(edict_t *self);
+	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
+	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
+	void (*G_cprintf)(edict_t *ent, int printlevel, short stringid);
+	void (*G_WeapNext)(edict_t *ent);
+	void (*G_UseItem)(edict_t *ent);
+
+	// Common client & server (game) function callbacks.
+
+	int (*PointContents)(vec3_t point);
+	void (*SetJointAngles)(edict_t *self);
+	void (*ResetJointAngles)(edict_t *self);
+	void (*PlayerActionSwordAttack)(edict_t *self, int value);
+	void (*PlayerActionSpellFireball)(edict_t *self);
+	void (*PlayerActionSpellBlast)(edict_t *self);
+	void (*PlayerActionSpellArray)(edict_t *self, int value);
+	void (*PlayerActionSpellSphereCreate)(edict_t *self, qboolean *Charging);
+	void (*PlayerActionSpellFirewall)(edict_t *self);
+	void (*PlayerActionSpellBigBall)(edict_t *self);
+	void (*PlayerActionRedRainBowAttack)(edict_t *self);
+	void (*PlayerActionPhoenixBowAttack)(edict_t *self);
+	void (*PlayerActionHellstaffAttack)(edict_t *self);
+	void (*PlayerActionSpellDefensive)(edict_t *self);
+	qboolean (*G_EntIsAButton)(edict_t *ent);
+	int (*irand)(playerinfo_t *playerinfo,int mn,int mx);
 } player_import_t;
 
 extern player_import_t pi;

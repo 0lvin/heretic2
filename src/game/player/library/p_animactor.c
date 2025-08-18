@@ -176,11 +176,11 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			if (playerinfo->effects)
 			{
 				if (!playerinfo->isclient)
-					playerinfo->G_RemoveEffects(EFFECT_PRED_ID26,
+					pi.G_RemoveEffects(EFFECT_PRED_ID26,
 												playerinfo->self,
 												FX_SPELLHANDS);
 				else
-					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID26,
+					pi.CL_RemoveEffects(EFFECT_PRED_ID26,
 												 playerinfo->self,
 												 FX_SPELLHANDS);
 			}
@@ -192,11 +192,11 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			if (playerinfo->effects)
 			{
 				if (!playerinfo->isclient)
-					playerinfo->G_RemoveEffects(EFFECT_PRED_ID27,
+					pi.G_RemoveEffects(EFFECT_PRED_ID27,
 												playerinfo->self,
 												FX_WEAPON_REDRAINGLOW);
 				else
-					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID27,
+					pi.CL_RemoveEffects(EFFECT_PRED_ID27,
 												playerinfo->self,
 												FX_WEAPON_REDRAINGLOW);
 			}
@@ -209,11 +209,11 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			if (playerinfo->effects)
 			{
 				if (!playerinfo->isclient)
-					playerinfo->G_RemoveEffects(EFFECT_PRED_ID28,
+					pi.G_RemoveEffects(EFFECT_PRED_ID28,
 												playerinfo->self,
 												FX_FIREHANDS);
 				else
-					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID28,
+					pi.CL_RemoveEffects(EFFECT_PRED_ID28,
 												 playerinfo->self,
 												 FX_FIREHANDS);
 			}
@@ -226,11 +226,11 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			if (playerinfo->effects)
 			{
 				if (!playerinfo->isclient)
-					playerinfo->G_RemoveEffects(EFFECT_PRED_ID29,
+					pi.G_RemoveEffects(EFFECT_PRED_ID29,
 												playerinfo->self,
 												FX_STAFF);
 				else
-					playerinfo->CL_RemoveEffects(EFFECT_PRED_ID29,
+					pi.CL_RemoveEffects(EFFECT_PRED_ID29,
 												 playerinfo->self,
 												 FX_STAFF);
 
@@ -275,7 +275,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	// Handle teleporting (and chicken morphing) only on game side.
 	if (!playerinfo->isclient)
 	{
-		if (playerinfo->G_HandleTeleport(playerinfo->self))
+		if (pi.G_HandleTeleport(playerinfo->self))
 		{
 			return;
 		}
@@ -334,27 +334,14 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 4;
 		playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-		if (playerinfo->isclient)
-		{
-			playerinfo->CL_Sound(SND_PRED_ID37,
-								 playerinfo->origin,
-									CHAN_VOICE,
-									"player/ropegrab.wav",
-									0.75,
-									ATTN_NORM,
-									0);
-		}
-		else
-		{
-			playerinfo->G_Sound(SND_PRED_ID37,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_VOICE,
-								playerinfo->G_SoundIndex("player/ropegrab.wav"),
-								0.75,
-								ATTN_NORM,
-								0);
-		}
+		pi.G_Sound(SND_PRED_ID37,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_VOICE,
+							pi.G_SoundIndex("player/ropegrab.wav"),
+							0.75,
+							ATTN_NORM,
+							0);
 
 		PlayerAnimSetLowerSeq(playerinfo, ASEQ_CLIMB_ON);
 	}
@@ -371,10 +358,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		{
 			if (playerinfo->velocity[2] < PLAYER_SCREAM_THRESHOLD)
 			{
-				if (playerinfo->isclient)
-					playerinfo->CL_Sound(playerinfo->origin, CHAN_VOICE, "player/falldeath1.wav", 0.75, ATTN_NORM, 0);
-				else
-					playerinfo->G_Sound(playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("player/falldeath1.wav"), 0.75, ATTN_NORM, 0);
+				pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/falldeath1.wav"), 0.75, ATTN_NORM, 0);
 			}
 		}
 		*/
@@ -404,10 +388,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 								playerinfo->upvel += 225;
 								PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-								if (playerinfo->isclient)
-									playerinfo->CL_Sound(SND_PRED_ID38,playerinfo->origin, CHAN_VOICE, "*offwall.wav", 0.75, ATTN_NORM, 0);
-								else
-									playerinfo->G_Sound(SND_PRED_ID38,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
+								pi.G_Sound(SND_PRED_ID38,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
 								return;
 							}
 						}
@@ -464,10 +445,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 						playerinfo->upvel += 225;
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-						if (playerinfo->isclient)
-							playerinfo->CL_Sound(SND_PRED_ID39,playerinfo->origin, CHAN_VOICE, "*offwall.wav", 0.75, ATTN_NORM, 0);
-						else
-							playerinfo->G_Sound(SND_PRED_ID39,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, playerinfo->G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
+						pi.G_Sound(SND_PRED_ID39,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
 					}
 					else if (PlayerSeqData2[playerinfo->lowerseq].collideseq != ASEQ_NONE)
 					{
@@ -606,7 +584,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	{
 		// Straighten out joints, i.e. no torso aiming.
 
-		playerinfo->ResetJointAngles(playerinfo->self);
+		pi.ResetJointAngles(playerinfo->self);
 
 		playerinfo->swapFrame = playerinfo->frame;
 
@@ -690,7 +668,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			{
 				// Straighten out joints, i.e. no torso aiming.
 
-				playerinfo->ResetJointAngles(playerinfo->self);
+				pi.ResetJointAngles(playerinfo->self);
 
 				return;
 			}
@@ -721,7 +699,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 
 		// Now set joints in motion.
 
-		playerinfo->SetJointAngles(playerinfo->self);
+		pi.SetJointAngles(playerinfo->self);
 	}
 }
 
@@ -740,7 +718,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		endpos[2]+=playerinfo->mins[2];
 
 		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
-		   (playerinfo->PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
+		   (pi.PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
 		   (playerinfo->waterlevel==1))
 		{
 			PlayerIntLand(playerinfo,delta);
@@ -782,14 +760,14 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		// Unimplemented.
 
 		if (!playerinfo->isclient)
-			playerinfo->G_CreateEffect(EFFECT_PRED_ID11,
+			pi.G_CreateEffect(EFFECT_PRED_ID11,
 									   playerinfo->self,
 									   FX_FOOTSTEP,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,
 									   "");
 		else
-			playerinfo->CL_CreateEffect(EFFECT_PRED_ID11,
+			pi.CL_CreateEffect(EFFECT_PRED_ID11,
 										playerinfo->self,
 										FX_FOOTSTEP,
 										CEF_OWNERS_ORIGIN,
@@ -804,21 +782,21 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		// Apply damage to player entity if we are running server (game) side.
 
 		if (!playerinfo->isclient)
-			playerinfo->G_PlayerFallingDamage(playerinfo,delta);
+			pi.G_PlayerFallingDamage(playerinfo,delta);
 	}
 	else
 	{
 		// Unimplemented.
 
 		if (!playerinfo->isclient)
-			playerinfo->G_CreateEffect(EFFECT_PRED_ID12,
+			pi.G_CreateEffect(EFFECT_PRED_ID12,
 									   playerinfo->self,
 									   FX_FALLSHORT,
 									   CEF_OWNERS_ORIGIN,
 									   playerinfo->origin,
 									   "");
 		else
-			playerinfo->CL_CreateEffect(EFFECT_PRED_ID12,
+			pi.CL_CreateEffect(EFFECT_PRED_ID12,
 										playerinfo->self,
 										FX_FALLSHORT,
 										CEF_OWNERS_ORIGIN,

@@ -4583,7 +4583,7 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 	{
 		if (playerinfo->pers.inventory[ITEM_INDEX(FindItem(Weapon->ammo))] < Weapon->quantity)
 		{
-			playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOMANA);
+			G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOMANA);
 			return;
 		}
 	}
@@ -4626,7 +4626,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 
     if(!playerinfo->pers.inventory[AmmoIndex])
 	{
-		playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
+		G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
 	}
 
@@ -4671,7 +4671,7 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 
     if(!playerinfo->pers.inventory[AmmoIndex])
 	{
-		playerinfo->G_cprintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
+		G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
 	}
 

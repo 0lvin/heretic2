@@ -189,52 +189,26 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	if (material)
 	{
-		if (playerinfo->isclient)
-		{
-			playerinfo->CL_Sound(SND_PRED_ID51,
-								 playerinfo->origin,
-								 CHAN_VOICE,
-								 LandSound,
-								 1,
-								 ATTN_NORM,
-								 0);
-		}
-		else
-		{
-			playerinfo->G_Sound(SND_PRED_ID51,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_VOICE,
-								playerinfo->G_SoundIndex(LandSound),
-								1,
-								ATTN_NORM,
-								0);
-		}
+		pi.G_Sound(SND_PRED_ID51,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_VOICE,
+							pi.G_SoundIndex(LandSound),
+							1,
+							ATTN_NORM,
+							0);
 	}
 
 	if (hardfall)
 	{	// Grunt.
-		if (playerinfo->isclient)
-		{
-			playerinfo->CL_Sound(SND_PRED_ID52,
-								 playerinfo->origin,
-								 CHAN_BODY,
-								 "*fall.wav",
-								 1,
-								 ATTN_NORM,
-								 0);
-		}
-		else
-		{
-			playerinfo->G_Sound(SND_PRED_ID52,
-								playerinfo->leveltime,
-								playerinfo->self,
-								CHAN_BODY,
-								playerinfo->G_SoundIndex("*fall.wav"),
-								1,
-								ATTN_NORM,
-								0);
-		}
+		pi.G_Sound(SND_PRED_ID52,
+							playerinfo->leveltime,
+							playerinfo->self,
+							CHAN_BODY,
+							pi.G_SoundIndex("*fall.wav"),
+							1,
+							ATTN_NORM,
+							0);
 	}
 
 	playerinfo->flags &= ~ PLAYER_FLAG_FALLING;
@@ -245,7 +219,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 	{
 		if (!playerinfo->isclient)
 		{
-			playerinfo->G_CreateEffect(
+			pi.G_CreateEffect(
 				EFFECT_PRED_ID15,
 				playerinfo->self,
 				FX_DUST_PUFF,
@@ -255,7 +229,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		}
 		else
 		{
-			playerinfo->CL_CreateEffect(
+			pi.CL_CreateEffect(
 				EFFECT_PRED_ID15,
 				playerinfo->self,
 				FX_DUST_PUFF,

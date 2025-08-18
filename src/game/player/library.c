@@ -53,6 +53,29 @@ void P_Freelib()
 	player_library = NULL;
 }
 
+// ** setup a looping sound on the client
+static void
+G_set_looping_sound(edict_t *self, int sound_num)
+{
+	self->s.sound = sound_num;
+	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
+}
+
+static int
+ClientServerRand(playerinfo_t *playerinfo,int mn, int mx)
+{
+	int t;
+
+	if (mn >= mx)
+		return(mn);
+
+	t = (int)(playerinfo->leveltime*10.0f);
+	t = (t>>7)^(t>>10)^(t>>5);
+	t %= (1+mx-mn);
+
+	return(t+mn);
+}
+
 // ************************************************************************************************
 // P_Load
 // ------
@@ -172,6 +195,68 @@ P_Load(void)
 	playerImport.Weapon_CurrentShotsLeft = Weapon_CurrentShotsLeft;
 	playerImport.Defence_CurrentShotsLeft = Defence_CurrentShotsLeft;
 	playerImport.FindItem = FindItem;
+	// Client side function callbacks (approximating functionality of server function callbacks).
+
+	playerImport.CL_Trace = NULL;
+	playerImport.CL_CreateEffect = NULL;
+
+	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
+
+	playerImport.G_L_Sound = G_set_looping_sound;
+	playerImport.G_Sound = G_SoundEvent;
+	playerImport.G_Trace = gi.trace;
+	playerImport.G_CreateEffect = gi.CreateEffectEvent;
+	playerImport.G_RemoveEffects = gi.RemoveEffectsEvent;
+
+	// Server (game) function callbacks that have no client side equivalent.
+
+	playerImport.G_SoundIndex = gi.soundindex;
+	playerImport.G_SoundRemove = G_SoundRemove;
+	playerImport.G_UseTargets = G_UseTargets;
+	playerImport.G_GetEntityStatePtr = G_GetEntityStatePtr;
+	playerImport.G_BranchLwrClimbing = G_BranchLwrClimbing;
+	playerImport.G_PlayerActionCheckRopeGrab = G_PlayerActionCheckRopeGrab;
+	playerImport.G_PlayerClimbingMoveFunc = G_PlayerClimbingMoveFunc;
+	playerImport.G_PlayerActionUsePuzzle = G_PlayerActionUsePuzzle;
+	playerImport.G_PlayerActionCheckPuzzleGrab = G_PlayerActionCheckPuzzleGrab;
+	playerImport.G_PlayerActionTakePuzzle = G_PlayerActionTakePuzzle;
+	playerImport.G_PlayerActionCheckPushPull_Ent = G_PlayerActionCheckPushPull_Ent;
+	playerImport.G_PlayerActionMoveItem = G_PlayerActionMoveItem;
+	playerImport.G_PlayerActionCheckPushButton = G_PlayerActionCheckPushButton;
+	playerImport.G_PlayerActionPushButton = G_PlayerActionPushButton;
+	playerImport.G_PlayerActionCheckPushLever = G_PlayerActionCheckPushLever;
+	playerImport.G_PlayerActionPushLever = G_PlayerActionPushLever;
+	playerImport.G_HandleTeleport = G_HandleTeleport;
+	playerImport.G_PlayerActionShrineEffect = G_PlayerActionShrineEffect;
+	playerImport.G_PlayerActionChickenBite = G_PlayerActionChickenBite;
+	playerImport.G_PlayerFallingDamage = G_PlayerFallingDamage;
+	playerImport.G_PlayerSpellShieldAttack = G_PlayerSpellShieldAttack;
+	playerImport.G_PlayerSpellStopShieldAttack = G_PlayerSpellStopShieldAttack;
+	playerImport.G_PlayerVaultKick = G_PlayerVaultKick;
+	playerImport.G_PlayerActionCheckRopeMove = G_PlayerActionCheckRopeMove;
+	playerImport.G_cprintf = G_CPrintf;
+	playerImport.G_WeapNext = Cmd_WeapPrev_f;
+	playerImport.G_UseItem = Cmd_Use_f;
+
+	// Common client & server (game) function callbacks.
+
+	playerImport.PointContents = gi.pointcontents;
+	playerImport.SetJointAngles = G_SetJointAngles;
+	playerImport.ResetJointAngles = G_ResetJointAngles;
+	playerImport.PlayerActionSwordAttack = G_PlayerActionSwordAttack;
+	playerImport.PlayerActionSpellFireball = WeaponThink_FlyingFist;
+	playerImport.PlayerActionSpellBlast = WeaponThink_Blast;
+	playerImport.PlayerActionSpellArray = G_PlayerActionSpellArray;
+	playerImport.PlayerActionSpellSphereCreate = G_PlayerActionSpellSphereCreate;
+	playerImport.PlayerActionSpellBigBall = WeaponThink_Maceballs;
+	playerImport.PlayerActionSpellFirewall = WeaponThink_Firewall;
+	playerImport.PlayerActionRedRainBowAttack = WeaponThink_RedRainBow;
+	playerImport.PlayerActionPhoenixBowAttack = WeaponThink_PhoenixBow;
+	playerImport.PlayerActionHellstaffAttack = WeaponThink_HellStaff;
+	playerImport.PlayerActionSpellDefensive = G_PlayerActionSpellDefensive;
+	playerImport.G_EntIsAButton = G_EntIsAButton;
+	playerImport.irand = ClientServerRand;
+
 
 	playerExport = P_GetPlayerAPI(&playerImport);
 	playerExport->Init();
