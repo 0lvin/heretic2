@@ -40,8 +40,6 @@
 #define PUSH_START_OFF 0x02
 #define PUSH_SILENT 0x04
 
-static int windsound;
-
 void trigger_push_active(edict_t *self);
 void hurt_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 		csurface_t *surf /* unused */);

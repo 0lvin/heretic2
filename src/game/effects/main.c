@@ -18,7 +18,6 @@
 
 client_fx_import_t fxi;
 static client_fx_export_t effectsExport;
-static sizebuf_t *fxMsgBuf;
 
 cvar_t	*cl_camera_under_surface;
 cvar_t	*r_farclipdist;
@@ -252,7 +251,7 @@ ParseClientEffects
 */
 
 static void
-ParseEffectsEx(sizebuf_t *msg_read, int num)
+ParseEffects(sizebuf_t *msg_read, int num)
 {
 	int				i;
 	int				flags = 0;
@@ -295,8 +294,8 @@ ParseEffectsEx(sizebuf_t *msg_read, int num)
 
 				if (index >= MAX_EDICTS)
 				{
-					fxi.Com_Error(ERR_DROP, "%s: unexpected entity index %d",
-						__func__, index);
+					fxi.Com_Error(ERR_DROP, "%s: unexpected entity index %d for %d\n",
+						__func__, index, effect);
 					return;
 				}
 
@@ -355,8 +354,6 @@ ParseEffectsEx(sizebuf_t *msg_read, int num)
 
 		last_effect = effect;
 	}
-
-	fxMsgBuf = NULL;
 }
 
 int
@@ -365,14 +362,7 @@ FXGetEffect(centity_t* ent, int flags, char* format, ...)
 	sizebuf_t* msg;
 	va_list args;
 
-	if (!ent)
-	{
-		msg = fxi.net_message;
-	}
-	else
-	{
-		msg = fxMsgBuf;
-	}
+	msg = fxi.net_message;
 
 	va_start(args, format);
 
@@ -423,36 +413,6 @@ FXGetEffect(centity_t* ent, int flags, char* format, ...)
 	}
 
 	return len;
-}
-
-static void
-ParseEffects(centity_t *owner)
-{
-	sizebuf_t		*msg_read;
-	sizebuf_t		tempBuf;
-	EffectsBuffer_t *fxBuf = NULL;
-	int num;
-
-	// Where do we pull the effect from?
-
-	// Effects received as part of entity_state_t from server.
-	fxBuf = &owner->current.clientEffects;
-
-	num = fxBuf->numEffects;
-
-	fxMsgBuf = msg_read = &tempBuf;
-	memset (msg_read, 0, sizeof(*msg_read));
-	msg_read->data = fxBuf->buf;
-	msg_read->cursize = msg_read->maxsize = fxBuf->bufSize;
-
-	ParseEffectsEx(msg_read, num);
-
-	// free the buffer allocated in CL_ParseDelta and passed onto owner->current
-	fxBuf->freeBlock = 0;
-	fxi.TagFree(fxBuf->buf);
-	fxBuf->buf = NULL;
-	fxBuf->numEffects = 0;
-	fxBuf->bufSize = 0;
 }
 
 static entity_t		sv_ents[MAX_ENTITIES];
@@ -736,12 +696,6 @@ AddServerEntities(frame_t *frame)
 			{
 				ent->swapFrame = cent->prev.swapFrame = NO_SWAP_FRAME;
 			}
-
-		}
-
-		if (cent->current.clientEffects.numEffects)
-		{
-			ParseEffects(cent);
 		}
 
 		// Add player's packet_entity_t to refresh list of entity_t's and save the entity_t pointer
@@ -830,13 +784,12 @@ GetFXAPI(client_fx_import_t import)
 	effectsExport.AddEffects = AddEffects;
 
 	// Thirdly (if any independent effects exist).
-	effectsExport.ParseClientEffects = ParseEffectsEx;
+	effectsExport.ParseClientEffects = ParseEffects;
 
 	// Lastly.
 	effectsExport.UpdateEffects = PostRenderUpdate;
 
 	effectsExport.RemoveClientEffects = RemoveEffectsFromCent;
-	fxMsgBuf = NULL;
 
 	return &effectsExport;
 }

@@ -541,7 +541,8 @@ SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_
 
 	for (i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
 	{
-		if (SV_Persistant_Effects[i].inUse && SV_Persistant_Effects[i].needsUpdate && SV_Persistant_Effects[i].entity == NULL)
+		if (SV_Persistant_Effects[i].inUse &&
+			SV_Persistant_Effects[i].needsUpdate)
 		{
 			numUpdatedEffects++;
 		}
@@ -551,7 +552,8 @@ SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, sizebuf_
 
 	for (i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
 	{
-		if (SV_Persistant_Effects[i].inUse && SV_Persistant_Effects[i].needsUpdate && SV_Persistant_Effects[i].entity == NULL)
+		if (SV_Persistant_Effects[i].inUse &&
+			SV_Persistant_Effects[i].needsUpdate)
 		{
 			MSG_WriteData(msg, SV_Persistant_Effects[i].buf, SV_Persistant_Effects[i].data_size);
 			SV_Persistant_Effects[i].needsUpdate = false;
@@ -665,10 +667,6 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 	}
 
 	effect->data_size = msg.cursize;
-	if (ent != NULL)
-	{
-		ent->s.clientEffects.cursize = msg.cursize;
-	}
 
 	va_end(args);
 
@@ -759,11 +757,6 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 	}
 
 	effect->data_size = msg.cursize;
-
-	if (ent != NULL)
-	{
-		ent->s.clientEffects.cursize = msg.cursize;
-	}
 
 	va_end(args);
 }

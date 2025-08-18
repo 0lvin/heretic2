@@ -1237,14 +1237,10 @@ Pickup_Key(edict_t *ent, edict_t *other)
 qboolean
 Pickup_Puzzle(edict_t *ent, edict_t *other)
 {
-	gitem_t	*item;
-
 	if (other->flags & FL_CHICKEN)
 	{
 		return false;
 	}
-
-	item = FindItemByClassname(ent->classname);
 
 	if (!other->client->playerinfo.pers.inventory[ITEM_INDEX(ent->item)])
 	{

@@ -174,28 +174,6 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	VectorCopy(from->origin, to->old_origin);
 	to->number = number;
 
-	if (bits & U_CLIENT_EFFECTS)
-	{
-		int numEffects = MSG_ReadShort(&net_message);
-
-		if (numEffects == -1)
-		{
-			to->clientEffects.bufSize = 0;
-			to->clientEffects.numEffects = 0;
-		}
-		else
-		{
-			to->clientEffects.numEffects = numEffects;
-			to->clientEffects.buf = (byte*)Z_Malloc(ENTITY_FX_BUF_SIZE);
-			to->clientEffects.bufSize = MSG_ReadShort(&net_message);;
-			MSG_ReadData(&net_message, to->clientEffects.buf, to->clientEffects.bufSize);
-		}
-	}
-	else
-	{
-		to->clientEffects.numEffects = 0;
-	}
-
 	if (cls.serverProtocol != PROTOCOL_VERSION)
 	{
 		int i;

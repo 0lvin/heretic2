@@ -2655,7 +2655,6 @@ void
 door_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {
 	edict_t *ent;
-	vec3_t center;
 
 	if (!self)
 	{

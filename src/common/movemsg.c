@@ -240,11 +240,6 @@ DeltaEntityBits(const entity_xstate_t *from,
 		bits |= U_ANGLE3;
 	}
 
-	if (to->clientEffects.numEffects != from->clientEffects.numEffects || to->clientEffects.isPersistant)
-	{
-		bits |= U_CLIENT_EFFECTS;
-	}
-
 	if (to->skinnum != from->skinnum)
 	{
 		if ((unsigned)to->skinnum < 256)
@@ -419,11 +414,6 @@ MSG_DeltaEntity_Size(const entity_xstate_t *from, const entity_xstate_t *to,
 	else
 	{
 		sz++;
-	}
-
-	if (bits & U_CLIENT_EFFECTS)
-	{
-		sz += 2;
 	}
 
 	if (IS_QII97_PROTOCOL(protocol))
@@ -918,20 +908,6 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 	else
 	{
 		MSG_WriteByte(msg, to->number);
-	}
-
-	if (bits & U_CLIENT_EFFECTS)
-	{
-		if (to->clientEffects.buf == NULL || to->clientEffects.numEffects <= 0)
-		{
-			MSG_WriteShort(msg, -1);
-		}
-		else
-		{
-			MSG_WriteShort(msg, to->clientEffects.numEffects);
-			MSG_WriteShort(msg, to->clientEffects.bufSize);
-			MSG_WriteData(msg, to->clientEffects.buf, to->clientEffects.bufSize);
-		}
 	}
 
 	if (IS_QII97_PROTOCOL(protocol))

@@ -1464,7 +1464,6 @@ typedef struct EffectsBuffer_s
 	int		bufSize;
 	int		freeBlock;
 	int		numEffects;
-	int		cursize;
 	// jmarshall
 	qboolean isPersistant;
 	// jmarshall end
