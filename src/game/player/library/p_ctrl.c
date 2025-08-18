@@ -217,25 +217,12 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	if (playerinfo->waterlevel == 0)
 	{
-		if (!playerinfo->isclient)
-		{
-			pi.G_CreateEffect(
-				EFFECT_PRED_ID15,
-				playerinfo->self,
-				FX_DUST_PUFF,
-				CEF_OWNERS_ORIGIN,
-				playerinfo->origin,
-				"");
-		}
-		else
-		{
-			pi.CL_CreateEffect(
-				EFFECT_PRED_ID15,
-				playerinfo->self,
-				FX_DUST_PUFF,
-				CEF_OWNERS_ORIGIN,
-				playerinfo->origin,
-				"");
-		}
+		pi.G_CreateEffect(
+			EFFECT_PRED_ID15,
+			playerinfo->self,
+			FX_DUST_PUFF,
+			CEF_OWNERS_ORIGIN,
+			playerinfo->origin,
+			"");
 	}
 }

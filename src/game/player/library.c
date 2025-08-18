@@ -195,10 +195,6 @@ P_Load(void)
 	playerImport.Weapon_CurrentShotsLeft = Weapon_CurrentShotsLeft;
 	playerImport.Defence_CurrentShotsLeft = Defence_CurrentShotsLeft;
 	playerImport.FindItem = FindItem;
-	// Client side function callbacks (approximating functionality of server function callbacks).
-
-	playerImport.CL_Trace = NULL;
-	playerImport.CL_CreateEffect = NULL;
 
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
 

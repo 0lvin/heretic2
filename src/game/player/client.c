@@ -3270,8 +3270,6 @@ PutClientInServer(edict_t *ent)
 		ent->client->shrine_framenum = level.time + 3.3;
 	}
 
-	InitPlayerinfo(ent);
-
 	SetupPlayerinfo(ent);
 
 	playerExport->PlayerInit(&ent->client->playerinfo,complete_reset);

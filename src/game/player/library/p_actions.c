@@ -214,8 +214,7 @@ void PlayerActionCheckStrafe (playerinfo_t *playerinfo)
 
 void PlayerActionCheckVaultKick (playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerVaultKick(playerinfo);
+	pi.G_PlayerVaultKick(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -242,10 +241,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	if (playerinfo->isclient)
-		trace = pi.CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -255,10 +251,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		if (playerinfo->isclient)
-			trace = pi.CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-		else
-			trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -297,10 +290,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	if (playerinfo->isclient)
-		trace = pi.CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -310,10 +300,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		if (playerinfo->isclient)
-			trace = pi.CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-		else
-			trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -454,7 +441,7 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 		}
 	}
 	else
-	if (!playerinfo->isclient&&!(pi.Weapon_CurrentShotsLeft(playerinfo)))
+	if (!(pi.Weapon_CurrentShotsLeft(playerinfo)))
 		pi.G_WeapNext(playerinfo->self);
 
 }
@@ -863,40 +850,22 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		{
 		case WEAPON_READY_SWORDSTAFF:
 
-			if (!playerinfo->isclient)
-			{
-				pi.G_CreateEffect(EFFECT_PRED_ID3,
-										   playerinfo->self,
-										   FX_STAFF_CREATEPOOF,
-										   CEF_OWNERS_ORIGIN,
-										   NULL,
-										   "");
-			}
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID3,
-											playerinfo->self,
-											FX_STAFF_CREATEPOOF,
-										    CEF_OWNERS_ORIGIN,
-										    NULL,
-										    "");
+			pi.G_CreateEffect(EFFECT_PRED_ID3,
+									   playerinfo->self,
+									   FX_STAFF_CREATEPOOF,
+									   CEF_OWNERS_ORIGIN,
+									   NULL,
+									   "");
 			break;
 
 		case WEAPON_READY_HELLSTAFF:
 
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID4,
-										   playerinfo->self,
-										   FX_STAFF_CREATEPOOF,
-										   CEF_OWNERS_ORIGIN|CEF_FLAG6,
-										   NULL,
-										   "");
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID4,
-											playerinfo->self,
-											FX_STAFF_CREATEPOOF,
-											CEF_OWNERS_ORIGIN|CEF_FLAG6,
-											NULL,
-											"");
+			pi.G_CreateEffect(EFFECT_PRED_ID4,
+									   playerinfo->self,
+									   FX_STAFF_CREATEPOOF,
+									   CEF_OWNERS_ORIGIN|CEF_FLAG6,
+									   NULL,
+									   "");
 
 			break;
 
@@ -937,24 +906,14 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						if (!playerinfo->isclient)
-							pi.G_CreateEffect(EFFECT_PRED_ID5,
-													   NULL,
-													   FX_SPELL_CHANGE,
-													   0,
-													   spawnpoint,
-													   "db",
-													   right,
-													   6);
-						else
-							pi.CL_CreateEffect(EFFECT_PRED_ID5,
-														NULL,
-														FX_SPELL_CHANGE,
-														0,
-														spawnpoint,
-														"db",
-														right,
-														6);
+						pi.G_CreateEffect(EFFECT_PRED_ID5,
+												   NULL,
+												   FX_SPELL_CHANGE,
+												   0,
+												   spawnpoint,
+												   "db",
+												   right,
+												   6);
 					}
 				}
 				else if (weapon->tag == ITEM_WEAPON_PHOENIXBOW)
@@ -984,24 +943,14 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						if (!playerinfo->isclient)
-							pi.G_CreateEffect(EFFECT_PRED_ID6,
-													   NULL,
-													   FX_SPELL_CHANGE,
-													   0,
-													   spawnpoint,
-													   "db",
-													   right,
-													   7);
-						else
-							pi.CL_CreateEffect(EFFECT_PRED_ID6,
-														NULL,
-														FX_SPELL_CHANGE,
-														0,
-														spawnpoint,
-														"db",
-														right,
-														7);
+						pi.G_CreateEffect(EFFECT_PRED_ID6,
+												   NULL,
+												   FX_SPELL_CHANGE,
+												   0,
+												   spawnpoint,
+												   "db",
+												   right,
+												   7);
 					}
 				}
 			}
@@ -1235,10 +1184,7 @@ void PlayerActionRedRainBowTrailStart(playerinfo_t *playerinfo, float value)
 		PlayerSetHandFX(playerinfo, HANDFX_REDRAIN, -1);
 	}
 
-	if (!playerinfo->isclient)
-	{
-		pi.G_L_Sound(playerinfo->self,pi.G_SoundIndex("weapons/bowReady.wav"));
-	}
+	pi.G_L_Sound(playerinfo->self,pi.G_SoundIndex("weapons/bowReady.wav"));
 }
 
 /*-----------------------------------------------
@@ -1258,10 +1204,7 @@ void PlayerActionPhoenixBowTrailStart(playerinfo_t *playerinfo, float value)
 		PlayerSetHandFX(playerinfo, HANDFX_PHOENIX, -1);
 	}
 
-	if (!playerinfo->isclient)
-	{
-		pi.G_L_Sound(playerinfo->self, pi.G_SoundIndex("weapons/PhoenixReady.wav"));
-	}
+	pi.G_L_Sound(playerinfo->self, pi.G_SoundIndex("weapons/PhoenixReady.wav"));
 }
 
 /*-----------------------------------------------
@@ -1518,25 +1461,14 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 		Dir[2]=1.0;
 
 		//
-
-		if (!playerinfo->isclient)
-			pi.G_CreateEffect(EFFECT_PRED_ID9,
-									   NULL,
-									   FX_WATER_ENTRYSPLASH,
-									   0,
-									   Origin,
-									   "bd",
-									   32,
-									   Dir);
-		else
-			pi.CL_CreateEffect(EFFECT_PRED_ID9,
-										NULL,
-										FX_WATER_ENTRYSPLASH,
-										0,
-										Origin,
-										"bd",
-										32,
-										Dir);
+		pi.G_CreateEffect(EFFECT_PRED_ID9,
+								   NULL,
+								   FX_WATER_ENTRYSPLASH,
+								   0,
+								   Origin,
+								   "bd",
+								   32,
+								   Dir);
 	}
 }
 
@@ -1603,10 +1535,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	righthand[2] += v_adjust;
 	VectorMA(righthand, GRAB_HAND_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1627,10 +1556,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	lefthand[2] += v_adjust;
 	VectorMA(lefthand, GRAB_HAND_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1671,10 +1597,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= vertlength;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1698,10 +1621,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= vertlength;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1733,10 +1653,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	playermax[2] = GRAB_HAND_HEIGHT;
 	VectorMA(playerinfo->origin, GRAB_HAND_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1)
 		return 0;
@@ -1754,7 +1671,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	if (grabtrace.plane.normal[2] > 0)
 		return 0;
 
-	if (grabtrace.ent&&!playerinfo->isclient)
+	if (grabtrace.ent)
 	{
 		if (pi.G_EntIsAButton(grabtrace.ent))
 		{
@@ -1790,10 +1707,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 	//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-	if (playerinfo->isclient)
-		lasttrace = pi.CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
-	else
-		lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+	lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		return (false);
@@ -1807,10 +1721,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	AngleVectors(playerinfo->angles, forward, NULL, NULL);
 	VectorMA(playerinfo->origin, 32, forward, endpoint);
 
-	if (playerinfo->isclient)
-		swingtrace = pi.CL_Trace(playerinfo->origin,mins,maxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		swingtrace = pi.G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	swingtrace = pi.G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	//Did we hit a wall underneath?
 	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
@@ -1826,24 +1737,12 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[1] = grabtrace.endpos[1];
 	endpoint[2] = playerinfo->grabloc[2] - v_adjust;
 
-	if (playerinfo->isclient)
-	{
-		grabtrace = pi.CL_Trace(playerinfo->origin,
-							 NULL,
-							 NULL,
-							 endpoint,
-							 MASK_PLAYERSOLID,
-							 CEF_CLIP_TO_WORLD);
-	}
-	else
-	{
-		grabtrace = pi.G_Trace(playerinfo->origin,
-									  NULL,
-									  NULL,
-									  endpoint,
-									  playerinfo->self,
-									  MASK_PLAYERSOLID);
-	}
+	grabtrace = pi.G_Trace(playerinfo->origin,
+								  NULL,
+								  NULL,
+								  endpoint,
+								  playerinfo->self,
+								  MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1.0)
 	{
@@ -1967,16 +1866,7 @@ void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-	{
-		return(pi.G_PlayerActionUsePuzzle(playerinfo));
-	}
-	else
-	{
-		// Client does nothing.
-
-		return false;
-	}
+	return(pi.G_PlayerActionUsePuzzle(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -1985,16 +1875,7 @@ qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 
 qboolean PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-	{
-		return(pi.G_PlayerActionCheckPuzzleGrab(playerinfo));
-	}
-	else
-	{
-		// Client does nothing.
-
-		return false;
-	}
+	return(pi.G_PlayerActionCheckPuzzleGrab(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -2041,10 +1922,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	playermax[2] = GRAB_HAND_HEIGHT;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// There's no room to jump.
@@ -2066,10 +1944,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	righthand[2] = handheight;
 	VectorMA(righthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0)
@@ -2081,10 +1956,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	lefthand[2] = handheight;
 	VectorMA(lefthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0)
@@ -2099,10 +1971,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -2118,10 +1987,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] = playerinfo->origin[2] + GRAB_HAND_HEIGHT;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -2146,10 +2012,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	VectorMA(playerinfo->origin, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(playerinfo->origin,NULL,NULL,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(playerinfo->origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	// Now, if the player is grabbing an overhang, this will not hit anything.
 
@@ -2165,10 +2028,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 		playermax[2] = (lefthand[2]+righthand[2])*0.5 - playerinfo->origin[2];
 
-		if (playerinfo->isclient)
-			grabtrace = pi.CL_Trace(playerinfo->origin,playermin,playermax,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-		else
-			grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = pi.G_Trace(playerinfo->origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		if (grabtrace.fraction >= 1.0)
 		{
@@ -2220,71 +2080,62 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
+	vec3_t player_facing;
+	vec3_t forward, right;
+	vec3_t righthand, lefthand, endpoint;
+	trace_t grabtrace;
+	vec3_t planedir;
+	float yaw;
+	void *holdent;
+
+	assert(playerinfo);
+
+	VectorCopy(playerinfo->angles,player_facing);
+	player_facing[PITCH]=player_facing[ROLL]=0;
+	AngleVectors(player_facing, forward, right, NULL);
+
+	VectorMA(playerinfo->origin, PUSH_HAND_WIDTH, right, righthand);
+	righthand[2] += PUSH_HAND_HEIGHT;
+	VectorMA(righthand, PUSH_HAND_HORZONE, forward, endpoint);
+
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+
+	if ((grabtrace.fraction == 1) || (!grabtrace.ent))
+		return false;
+
+	if (!(pi.G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
+		return false;
+
+	holdent = (void *)grabtrace.ent;
+
+	VectorMA(playerinfo->origin, -PUSH_HAND_WIDTH, right, lefthand);
+	lefthand[2] += PUSH_HAND_HEIGHT;
+	VectorMA(lefthand, PUSH_HAND_HORZONE, forward, endpoint);
+
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+
+	VectorCopy(grabtrace.endpos, lefthand);
+
+	if ((grabtrace.fraction == 1.0) ||  (grabtrace.ent != holdent))
 	{
-		vec3_t player_facing;
-		vec3_t forward, right;
-		vec3_t righthand, lefthand, endpoint;
-		trace_t grabtrace;
-		vec3_t planedir;
-		float yaw;
-		void *holdent;
-
-		assert(playerinfo);
-
-		VectorCopy(playerinfo->angles,player_facing);
-		player_facing[PITCH]=player_facing[ROLL]=0;
-		AngleVectors(player_facing, forward, right, NULL);
-
-		VectorMA(playerinfo->origin, PUSH_HAND_WIDTH, right, righthand);
-		righthand[2] += PUSH_HAND_HEIGHT;
-		VectorMA(righthand, PUSH_HAND_HORZONE, forward, endpoint);
-
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
-
-		if ((grabtrace.fraction == 1) || (!grabtrace.ent))
-			return false;
-
-		if (!(pi.G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
-			return false;
-
-		holdent = (void *)grabtrace.ent;
-
-		VectorMA(playerinfo->origin, -PUSH_HAND_WIDTH, right, lefthand);
-		lefthand[2] += PUSH_HAND_HEIGHT;
-		VectorMA(lefthand, PUSH_HAND_HORZONE, forward, endpoint);
-
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
-
-		VectorCopy(grabtrace.endpos, lefthand);
-
-		if ((grabtrace.fraction == 1.0) ||  (grabtrace.ent != holdent))
-		{
-			// Left hand is not near to pushable object.
-
-			return false;
-		}
-
-		// Parallel to each other?
-
-		VectoAngles(grabtrace.plane.normal, planedir);
-		yaw = planedir[YAW] - playerinfo->angles[YAW];
-		yaw = anglemod(yaw) - 180.0;
-		if (yaw > 30.0 || yaw < -30.0)
-		{	//
-			return false;
-		}
-
-     	playerinfo->target_ent = grabtrace.ent;
-
-		return (true);
-	}
-	else
-	{
-		// Client does nothing.
+		// Left hand is not near to pushable object.
 
 		return false;
 	}
+
+	// Parallel to each other?
+
+	VectoAngles(grabtrace.plane.normal, planedir);
+	yaw = planedir[YAW] - playerinfo->angles[YAW];
+	yaw = anglemod(yaw) - 180.0;
+	if (yaw > 30.0 || yaw < -30.0)
+	{	//
+		return false;
+	}
+
+	playerinfo->target_ent = grabtrace.ent;
+
+	return (true);
 }
 
 /*-----------------------------------------------
@@ -2327,10 +2178,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 //	start[2] += VAULT_HEIGHT_CHECK;//waist - 16
 	VectorMA(start, VAULT_HAND_HORZONE, forward, end);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(start,vaultcheckmins,vaultcheckmaxs,end,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1.0)
 	{
@@ -2350,7 +2198,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		return false;
 	}
 
-	if (grabtrace.ent&&!playerinfo->isclient)
+	if (grabtrace.ent)
 	{
 		if (pi.G_EntIsAButton(grabtrace.ent))
 		{
@@ -2378,10 +2226,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	righthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(righthand, VAULT_HAND_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2394,10 +2239,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	lefthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(lefthand, VAULT_HAND_HORZONE, forward, endpoint);
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2413,10 +2255,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(righthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2433,10 +2272,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
-	if (playerinfo->isclient)
-		grabtrace = pi.CL_Trace(lefthand,handmins,handmaxs,endpoint,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2465,10 +2301,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 		//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-		if (playerinfo->isclient)
-			lasttrace = pi.CL_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
-		else
-			lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+		lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		{
@@ -2534,41 +2367,24 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	AngleVectors(playerinfo->angles, pushdir, NULL, NULL);
 	VectorMA(playerinfo->origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
 
-	if (playerinfo->isclient)
-		trace = pi.CL_Trace(playerinfo->origin,
-							 NULL,
-							 NULL,
-							 endpos,
-							 CEF_CLIP_TO_WORLD,
-							 MASK_PLAYERSOLID);
-	else
-		trace = pi.G_Trace(playerinfo->origin,
-								  NULL,
-								  NULL,
-								  endpos,
-								  playerinfo->self,
-								  MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin,
+							  NULL,
+							  NULL,
+							  endpos,
+							  playerinfo->self,
+							  MASK_PLAYERSOLID);
 
 	// Now push in the opposite direction for a new location.
 
 	VectorMA(trace.endpos, -PLAYER_BLOCKING_DIST, pushdir, endpos);
 
 	// Try placing the entity in the new location.
-
-	if (playerinfo->isclient)
-		trace = pi.CL_Trace(endpos,
-							 playerinfo->mins,
-							 playerinfo->maxs,
-							 endpos,
-							 MASK_PLAYERSOLID,
-							 CEF_CLIP_TO_WORLD);
-	else
-		trace = pi.G_Trace(endpos,
-								  playerinfo->mins,
-								  playerinfo->maxs,
-								  endpos,
-								  playerinfo->self,
-								  MASK_PLAYERSOLID);
+	trace = pi.G_Trace(endpos,
+							  playerinfo->mins,
+							  playerinfo->maxs,
+							  endpos,
+							  playerinfo->self,
+							  MASK_PLAYERSOLID);
 
 	// If it didn't work, panic!
 //		if (trace.startsolid || trace.allsolid)
@@ -2585,17 +2401,11 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 {
-	if (!playerinfo->isclient)
-	{	// Check dismemberment before game side rope check.
-		if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
-			return false;
-		else
-			return(pi.G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
-	}
-	else
-	{
+	// Check dismemberment before game side rope check.
+	if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return false;
-	}
+	else
+		return(pi.G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
 }
 
 /*-----------------------------------------------
@@ -2664,20 +2474,12 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] += (playerinfo->mins[2] - 2);
 
-	if (playerinfo->isclient)
-		trace = pi.CL_Trace(playerinfo->origin,
-							 playerinfo->mins,
-							 playerinfo->maxs,
-							 endpos,
-							 CEF_CLIP_TO_WORLD,
-							 MASK_PLAYERSOLID);
-	else
-		trace = pi.G_Trace(playerinfo->origin,
-								  playerinfo->mins,
-								  playerinfo->maxs,
-								  endpos,
-								  playerinfo->self,
-								  MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin,
+							  playerinfo->mins,
+							  playerinfo->maxs,
+							  endpos,
+							  playerinfo->self,
+							  MASK_PLAYERSOLID);
 
 	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < 2)
 	{
@@ -2697,24 +2499,12 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] += (playerinfo->mins[2] - 2);
 
-	if (playerinfo->isclient)
-	{
-		trace = pi.CL_Trace(playerinfo->origin,
-							 playerinfo->mins,
-							 playerinfo->maxs,
-							 endpos,
-							 CEF_CLIP_TO_WORLD,
-							 MASK_PLAYERSOLID);
-	}
-	else
-	{
-		trace = pi.G_Trace(playerinfo->origin,
-								  playerinfo->mins,
-								  playerinfo->maxs,
-								  endpos,
-								  playerinfo->self,
-								  MASK_PLAYERSOLID);
-	}
+	trace = pi.G_Trace(playerinfo->origin,
+							  playerinfo->mins,
+							  playerinfo->maxs,
+							  endpos,
+							  playerinfo->self,
+							  MASK_PLAYERSOLID);
 
 	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < 2)
 	{
@@ -2750,8 +2540,7 @@ void PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, 
 {
 	assert(playerinfo);
 
-	if (!playerinfo->isclient)
-		pi.G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
+	pi.G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
 }
 
 /*-----------------------------------------------
@@ -2972,20 +2761,12 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		VectorCopy(playerinfo->grabloc, endpoint);
 		endpoint[2] -= playerinfo->mins[2] + 2;
 
-		if (playerinfo->isclient)
-			trace = pi.CL_Trace(playerinfo->origin,
-								 playerinfo->mins,
-								 playerinfo->maxs,
-								 endpoint,
-								 MASK_PLAYERSOLID,
-								 CEF_CLIP_TO_WORLD);
-		else
-			trace = pi.G_Trace(playerinfo->origin,
-									  playerinfo->mins,
-									  playerinfo->maxs,
-									  endpoint,
-									  playerinfo->self,
-									  MASK_PLAYERSOLID);
+		trace = pi.G_Trace(playerinfo->origin,
+								  playerinfo->mins,
+								  playerinfo->maxs,
+								  endpoint,
+								  playerinfo->self,
+								  MASK_PLAYERSOLID);
 
 		VectorCopy(trace.endpos, playerinfo->origin);
 
@@ -3020,20 +2801,12 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			VectorCopy(playerinfo->mins, playermin);
 			VectorCopy(playerinfo->maxs, playermax);
 
-			if (playerinfo->isclient)
-				trace = pi.CL_Trace(playerinfo->origin,
-									 playermin,
-									 playermax,
-									 endpoint,
-									 MASK_PLAYERSOLID,
-									 CEF_CLIP_TO_WORLD);
-			else
-				trace = pi.G_Trace(playerinfo->origin,
-										  playermin,
-										  playermax,
-										  endpoint,
-										  playerinfo->self,
-										  MASK_PLAYERSOLID);
+			trace = pi.G_Trace(playerinfo->origin,
+									  playermin,
+									  playermax,
+									  endpoint,
+									  playerinfo->self,
+									  MASK_PLAYERSOLID);
 
 			if (trace.fraction < 1.0)
 			{
@@ -3048,20 +2821,12 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 				//playermin[2] -= 2;
 
 				//Move to the correct distance away from the wall
-				if (playerinfo->isclient)
-					trace = pi.CL_Trace(trace.endpos,
-										 playermin,
-										 playermax,
-										 endpoint,
-										 MASK_PLAYERSOLID,
-										 CEF_CLIP_TO_WORLD);
-				else
-					trace = pi.G_Trace(trace.endpos,
-											  playermin,
-											  playermax,
-											  endpoint,
-											  playerinfo->self,
-											  MASK_PLAYERSOLID);
+				trace = pi.G_Trace(trace.endpos,
+										  playermin,
+										  playermax,
+										  endpoint,
+										  playerinfo->self,
+										  MASK_PLAYERSOLID);
 
 				if (trace.fraction < 1)
 				{
@@ -3090,10 +2855,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 
 qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-		return(pi.G_PlayerActionCheckPushButton(playerinfo));
-	else
-		return false;
+	return(pi.G_PlayerActionCheckPushButton(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -3102,8 +2864,7 @@ qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionPushButton(playerinfo);
+	pi.G_PlayerActionPushButton(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3112,10 +2873,7 @@ void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-		return(pi.G_PlayerActionCheckPushLever(playerinfo));
-	else
-		return false;
+	return(pi.G_PlayerActionCheckPushLever(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -3124,8 +2882,7 @@ qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionPushLever(playerinfo);
+	pi.G_PlayerActionPushLever(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3134,8 +2891,7 @@ void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 
 void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionTakePuzzle(playerinfo);
+	pi.G_PlayerActionTakePuzzle(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3144,8 +2900,7 @@ void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 
 void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionMoveItem(playerinfo,distance);
+	pi.G_PlayerActionMoveItem(playerinfo,distance);
 }
 
 /*-----------------------------------------------
@@ -3154,8 +2909,7 @@ void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 
 void PlayerActionShrineEffect(playerinfo_t *playerinfo, float value)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionShrineEffect(playerinfo);
+	pi.G_PlayerActionShrineEffect(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3241,10 +2995,7 @@ void PlayerActionCheckDive(playerinfo_t *playerinfo)
 
 void PlayerActionCheckRopeMove(playerinfo_t *playerinfo, float foo )
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionCheckRopeMove(playerinfo);
-	else
-		return;
+	pi.G_PlayerActionCheckRopeMove(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -3344,20 +3095,12 @@ void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 {
 	if (playerinfo->waterlevel==0)
 	{
-		if (!playerinfo->isclient)
-			pi.G_CreateEffect(EFFECT_PRED_ID10,
-									   playerinfo->self,
-									   FX_DUST_PUFF,
-									   CEF_OWNERS_ORIGIN,
-									   playerinfo->origin,
-									   "");
-		else
-			pi.CL_CreateEffect(EFFECT_PRED_ID10,
-										playerinfo->self,
-										FX_DUST_PUFF,
-										CEF_OWNERS_ORIGIN,
-										playerinfo->origin,
-										"");
+		pi.G_CreateEffect(EFFECT_PRED_ID10,
+								   playerinfo->self,
+								   FX_DUST_PUFF,
+								   CEF_OWNERS_ORIGIN,
+								   playerinfo->origin,
+								   "");
 	}
 }
 

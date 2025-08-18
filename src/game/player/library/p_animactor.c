@@ -175,14 +175,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID26,
-												playerinfo->self,
-												FX_SPELLHANDS);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID26,
-												 playerinfo->self,
-												 FX_SPELLHANDS);
+				pi.G_RemoveEffects(EFFECT_PRED_ID26,
+											playerinfo->self,
+											FX_SPELLHANDS);
 			}
 			break;
 
@@ -191,14 +186,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID27,
-												playerinfo->self,
-												FX_WEAPON_REDRAINGLOW);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID27,
-												playerinfo->self,
-												FX_WEAPON_REDRAINGLOW);
+				pi.G_RemoveEffects(EFFECT_PRED_ID27,
+											playerinfo->self,
+											FX_WEAPON_REDRAINGLOW);
 			}
 			break;
 
@@ -208,14 +198,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID28,
-												playerinfo->self,
-												FX_FIREHANDS);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID28,
-												 playerinfo->self,
-												 FX_FIREHANDS);
+				pi.G_RemoveEffects(EFFECT_PRED_ID28,
+											playerinfo->self,
+											FX_FIREHANDS);
 			}
 			break;
 
@@ -225,14 +210,9 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID29,
-												playerinfo->self,
-												FX_STAFF);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID29,
-												 playerinfo->self,
-												 FX_STAFF);
+				pi.G_RemoveEffects(EFFECT_PRED_ID29,
+											playerinfo->self,
+											FX_STAFF);
 
 				playerinfo->effects&=~EF_BLOOD_ENABLED;
 			}
@@ -273,12 +253,9 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Handle teleporting (and chicken morphing) only on game side.
-	if (!playerinfo->isclient)
+	if (pi.G_HandleTeleport(playerinfo->self))
 	{
-		if (pi.G_HandleTeleport(playerinfo->self))
-		{
-			return;
-		}
+		return;
 	}
 
 	//Handle a dive request
@@ -347,8 +324,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Think rate handled different on client.
-	if (!playerinfo->isclient)
-		playerinfo->nextthink=playerinfo->leveltime+0.1;//FRAMETIME;
+	playerinfo->nextthink=playerinfo->leveltime+0.1;//FRAMETIME;
 
 	if (!(playerinfo->edictflags & FL_CHICKEN) && (!(playerinfo->deadflag)))
 	{
@@ -758,21 +734,12 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	if (delta<15.0)
 	{
 		// Unimplemented.
-
-		if (!playerinfo->isclient)
-			pi.G_CreateEffect(EFFECT_PRED_ID11,
-									   playerinfo->self,
-									   FX_FOOTSTEP,
-									   CEF_OWNERS_ORIGIN,
-									   playerinfo->origin,
-									   "");
-		else
-			pi.CL_CreateEffect(EFFECT_PRED_ID11,
-										playerinfo->self,
-										FX_FOOTSTEP,
-										CEF_OWNERS_ORIGIN,
-										playerinfo->origin,
-										"");
+		pi.G_CreateEffect(EFFECT_PRED_ID11,
+								   playerinfo->self,
+								   FX_FOOTSTEP,
+								   CEF_OWNERS_ORIGIN,
+								   playerinfo->origin,
+								   "");
 
 		return;
 	}
@@ -781,27 +748,18 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	{
 		// Apply damage to player entity if we are running server (game) side.
 
-		if (!playerinfo->isclient)
-			pi.G_PlayerFallingDamage(playerinfo,delta);
+		pi.G_PlayerFallingDamage(playerinfo,delta);
 	}
 	else
 	{
 		// Unimplemented.
 
-		if (!playerinfo->isclient)
-			pi.G_CreateEffect(EFFECT_PRED_ID12,
-									   playerinfo->self,
-									   FX_FALLSHORT,
-									   CEF_OWNERS_ORIGIN,
-									   playerinfo->origin,
-									   "");
-		else
-			pi.CL_CreateEffect(EFFECT_PRED_ID12,
-										playerinfo->self,
-										FX_FALLSHORT,
-										CEF_OWNERS_ORIGIN,
-										playerinfo->origin,
-										"");
+		pi.G_CreateEffect(EFFECT_PRED_ID12,
+								   playerinfo->self,
+								   FX_FALLSHORT,
+								   CEF_OWNERS_ORIGIN,
+								   playerinfo->origin,
+								   "");
 
 		return;
 	}

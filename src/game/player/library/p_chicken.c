@@ -62,8 +62,7 @@ void ChickenAssert(playerinfo_t *playerinfo)
 
 void PlayerChickenBite(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-		pi.G_PlayerActionChickenBite(playerinfo);
+	pi.G_PlayerActionChickenBite(playerinfo);
 }
 
 // ***********************************************************************************************
@@ -120,24 +119,12 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin,endpos);
 	endpos[2]+=(playerinfo->mins[2]-2.0);
 
-	if (playerinfo->isclient)
-	{
-		trace = pi.CL_Trace(playerinfo->origin,
-							 playerinfo->mins,
-							 playerinfo->maxs,
-							 endpos,
-							 MASK_PLAYERSOLID,
-							 CEF_CLIP_TO_WORLD);
-	}
-	else
-	{
-		trace = pi.G_Trace(playerinfo->origin,
-								  playerinfo->mins,
-								  playerinfo->maxs,
-								  endpos,
-								  playerinfo->self,
-								  MASK_PLAYERSOLID);
-	}
+	trace = pi.G_Trace(playerinfo->origin,
+							  playerinfo->mins,
+							  playerinfo->maxs,
+							  endpos,
+							  playerinfo->self,
+							  MASK_PLAYERSOLID);
 
 	if ((playerinfo->groundentity||trace.fraction<0.2)&&playerinfo->waterlevel<2)
 		playerinfo->upvel=200;
@@ -209,20 +196,12 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 
 		playerinfo->velocity[2] += CHICKEN_GLIDE;
 
-		if (!playerinfo->isclient)
-			pi.G_CreateEffect(EFFECT_PRED_ID13,
-									   playerinfo->self,
-									   FX_CHICKEN_EXPLODE,
-									   CEF_OWNERS_ORIGIN | CEF_FLAG6,
-									   NULL,
-									   "");
-		else
-			pi.CL_CreateEffect(EFFECT_PRED_ID13,
-										playerinfo->self,
-									    FX_CHICKEN_EXPLODE,
-									    CEF_OWNERS_ORIGIN | CEF_FLAG6,
-										NULL,
-										"");
+		pi.G_CreateEffect(EFFECT_PRED_ID13,
+								   playerinfo->self,
+								   FX_CHICKEN_EXPLODE,
+								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
+								   NULL,
+								   "");
 
 		PlayerAnimSetLowerSeq(playerinfo,ASEQ_JUMPFWD);
 	}
@@ -241,18 +220,10 @@ void PlayerChickenFlap (playerinfo_t *playerinfo)
 
 	playerinfo->velocity[2] += CHICKEN_GLIDE;
 
-	if (!playerinfo->isclient)
-		pi.G_CreateEffect(EFFECT_PRED_ID14,
-								   playerinfo->self, // jmarshall: believe this is right.
-								   FX_CHICKEN_EXPLODE,
-								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
-								   NULL,
-								   "");
-	else
-		pi.CL_CreateEffect(EFFECT_PRED_ID14,
-									playerinfo->self,
-								    FX_CHICKEN_EXPLODE,
-								    CEF_OWNERS_ORIGIN | CEF_FLAG6,
-								    NULL,
-								    "");
+	pi.G_CreateEffect(EFFECT_PRED_ID14,
+							   playerinfo->self, // jmarshall: believe this is right.
+							   FX_CHICKEN_EXPLODE,
+							   CEF_OWNERS_ORIGIN | CEF_FLAG6,
+							   NULL,
+							   "");
 }

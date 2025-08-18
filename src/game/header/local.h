@@ -1782,7 +1782,6 @@ void SetupPlayerinfo(edict_t *ent);
 void WritePlayerinfo(edict_t *ent);
 void SetupPlayerinfo_effects(edict_t *ent);
 void WritePlayerinfo_effects(edict_t *ent);
-void InitPlayerinfo(edict_t *ent);
 
 /* p_hud.c */
 void MoveClientToIntermission(edict_t *client);
@@ -2078,14 +2077,6 @@ typedef struct
 
 typedef struct playerinfo_s
 {
-	// Indicates whether this playerinfo_t is held on the client or server.
-
-	qboolean			isclient;
-
-	// This is client only and records the highest level time the anim has run... we use this to
-	// prevent multiple sounds etc. Logic is basically if(!ishistory) playsound...
-	qboolean			ishistory;
-
 	// Pointer to the associated player's edict_t.
 
 	edict_t				*self;
@@ -2328,12 +2319,6 @@ typedef struct
 	// ********************************************************************************************
 	// Inputs only.
 	// ********************************************************************************************
-
-	// Client side function callbacks (approximating functionality of server function callbacks).
-
-	trace_t (*CL_Trace)(vec3_t start,vec3_t mins,vec3_t maxs,vec3_t end,int brushmask,int flags);
-	int (*CL_CreateEffect)(byte EventId,void *owner,unsigned short type,int flags,vec3_t position,char *format,...);
-	void (*CL_RemoveEffects)(byte EventId,void *owner,int fx);
 
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
 

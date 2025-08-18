@@ -40,10 +40,7 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] -= FALL_MINHEIGHT;
 
-	if (playerinfo->isclient)
-		checktrace = pi.CL_Trace(playerinfo->origin,playerinfo->mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		checktrace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (checktrace.fraction >= 1)
 	{
@@ -65,10 +62,7 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin,v);
 	v[2]+=25.0 - playerinfo->maxs[2];//was 25
 
-	if (playerinfo->isclient)
-		trace = pi.CL_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		trace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 		return false;
@@ -103,10 +97,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	if (playerinfo->isclient)
-		checktrace = pi.CL_Trace(playerinfo->origin,mins,playerinfo->maxs,startpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-	else
-		checktrace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (checktrace.fraction == 1)
@@ -116,10 +107,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		if (playerinfo->isclient)
-			checktrace = pi.CL_Trace(startpos,mins,playerinfo->maxs,endpos,MASK_PLAYERSOLID,CEF_CLIP_TO_WORLD);
-		else
-			checktrace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		checktrace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (checktrace.fraction == 1 || (checktrace.startsolid || checktrace.allsolid))
 		{
@@ -180,23 +168,9 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	lspotmin[2] += playerinfo->mins[2] * 2.0;
 	rspotmin[2] += playerinfo->mins[2] * 2.0;
 
-	if (playerinfo->isclient)
-	{
-		leftfoot = pi.CL_Trace(lspotmax, footmins, footmaxs, lspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
-	}
-	else
-	{
-		leftfoot = pi.G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
-	}
+	leftfoot = pi.G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
 
-	if (playerinfo->isclient)
-	{
-		rightfoot = pi.CL_Trace(rspotmax, footmins, footmaxs, rspotmin, MASK_PLAYERSOLID, CEF_CLIP_TO_WORLD);
-	}
-	else
-	{
-		rightfoot = pi.G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
-	}
+	rightfoot = pi.G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
 
 	if ((rightfoot.fraction == 1.0) && !rightfoot.startsolid && !rightfoot.allsolid)
 	{
@@ -338,7 +312,7 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 
 	// If we've reached this point, we are still idling - so decide if which one we want to do.
 
-// OK NOW?	if (!playerinfo->isclient)
+// OK NOW?
 	{
 		temp = (pi.irand(playerinfo,0,5));
 
@@ -664,10 +638,6 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		else
 			return ASEQ_NONE;
 	}
-
-	//Check for a sloped stand
-	if (playerinfo->isclient&&((playerinfo->lowerseq >= ASEQ_LSTAIR4 && playerinfo->lowerseq <= ASEQ_RSTAIR16)||playerinfo->lowerseq==ASEQ_STAND))
-		return playerinfo->lowerseq;
 
 	checksloped = CheckSlopedStand(playerinfo);
 
@@ -1880,10 +1850,7 @@ int BranchLwrHanging(playerinfo_t *playerinfo)
 
 int BranchLwrClimbing(playerinfo_t *playerinfo)
 {
-	if (!playerinfo->isclient)
-		return(pi.G_BranchLwrClimbing(playerinfo));
-	else
-		return(ASEQ_NONE);
+	return(pi.G_BranchLwrClimbing(playerinfo));
 }
 
 
@@ -2052,7 +2019,7 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 int BranchCheckAmmo(playerinfo_t *playerinfo)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
+	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return(ASEQ_NONE);
 
 	pi.G_WeapNext(playerinfo->self);
@@ -2076,7 +2043,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 
 int BranchCheckHellAmmo(playerinfo_t *playerinfo)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
+	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return(ASEQ_NONE);
 
 	pi.G_WeapNext(playerinfo->self);
@@ -2128,7 +2095,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 // if we are out of offensive mana, then switch us to the next weapon
 int BranchCheckMana(playerinfo_t *playerinfo)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo) || playerinfo->isclient)		// The client prediction shouldn't test the weapon.
+	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return(BranchUprReady(playerinfo));
 
 	pi.G_WeapNext(playerinfo->self);
@@ -2169,7 +2136,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 				break;
 			}
 		}
-		else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
+		else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW))
 		{
 			// Because the bow doesn't look right in some idles.
 			switch(pi.irand(playerinfo, 0, 10))

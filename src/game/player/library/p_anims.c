@@ -93,13 +93,10 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 
 	// Set / reset flag that says I am movelocked.
 
-	if (!playerinfo->isclient)
-	{
-		if (seqdata->lockmove)
-			playerinfo->pm_flags |= PMF_LOCKMOVE;
-		else
-			playerinfo->pm_flags &= ~PMF_LOCKMOVE;
-	}
+	if (seqdata->lockmove)
+		playerinfo->pm_flags |= PMF_LOCKMOVE;
+	else
+		playerinfo->pm_flags &= ~PMF_LOCKMOVE;
 }
 
 void PlayerBasicAnimReset(playerinfo_t *playerinfo)
@@ -269,7 +266,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			else
 			if (playerinfo->sv_cinematicfreeze)
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_LOOKBACK);
-			else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW) || (playerinfo->isclient))
+			else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW))
 			{
 				// Because the bow doesn't look right in some idles.
 

@@ -32,14 +32,9 @@ void
 PlayerClearEffects(playerinfo_t *playerinfo)
 {
 	// Remove all special effects from the player.
-	if (!playerinfo->isclient)
-		pi.G_RemoveEffects(EFFECT_PRED_ID30,
-									playerinfo->self,
-									FX_REMOVE_EFFECTS);
-	else
-		pi.CL_RemoveEffects(EFFECT_PRED_ID30,
-									 playerinfo->self,
-									 FX_REMOVE_EFFECTS);
+	pi.G_RemoveEffects(EFFECT_PRED_ID30,
+								playerinfo->self,
+								FX_REMOVE_EFFECTS);
 }
 
 void
@@ -280,7 +275,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	{
 		// Not a chicken, so...
 
-		if (!playerinfo->isclient && playerinfo->pers.defence)
+		if (playerinfo->pers.defence)
 		{
 			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
@@ -300,15 +295,12 @@ PlayerUpdate(playerinfo_t *playerinfo)
 		playerinfo->remember_buttons &= ~BUTTON_DEFEND;
 	}
 
-	if (!playerinfo->isclient)
-	{
-		// Check to see if the lightning shield is engaged.
+	// Check to see if the lightning shield is engaged.
 
-		if (playerinfo->shield_timer > playerinfo->leveltime)
-			pi.G_PlayerSpellShieldAttack(playerinfo->self);
-		else
-			pi.G_PlayerSpellStopShieldAttack(playerinfo->self);
-	}
+	if (playerinfo->shield_timer > playerinfo->leveltime)
+		pi.G_PlayerSpellShieldAttack(playerinfo->self);
+	else
+		pi.G_PlayerSpellStopShieldAttack(playerinfo->self);
 }
 
 // This function should be called anytime the player's skin, armor, weapon, damaged parts, etc are changed.
@@ -593,12 +585,11 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 /*
 				if (playerinfo->leveltime > 1.0)
 				{
-					if (!playerinfo->isclient)
-						pi.G_CreateEffect(pi.G_GetEntityStatePtr(playerinfo->self),
-												   FX_STAFF_CREATEPOOF,
-												   CEF_OWNERS_ORIGIN,
-												   NULL,
-												   "");
+					pi.G_CreateEffect(pi.G_GetEntityStatePtr(playerinfo->self),
+											   FX_STAFF_CREATEPOOF,
+											   CEF_OWNERS_ORIGIN,
+											   NULL,
+											   "");
 				}
 */
 				break;
@@ -619,12 +610,11 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 /*
 				if (playerinfo->leveltime > 1.0)
 				{
-					if (!playerinfo->isclient)
-						pi.G_CreateEffect(pi.G_GetEntityStatePtr(playerinfo->self),
-												   FX_STAFF_CREATEPOOF,
-												   CEF_OWNERS_ORIGIN|CEF_FLAG6,
-												   NULL,
-												   "");
+					pi.G_CreateEffect(pi.G_GetEntityStatePtr(playerinfo->self),
+											   FX_STAFF_CREATEPOOF,
+											   CEF_OWNERS_ORIGIN|CEF_FLAG6,
+											   NULL,
+											   "");
 				}
 				*/
 
@@ -692,42 +682,27 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_SPHERE:
 			if (playerinfo->effects)
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID31,
-												pi.G_GetEntityStatePtr(playerinfo->self),
-												FX_SPELLHANDS);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID31,
-												 playerinfo->self,
-												 FX_SPELLHANDS);
+				pi.G_RemoveEffects(EFFECT_PRED_ID31,
+											pi.G_GetEntityStatePtr(playerinfo->self),
+											FX_SPELLHANDS);
 			break;
 
 		case HANDFX_REDRAIN:
 		case HANDFX_POWERREDRAIN:
 
 			if (playerinfo->effects)
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID32,
-												pi.G_GetEntityStatePtr(playerinfo->self),
-												FX_WEAPON_REDRAINGLOW);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID32,
-												 playerinfo->self,
-												 FX_WEAPON_REDRAINGLOW);
+				pi.G_RemoveEffects(EFFECT_PRED_ID32,
+											pi.G_GetEntityStatePtr(playerinfo->self),
+											FX_WEAPON_REDRAINGLOW);
 			break;
 
 		case HANDFX_PHOENIX:
 		case HANDFX_POWERPHOENIX:
 
 			if (playerinfo->effects)
-				if (!playerinfo->isclient)
-					pi.G_RemoveEffects(EFFECT_PRED_ID33,
-												pi.G_GetEntityStatePtr(playerinfo->self),
-												FX_FIREHANDS);
-				else
-					pi.CL_RemoveEffects(EFFECT_PRED_ID33,
-												 playerinfo->self,
-												 FX_FIREHANDS);
+				pi.G_RemoveEffects(EFFECT_PRED_ID33,
+											pi.G_GetEntityStatePtr(playerinfo->self),
+											FX_FIREHANDS);
 			break;
 
 		case HANDFX_NONE:
@@ -755,65 +730,38 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Red effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 4;		// .4 seconds is normal fireball throw time.
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID16,
-										   playerinfo->self,
-										   FX_SPELLHANDS,
-										   CEF_OWNERS_ORIGIN,
-										   NULL,
-										   "b",
-										   (byte)lifetime);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID16,
-											playerinfo->self,
-										    FX_SPELLHANDS,
-										    CEF_OWNERS_ORIGIN,
-										    NULL,
-										    "b",
-										    (byte)lifetime);
+			pi.G_CreateEffect(EFFECT_PRED_ID16,
+									   playerinfo->self,
+									   FX_SPELLHANDS,
+									   CEF_OWNERS_ORIGIN,
+									   NULL,
+									   "b",
+									   (byte)lifetime);
 			break;
 
 		case HANDFX_MISSILE:
 			// Green effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 6;		// .6 seconds is normal fireball throw time
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID17,
-										   playerinfo->self,
-										   FX_SPELLHANDS,
-										   CEF_OWNERS_ORIGIN|CEF_FLAG8,
-										   NULL,
-										   "b",
-										   (byte)lifetime);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID17,
-											playerinfo->self,
-											FX_SPELLHANDS,
-											CEF_OWNERS_ORIGIN|CEF_FLAG8,
-											NULL,
-											"b",
-											(byte)lifetime);
+			pi.G_CreateEffect(EFFECT_PRED_ID17,
+									   playerinfo->self,
+									   FX_SPELLHANDS,
+									   CEF_OWNERS_ORIGIN|CEF_FLAG8,
+									   NULL,
+									   "b",
+									   (byte)lifetime);
 			break;
 
 		case HANDFX_FIREWALL:
 			if (lifetime == 0)
 				lifetime = 11;		// 1.1 seconds is normal fireball throw time
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID19,
-										   playerinfo->self,
-										   FX_FIREHANDS,
-										   CEF_OWNERS_ORIGIN|CEF_FLAG6,
-										   NULL,
-										   "b",
-										   lifetime);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID19,
-											playerinfo->self,
-											FX_FIREHANDS,
-											CEF_OWNERS_ORIGIN|CEF_FLAG6,
-											NULL,
-											"b",
-											lifetime);
+			pi.G_CreateEffect(EFFECT_PRED_ID19,
+									   playerinfo->self,
+									   FX_FIREHANDS,
+									   CEF_OWNERS_ORIGIN|CEF_FLAG6,
+									   NULL,
+									   "b",
+									   lifetime);
 			break;
 
 		case HANDFX_STAFF1:
@@ -829,28 +777,14 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (powerlevel >= STAFF_LEVEL_MAX)
 				powerlevel = STAFF_LEVEL_MAX-1;
 
-			if (!playerinfo->isclient)
-			{
-				pi.G_CreateEffect(EFFECT_PRED_ID20,
-										   playerinfo->self,
-										   FX_STAFF,
-										   CEF_OWNERS_ORIGIN,
-										   NULL,
-										   "bb",
-										   (byte)powerlevel,
-										   (byte)lifetime);
-			}
-			else
-			{
-				pi.CL_CreateEffect(EFFECT_PRED_ID20,
-											playerinfo->self,
-											FX_STAFF,
-											CEF_OWNERS_ORIGIN,
-											NULL,
-											"bb",
-											(byte)powerlevel,
-											(byte)lifetime);
-			}
+			pi.G_CreateEffect(EFFECT_PRED_ID20,
+									   playerinfo->self,
+									   FX_STAFF,
+									   CEF_OWNERS_ORIGIN,
+									   NULL,
+									   "bb",
+									   (byte)powerlevel,
+									   (byte)lifetime);
 			break;
 
 		case HANDFX_SPHERE:
@@ -858,107 +792,57 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (lifetime == 0)
 				lifetime = 8;
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID18,
-										   playerinfo->self,
-										   FX_SPELLHANDS,
-										   CEF_OWNERS_ORIGIN|CEF_FLAG6|CEF_FLAG7,
-										   NULL,
-										   "b",
-										   -1);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID18,
-											playerinfo->self,
-											FX_SPELLHANDS,
-											CEF_OWNERS_ORIGIN|CEF_FLAG6|CEF_FLAG7,
-											NULL,
-											"b",
-											-1);
+			pi.G_CreateEffect(EFFECT_PRED_ID18,
+									   playerinfo->self,
+									   FX_SPELLHANDS,
+									   CEF_OWNERS_ORIGIN|CEF_FLAG6|CEF_FLAG7,
+									   NULL,
+									   "b",
+									   -1);
 			break;
 
 		case HANDFX_REDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if (!playerinfo->isclient)
-			{
-				pi.G_CreateEffect(EFFECT_PRED_ID21,
-										   playerinfo->self,
-										   FX_WEAPON_REDRAINGLOW,
-										   CEF_OWNERS_ORIGIN,
-										   NULL,
-										   "b",
-										   -1);
-			}
-			else
-			{
-				pi.CL_CreateEffect(EFFECT_PRED_ID21,
-											playerinfo->self,
-											FX_WEAPON_REDRAINGLOW,
-											CEF_OWNERS_ORIGIN,
-											NULL,
-											"b",
-											-1);
-			}
+			pi.G_CreateEffect(EFFECT_PRED_ID21,
+									   playerinfo->self,
+									   FX_WEAPON_REDRAINGLOW,
+									   CEF_OWNERS_ORIGIN,
+									   NULL,
+									   "b",
+									   -1);
 			break;
 
 		case HANDFX_POWERREDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID22,
-										   playerinfo->self,
-										   FX_WEAPON_REDRAINGLOW,
-										   CEF_OWNERS_ORIGIN | CEF_FLAG6,
-										   NULL,
-										   "b",
-										   -1);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID22,
-											playerinfo->self,
-										    FX_WEAPON_REDRAINGLOW,
-										    CEF_OWNERS_ORIGIN | CEF_FLAG6,
-										    NULL,
-										    "b",
-										    -1);
-
+			pi.G_CreateEffect(EFFECT_PRED_ID22,
+									   playerinfo->self,
+									   FX_WEAPON_REDRAINGLOW,
+									   CEF_OWNERS_ORIGIN | CEF_FLAG6,
+									   NULL,
+									   "b",
+									   -1);
 			break;
 
 		case HANDFX_PHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID23,
-										   playerinfo->self,
-										   FX_FIREHANDS,
-										   CEF_OWNERS_ORIGIN,
-										   NULL,
-										   "b",
-										   -1);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID23,
-											playerinfo->self,
-										    FX_FIREHANDS,
-										    CEF_OWNERS_ORIGIN,
-										    NULL,
-										    "b",
-										    -1);
+			pi.G_CreateEffect(EFFECT_PRED_ID23,
+									   playerinfo->self,
+									   FX_FIREHANDS,
+									   CEF_OWNERS_ORIGIN,
+									   NULL,
+									   "b",
+									   -1);
 			break;
 
 		case HANDFX_POWERPHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			if (!playerinfo->isclient)
-				pi.G_CreateEffect(EFFECT_PRED_ID24,
-										   playerinfo->self,
-										   FX_FIREHANDS,
-										   CEF_OWNERS_ORIGIN,
-										   NULL,
-										   "b",
-										   -1);
-			else
-				pi.CL_CreateEffect(EFFECT_PRED_ID24,
-											playerinfo->self,
-										    FX_FIREHANDS,
-										    CEF_OWNERS_ORIGIN,
-										    NULL,
-										    "b",
-										    -1);
+			pi.G_CreateEffect(EFFECT_PRED_ID24,
+									   playerinfo->self,
+									   FX_FIREHANDS,
+									   CEF_OWNERS_ORIGIN,
+									   NULL,
+									   "b",
+									   -1);
 			break;
 
 		case HANDFX_MACEBALL:

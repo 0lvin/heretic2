@@ -346,15 +346,6 @@ SV_CalcViewOffset(edict_t *ent)
 }
 
 void
-InitPlayerinfo(edict_t *ent)
-{
-	// So we know we are server (game) side.
-
-	ent->client->playerinfo.isclient = false;
-	ent->client->playerinfo.ishistory = false;
-}
-
-void
 SetupPlayerinfo(edict_t *ent)
 {
 	int	i;

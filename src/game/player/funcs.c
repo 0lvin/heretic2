@@ -591,17 +591,14 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, float var3)
 {
-	if (!playerinfo->isclient)
-	{
-		// Pull Corvus into the rope.
-		G_PlayerActionCheckRopeGrab(playerinfo,1);
+	// Pull Corvus into the rope.
+	G_PlayerActionCheckRopeGrab(playerinfo,1);
 
-		if (playerinfo->targetEnt)
-		{
-			//Update the rope's information about the player's position
-			((edict_t *)playerinfo->targetEnt)->teamchain->accel=((edict_t *)playerinfo->targetEnt)->teamchain->viewheight;
-			((edict_t *)playerinfo->targetEnt)->teamchain->viewheight-=height;
-		}
+	if (playerinfo->targetEnt)
+	{
+		//Update the rope's information about the player's position
+		((edict_t *)playerinfo->targetEnt)->teamchain->accel=((edict_t *)playerinfo->targetEnt)->teamchain->viewheight;
+		((edict_t *)playerinfo->targetEnt)->teamchain->viewheight-=height;
 	}
 }
 
