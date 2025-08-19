@@ -345,6 +345,22 @@ set(Game-Source
 	${COMMON_SRC_DIR}/shared/flash.c
 	${COMMON_SRC_DIR}/shared/rand.c
 	${COMMON_SRC_DIR}/shared/shared.c
+	${GAME_SRC_DIR}/bot/ai_class_dmbot.c
+	${GAME_SRC_DIR}/bot/ai_dropnodes.c
+	${GAME_SRC_DIR}/bot/ai_items.c
+	${GAME_SRC_DIR}/bot/ai_links.c
+	${GAME_SRC_DIR}/bot/ai_local.h
+	${GAME_SRC_DIR}/bot/ai_main.c
+	${GAME_SRC_DIR}/bot/ai_movement.c
+	${GAME_SRC_DIR}/bot/ai_navigation.c
+	${GAME_SRC_DIR}/bot/ai_nodes.c
+	${GAME_SRC_DIR}/bot/ai_nodes_local.h
+	${GAME_SRC_DIR}/bot/ai_nodes_shared.h
+	${GAME_SRC_DIR}/bot/ai_tools.c
+	${GAME_SRC_DIR}/bot/ai_weapons.c
+	${GAME_SRC_DIR}/bot/ai_weapons.h
+	${GAME_SRC_DIR}/bot/astar.c
+	${GAME_SRC_DIR}/bot/bot_spawn.c
 	${GAME_SRC_DIR}/common/h2vector.c
 	${GAME_SRC_DIR}/common/h2rand.c
 	${GAME_SRC_DIR}/common/h2singlylinkedlist.c

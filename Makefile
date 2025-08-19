@@ -972,6 +972,18 @@ GAME_OBJS_ = \
 	src/common/shared/flash.o \
 	src/common/shared/rand.o \
 	src/common/shared/shared.o \
+	src/game/bot/ai_class_dmbot.o \
+	src/game/bot/ai_dropnodes.o \
+	src/game/bot/ai_items.o \
+	src/game/bot/ai_links.o \
+	src/game/bot/ai_main.o \
+	src/game/bot/ai_movement.o \
+	src/game/bot/ai_navigation.o \
+	src/game/bot/ai_nodes.o \
+	src/game/bot/ai_tools.o \
+	src/game/bot/ai_weapons.o \
+	src/game/bot/astar.o \
+	src/game/bot/bot_spawn.o \
 	src/game/common/h2vector.o \
 	src/game/common/h2rand.o \
 	src/game/common/h2singlylinkedlist.o \

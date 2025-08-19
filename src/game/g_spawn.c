@@ -1359,11 +1359,44 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 		ED_CallSpawn(ent);
 	}
 
+	/* in case the last entity in the entstring has spawntemp fields */
+	memset(&st, 0, sizeof(st));
+
 	gi.dprintf("%i entities inhibited.\n", inhibit);
 
 	G_FindTeams();
+
 	ConstructEntities();
+
+	if (deathmatch->value)
+	{
+		if (randomrespawn && randomrespawn->value)
+		{
+			PrecacheForRandomRespawn();
+		}
+	}
+	else
+	{
+		InitHintPaths();
+	}
+
+	if (deathmatch->value && gamerules && gamerules->value)
+	{
+		if (DMGame.PostInitSetup)
+		{
+			DMGame.PostInitSetup();
+		}
+	}
+
+	if (ctf->value)
+	{
+		CTFSpawn();
+	}
+
+	AI_NewMap();//JABot
 }
+
+/* =================================================================== */
 
 // EAX world preset types
 enum

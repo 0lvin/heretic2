@@ -346,7 +346,6 @@ ServerCommand(void)
 	{
 		SVCmd_WriteIP_f();
 	}
-#if 0
 	/* JABot[start] */
 	else if (Q_stricmp(cmd, "addbot") == 0)
 	{
@@ -376,7 +375,6 @@ ServerCommand(void)
 		BOT_RemoveBot(gi.argv(2));
 	}
 	/* [end] */
-#endif
 	else
 	{
 		gi.cprintf(NULL, PRINT_HIGH, "Unknown server command \"%s\"\n", cmd);

@@ -640,6 +640,15 @@ ExitLevel(void)
 	level.exitintermission = 0;
 	level.intermissiontime = 0;
 
+	if (CTFNextMap())
+	{
+		return;
+	}
+
+	//JABot[start] (Disconnect all bots before changing map)
+	BOT_RemoveBot("all");
+	//[end]
+
 	Com_sprintf(command, sizeof(command), "gamemap \"%s\"\n", level.changemap);
 	gi.AddCommandString(command);
 	level.changemap = NULL;
@@ -851,7 +860,8 @@ G_RunFrame(void)
 	/* treat each object in turn
 	   even the world gets a chance
 	   to think */
-	ent = g_edicts;
+	ent = &g_edicts[0];
+
 	for (i = 0; i < globals.num_edicts; i++, ent++)
 	{
 
@@ -932,9 +942,9 @@ G_RunFrame(void)
 			}
 		}
 
-		if (i > 0 && i <= maxclients->value)
+		if ((i > 0) && (i <= maxclients->value))
 		{
-			ClientBeginServerFrame (ent);
+			ClientBeginServerFrame(ent);
 			// ok, we need to hack in some bits here - the players think function never appears to get called. Why, I don't know
 			// kinda defies the point of having a think based system if your not going to use it. Still, never mind.
 			// we need the think function for when the player is a chicken, in order to keep track of how long he should remain a chicken
@@ -942,7 +952,10 @@ G_RunFrame(void)
 			if (ent->flags & FL_CHICKEN)	// We're set as a chicken
 				EntityThink(ent);
 
-			continue;
+			//JABot[start]
+			if (!ent->ai)
+			//[end]
+				continue;
 		}
 
 		// Use new physics for everything except flymissile (and movetype none)
@@ -985,9 +998,7 @@ G_RunFrame(void)
 	/* build the playerstate_t structures for all players */
 	ClientEndServerFrames();
 
-#if 0
 	//JABot[start]
 	AITools_Frame();	//give think time to AI debug tools
 	//[end]
-#endif
 }
