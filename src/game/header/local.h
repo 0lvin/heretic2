@@ -2642,6 +2642,7 @@ struct edict_s
 	char *team;
 	char *pathtarget;
 	char *deathtarget;
+	char *pathtargetname;
 	char *combattarget;
 	edict_t *target_ent;
 

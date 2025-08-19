@@ -35,6 +35,7 @@ It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
 Drawbacks:
+ * [ ] effects is not started sometime,
  * [ ] huge amount of possibly dead code
  * [ ] no menu implementations
  * [ ] no books implementations

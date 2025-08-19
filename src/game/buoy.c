@@ -357,7 +357,7 @@ void PrintLocalBuoyInfo(vec3_t org)
 
 					gi.dprintf("\nACTIVATE\n");
 					gi.dprintf("pathtarget: %s\n", level.buoy_list[i].pathtarget);
-					if ((found = G_Find(NULL, FOFS(deathtarget), level.buoy_list[i].pathtarget)))
+					if ((found = G_Find(NULL, FOFS(pathtargetname), level.buoy_list[i].pathtarget)))
 					{
 						gi.dprintf("entity to activate: %s\n", found->classname);
 					}

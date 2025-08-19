@@ -1467,7 +1467,7 @@ void MG_MonsterFirePathTarget(edict_t *self, char *ptarg)
 
 	ent = NULL;
 
-	while ((ent = G_Find(ent, FOFS(deathtarget), ptarg)) != NULL)
+	while ((ent = G_Find(ent, FOFS(pathtargetname), ptarg)) != NULL)
 	{
 		if (ent->use)
 			ent->use(ent, self, self);

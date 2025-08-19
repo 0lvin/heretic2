@@ -303,6 +303,7 @@ void ShutdownScripts(qboolean Complete)
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 void SaveScripts(FILE *FH, qboolean DoGlobals)
 {
 	int						size;
@@ -373,7 +374,7 @@ void LoadScripts(FILE *FH, qboolean DoGlobals)
 }
 
 
-static void
+void
 script_use(edict_t *ent, edict_t *other, edict_t *activator)
 {
 	CScript *s = (CScript*)ent->script;
@@ -416,6 +417,7 @@ void SP_script_runner (edict_t *ent)
 //	gi.setmodel (ent, ent->model);
 //	gi.linkentity(ent);
 }
+
 #ifdef __cplusplus
 } //end extern "C"
 #endif
