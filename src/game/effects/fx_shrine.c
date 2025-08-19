@@ -631,7 +631,7 @@ void FXCreateLightning(struct client_entity_s *self, centity_t *owner)
 	self->SpawnData -= 5;
 
 	// if the owner of the lightning is the main client then flash the screen
-	if (owner->current.number == fxi.cl->playernum + 1)
+	if (owner && owner->current.number == fxi.cl->playernum + 1)
 	{
 		// give a quick screen flash
 		fxi.Activate_Screen_Flash(0x80ffd0c0);

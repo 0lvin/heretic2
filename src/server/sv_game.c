@@ -491,7 +491,10 @@ qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
 static void
 SV_RemoveEffects(edict_t* ent, int type)
 {
-	ent->s.clientEffects.numEffects = 0;
+	if (developer && developer->value)
+	{
+		Com_Printf("%s: TODO: Unimplemented\n", __func__);
+	}
 }
 
 void
@@ -624,26 +627,10 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 	effect->needsUpdate = true;
 	effect->entity = ent;
 	effect->inUse = true;
-	effect->nonPersistant = false;
+	effect->nonPersistant = (type != (int)FX_MAGIC_PORTAL);
 
 	SZ_Init(&msg, effect->buf, sizeof(effect->buf));
 	MSG_WriteShort(&msg, type);
-
-	if (ent != NULL)
-	{
-		ent->s.clientEffects.buf = &effect->buf[0];
-		ent->s.clientEffects.bufSize = sizeof(effect->buf);
-		ent->s.clientEffects.numEffects = 1;
-
-		if (type == (int)FX_MAGIC_PORTAL)
-		{
-			ent->s.clientEffects.isPersistant = true;
-		}
-		else
-		{
-			ent->s.clientEffects.isPersistant = false;
-		}
-	}
 
 	testflags = flags;
 
@@ -729,13 +716,6 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 
 	SZ_Init(&msg, effect->buf, sizeof(effect->buf));
 	MSG_WriteShort(&msg, type);
-
-	if (ent != NULL)
-	{
-		ent->s.clientEffects.buf = &effect->buf[0];
-		ent->s.clientEffects.bufSize = sizeof(effect->buf);
-		ent->s.clientEffects.numEffects = 1;
-	}
 
 	testflags = flags;
 

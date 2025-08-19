@@ -663,10 +663,6 @@ G_InitEdict(edict_t *e)
 	e->gravity = 1.0;
 	e->s.number = e - g_edicts;
 
-	e->s.clientEffects.buf = NULL;
-	e->s.clientEffects.bufSize = 0;
-	e->s.clientEffects.freeBlock = 0;
-	e->s.clientEffects.numEffects = 0;
 	e->movetype = MOVETYPE_NONE;
 	e->friction = 1.0;
 	e->elasticity = ELASTICITY_SLIDE;
@@ -786,7 +782,6 @@ void
 G_FreeEdict(edict_t *ed)
 {
 	SinglyLinkedList_t msgs;
-	char *temp;
 	unsigned int	usageCount;
 	int		entnum;
 
@@ -819,15 +814,6 @@ G_FreeEdict(edict_t *ed)
 		FreeSkeleton(ed->s.rootJoint);
 	}
 
-	if (ed->s.clientEffects.buf)
-	{
-		temp = (char *)ed->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
-	}
-	else
-	{
-		temp = NULL;
-	}
-
 	msgs = ed->msgQ.msgs;
 	usageCount = ed->s.usageCount;
 	entnum = ed->s.number;
@@ -840,7 +826,6 @@ G_FreeEdict(edict_t *ed)
 
 	ed->s.usageCount = usageCount;
 	ed->msgQ.msgs = msgs;
-	ed->s.clientEffects.buf = (byte *)temp;
 	ed->s.number = entnum;
 
 	// End non-quake2.

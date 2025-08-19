@@ -1344,17 +1344,7 @@ ReadEdict(FILE *f, edict_t *ent)
 {
 	field_t *field;
 	SinglyLinkedList_t msgs;
-	byte *temp;
 	void *s;
-
-	if (ent->s.clientEffects.buf)
-	{
-		temp = ent->s.clientEffects.buf; // buffer needs to be stored to be cleared by the engine
-	}
-	else
-	{
-		temp = NULL;
-	}
 
 	msgs = ent->msgQ.msgs;
 
@@ -1366,7 +1356,6 @@ ReadEdict(FILE *f, edict_t *ent)
 	}
 
 	ent->script = s;
-	ent->s.clientEffects.buf = temp;
 
 	ent->msgQ.msgs = msgs;
 	ent->last_alert = NULL;

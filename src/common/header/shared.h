@@ -1458,17 +1458,6 @@ typedef struct
 	int				skin;
 } fmnodeinfo_t;
 
-typedef struct EffectsBuffer_s
-{
-	byte* buf;
-	int		bufSize;
-	int		freeBlock;
-	int		numEffects;
-	// jmarshall
-	qboolean isPersistant;
-	// jmarshall end
-} EffectsBuffer_t;
-
 /* entity_state_t is the information conveyed from the server
  * in an update message about entities that the client will
  * need to render in some way */
@@ -1509,9 +1498,6 @@ typedef struct entity_state_s
 
 	// required so we can place sounds for bmodels correctly in 3d space
 	vec3_t			bmodel_origin;
-
-	// Header block for list of all client effects attatched to this entity.
-	EffectsBuffer_t clientEffects;
 
 	// Specifies which parts (nodes) of the model are on/off, node colors etc.
 
@@ -1574,9 +1560,6 @@ typedef struct entity_xstate_s
 
 	// required so we can place sounds for bmodels correctly in 3d space
 	vec3_t			bmodel_origin;
-
-	// Header block for list of all client effects attatched to this entity.
-	EffectsBuffer_t clientEffects;
 
 	// Specifies which parts (nodes) of the model are on/off, node colors etc.
 

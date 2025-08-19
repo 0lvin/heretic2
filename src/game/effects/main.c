@@ -89,12 +89,6 @@ Clear(void)
 		{
 			RemoveOwnedEffectList(owner);
 		}
-
-		if (owner->current.clientEffects.buf)
-		{
-			fxi.TagFree(owner->current.clientEffects.buf);
-			owner->current.clientEffects.buf = NULL;
-		}
 	}
 
 	fxi.CL_ClearLightStyles();
