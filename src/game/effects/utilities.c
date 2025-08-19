@@ -570,9 +570,11 @@ float GetGravity()
 // Tells if we have not rendered _this reference point for a while.
 qboolean RefPointsValid(centity_t *owner)
 {
-	if (owner->referenceInfo==NULL ||
-			owner->current.renderfx & RF_IGNORE_REFS ||			// This one is necessary in case we're a chicken.
-			owner->referenceInfo->lastUpdate - fxi.cl->time > REF_MINCULLTIME)
+	if (!owner ||
+		owner->referenceInfo==NULL ||
+		/* This one is necessary in case we're a chicken. */
+		owner->current.renderfx & RF_IGNORE_REFS ||
+		owner->referenceInfo->lastUpdate - fxi.cl->time > REF_MINCULLTIME)
 		return false;
 	else
 		return true;

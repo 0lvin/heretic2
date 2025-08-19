@@ -93,8 +93,6 @@ void rat_runorder(edict_t *self);
 void rat_standorder(edict_t *self);
 void rat_pause (edict_t *self);
 
-int rat_standdecision (edict_t *self);
-int rat_eatdecision (edict_t *self);
 void rat_eatorder(edict_t *self);
 void rat_runorder(edict_t *self);
 void rathiss (edict_t *self);
@@ -103,8 +101,6 @@ void ratchatter (edict_t *self);
 void ratchew (edict_t *self);
 void ratswallow (edict_t *self);
 void ratjump(edict_t *self);
-
-void rat_init (void);
 
 void rat_pain(edict_t *self, G_Message_t *msg);
 void rat_death(edict_t *self, G_Message_t *msg);

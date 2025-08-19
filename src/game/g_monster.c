@@ -570,7 +570,6 @@ M_FlyCheck(edict_t *self)
 	self->nextthink = level.time + 5 + 10 * random();
 }
 
-
 void
 AttackFinished(edict_t *self, float time)
 {
@@ -1006,7 +1005,6 @@ M_MoveFrame(edict_t *self)
 	}
 
 	move = self->monsterinfo.currentmove;
-
 	if (!move)
 	{
 		/* if move is NULL, then this monster needs to have an anim set on it or all is lost. */
@@ -1160,8 +1158,6 @@ void monster_start_go (edict_t *self);
 void
 monster_triggered_spawn(edict_t *self)
 {
-	vec3_t	pos;
-
 	if (!self)
 	{
 		return;
@@ -1190,6 +1186,8 @@ monster_triggered_spawn(edict_t *self)
 
 	if ((self->classID == CID_ASSASSIN) && (self->spawnflags & MSF_ASS_TPORTAMBUSH))
 	{
+		vec3_t	pos;
+
 		FoundTarget (self, true);
 		VectorCopy(self->s.origin, pos);
 		pos[2]+=self->mins[2];
@@ -1255,7 +1253,6 @@ monster_death_use(edict_t *self)
 	}
 
 	self->flags &= ~(FL_FLY | FL_SWIM);
-//	self->monsterinfo.aiflags &= AI_GOOD_GUY;//WHY mask out everything above this flag???
 
 	if (self->item)
 	{
@@ -1443,6 +1440,7 @@ monster_start(edict_t *self)
 	if (st.item)
 	{
 		self->item = FindItemByClassname(st.item);
+
 		if (!self->item)
 		{
 			gi.dprintf("%s at %s has bad item: %s\n", self->classname,
@@ -1450,7 +1448,7 @@ monster_start(edict_t *self)
 		}
 	}
 
-	// randomize what frame they start on
+	/* randomize what frame they start on */
 //	if (self->monsterinfo.currentmove)
 //		self->s.frame = self->monsterinfo.currentmove->firstframe + (rand() % (self->monsterinfo.currentmove->lastframe - self->monsterinfo.currentmove->firstframe + 1));
 

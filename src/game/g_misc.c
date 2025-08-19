@@ -3228,7 +3228,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 	}
 }
 
-void
+static void
 BecomeDebris2(edict_t *self, float damage)
 {
 	float		size;
@@ -4615,24 +4615,8 @@ SkyFlyCheck(edict_t *self)
 void
 SkyFly(edict_t *self)
 {
-/*	if (deathmatch->value)
-	{*/
-		G_SetToFree(self);
-		return;
-/*	}
-//They're not being drawn, even after this is set- why not?  Did they stop?
-	self->svflags |= SVF_ALWAYS_SEND;
-	self->movetype = MOVETYPE_NOCLIP;
-	self->solid = SOLID_NOT;
-
-	self->touch = NULL;
-	self->isBlocked = NULL;
-	self->isBlocking = NULL;
-	self->bounced = NULL;
-//or just remove self after a time
-	self->think = SkyFlyCheck;
-	self->nextthink = level.time + 0.1;
-*/
+	G_SetToFree(self);
+	return;
 }
 
 void

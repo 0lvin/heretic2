@@ -35,8 +35,8 @@
 
 #define LIGHT_NOHALO	16
 
-static void TorchUse (edict_t *self, edict_t *other, edict_t *activator);
-static void TorchStart (edict_t *self);
+void TorchUse (edict_t *self, edict_t *other, edict_t *activator);
+void TorchStart (edict_t *self);
 void SpawnClientAnim(edict_t *self, byte type, char *sound);
 void create_fire_touch (edict_t *owner,vec3_t origin);
 
@@ -331,7 +331,8 @@ SP_env_fire(edict_t *self)
 	create_fire_touch(self,self->s.origin);
 }
 
-static void TorchUse (edict_t *self, edict_t *other, edict_t *activator)
+void
+TorchUse(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->spawnflags & LIGHT_STARTOFF)
 	{
@@ -345,7 +346,8 @@ static void TorchUse (edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-static void TorchStart (edict_t *self)
+void
+TorchStart (edict_t *self)
 {
 	if (self->spawnflags & LIGHT_STARTOFF)
 	{
