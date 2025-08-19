@@ -34,31 +34,34 @@ Comments:
 It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
-Drawbacks:
+Drawbacks, sorted by priority:
+ * [ ] fix attack angle direction,
+ * [ ] no action on button press,
+ * [ ] game memory management, fix or replace singlelinkedlist,
+ * [ ] broken jumps,
+ * [ ] save code broken as not all callbacks registered
  * [ ] effects is not started sometime,
+ * [ ] only gl1 has full support render
+ * [ ] need to rewrite RF_TRANS_ADD to use quake2 logic
+ * [ ] unsupported foodstep with unsupported player ground surface,
+ * [ ] third person code is different to quake 2,
+ * [ ] correctly implement misc_remote_camera.
+ * [ ] progress bars has custom implementation,
+ * [ ] color type/paticles/effects,
+ * [ ] get rid C++ code,
+ * [ ] other logic of animations, reuse jabots code or replace to more sync logic,
  * [ ] huge amount of possibly dead code
  * [ ] no menu implementations
  * [ ] no books implementations
  * [ ] code is little bit mess
- * [ ] only gl1 has full support render
- * [ ] need to rewrite RF_TRANS_ADD to use quake2 logic
+ * [x] effects protocol is different to quake 2,
  * [x] code use different angles values to quake2,
- * [ ] fix attack angle direction,
- * [ ] unsupported foodstep with unsupported player ground surface,
- * [ ] broken jumps,
- * [ ] third person code is different to quake 2,
- * [ ] effects protocol is different to quake 2,
- * [ ] progress bars has custom implementation,
- * [ ] color type/paticles,
  * [x] ANGLE_1 usage in client code,
  * [x] different move code and noclip,
  * [x] implement books as sprite,
  * [x] Incorrect 16 bit frame flag unset,
  * [x] MAX_MODELS/MAX_SOUND define hardcode,
- * [ ] no action on button press,
- * [ ] save code broken as not all callbacks registered
  * [x] soft,gl3,vk render has incorrect angles (used same angle in all renders).
- * [ ] correctly implement misc_remote_camera.
 
 Minimal file set from Loki release:
 ```
