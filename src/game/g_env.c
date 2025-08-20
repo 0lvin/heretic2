@@ -94,10 +94,10 @@ void smoke_use (edict_t *self, edict_t *other, edict_t *activator)
 	{
 		if (self->PersistantCFX)
 		{
-			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_SMOKE);
+			G_RemovePersistantEffect(self->PersistantCFX, REMOVE_SMOKE);
 			self->PersistantCFX = 0;
 		}
-		gi.RemoveEffects(self, FX_ENVSMOKE);
+		G_RemoveEffects(self, FX_ENVSMOKE);
 		self->spawnflags |= START_OFF;
 	}
 }

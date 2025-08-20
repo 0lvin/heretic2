@@ -2012,7 +2012,7 @@ void gorgon_prethink (edict_t *self)
 	}
 	else
 	{
-		gi.RemoveEffects(self, FX_M_EFFECTS);
+		G_RemoveEffects(self, FX_M_EFFECTS);
 		self->gravity = 1.0f;
 		self->svflags &= ~SVF_TAKE_NO_IMPACT_DMG;
 		if (AVG_VEC3T(self->rrs.scale) > 0.5)

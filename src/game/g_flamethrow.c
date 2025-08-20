@@ -79,7 +79,7 @@ void flamethrower_use( edict_t *self, edict_t *other, edict_t *activator )
 		{
 			//Toggle off
 			self->wait = -1;
-			//gi.RemoveEffects( &self->s, FX_FLAMETHROWER );
+			//G_RemoveEffects( &self->s, FX_FLAMETHROWER );
 		}
 		else if (self->wait == -1)
 		{

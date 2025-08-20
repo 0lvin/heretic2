@@ -241,7 +241,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 
 	if (self->owner->s.effects&EF_DISABLE_EXTRA_FX)
 	{
-		gi.RemoveEffects(self,0);
+		G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 		G_FreeEdict(self);
 		return;
 	}

@@ -423,6 +423,7 @@ InitGame(void)
 		Sys_Error("Unable to player library");
 	}
 
+	G_ClearPersistantEffects();
 	/* items */
 	InitItems();
 
@@ -1514,7 +1515,7 @@ ReadLevel(const char *filename)
 	// Load up all the persistant effects and fire them off.
 
 	fread (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
-	gi.ClearPersistantEffects();
+	G_ClearPersistantEffects();
 
 	fclose(f);
 

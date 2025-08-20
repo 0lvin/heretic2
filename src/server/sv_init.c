@@ -271,7 +271,7 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	Q_strlcpy(sv.configstrings[CS_NAME], server,
 		sizeof(sv.configstrings[CS_NAME]));
 
-	SV_ClearPersistantEffects();
+	ge->ClearPersistantEffects();
 
 	if (serverstate != ss_game)
 	{

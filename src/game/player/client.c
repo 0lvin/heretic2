@@ -1249,9 +1249,9 @@ void player_leader_effect(void)
 			else
 			if (ent->Leader_PersistantCFX)
 			{
-				gi.RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER);
-				gi.RemoveEffects(ent, FX_SHOW_LEADER);
-				ent->Leader_PersistantCFX =0;
+				G_RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER);
+				G_RemoveEffects(ent, FX_SHOW_LEADER);
+				ent->Leader_PersistantCFX = 0;
 			}
 
 		}
@@ -1585,13 +1585,13 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	// Get rid of the player's persistent effect.
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_DIE);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_DIE);
 		self->PersistantCFX = 0;
 	}
 
 	if (self->Leader_PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->Leader_PersistantCFX, REMOVE_LEADER_DIE);
+		G_RemovePersistantEffect(self->Leader_PersistantCFX, REMOVE_LEADER_DIE);
 		self->Leader_PersistantCFX =0;
 	}
 
@@ -1602,8 +1602,8 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		{
 			if (self->client->Meteors[i]->PersistantCFX)
 			{
-				gi.RemovePersistantEffect(self->client->Meteors[i]->PersistantCFX, REMOVE_METEOR);
-				gi.RemoveEffects(self, FX_SPELL_METEORBARRIER+i);
+				G_RemovePersistantEffect(self->client->Meteors[i]->PersistantCFX, REMOVE_METEOR);
+				G_RemoveEffects(self, FX_SPELL_METEORBARRIER+i);
 				self->client->Meteors[i]->PersistantCFX = 0;
 			}
 			G_SetToFree(self->client->Meteors[i]);
@@ -1620,9 +1620,9 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	gi.CreatePersistantEffect(self,FX_REMOVE_EFFECTS,CEF_BROADCAST|CEF_OWNERS_ORIGIN,NULL,"s",0);
 
 	// Get rid of all the stuff set up in PlayerFirstSeenInit...
-	gi.RemoveEffects(self, FX_SHADOW);
-	gi.RemoveEffects(self, FX_WATER_PARTICLES);
-	gi.RemoveEffects(self, FX_CROSSHAIR);
+	G_RemoveEffects(self, FX_SHADOW);
+	G_RemoveEffects(self, FX_WATER_PARTICLES);
+	G_RemoveEffects(self, FX_CROSSHAIR);
 
 	// Remove any shrine effects we have going.
 	PlayerKillShrineFX(self);
@@ -3268,7 +3268,7 @@ PutClientInServer(edict_t *ent)
 
 		// Just in case we were on fire when we died.
 
-		gi.RemoveEffects(ent, FX_FIRE_ON_ENTITY);
+		G_RemoveEffects(ent, FX_FIRE_ON_ENTITY);
 
 		// Make us invincible for a few seconds after spawn.
 
@@ -3850,8 +3850,8 @@ ClientDisconnect(edict_t *ent)
 
 	if (ent->Leader_PersistantCFX)
 	{
-		gi.RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER_CLIENT);
-		gi.RemoveEffects(ent, FX_SHOW_LEADER);
+		G_RemovePersistantEffect(ent->Leader_PersistantCFX, REMOVE_LEADER_CLIENT);
+		G_RemoveEffects(ent, FX_SHOW_LEADER);
 		ent->Leader_PersistantCFX =0;
 	}
 

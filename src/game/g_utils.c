@@ -1015,7 +1015,7 @@ void G_SetToFree(edict_t *self)
 {
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_ENTITY);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_ENTITY);
 		self->PersistantCFX = 0;
 	}
 

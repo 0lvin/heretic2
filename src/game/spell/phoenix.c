@@ -120,7 +120,7 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 
 	VectorClear(self->velocity);
    // Turn off the client effect
-	gi.RemoveEffects(self, FX_WEAPON_PHOENIXMISSILE);
+	G_RemoveEffects(self, FX_WEAPON_PHOENIXMISSILE);
 
 	G_SetToFree(self);
 }

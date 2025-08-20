@@ -15,7 +15,7 @@
 
 typedef enum FX_Type_e
 {	// NOTE We currently have 126 client effects, we cannot exceed 32768 - ha !! Like we'll ever reach that !
-	FX_REMOVE_EFFECTS=0,			// special fx type for removing client fx
+	FX_REMOVE_EFFECTS = 0,			// special fx type for removing client fx
 	FX_TEST,
 	FX_EXPLOSION1,
 	FX_EXPLOSION2,
@@ -286,27 +286,5 @@ typedef enum HighPriestessStaff_e
 	HP_STAFF_INIT,
 	HP_STAFF_TRAIL,
 } HighPriestessStaff_t;
-
-#define ENTITY_FX_BUF_SIZE 192
-#define MAX_PERSISTANT_EFFECTS		512
-
-typedef struct PerEffectsBuffer_s
-{
-	byte	buf[ENTITY_FX_BUF_SIZE];
-	int		bufSize;
-	int		freeBlock;
-	int		numEffects;
-	int		send_mask;
-	int		demo_send_mask;
-	int		fx_num;
-	// jmarshall
-	qboolean inUse;
-	qboolean needsUpdate;
-	qboolean nonPersistant;
-
-	void* entity;
-	int data_size;
-	// jmarshall end
-} PerEffectsBuffer_t;
 
 #endif

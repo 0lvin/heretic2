@@ -453,51 +453,13 @@ SV_ShutdownGameProgs(void)
 }
 
 #include "../game/common/fx.h"
-int sv_numeffects = 0;
 PerEffectsBuffer_t SV_Persistant_Effects[MAX_PERSISTANT_EFFECTS];
 
 game_export_t* GetGameAPI(game_import_t* import);
 
 void MSG_WriteData(sizebuf_t* sb, byte* data, int len);
 
-
 static void
-SV_CreateEffectEvent(byte EventId, edict_t* ent, int type, int flags, vec3_t origin, char* format, ...)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-static void
-SV_RemoveEffectsEvent(byte EventId, edict_t* ent, int type)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-qboolean SV_RemovePersistantEffect(int toRemove, int call_from)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-	return false;
-}
-
-static void
-SV_RemoveEffects(edict_t* ent, int type)
-{
-	if (developer && developer->value)
-	{
-		Com_Printf("%s: TODO: Unimplemented\n", __func__);
-	}
-}
-
-void
 SV_WriteEffectToBuffer(sizebuf_t* msg, char* format, va_list args)
 {
 	int len = strlen(format);
@@ -589,13 +551,6 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 		enta = -1;
 	}
 
-	if (sv_numeffects >= MAX_PERSISTANT_EFFECTS)
-	{
-		Com_Printf("Warning : Unable to create persistant effect\n");
-		va_end(args);
-		return -1;
-	}
-
 	for (int i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
 	{
 		if (SV_Persistant_Effects[i].inUse == false)
@@ -607,8 +562,9 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 
 	if (effectID == -1)
 	{
+		Com_Printf("Warning : Unable to create persistant effect\n");
 		va_end(args);
-		return -1;
+		return 0;
 	}
 
 	if (type == FX_FIRE)
@@ -657,7 +613,7 @@ SV_CreatePersistantEffect(edict_t* ent, int type, int flags, vec3_t origin, char
 
 	va_end(args);
 
-	return effectID;
+	return effectID + 1;
 }
 
 void
@@ -680,13 +636,6 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 		enta = -1;
 	}
 
-	if (sv_numeffects >= MAX_PERSISTANT_EFFECTS)
-	{
-		Com_Printf("Warning : Unable to create persistant effect\n");
-		va_end(args);
-		return;
-	}
-
 	for (int i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
 	{
 		if (SV_Persistant_Effects[i].inUse == false)
@@ -698,6 +647,7 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 
 	if (effectID == -1)
 	{
+		Com_Printf("Warning : Unable to create persistant effect\n");
 		va_end(args);
 		return;
 	}
@@ -740,14 +690,6 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 
 	va_end(args);
 }
-
-void
-SV_ClearPersistantEffects(void)
-{
-	sv_numeffects = 0;
-	memset(&SV_Persistant_Effects, 0, sizeof(SV_Persistant_Effects));
-}
-
 
 /*
  * Init the game subsystem for a new map
@@ -836,18 +778,11 @@ SV_InitGameProgs(void)
 	import.FS_NextPath = FS_NextPath;
 
 	import.CreateEffect = SV_CreateEffect;
-	import.RemoveEffects = SV_RemoveEffects;
-	import.CreateEffectEvent = SV_CreateEffectEvent;
-	import.RemoveEffectsEvent = SV_RemoveEffectsEvent;
 	import.CreatePersistantEffect = SV_CreatePersistantEffect;
-	import.RemovePersistantEffect = SV_RemovePersistantEffect;
-	import.ClearPersistantEffects = SV_ClearPersistantEffects;
 
-	import.Persistant_Effects_Array = &SV_Persistant_Effects;
+	import.Persistant_Effects_Array = SV_Persistant_Effects;
 
 	ge = (game_export_t *)Sys_GetGameAPI(&import);
-
-	SV_ClearPersistantEffects();
 
 	if (!ge)
 	{

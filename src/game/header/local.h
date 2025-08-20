@@ -3384,6 +3384,9 @@ qboolean G_CheckDistances(vec3_t origin, float dist);
 void G_SoundRemove(char* name);
 void G_CleanLevel(void);
 void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs);
+void G_RemoveEffects(edict_t* ent, int type);
+qboolean G_RemovePersistantEffect(int toRemove, int call_from);
+void G_ClearPersistantEffects(void);
 
 int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent);
 int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo);

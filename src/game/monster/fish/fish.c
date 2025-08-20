@@ -798,10 +798,10 @@ void fish_dead(edict_t *self)
 	self->nextthink = level.time + 0.1;
 
 	// stop the fish making bubbles
-	gi.RemoveEffects(self, FX_WATER_BUBBLE);
+	G_RemoveEffects(self, FX_WATER_BUBBLE);
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_FISH);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_FISH);
 		self->PersistantCFX = 0;
 	}
 

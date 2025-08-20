@@ -101,11 +101,11 @@ void PlayerKillShrineFX(edict_t *self)
 	// turn off the run shrine should we need to
 
 	self->s.effects &= ~EF_SPEED_ACTIVE;
-	gi.RemoveEffects(self, FX_FOOT_TRAIL);
+	G_RemoveEffects(self, FX_FOOT_TRAIL);
 
 	// Kill any lights that may already be out there for this player.
 
-	gi.RemoveEffects(self, FX_PLAYER_TORCH);
+	G_RemoveEffects(self, FX_PLAYER_TORCH);
 
 	// Kill lungs.
 
@@ -133,7 +133,7 @@ void PlayerKillShrineFX(edict_t *self)
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(self, FX_TOME_OF_POWER);
+	G_RemoveEffects(self, FX_TOME_OF_POWER);
 
 	// Turn off the tome at the client effect end through client flags that are passed down.
 
@@ -155,7 +155,7 @@ void PlayerRestartShrineFX(edict_t *self)
 	{
 		// Kill any lights that may already be out there for this player.
 
-		gi.RemoveEffects(self, FX_PLAYER_TORCH);
+		G_RemoveEffects(self, FX_PLAYER_TORCH);
 
 		// Create the light and the tome of power.
 
@@ -168,7 +168,7 @@ void PlayerRestartShrineFX(edict_t *self)
 	{
 		// Kill any lights that may already be out there for this player.
 
-		gi.RemoveEffects(self, FX_TOME_OF_POWER);
+		G_RemoveEffects(self, FX_TOME_OF_POWER);
 
 		// Create the light and the tome of power.
 
@@ -181,7 +181,7 @@ void PlayerRestartShrineFX(edict_t *self)
 	{
 		// Kill any lights that may already be out there for this player.
 
-		gi.RemoveEffects(self, FX_FOOT_TRAIL);
+		G_RemoveEffects(self, FX_FOOT_TRAIL);
 
 		// Create the light and the tome of power.
 
@@ -454,12 +454,12 @@ void deal_with_shrine_node(edict_t *self)
 
 	// But kill the shrine ball thats out there for this shrine.
 
-	gi.RemoveEffects(dest, FX_SHRINE_BALL);
+	G_RemoveEffects(dest, FX_SHRINE_BALL);
 
 	// Kill the glowing ball in the middle.
 	if (dest->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(dest->PersistantCFX, REMOVE_SHRINE);
+		G_RemovePersistantEffect(dest->PersistantCFX, REMOVE_SHRINE);
 		dest->PersistantCFX = 0;
 	}
 
@@ -1055,7 +1055,7 @@ void player_shrine_light_effect(edict_t *self)
 
 	// Kill any lights that may already be out there for this player.
 
-	gi.RemoveEffects(self, FX_PLAYER_TORCH);
+	G_RemoveEffects(self, FX_PLAYER_TORCH);
 
 	// Create the light and the tome of power.
 
@@ -1498,7 +1498,7 @@ void player_shrine_powerup_effect(edict_t *self)
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(self, FX_TOME_OF_POWER);
+	G_RemoveEffects(self, FX_TOME_OF_POWER);
 
 	// Create the tome of power.
 
@@ -1644,7 +1644,7 @@ void shrine_speed_core (edict_t *self, edict_t *other)
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(other, FX_FOOT_TRAIL);
+	G_RemoveEffects(other, FX_FOOT_TRAIL);
 
 	// Create the tome of power.
 

@@ -38,7 +38,7 @@ void waterdrip_use (edict_t *self, edict_t *other, edict_t *activator)
 		waterdrip_go(self);
 	else
 	{
-		gi.RemoveEffects(self,0);
+		G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 		self->PersistantCFX = 0;
 	}
 }
@@ -93,10 +93,10 @@ void fountain_use (edict_t *self, edict_t *other, edict_t *activator)
 	{
 		if (self->PersistantCFX)
 		{
-			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_WATER);
+			G_RemovePersistantEffect(self->PersistantCFX, REMOVE_WATER);
 			self->PersistantCFX = 0;
 		}
-		gi.RemoveEffects(self, FX_FOUNTAIN);
+		G_RemoveEffects(self, FX_FOUNTAIN);
 		self->spawnflags |= FOUNTAIN_OFF;
 		self->s.sound = 0;
 	}

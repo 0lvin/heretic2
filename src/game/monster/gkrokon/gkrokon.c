@@ -160,7 +160,7 @@ void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *S
 	T_DamageRadius(self, self->owner, self, 5.0,
 					self->dmg, self->dmg/4, DAMAGE_NO_KNOCKBACK|DAMAGE_ATTACKER_IMMUNE,MOD_DIED);
 
-	gi.RemoveEffects(self, 0);
+	G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 
 	if (IsDecalApplicable(self, Other, self->s.origin, Surface, Plane, planeDir))
 	{

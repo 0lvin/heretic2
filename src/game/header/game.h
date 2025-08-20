@@ -123,6 +123,28 @@ struct edict_s
 
 /* =============================================================== */
 
+#define ENTITY_FX_BUF_SIZE 192
+#define MAX_PERSISTANT_EFFECTS		512
+
+typedef struct PerEffectsBuffer_s
+{
+	byte	buf[ENTITY_FX_BUF_SIZE];
+	int		bufSize;
+	int		freeBlock;
+	int		numEffects;
+	int		send_mask;
+	int		demo_send_mask;
+	int		fx_num;
+	// jmarshall
+	qboolean inUse;
+	qboolean needsUpdate;
+	qboolean nonPersistant;
+
+	void* entity;
+	int data_size;
+	// jmarshall end
+} PerEffectsBuffer_t;
+
 /* functions provided by the main engine */
 typedef struct
 {
@@ -221,13 +243,7 @@ typedef struct
 
 	/* Heretic 2 specific */
 	void	(*CreateEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	void	(*RemoveEffects)(edict_t *ent, int type);
-	void	(*CreateEffectEvent) (byte EventId, edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	void	(*RemoveEffectsEvent)(byte EventId, edict_t *ent, int type);
 	int		(*CreatePersistantEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
-	qboolean	(*RemovePersistantEffect) (int toRemove, int call_from);	// removes the effect from the server's persistant effect list.
-					// The effect is not removed on the client									// This should be done by removing the effects from the owning entity or freein
-	void	(*ClearPersistantEffects) (void);
 
 	// Files will be memory mapped read only. The returned buffer may be part of a larger '.pak'
 	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
@@ -235,7 +251,7 @@ typedef struct
 	const char	*(*FS_NextPath)(const char *prevpath);
 
 	// pointer to the server side persistant effects arrary
-	void	*Persistant_Effects_Array;
+	PerEffectsBuffer_t *Persistant_Effects_Array;
 } game_import_t;
 
 /* functions exported by the game subsystem */
@@ -289,4 +305,7 @@ typedef struct
 	int edict_size;
 	int num_edicts;             /* current number, <= max_edicts */
 	int max_edicts;
+
+	/* extended API */
+	void	(*ClearPersistantEffects) (void);
 } game_export_t;

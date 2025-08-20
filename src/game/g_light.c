@@ -186,11 +186,11 @@ void fire_use (edict_t *self, edict_t *other, edict_t *activator)
 	{
 		if (self->PersistantCFX)
 		{
-			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_FIRE);
+			G_RemovePersistantEffect(self->PersistantCFX, REMOVE_FIRE);
 			self->PersistantCFX = 0;
 		}
 		self->s.sound = 0;
-		gi.RemoveEffects(self, FX_FIRE);
+		G_RemoveEffects(self, FX_FIRE);
 		self->spawnflags |= FIRE_OFF;
 		G_FreeEdict(self->enemy);
 

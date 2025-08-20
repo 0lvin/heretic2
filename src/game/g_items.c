@@ -1596,7 +1596,7 @@ Pickup_Health(edict_t *ent, edict_t *other)
 		if (other->fire_damage_time<=0)
 		{
 			other->fire_damage_time = 0;
-//			gi.RemoveEffects(other, FX_FIRE_ON_ENTITY);//turn off CFX too
+//			G_RemoveEffects(other, FX_FIRE_ON_ENTITY);//turn off CFX too
 			other->s.effects |= EF_MARCUS_FLAG1;		// Notify the effect to turn itself off.
 		}
 	}
@@ -1951,7 +1951,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 
 		// Once picked up, the item is gone forever, so remove it's client effect(s).
 
-		gi.RemoveEffects(ent,0);
+		G_RemoveEffects(ent, FX_REMOVE_EFFECTS);
 
 		// The persistent part is removed from the server here.
 

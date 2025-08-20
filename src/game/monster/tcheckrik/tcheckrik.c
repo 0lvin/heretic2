@@ -395,7 +395,7 @@ void insect_death(edict_t *self, G_Message_t *msg)
 	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
-	gi.RemoveEffects(self, FX_I_EFFECTS);
+	G_RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 
 	self->deadflag = DEAD_DEAD;
@@ -715,7 +715,7 @@ void insectSpell(edict_t *self, float whichspell)
 
 void insectReleaseSpell (edict_t *self)
 {
-	gi.RemoveEffects(self, FX_I_EFFECTS);
+	G_RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX | EF_MARCUS_FLAG1;
 	self->damage_debounce_time = true;
 }
@@ -1153,7 +1153,7 @@ void insect_pain(edict_t *self, G_Message_t *msg)
 	if (!force_damage&&(frandk() * self->health)>damage)
 		return;
 
-	gi.RemoveEffects(self, FX_I_EFFECTS);
+	G_RemoveEffects(self, FX_I_EFFECTS);
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 	//sound
 	insect_random_pain_sound(self);

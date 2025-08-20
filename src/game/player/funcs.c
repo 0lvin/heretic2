@@ -1231,7 +1231,7 @@ void G_PlayerSpellStopShieldAttack(edict_t *self)
 {
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_SHIELD);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_SHIELD);
 		self->PersistantCFX = 0;
 		self->s.sound = 0;
 	}

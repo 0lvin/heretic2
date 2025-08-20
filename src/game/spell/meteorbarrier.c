@@ -57,8 +57,8 @@ static void MeteorBarrierDie(edict_t *self, int Flags)
 	// remove the persistant effect from the persistant effect list
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
-		gi.RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
+		G_RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
 		self->PersistantCFX = 0;
 	}
 
@@ -191,8 +191,8 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 	// remove the persistant effect from the persistant effect list
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
-		gi.RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
+		G_RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
 		self->PersistantCFX = 0;
 	}
 
@@ -311,8 +311,8 @@ static void MeteorBarrierSearchThink(edict_t *self)
 			// remove the persistant effect from the persistant effect list
 			if (self->PersistantCFX)
 			{
-				gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
-				gi.RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
+				G_RemovePersistantEffect(self->PersistantCFX, REMOVE_METEOR);
+				G_RemoveEffects(self->owner, FX_SPELL_METEORBARRIER+self->health);
 				self->PersistantCFX = 0;
 			}
 

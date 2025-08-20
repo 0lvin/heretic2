@@ -15,7 +15,7 @@ void create_redarrow(edict_t *redarrow);
 
 void RedRainRemove(edict_t *self)
 {
-	gi.RemoveEffects(self, 0);
+	G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 	G_SetToFree(self);
 }
 
@@ -333,7 +333,7 @@ void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 	damagearea->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 
 	// Turn off the client effect
-	gi.RemoveEffects(self, FX_WEAPON_REDRAINMISSILE);
+	G_RemoveEffects(self, FX_WEAPON_REDRAINMISSILE);
 	G_SetToFree(self);
 }
 
@@ -423,7 +423,7 @@ void SpellCastRedRain(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t
 	redarrow->owner = caster;
 	G_LinkMissile(redarrow);
 
-	gi.RemoveEffects(caster, FX_WEAPON_REDRAINGLOW);
+	G_RemoveEffects(caster, FX_WEAPON_REDRAINGLOW);
 
 	if (powerup)
 	{	// Play powerup firing sound

@@ -368,6 +368,7 @@ GetGameAPI(game_import_t *import)
 	globals.Init = InitGame;
 	globals.Shutdown = ShutdownGame;
 	globals.SpawnEntities = SpawnEntities;
+	globals.ClearPersistantEffects = G_ClearPersistantEffects;
 
 	globals.WriteGame = WriteGame;
 	globals.ReadGame = ReadGame;
@@ -674,7 +675,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 		{//FIXME: make hiss and smoke too
 			gi.dprintf("%s fire doused\n", self->classname);
 			self->fire_damage_time = 0;
-//			gi.RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
+//			G_RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
 			self->s.effects &= ~EF_ON_FIRE;			// Use this to instead notify the fire to stop.
 			gi.CreateEffect(NULL,
 					FX_ENVSMOKE,
@@ -729,7 +730,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 	else if(self->fire_damage_time>0)
 	{
 		self->fire_damage_time = 0;
-//		gi.RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
+//		G_RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
 		self->s.effects &= ~EF_ON_FIRE;		// Use this to instead notify the fire to stop.
 		return;
 	}
@@ -1001,4 +1002,63 @@ G_RunFrame(void)
 	//JABot[start]
 	AITools_Frame();	//give think time to AI debug tools
 	//[end]
+}
+
+void
+G_RemoveEffects(edict_t* ent, int type)
+{
+	int i;
+
+	for (i = 0; i < MAX_PERSISTANT_EFFECTS; i++)
+	{
+		if (gi.Persistant_Effects_Array[i].nonPersistant ||
+			!gi.Persistant_Effects_Array[i].inUse)
+		{
+			continue;
+		}
+
+		if ((type == FX_REMOVE_EFFECTS) ||
+			(gi.Persistant_Effects_Array[i].fx_num == type))
+		{
+			if (gi.Persistant_Effects_Array[i].entity == ent)
+			{
+				gi.Persistant_Effects_Array[i].inUse = false;
+			}
+		}
+	}
+}
+
+// removes the effect from the server's persistant effect list.
+// The effect is not removed on the client
+// This should be done by removing the effects from the owning entity or freein
+qboolean
+G_RemovePersistantEffect(int toRemove, int call_from)
+{
+	/* 0 used as unexested effect */
+	toRemove--;
+
+	if (toRemove >= MAX_PERSISTANT_EFFECTS ||
+		toRemove < 0 ||
+		gi.Persistant_Effects_Array[toRemove].nonPersistant)
+	{
+		Com_Printf("%s: Effect %d does not exist\n", __func__, toRemove);
+		return false;
+	}
+
+	if (gi.Persistant_Effects_Array[toRemove].inUse)
+	{
+		gi.Persistant_Effects_Array[toRemove].inUse = false;
+		return true;
+	}
+
+	Com_Printf("%s: Effect %d is already unused %d\n",
+		__func__, toRemove, call_from);
+
+	return false;
+}
+
+void
+G_ClearPersistantEffects(void)
+{
+	memset(gi.Persistant_Effects_Array, 0, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS));
 }

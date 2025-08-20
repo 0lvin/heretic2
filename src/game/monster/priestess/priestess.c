@@ -1439,10 +1439,10 @@ void priestess_dead( edict_t *self )
 
 	if (self->PersistantCFX)
 	{
-		gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_PRIESTESS);
+		G_RemovePersistantEffect(self->PersistantCFX, REMOVE_PRIESTESS);
 		self->PersistantCFX = 0;
 	}
-	gi.RemoveEffects(self, 0);
+	G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 
 	gi.linkentity(self);
 

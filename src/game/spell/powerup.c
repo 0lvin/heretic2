@@ -16,7 +16,7 @@ SpellCastPowerup(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimD
 
 	// Kill any tomes that may already be out there for this player.
 
-	gi.RemoveEffects(caster, FX_TOME_OF_POWER);
+	G_RemoveEffects(caster, FX_TOME_OF_POWER);
 
 	// if we are a chicken, lets make us a player again
 	if (caster->flags & FL_CHICKEN)

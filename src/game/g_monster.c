@@ -2499,7 +2499,7 @@ void M_EndDeath( edict_t *self)
 		self->think = NULL;
 		self->nextthink = -1;//stop thinkin'
 
-		gi.RemoveEffects(self, 0);
+		G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 	}
 	self->s.effects |= EF_DISABLE_EXTRA_FX;
 

@@ -3644,10 +3644,10 @@ void Teleporter_Deactivate(edict_t *self, G_Message_t *msg)
 	// if there's an effect out there, kill it
 	if (self->enemy)
 	{
-		gi.RemoveEffects(self->enemy, FX_TELEPORT_PAD);
+		G_RemoveEffects(self->enemy, FX_TELEPORT_PAD);
 		if (self->enemy->PersistantCFX)
 		{
-			gi.RemovePersistantEffect(self->enemy->PersistantCFX, REMOVE_TELEPORT_PAD);
+			G_RemovePersistantEffect(self->enemy->PersistantCFX, REMOVE_TELEPORT_PAD);
 			self->enemy->PersistantCFX = 0;
 		}
 		self->enemy = NULL;
@@ -3831,7 +3831,7 @@ misc_magic_portal_use(edict_t *self, edict_t *other, edict_t *activator)
 		// remove the persistant effect
 		if (self->PersistantCFX)
 		{
-			gi.RemovePersistantEffect(self->PersistantCFX, REMOVE_PORTAL);
+			G_RemovePersistantEffect(self->PersistantCFX, REMOVE_PORTAL);
 			self->PersistantCFX = 0;
 		}
 
@@ -3997,7 +3997,7 @@ sound_ambient_use(edict_t *self, edict_t *other, edict_t *activator)
 	if (self->count)	// This is just a flag to show it's on
 	{
 		self->count = 0;
-		gi.RemoveEffects(self,0);
+		G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 	}
 	else
 		soundambient_think(self);
@@ -4635,14 +4635,14 @@ fire_spark_think(edict_t *self)
 void fire_spark_gone (edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->use = NULL;
-	gi.RemoveEffects(self, FX_SPARKS);
+	G_RemoveEffects(self, FX_SPARKS);
 	G_FreeEdict(self);
 }
 
 void
 fire_spark_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	gi.CreateEffect(self, FX_SPARKS, CEF_FLAG6|CEF_FLAG7|CEF_FLAG8, self->s.origin, "d", vec3_up);
+	gi.CreateEffect(self, FX_SPARKS, CEF_FLAG6 | CEF_FLAG7 | CEF_FLAG8, self->s.origin, "d", vec3_up);
 
 	self->use = fire_spark_gone;
 
