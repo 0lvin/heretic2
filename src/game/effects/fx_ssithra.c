@@ -172,8 +172,6 @@ void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec
 	AddEffect(owner, missile);
 }
 
-
-
 // ************************************************************************************************
 // FXSsithraArrowExplode
 // ************************************************************************************************

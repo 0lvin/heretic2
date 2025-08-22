@@ -23,13 +23,11 @@ void PreCacheScorch()
 	scorch_models[0] = fxi.RegisterModel("sprites/fx/scorchmark.sp2");
 }
 
-
 static qboolean
 EndLessLoop(struct client_entity_s *self, centity_t *owner)
 {
 	return true;
 }
-
 
 // --------------------------------------------------------------
 // Find exact plane to decal the scorchmark to

@@ -230,7 +230,6 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 	}
 }
 
-
 // ****************************************************************************
 // FXGlobeOfOuchinessGlobeThink -
 // ****************************************************************************
@@ -342,7 +341,7 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 	AuraThinker->flags|=CEF_NO_DRAW;
 	AuraThinker->dlight=CE_DLight_new(LightColor,150.0,0.0);
 	AuraThinker->Update=FXGlobeOfOuchinessAuraThink;
-	AuraThinker->extra=owner;//(void *)(&fxi.server_entities[CasterEntnum]);// The caster's centity_t.
+	AuraThinker->extra=owner; // The caster's centity_t.
 
 	AddEffect(owner,AuraThinker);
 
@@ -553,7 +552,6 @@ void FXInsectGlow(centity_t *owner,int type,int flags,vec3_t origin, short Caste
 	GlowballSpawner->color.g=0;
 	GlowballSpawner->Update=FXGlobeOfOuchinessGlowballSpawnerThink;
 	GlowballSpawner->extra=(void *)(&fxi.server_entities[CasterEntnum]);
-//	GlowballSpawner->extra=(void *)owner;
 
 	AddEffect(owner,GlowballSpawner);
 }
@@ -688,7 +686,6 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(owner, hellbolt);
 
-//
 	hellbolt = ClientEntity_new(type, CEF_OWNERS_ORIGIN, origin, NULL, 10000);
 
 	hellbolt->r.model = spear_models[2];
@@ -700,7 +697,6 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
 	hellbolt->AddToView = LinkedEntityUpdatePlacement;
-
 
 	AddEffect(owner, hellbolt);
 }

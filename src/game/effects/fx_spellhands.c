@@ -39,7 +39,6 @@ void PreCacheHands()
 
 // --------------------------------------------------------------
 
-
 static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	int				part_type;

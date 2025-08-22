@@ -81,7 +81,6 @@ FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
 		dur= 500;
 	}
 
-
 	for (i=0; i<count; i++)
 	{
 		ce = ClientParticle_new(PART_16x16_SPARK_G, color, dur);
@@ -203,7 +202,6 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		AddEffect(NULL, glow);
 	}
 }
-
 
 // -----------------------------------------------------------------------------------------
 
@@ -399,6 +397,4 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		}
 	}
 }
-
-
 // end

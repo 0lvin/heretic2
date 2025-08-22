@@ -45,9 +45,6 @@ qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 		FXWaterParticles(owner, FX_WATER_PARTICLES, 0, owner->origin);
 
 	//This is a cheap, silly effect that probably could look better and doesn't use the viewstatuschanged flag... urg...
-	//if(compass->value)
-	//	FXCompass(owner, FX_WATER_PARTICLES, 0, owner->origin);
-
 	FXCrosshair(owner, FX_CROSSHAIR, 0, owner->origin);
 
 	return true;

@@ -32,7 +32,6 @@ void PreCacheArray()
 	array_models[2] = fxi.RegisterModel("Sprites/spells/indigostreak.sp2");
 }
 
-
 // ************************************************************************************************
 // FXMagicMissileTrailThink
 // ------------------------
@@ -54,8 +53,6 @@ FXMagicMissileTrailThink(struct client_entity_s *Self, centity_t *Owner)
 	VectorCopy(Self->velocity,NormVelocity);
 	VectorNormalize(NormVelocity);
 
-//	count = GetScaledCount(ARRAY_TRAIL_COUNT, 0.8);
-//	for(i = 0; i < count; i++)
 	for (i=0; i<2; i++)	// Each cardinal direction
 	{
 		float scale;
@@ -185,8 +182,6 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	Missile->dlight=CE_DLight_new(LightColor,150.0f,0.0f);
 	Missile->Update=FXMagicMissileModelThink1;
 
-//	FXMagicMissileTrailThink(Self, Owner);
-
 	AddEffect(Owner, Missile);
 }
 
@@ -307,7 +302,6 @@ void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 			VectorSet(puff->r.scale, scale, scale, scale);
 			puff->radius = 14.0;
 			puff->alpha = 0.95;
-//			puff->d_alpha = -1.0;
 			puff->d_scale = -1.4*scale;
 			VectorSet(puff->velocity, flrand(-8.0,8.0), flrand(-8.0,8.0), flrand(-8.0,8.0));
 			VectorAdd(puff->velocity, back, puff->velocity);

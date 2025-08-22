@@ -103,7 +103,6 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 	// Currently either AnglesFromDirAndUp or PerpendicularVector isn't working properly
 	// This will need to be fixed at some point.
 	AnglesFromDirI(newEnt->direction, newEnt->r.angles);
-//	AnglesFromDirAndUp(newEnt->direction, newEnt->up, newEnt->r.angles);
 
 	VectorSet(newEnt->r.scale, 1.0F, 1.0F, 1.0F);
 	newEnt->r.color = 0xffffffff;
@@ -114,7 +113,6 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 	newEnt->flags = flags | CEF_CULLED;		//added _this cos we need to assume every client effect is culled before we do addeffectstoview for the first time
 											// to make sure the viewstatuschanged fires.
 
-//	assert(nextThinkTime > 16);
 	newEnt->updateTime = nextThinkTime;
 	newEnt->nextThinkTime = fxi.cl->time + nextThinkTime;
 	newEnt->startTime = fxi.cl->time;
@@ -206,7 +204,6 @@ void RemoveEffectTypeList(client_entity_t **root, FX_Type_t fx, centity_t *owner
 	client_entity_t *current;
 
 	assert(root);
-//	assert(*root);		// FIXME:  This shouldn't fire, but it does.  The result is more or less harmless.
 
 	for(prev = root, current = *root; current; current = current->next)
 	{
@@ -366,7 +363,6 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 	return numFX;
 }
-
 
 void AddEffect(centity_t* owner, client_entity_t* fx)
 	{

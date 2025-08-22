@@ -153,7 +153,6 @@ void FXTomeOfPower(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, tome);
 }
 
-
 /////////// TORCH STUFF
 
 // update the position of the Tome of power relative to its owner
@@ -177,7 +176,6 @@ qboolean FXROTTorchAddToView(client_entity_t *tome, centity_t *owner)
 
 	return true;
 }
-
 
 // update the position of the Tome of power relative to its owner
 qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
@@ -203,7 +201,6 @@ qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
 
 	return true;
 }
-
 
 // make the light follow us
 static qboolean FXplayertorch_think(struct client_entity_s *self, centity_t *owner)
@@ -249,6 +246,5 @@ void FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
 	effect->d_alpha = 0;
 
 }
-
 
 // end

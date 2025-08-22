@@ -84,7 +84,6 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	AddEffect(NULL, lightning);
 
 	// Add a little ball at the joint (end)
-
 	lightning = ClientEntity_new(FX_LIGHTNING, CEF_DONT_LINK, start, NULL, 250);
 	lightning->r.model = lightning_models[type + LIGHTNING_JOINT_OFFSET];
 	lightning->r.frame = 0;
@@ -130,7 +129,6 @@ void DoLightning(vec3_t groundpos, vec3_t airpos)
 	}
 }
 
-
 // Directed lightning bolt
 void LightningBolt(int model, float width, vec3_t startpos, vec3_t endpos)
 {
@@ -174,7 +172,6 @@ void LightningBolt(int model, float width, vec3_t startpos, vec3_t endpos)
 	MakeLightningPiece(model, width, endpos, lastpos, variance);
 }
 
-
 static qboolean
 FXLightningThink(client_entity_t *thinker, centity_t *owner)
 {
@@ -188,7 +185,6 @@ FXLightningThink(client_entity_t *thinker, centity_t *owner)
 		return false;
 	}
 }
-
 
 // This is from creating the effect FX_LIGHTNING
 void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
@@ -226,7 +222,6 @@ void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		LightningBolt(LIGHTNING_TYPE_BLUE, (float)width, Origin, target);	// Normal, blue lightning
 
 }
-
 
 // This is from creating the effect FX_POWER_LIGHTNING
 void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
@@ -416,7 +411,4 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	if (Flags & CEF_FLAG8)	// Play sound flag
 		fxi.S_StartSound(target, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/LightningPower.wav"), 1, ATTN_NORM, 0);
 }
-
-
-
 // end

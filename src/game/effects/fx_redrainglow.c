@@ -19,7 +19,6 @@
 
 #define CLOUD_GEN_RAD	30.0
 
-
 // -------------------------------------------------------
 static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owner)
 {
@@ -123,7 +122,6 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 	return true;
 }
 
-
 void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
@@ -156,7 +154,6 @@ void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 		glow->LifeTime = fxi.cl->time + (lifetime * 100);
 	else
 		glow->LifeTime = -1;
-
 
 	AddEffect(owner, glow);
 }

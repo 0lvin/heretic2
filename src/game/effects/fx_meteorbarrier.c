@@ -154,8 +154,6 @@ void FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, trail);
 }
 
-
-
 // -------------------------------------------------------
 
 void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin)

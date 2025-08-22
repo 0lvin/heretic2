@@ -100,7 +100,6 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-
 void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t  	*teleport_fx;
@@ -167,12 +166,10 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-
 static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
-//	vec3_t				vel;
 	int					i;
 	int					count;
 
@@ -190,7 +187,6 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 
 		ce->origin[SPH_RADIUS] = TELE_RAD;
 		ce->origin[SPH_YAW] = flrand(0, ANGLE_360);
-//		ce->origin[SPH_PITCH] = flrand(-ANGLE_90, 0);
 		ce->origin[SPH_PITCH] = -ANGLE_90;
 
 		ce->velocity[SPH_YAW] = flrand(-2.0*ANGLE_360, 2.0*ANGLE_360);
@@ -233,7 +229,6 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 		ce->d_scale = irand(80.0, 160.0);
 		AddParticleToList(self, ce);
 	}
-
 
 	return true;
 }

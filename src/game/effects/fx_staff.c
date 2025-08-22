@@ -241,7 +241,6 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	}
 }
 
-
 // ************************************************************************************************
 // FXStaffElementThink
 // ------------------------
@@ -920,7 +919,6 @@ void FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	AddEffect(owner, stafffx);
 }
 
-
 qboolean FXSpellChangePuffThink(struct client_entity_s *Self, centity_t *owner);
 
 // ************************************************************************************************
@@ -965,7 +963,6 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	AddEffect(owner,stafffx);
 	FXStaffElementThink(stafffx,owner);
 
-
 	if (!(Flags & CEF_FLAG6))	// Just for the sword staff
 	{
 		VectorCopy(owner->referenceInfo->references[CORVUS_STAFF].placement.origin, spawnpt);
@@ -990,8 +987,6 @@ void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		FXStaffElementThink(stafffx,owner);
 	}
 }
-
-
 
 // ************************************************************************************************
 // FXStaffRemoveThink

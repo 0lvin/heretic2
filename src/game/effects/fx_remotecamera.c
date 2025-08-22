@@ -18,8 +18,6 @@
 
 static qboolean FXRemoteCameraThink(struct client_entity_s *Self, centity_t *Owner)
 {
-
-
 	return false;
 }
 

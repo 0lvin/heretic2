@@ -55,7 +55,6 @@ qboolean FXBubbleThink(client_entity_t *bubble, centity_t *owner)
 	return true;
 }
 
-
 static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	client_entity_t *bubble;
@@ -149,7 +148,6 @@ void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	AddEffect(NULL, bubble);
 }
-
 
 void MakeBubble(vec3_t loc, client_entity_t *spawner)
 {

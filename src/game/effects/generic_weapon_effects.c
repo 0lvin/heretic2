@@ -23,7 +23,6 @@ void PreCacheArmorHit(void)
 	armorhit_models[0] = fxi.RegisterModel("sprites/fx/firestreak.sp2");
 }
 
-
 // we hit someone with armor - do a pretty effect
 // ripped off unashamedly from Josh's extremely cool streak effect. One of the coolest effects I've seen in a long time Josh. Good work Dude.
 void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)

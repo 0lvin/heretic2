@@ -19,7 +19,6 @@ void PreCacheTPortSmoke()
 {
 }
 
-
 void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	int			numPuffs, i;
@@ -77,7 +76,6 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		AddParticleToList(TPortSmoke, ce);
 	}
 }
-
 
 static qboolean FXAssSkinUpdaterThink(client_entity_t *assskinupdater, centity_t *owner)
 {

@@ -161,8 +161,6 @@ void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, missile);
 }
 
-
-
 // ************************************************************************************************
 // FXFlyingFistExplode
 // ************************************************************************************************
@@ -199,7 +197,6 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 		volume=0.75;
 	}
 
-//	FXGetEffect(owner, flags, "xb", dir, &powerup);
 	Vec3ScaleAssign(32.0, dir);
 
 	if (powerup)

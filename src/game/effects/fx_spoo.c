@@ -38,21 +38,6 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	count = GetScaledCount(8, 0.85);
 
-	/*
-	//Setup the common origin
-	VectorCopy(self->startpos, org);
-
-	//Get the direction
-	VectorSubtract(owner->current.origin, self->startpos, dir);
-	len = VectorNormalize(dir);
-
-	//Get the offset increment
-	len /= count;
-
-	//Get the increment vector
-	VectorScale(dir, len, dir);
-	*/
-
 	while (count--)
 	{
 		//VectorAdd(org, dir, org);

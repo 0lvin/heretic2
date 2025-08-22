@@ -24,8 +24,6 @@ void PreCacheWake()
 
 // -----------------------------------------------------------------
 
-
-
 void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	short			CreatorEntNum;

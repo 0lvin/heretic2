@@ -18,7 +18,6 @@
 #include "q_sprite.h"
 #include "../header/g_playstats.h"
 
-
 #define	NUM_WALL_MODELS	3
 
 static struct model_s *wall_models[NUM_WALL_MODELS];
@@ -30,14 +29,10 @@ void PreCacheWall()
 	wall_models[2] = fxi.RegisterModel("sprites/fx/halo.sp2");
 }
 
-
-
-
 // *****************************************************************
 // The fire wall
 // Powered up
 // *****************************************************************
-
 
 #define FIREWORM_LIFETIME		1.0
 #define FIREWORM_BLASTLIFE		0.25
@@ -55,13 +50,12 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 	client_entity_t		*blast;
 	client_particle_t	*spark, *spark2;
 	vec3_t				diffpos;
-	float				dtime, dtime2;
+	float				dtime;
 	float				anginc, ang;
 	int					i;
 	paletteRGBA_t		color;
 
 	dtime = (fxi.cl->time - worm->startTime)/FIREWORM_LIFETIME_MS;
-	dtime2 = dtime * dtime * 0.5;
 
 	color.c = 0xffffffff;
 
@@ -154,16 +148,6 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 		return true;
 	}
 
-	// Continue snaking to target.
-
-//	VectorSubtract(worm->endpos, worm->startpos, diffpos);
-
-	// Move linearly to the target.
-//	VectorMA(worm->startpos, dtime, diffpos, worm->r.origin);
-	// Now add in an additional arc.
-//	worm->r.origin[2] += FIREWORM_INITVEL*dtime + FIREWORM_ACCEL*dtime2;
-//	worm->velocity[2] = (diffpos[2]/FIREWORM_LIFETIME) + FIREWORM_INITVEL + FIREWORM_ACCEL*dtime;
-
 	// Add a trail entity and particle trail segment.
 	blast = ClientEntity_new(FX_WEAPON_FIREWAVE, CEF_NO_DRAW | CEF_ADDITIVE_PARTS, worm->r.origin, NULL, 500);
 	VectorClear(blast->velocity);
@@ -171,7 +155,6 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 
 	for (i=0; i<4; i++)
 	{
-//		spark = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), color, 500);
 		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 500);
 
 		VectorSet(spark->velocity,
@@ -191,7 +174,6 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 
 	return true;
 }
-
 
 #define FIREWAVE_TRACEDOWN		(128)
 #define FIREWAVE_WORM_TIME		(0.5*1000)
@@ -236,7 +218,6 @@ static void FXFireWaveImpact(client_entity_t *wall)
 		AddEffect(NULL, blast);
 	}
 }
-
 
 static qboolean
 FXFireWaveThink(client_entity_t *wall, centity_t *owner)
@@ -445,7 +426,6 @@ FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 	return true;
 }
 
-
 // Create Effect FX_WEAPON_FIREWAVE
 void FXFireWave(centity_t *owner, int type, int flags, vec3_t origin)
 {
@@ -484,8 +464,6 @@ void FXFireWave(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(owner, wall);
 }
-
-
 
 // Create Effect FX_WEAPON_FIREWAVEWORM
 void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
@@ -555,10 +533,6 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 	FXFireWormThink(worm, NULL);
 }
 
-
-
-
-
 // *****************************************************************
 // The fire blast
 // Unpowered
@@ -602,8 +576,6 @@ static void FXFireBurstImpact(client_entity_t *wall)
 		AddEffect(NULL, blast);
 	}
 }
-
-
 
 #define FIREBURST_PART_SPEED		160
 
@@ -685,7 +657,6 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 		edgeVal = fabs((numFlameColumns/2)-i)*(12.0/numFlameColumns);
 
 		j=1;
-//		for(j = 0; j < 2; j++)
 		{
 			float scale;
 
@@ -729,7 +700,6 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 	return true;
 }
 
-
 // Create effect FX_WEAPON_FIREBURST
 void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 {
@@ -755,14 +725,10 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	wall->direction[2] = 0.0;
 	wall->right[2] = 0.0;
 
-//	wall->r.model = wall_models[1];
-//	wall->alpha = 0.01;
-
 	wall->Update = FXFireBurstThink;
 	wall->radius = FIREBLAST_RADIUS;
 	wall->color.c = 0xff00afff;
-//	VectorSet(wall->r.scale, 8.0, 8.0, 8.0);
-//	wall->d_scale = 56.0;
+
 	wall->dlight = CE_DLight_new(wall->color, 150.0F, 0.0F);
 	wall->lastThinkTime = fxi.cl->time;
 

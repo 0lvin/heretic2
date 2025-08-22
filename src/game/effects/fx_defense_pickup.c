@@ -45,7 +45,6 @@ void PreCacheItemDefense()
 	defense_models[11] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");					// blue spark
 }
 
-
 static qboolean FXEggSparkThink(struct client_entity_s *shield, centity_t *owner)
 {
 	vec3_t angvect;

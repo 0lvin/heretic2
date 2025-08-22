@@ -161,7 +161,7 @@ void FXFountain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	fountain->color.c = 0xffffffff;
 	fountain->radius = 128.0F + Q_fabs(fountain->SpawnData);
 	fountain->Update = FXFountainParticleSpawner;
-	fountain->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_VIEWSTATUSCHANGED;	// | CEF_ADDITIVE_PARTS;
+	fountain->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_CULLED | CEF_VIEWSTATUSCHANGED;
 
 	AddEffect(Owner, fountain);
 }

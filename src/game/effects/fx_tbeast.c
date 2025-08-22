@@ -20,7 +20,6 @@ enum
 	FX_TB_SNORT,
 };
 
-
 #define	NUM_BEAST_MODELS	1
 static struct model_s *tb_dustpuff_models[NUM_BEAST_MODELS];
 void PreCacheTB(void)
@@ -64,7 +63,6 @@ void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 	AddEffect(NULL, DustPuff);
 }
 
-
 void FXTBDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	int			i;
@@ -74,7 +72,6 @@ void FXTBDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 		FXTBDustPuff(type,flags,origin, i * flrand(30, 60));
 	}
 }
-
 
 void FXTBSnort(centity_t *owner, int type, int flags, vec3_t origin)
 {

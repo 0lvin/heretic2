@@ -169,7 +169,6 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *ow
 	trace_t			trace;
 	centity_t		*fake_owner = (centity_t *) self->extra;
 
-
 	if ( ( self->LifeTime > 0 ) && ( self->LifeTime < fxi.cl->time ) )
 		return (false);
 
@@ -378,7 +377,6 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		if (Flags & CEF_FLAG8)
 			Explosion->LifeTime = 4000 + fxi.cl->time;
 
-
 		Explosion->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA|RF_NODEPTHTEST;
 		Explosion->Scale=flare_scale[I];
 		Explosion->r.frame=0;
@@ -400,18 +398,7 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		if (owner)
 		{
-/*			client_entity_t		*nullfx;
-			nullfx=ClientEntity_new(FX_LENSFLARE,
-									   CEF_NO_DRAW|CEF_OWNERS_ORIGIN,
-									   Origin,
-									   NULL,
-									   1000000);
-			nullfx->flags |= CEF_NO_DRAW;
-
-			AddEffect(owner, nullfx);*/
-
-			AddEffect(owner,Explosion);
-//			Explosion->AddToView = LinkedEntityUpdatePlacement;
+			AddEffect(owner, Explosion);
 
 			Explosion->extra = (centity_t *) owner;
 			Explosion->Update=FXFlareThinkAttached;
@@ -429,7 +416,6 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		}
 	}
 }
-
 
 void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int lifeTime, paletteRGBA_t *tint)
 {
@@ -525,18 +511,7 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 
 		if (owner)
 		{
-/*			client_entity_t		*nullfx;
-			nullfx=ClientEntity_new(FX_LENSFLARE,
-									   CEF_NO_DRAW|CEF_OWNERS_ORIGIN,
-									   Origin,
-									   NULL,
-									   1000000);
-			nullfx->flags |= CEF_NO_DRAW;
-
-			AddEffect(owner, nullfx);*/
-
 			AddEffect(owner,Explosion);
-//			Explosion->AddToView = LinkedEntityUpdatePlacement;
 
 			Explosion->extra = (centity_t *) owner;
 			Explosion->Update=FXFlareThinkAttached;

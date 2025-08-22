@@ -103,25 +103,10 @@ Main Player routine  - make large player, and fade it into us
 ----------------------------------------
 */
 
-
-// kill the expanding player model when it fades away
-static qboolean
-shrine_player_update(struct client_entity_s *self, centity_t *owner)
-{
-	if (!(--self->SpawnInfo))
-	{
-		self->r.rr_mesh = 0;
-		return false;
-	}
-
-	return true;
-}
-
 // Create a model of the player, and have it expand and fade, with a tint
 void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 }
-
 
 /*
 ----------------------------------------
@@ -198,7 +183,6 @@ Armor effect routine
 
 ----------------------------------------
 */
-
 
 static qboolean
 FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
@@ -354,7 +338,6 @@ Staff Powerup Routines
 ----------------------------------------
 */
 
-
 // create the two circles that ring the player
 static qboolean
 FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
@@ -470,7 +453,6 @@ void FXShrineStaffEffect(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(owner, glow);
 }
-
 
 /*
 ----------------------------------------
@@ -616,7 +598,6 @@ void FXCreateLightning(struct client_entity_s *self, centity_t *owner)
 		fxi.Activate_Screen_Shake(4,800, fxi.cl->time, SHAKE_ALL_DIR);
 	}
 }
-
 
 // make the lightning effect re-occur
 static qboolean
@@ -904,7 +885,6 @@ void FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, glow);
 }
 
-
 /*
 ----------------------------------------
 
@@ -1013,8 +993,6 @@ enum
 	SHRINEBALL_MAX
 };
 
-
-
 static short ShrineParticle[12][2] =
 {
 	{	PART_16x16_SPARK_I,		PART_16x16_LIGHTNING	},	// SHRINEBALL_HEAL,
@@ -1030,7 +1008,6 @@ static short ShrineParticle[12][2] =
 	{	PART_32x32_WFALL,		PART_16x16_STAR			},	// SHRINEBALL_GHOST,
 	{	PART_32x32_STEAM,		PART_32x32_STEAM		},	// SHRINEBALL_SPEED,
 };
-
 
 // make the shrine glow ball effect shimmer, and give off steam
 static qboolean

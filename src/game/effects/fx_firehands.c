@@ -18,13 +18,10 @@
 #include "ce_dlight.h"
 #include "../header/g_playstats.h"
 
-
 #define HANDFIRE_NUM	1
 #define HANDFIRE_RADIUS	2.0
 #define HANDFIRE_SCALE	8.0
 #define HANDFIRE_ACCEL	32.0
-
-
 
 static qboolean FXFireHandsThink(struct client_entity_s *self, centity_t *owner)
 {
@@ -118,7 +115,6 @@ void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 
 	VectorClear(origin);
 
-
 	if (r_detail->value > DETAIL_NORMAL)
 		flame_dur = 50;
 	else
@@ -144,7 +140,6 @@ void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 			trail->LifeTime = fxi.cl->time + (lifetime * 100);
 		else
 			trail->LifeTime = -1;
-
 
 		AddEffect(owner,trail);
 	}

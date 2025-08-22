@@ -350,7 +350,6 @@ void CreateWaterParticles(client_entity_t *self)
 	}
 }
 
-
 static const float cl_turbsin[] =
 {
 	0, 0.19633, 0.392541, 0.588517, 0.784137, 0.979285, 1.17384, 1.3677,
@@ -434,7 +433,6 @@ qboolean WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-
 int wake_particle [6] =
 {
 	PART_4x4_WHITE,
@@ -444,7 +442,6 @@ int wake_particle [6] =
 	PART_32x32_STEAM,
 	PART_32x32_BUBBLE
 };
-
 
 void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 {
@@ -493,13 +490,11 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 			VectorMA(p->velocity, flrand(10, 2), right, p->velocity);
 
 		p->acceleration[2] = 16;
-//		p->d_alpha = flrand(-3, -1);
 		p->d_scale = flrand(-0.15, -0.10);
 
 		AddParticleToList(self, p);
 	}
 }
-
 
 qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 {
@@ -512,7 +507,6 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 	VectorSet(org, crandk() * 20.0, crandk() * 20.0, crandk() * 20.0);
 	VectorAdd(org, owner->origin, org);
 	MakeBubble(org, self);
-
 
 	// Create a wake of bubbles!
 	// ----------------------------------------------------
@@ -529,7 +523,6 @@ qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
 
 	return true;
 }
-
 
 void FXWaterParticles(centity_t *owner, int type, int flags, vec3_t origin)
 {
@@ -705,7 +698,6 @@ void FXCorpseRemove(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 		VectorSet(p->velocity, vel1 * cos(curAng), vel1 * sin(curAng), 0);
 		VectorScale(p->velocity, -0.3, p->acceleration);
-//		p->type |= PFL_ADDITIVE;
 
 		AddParticleToList(flameitem, p);
 
@@ -733,7 +725,6 @@ void FXCorpseRemove(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	}
 
 }
-
 
 /*
 ----------------------------------------
@@ -806,7 +797,6 @@ void FXLeader(centity_t *owner, int type, int flags, vec3_t origin)
 #define FOOTTRAIL_RADIUS	2.0
 #define FOOTTRAIL_SCALE	8.0
 #define FOOTTRAIL_ACCEL	20.0
-
 
 static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 {
@@ -882,7 +872,6 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 
 	VectorCopy(origin, self->origin);
 
-
 	return true;
 }
 
@@ -927,6 +916,5 @@ void FXFeetTrail(centity_t *owner,int type,int flags,vec3_t origin)
 		AddEffect(owner,trail);
 	}
 }
-
 
 // end

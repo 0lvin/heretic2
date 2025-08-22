@@ -114,7 +114,6 @@ DebrisChunk_t debrisChunks[]=
 	{"models/debris/wood/splinter4/tris.fm", 0, NULL, 1.6},
 	{"models/debris/wood/splinter1/tris.fm", 0, NULL, 1.8},
 
-
 	// Leaf - invalid debris type.
 	{"models/debris/pottery/pot1/tris.fm", 0, NULL, 2.0},//31
 	{"models/debris/pottery/pot1/tris.fm", 0, NULL, 2.0},
@@ -254,8 +253,6 @@ void DoFireTrail (client_entity_t *spawner)
 		flame->acceleration[2] = 32.0 * AVG_VEC3T(spawner->r.scale);
 		flame->d_scale = flrand(-5.0, -2.5);
 		flame->d_alpha = flrand(-200.0, -160.0);
-
-//		flame->extraUpdate = flame_out;
 
 		flame->duration = (255.0 * flame_duration) / -flame->d_alpha;		// time taken to reach zero alpha
 
@@ -438,7 +435,6 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 
 	AddEffect(NULL,debris);
 }
-
 
 qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner)
 {
@@ -957,7 +953,6 @@ qboolean FXFleshDebris_Update(struct client_entity_s *self, centity_t *owner)
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;
 
-
 	if (self->flags&CEF_FLAG6)//on fire- do a fire trail
 	{
 		DoFireTrail(self);
@@ -966,7 +961,6 @@ qboolean FXFleshDebris_Update(struct client_entity_s *self, centity_t *owner)
 	}
 	else
 		DoBloodTrail(self, 2);
-
 
 	if (curTime > self->LifeTime)
 	{

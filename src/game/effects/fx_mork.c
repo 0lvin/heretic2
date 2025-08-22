@@ -31,7 +31,6 @@ client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, 
 #define NUM_BUOY_MODELS 1
 
 static struct model_s *Morkproj_models[NUM_M_MISSILE_MODELS];
-static struct model_s *Morkshield_models[NUM_M_SHIELD_MODELS];
 static struct model_s *Morklightning_models[NUM_M_LIGHTNING_MODELS];
 static struct model_s *Morkpp_models[NUM_M_PP_MODELS];
 static struct model_s *Imp_models[NUM_IMP_MODELS];
@@ -136,7 +135,6 @@ FXMorkTrailThink_old(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-
 void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
@@ -200,7 +198,6 @@ FXCWTrailThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-
 static qboolean
 FXMorkTrailThink2(struct client_entity_s *self, centity_t *owner)
 {
@@ -214,155 +211,11 @@ FXMorkTrailThink2(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-static qboolean
-FXMorkMissileTrailThink(struct client_entity_s *self, centity_t *owner)
-{
-	float scale;
-
-	scale = flrand(0.35, 0.65);
-	VectorSet(self->r.scale, scale, scale, scale);
-
-	MorkMakeLightningPiece(self->startpos, owner->origin, 2000, 400, false);
-	VectorCopy(owner->origin, self->startpos);
-
-	return true;
-}
-
-/*==================
-
-	FX_M_QUAKE
-
-  ==================*/
-
-static qboolean
-FXQuakeThink (struct client_entity_s *self, centity_t *owner)
-{
-	if (self->LifeTime <= 0)
-		return (false);
-
-	self->LifeTime -= 5;
-	fxi.Cvar_SetValue("quake_amount", self->LifeTime);
-	return (true);
-}
-
 /*==================
 
 	FX_M_POWERPUFF
 
   ==================*/
-
-static qboolean
-FXMorkPPTrailThink(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*TrailEnt;
-	client_particle_t	*spark;
-	int		i, numparts;
-	vec3_t	offset;
-	int		parttype;
-	float scale;
-	paletteRGBA_t color;
-
-	color.c = self->r.color;
-	if (color.r<250)
-		color.r += 8;
-
-	if (color.g<150)
-		color.g += 4;
-
-	if (color.b>100)//was r?
-		color.b -= 4;
-
-	self->r.color = color.c;
-
-	TrailEnt=ClientEntity_new(FX_M_EFFECTS,
-							  CEF_DONT_LINK,
-							  owner->origin,
-							  NULL,
-							  17);
-
-	TrailEnt->radius = 2000;
-
-	VectorCopy( owner->origin, TrailEnt->origin );
-
-	TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
-	TrailEnt->r.model = Morkproj_models[2];
-
-	TrailEnt->r.color = self->r.color;
-	TrailEnt->r.spriteType = SPRITE_LINE;
-	TrailEnt->r.tile = 1;
-	scale = 1.5 * AVG_VEC3T(self->r.scale) / 0.35;
-	VectorSet(TrailEnt->r.scale, scale, scale, scale);
-	TrailEnt->alpha = 1.0;
-	scale = AVG_VEC3T(self->r.scale) / 0.35;
-	VectorSet(TrailEnt->r.scale, scale, scale, scale);
-
-	VectorCopy( self->startpos, TrailEnt->r.startpos );
-	VectorCopy( owner->origin , TrailEnt->r.endpos );
-
-	TrailEnt->d_alpha = -4.0;
-	TrailEnt->d_scale = 0.0;
-	TrailEnt->Update = FXMorkTrailThink2;
-
-	AddEffect(NULL,TrailEnt);
-
-	VectorCopy(owner->origin, self->startpos);
-
-	numparts = floor(irand(6, 9) * AVG_VEC3T(self->r.scale));
-	if (numparts>500)
-		numparts=500;
-	for(i = 0; i < numparts; i++)
-	{
-		parttype = irand(0, 6);
-		switch(parttype)
-		{
-			case 0:
-				parttype = PART_4x4_WHITE;
-				break;
-			case 1:
-				parttype = PART_4x4_BLUE2;
-				break;
-			case 2:
-				parttype = PART_4x4_BLUE3;
-				break;
-			case 3:
-				parttype = PART_8x8_BLUE_CIRCLE;
-				break;
-			case 4:
-				parttype = PART_8x8_BLUE_X;
-				break;
-			case 5:
-				parttype = PART_16x16_STAR;
-				break;
-			case 6:
-				parttype = PART_16x16_SPARK_B;
-				break;
-			default:
-				parttype = PART_4x4_WHITE;
-				break;
-		}
-
-		spark = ClientParticle_new(parttype, color, 2000);
-		spark->acceleration[2] = -10;
-		spark->scale = flrand(3, 5);
-		spark->d_scale = flrand(-10.0, -15.0);
-		spark->color.a = irand(100, 200.0);
-		spark->d_alpha = flrand(-40.0, -32.0);
-		spark->duration = (255.0 * 2000.0) / -spark->d_alpha;		// time taken to reach zero alpha
-
-		VectorCopy(owner->origin, spark->origin);
-		offset[0] = crandk() * 10.0;
-		offset[1] = crandk() * 10.0;
-		offset[2] = flrand(0, 10);
-		VectorAdd(spark->origin, offset, spark->origin);
-		VectorSet(spark->velocity,	offset[0] * (-1.3, -0.9),
-									offset[1] * (-1.3, -0.9),
-									flrand(50, 75));
-
-		AddParticleToList(self, spark);
-	}
-
-	return true;
-}
 
 #define EXPLODE_SPEED		160.0
 #define EXPLODE_GRAVITY		(-320.0)
@@ -374,26 +227,6 @@ FXMorkPPTrailThink(struct client_entity_s *self, centity_t *owner)
 #define PP_EXPLODE_LIFETIME	50
 
 #define	NUM_Morkpp_models	6
-
-static qboolean
-FXMPPExplosionBallThink(client_entity_t *explosion, centity_t *owner)
-{
-	explosion->LifeTime--;
-	if (explosion->LifeTime<=0)
-		return false;
-
-	if (explosion->dlight->intensity > 0.0F)
-		explosion->dlight->intensity -= 5.0F;
-
-	// Spin the ball of fire while it expands and fades.
-	if ((explosion->r.angles[0]+=(M_PI/64.0))>(M_PI*2.0))
-		explosion->r.angles[0]=0.0;
-
-	if ((explosion->r.angles[1]+=(M_PI/64.0))>(M_PI*2.0))
-		explosion->r.angles[1]=0.0;
-
-	return true;
-}
 
 static qboolean
 FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
@@ -415,7 +248,7 @@ FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
 
 		flash = ClientEntity_new(-1, explosion->r.flags, explosion->origin, NULL, 250);
 		flash->r.model = Morkpp_models[2];
-		flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+		flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 		flash->r.frame = 1;
 		flash->radius = 128;
 		VectorSet(flash->r.scale, 1.0, 1.0, 1.0);
@@ -493,12 +326,10 @@ FXMPPExplosionCoreThink(client_entity_t *core, centity_t *owner)
 	VectorSet(pos, crandk() * 8.0, crandk() * 8.0, crandk() * 8.0);
 	VectorAdd(pos, core->r.origin, pos);
 	newcore = ClientEntity_new(-1, core->r.flags, pos, NULL, 250);
-//	newcore = ClientEntity_new(-1, core->r.flags, pos, NULL, 100);
-//	newcore->Update = FXMPPExplosionCoreUpdate;
 	newcore->r.model = Morkpp_models[3];
 	newcore->r.color = 0xFF0077ff;
 	newcore->r.frame = 0;//1
-	newcore->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	newcore->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	newcore->radius	= 128;
 	VectorCopy(core->r.scale, newcore->r.scale);
 	newcore->alpha	= core->alpha;
@@ -530,7 +361,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 		ballorigin[2] = origin[2] + crandk() * EXPLODE_BALL_RANGE + (dir[2]*EXPLODE_BALL_RANGE);
 		subexplosion = ClientEntity_new(type, flags, ballorigin, NULL, 17);
 		subexplosion->r.model = Morkpp_models[4];
-		subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+		subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 		subexplosion->alpha = 0.1;
 		VectorSet(subexplosion->r.scale, 0.01, 0.01, 0.01);
 		subexplosion->radius=128;
@@ -552,18 +383,16 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	}
 
 	// Create the main big explosion sphere.
-//	explosion = ClientEntity_new(type, flags, origin, NULL, 17);
-
 	explosion->r.model = Morkpp_models[1];
 	explosion->r.frame = 0;
 
 	//	explosion->r.model = Morkpp_models[5];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	explosion->flags |= CEF_ADDITIVE_PARTS;
 	explosion->alpha = 1.0;
-	VectorSet(explosion->r.scale, 2, 2, 2);//0.1;
-	explosion->d_alpha=-0.3;//-2.0;
-	explosion->d_scale= 0.0;//4.0;
+	VectorSet(explosion->r.scale, 2, 2, 2);
+	explosion->d_alpha=-0.3;
+	explosion->d_scale= 0.0;
 	explosion->radius=128;
 	explosion->LifeTime=PP_EXPLODE_LIFETIME;
 
@@ -572,7 +401,6 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 
 	explosion->dlight = CE_DLight_new(color, 150.0F, -0.3F);
 	explosion->Update = FXMPPExplosionCoreUpdate;
-//	explosion->Update = FXMPPExplosionBallThink;
 	AddEffect(NULL, explosion);
 
 	// Add some glowing blast particles.
@@ -596,7 +424,7 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	// ...and a big-ass flash
 	explosion = ClientEntity_new(-1, flags, origin, NULL, 250);
 	explosion->r.model = Morkpp_models[2];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	explosion->r.frame = 1;
 	explosion->radius = 128;
 	VectorSet(explosion->r.scale, 1.5, 1.5, 1.5);
@@ -607,13 +435,12 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 	// ...and draw the MPP rising from the explosion
 	explosion = ClientEntity_new(type, flags, origin, NULL, 100);
 	explosion->r.model = Morkpp_models[3];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;// | RF_FULLBRIGHT;
+	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
 	explosion->r.color = 0xFF00aaFF;
 	explosion->r.frame = 0;
 	explosion->radius=128;
 	VectorSet(explosion->r.scale, 1.0, 1.0, 1.0);
 	VectorScale(dir, 0.25, explosion->velocity);
-//	explosion->velocity[2] += 64;
 	explosion->acceleration[2] = 64;
 	explosion->alpha = 1.0;
 	explosion->d_alpha=-1.5;
@@ -666,151 +493,6 @@ void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t
 		AddEffect(NULL,SmokePuff);
 	}
 }
-
-/*===============================
-
-  FX_M_READYPP
-
-  ===============================*/
-static qboolean
-FXMorkPPReadyThink(struct client_entity_s *self, centity_t *owner)
-{
-	int		add_rate = 5;
-	client_particle_t	*spark;
-	int		i, numparts;
-	vec3_t	offset;
-	int		parttype;
-	paletteRGBA_t	color;
-
-	if (self->LifeTime<fxi.cl->time)
-		return (false);
-
-	color.c = self->r.color;
-
-	if (color.g < 100)
-		color.g += add_rate;
-
-	if (color.b < 250)
-		color.b += add_rate;
-
-	if (color.r < 100)
-		color.r += add_rate;
-
-	if (color.a < 251)
-		color.a += add_rate;
-
-	self->r.color = color.c;
-
-	self->dlight->color = color;
-	if (self->dlight->intensity<246)
-		self->dlight->intensity += 10;
-
-	numparts = floor(irand(6, 9) * AVG_VEC3T(self->r.scale));
-	if (numparts>500)
-		numparts=500;
-	for(i = 0; i < numparts; i++)
-	{
-		paletteRGBA_t	color = {{{255, 255, 255, 255}}};
-
-		parttype = irand(0, 6);
-		switch(parttype)
-		{
-			case 0:
-				parttype = PART_4x4_WHITE;
-				break;
-			case 1:
-				parttype = PART_4x4_BLUE2;
-				break;
-			case 2:
-				parttype = PART_4x4_BLUE3;
-				break;
-			case 3:
-				parttype = PART_8x8_BLUE_CIRCLE;
-				break;
-			case 4:
-				parttype = PART_8x8_BLUE_X;
-				break;
-			case 5:
-				parttype = PART_16x16_STAR;
-				break;
-			case 6:
-				parttype = PART_16x16_SPARK_B;
-				break;
-			default:
-				parttype = PART_4x4_WHITE;
-				break;
-		}
-
-		spark = ClientParticle_new(parttype, color, 2000);
-		spark->acceleration[2] = 10;
-		spark->scale = flrand(3, 5);
-		spark->d_scale = flrand(-10.0, -15.0);
-		spark->color.a = irand(100, 200.0);
-		spark->d_alpha = flrand(-40.0, -32.0);
-		spark->duration = (255.0 * 2000.0) / -spark->d_alpha;		// time taken to reach zero alpha
-
-		offset[0] = crandk() * 10.0;
-		offset[1] = crandk() * 10.0;
-		offset[2] = flrand(0, 10);
-		VectorAdd(spark->origin, offset, spark->origin);
-		VectorSet(spark->velocity,	offset[0] * (-1.3, -0.9),
-									offset[1] * (-1.3, -0.9),
-									flrand(50, 75));
-
-		AddParticleToList(self, spark);
-	}
-
-	return (true);
-}
-/*=====================
-
-	FX_M_SHIELD
-
-  =====================*/
-
-static qboolean
-FXMorkShieldThink(struct client_entity_s *self, centity_t *owner)
-{
-	return true;
-}
-
-static qboolean
-FXMorkShieldForm(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*Trail;
-
-	if (AVG_VEC3T(self->r.scale) <= 2.5)
-	{
-		return false;
-		self->d_alpha = 0.0;
-		self->d_scale = 0.0;
-		self->Update = FXMorkShieldThink;
-		return true;
-	}
-
-	if (AVG_VEC3T(self->r.scale) <= 3.0 && !self->SpawnInfo)
-	{
-		self->SpawnInfo = 1;
-		Trail=ClientEntity_new(FX_M_EFFECTS, 0, self->origin, NULL, 100);
-
-		Trail->r.model = Morkshield_models[0];
-
-		Trail->r.flags |= RF_TRANSLUCENT | RF_FULLBRIGHT | RF_REFLECTION;
-		Trail->alpha = self->alpha;
-		VectorCopy(self->r.scale, Trail->r.scale);
-
-		Trail->d_scale = 4.0;
-		Trail->d_alpha = -0.15;
-		Trail->radius = 1000;
-
-		AddEffect(NULL,Trail);
-	}
-
-	self->flags &= ~CEF_DISAPPEARED;
-
-	return true;
-}
-
 
 /*=====================
 
@@ -953,80 +635,6 @@ void MorkDoEyesLightning(centity_t *owner, vec3_t groundpos)
 	}
 }
 
-/*static vec3_t plas_start;
-static vec3_t plas_end;
-
-qboolean FXCWRingUpdate (struct client_entity_s *self, centity_t *owner)
-{
-	vec3_t	plas_dir;
-	float	plas_length;
-
-	self->SpawnInfo++;
-
-	if (self->SpawnInfo >= 100)
-		return (false);
-
-	VectorSubtract(plas_start, plas_end, plas_dir);
-	plas_length = VectorNormalize(plas_dir);
-	assert(plas_length);
-
-	VectorMA(plas_end, (float)(self->SpawnInfo)/100 * plas_length, plas_dir, self->r.origin);
-
-	VectoAngles(plas_dir, self->r.angles);
-
-	return (true);
-}
-*/
-void FizzleEffect (client_entity_t *self, vec3_t surface_top, vec3_t normal);
-void CWPlasma(vec3_t top, vec3_t groundpos, int flags)
-{
-	vec3_t curpos, lastpos, bottom, refpoint, diffpos, rand, normal;
-	float scale;
-	int i;
-//	client_entity_t *ring;
-
-	//store in local globals
-//	VectorCopy(top, plas_start);
-//	VectorCopy(groundpos, plas_end);
-
-	VectorCopy(groundpos, bottom);
-
-	VectorSubtract(bottom, top, diffpos);
-	scale = VectorLength(diffpos) / 100.0;
-	VectorScale(diffpos, -1, normal);
-	VectorScale(diffpos, 0.2, diffpos);
-
-	VectorCopy(top, lastpos);
-	VectorCopy(top, refpoint);
-	for (i=0; i<5; i++)
-	{
-		VectorAdd(refpoint, diffpos, refpoint);
-		VectorSet(rand, flrand(-scale, scale), flrand(-scale, scale), flrand(-scale, scale));
-		VectorAdd(refpoint, rand, curpos);
-		MorkMakeLightningPiece(curpos, lastpos, scale, 250, true);
-		VectorCopy(curpos, lastpos);
-
-		if (flags & CEF_FLAG7 && !irand(0,9))//make it smoke?
-		{
-			FXClientScorchmark(curpos, diffpos);
-			FizzleEffect (NULL, curpos, normal);
-		}
-	}
-
-	//rings
-/*
-	if (flags & CEF_FLAG6)
-	{
-		ring = ClientEntity_new(FX_M_EFFECTS, 0, bottom, NULL, 20);
-		ring->r.model = CW_models[1];
-		ring->r.flags |= RF_FIXED | RF_GLOW | RF_TRANSLUCENT;
-		VectorSet(ring->r.scale, 1.0f, 1.0f, 1.0f);
-		ring->alpha = 0.5;
-		ring->SpawnInfo = 0;
-		ring->Update = FXCWRingUpdate;
-		AddEffect(NULL, ring);
-	}*/
-}
 /*===============================
 
   FX_M_EYES
@@ -1080,7 +688,6 @@ qboolean MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
 		else
 			darken++;
 
-
 		if (self->color.r>150 && self->color.r<156)
 		{
 			float				d_time, d_time2;
@@ -1110,68 +717,7 @@ qboolean MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
 }
 
 static qboolean
-FXMorkEyes (struct client_entity_s *self, centity_t *owner)
-{
-	vec3_t	angles, forward, right, pos, pos2, side;
-	int		num_parts, e, n;
-	client_particle_t	*flame;
-
-//	if (self->LifeTime<fxi.cl->time)
-//		return false;
-
-	VectorScale(owner->current.angles, 180.0/M_PI, angles);
-	AngleVectors(angles, forward, right, NULL);
-
-	//left or right eye
-	e = self->LifeTime;
-
-	VectorCopy(owner->current.origin, pos);
-	pos[2] += 36;
-	if (!e)
-	{//right side
-		VectorCopy(right, side);
-		VectorMA(pos, 2, right, pos);
-	}
-	else
-	{
-		VectorScale(right, -1, side);
-		VectorMA(pos, -2, right, pos);
-	}
-	VectorMA(pos, 8, forward, pos);
-
-	num_parts = irand(3, 7);
-
-	for(n = 0; n<num_parts; n++)
-	{//number of particles
-		paletteRGBA_t color;
-		color.c = self->r.color;
-
-		if (!e)
-			VectorMA(pos, flrand(0,1), right, pos2);
-		else
-			VectorMA(pos, flrand(-1,0), right, pos2);
-
-		flame = ClientParticle_new(PART_4x4_WHITE, color, 50);//
-
-		VectorCopy(pos, flame->origin);//pos2
-		flame->scale = 0.75;
-
-		// Make the fire shoot out the front and to the side
-		VectorScale(side, 3, flame->velocity);
-		VectorScale(side, -1, flame->acceleration);
-		flame->acceleration[2] = 7;
-
-		flame->d_scale = flrand(-0.1, -0.15);
-		flame->d_alpha = flrand(-200.0, -160.0);
-		flame->duration = ((255.0 * 1000.0) / -flame->d_alpha)*2;		// time taken to reach zero alpha
-
-		AddParticleToList(self, flame);
-	}
-	return (true);
-}
-
-static qboolean
-FXMorkEyes2(struct client_entity_s *self, centity_t *owner)
+FXMorkEyes(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t	angles, forward, right, pos, pos2, side;
 	int		num_parts, e, n;
@@ -1256,243 +802,6 @@ FXMorkEyes2(struct client_entity_s *self, centity_t *owner)
 	return (true);
 }
 
-
-/*===============================
-
-  FX_M_SHOVE
-
-  ===============================*/
-
-static qboolean
-ShoveThink (struct client_entity_s *self, centity_t *owner)
-{
-	paletteRGBA_t color;
-	int	dec_rate = 5;
-	if (self->alpha <= 0.1)// || self->r.scale > 0.0)
-		return false;
-
-	self->r.scale[0] += 0.1;
-	self->r.scale[1] += 0.1;
-	self->r.scale[2] += 0.1;
-
-	color.c = self->r.color;
-
-	if (color.g > 10)
-		color.g -= dec_rate;
-
-	if (color.b > 25)
-		color.b -= dec_rate;
-
-	if (color.r > 10)
-		color.r -= dec_rate;
-
-	if (color.a > 50)
-		color.a -= dec_rate;
-
-	self->r.color = color.c;
-	return (true);
-}
-
-static qboolean
-ShoveInnerThink (struct client_entity_s *self, centity_t *owner)
-{
-	if (self->alpha <= 0.1 || self->alpha > 2.0 || AVG_VEC3T(self->r.scale) <= 0.1)
-		return false;
-
-	self->r.scale[0] -= 0.1;
-	self->r.scale[1] -= 0.1;
-	self->r.scale[2] -= 0.1;
-
-	return (true);
-}
-
-static qboolean
-ShoveOuterThink (struct client_entity_s *self, centity_t *owner)
-{
-	if (self->alpha <= 0.1 || self->alpha > 1.0)
-		return false;
-
-	self->r.scale[0] += 0.1;
-	self->r.scale[1] += 0.1;
-	self->r.scale[2] += 0.1;
-
-	return (true);
-}
-
-static qboolean
-FXMorkShove(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*TrailEnt;
-	vec3_t	forward, right, pos1, pos2, pos3, pos4, pos5, pos6, pos7, pos8, crap, angles;
-	vec3_t	lllf, llf, lf, rrrf, rrf, rf, temp_r, temp_f;
-	float dist;
-	int	i, j;
-
-	if (self->LifeTime<fxi.cl->time)
-		return false;
-
-	VectorScale(self->endpos2, 180.0/M_PI, angles);
-	AngleVectors(angles, forward, right, NULL);
-	VectorSubtract(self->r.origin, self->startpos2, crap);
-	dist = VectorNormalize(crap);
-
-	VectorScale(right, -0.75, temp_r);
-	VectorScale(forward, 0.25, temp_f);
-	VectorAdd(temp_r, temp_f, lllf);
-	VectorNormalize(lllf);
-
-	VectorScale(right, -0.5, temp_r);
-	VectorScale(forward, 0.5, temp_f);
-	VectorAdd(temp_r, temp_f, llf);
-	VectorNormalize(llf);
-
-	VectorScale(right, -0.25, temp_r);
-	VectorScale(forward, 0.75, temp_f);
-	VectorAdd(temp_r, temp_f, lf);
-	VectorNormalize(lf);
-
-	VectorScale(right, 0.25, temp_r);
-	VectorScale(forward, 0.75, temp_f);
-	VectorAdd(temp_r, temp_f, rf);
-	VectorNormalize(rf);
-
-	VectorScale(right, 0.5, temp_r);
-	VectorScale(forward, 0.5, temp_f);
-	VectorAdd(temp_r, temp_f, rrf);
-	VectorNormalize(rrf);
-
-	VectorScale(right, 0.75, temp_r);
-	VectorScale(forward, 0.25, temp_f);
-	VectorAdd(temp_r, temp_f, rrrf);
-	VectorNormalize(rrrf);
-
-	VectorMA(self->startpos2, -dist, right, pos1);
-	VectorMA(self->startpos2, dist, lllf, pos2);
-	VectorMA(self->startpos2, dist, llf, pos3);
-	VectorMA(self->startpos2, dist, lf, pos4);
-	VectorMA(self->startpos2, dist, rf, pos5);
-	VectorMA(self->startpos2, dist, rrf, pos6);
-	VectorMA(self->startpos2, dist, rrrf, pos7);
-	VectorMA(self->startpos2, dist, right, pos8);
-
-	for(j=0;j<2;j++)
-	{
-		if (j)
-		{//extra 10 to avoid depth clip confusion
-			VectorMA(pos1, -10, right, pos1);
-			VectorMA(pos2, 10, lllf, pos2);
-			VectorMA(pos3, 10, llf, pos3);
-			VectorMA(pos4, 10, lf, pos4);
-			VectorMA(pos5, 10, rf, pos5);
-			VectorMA(pos6, 10, rrf, pos6);
-			VectorMA(pos7, 10, rrrf, pos7);
-			VectorMA(pos8, 10, right, pos8);
-		}
-		for(i = 0; i<7; i++)
-		{
-			TrailEnt=ClientEntity_new(FX_M_EFFECTS,
-									  CEF_DONT_LINK,
-									  self->r.origin,
-									  NULL,
-									  17);
-
-			TrailEnt->radius = 2000;
-
-			VectorCopy( self->r.origin, TrailEnt->origin );
-
-			switch(i)
-			{
-				case 0:
-					VectorCopy(pos1 , TrailEnt->r.startpos);
-					VectorCopy(pos2 , TrailEnt->r.endpos);
-					break;
-				case 1:
-					VectorCopy(pos2 , TrailEnt->r.startpos);
-					VectorCopy(pos3 , TrailEnt->r.endpos);
-					break;
-				case 2:
-					VectorCopy(pos3 , TrailEnt->r.startpos);
-					VectorCopy(pos4 , TrailEnt->r.endpos);
-					break;
-				case 3:
-					VectorCopy(pos4 , TrailEnt->r.startpos);
-					VectorCopy(pos5 , TrailEnt->r.endpos);
-					break;
-				case 4:
-					VectorCopy(pos5 , TrailEnt->r.startpos);
-					VectorCopy(pos6 , TrailEnt->r.endpos);
-					break;
-				case 5:
-					VectorCopy(pos6 , TrailEnt->r.startpos);
-					VectorCopy(pos7 , TrailEnt->r.endpos);
-					break;
-				case 6:
-					VectorCopy(pos7 , TrailEnt->r.startpos);
-					VectorCopy(pos8 , TrailEnt->r.endpos);
-					break;
-			}
-
-			TrailEnt->Update = ShoveThink;
-
-			if (j)
-			{
-				//white inner
-				float scale;
-
-				TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
-				TrailEnt->r.model = Morkproj_models[2];
-
-				TrailEnt->r.spriteType = SPRITE_LINE;
-				TrailEnt->r.tile = 1;
-				scale = (dist/32);
-				VectorSet(TrailEnt->r.scale, scale, scale, scale);
-				if (AVG_VEC3T(TrailEnt->r.scale) < 1)
-					VectorSet(TrailEnt->r.scale, 1.0, 1.0, 1.0);
-				TrailEnt->alpha = 2.0;
-				VectorSet(TrailEnt->r.scale, 1.0, 1.0, 1.0);
-
-				TrailEnt->d_alpha = -1.0;
-				TrailEnt->d_scale = -0.1;
-				TrailEnt->Update = ShoveInnerThink;
-			//	TrailEnt->Update = FXMorkTrailThink_old;
-			}
-			else
-			{
-				//blue outer
-				float scale;
-				paletteRGBA_t color;
-
-				TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
-				TrailEnt->r.model = Morkproj_models[2];
-
-				TrailEnt->r.spriteType = SPRITE_LINE;
-				TrailEnt->r.tile = 1;
-				scale = (dist / 32) * 4;
-				VectorSet(TrailEnt->r.scale, scale, scale, scale);
-				if (AVG_VEC3T(TrailEnt->r.scale) < 4)
-				{
-					VectorSet(TrailEnt->r.scale, 4, 4, 4);
-				}
-				TrailEnt->alpha = 1.0;
-				VectorSet(TrailEnt->r.scale, 4, 4, 4);
-				color.c = TrailEnt->r.color;
-				color.r = 100;
-				color.g = 75;
-				color.b = 250;
-				TrailEnt->r.color = color.c;
-				TrailEnt->d_alpha = -0.5;
-				TrailEnt->Update = ShoveOuterThink;
-				TrailEnt->d_scale = 0.1;
-	//			TrailEnt->Update = FXMorkTrailThink_old;
-			}
-			AddEffect(NULL,TrailEnt);
-		}
-	}
-
-	return true;
-}
-
-
 /*===============================
 
   FX_M_BEAM
@@ -1541,8 +850,7 @@ FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 	int					i;
 	paletteRGBA_t color;
 
-	//VectorCopy(owner->origin, self->origin);
-//Make inner beam
+	//Make inner beam
 	TrailEnt=ClientEntity_new(FX_M_EFFECTS,
 							  CEF_DONT_LINK,
 							  owner->origin,
@@ -1570,7 +878,7 @@ FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 
 	AddEffect(NULL,TrailEnt);
 
-//make outer beam
+	//make outer beam
 	TrailEnt=ClientEntity_new(FX_M_EFFECTS,
 							  CEF_DONT_LINK,
 							  owner->origin,
@@ -1648,7 +956,6 @@ FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 		spark->d_alpha = flrand(-60.0, -42.0);
 		spark->duration = flrand(1500, 3000);
 		spark->acceleration[2] = flrand(10, 20);
-//		spark->extraUpdate = ParticleFadeToBlue;
 
 		VectorSet(spark->origin, crandk() * 10.0,
 									crandk() * 10.0,
@@ -1678,10 +985,10 @@ qboolean MorkFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	self->AddToView = NULL;
 	self->Update = KeepSelfAI;
 
-//Make the eyes
+	//Make the eyes
 	fx=ClientEntity_new(FX_M_EFFECTS, CEF_NO_DRAW|CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, owner->current.origin, NULL, 20);
 	fx->flags |= CEF_NO_DRAW | CEF_ABSOLUTE_PARTS;
-	fx->Update = FXMorkEyes2;
+	fx->Update = FXMorkEyes;
 	fx->LifeTime = 0;
 	color.c = 0xe5007fff;
 	fx->r.color = color.c;
@@ -1693,7 +1000,7 @@ qboolean MorkFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	//--------------------------------------
 	fx=ClientEntity_new(FX_M_EFFECTS, CEF_NO_DRAW|CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, owner->current.origin, NULL, 20);
 	fx->flags |= CEF_NO_DRAW|CEF_ABSOLUTE_PARTS;
-	fx->Update = FXMorkEyes2;
+	fx->Update = FXMorkEyes;
 	fx->LifeTime = 1;
 	color.c = 0xe5007fff;
 	fx->r.color = color.c;
@@ -1716,185 +1023,6 @@ void FXMorkReadyRefs (centity_t *owner,int type,int flags,vec3_t origin)
 	self->AddToView = MorkFirstSeenInit;
 
 	AddEffect(owner, self);
-}
-
-
-static qboolean
-DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_ParticleUpdate_opt (struct client_particle_s *self, int crap)
-{
-	float	d_time, d_time2;
-	int		d_msec, yaw;
-	vec3_t	dir, angles, right;//, center_dist, part_dist;
-	float	dist, counter;//, view_dist;
-	float	sum;
-
-/*=======================
-
-  Further optimization: have one think and 50 others trail behind it
-  with a 0.1 - 10 ms offset?  Or using it's velocity as the
-  oldorigin and it's own velocity as an offset off that velocity...
-  need to use the ->next field?
-
-  =======================*/
-
-
-	d_msec = (fxi.cl->time - self->startTime);
-	d_time = d_msec * 0.001f;
-	d_time2 = d_time * d_time * 0.5;
-
-	VectorSubtract(self->acceleration, self->origin, dir);
-	dist = VectorLengthSquared(dir);//no quare root!
-	//normalization trick
-	sum = Q_fabs(dir[0]) + Q_fabs(dir[1]) + Q_fabs(dir[2]);
-	dir[0] /= sum;
-	dir[1] /= sum;
-	dir[2] /= sum;
-
-	if (dist< 22500)
-	{
-		if (self->color.g<250)
-			self->color.g+=2;
-
-		if (self->color.b<254)
-			self->color.b+=2;
-
-		if (self->color.r<250)
-			self->color.r+=2;
-	}
-	else if(dist<32400)
-	{
-		if (self->color.b<255)
-			self->color.b++;
-	}
-
-	if (dist < 100)
-	{//shoot out sooner?
-		if (!irand(0, 10))
-		{//spray out
-			VectorCopy(self->acceleration, self->origin);
-			if (!irand(0, 1))
-				VectorSet(self->acceleration, 0, 0, 10);
-			else
-				VectorSet(self->acceleration, 0, 0, -10);
-			VectorClear(self->velocity);
-			VectorSet(self->velocity, crandk() * 2.0, crandk() * 2.0, 0);
-			self->d_alpha = -40.0f;
-			self->scale = flrand(2.0, 3.0);
-			self->d_scale = 0.5f;
-//				self->extraUpdate = NULL;
-			self->duration = Q_fabs((self->color.a/(self->d_alpha/255)) * 1000);
-			self->startTime = fxi.cl->time;
-			return (true);
-		}
-		self->scale = 20;//dist == 200, scale = 0.1; dist = 0, scale = 5
-	}
-	else if(dist<2500)
-	{
-		self->scale = (10000 - dist)/10000 * 14;//dist == 200, scale = 0.1; dist = 0, scale = 5
-		self->d_scale = 0.0f;
-	}
-	else if(dist<22500)
-	{
-		self->scale = (44100 - dist)/44100 * 7;//dist == 200, scale = 0.1; dist = 0, scale = 5
-		self->d_scale = 0.0f;
-	}
-
-	if (dir[YAW] == 0 && dir[PITCH] == 0)
-		yaw = 0;
-	else
-	{//ignore pitch? shouldn't be any!
-		yaw = (int) (atan2(dir[YAW], dir[PITCH]) * 180 / M_PI);
-		if (yaw < 0)
-			yaw += 360;
-	}
-
-	VectorSet(angles, 0, yaw, 0);
-	AngleVectors(angles, NULL, right, NULL);
-
-	counter = self->duration - 1000000000;
-	self->duration = 1000000000 + counter + 1;
-	if (counter>1000)
-		counter = 1000;
-
-	VectorScale(right, -1000/(1000 - counter), right);
-	VectorScale(dir, 1000/(1000 - counter), dir);
-	VectorAdd(dir, right, dir);
-	sum = Q_fabs(dir[0]) + Q_fabs(dir[1]) + Q_fabs(dir[2]);
-	dir[0] /= sum;
-	dir[1] /= sum;
-	dir[2] /= sum;
-//Store oldorigin in velocity for particles that trail me
-//use velocity as offset for trailing particles
-	VectorAdd(self->origin, dir, self->origin);
-
-//L-o-D
-/*Only if one of below used
-	VectorSubtract(fxi.cl->refdef.vieworg, self->origin, part_dist);
-	view_dist = VectorLengthSquared(part_dist);
-*/
-/*//Do only if not high detail
-	if (view_dist>65536)
-		self->type = PART_4x4_WHITE;//too far away, use smaller particle
-	else
-		self->type = PART_32x32_ALPHA_GLOBE;//closer, use nicer particles
-	self->type &= ~PFL_DRAWLAST;//done auto above
-*/
-
-//PLANETS! - Ultra high detail!!!
-/*
-	if (view_dist<257)
-	{//closer than 16 to viewport draw planets
-		client_particle_t	*planet;
-		int	p;
-		vec3_t	forward;
-		client_entity_t	*owner;
-
-		self->type = PART_16x16_STAR;
-		for(p = 1; p<self->velocity[0] + 1; p++)
-		{//number of planets
-			planet = ClientParticle_new(PART_4x4_WHITE, self->color, 10);
-
-			VectorClear(angles);
-			angles[YAW] = p * 60;//counter/10 + (p * self->velocity[1]);
-			AngleVectors(angles, forward, NULL, NULL);
-
-//			if (DotProduct(forward, part_dist)>0)
-				planet->type |= PFL_DRAWLAST;
-
-//			VectorMA(self->origin, self->scale + p * 2, forward, planet->origin);//self->velocity[1] / 10
-			VectorMA(self->origin, 10 + p * 2, forward, planet->origin);
-			planet->acceleration[2] = 0;
-
-			planet->d_alpha = 0;
-			planet->scale = 1;//p * self->velocity[1] / 100 * self->scale;
-			planet->color.r = self->color.r;// - p * self->velocity[1]/100;
-			planet->color.g = self->color.g;//- p * self->velocity[1]/100;
-			planet->color.b = self->color.b;// - p * self->velocity[1]/100;
-			planet->color.a = 1;
-			planet->extraUpdate = KeepSelfAI;
-
-			owner = ((client_entity_t *)((long)(self->velocity[2])));
-
-			owner->flags|=(CEF_ABSOLUTE_PARTS | CEF_STATIC_PARTICLES);
-
-			AddParticleToList(owner, planet);
-		}
-
-	}
-*/
-
-/*Again, High detail
-//draw in front?
-	if (dist>10000)
-	{//at least 100 away from core
-		VectorSubtract(fxi.cl->refdef.vieworg, self->acceleration, center_dist);
-		if (view_dist<VectorLengthSquared(center_dist))
-		{//closer to the camera than the core
-			self->type |= PFL_DRAWLAST;
-		}
-	}
-*/
-	return (true);
 }
 
 static qboolean
@@ -1937,8 +1065,6 @@ DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_SpawnerUpdate (struct 
 		star->color.a = 200;
 		star->d_alpha = 0.1;
 		star->duration = 1000000000;
-
-//		star->extraUpdate = DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_ParticleUpdate_opt;
 
 		AddParticleToList(self, star);
 	}
@@ -2051,7 +1177,6 @@ qboolean ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
 		p->d_scale = flrand(-15.0, -10.0);
 		p->d_alpha = flrand(-200.0, -160.0);
 		p->duration = (255.0 * 1000.0) / -p->d_alpha;		// time taken to reach zero alpha
-
 
 		AddParticleToList(self, p);
 	}
@@ -2490,7 +1615,6 @@ void FXBuoyPath (vec3_t org, vec3_t vel)
 	AddEffect(NULL,fx);
 }
 
-
 qboolean FXMMoBlurUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->alpha <= 0.05f)
@@ -2554,8 +1678,6 @@ void FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 
 	dagger = ClientEntity_new(FX_M_EFFECTS, CEF_DONT_LINK, owner->current.origin, NULL, 20);
 
-//	VectoAngles(vel, dagger->r.angles);
-//	VectorScale(dagger->r.angles, ANGLE_TO_RAD, dagger->r.angles);
 	VectorScale(owner->current.angles, ANGLE_TO_RAD, dagger->r.angles);
 	dagger->r.model = ass_dagger_model[0];
 	dagger->r.flags |= RF_FULLBRIGHT;
@@ -2565,7 +1687,6 @@ void FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 
 	AddEffect(owner, dagger);
 }
-
 
 int water_particle [6] =
 {
@@ -2635,23 +1756,15 @@ void FXUnderWaterWake (centity_t *owner)
 	AddEffect(owner, fx);
 }
 
-
-
-
-
-
 /*
 
 	JWEIER EFFECTS BLOCKS
 
 */
 
-
-
 /*-----------------------------------------------
 	FXQuakeRing
 -----------------------------------------------*/
-
 
 #define BALL_RADIUS		0.15
 #define NUM_RIPPER_PUFFS	12
@@ -2761,7 +1874,6 @@ static qboolean
 beam_update(struct client_entity_s *self, centity_t *owner)
 {
 	//TODO: Cool ass effects here
-
 	return true;
 }
 
@@ -3083,34 +2195,6 @@ void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
 	FXMMissileTrailThink(Trail,owner);
 }
 
-void FXMorkRecharge( centity_t *owner, vec3_t velocity )
-{
-	client_entity_t	*Trail;
-	int		i;
-
-	i = GetScaledCount(8, 0.85);
-
-	while (i--)
-	{
-		Trail = ClientEntity_new( FX_M_EFFECTS, CEF_OWNERS_ORIGIN | CEF_DONT_LINK, owner->origin, NULL, 2000);
-
-		Trail->radius = 500;
-		Trail->r.model = morc_models[irand(6, 8)];
-		Trail->r.color = 0xFFFFFFFF;
-		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
-		Trail->velocity[2] = 32;
-		Trail->acceleration[2] = 64;
-		Trail->d_scale = 2.0;
-		Trail->d_alpha = -0.1;
-
-		Trail->r.origin[0] = irand(-32, 32);
-		Trail->r.origin[1] = irand(-32, 32);
-
-		AddEffect(owner,Trail);
-	}
-}
-
 qboolean rubble_spin (client_entity_t *self, centity_t *owner)
 {
 	if (self->LifeTime < fxi.cl->time)
@@ -3314,7 +2398,6 @@ qboolean ArrowDrawTrail (client_entity_t *self, centity_t *owner)
 			self->r.scale2 = scale;
 		}
 
-
 		if (self->SpawnInfo > -64)
 			self->SpawnInfo-=4;
 
@@ -3455,9 +2538,6 @@ void FXMSsithraArrowCharge( vec3_t startpos )
 
   ===============================*/
 
-
-
-
 void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 {
 	client_entity_t	*fx;
@@ -3549,11 +2629,6 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 			FXCWStars(owner, type, flags, org);
 			break;
 
-		/*
-		case FX_CW_PLASMA:
-			CWPlasma(org, vel, flags);
-			break;*/
-
 		case FX_BUOY:
 			FXBuoy(owner, flags, org, vel[0]);
 			break;
@@ -3597,11 +2672,6 @@ void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 		case FX_MORK_TRACKING_MISSILE:
 			FXMorkTrackingMissile(owner, org, vel);
 			break;
-
-		/*
-		case FX_MORK_RECHARGE:
-			FXMorkRecharge(owner, vel);
-			break;*/
 
 		case FX_MSSITHRA_EXPLODE:
 			if (flags & CEF_FLAG6)

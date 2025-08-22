@@ -16,14 +16,12 @@
 #include "../header/g_playstats.h"
 #include "../common/skeletons.h"
 
-
 // setup for circular list
 #define CFX_CULLING_DIST 1000.0f
 client_entity_t *CircularList[MAX_ENTRIES_IN_CIRCLE_LIST + 1];
 int				CurrentCirclePointer = 0;
 int				total_circle_entries;
 extern void RemoveEffectFromList(client_entity_t **root, centity_t *owner);
-
 
 //------------------------------------------------------------------
 // Update funcs
@@ -386,7 +384,6 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 				FXDoWaterEntrySplash(NULL, FX_WATER_ENTRYSPLASH, 0, surface_top, 64, trace->plane.normal);
 			}
 
-
 			if (flrand(-0.5, 0) < hit_angle)
 			{//splash sound
 				if (do_effect)
@@ -579,8 +576,6 @@ qboolean RefPointsValid(centity_t *owner)
 	else
 		return true;
 }
-
-
 
 // FIXME Obsolete
 qboolean ReferencesInitialized(centity_t *owner)

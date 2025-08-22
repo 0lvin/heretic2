@@ -77,8 +77,6 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 
 	mist->d_scale = -2.0;
 	mist->d_alpha = -8.0F;
-//	mist->velocity[0] = crandk() * 20.0F;
-//	mist->velocity[1] = crandk() * 20.0F;
 	AddEffect(NULL, mist);
 
 	color.c = 0xffffffff;

@@ -41,7 +41,6 @@ void PreCacheMaceball()
 
 // --------------------------------------------------------------
 // Need to create some pretty effect here
-
 #define BALL_GROWTH		0.05
 #define BALL_MAX		(6.0 * BALL_RADIUS)
 
@@ -192,7 +191,6 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_MACEBALLEXPLODE].formatString,dir);
 
 	// Create an expanding ball of gre.
-
 	explosion=ClientEntity_new(type,CEF_DONT_LINK|CEF_ADDITIVE_PARTS,origin,dir,750);
 	explosion->r.model = mace_models[3];
 	explosion->r.flags |= RF_TRANSLUCENT;
@@ -222,39 +220,11 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	// Spawn some chunks too
 	FXDebris_SpawnChunks(type, flags & ~(CEF_FLAG6|CEF_FLAG7|CEF_FLAG8), origin, 5, MAT_METAL, dir, 80000.0f, mins, 1.5, false);
 }
-
-
-
 // end
-
-
-
-
-
 
 // ************************************************************************************************
 // FXRipperBall
 // ************************************************************************************************
-
-
-// ************************************************************************************************
-// FXRipperExplode
-// ---------------------
-// ************************************************************************************************
-
-static qboolean
-FXRipperExplodeLightThink(struct client_entity_s *self, centity_t *owner)
-{
-	if (fxi.cl->time > self->lastThinkTime)
-		return false;
-
-	if (self->dlight->intensity > 0.0F)
-		self->dlight->intensity -= 10.0F;
-
-	return true;
-}
-
-
 
 static qboolean
 FXRipperExplodeBallThink(struct client_entity_s *self, centity_t *owner)
@@ -289,7 +259,6 @@ FXRipperExplodeBallThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-
 // Create Effect FX_WEAPON_RIPPEREXPLODE
 void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
@@ -304,7 +273,6 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	vec3_t			lastvel, diff, curpos;
 	client_entity_t	*flash, *ring;
 	client_particle_t *spark;
-
 
 	FXGetEffect(owner, flags, clientEffectSpawners[FX_WEAPON_RIPPEREXPLODE].formatString,
 			casterpos,
@@ -366,7 +334,6 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.S_StartSound(flash->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/RipperImpact.wav"), 1, ATTN_NORM, 0);
 	flash->dlight = CE_DLight_new(color, 150.0f, -100.0f);
 	flash->lastThinkTime = fxi.cl->time + 750;
-//	flash->Update = FXRipperExplodeLightThink;
 
 	AddEffect(NULL, flash);
 
@@ -470,6 +437,4 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 
 }
-
-
 // end

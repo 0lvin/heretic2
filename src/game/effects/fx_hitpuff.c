@@ -28,7 +28,6 @@ void PreCacheHitPuff()
 
 // --------------------------------------------------------------
 
-
 #define LIGHTNING_VEL	256.0
 
 #define NUM_LIGHTNING_BITS	25
@@ -80,7 +79,6 @@ void FXLightningHit(centity_t *owner, int type, int flags, vec3_t origin)
 	{
 		spark = ClientParticle_new(part, color, 500);
 		VectorRandomCopy(dir, spark->velocity, LIGHTNING_VEL);
-//		VectorSet(dir, 0.0, 0.0, GetGravity() * 0.3);
 		spark->scale = flrand(20.0, 32.0);
 		spark->d_scale = -32.0;
 		spark->d_alpha = flrand(-640.0, -512.0);

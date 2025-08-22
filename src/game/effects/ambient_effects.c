@@ -60,11 +60,7 @@ qboolean CreateFlyParticles(client_entity_t *_this, centity_t *owner)
 {
 #define NUMVERTEXNORMALS	162
 #define	BEAMLENGTH			16
-//	int		n;
 	int		count;
-//	int		starttime;
-
-//	int fly_stoptime;
 
 	int			i;
 	client_particle_t *p;

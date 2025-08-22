@@ -51,7 +51,6 @@ PuzzleModel_t PuzzleModels[]=
 	{"models/items/puzzles/townkey/tris.fm",		NULL, 1.5},		// ITEM_TAVERNKEY
 };
 
-
 void PreCachePuzzleItems()
 {
 	int i;

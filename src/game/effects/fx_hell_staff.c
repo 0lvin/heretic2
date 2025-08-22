@@ -96,7 +96,6 @@ void HellboltExplode(vec3_t loc, vec3_t vel)
 	}
 }
 
-
 void FXHellboltExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			Dir;
@@ -127,7 +126,6 @@ void HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
 	blast->radius = 32.0;
 
 	// We're not gonna put any sound on the laser impact.
-//	fxi.S_StartSound(blast->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/HellLaserHit.wav"), 1, ATTN_NORM, 0);
 	blast->dlight = CE_DLight_new(lightcolor, 150.0f, -300.0f);
 	VectorClear(blast->velocity);
 
@@ -152,7 +150,6 @@ void HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
 	}
 }
 
-
 // Create Effect FX_WEAPON_HELLSTAFF_POWER_BURN
 void FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
 {
@@ -167,7 +164,6 @@ void FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
 
 	HellLaserBurn(origin, fwd, right, up);
 }
-
 
 // CreateEffect FX_WEAPON_HELLSTAFF_POWER
 void

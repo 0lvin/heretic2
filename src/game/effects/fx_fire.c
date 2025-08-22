@@ -28,7 +28,6 @@
 #define FIRE_ENT_SCALE 		8.0
 #define FIRE_ACCEL			32.0
 
-
 #define	NUM_FLAREUP_MODELS	1
 
 static struct model_s *flareup_models[NUM_FLAREUP_MODELS];
@@ -80,8 +79,6 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 		AddParticleToList(spawner, flame);
 	}
 }
-
-
 
 qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 {
@@ -251,7 +248,6 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 	}
 }
 
-
 qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*flame;
@@ -331,7 +327,6 @@ void FXFireOnEntity(centity_t *owner, int type, int flags, vec3_t origin)
 
 	spawner->r.flags |= RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA;
 	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_CULLED | CEF_CHECK_OWNER;
-//	spawner->flags |= CEF_NO_DRAW | CEF_NOMOVE | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_CULLED | CEF_VIEWSTATUSCHANGED;
 	spawner->color.c = 0xe5007fff;
 	spawner->radius = 128;
 	if (!style)//fire fades out- for things that catch fire

@@ -22,15 +22,11 @@
 
 static struct model_s *rope_models[NUM_ROPE_MODELS];
 
-
-
 /*
 
   Precache function
 
 */
-
-
 
 void PreCacheRope()
 {
@@ -40,15 +36,11 @@ void PreCacheRope()
 	rope_models[3] = fxi.RegisterModel("sprites/fx/segment_tendril.sp2");
 }
 
-
-
 /*
 
   Helper function
 
 */
-
-
 
 /*-----------------------------------------------
 	RopeCheckToHide
@@ -72,15 +64,11 @@ qboolean RopeCheckToHide(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-
-
 /*
 
   Attached Rope Segments
 
 */
-
-
 
 /*-----------------------------------------------
 	FXRopeTopDrawAttached
@@ -225,15 +213,11 @@ FXRopeBottomDrawAttached(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-
-
 /*
 
   Unattached Rope Segments
 
 */
-
-
 
 /*-----------------------------------------------
 	FXRopeTopDraw
@@ -296,14 +280,11 @@ FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
   return true;
 }
 
-
 /*
 
 	FXROPE
 
 */
-
-
 
 /*-----------------------------------------------
 	FXRope

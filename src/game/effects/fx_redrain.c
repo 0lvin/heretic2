@@ -52,16 +52,13 @@ void PreCacheRedrain()
 void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner);
 void DoLightning(vec3_t groundpos, vec3_t airpos);
 
-
-
-
 // Things dropped by the red rain.
 
 // --------------------------------------------------------------
 
 // This is a delayed effect which creates a splash out of red sparks.
-//static
-qboolean FXRedRainSplashThink(client_entity_t *splash, centity_t *owner)
+static qboolean
+FXRedRainSplashThink(client_entity_t *splash, centity_t *owner)
 {
 	client_entity_t		*mist;
 	client_particle_t	*spark;
@@ -94,10 +91,9 @@ qboolean FXRedRainSplashThink(client_entity_t *splash, centity_t *owner)
 	return false;
 }
 
-
 // The drops need to update as they're added to the view, because velocity doesn't update the sprite line's start and endpoint.
-//static
-qboolean FXRedRainDropUpdate(client_entity_t *drop, centity_t *owner)
+static qboolean
+FXRedRainDropUpdate(client_entity_t *drop, centity_t *owner)
 {
 	drop->r.startpos[2] = drop->r.origin[2] + RAIN_HEIGHT;
 	if (drop->r.startpos[2] > drop->SpawnData)	// Make sure that the top of the drop doesn't go higher that the spawn height
@@ -106,7 +102,6 @@ qboolean FXRedRainDropUpdate(client_entity_t *drop, centity_t *owner)
 
 	return false;
 }
-
 
 // Red Rain area
 
@@ -142,7 +137,7 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 			rain->SpawnData = 0.0;
 	}
 
-	if (owner->current.effects&EF_DISABLE_EXTRA_FX)//rain->LifeTime < 1000)
+	if (owner->current.effects&EF_DISABLE_EXTRA_FX)
 		return true;
 
 	for(j = 0; j < NUM_DROPS; j++)
@@ -228,10 +223,7 @@ void FXRedRain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 // Red Rain Missile
 
-
-
 // ---------------------------------------------------------------------------
-
 
 // The red rain projectile's trail of red sparks.
 static qboolean
@@ -330,7 +322,6 @@ void FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 // Red Rain Explosion
 
 // ---------------------------------------------------------------------------
-
 
 // Thinker for the explosion, just fades the light
 static qboolean
@@ -472,7 +463,5 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 	else
 		fxi.S_StartSound(impactpos, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/RedRainHit.wav"), 1, ATTN_NORM, 0);
 }
-
-
 
 // end

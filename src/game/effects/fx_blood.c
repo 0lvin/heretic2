@@ -596,19 +596,4 @@ void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-/*
-void FXTrailBlood(centity_t *owner, int type, int flags, vec3_t origin)
-{
-	client_entity_t		*spawner;
-	byte				amount;
-	vec3_t				velocity;
-	qboolean			yellow_blood = false;
-
-	if (flags&CEF_FLAG8)
-		yellow_blood = true;
-
-	spawner = DoBloodSplash(origin, amount, yellow_blood);
-	VectorCopy(velocity, spawner->velocity);
-}
-*/
 // end

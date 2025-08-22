@@ -55,7 +55,6 @@ static qboolean FXPlagueMistParticleSpawner(client_entity_t *spawner, centity_t 
 		mist_d_scale = 5.0;
 	}
 
-
 	for(i = 0; i < count; i++)
 	{
 		color.r = irand(200, 255);

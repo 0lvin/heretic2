@@ -15,7 +15,6 @@
 #include "q_sprite.h"
 #include "../header/g_playstats.h"
 
-
 #define SINESCALE (256.0 / (2 * M_PI))
 #define NUM_PORTAL_PARTS	20
 #define PICTURE_RADIUS		55.0
@@ -109,10 +108,8 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		}
 		ce->type |= PFL_ADDITIVE;
 
-//		ce->color.a = irand(128, 255);
 		ce->color.a = irand(2, 128);
 
-//		ce->d_alpha = flrand(ce->color.a * -0.8f, -ce->color.a);
 		ce->d_alpha = irand(320, 480);
 		AddParticleToList(self, ce);
 	}
@@ -126,7 +123,6 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 									 4000);
 
 		ripple->r.model = portal_models[0];
-		//ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_TRANSLUCENT | RF_FIXED | RF_TRANS_GHOST;
 		ripple->r.flags |= RF_TRANS_ADD_ALPHA | RF_TRANS_ADD | RF_FIXED | RF_TRANS_GHOST;
 		VectorSet(ripple->r.scale, 0.1f, 0.1f, 0.1f);
 		ripple->d_scale = 1.0f;
@@ -263,33 +259,33 @@ void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 		if (1)
 		{
 			//top left
-			portal->r.verts[0][0] = -PICTURE_RADIUS;// + crandk() * 2.0;//x
-			portal->r.verts[0][1] = -PICTURE_RADIUS;// + crandk() * 2.0;//y
+			portal->r.verts[0][0] = -PICTURE_RADIUS;//x
+			portal->r.verts[0][1] = -PICTURE_RADIUS;//y
 			//top right
-			portal->r.verts[1][0] = PICTURE_RADIUS;// + crandk() * 2.0;//x
-			portal->r.verts[1][1] = -PICTURE_RADIUS;// + crandk() * 2.0;//y
+			portal->r.verts[1][0] = PICTURE_RADIUS;//x
+			portal->r.verts[1][1] = -PICTURE_RADIUS;//y
 			//bottom left
-			portal->r.verts[2][0] = PICTURE_RADIUS;// + crandk() * 2.0;//x
-			portal->r.verts[2][1] = PICTURE_RADIUS;//+ crandk() * 2.0;//y
+			portal->r.verts[2][0] = PICTURE_RADIUS;//x
+			portal->r.verts[2][1] = PICTURE_RADIUS;//y
 			//bottom right
-			portal->r.verts[3][0] = -PICTURE_RADIUS;// + crandk() * 2.0;//x
-			portal->r.verts[3][1] = PICTURE_RADIUS;// + crandk() * 2.0;//y
+			portal->r.verts[3][0] = -PICTURE_RADIUS;//x
+			portal->r.verts[3][1] = PICTURE_RADIUS;//y
 		}
 
 		if (1)
 		{
 			//top left
-			portal->r.verts[0][2] = 0;//PORTALPIC_SIZE;// + crandk() * 2.0;//u
-			portal->r.verts[0][3] = 1;//-PORTALPIC_SIZE;// + crandk() * 2.0;//v
+			portal->r.verts[0][2] = 0;//u
+			portal->r.verts[0][3] = 1;//v
 			//top right
-			portal->r.verts[1][2] = 1;//PORTALPIC_SIZE;// + crandk() * 2.0;//u
-			portal->r.verts[1][3] = 1;//PORTALPIC_SIZE;// + crandk() * 2.0;//v
+			portal->r.verts[1][2] = 1;//u
+			portal->r.verts[1][3] = 1;//v
 			//bottom left
-			portal->r.verts[2][2] = 1;//-PORTALPIC_SIZE;// + crandk() * 2.0;//u
-			portal->r.verts[2][3] = 0;//PORTALPIC_SIZE;// + crandk() * 2.0;//v
+			portal->r.verts[2][2] = 1;//u
+			portal->r.verts[2][3] = 0;//v
 			//bottom right
-			portal->r.verts[3][2] = 0;//-PORTALPIC_SIZE;// + crandk() * 2.0;//u
-			portal->r.verts[3][3] = 0;//-PORTALPIC_SIZE;// + crandk() * 2.0;//v
+			portal->r.verts[3][2] = 0;//u
+			portal->r.verts[3][3] = 0;//v
 		}
 
 		portal->r.model = portal_models[1];

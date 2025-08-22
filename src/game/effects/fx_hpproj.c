@@ -123,7 +123,7 @@ FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
 
 		//Spawn some particles and some rock chunks
 
-		i =  GetScaledCount(8, 0.7);//irand(8,12);
+		i =  GetScaledCount(8, 0.7);
 
 		while(i--)
 		{
@@ -159,7 +159,7 @@ FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
 			AddParticleToList(self, p);
 		}
 
-		i = GetScaledCount(5, 0.7);//irand(4,6);
+		i = GetScaledCount(5, 0.7);
 
 		while(i--)
 		{
@@ -484,7 +484,6 @@ FXHPMissileTrailThink2(struct client_entity_s *self, centity_t *Owner)
 	scale = flrand(0.35, 0.55);
 	VectorSet(self->r.scale, scale, scale, scale);
 
-
 	TrailEnt=ClientEntity_new(FX_HP_MISSILE,
 							  CEF_DONT_LINK,
 							  Owner->origin,
@@ -695,7 +694,6 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	float			boltStep, width, alpha, scale;
 	byte			effectType;
 	int				bends, i, bolts, j;
-
 
 	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_HP_MISSILE].formatString, &vel, &effectType);
 
@@ -1101,26 +1099,6 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		break;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 

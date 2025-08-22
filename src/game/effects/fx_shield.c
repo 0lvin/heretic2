@@ -75,7 +75,6 @@ static qboolean FXShieldSparkThink(struct client_entity_s *shield, centity_t *ow
 	return true;
 }
 
-
 static qboolean FXShieldTerminate(struct client_entity_s *shield, centity_t *owner)
 {
 	// Don't instantly delete yourself.  Don't accept any more updates and die out within a second.
@@ -86,7 +85,6 @@ static qboolean FXShieldTerminate(struct client_entity_s *shield, centity_t *own
 
 	return true;
 }
-
 
 // ************************************************************************************************
 // FXLightningShield

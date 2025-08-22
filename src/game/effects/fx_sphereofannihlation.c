@@ -48,7 +48,6 @@ static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self
 static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner);
 extern void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int lifeTime, paletteRGBA_t *tint);
 
-
 // ****************************************************************************
 // FXSphereOfAnnihilationSphereThink -
 // ****************************************************************************
@@ -224,7 +223,6 @@ FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Own
 	else
 		dur = 500;
 
-
 	if (Self->color.r>3)
 	{
 		paletteRGBA_t color;
@@ -353,7 +351,6 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 			VectorScale(Temp,180.0/M_PI,Temp);
 			AngleVectors(Temp,Forward,Right,NULL);
 
-
 			VectorSet(Glowball->r.origin,	crandk() * 10.0+ Self->r.origin[0],
 											crandk() * 10.0+ Self->r.origin[1],
 											crandk() * 10.0+ Self->r.origin[2]);
@@ -362,7 +359,6 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 		VectorCopy(Owner->current.angles,Temp);
 		VectorScale(Temp,180.0/M_PI,Temp);
 		AngleVectors(Temp,Forward2,Right2,NULL);
-
 
 		// Set my velocity and accelaration.
 
@@ -534,13 +530,6 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 
 	for(I=0;I<count;I++)
 	{
-
-		// No more tinting these particles.  It wasn't really worth it anyway
-/*		LightColor.r=irand(25, 50);
-		LightColor.g=irand(25, 50);
-		LightColor.b=irand(200, 255);
-		*/
-
 		ce = ClientParticle_new(PART_16x16_SPARK_B, LightColor, 600);
 
 		VectorCopy(Dir,ce->velocity);
@@ -661,19 +650,7 @@ void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Orig
 		exp1->d_alpha = -2.0;
 		AddEffect(NULL, exp1);
 	}
-
-	// create a scorchmark if necessary
-//	VectorSubtract(beam->r.endpos, beam->r.startpos, dir);
-//	VectorNormalize(dir);
-
-	// Looks silly if it makes a burn
-//	if	(Flags & CEF_FLAG7)
-//		FXClientScorchmark(beam->r.endpos, dir);
-
 }
-
-
-
 
 // PLAYER SPHERE OF ANNIHILATION EXPLOSION
 
@@ -702,7 +679,6 @@ FXSpherePlayerExplodeThink(struct client_entity_s *self, centity_t *Owner)
 	return true;
 }
 
-
 static qboolean
 FXSpherePlayerExplodeAddToView(struct client_entity_s *self, centity_t *Owner)
 {
@@ -713,7 +689,6 @@ FXSpherePlayerExplodeAddToView(struct client_entity_s *self, centity_t *Owner)
 
 	return true;
 }
-
 
 static qboolean
 FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball, centity_t *owner)
@@ -736,7 +711,6 @@ FXSpherePlayerExplodeGlowballThink(client_entity_t *glowball, centity_t *owner)
 	return true;
 }
 
-
 static qboolean
 FXSpherePlayerExplodeGlowballTerminate(client_entity_t *glowball, centity_t *owner)
 {
@@ -747,8 +721,6 @@ FXSpherePlayerExplodeGlowballTerminate(client_entity_t *glowball, centity_t *own
 
 	return true;
 }
-
-
 
 // ****************************************************************************
 // FXSphereOfAnnihilationExplode -

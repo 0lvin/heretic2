@@ -6,7 +6,6 @@
 #include "../../client/header/client.h"
 #include "../common/genericunions.h"
 
-
 typedef enum ParticleTypes_e
 {
 	// Small 4x4 particles in the upper left (0,0)
@@ -147,7 +146,6 @@ typedef struct client_particle_s
 #define PFL_ADDITIVE	0x40000000	// Particle is added to additive particle list
 #define PFL_NEARCULL	0x80000000	// Force near culling
 
-
 #define CYL_RADIUS		0		// These are used in the vectors for origin, velocity and acceleration in particles
 #define CYL_YAW			1		//		that use Cylindrical coordinates.
 #define CYL_Z			2
@@ -155,7 +153,6 @@ typedef struct client_particle_s
 #define SPH_RADIUS		0		// These are used in the vectors for origin, velocity and acceleration in particles
 #define SPH_YAW			1		//		that use Spherical coordinates.
 #define SPH_PITCH		2
-
 
 void InitParticleMngrMngr();
 void ReleaseParticleMngrMngr();

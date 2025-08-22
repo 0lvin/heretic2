@@ -80,8 +80,6 @@ FXShadowUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-
-
 static qboolean
 FXShadowReferenceUpdate(struct client_entity_s *self, centity_t *owner)
 {
@@ -148,10 +146,6 @@ FXShadowReferenceUpdate(struct client_entity_s *self, centity_t *owner)
 
 	return true;
 }
-
-
-
-
 
 void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 {

@@ -15,5 +15,4 @@ typedef enum SpriteType_s
 	NUM_SPRITE_TYPES,
 } SpriteType_t;
 
-
 #endif

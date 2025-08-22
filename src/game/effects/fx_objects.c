@@ -36,9 +36,6 @@ extern qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_
 extern qboolean FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner);
 extern client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin);
 
-
-
-
 // ************************************************************************************************
 // FXBarrelExplode
 // ************************************************************************************************

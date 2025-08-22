@@ -16,7 +16,6 @@
 #include "ce_dlight.h"
 #include "particle.h"
 
-
 #define NUM_BITS		12
 #define LIGHT_LIFETIME	1000
 

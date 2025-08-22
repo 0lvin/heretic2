@@ -587,7 +587,6 @@ AddServerEntities(frame_t *frame)
 		}
 
 		// Set render effects (fullbright, translucent, etc).
-
 		ent->flags = renderfx;
 
 		// Calculate angles.

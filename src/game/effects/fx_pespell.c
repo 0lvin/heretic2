@@ -133,8 +133,6 @@ void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t ve
 			1, ATTN_NORM, 0);
 }
 
-
-
 // ************************************************************************************************
 // FXPESpellExplode
 // ************************************************************************************************
@@ -239,10 +237,6 @@ FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 		scale = SPELL_SCALE + flrand(0.0, 0.05);
 		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 
-		/*TrailEnt->r.color.g = irand(40, 60);
-		TrailEnt->r.color.b = irand(245, 255);
-		TrailEnt->r.color.r = irand(95, 105);*/
-
 		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 		VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
 
@@ -294,8 +288,6 @@ void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 			1, ATTN_NORM, 0);
 }
 
-
-
 // ************************************************************************************************
 // FXPESpell2Explode
 // ************************************************************************************************
@@ -341,10 +333,6 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		/*
-		SmokePuff->r.color.g = irand(40, 60);
-		SmokePuff->r.color.b = irand(245, 255);
-		SmokePuff->r.color.r = irand(95, 105);*/
 
 		SmokePuff->r.frame=0;
 
@@ -365,94 +353,6 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 }
 
 //=====================================================================================
-
-// ************************************************************************************************
-// FXPESpell3TrailThink
-// ************************************************************************************************
-
-static qboolean
-FXPESpell3TrailThink(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*TrailEnt;
-	vec3_t			accel_dir;
-	int				i;
-
-	self->updateTime = 20;
-
-	if (self->SpawnInfo > 9)
-		self->SpawnInfo--;
-
-	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
-	while(i--)
-	{
-		float scale;
-
-		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
-		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-
-		VectorCopy(self->velocity, accel_dir);
-		VectorNormalize(accel_dir);
-
-		TrailEnt->r.model = spell_models[0];
-		scale = SPELL_SCALE + flrand(0.0, 0.05);
-		VectorSet(TrailEnt->r.scale, scale, scale, scale);
-
-		/*TrailEnt->r.color.g = irand(40, 60);
-		TrailEnt->r.color.r = irand(245, 255);
-		TrailEnt->r.color.b = irand(95, 105);*/
-
-		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
-		VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
-
-		TrailEnt->d_alpha = flrand(-1.5, -2.0);
-		TrailEnt->d_scale = flrand(-1.0, -1.25);
-		TrailEnt->updateTime = (TrailEnt->alpha * 1000.0) / -TrailEnt->d_scale;
-		TrailEnt->radius = 20.0;
-
-		AddEffect(NULL,TrailEnt);
-	}
-
-	return true;
-}
-
-// ************************************************************************************************
-// FXPESpell3
-// ************************************************************************************************
-
-////////////////////////////////////
-// From CreateEffect FX_WEAPON_PESPELL
-////////////////////////////////////
-void FXPESpell3Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
-{
-	vec3_t			dir;
-	client_entity_t	*missile;
-	paletteRGBA_t	LightColor;
-	float			lightsize;
-
-	missile = ClientEntity_new(type, flags | CEF_DONT_LINK, origin, NULL, 100);
-
-	missile->flags |= CEF_NO_DRAW;
-	LightColor.c = 0xffff6611;		// cyan
-	lightsize = 120.0;
-
-	VectorCopy(vel, missile->velocity);
-	VectorNormalize2(vel, dir);
-	AnglesFromDir(dir, missile->r.angles);
-
-	missile->radius = 128;
-	if (r_detail->value > DETAIL_NORMAL)
-		missile->dlight = CE_DLight_new(LightColor, lightsize, 0.0f);
-	missile->Update = FXPESpell3TrailThink;
-
-	missile->SpawnInfo = 32;
-
-	AddEffect(owner, missile);
-
-	fxi.S_StartSound(missile->r.origin, -1, CHAN_WEAPON, fxi.S_RegisterSound("monsters/plagueelf/spell3.wav"),
-			1, ATTN_NORM, 0);
-}
-
-
 
 // ************************************************************************************************
 // FXPESpell3Explode
@@ -499,11 +399,6 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		/*
-		SmokePuff->r.color.g = irand(40, 60);
-		SmokePuff->r.color.r = irand(245, 255);
-		SmokePuff->r.color.b = irand(95, 105);
-		*/
 
 		SmokePuff->r.frame=0;
 
@@ -555,7 +450,6 @@ void FXPESpell(centity_t *owner, int type, int flags, vec3_t origin)
 
 		case FX_PE_MAKE_SPELL3:
 			FXCWStars(owner, type, flags, origin);
-			//FXPESpell3Go(owner, type, flags, origin, vel);
 			break;
 
 		case FX_PE_EXPLODE_SPELL3:

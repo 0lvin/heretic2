@@ -103,7 +103,6 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 	else
 		NoOfRipples = 1;
 
-
 	if (Flags&CEF_FLAG6)
 	{//they want a sound too
 		fxi.S_StartSound(Origin, -1, CHAN_AUTO,
@@ -240,7 +239,6 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 		EntrySplashThinker->flags &= ~CEF_FLAG7;		// Remove that splooshy flag
 	}
 }
-
 
 void FXWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {

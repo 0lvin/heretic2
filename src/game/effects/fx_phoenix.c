@@ -41,7 +41,6 @@ static qboolean
 FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner);
 void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
 
-
 #define	NUM_PHOEN_MODELS	6
 static struct model_s *phoen_models[NUM_PHOEN_MODELS];
 void PreCachePhoenix()
@@ -54,9 +53,7 @@ void PreCachePhoenix()
 	phoen_models[5] = fxi.RegisterModel("models/fx/explosion/outer/tris.fm");
 }
 
-
 // -----------------------------------------------------------------------------------------
-
 
 static qboolean
 FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner)
@@ -185,7 +182,6 @@ FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner)
 	return true;
 }
 
-
 ///////////////////////////
 // From CreateEffect FX_WEAPON_PHOENIXMISSILE
 ///////////////////////////
@@ -201,7 +197,6 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 		Vec3ScaleAssign(PHOENIX_ARROW_SPEED/2,missile->velocity);
 	else
 		Vec3ScaleAssign(PHOENIX_ARROW_SPEED,missile->velocity);
-
 
 	VectorCopy(missile->velocity, temp);
 	VectorNormalize(temp);
@@ -334,8 +329,6 @@ client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin)
 	return(subexplosion);
 }
 
-
-
 //////////////////////////
 // From CreateEffect FX_WEAPON_PHOENIXEXPLODE
 //////////////////////////
@@ -463,10 +456,7 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/PhoenixHit.wav"), 1, ATTN_NORM, 0);
 }
 
-
-
 // end
-
 
 #define PHOENIXPOWER_NUMTRAILS 11
 #define PHOENIXPOWER_PARTS_PER_TRAIL 8
@@ -713,7 +703,6 @@ FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner)
 
 		AddParticleToList(smoke, flame);
 	}
-
 
 	// Remember for even spread of particles
 	VectorCopy(missile->r.origin, missile->origin);

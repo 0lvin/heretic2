@@ -78,7 +78,6 @@ qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 		AddEffect(NULL, light);
 	}
 
-
 	return true;
 }
 
@@ -169,9 +168,6 @@ void FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(NULL, glow);
 }
-
-
-
 
 // put out there just so we can make the real effect match _this
 void FXflametest(centity_t *owner, int type, int flags, vec3_t origin)
