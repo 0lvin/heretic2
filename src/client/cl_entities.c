@@ -180,7 +180,7 @@ CL_AddPacketEntities(frame_t *frame)
 			}
 
 			ent.flags = renderfx | RF_TRANSLUCENT;
-			ent.color = BigLong(s1->skinnum);
+			ent.color = BigLong(s1->skinnum) & 0xFFFFFFFF;
 			VectorCopy(s1->scale, ent.scale);
 
 			V_AddEntity(&ent);
