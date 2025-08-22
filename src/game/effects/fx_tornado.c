@@ -347,7 +347,7 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		TrailEnt->r.color.c = 0xFFFFFFFF;
+		TrailEnt->r.color = 0xFFFFFFFF;
 		TrailEnt->r.scale = flrand(1.0, 2.5);
 		TrailEnt->alpha = flrand(1.0, 0.75);
 		TrailEnt->d_alpha = -2.0;

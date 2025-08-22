@@ -55,7 +55,7 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 	VectorCopy(vel, hellbolt->velocity);
 
 	VectorSet(hellbolt->r.scale, 0.5, 0.5, 0.5);
-	hellbolt->r.color = lightcolor;
+	hellbolt->r.color = lightcolor.c;
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
 

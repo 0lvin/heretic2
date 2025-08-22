@@ -40,6 +40,7 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	while (i--)
 	{
 		float scale;
+		paletteRGBA_t color;
 
 		TrailEnt=ClientEntity_new(Type, Flags & ~CEF_NO_DRAW, Origin, 0, 500);
 
@@ -48,17 +49,18 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt->r.spriteType = SPRITE_LINE;
 
 		TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		TrailEnt->r.color.c = 0xFFFFFFFF;
+		TrailEnt->r.color = 0xFFFFFFFF;
 		scale = flrand(1.0, 2.5);
 		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 		TrailEnt->alpha = flrand(1.0, 0.75);
 		TrailEnt->d_alpha = -2.0;
 		TrailEnt->d_scale = -1.0;
 
-		TrailEnt->r.color.r = irand(128, 255);
-		TrailEnt->r.color.g = irand(64, 255);
-		TrailEnt->r.color.b = irand(64, 255);
-		TrailEnt->r.color.a = 64 + irand(16, 128);
+		color.r = irand(128, 255);
+		color.g = irand(64, 255);
+		color.b = irand(64, 255);
+		color.a = 64 + irand(16, 128);
+		TrailEnt->r.color = color.c;
 
 		VectorRandomCopy(dir, TrailEnt->velocity, 1.0);
 

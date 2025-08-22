@@ -227,6 +227,7 @@ FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Own
 
 	if (Self->color.r>3)
 	{
+		paletteRGBA_t color;
 		// Create a trailing spark.
 
 		Spark=ClientEntity_new(FX_WEAPON_SPHERE,
@@ -237,9 +238,11 @@ FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Own
 
 		Spark->r.model = sphere_models[2];
 		Spark->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
-		Spark->r.color.r=irand(128, 180);
-		Spark->r.color.g=irand(128, 180);
-		Spark->r.color.b=irand(180, 255);
+		color.c = Spark->r.color;
+		color.r = irand(128, 180);
+		color.g = irand(128, 180);
+		color.b = irand(180, 255);
+		Spark->r.color = color.c;
 		Spark->Scale=flrand(0.8, 1.0);
 		Spark->radius=20.0;
 		Spark->d_scale = -1.5;
@@ -294,6 +297,7 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 
 	if (Owner->current.effects&EF_MARCUS_FLAG1)
 	{
+		paletteRGBA_t color;
 		// 'Self->extra' refers to the caster's centity_t.
 
 		if (Self->extra)
@@ -379,11 +383,13 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 		// Fill in the rest of my info.
 
 		Glowball->r.model = sphere_models[2];
-		Glowball->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
-		Glowball->r.color.r= irand(128, 180);
-		Glowball->r.color.g= irand(128, 180);
-		Glowball->r.color.b= irand(180, 255);
-		Glowball->color.r=1;
+		Glowball->r.flags = RF_TRANSLUCENT|RF_TRANS_ADD;
+		color.c = Glowball->r.color;
+		color.r = irand(128, 180);
+		color.g = irand(128, 180);
+		color.b = irand(180, 255);
+		Glowball->r.color = color.c;
+		Glowball->color.r = 1;
 		Glowball->radius=20.0;
 		Glowball->extra=(void *)Owner;
 		Glowball->Update=FXSphereOfAnnihilationGlowballThink;

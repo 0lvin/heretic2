@@ -340,7 +340,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 		// Set up the basic attributes
 		VectorSet(ripper->r.scale, 0.25, 0.25, 0.25);
-		ripper->r.color = color;
+		ripper->r.color = color.c;
 		ripper->radius = 10.0F;
 		ripper->Update = FXRipperExplodeBallThink;
 

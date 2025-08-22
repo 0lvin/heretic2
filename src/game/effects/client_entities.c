@@ -106,7 +106,7 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 //	AnglesFromDirAndUp(newEnt->direction, newEnt->up, newEnt->r.angles);
 
 	VectorSet(newEnt->r.scale, 1.0F, 1.0F, 1.0F);
-	newEnt->r.color.c = 0xffffffff;
+	newEnt->r.color = 0xffffffff;
 	newEnt->alpha = 1.0F;
 	newEnt->radius = 1.0F;
 	newEnt->effectID = type;
@@ -338,14 +338,19 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 		if (!(current->flags & (CEF_NO_DRAW | CEF_DISAPPEARED)))
 		{
+			paletteRGBA_t color;
+
+			color.c = current->r.color;
+
 			if (current->alpha < 0)
 			{	// wacky all colors at minimum, but drawn at max instead for addative transparent sprites
 				current->alpha = 0.0F;
 			}
 
-			current->r.color.a = Q_ftol(current->alpha * 255.0);
+			color.a = Q_ftol(current->alpha * 255.0);
+			current->r.color = color.c;
 
-			if (current->r.color.a && (AVG_VEC3T(current->r.scale) > 0.0))
+			if (color.a && (AVG_VEC3T(current->r.scale) > 0.0))
 			{
 				if (!AddEntityToView(&current->r))
 				{
@@ -358,6 +363,7 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 			}
 		}
 	}
+
 	return numFX;
 }
 
@@ -590,6 +596,8 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 
 qboolean AddEntityToView(entity_t *ent)
 {
+	paletteRGBA_t color;
+
 	if (!ent->model)
 	{
 		fxi.Com_Printf("AddEntityToView: NULL Model\n");
@@ -599,7 +607,8 @@ qboolean AddEntityToView(entity_t *ent)
 		fxi.Com_Printf("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
 	}
 
-	if (ent->color.a != 255)
+	color.c = ent->color;
+	if (color.a != 255)
 	{
 		ent->flags |= RF_TRANSLUCENT;
 	}

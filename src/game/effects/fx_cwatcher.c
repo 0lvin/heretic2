@@ -272,7 +272,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA;
 		VectorSet(spawner->r.scale, 16, 16, 16);
-		spawner->r.color.c = 0xA0FFFFFF;
+		spawner->r.color = 0xA0FFFFFF;
 		spawner->r.spriteType = SPRITE_LINE;
 		VectorCopy(vel, spawner->r.startpos);
 		VectorCopy(origin, spawner->r.endpos);
@@ -291,7 +291,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 		VectorSet(spawner->r.scale, 2.5, 2.5, 2.5);
-		spawner->r.color.c = 0xFFFFFFFF;
+		spawner->r.color = 0xFFFFFFFF;
 
 		spawner->LifeTime = fxi.cl->time + 3100;
 
@@ -315,7 +315,7 @@ void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 
 		spawner->r.flags = RF_TRANS_ADD | RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD_ALPHA | RF_NODEPTHTEST;
 		VectorSet(spawner->r.scale, 2.5, 2.5, 2.5);
-		spawner->r.color.c = 0xFFFFFFFF;
+		spawner->r.color = 0xFFFFFFFF;
 
 		spawner->dlight=CE_DLight_new(white_light,200.0f,0.0f);
 

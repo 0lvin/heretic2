@@ -193,7 +193,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		glow->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 		glow->color.c = MORPH_COL;
-		glow->r.color.c = MORPH_COL;
+		glow->r.color = MORPH_COL;
 		glow->dlight = CE_DLight_new(glow->color, GLOW_INTENSITY, -GLOW_INTENSITY);
 		glow->d_scale = 1.8;
 		VectorSet(glow->r.scale, 0.5, 0.5, 0.5);

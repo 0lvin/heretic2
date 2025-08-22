@@ -237,7 +237,7 @@ FXHPMissileSpawnerThink(struct client_entity_s *self, centity_t *Owner)
 	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = hpproj_models[3];
 
-	TrailEnt->r.color.c = 0xFFFFFFFF;
+	TrailEnt->r.color = 0xFFFFFFFF;
 	TrailEnt->alpha = 1.0;
 	VectorSet(TrailEnt->r.scale, 0.1, 0.1, 0.1);
 
@@ -263,6 +263,7 @@ static qboolean
 FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t *Owner)
 {
 	client_entity_t	*TrailEnt;
+	paletteRGBA_t color;
 
 	if (self->LifeTime < fxi.cl->time)
 		return false;
@@ -278,10 +279,11 @@ FXHPMissileSpawnerThink2(struct client_entity_s *self, centity_t *Owner)
 	TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	TrailEnt->r.model = hpproj_models[4];
 
-	TrailEnt->r.color.r = 229;
-	TrailEnt->r.color.g = 250;
-	TrailEnt->r.color.b = 88;
-	TrailEnt->r.color.a = 255;
+	color.r = 229;
+	color.g = 250;
+	color.b = 88;
+	color.a = 255;
+	TrailEnt->r.color = color.c;
 
 	TrailEnt->alpha = 0.5;
 	VectorSet(TrailEnt->r.scale, 0.25, 0.25, 0.25);
@@ -660,7 +662,7 @@ void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	Trail->radius = 500;
 	Trail->r.model = hpproj_models[3];
-	Trail->r.color.c = 0xffff5555;
+	Trail->r.color = 0xffff5555;
 	Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 	VectorSet(Trail->r.scale, 0.1, 0.1, 0.1);
 	Trail->d_scale = 2.0;
@@ -688,6 +690,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	paletteRGBA_t	BugColor = {{{229, 250, 88, 255}}};
 	paletteRGBA_t	BrightColor = {{{255, 255, 255, 255}}};
+	paletteRGBA_t color;
 	vec3_t			vel, boltDir, boltAng, oldPos, ang, huntdir;
 	float			boltStep, width, alpha, scale;
 	byte			effectType;
@@ -711,7 +714,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->dlight=CE_DLight_new(LightColor,150.0f,0.0f);
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[3];
-		Trail->r.color.c = 0x00999999;
+		Trail->r.color = 0x00999999;
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		VectorSet(Trail->r.scale, 0.5, 0.5, 0.5);
 		Trail->AddToView = PriestessLinkedEntityUpdatePlacement;
@@ -736,7 +739,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->dlight=CE_DLight_new(LightColor,150.0f,0.0f);
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[3];
-		Trail->r.color.c = 0x00999999;
+		Trail->r.color = 0x00999999;
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		VectorSet(Trail->r.scale, 0.45, 0.45, 0.45);
 		Trail->AddToView = PriestessLinkedEntityUpdatePlacement;
@@ -765,7 +768,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		AnglesFromDir(vel, Trail->r.angles);
 		Trail->r.angles[PITCH] -= ANGLE_90;
 
-		Trail->r.color.c = 0xFF999999;
+		Trail->r.color = 0xFF999999;
 		scale = flrand(0.3, 0.4);
 		VectorSet(Trail->r.scale, scale, scale, scale);
 		Trail->AddToView = LinkedEntityUpdatePlacement;
@@ -784,10 +787,11 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[4];
 
-		Trail->r.color.r = 229;
-		Trail->r.color.g = 250;
-		Trail->r.color.b = 88;
-		Trail->r.color.a = 255;
+		color.r = 229;
+		color.g = 250;
+		color.b = 88;
+		color.a = 255;
+		Trail->r.color = color.c;
 
 		Trail->alpha = 0.5;
 
@@ -953,7 +957,7 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		Trail->Update=FXHPMissileSpawnerThink;
 		Trail->radius = 500;
 		Trail->r.model = hpproj_models[3];
-		Trail->r.color.c = 0xFFFFFFFF;
+		Trail->r.color = 0xFFFFFFFF;
 		Trail->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		Trail->dlight=CE_DLight_new(LightColor,200.0f,0.0f);
 		Trail->LifeTime = fxi.cl->time + 4000;

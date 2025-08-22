@@ -80,13 +80,15 @@ FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 		else
 		{
 			float scale;
+			paletteRGBA_t color;
 
 			//make _this use tinting instead of darken?
 			TrailEnt->r.flags |= RF_TRANSLUCENT;//darken
-			TrailEnt->r.color.r = 75;
-			TrailEnt->r.color.g = 50;
-			TrailEnt->r.color.b = 100;
-			TrailEnt->r.color.a = 100;
+			color.r = 75;
+			color.g = 50;
+			color.b = 100;
+			color.a = 100;
+			TrailEnt->r.color = color.c;
 			TrailEnt->r.model = arrow_models[0];
 			scale = ARROW_SCALE + flrand(-0.2, 0.2);
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
@@ -194,6 +196,7 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 
 	while(i--)
 	{
+		paletteRGBA_t color;
 		float scale;
 
 		if (!i)
@@ -213,10 +216,11 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 
 		//make _this use tinting instead of darken?
 		SmokePuff->r.flags |= RF_TRANSLUCENT;
-		SmokePuff->r.color.r = 75;
-		SmokePuff->r.color.g = 50;
-		SmokePuff->r.color.b = 100;
-		SmokePuff->r.color.a = 100;
+		color.r = 75;
+		color.g = 50;
+		color.b = 100;
+		color.a = 100;
+		SmokePuff->r.color = color.c;
 
 		SmokePuff->r.frame=0;
 

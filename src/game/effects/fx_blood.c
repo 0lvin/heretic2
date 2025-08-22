@@ -394,6 +394,7 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 	if (trueplane || GetTruePlane(origin, normal))
 	{
 		float scale;
+		paletteRGBA_t color;
 
 		bloodmark = ClientEntity_new(FX_BLOOD, CEF_NOMOVE, origin, tnormal, 1000);
 
@@ -410,19 +411,17 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 		if (dark)
 		{
 			brightness = irand(32, 72);
-			bloodmark->r.color.r = brightness;
-			bloodmark->r.color.g = brightness;
-			bloodmark->r.color.b = brightness;
 		}
 		else
 		{
 			brightness = irand(72, 128);
-			bloodmark->r.color.r = brightness;
-			bloodmark->r.color.g = brightness;
-			bloodmark->r.color.b = brightness;
 		}
-		bloodmark->r.color.a = 255;
+		color.r = brightness;
+		color.g = brightness;
+		color.b = brightness;
+		color.a = 255;
 		bloodmark->alpha = 1.0;
+		bloodmark->r.color = color.c;
 
 		bloodmark->radius = 10.0;
 		scale = flrand(0.2, 0.45);

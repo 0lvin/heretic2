@@ -4,6 +4,7 @@
 //
 #include "../../common/header/common.h"
 #include "../../client/header/client.h"
+#include "../common/genericunions.h"
 
 typedef struct CE_DLight_s
 {

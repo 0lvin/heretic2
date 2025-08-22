@@ -120,41 +120,6 @@ shrine_player_update(struct client_entity_s *self, centity_t *owner)
 // Create a model of the player, and have it expand and fade, with a tint
 void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
-	client_entity_t	*shrine_fx;
-	byte					shrine_type;
-
-	// no longer used - causes really hard to find crashes.
-	return;
-	FXGetEffect(owner, flags, clientEffectSpawners[FX_SHRINE_PLAYER].formatString, &shrine_type);
-
-	// push the model slightly up,since we create the model at a larger scale than the original
-	origin[2] += 60.0;
-
-	// create the player shrine effect around the player to begin with
-	shrine_fx = ClientEntity_new(type, flags, origin, NULL, 100);
-	shrine_fx->radius = 20.0F;
-	if (owner->current.effects & EF_CHICKEN)
-		shrine_fx->r.model = shrine_models[1];
-	else
-		shrine_fx->r.model = shrine_models[0];
-	shrine_fx->d_scale = -1.2;
-	VectorSet(shrine_fx->r.scale, 3.0, 3.0, 3.0);
-	shrine_fx->velocity[2] = -35.5;
-	shrine_fx->r.flags = RF_TRANSLUCENT ;
-	shrine_fx->r.rr_mesh = 1 ? (owner->current.fmnodeinfo[0].flags & FMNI_NO_DRAW) : 0;
-	shrine_fx->Update = shrine_player_update;
-	shrine_fx->SpawnInfo = PLAYER_FADE_TIME;
-	shrine_fx->d_alpha = 0.45;
-	shrine_fx->alpha = 0.05;
-	shrine_fx->r.frame = owner->current.frame;
-	shrine_fx->r.color.r = tint_tab[shrine_type].red;
-	shrine_fx->r.color.g = tint_tab[shrine_type].green;
-	shrine_fx->r.color.b = tint_tab[shrine_type].blue;
-	shrine_fx->AddToView = LinkedEntityUpdatePlacement;
-	VectorDegreesToRadians(&owner->current.angles[0],shrine_fx->r.angles);
-
-	AddEffect(owner, shrine_fx);
-
 }
 
 
@@ -396,10 +361,9 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	vec3_t				vel;
-	int					count;
-	float					curAng;
-	float					new_y;
-	float					rad;
+	int count;
+	float curAng, new_y, rad;
+	paletteRGBA_t color;
 
 	if (!(--self->SpawnInfo))
 	{
@@ -414,13 +378,15 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 		// create the ring of particles that goes up
 		for(curAng = 0.0F; curAng < (M_PI * 2.0F); curAng += (M_PI * 2.0F) / count )
 		{
+			paletteRGBA_t color;
+			color.c = self->r.color;
 
 			VectorSet(vel, rad * cos(curAng), rad * sin(curAng), self->SpawnData);
 
 			if (self->flags & CEF_FLAG6)
-				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), self->r.color, self->LifeTime);
+				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), color, self->LifeTime);
 			else
-				ce = ClientParticle_new(PART_16x16_SPARK_B, self->r.color, self->LifeTime);
+				ce = ClientParticle_new(PART_16x16_SPARK_B, color, self->LifeTime);
 
 			ce->acceleration[2] = 0.0;
 			VectorCopy(vel, ce->origin);
@@ -432,13 +398,15 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 		new_y = -self->SpawnData;
 		for(curAng = 0.0F; curAng < (M_PI * 2.0F); curAng += (M_PI * 2.0F) / count )
 		{
+			paletteRGBA_t color;
+			color.c = self->r.color;
 
 			VectorSet(vel, rad * cos(curAng), rad * sin(curAng), new_y);
 
 			if (self->flags & CEF_FLAG6)
-				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), self->r.color, self->LifeTime);
+				ce = ClientParticle_new(irand(PART_16x16_FIRE1, PART_16x16_FIRE3), color, self->LifeTime);
 			else
-				ce = ClientParticle_new(PART_16x16_SPARK_B, self->r.color, self->LifeTime);
+				ce = ClientParticle_new(PART_16x16_SPARK_B, color, self->LifeTime);
 			ce->acceleration[2] = 0.0;
 			VectorCopy(vel, ce->origin);
 			ce->color.a = 118;
@@ -447,16 +415,20 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 		}
 	}
 
-	// update the particles colors
-	if (self->r.color.g > 0)
-		self->r.color.g += STAFF_GREEN_ADD;
-	else
-		self->r.color.g = 0;
+	color.c = self->r.color;
 
-	if (self->r.color.b > 0)
-		self->r.color.b += STAFF_BLUE_ADD;
+	// update the particles colors
+	if (color.g > 0)
+		color.g += STAFF_GREEN_ADD;
 	else
-		self->r.color.b = 0;
+		color.g = 0;
+
+	if (color.b > 0)
+		color.b += STAFF_BLUE_ADD;
+	else
+		color.b = 0;
+
+	self->r.color = color.c;
 
 	// move the rings up/down next frame
 	self->SpawnData += STAFF_HEIGHT_ADD;
@@ -873,8 +845,7 @@ FXShrineSpeedThink(struct client_entity_s *self, centity_t *owner)
 		return false;
 	}
 
-	color.c = 0xffffff;
-	color.a = 0xff;
+	color.c = 0xffffffff;
 
 	// figure out how many particles we are going to use
 	count = GetScaledCount(NUM_OF_REFLECT_PARTS, 0.7);
@@ -882,7 +853,10 @@ FXShrineSpeedThink(struct client_entity_s *self, centity_t *owner)
 	ang = 0;
 	for (i=0; i< count; i++)
 	{
-		ce = ClientParticle_new(PART_32x32_STEAM, self->r.color, 380);
+		paletteRGBA_t color;
+
+		color.c = self->r.color;
+		ce = ClientParticle_new(PART_32x32_STEAM, color, 380);
 		ce->acceleration[2] = 0.0;
 		VectorSet(angles, ang, self->Scale, 0);
 		DirFromAngles(angles, ce->origin);
@@ -924,8 +898,7 @@ void FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->SpawnInfo = TOTAL_REFLECT_EFFECTS;
 	glow->AddToView = LinkedEntityUpdatePlacement;
 	glow->SpawnData = REFLECT_EFFECTS_START_HEIGHT;
-	glow->r.color.c = 0x604040;
-	glow->r.color.a = 255;
+	glow->r.color = 0xFF604040;
 	glow->Scale = 0;
 
 	AddEffect(owner, glow);

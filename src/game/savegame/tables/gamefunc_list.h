@@ -689,6 +689,7 @@
 {"trigger_elevator_use", (byte *)trigger_elevator_use},
 {"trigger_enable", (byte *)trigger_enable},
 {"trigger_flashlight_touch", (byte *)trigger_flashlight_touch},
+{"trigger_fog_touch", (byte *)trigger_fog_touch},
 {"trigger_goto_buoy_touch", (byte *)trigger_goto_buoy_touch},
 {"trigger_goto_buoy_touch_go", (byte *)trigger_goto_buoy_touch_go},
 {"trigger_goto_buoy_use", (byte *)trigger_goto_buoy_use},

@@ -74,7 +74,10 @@ static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_
 		numtrails = 1;
 	while(numtrails-->0)
 	{
-		ce = ClientParticle_new(PART_16x16_SPARK_G, self->r.color, 400);
+		paletteRGBA_t color;
+
+		color.c = self->r.color;
+		ce = ClientParticle_new(PART_16x16_SPARK_G, color, 400);
 		ce->scale = 13;
 		ce->d_scale = -10.0;
 		ce->color.a = 255*alpha;
@@ -125,7 +128,7 @@ void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
 	trail->AddToView = MeteorAddToView;
 	trail->SpawnData = (flags & (CEF_FLAG6|CEF_FLAG7)) >> 5;
 	trail->radius = 10.0;
-	trail->r.color.c = -1;
+	trail->r.color = -1;
 	if (r_detail->value >= DETAIL_NORMAL)
 		trail->dlight = CE_DLight_new(lightcolor, 150.0, 0.0);
 
@@ -144,7 +147,7 @@ void FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
 	trail->r.model = meteor_models[0];
 	trail->AddToView = LinkedEntityUpdatePlacement;
 	trail->radius = 10.0;
-	trail->r.color.c = -1;
+	trail->r.color = -1;
 	if (r_detail->value >= DETAIL_NORMAL)
 		trail->dlight = CE_DLight_new(lightcolor, 150.0, 0.0);
 
@@ -188,7 +191,10 @@ void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin
 	count = GetScaledCount(NUM_METEOR_CHUNKS, 0.4);
 	for(i = 0; i < count; i++)
 	{
-		ce = ClientParticle_new(PART_16x16_SPARK_G, smokepuff->r.color, 500);
+		paletteRGBA_t color;
+
+		color.c = smokepuff->r.color;
+		ce = ClientParticle_new(PART_16x16_SPARK_G, color, 500);
 		ce->scale = flrand(11,15);
 		ce->d_scale = -10.0;
 		VectorRandomCopy(dir, ce->velocity, 64.0);

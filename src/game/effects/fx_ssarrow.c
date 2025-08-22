@@ -77,7 +77,7 @@ static qboolean FXSsithraArrowMissileThink(client_entity_t *missile, centity_t *
 		ce = ClientEntity_new(-1, 0, org, NULL, 500);
 		ce->r.model = ssarrow_models[0];		// Can be a particle now
 		ce->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		ce->r.color = missile->color;
+		ce->r.color = missile->color.c;
 		ce->radius = 16.0F;
 		VectorSet(ce->r.scale, 0.1F, 0.1F, 0.1F);
 		ce->d_scale = 2.0F;

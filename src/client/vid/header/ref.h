@@ -74,6 +74,7 @@ typedef struct entity_s {
 
 	int		lightstyle; /* for flashing entities */
 	float	alpha; /* ignore if RF_TRANSLUCENT isn't set */
+	int		color; /* used for sprite with FLARE */
 
 	struct image_s	*skin; /* NULL for inline skin */
 	int		flags;
@@ -82,7 +83,6 @@ typedef struct entity_s {
 	float				depth;					// distance to the camera origin, gets set every
 												// frame by AddEffectsToView
 
-	paletteRGBA_t		color;
 	int					spriteType;
 
 	// info for fmodels and bmodels

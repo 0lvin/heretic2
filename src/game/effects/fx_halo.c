@@ -146,7 +146,7 @@ static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*halo;
-
+	paletteRGBA_t color;
 
 	// no halo's for normal or low details.. they are really expensive in traces.
 	if (r_detail->value <= DETAIL_NORMAL)
@@ -168,27 +168,28 @@ void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	switch (Flags)
 	{
 	case CEF_FLAG7:
-		halo->r.color.r = 90;
-		halo->r.color.g = 90;
-		halo->r.color.b = 175;
+		color.r = 90;
+		color.g = 90;
+		color.b = 175;
 		break;
 	case CEF_FLAG8:
-		halo->r.color.r = 190;
-		halo->r.color.g = 180;
-		halo->r.color.b = 16;
+		color.r = 190;
+		color.g = 180;
+		color.b = 16;
 		break;
 	case CEF_FLAG7|CEF_FLAG8:
-		halo->r.color.r = 255;
-		halo->r.color.g = 255;
-		halo->r.color.b = 255;
+		color.r = 255;
+		color.g = 255;
+		color.b = 255;
 		break;
 	case 0:
 	default:
-		halo->r.color.r = 148;
-		halo->r.color.g = 132;
-		halo->r.color.b = 82;
+		color.r = 148;
+		color.g = 132;
+		color.b = 82;
 		break;
 	}
+	halo->r.color = color.c;
 	halo->alpha = 0.6;
 	halo->Update = FXHaloThink;
 

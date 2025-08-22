@@ -63,6 +63,7 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
 	while(i--)
 	{
+		paletteRGBA_t color;
 		float scale;
 
 		TrailEnt = ClientEntity_new(FX_PE_SPELL, 0, self->r.origin, NULL, 1000);
@@ -75,9 +76,11 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 		scale = SPELL_SCALE + flrand(0.0, 0.05);
 		VectorSet(TrailEnt->r.scale, scale, scale, scale);
 
-		TrailEnt->r.color.r = irand(40, 60);
-		TrailEnt->r.color.g = irand(245, 255);
-		TrailEnt->r.color.b = irand(95, 105);
+		color.c = TrailEnt->r.color;
+		color.r = irand(40, 60);
+		color.g = irand(245, 255);
+		color.b = irand(95, 105);
+		TrailEnt->r.color = color.c;
 
 		VectorRandomCopy(self->r.origin, TrailEnt->r.origin, crandk() * 5.0);
 		VectorScale(accel_dir, flrand(-50.0, -400.0), TrailEnt->velocity);
@@ -143,7 +146,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 {
 	client_entity_t	*SmokePuff;
 	int				i;
-	paletteRGBA_t	LightColor;
+	paletteRGBA_t	LightColor, color;
 	float			lightrad;
 
 	if (flags & CEF_FLAG6)
@@ -177,9 +180,11 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 		SmokePuff->acceleration[2] = flrand(-40, -60);
 
 		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		SmokePuff->r.color.r = irand(40, 60);
-		SmokePuff->r.color.g = irand(245, 255);
-		SmokePuff->r.color.b = irand(95, 105);
+		color.c = SmokePuff->r.color;
+		color.r = irand(40, 60);
+		color.g = irand(245, 255);
+		color.b = irand(95, 105);
+		SmokePuff->r.color = color.c;
 
 		SmokePuff->r.frame=0;
 

@@ -54,6 +54,7 @@
 #define svc_layout 4
 #define svc_inventory 5
 #define svc_stufftext 11
+#define svc_fog 21
 
 /* ================================================================== */
 
@@ -1956,6 +1957,7 @@ void spawngrow_think(edict_t *self);
 
 /* p_client.c */
 void RemoveAttackingPainDaemons(edict_t *self);
+void ForceFogTransition(edict_t *ent, qboolean instant);
 
 /* g_resourcemanagers.c */
 void G_InitResourceManagers();
@@ -1978,6 +1980,16 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
 #define ANIM_ATTACK 4
 #define ANIM_DEATH 5
 #define ANIM_REVERSE 6
+
+/* height fog data values */
+typedef struct
+{
+	// r g b dist
+	float start[4];
+	float end[4];
+	float falloff;
+	float density;
+} height_fog_t;
 
 /* client data that stays across multiple level loads */
 typedef struct
@@ -2025,6 +2037,12 @@ typedef struct
 	int max_mines;
 	int max_flechettes;
 	int max_rounds;
+
+	// [Paril-KEX] fog that we want to achieve; density rgb skyfogfactor
+	float wanted_fog[5];
+	height_fog_t wanted_heightfog;
+	// relative time value, copied from last touched trigger
+	float fog_transition_time;
 
 	// ********************************************************************************************
 	// User info.
@@ -2532,6 +2550,10 @@ struct gclient_s
 	int zoom;
 	int delayedstart;
 
+	/* sync fog */
+	float fog[5];
+	height_fog_t heightfog;
+
 	int complete_reset;
 	qboolean damage_gas;            /* Did damage come from plague mist? */
 	// Damage stuff. Sum up damage over an entire frame.
@@ -2587,6 +2609,32 @@ struct gclient_s
 #include "g_classstatics.h"
 
 #define MAX_BUOY_BRANCHES 3
+
+typedef struct {
+	vec3_t color;
+	float density;
+	float sky_factor;
+
+	vec3_t color_off;
+	float density_off;
+	float sky_factor_off;
+} edictfog_t;
+
+typedef struct {
+	float falloff;
+	float density;
+	vec3_t start_color;
+	float start_dist;
+	vec3_t end_color;
+	float end_dist;
+
+	float falloff_off;
+	float density_off;
+	vec3_t start_color_off;
+	float start_dist_off;
+	vec3_t end_color_off;
+	float end_dist_off;
+} edicthfog_t;
 
 struct edict_s
 {
@@ -2750,6 +2798,10 @@ struct edict_s
 	edict_t *target_hint_chain;
 	int hint_chain_id;
 	float lastMoveTime;
+
+	/* Fog stuff */
+	edictfog_t fog;
+	edicthfog_t heightfog;
 
 	/* Third person view */
 	int chasedist1;

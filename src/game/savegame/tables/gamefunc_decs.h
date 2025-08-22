@@ -1492,6 +1492,7 @@ extern void trigger_elevator_init ( edict_t * self ) ;
 extern void trigger_elevator_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void trigger_enable ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void trigger_flashlight_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
+extern void trigger_fog_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */);
 extern void trigger_goto_buoy_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 extern void trigger_goto_buoy_touch_go (edict_t *self);
 extern void trigger_goto_buoy_use (edict_t *self, edict_t *other, edict_t *activator);

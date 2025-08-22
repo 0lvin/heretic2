@@ -25,13 +25,16 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	int			numPuffs, i;
 	client_entity_t		*TPortSmoke;
 	client_particle_t	*ce;
+	paletteRGBA_t color;
 
 	TPortSmoke = ClientEntity_new(Type, Flags|CEF_NO_DRAW, Origin, NULL, 1650);
 
-	TPortSmoke->r.color.r = 255;
-	TPortSmoke->r.color.g = 255;
-	TPortSmoke->r.color.b = 255;
-	TPortSmoke->r.color.a = 128;
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 128;
+
+	TPortSmoke->r.color = color.c;
 
 	TPortSmoke->radius = 10.0F;
 
@@ -49,12 +52,12 @@ void FXTPortSmoke(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	for (i = 0; i < numPuffs; i++)
 	{
 		if (r_detail->value >= DETAIL_HIGH)
-			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, TPortSmoke->r.color, 1600);
+			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, color, 1600);
 		else
 		if (r_detail->value == DETAIL_NORMAL)
-			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, TPortSmoke->r.color, 1500);
+			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, color, 1500);
 		else
-			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, TPortSmoke->r.color, 1300);
+			ce = ClientParticle_new(PART_32x32_BLACKSMOKE | PFL_NEARCULL, color, 1300);
 
 		VectorClear(ce->origin);
 		ce->velocity[0] = crandk() * 100.0F;

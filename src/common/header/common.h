@@ -243,6 +243,7 @@ enum svc_ops_e
 	svc_packetentities,         /* [...] */
 	svc_deltapacketentities,    /* [...] */
 	svc_frame,
+	svc_fog,                    /* [Paril-KEX] change current fog values */
 	svc_client_effect,
 };
 

@@ -324,6 +324,8 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	for(I=0;I<Count;I++)
 	{
+		paletteRGBA_t color;
+
 		Explosion=ClientEntity_new(FX_LENSFLARE,
 								   0,
 								   Origin,
@@ -332,10 +334,12 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
 
-		Explosion->r.color.r = tint.r;
-		Explosion->r.color.g = tint.g;
-		Explosion->r.color.b = tint.b;
-		Explosion->alpha=alpha;
+		color.c = Explosion->r.color;
+		color.r = tint.r;
+		color.g = tint.g;
+		color.b = tint.b;
+		Explosion->r.color = color.c;
+		Explosion->alpha = alpha;
 
 		switch (I)
 		{
@@ -363,9 +367,10 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 				Explosion->up[2] = alpha;
 				if (Flags & CEF_FLAG8)
 				{
-					Explosion->r.color.r=255;
-					Explosion->r.color.g=255;
-					Explosion->r.color.b=255;
+					color.r = 255;
+					color.g = 255;
+					color.b = 255;
+					Explosion->r.color = color.c;
 				}
 			break;
 		}
@@ -445,6 +450,8 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 
 	for(I=0;I<Count;I++)
 	{
+		paletteRGBA_t color;
+
 		Explosion=ClientEntity_new(FX_LENSFLARE,
 								   0,
 								   Origin,
@@ -453,9 +460,11 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 
 		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
 
-		Explosion->r.color.r = tint->r;
-		Explosion->r.color.g = tint->g;
-		Explosion->r.color.b = tint->b;
+		color.c = Explosion->r.color;
+		color.r = tint->r;
+		color.g = tint->g;
+		color.b = tint->b;
+		Explosion->r.color = color.c;
 		Explosion->alpha = (float)(tint->a)/255.0;
 
 		switch (I)
@@ -484,9 +493,10 @@ void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int li
 				Explosion->up[2] = Explosion->alpha;
 				if (Flags & CEF_FLAG8)
 				{
-					Explosion->r.color.r=255;
-					Explosion->r.color.g=255;
-					Explosion->r.color.b=255;
+					color.r = 255;
+					color.g = 255;
+					color.b = 255;
+					Explosion->r.color = color.c;
 				}
 			break;
 		}

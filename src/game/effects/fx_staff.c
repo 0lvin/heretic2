@@ -63,6 +63,7 @@ void PreCacheStaff()
 void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*TrailEnt;
+	paletteRGBA_t ent_color;
 	vec3_t			dir;
 	byte			powerlevel;
 	int				i, white;
@@ -91,12 +92,13 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 		white = irand(8, 16);
 
-		TrailEnt->r.color.r = 128 + irand(108, 127);
-		TrailEnt->r.color.g = 64  + white;
-		TrailEnt->r.color.b = 16  + white;
-		TrailEnt->r.color.a = 64  + irand(16, 128);
+		ent_color.r = 128 + irand(108, 127);
+		ent_color.g = 64  + white;
+		ent_color.b = 16  + white;
+		ent_color.a = 64  + irand(16, 128);
+		TrailEnt->r.color = ent_color.c;
 
-		TrailEnt->dlight = CE_DLight_new(TrailEnt->r.color, 150.0F, -100.0F);
+		TrailEnt->dlight = CE_DLight_new(ent_color, 150.0F, -100.0F);
 
 		AddEffect(NULL, TrailEnt);
 
@@ -112,7 +114,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-			TrailEnt->r.color.c = 0xFFFFFFFF;
+			TrailEnt->r.color = 0xFFFFFFFF;
 			scale = flrand(1.0, 2.5);
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->alpha = 1.0;
@@ -121,10 +123,11 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			white = irand(128, 255);
 
-			TrailEnt->r.color.r = white;
-			TrailEnt->r.color.g = white;
-			TrailEnt->r.color.b = 128 + irand(108, 127);
-			TrailEnt->r.color.a = 64 + irand(16, 128);
+			ent_color.r = white;
+			ent_color.g = white;
+			ent_color.b = 128 + irand(108, 127);
+			ent_color.a = 64 + irand(16, 128);
+			TrailEnt->r.color = ent_color.c;
 
 			VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
 
@@ -154,8 +157,9 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			white = irand(32, 64);
 
-			TrailEnt->r.color.r = TrailEnt->r.color.g = TrailEnt->r.color.b = white;
-			TrailEnt->r.color.a = 128;
+			ent_color.r = ent_color.g = ent_color.b = white;
+			ent_color.a = 128;
+			TrailEnt->r.color = ent_color.c;
 
 			VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
 
@@ -186,9 +190,10 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		TrailEnt->d_alpha = -2.0;
 		TrailEnt->d_scale = -2.0;
 		TrailEnt->r.frame = 1;
-		TrailEnt->r.color.c = 0xFF888888;
+		TrailEnt->r.color = 0xFF888888;
+		ent_color.c = TrailEnt->r.color;
 
-		TrailEnt->dlight = CE_DLight_new(TrailEnt->r.color, 150.0F, -100.0F);
+		TrailEnt->dlight = CE_DLight_new(ent_color, 150.0F, -100.0F);
 
 		AddEffect(NULL, TrailEnt);
 
@@ -206,7 +211,7 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			TrailEnt->r.spriteType = SPRITE_LINE;
 
 			TrailEnt->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-			TrailEnt->r.color.c = 0xFFFFFFFF;
+			TrailEnt->r.color = 0xFFFFFFFF;
 			scale = flrand(1.0, 2.5);
 			VectorSet(TrailEnt->r.scale, scale, scale, scale);
 			TrailEnt->alpha = flrand(1.0, 0.75);
@@ -215,10 +220,11 @@ void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 			white = irand(128, 255);
 
-			TrailEnt->r.color.r = white;
-			TrailEnt->r.color.g = white;
-			TrailEnt->r.color.b = 128 + irand(108, 127);
-			TrailEnt->r.color.a = 64 + irand(16, 128);
+			ent_color.r = white;
+			ent_color.g = white;
+			ent_color.b = 128 + irand(108, 127);
+			ent_color.a = 64 + irand(16, 128);
+			TrailEnt->r.color = ent_color.c;
 
 			VectorRandomCopy(dir, TrailEnt->velocity, 1.25);
 
@@ -261,11 +267,15 @@ FXStaffElementThink(struct client_entity_s *Self, centity_t *owner)
 	}
 	else
 	{
-		Multiplier=1.0-Frac/(Self->NoOfAnimFrames-1);
+		paletteRGBA_t color;
 
-		Self->r.color.r=Self->color.r*Multiplier;
-		Self->r.color.b=Self->color.g*Multiplier;
-		Self->r.color.g=Self->color.b*Multiplier;
+		Multiplier=1.0 - Frac / (Self->NoOfAnimFrames-1);
+
+		color.c = Self->r.color;
+		color.r = color.r * Multiplier;
+		color.b = color.g * Multiplier;
+		color.g = color.b * Multiplier;
+		Self->r.color = color.c;
 
 		Self->r.frame=FrameNo+1;
 
@@ -390,6 +400,7 @@ FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 		if (!irand(0,3))
 		{
 			float scale;
+			paletteRGBA_t ent_color;
 
 			TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 5000);
 
@@ -412,8 +423,9 @@ FXStaffLevel2Think(struct client_entity_s *Self, centity_t *owner)
 
 			white = irand(32, 64);
 
-			TrailEnt->r.color.r = TrailEnt->r.color.g = TrailEnt->r.color.b = white;
-			TrailEnt->r.color.a = 128;
+			ent_color.r = ent_color.g = ent_color.b = white;
+			ent_color.a = 128;
+			TrailEnt->r.color = ent_color.c;
 
 			//Attach a dynamic light to the last one
 			if (NoOfIntervals==1 && (r_detail->value >= DETAIL_NORMAL))
@@ -504,6 +516,8 @@ FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
 
 	while (NoOfIntervals >= 0)
 	{
+		paletteRGBA_t color;
+
 		VectorMA(curpivot, STAFF_LENGTH, adjnormal, newpoint);
 
 		TrailEnt=ClientEntity_new(FX_SPELLHANDS, Self->flags & ~CEF_NO_DRAW, newpoint, 0, 500);
@@ -526,25 +540,26 @@ FXStaffLevel3Think(struct client_entity_s *Self, centity_t *owner)
 		{
 			white = irand(128, 208);
 
-			TrailEnt->r.color.r = 128 + irand(108, 127);
-			TrailEnt->r.color.g = white;
-			TrailEnt->r.color.b = white;
-			TrailEnt->r.color.a = 64 + irand(16, 128);
+			color.r = 128 + irand(108, 127);
+			color.g = white;
+			color.b = white;
+			color.a = 64 + irand(16, 128);
 		}
 		else
 		{
 			white = irand(128, 208);
 
-			TrailEnt->r.color.r = white;
-			TrailEnt->r.color.g = white;
-			TrailEnt->r.color.b = 128 + irand(108, 127);
-			TrailEnt->r.color.a = 64 + irand(16, 128);
+			color.r = white;
+			color.g = white;
+			color.b = 128 + irand(108, 127);
+			color.a = 64 + irand(16, 128);
 		}
+		TrailEnt->r.color = color.c;
 
 		//Attach a dynamic light to the last one
 		if (NoOfIntervals==1 && (r_detail->value >= DETAIL_NORMAL))
 		{
-			TrailEnt->dlight = CE_DLight_new(TrailEnt->r.color, 100.0F, -100.0F);
+			TrailEnt->dlight = CE_DLight_new(color, 100.0F, -100.0F);
 		}
 
 		TrailEnt->AddToView=OffsetLinkedEntityUpdatePlacement;
@@ -633,11 +648,11 @@ FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 
 		if (owner->current.effects & EF_BLOOD_ENABLED)
 		{
-			TrailEnt->r.color.c = 0x50000018;
+			TrailEnt->r.color = 0x50000018;
 		}
 		else
 		{
-			TrailEnt->r.color = Self->color;
+			TrailEnt->r.color = Self->color.c;
 		}
 
 		VectorSet(TrailEnt->r.scale,
@@ -838,18 +853,20 @@ FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 
 			if (owner->current.effects & EF_BLOOD_ENABLED)
 			{
-				TrailEnt->r.color.c = 0x50000018;
+				TrailEnt->r.color = 0x50000018;
 			}
 			else
 			{
 				int	white;
+				paletteRGBA_t color;
 
 				white = irand(128, 208);
 
-				TrailEnt->r.color.r = white;
-				TrailEnt->r.color.g = white;
-				TrailEnt->r.color.b = 128 + irand(108, 127);
-				TrailEnt->r.color.a = 64 + irand(16, 128);
+				color.r = white;
+				color.g = white;
+				color.b = 128 + irand(108, 127);
+				color.a = 64 + irand(16, 128);
+				TrailEnt->r.color = color.c;
 			}
 
 			AddEffect(owner,TrailEnt);
@@ -1086,18 +1103,20 @@ FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 
 			if (owner->current.effects & EF_BLOOD_ENABLED)
 			{
-				TrailEnt->r.color.c = 0x50000018;
+				TrailEnt->r.color = 0x50000018;
 			}
 			else
 			{
 				int	white;
+				paletteRGBA_t color;
 
 				white = irand(128, 208);
 
-				TrailEnt->r.color.r = white;
-				TrailEnt->r.color.g = white;
-				TrailEnt->r.color.b = 128 + irand(108, 127);
-				TrailEnt->r.color.a = 64 + irand(16, 128);
+				color.r = white;
+				color.g = white;
+				color.b = 128 + irand(108, 127);
+				color.a = 64 + irand(16, 128);
+				TrailEnt->r.color = color.c;
 			}
 
 			AddEffect(owner,TrailEnt);

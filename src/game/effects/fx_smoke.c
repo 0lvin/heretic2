@@ -34,7 +34,7 @@ void FXDarkSmoke(vec3_t origin, float scale, float range)
 
 	effect->r.model = smoke_models[0];
 	VectorSet(effect->r.scale, scale, scale, scale);
-	effect->r.color.c = 0xaa777777;
+	effect->r.color = 0xaa777777;
 
 	duration = Q_ftol(GetTimeToReachDistance(50.0, 0.0, range));
 
@@ -57,7 +57,7 @@ void FXSmoke(vec3_t origin, float scale, float range)
 
 	effect->r.model = smoke_models[0];
 	VectorSet(effect->r.scale, scale, scale, scale);
-	effect->r.color.c = 0xffffffff;
+	effect->r.color = 0xffffffff;
 
 	duration = Q_ftol(GetTimeToReachDistance(50.0, 0.0, range));
 

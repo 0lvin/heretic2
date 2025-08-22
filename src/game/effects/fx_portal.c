@@ -132,9 +132,13 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		ripple->d_scale = 1.0f;
 		if (!(self->flags & CEF_NO_DRAW))
 		{
-			ripple->r.color.r = irand(10, 100);
-			ripple->r.color.g = irand(0, 50);
-			ripple->r.color.b = irand(10, 100);
+			paletteRGBA_t color;
+
+			color.c = ripple->r.color;
+			color.r = irand(10, 100);
+			color.g = irand(0, 50);
+			color.b = irand(10, 100);
+			ripple->r.color = color.c;
 			ripple->alpha = 0.40f;
 			ripple->d_alpha = -0.20f;
 		}
@@ -197,6 +201,7 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 		while (i--)
 		{
 			float scale;
+			paletteRGBA_t color;
 
 			line=ClientEntity_new(FX_WEAPON_STAFF_STRIKE, 0, owner->current.origin, 0, 600);
 
@@ -205,17 +210,18 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 			line->r.spriteType = SPRITE_LINE;
 
 			line->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-			line->r.color.c = 0xFFFFFFFF;
+			line->r.color = 0xFFFFFFFF;
 			scale = flrand(1.0, 2.5);
 			VectorSet(line->r.scale, scale, scale, scale);
 			line->alpha = flrand(1.0, 0.75);
 			line->d_alpha = -2.0;
 			line->d_scale = -1.0;
 
-			line->r.color.r = irand(128, 255);
-			line->r.color.g = irand(128, 255);
-			line->r.color.b = 128 + irand(108, 127);
-			line->r.color.a = 64 + irand(16, 128);
+			color.r = irand(128, 255);
+			color.g = irand(128, 255);
+			color.b = 128 + irand(108, 127);
+			color.a = 64 + irand(16, 128);
+			line->r.color = color.c;
 
 			VectorRandomCopy(self->direction, line->velocity, 1.25);
 

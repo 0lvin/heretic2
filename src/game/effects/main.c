@@ -573,14 +573,17 @@ AddServerEntities(frame_t *frame)
 		   s1->color[2] ||
 		   s1->color[3])
 		{
-			ent->color.r = s1->color[0];
-			ent->color.g = s1->color[1];
-			ent->color.b = s1->color[2];
-			ent->color.a = s1->color[3];
+			paletteRGBA_t color;
+
+			color.r = s1->color[0];
+			color.g = s1->color[1];
+			color.b = s1->color[2];
+			color.a = s1->color[3];
+			ent->color = color.c;
 		}
 		else
 		{
-			ent->color.c = 0xFFFFFFFF;
+			ent->color = 0xFFFFFFFF;
 		}
 
 		// Set render effects (fullbright, translucent, etc).
@@ -704,7 +707,11 @@ AddServerEntities(frame_t *frame)
 
 			if (PlayerAlpha < 1.0)
 			{
-				ent->color.a = (byte)(PlayerAlpha * (float)(ent->color.a));
+				paletteRGBA_t color;
+
+				color.c = ent->color;
+				color.a = (byte)(PlayerAlpha * (float)(color.a));
+				ent->color = color.c;
 				ent->flags |= RF_TRANSLUCENT;
 			}
 			else

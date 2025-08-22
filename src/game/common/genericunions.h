@@ -5,7 +5,21 @@
 #ifndef GENERICUNIONS_H
 #define GENERICUNIONS_H
 
+typedef struct paletteRGBA_s
+{
+	union
+	{
+		struct
+		{
+			byte r, g, b, a;
+		};
+		unsigned c;
+		byte c_array[4];
+	};
+} paletteRGBA_t;
+
 // don't add anything to this union which is greater than 4 bytes in size
+// TODO and Rewrite: Neet total rewrite pointer is not 4 bytes at all
 typedef union GenericUnion4_u
 {
 	byte t_byte;
@@ -18,21 +32,5 @@ typedef union GenericUnion4_u
 	void *t_void_p;
 	paletteRGBA_t t_RGBA;
 } GenericUnion4_t;
-
-// don't add anything to this union which is greater than 8 bytes in size
-typedef union GenericUnion8_u
-{
-	GenericUnion4_t	u4;
-	long t_long;
-	unsigned long t_ulong;
-	double t_double;
-} GenericUnion8_t;
-
-// don't add anything to this union which is greater than 8 bytes in size
-typedef union GenericUnion12_u
-{
-	GenericUnion8_t u8;
-	vec3_t t_vec3;
-} GenericUnion12_t;
 
 #endif

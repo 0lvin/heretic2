@@ -170,7 +170,7 @@ void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 	VectorSet(Trail->r.scale, scale, scale, scale);
 	Trail->d_alpha = 0.0f;
 	Trail->d_scale = 0.0f;
-	Trail->r.color.c = 0xffffffff;
+	Trail->r.color = 0xffffffff;
 	Trail->radius = 20.0;
 
 	Trail->Update=FXInsectStaffTrailThink;
@@ -326,6 +326,7 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 {
 	client_entity_t *GlobeThinker, *AuraThinker;
 	paletteRGBA_t LightColor = {{{0, 0, 255, 255}}};
+	paletteRGBA_t color;
 	int caster_update;
 	float scale;
 
@@ -356,9 +357,11 @@ void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short Cast
 	scale = flrand(0.15, 0.20);
 	VectorSet(GlobeThinker->r.scale, scale, scale, scale);
 
-	GlobeThinker->r.color.r=irand(128, 180);
-	GlobeThinker->r.color.g=irand(128, 180);
-	GlobeThinker->r.color.b=irand(180, 255);
+	color.c = GlobeThinker->r.color;
+	color.r = irand(128, 180);
+	color.g = irand(128, 180);
+	color.b = irand(180, 255);
+	GlobeThinker->r.color = color.c;
 
 	GlobeThinker->radius = 70.0;
 	GlobeThinker->Update = FXGlobeOfOuchinessGlobeThink;
@@ -446,6 +449,8 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 
 	if (owner->current.effects&EF_MARCUS_FLAG1)
 	{
+		paletteRGBA_t color;
+
 		// 'self->extra' refers to the caster's centity_t.
 
 		Glowball=ClientEntity_new(FX_I_EFFECTS,
@@ -503,9 +508,13 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 		Glowball->r.model = globe_models[2];
 
 		Glowball->r.flags=RF_TRANSLUCENT|RF_TRANS_ADD;
-		Glowball->r.color.r= irand(128, 180);
-		Glowball->r.color.g= irand(128, 180);
-		Glowball->r.color.b= irand(180, 255);
+
+		color.c = Glowball->r.color;
+		color.r = irand(128, 180);
+		color.g = irand(128, 180);
+		color.b = irand(180, 255);
+
+		Glowball->r.color = color.c;
 		Glowball->color.r=1;
 		Glowball->radius=20.0;
 
@@ -590,7 +599,7 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
 	VectorSet(hellbolt->r.scale, 1.0, 1.0, 1.0);
-	hellbolt->r.color = LightColor;
+	hellbolt->r.color = LightColor.c;
 	hellbolt->d_alpha = 0.0;
 	hellbolt->radius = 10.0F;
 	VectorCopy(vel, hellbolt->velocity);
@@ -608,8 +617,12 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 	int					i;
 	float				dist, scale;
 	vec3_t				dir;
+	paletteRGBA_t color;
 
-	self->r.color.a = irand(128, 136);
+	color.c = self->r.color;
+	color.a = irand(128, 136);
+	self->r.color = color.c;
+
 	scale = flrand(0.1, 0.5);
 	VectorSet(self->r.scale, scale, scale, scale);
 
@@ -621,7 +634,8 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 
 	for(i = 0; i < 10; i++)
 	{
-		spark = ClientParticle_new(PART_16x16_SPARK_Y, self->r.color, 200);
+		color.c = self->r.color;
+		spark = ClientParticle_new(PART_16x16_SPARK_Y, color, 200);
 		spark->type |= PFL_ADDITIVE;
 
 		spark->acceleration[2] = 0.5;
@@ -659,7 +673,7 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->r.model = spear_models[3];
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-	hellbolt->r.color.c = 0xffffffff;
+	hellbolt->r.color = 0xffffffff;
 	scale = flrand(0.2, 0.4);
 	VectorSet(hellbolt->r.scale, scale, scale, scale);
 	hellbolt->d_alpha = 0.0;
@@ -680,7 +694,7 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 	hellbolt->r.model = spear_models[2];
 	hellbolt->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-	hellbolt->r.color.c = 0x33ffffff;
+	hellbolt->r.color = 0x33ffffff;
 	scale = flrand(1, 2);
 	VectorSet(hellbolt->r.scale, scale, scale, scale);
 	hellbolt->d_alpha = 0.0;
@@ -717,7 +731,7 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 		smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		scale = flrand(0.2, 0.3);
 		VectorSet(smokepuff->r.scale, scale, scale, scale);
-		smokepuff->r.color = lightcolor;
+		smokepuff->r.color = lightcolor.c;
 
 		VectorRandomCopy(Dir, smokepuff->velocity, 64);
 		VectorSet(smokepuff->acceleration, 0.0, 0.0, GetGravity() * 0.3);
@@ -776,7 +790,7 @@ void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t D
 	smokepuff->r.frame = 1;
 	smokepuff->r.flags = RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 
-	smokepuff->r.color.c = 0x77ffffff;
+	smokepuff->r.color = 0x77ffffff;
 	scale = flrand(0.3, 0.5);
 	VectorSet(smokepuff->r.scale, scale, scale, scale);
 	smokepuff->d_scale = 2;
@@ -811,11 +825,15 @@ FXStaffElementThink(struct client_entity_s *self, centity_t *owner)
 	}
 	else
 	{
-		Multiplier=1.0-Frac/(self->NoOfAnimFrames-1);
+		paletteRGBA_t color;
 
-		self->r.color.r=self->color.r*Multiplier;
-		self->r.color.b=self->color.g*Multiplier;
-		self->r.color.g=self->color.b*Multiplier;
+		Multiplier = 1.0 - Frac / (self->NoOfAnimFrames - 1);
+
+		color.c = self->r.color;
+		color.r = color.r * Multiplier;
+		color.b = color.g * Multiplier;
+		color.g = color.b * Multiplier;
+		self->r.color = color.c;
 
 		self->r.frame=FrameNo+1;
 

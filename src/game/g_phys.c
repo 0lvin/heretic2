@@ -3023,26 +3023,6 @@ qboolean DiscreteMove_Step(edict_t *self, vec3_t move, FormMove_t *formMove)
 
 	VectorAdd(self->s.origin, move, neworg);
 
-#ifdef NONCLIENT_PRIMITIVE_DISPLAY_HACK
-	{
-		paletteRGBA_t color;
-		vec3_t origin;
-
-		color.r = 255;
-		color.g = 0;
-		color.b = 0;
-		color.a = 255;
-
-		VectorCopy(self->s.origin, origin);
-		origin[2] += 100.0;
-		AddServerParticle(origin, color, 2, 5);
-
-		VectorCopy(neworg, origin);
-		origin[2] += 100.0;
-		AddServerParticle(origin, color, 2, 5);
-	}
-#endif
-
 	start[0] = end[0] = neworg[0];
 	start[1] = end[1] = neworg[1];
 	start[2] = neworg[2] + formMove->stepHeight;
