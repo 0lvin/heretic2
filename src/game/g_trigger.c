@@ -663,7 +663,7 @@ void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane,
 	if (!other->client)
 		return;
 
-	gi.AddCommandString ("menu_main\n");
+	gi.AddCommandString("menu_main\n");
 }
 
 void trigger_quit_to_menu_use (edict_t *self, edict_t *other, edict_t *activator)
@@ -671,7 +671,7 @@ void trigger_quit_to_menu_use (edict_t *self, edict_t *other, edict_t *activator
 	if (!activator->client)
 		return;
 
-	gi.AddCommandString ("menu_main\n");
+	gi.AddCommandString("menu_main\n");
 }
 
 /*QUAKED trigger_quit_to_menu (.5 .5 .5) ?
@@ -884,6 +884,8 @@ void mission_give_use (edict_t *self, edict_t *other)
 	int				num, i;
 	player_state_t	*ps;
 
+	gi.dprintf("TODO: mission changed %s\n", self->message);
+
 	num = atoi(self->message);
 	for (i = 1; i <= game.maxclients; i++)
 	{
@@ -907,6 +909,7 @@ void mission_give_use (edict_t *self, edict_t *other)
 			G_CPrintf(other, PRINT_HIGH, GM_NEWOBJ);
 		}
 	}
+
 	G_UseTargets(self, self);
 }
 
@@ -934,7 +937,8 @@ void SP_trigger_mission_give (edict_t *self)
 #define MISSION_TAKE1 16
 #define MISSION_TAKE2 32
 
-void mission_take_use (edict_t *self, edict_t *other)
+void
+mission_take_use(edict_t *self, edict_t *other)
 {
 	player_state_t		*ps;
 	int					i;
@@ -955,8 +959,9 @@ void mission_take_use (edict_t *self, edict_t *other)
 		if (self->spawnflags & MISSION_TAKE2)
 			ps->mission_num2 = 0;
 	}
-	G_UseTargets(self, self);
 
+
+	G_UseTargets(self, self);
 }
 
 /*QUAKED trigger_mission_take (0.3 0.1 0.6) ? MONSTER NOT_PLAYER TRIGGERED ANY TAKE1  TAKE2
@@ -1027,7 +1032,7 @@ void SP_trigger_farclip (edict_t *self)
 
 void trigger_endgame_think(edict_t *self)
 {
-	gi.AddCommandString ("newcoopgame\n");
+	gi.AddCommandString("newcoopgame\n");
 
 	G_SetToFree(self);
 }
@@ -1071,7 +1076,7 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 	}
 	else
 	{
-		gi.AddCommandString ("endgame\n");
+		gi.AddCommandString("endgame\n");
 
 		G_SetToFree(self);
 	}
@@ -1111,7 +1116,7 @@ void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
 	}
 	else
 	{
-		gi.AddCommandString ("endgame\n");
+		gi.AddCommandString("endgame\n");
 
 		G_SetToFree(self);
 	}

@@ -1269,7 +1269,7 @@ qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 
 		// Now decide if we want to swap defenses or not.
 
-		if (player->client->playerinfo.pers.autoweapon )
+		if (player->client->pers.autoweapon )
 		{
 			item->use(player, item);
 		}

@@ -909,18 +909,11 @@ infront(edict_t *self, edict_t *other)
 
 /* ============================================================================ */
 
-
-/*
-===========
-HuntTarget - a target has been found, it is visible, so do we attack it, watch it, or stand there?
-
-============
-*/
 void
 HuntTarget(edict_t *self)
 {
 	vec3_t vec;
-	int r;
+
 
 	if (!self)
 	{
@@ -935,6 +928,8 @@ HuntTarget(edict_t *self)
 	}
 	else
 	{
+		int r;
+
 		r = range(self,self->enemy);
 		if ((self->monsterinfo.aiflags & AI_EATING) && (r == RANGE_MID))
 		{
@@ -1624,7 +1619,7 @@ startcheck:
 //
 // got one
 //
-	FoundTarget (self, true);
+	FoundTarget(self, true);
 
 	return true;
 
@@ -5937,24 +5932,6 @@ MG_SwimFlyToGoal(edict_t *self, float dist)
 			gi.dprintf("Bumped world - t_f: %f t_allsolid: %d, t_startsolid %d\n",trace.fraction, trace.allsolid, trace.startsolid);
 
 	}
-
-//Ledge?
-/*	if (trace.fraction >= 0.5 + distloss && !trace.allsolid && !trace.startsolid)//a ledge
-	{//why not tracefraction == 1.0?
-		if (trace.fraction >= 0.5)//even assassins skip this
-		{
-			if (mgai_debug->value)
-				gi.dprintf("Can't jump off, getting newdir\n");
-
-			if (self->monsterinfo.idle_time < level.time)
-			{//not already following some other dir, pick one
-				self->monsterinfo.idle_time = level.time + flrand(1, 2);
-				self->best_move_yaw = anglemod(180 + self->ideal_yaw);
-				MG_NewDir(self, dist);//what if this fails to set one?
-			}
-			return false;
-		}
-	}*/
 
 	if (mgai_debug->value)
 		if (trace.allsolid || trace.startsolid)

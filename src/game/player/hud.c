@@ -134,7 +134,7 @@ BeginIntermission(edict_t *targ)
 		}
 
 		/* Save third person view */
-		client->client->playerinfo.pers.chasetoggle = client->client->chasetoggle;
+		client->client->pers.chasetoggle = client->client->chasetoggle;
 	}
 
 	level.intermissiontime = level.time;
@@ -274,7 +274,7 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 
 			// determine score and team type
 			score = game.clients[i].resp.score;
-			strcpy(value, Info_ValueForKey (cl_ent->client->playerinfo.pers.userinfo, "skin"));
+			strcpy(value, Info_ValueForKey (cl_ent->client->pers.userinfo, "skin"));
 
 			if (!value[0])
 				continue;
@@ -612,7 +612,8 @@ G_SetStats(edict_t *ent)
 	gitem_t *item;
 	gclient_t			*pi;
 	player_state_t		*ps;
-	player_persistant_t	*pers;
+	client_persistant_t	*pers;
+	player_persistant_t	*ppers;
 	float				time;
 
 	if (!ent)
@@ -622,7 +623,8 @@ G_SetStats(edict_t *ent)
 
 	pi = ent->client;
 	ps = &ent->client->ps;
-	pers = &ent->client->playerinfo.pers;
+	pers = &ent->client->pers;
+	ppers = &ent->client->playerinfo.pers;
 
 	// ********************************************************************************************
 	// Frags
@@ -641,21 +643,21 @@ G_SetStats(edict_t *ent)
 	// Weapon / defence.
 	// ********************************************************************************************
 
-	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(pers->weapon->icon);
-	if (pers->defence)
+	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(ppers->weapon->icon);
+	if (ppers->defence)
 	{
-		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(pers->defence->icon);
+		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(ppers->defence->icon);
 	}
 
 	// ********************************************************************************************
 	// Weapon ammo.
 	// ********************************************************************************************
 
-	if (pers->weapon->ammo && pers->weapon->count_width)
+	if (ppers->weapon->ammo && ppers->weapon->count_width)
 	{
-		item=FindItem(pers->weapon->ammo);
+		item = FindItem(ppers->weapon->ammo);
 		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
-		ps->stats[STAT_AMMO] = pers->inventory[ITEM_INDEX(item)];
+		ps->stats[STAT_AMMO] = ppers->inventory[ITEM_INDEX(item)];
 	}
 	else
 	{
@@ -669,7 +671,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_OFFMANA_ICON] = gi.imageindex("icons/green-mana");
 	ps->stats[STAT_OFFMANA_BACK] = gi.imageindex("icons/green-mana2");
 	item = FindItem("Off-mana");
-	ps->stats[STAT_OFFMANA] = (pers->inventory[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
+	ps->stats[STAT_OFFMANA] = (ppers->inventory[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
 	if (ps->stats[STAT_OFFMANA] < 0)
 	{
 		ps->stats[STAT_OFFMANA] = 0;
@@ -682,7 +684,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_DEFMANA_ICON] = gi.imageindex("icons/blue-mana");
 	ps->stats[STAT_DEFMANA_BACK] = gi.imageindex("icons/blue-mana2");
 	item = FindItem("Def-mana");
-	ps->stats[STAT_DEFMANA] = (pers->inventory[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
+	ps->stats[STAT_DEFMANA] = (ppers->inventory[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
 	if (ps->stats[STAT_DEFMANA] < 0)
 	{
 		ps->stats[STAT_DEFMANA] = 0;
@@ -731,12 +733,14 @@ G_SetStats(edict_t *ent)
 
 	ps->stats[STAT_ARMOUR_ICON] = 0;
 	ps->stats[STAT_ARMOUR] = 0;
-	if (pers->armortype == ARMOR_TYPE_SILVER)
+
+	if (ppers->armortype == ARMOR_TYPE_SILVER)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_silver");
 		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 100) / MAX_SILVER_ARMOR;
 	}
-	if (pers->armortype == ARMOR_TYPE_GOLD)
+
+	if (ppers->armortype == ARMOR_TYPE_GOLD)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_gold");
 		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 250) / MAX_GOLD_ARMOR;
@@ -763,7 +767,7 @@ G_SetStats(edict_t *ent)
 			break;
 		}
 
-		if ((item->flags & IT_PUZZLE) && pers->inventory[i])
+		if ((item->flags & IT_PUZZLE) && ppers->inventory[i])
 		{
 			 if(count > STAT_PUZZLE_ITEM4)
 			 {
@@ -777,6 +781,7 @@ G_SetStats(edict_t *ent)
 				{
 					ps->stats[count] |= 0x8000;
 				}
+
 				count++;
 			 }
 		}

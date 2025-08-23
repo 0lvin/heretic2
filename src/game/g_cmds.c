@@ -67,7 +67,7 @@ ClientTeam(edict_t *ent, char* value)
 		return value;
 	}
 
-	strcpy(value, Info_ValueForKey(ent->client->playerinfo.pers.userinfo, "skin"));
+	strcpy(value, Info_ValueForKey(ent->client->pers.userinfo, "skin"));
 	p = strchr(value, '/');
 
 	if (!p)
@@ -659,7 +659,7 @@ Cmd_Give_f(edict_t *ent)
 
 		gi.dprintf("Setting plague level to %d\n", ent->client->playerinfo.plaguelevel);
 
-		memcpy (userinfo, ent->client->playerinfo.pers.userinfo, sizeof(userinfo));
+		memcpy (userinfo, ent->client->pers.userinfo, sizeof(userinfo));
 		ClientUserinfoChanged (ent, userinfo);
 
 		SetupPlayerinfo_effects(ent);
@@ -675,7 +675,12 @@ Cmd_Give_f(edict_t *ent)
 		{
 			it = itemlist + i;
 
-			if ((!it->pickup) && !(it->flags & IT_PUZZLE))
+			if (!it->pickup)
+			{
+				continue;
+			}
+
+			if (!(it->flags & IT_PUZZLE))
 			{
 				continue;
 			}
@@ -922,9 +927,10 @@ Cmd_Use_f(edict_t *ent)
 		gi.cprintf(ent, PRINT_HIGH, "unknown item: %s\n", s);
 		return;
 	}
+
 	if (!it->use)
 	{
-		G_CPrintf(ent, PRINT_HIGH, GM_NOTUSABLE);
+		gi.cprintf(ent, PRINT_HIGH, "Item is not usable.\n");
 		return;
 	}
 
@@ -971,11 +977,10 @@ Cmd_Use_f(edict_t *ent)
 			playerinfo->pers.defence = playerinfo->pers.lastdefence;
 			playerinfo->pers.lastdefence = it;
 		}
+		return;
 	}
-	else
-	{
-		it->use(ent, it);
-	}
+
+	it->use(ent, it);
 }
 
 /*
@@ -1279,13 +1284,15 @@ Cmd_WeapNext_f(edict_t *ent)
 
 	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
 
-	/* scan  for the next valid one */
+	/* scan for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
 	{
-		index = (selected_weapon + i)%MAX_ITEMS;
+		index = (selected_weapon + i) % MAX_ITEMS;
 
 		if (!cl->playerinfo.pers.inventory[index])
+		{
 			continue;
+		}
 
 		it = itemlist + index;
 		if (!it->use)
@@ -1604,7 +1611,7 @@ Cmd_Players_f(edict_t *ent)
 
 	for (i = 0; i < maxclients->value; i++)
 	{
-		if (game.clients[i].playerinfo.pers.connected)
+		if (game.clients[i].pers.connected)
 		{
 			index[count] = i;
 			count++;
@@ -1621,7 +1628,7 @@ Cmd_Players_f(edict_t *ent)
 	{
 		Com_sprintf(small, sizeof(small), "%3i %s\n",
 				game.clients[index[i]].ps.stats[STAT_FRAGS],
-				game.clients[index[i]].playerinfo.pers.netname);
+				game.clients[index[i]].pers.netname);
 
 		if (strlen(small) + strlen(large) > sizeof(large) - 100)
 		{
@@ -1889,11 +1896,11 @@ Cmd_Say_f(edict_t *ent, qboolean team, qboolean arg0)
 
 	if (team)
 	{
-		Com_sprintf(text, sizeof(text), "(%s): ", ent->client->playerinfo.pers.netname);
+		Com_sprintf(text, sizeof(text), "(%s): ", ent->client->pers.netname);
 	}
 	else
 	{
-		Com_sprintf(text, sizeof(text), "%s: ", ent->client->playerinfo.pers.netname);
+		Com_sprintf(text, sizeof(text), "%s: ", ent->client->pers.netname);
 	}
 
 	if (arg0)
@@ -2648,7 +2655,7 @@ ClientCommand(edict_t *ent)
 
 	if ((Q_stricmp(cmd, "say_team") == 0) || (Q_stricmp(cmd, "steam") == 0))
 	{
-		Cmd_Say_f(ent, true, false);
+		CTFSay_Team(ent, gi.args());
 		return;
 	}
 

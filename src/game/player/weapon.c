@@ -445,7 +445,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 
 		// Now decide if we want to swap weapons or not.
 
-		if (player->client->playerinfo.pers.autoweapon)
+		if (player->client->pers.autoweapon)
 		{
 			// If this new weapon is a higher value than the one we currently have, swap the current
 			// weapon for the new one.

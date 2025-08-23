@@ -1766,7 +1766,6 @@ void ClientUserinfoChanged(edict_t *ent, char *userinfo);
 void player_pain(edict_t *self, edict_t *other, float kick, int damage);
 void player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point);
-int SexedSoundIndex(edict_t *ent, char *base);
 void player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation);
 void ResetPlayerBaseNodes(edict_t *ent);
 void player_repair_skin(edict_t *self);
@@ -2034,77 +2033,25 @@ typedef struct
 	height_fog_t wanted_heightfog;
 	// relative time value, copied from last touched trigger
 	float fog_transition_time;
+
+	/* Heretic2 */
+	int autoweapon;
+	short mission_num1;
+	short mission_num2;
 } client_persistant_t;
 
 /* client data that stays across multiple level loads */
 typedef struct
 {
-	char userinfo[MAX_INFO_STRING];
-	char netname[16];
-	int hand;
-
-	qboolean connected;             /* a loadgame will leave valid entities that
-	                                   just don't have a connection yet */
-
 	/* values saved and restored from
 	   edicts when changing levels */
-	int health;
-	int max_health;
-	int savedFlags;
-
 	int selected_item;
 	int inventory[MAX_ITEMS];
-
-	/* ammo capacities */
-	int max_bullets;
-	int max_shells;
-	int max_rockets;
-	int max_grenades;
-	int max_cells;
-	int max_slugs;
-	int max_magslug;
-	int max_trap;
 
 	gitem_t *weapon;
 	gitem_t *lastweapon;
 
-	int power_cubes;            /* used for tracking the cubes in coop games */
-	int score;                  /* for calculating total unit score in coop games */
-
-	int game_helpchanged;
-	int helpchanged;
-
-	qboolean spectator;         /* client is a spectator */
-	int chasetoggle;       /* Chasetoggle */
-
-	int max_tesla;
-	int max_prox;
-	int max_mines;
-	int max_flechettes;
-	int max_rounds;
-
-	// [Paril-KEX] fog that we want to achieve; density rgb skyfogfactor
-	float wanted_fog[5];
-	height_fog_t wanted_heightfog;
-	// relative time value, copied from last touched trigger
-	float fog_transition_time;
-
-	// ********************************************************************************************
-	// User info.
-	// ********************************************************************************************
-
-	char		sounddir[MAX_QPATH];
-	int			autoweapon;
-
-	// ********************************************************************************************
-	// Values that are saved from and restored to 'edict_t's when changing levels.
-	// ********************************************************************************************
-
-	short		mission_num1;
-	short		mission_num2;
-
 	// Visible model attributes.
-
 	int			weaponready;
 	byte		armortype;			// Current armour Corvus is wearing.
 	byte		bowtype;			// Current bow and what kind (when it is on Corvus' back too).

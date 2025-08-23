@@ -450,16 +450,6 @@ IsNeutral(edict_t *ent)
 	return false;
 }
 
-int
-SexedSoundIndex(edict_t *ent, char *base)
-{
-	char buffer[MAX_QPATH];
-
-	Com_sprintf (buffer, sizeof(buffer), "%s/%s.wav", ent->client->playerinfo.pers.sounddir, base);
-
-	return gi.soundindex(buffer);
-}
-
 void
 ClientSetSkinType(edict_t *ent, char *skinname)
 {
@@ -1538,11 +1528,11 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	if (self->client->chasetoggle)
 	{
 		ChasecamRemove(self);
-		self->client->playerinfo.pers.chasetoggle = 1;
+		self->client->pers.chasetoggle = 1;
 	}
 	else
 	{
-		self->client->playerinfo.pers.chasetoggle = 0;
+		self->client->pers.chasetoggle = 0;
 	}
 
 	VectorClear(self->avelocity);
@@ -1840,13 +1830,13 @@ InitClientPersistant(edict_t *ent)
 	// Set up player's health.
 	// ********************************************************************************************
 
-	client->playerinfo.pers.health = 100;
+	client->pers.health = 100;
 
 	// ********************************************************************************************
 	// Set up maximums amounts for health, mana and ammo for bows and hellstaff.
 	// ********************************************************************************************
 
-	client->playerinfo.pers.max_health		= 100;
+	client->pers.max_health		= 100;
 	client->playerinfo.pers.max_offmana		= MAX_OFF_MANA;
 	client->playerinfo.pers.max_defmana		= MAX_DEF_MANA;
 	client->playerinfo.pers.max_redarrow	= MAX_RAIN_AMMO;
@@ -1931,10 +1921,10 @@ InitClientPersistant(edict_t *ent)
 
 #endif // G_NOAMMO
 
-	client->playerinfo.pers.connected = true;
+	client->pers.connected = true;
 
 	/* Default chasecam to off */
-	client->playerinfo.pers.chasetoggle = 0;
+	client->pers.chasetoggle = 0;
 
 	/* start items */
 	if (*g_start_items->string)
@@ -1991,18 +1981,18 @@ SaveClientData(void)
 			continue;
 		}
 
-		game.clients[i].playerinfo.pers.chasetoggle = ent->client->chasetoggle;
-		game.clients[i].playerinfo.pers.health = ent->health;
-		if (coop->value && game.clients[i].playerinfo.pers.health < 25)
-			game.clients[i].playerinfo.pers.health=25;
-		game.clients[i].playerinfo.pers.max_health = ent->max_health;
+		game.clients[i].pers.chasetoggle = ent->client->chasetoggle;
+		game.clients[i].pers.health = ent->health;
+		if (coop->value && game.clients[i].pers.health < 25)
+			game.clients[i].pers.health=25;
+		game.clients[i].pers.max_health = ent->max_health;
 
-		game.clients[i].playerinfo.pers.mission_num1 = ent->client->ps.mission_num1;
-		game.clients[i].playerinfo.pers.mission_num2 = ent->client->ps.mission_num2;
+		game.clients[i].pers.mission_num1 = ent->client->ps.mission_num1;
+		game.clients[i].pers.mission_num2 = ent->client->ps.mission_num2;
 
 		if (coop->value)
 		{
-			game.clients[i].playerinfo.pers.score = ent->client->resp.score;
+			game.clients[i].pers.score = ent->client->resp.score;
 		}
 	}
 }
@@ -2015,19 +2005,19 @@ FetchClientEntData(edict_t *ent)
 		return;
 	}
 
-	ent->health = ent->client->playerinfo.pers.health;
+	ent->health = ent->client->pers.health;
 	if (coop->value && ent->health < 25)
 	{
 		ent->health = 25;
 	}
-	ent->max_health = ent->client->playerinfo.pers.max_health;
+	ent->max_health = ent->client->pers.max_health;
 
-	ent->client->ps.mission_num1 = ent->client->playerinfo.pers.mission_num1;
-	ent->client->ps.mission_num2 = ent->client->playerinfo.pers.mission_num2;
+	ent->client->ps.mission_num1 = ent->client->pers.mission_num1;
+	ent->client->ps.mission_num2 = ent->client->pers.mission_num2;
 
 	if (coop->value)
 	{
-		ent->client->resp.score = ent->client->playerinfo.pers.score;
+		ent->client->resp.score = ent->client->pers.score;
 	}
 }
 
@@ -2664,16 +2654,16 @@ spectator_respawn(edict_t *ent)
 
 	/* if the user wants to become a spectator,
 	   make sure he doesn't exceed max_spectators */
-	if (ent->client->playerinfo.pers.spectator)
+	if (ent->client->pers.spectator)
 	{
-		char *value = Info_ValueForKey(ent->client->playerinfo.pers.userinfo, "spectator");
+		char *value = Info_ValueForKey(ent->client->pers.userinfo, "spectator");
 
 		if (*spectator_password->string &&
 			strcmp(spectator_password->string, "none") &&
 			strcmp(spectator_password->string, value))
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Spectator password incorrect.\n");
-			ent->client->playerinfo.pers.spectator = false;
+			ent->client->pers.spectator = false;
 			gi.WriteByte(svc_stufftext);
 			gi.WriteString("spectator 0\n");
 			gi.unicast(ent, true);
@@ -2683,7 +2673,7 @@ spectator_respawn(edict_t *ent)
 		/* count spectators */
 		for (i = 1, numspec = 0; i <= maxclients->value; i++)
 		{
-			if (g_edicts[i].inuse && g_edicts[i].client->playerinfo.pers.spectator)
+			if (g_edicts[i].inuse && g_edicts[i].client->pers.spectator)
 			{
 				numspec++;
 			}
@@ -2692,7 +2682,7 @@ spectator_respawn(edict_t *ent)
 		if (numspec >= maxspectators->value)
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Server spectator limit is full.");
-			ent->client->playerinfo.pers.spectator = false;
+			ent->client->pers.spectator = false;
 
 			/* reset his spectator var */
 			gi.WriteByte(svc_stufftext);
@@ -2705,24 +2695,24 @@ spectator_respawn(edict_t *ent)
 		if (ent->client->chasetoggle)
 		{
 			ChasecamRemove(ent);
-			ent->client->playerinfo.pers.chasetoggle = 1;
+			ent->client->pers.chasetoggle = 1;
 		}
 		else
 		{
-			ent->client->playerinfo.pers.chasetoggle = 0;
+			ent->client->pers.chasetoggle = 0;
 		}
 	}
 	else
 	{
 		/* he was a spectator and wants to join the
 		   game he must have the right password */
-		char *value = Info_ValueForKey(ent->client->playerinfo.pers.userinfo, "password");
+		char *value = Info_ValueForKey(ent->client->pers.userinfo, "password");
 
 		if (*password->string && strcmp(password->string, "none") &&
 			strcmp(password->string, value))
 		{
 			gi.cprintf(ent, PRINT_HIGH, "Password incorrect.\n");
-			ent->client->playerinfo.pers.spectator = true;
+			ent->client->pers.spectator = true;
 			gi.WriteByte(svc_stufftext);
 			gi.WriteString("spectator 1\n");
 			gi.unicast(ent, true);
@@ -2731,13 +2721,13 @@ spectator_respawn(edict_t *ent)
 	}
 
 	/* clear client on respawn */
-	ent->client->resp.score = ent->client->playerinfo.pers.score = 0;
+	ent->client->resp.score = ent->client->pers.score = 0;
 
 	ent->svflags &= ~SVF_NOCLIENT;
 	PutClientInServer(ent);
 
 	/* add a teleportation effect */
-	if (!ent->client->playerinfo.pers.spectator)
+	if (!ent->client->pers.spectator)
 	{
 		/* send effect */
 		gi.WriteByte(svc_muzzleflash);
@@ -2752,15 +2742,15 @@ spectator_respawn(edict_t *ent)
 
 	ent->client->respawn_time = level.time;
 
-	if (ent->client->playerinfo.pers.spectator)
+	if (ent->client->pers.spectator)
 	{
 		gi.bprintf(PRINT_HIGH, "%s has moved to the sidelines\n",
-				ent->client->playerinfo.pers.netname);
+				ent->client->pers.netname);
 	}
 	else
 	{
 		gi.bprintf(PRINT_HIGH, "%s joined the game\n",
-				ent->client->playerinfo.pers.netname);
+				ent->client->pers.netname);
 	}
 }
 
@@ -3029,10 +3019,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&1)
 	{
-		item=FindItem("staff");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("staff");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3043,10 +3033,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&2)
 	{
-		item=FindItem("fball");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("fball");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3057,10 +3047,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&4)
 	{
-		item=FindItem("hell");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("hell");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3071,10 +3061,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&8)
 	{
-		item=FindItem("array");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("array");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3085,10 +3075,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&16)
 	{
-		item=FindItem("rain");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("rain");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3099,10 +3089,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&32)
 	{
-		item=FindItem("sphere");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("sphere");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3113,10 +3103,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&64)
 	{
-		item=FindItem("phoen");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("phoen");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3127,10 +3117,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&128)
 	{
-		item=FindItem("mace");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("mace");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3141,10 +3131,10 @@ GiveLevelItems(edict_t *player)
 
 	if (level.offensive_weapons&256)
 	{
-		item=FindItem("fwall");
-		if (AddWeaponToInventory(item,player))
+		item = FindItem("fwall");
+		if (AddWeaponToInventory(item, player))
 		{
-			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon))&&(client->playerinfo.pers.autoweapon))
+			if ((ITEM_INDEX(item) > ITEM_INDEX(weapon)) && client->pers.autoweapon)
 			{
 				weapon=item;
 				client->newweapon = item;
@@ -3155,31 +3145,31 @@ GiveLevelItems(edict_t *player)
 
 	if (level.defensive_weapons&1)
 	{
-		item=FindItem("ring");
+		item = FindItem("ring");
 		AddDefenseToInventory(item,player);
 	}
 
 	if (level.defensive_weapons&2)
 	{
-		item=FindItem("lshield");
+		item = FindItem("lshield");
 		AddDefenseToInventory(item,player);
 	}
 
 	if (level.defensive_weapons&4)
 	{
-		item=FindItem("tele");
+		item = FindItem("tele");
 		AddDefenseToInventory(item,player);
 	}
 
 	if (level.defensive_weapons&8)
 	{
-		item=FindItem("morph");
+		item = FindItem("morph");
 		AddDefenseToInventory(item,player);
 	}
 
 	if (level.defensive_weapons&16)
 	{
-		item=FindItem("meteor");
+		item = FindItem("meteor");
 		AddDefenseToInventory(item,player);
 	}
 
@@ -3226,7 +3216,7 @@ PutClientInServer(edict_t *ent)
 
 	index = ent - g_edicts - 1;
 	client = ent->client;
-	chasetoggle = client->playerinfo.pers.chasetoggle;
+	chasetoggle = client->pers.chasetoggle;
 
 	// The player's starting plague skin is determined by the worldspawn's s.skinnum.
 	if (!deathmatch->value)
@@ -3245,7 +3235,7 @@ PutClientInServer(edict_t *ent)
 		char userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
-		memcpy(userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
+		memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
 		InitClientPersistant(ent);
 		ClientUserinfoChanged(ent, userinfo);
 	}
@@ -3254,13 +3244,13 @@ PutClientInServer(edict_t *ent)
 		char userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
-		memcpy(userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
+		memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
 
 		ClientUserinfoChanged(ent, userinfo);
 
-		if (resp.score > client->playerinfo.pers.score)
+		if (resp.score > client->pers.score)
 		{
-			client->playerinfo.pers.score = resp.score;
+			client->pers.score = resp.score;
 		}
 	}
 	else
@@ -3268,7 +3258,7 @@ PutClientInServer(edict_t *ent)
 		char userinfo[MAX_INFO_STRING];
 
 		memset(&resp, 0, sizeof(resp));
-		memcpy(userinfo, client->playerinfo.pers.userinfo, sizeof(userinfo));
+		memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
 		ClientUserinfoChanged (ent, userinfo);
 	}
 
@@ -3301,11 +3291,11 @@ PutClientInServer(edict_t *ent)
 
 	// Initialise...
 
-	if (client->playerinfo.pers.health <= 0)
+	if (client->pers.health <= 0)
 		InitClientPersistant(ent);
 
 	client->resp = resp;
-	client->playerinfo.pers.chasetoggle = chasetoggle;
+	client->pers.chasetoggle = chasetoggle;
 
 	/* copy some data from the client to the entity */
 	FetchClientEntData(ent);
@@ -3373,7 +3363,7 @@ PutClientInServer(edict_t *ent)
 	 */
 
 
-	client->ps.fov = atoi(Info_ValueForKey(client->playerinfo.pers.userinfo, "fov"));
+	client->ps.fov = atoi(Info_ValueForKey(client->pers.userinfo, "fov"));
 
 	if (client->ps.fov < 1)
 	{
@@ -3440,7 +3430,7 @@ PutClientInServer(edict_t *ent)
 	}
 
 	/* spawn a spectator */
-	if (client->playerinfo.pers.spectator)
+	if (client->pers.spectator)
 	{
 		client->chase_target = NULL;
 
@@ -3475,7 +3465,7 @@ PutClientInServer(edict_t *ent)
 
 	ent->client->chasetoggle = 0;
 	/* If chasetoggle set then turn on (delayed start of 5 frames - 0.5s) */
-	if (ent->client->playerinfo.pers.chasetoggle && !ent->client->chasetoggle)
+	if (ent->client->pers.chasetoggle && !ent->client->chasetoggle)
 	{
 		ent->client->delayedstart = 5;
 	}
@@ -3505,7 +3495,7 @@ PutClientInServer(edict_t *ent)
 
 	// Make sure the skin attributes are transferred.
 
-	ClientSetSkinType(ent, Info_ValueForKey (ent->client->playerinfo.pers.userinfo, "skin"));
+	ClientSetSkinType(ent, Info_ValueForKey (ent->client->pers.userinfo, "skin"));
 
 	if (deathmatch->value||coop->value)
 	{
@@ -3539,7 +3529,7 @@ PutClientInServer(edict_t *ent)
 
 		gitem_t *item;
 
-		item=FindItem("staff");
+		item = FindItem("staff");
 		client->newweapon = item;
 		client->playerinfo.switchtoweapon=WEAPON_READY_SWORDSTAFF;
 	}
@@ -3686,7 +3676,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 
 	/* set name */
 	s = Info_ValueForKey(userinfo, "name");
-	Q_strlcpy(ent->client->playerinfo.pers.netname, s, sizeof(ent->client->playerinfo.pers.netname)-1);
+	Q_strlcpy(ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
 
 	/* set spectator */
 	s = Info_ValueForKey(userinfo, "spectator");
@@ -3694,11 +3684,11 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 	/* spectators are only supported in deathmatch */
 	if (deathmatch->value && *s && strcmp(s, "0"))
 	{
-		ent->client->playerinfo.pers.spectator = true;
+		ent->client->pers.spectator = true;
 	}
 	else
 	{
-		ent->client->playerinfo.pers.spectator = false;
+		ent->client->pers.spectator = false;
 	}
 
 	/* set skin */
@@ -3727,7 +3717,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			}
 		}
 
-		gi.configstring(CS_PLAYERSKINS + playernum, va("%s/%s", ent->client->playerinfo.pers.netname, skin) );
+		gi.configstring(CS_PLAYERSKINS + playernum, va("%s/%s", ent->client->pers.netname, skin) );
 	}
 	else if (coop->value)
 	{	// In coop only allow skins that have full plague levels...
@@ -3779,18 +3769,18 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				if (gi.LoadFile(filename, NULL) != -1)
 				{	// The plague1 skin exists.
 					gi.configstring(CS_PLAYERSKINS + playernum,
-						va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
+						va("%s\\%sP1", ent->client->pers.netname, skin) );
 				}
 				else
 				{	// Just use the basic skin, then.
 					gi.configstring(CS_PLAYERSKINS + playernum,
-						va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
+						va("%s\\%s", ent->client->pers.netname, skin) );
 				}
 			}
 			else
 			{
 				gi.configstring(CS_PLAYERSKINS + playernum,
-					va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
+					va("%s\\%sP1", ent->client->pers.netname, skin) );
 			}
 			break;
 		case 2:		// Plague level 2
@@ -3800,7 +3790,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				if (gi.LoadFile(filename, NULL) != -1)
 				{
 					// The plague1 skin exists.
-					gi.configstring(CS_PLAYERSKINS + playernum, va("%s/%sP2", ent->client->playerinfo.pers.netname, skin) );
+					gi.configstring(CS_PLAYERSKINS + playernum, va("%s/%sP2", ent->client->pers.netname, skin) );
 				}
 				else
 				{	// No plague 2 skin, try for a plague 1 skin.
@@ -3809,24 +3799,24 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 					{
 						/* The plague1 skin exists. */
 						gi.configstring(CS_PLAYERSKINS + playernum,
-							va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
+							va("%s\\%sP1", ent->client->pers.netname, skin) );
 					}
 					else
 					{	// Just use the basic skin, then.
 						gi.configstring(CS_PLAYERSKINS + playernum,
-							va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
+							va("%s\\%s", ent->client->pers.netname, skin) );
 					}
 				}
 			}
 			else
 			{
 				gi.configstring(CS_PLAYERSKINS + playernum,
-					va("%s\\%sP2", ent->client->playerinfo.pers.netname, skin) );
+					va("%s\\%sP2", ent->client->pers.netname, skin) );
 			}
 			break;
 		default:
 			gi.configstring(CS_PLAYERSKINS + playernum,
-				va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
+				va("%s\\%s", ent->client->pers.netname, skin) );
 		}
 	}
 	else
@@ -3858,12 +3848,12 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				{
 					// The plague1 skin exists.
 					gi.configstring(CS_PLAYERSKINS + playernum,
-						va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
+						va("%s\\%sP1", ent->client->pers.netname, skin) );
 				}
 				else
 				{	// Just use the basic skin, then.
 					gi.configstring(CS_PLAYERSKINS + playernum,
-						va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
+						va("%s\\%s", ent->client->pers.netname, skin) );
 				}
 				break;
 			case 2:		// Plague level 2
@@ -3873,7 +3863,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 				{
 					// The plague1 skin exists.
 					gi.configstring(CS_PLAYERSKINS + playernum,
-						va("%s\\%sP2", ent->client->playerinfo.pers.netname, skin) );
+						va("%s\\%sP2", ent->client->pers.netname, skin) );
 				}
 				else
 				{
@@ -3885,18 +3875,18 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 					{
 						// The plague1 skin exists.
 						gi.configstring(CS_PLAYERSKINS + playernum,
-							va("%s\\%sP1", ent->client->playerinfo.pers.netname, skin) );
+							va("%s\\%sP1", ent->client->pers.netname, skin) );
 					}
 					else
 					{	// Just use the basic skin, then.
 						gi.configstring(CS_PLAYERSKINS + playernum,
-							va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
+							va("%s\\%s", ent->client->pers.netname, skin) );
 					}
 				}
 				break;
 			default:
 				gi.configstring(CS_PLAYERSKINS+playernum,
-					va("%s\\%s", ent->client->playerinfo.pers.netname, skin) );
+					va("%s\\%s", ent->client->pers.netname, skin) );
 				break;
 			}
 		}
@@ -3906,14 +3896,14 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			{
 			case 1:		// Plague level 1
 				gi.configstring(CS_PLAYERSKINS + playernum,
-					va("%s\\male/CorvusP1", ent->client->playerinfo.pers.netname) );
+					va("%s\\male/CorvusP1", ent->client->pers.netname) );
 				break;
 			case 2:		// Plague level 2
 				gi.configstring(CS_PLAYERSKINS + playernum,
-					va("%s\\male/CorvusP2", ent->client->playerinfo.pers.netname) );
+					va("%s\\male/CorvusP2", ent->client->pers.netname) );
 				break;
 			default:
-				gi.configstring(CS_PLAYERSKINS + playernum, va("%s\\male/Corvus", ent->client->playerinfo.pers.netname) );
+				gi.configstring(CS_PLAYERSKINS + playernum, va("%s\\male/Corvus", ent->client->pers.netname) );
 				break;
 			}
 		}
@@ -3937,11 +3927,11 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 
 	if (strlen(s))
 	{
-		ent->client->playerinfo.pers.autoweapon = atoi(s);
+		ent->client->pers.autoweapon = atoi(s);
 	}
 
 	/* save off the userinfo in case we want to check something later */
-	Q_strlcpy(ent->client->playerinfo.pers.userinfo, userinfo, sizeof(ent->client->playerinfo.pers.userinfo));
+	Q_strlcpy(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
 }
 
 /*
@@ -3989,7 +3979,7 @@ ClientConnect(edict_t *ent, char *userinfo)
 		/* count spectators */
 		for (i = numspec = 0; i < maxclients->value; i++)
 		{
-			if (g_edicts[i + 1].inuse && g_edicts[i + 1].client->playerinfo.pers.spectator)
+			if (g_edicts[i + 1].inuse && g_edicts[i + 1].client->pers.spectator)
 			{
 				numspec++;
 			}
@@ -4049,11 +4039,11 @@ ClientConnect(edict_t *ent, char *userinfo)
 
 	if (game.maxclients > 1)
 	{
-		gi.dprintf("%s connected\n", ent->client->playerinfo.pers.netname);
+		gi.dprintf("%s connected\n", ent->client->pers.netname);
 	}
 
 	ent->svflags = 0; /* make sure we start with known default */
-	ent->client->playerinfo.pers.connected = true;
+	ent->client->pers.connected = true;
 	return true;
 }
 
@@ -4119,7 +4109,7 @@ ClientDisconnect(edict_t *ent)
 	ent->solid = SOLID_NOT;
 	ent->inuse = false;
 	ent->classname = "disconnected";
-	ent->client->playerinfo.pers.connected = false;
+	ent->client->pers.connected = false;
 
 	playernum = ent - g_edicts - 1;
 	gi.configstring(CS_PLAYERSKINS + playernum, "");
