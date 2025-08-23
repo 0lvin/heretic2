@@ -1959,15 +1959,6 @@ void spawngrow_think(edict_t *self);
 void RemoveAttackingPainDaemons(edict_t *self);
 void ForceFogTransition(edict_t *ent, qboolean instant);
 
-/* g_resourcemanagers.c */
-void G_InitResourceManagers();
-
-/* g_breakable.c */
-void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
-
-/* g_obj.c */
-void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
-
 /* ============================================================================ */
 
 #include "ai.h"//JABot
@@ -1990,6 +1981,60 @@ typedef struct
 	float falloff;
 	float density;
 } height_fog_t;
+
+/* client data that stays across multiple level loads */
+typedef struct
+{
+	char userinfo[MAX_INFO_STRING];
+	char netname[16];
+	int hand;
+
+	qboolean connected;             /* a loadgame will leave valid entities that
+	                                   just don't have a connection yet */
+
+	/* values saved and restored from
+	   edicts when changing levels */
+	int health;
+	int max_health;
+	int savedFlags;
+
+	int selected_item;
+	int inventory[MAX_ITEMS];
+
+	/* ammo capacities */
+	int max_bullets;
+	int max_shells;
+	int max_rockets;
+	int max_grenades;
+	int max_cells;
+	int max_slugs;
+	int max_magslug;
+	int max_trap;
+
+	gitem_t *weapon;
+	gitem_t *lastweapon;
+
+	int power_cubes;            /* used for tracking the cubes in coop games */
+	int score;                  /* for calculating total unit score in coop games */
+
+	int game_helpchanged;
+	int helpchanged;
+
+	qboolean spectator;         /* client is a spectator */
+	int chasetoggle;       /* Chasetoggle */
+
+	int max_tesla;
+	int max_prox;
+	int max_mines;
+	int max_flechettes;
+	int max_rounds;
+
+	// [Paril-KEX] fog that we want to achieve; density rgb skyfogfactor
+	float wanted_fog[5];
+	height_fog_t wanted_heightfog;
+	// relative time value, copied from last touched trigger
+	float fog_transition_time;
+} client_persistant_t;
 
 /* client data that stays across multiple level loads */
 typedef struct
@@ -2085,7 +2130,7 @@ typedef struct
 	// Offenses and defenses.
 
 	gitem_t *defence, *lastdefence;
-} client_persistant_t;
+} player_persistant_t;
 
 // ************************************************************************************************
 // playerinfo_t
@@ -2133,7 +2178,7 @@ typedef struct playerinfo_s
 
 	// Data that must be maintatined over the duration of a level.
 
-	client_persistant_t	pers;
+	player_persistant_t	pers;
 
 	// Last usercmd_t.
 
@@ -2291,6 +2336,15 @@ typedef struct
 	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
 	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
 } player_export_t;
+
+/* g_resourcemanagers.c */
+void G_InitResourceManagers();
+
+/* g_breakable.c */
+void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
+
+/* g_obj.c */
+void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
 
 // p_funcs
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);

@@ -1967,7 +1967,7 @@ InitClientResp(gclient_t *client)
 
 	memset(&client->resp, 0, sizeof(client->resp));
 	client->resp.enterframe = level.framenum;
-	client->resp.coop_respawn = client->playerinfo.pers;
+	client->resp.coop_respawn = client->pers;
 }
 
 /*
@@ -3202,6 +3202,7 @@ PutClientInServer(edict_t *ent)
 	gclient_t *client;
 	int i, chasetoggle;
 	client_persistant_t saved;
+	player_persistant_t psaved;
 	client_respawn_t resp;
 	int					complete_reset;
 	int					plaguelevel;
@@ -3292,9 +3293,11 @@ PutClientInServer(edict_t *ent)
 	// Clear everything but the persistant data.
 
 	plaguelevel = client->playerinfo.plaguelevel;	// Save me too.
-	saved = client->playerinfo.pers;
-	memset (client, 0, sizeof(gclient_t));
-	client->playerinfo.pers = saved;
+	saved = client->pers;
+	psaved = client->playerinfo.pers;
+	memset(client, 0, sizeof(gclient_t));
+	client->playerinfo.pers = psaved;
+	client->pers = saved;
 
 	// Initialise...
 

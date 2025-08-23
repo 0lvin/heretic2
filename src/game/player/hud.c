@@ -612,7 +612,7 @@ G_SetStats(edict_t *ent)
 	gitem_t *item;
 	gclient_t			*pi;
 	player_state_t		*ps;
-	client_persistant_t	*pers;
+	player_persistant_t	*pers;
 	float				time;
 
 	if (!ent)
