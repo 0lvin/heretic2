@@ -146,7 +146,7 @@ SelectNextItem(edict_t *ent, int itflags)
 	{
 		index = (cl->pers.selected_item + i) % MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 		{
 			continue;
 		}
@@ -205,7 +205,7 @@ SelectPrevItem(edict_t *ent, int itflags)
 	{
 		index = (cl->pers.selected_item + MAX_ITEMS - i) % MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 		{
 			continue;
 		}
@@ -242,7 +242,7 @@ ValidateSelectedItem(edict_t *ent)
 
 	cl = ent->client;
 
-	if (cl->playerinfo.pers.inventory[cl->pers.selected_item])
+	if (cl->pers.inventory[cl->pers.selected_item])
 	{
 		return; /* valid */
 	}
@@ -406,7 +406,7 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			ent->client->playerinfo.pers.inventory[i] += 1;
+			ent->client->pers.inventory[i] += 1;
 
 			if ((it->playeranimseq == ASEQ_WRRBOW_GO)||(it->playeranimseq == ASEQ_WPHBOW_GO))
 			{
@@ -444,7 +444,7 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			ent->client->playerinfo.pers.inventory[i] += 1;
+			ent->client->pers.inventory[i] += 1;
 		}
 
 		// if we don't already have a defence item, make the ring default
@@ -690,7 +690,7 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
-			ent->client->playerinfo.pers.inventory[i] = 1;
+			ent->client->pers.inventory[i] = 1;
 		}
 
 		return;
@@ -728,20 +728,20 @@ Cmd_Give_f(edict_t *ent)
 	{
 		if (gi.argc() == 3)
 		{
-			ent->client->playerinfo.pers.inventory[index] += atoi(gi.argv(2));
+			ent->client->pers.inventory[index] += atoi(gi.argv(2));
 		}
 		else
 		{
-			ent->client->playerinfo.pers.inventory[index] += it->quantity;
+			ent->client->pers.inventory[index] += it->quantity;
 		}
 	}
 	else if (it->flags & IT_WEAPON)
 	{
-		ent->client->playerinfo.pers.inventory[index] += 1;
+		ent->client->pers.inventory[index] += 1;
 	}
 	else
 	{
-		ent->client->playerinfo.pers.inventory[index] += 1;
+		ent->client->pers.inventory[index] += 1;
 	}
 
 	// if we don't already have a defence item, make this defence item default
@@ -936,7 +936,7 @@ Cmd_Use_f(edict_t *ent)
 
 	index = ITEM_INDEX(it);
 
-	if (!playerinfo->pers.inventory[index])
+	if (!ent->client->pers.inventory[index])
 	{
 		if (it->flags & (IT_WEAPON|IT_DEFENSE))
 			// index is two off, since we can never run out of the staff or the flying fist
@@ -1236,7 +1236,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 	{
 		index = (selected_weapon + MAX_ITEMS - i) % MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 		{
 			continue;
 		}
@@ -1289,7 +1289,7 @@ Cmd_WeapNext_f(edict_t *ent)
 	{
 		index = (selected_weapon + i) % MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 		{
 			continue;
 		}
@@ -1346,7 +1346,7 @@ Cmd_DefPrev_f(edict_t *ent)
 	{
 		index = (selected_defence + (MAX_ITEMS-i))%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 			continue;
 
 		it = &itemlist[index];
@@ -1405,7 +1405,7 @@ Cmd_DefNext_f(edict_t *ent)
 	{
 		index = (selected_defence + i)%MAX_ITEMS;
 
-		if (!cl->playerinfo.pers.inventory[index])
+		if (!cl->pers.inventory[index])
 			continue;
 		it = itemlist + index;
 		if (!it->use)
@@ -1458,7 +1458,7 @@ Cmd_WeapLast_f(edict_t *ent)
 
 	index = ITEM_INDEX(cl->pers.lastweapon);
 
-	if (!cl->playerinfo.pers.inventory[index])
+	if (!cl->pers.inventory[index])
 	{
 		return;
 	}

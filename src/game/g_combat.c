@@ -307,7 +307,7 @@ SpawnReward(edict_t *self, edict_t *attacker)
 	lookup = FindItemByClassname("item_mana_offensive_half");
 	index = ITEM_INDEX(lookup);
 	off_max = attacker->client->playerinfo.pers.max_offmana;
-	off_amount = attacker->client->playerinfo.pers.inventory[index];
+	off_amount = attacker->client->pers.inventory[index];
 
 	off_chance = (off_amount < off_max) ? ( (float) off_amount / (float) off_max ) : 9999;
 
@@ -315,7 +315,7 @@ SpawnReward(edict_t *self, edict_t *attacker)
 	lookup = FindItemByClassname("item_mana_defensive_half");
 	index = ITEM_INDEX(lookup);
 	def_max = attacker->client->playerinfo.pers.max_defmana;
-	def_amount = attacker->client->playerinfo.pers.inventory[index];
+	def_amount = attacker->client->pers.inventory[index];
 
 	def_chance = (def_amount < def_max) ? ( (float) def_amount / (float) def_max ) : 9999;
 

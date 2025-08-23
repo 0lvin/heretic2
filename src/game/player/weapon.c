@@ -412,7 +412,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 
 	// Do we already have this weapon?
 
-	if (!player->client->playerinfo.pers.inventory[index])
+	if (!player->client->pers.inventory[index])
 	{
 		// We don't already have it, so get the weapon and some ammo.
 
@@ -435,7 +435,7 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 		else
 			count = AMMO_COUNT_MOST;
 
-		player->client->playerinfo.pers.inventory[index] = 1;
+		player->client->pers.inventory[index] = 1;
 
 		if (count)
 		{
@@ -4191,10 +4191,10 @@ WeaponThink_FlyingFist(edict_t *caster)
 	SpellCastFlyingFist(caster, StartPos,caster->client->aimangles,Forward,0.0);
 
 	// Take off mana, but if there is none, then fire a wimpy fizzle-weapon.
-	if (caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] > 0)
+	if (caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] > 0)
 	{
 		if (!(deathmatch->value && ((int)dmflags->value & DF_INFINITE_MANA)))
-				caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
+				caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
 						caster->client->playerinfo.pers.weapon->quantity;
 	}
 }
@@ -4228,7 +4228,7 @@ WeaponThink_Maceballs(edict_t *caster)
 		SpellCastMaceball(caster, startpos, caster->client->aimangles, NULL, 0.0);
 		// Giant iron dooms require lotsa mana, but yer average ripper needs far less.
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
+			caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
 					caster->client->playerinfo.pers.weapon->quantity * 2.0;
 	}
 	else
@@ -4241,7 +4241,7 @@ WeaponThink_Maceballs(edict_t *caster)
 
 		SpellCastRipper(caster, startpos, caster->client->aimangles, NULL);
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
+			caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
 					caster->client->playerinfo.pers.weapon->quantity;		// Un-powered
 	}
 }
@@ -4295,7 +4295,7 @@ WeaponThink_MagicMissileSpreadEx(edict_t *caster,char *format,...)
 		gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/MagicMissileSpreadFire.wav"), 1, ATTN_NORM, 0);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index]--;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index]--;
 }
 
 void
@@ -4340,7 +4340,7 @@ WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
 								 ReleaseFlagsPtr);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
 }
 
 void
@@ -4360,7 +4360,7 @@ WeaponThink_Firewall(edict_t *caster)
 	SpellCastWall(caster, caster->s.origin, caster->client->aimangles, NULL, 0.0);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4381,7 +4381,7 @@ WeaponThink_RedRainBow(edict_t *caster)
 	SpellCastRedRain(caster, StartPos, caster->client->aimangles, NULL, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4402,7 +4402,7 @@ WeaponThink_PhoenixBow(edict_t *caster)
 	SpellCastPhoenix(caster, StartPos, caster->client->aimangles, Forward, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4440,7 +4440,7 @@ void WeaponThink_HellStaff(edict_t *caster)
 	SpellCastHellstaff(caster, StartPos, caster->client->aimangles, NULL);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
 }
 
 // ************************************************************************************************
@@ -4480,7 +4480,7 @@ WeaponThink_Blast(edict_t *caster)
 	SpellCastBlast(caster, startpos, caster->client->aimangles, NULL);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		caster->client->playerinfo.pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
+		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
 
 	gi.sound(caster,CHAN_WEAPON, gi.soundindex("weapons/BlastFire.wav"), 1, ATTN_NORM, 0);
 }
@@ -4585,9 +4585,9 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 	// if its anything other than the flying fist, see if we have mana for it.
 	if (Weapon->tag != ITEM_WEAPON_FLYINGFIST)
 	{
-		if (playerinfo->pers.inventory[ITEM_INDEX(FindItem(Weapon->ammo))] < Weapon->quantity)
+		if (ent->client->pers.inventory[ITEM_INDEX(FindItem(Weapon->ammo))] < Weapon->quantity)
 		{
-			G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOMANA);
+			G_CPrintf(ent, PRINT_HIGH, GM_NOMANA);
 			return;
 		}
 	}
@@ -4619,16 +4619,20 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 
 	//Make sure we have an arm to do it
 	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
+	{
 		return;
+	}
 
 	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
+	{
 		return;
+	}
 
 	// see if we actually have any ammo for it
 	AmmoItem = FindItem(Weapon->ammo);
 	AmmoIndex = ITEM_INDEX(AmmoItem);
 
-    if(!playerinfo->pers.inventory[AmmoIndex])
+    if(!ent->client->pers.inventory[AmmoIndex])
 	{
 		G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
@@ -4673,12 +4677,11 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 	AmmoItem = FindItem(Weapon->ammo);
 	AmmoIndex = ITEM_INDEX(AmmoItem);
 
-    if(!playerinfo->pers.inventory[AmmoIndex])
+    if(!ent->client->pers.inventory[AmmoIndex])
 	{
 		G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
 	}
-
 
 	ent->client->newweapon = Weapon;
 	playerinfo->switchtoweapon = WEAPON_READY_BOW;
@@ -4696,20 +4699,22 @@ int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 	gitem_t	*Weapon,
 			*AmmoItem;
 	int		AmmoIndex;
+	gclient_t *client;
 
-	Weapon=playerinfo->pers.weapon;
+	client = playerinfo->self->client;
+	Weapon = playerinfo->pers.weapon;
 
 	// If the weapon uses ammo, return the number of shots left, else return -1 (e.g. Sword-staff).
 
-	if (Weapon->ammo&&(Weapon->quantity))
+	if (Weapon->ammo && (Weapon->quantity))
 	{
 		AmmoItem = FindItem(Weapon->ammo);
 		AmmoIndex = ITEM_INDEX(AmmoItem);
 
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_MACEBALLS && playerinfo->powerup_timer > playerinfo->leveltime)
-			return(playerinfo->pers.inventory[AmmoIndex]/(Weapon->quantity*2.0));		// Double consumption for mace.
+		if (client->pers.weapon->tag == ITEM_WEAPON_MACEBALLS && playerinfo->powerup_timer > playerinfo->leveltime)
+			return(client->pers.inventory[AmmoIndex]/(Weapon->quantity*2.0));		// Double consumption for mace.
 		else
-			return(playerinfo->pers.inventory[AmmoIndex]/Weapon->quantity);
+			return(client->pers.inventory[AmmoIndex]/Weapon->quantity);
 	}
 	else
 		return(0);
@@ -4727,7 +4732,9 @@ int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 	gitem_t	*Defence,
 			*ManaItem;
 	int		ManaIndex;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	Defence = playerinfo->pers.defence;
 
 	// If the weapon uses ammo, return the number of shots left, else return -1 (e.g. Sword-staff).
@@ -4737,8 +4744,7 @@ int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 		ManaItem = FindItem(Defence->ammo);
 		ManaIndex = ITEM_INDEX(ManaItem);
 
-		return(playerinfo->pers.inventory[ManaIndex]/Defence->quantity);
-
+		return(client->pers.inventory[ManaIndex] / Defence->quantity);
 	}
 	else
 		return(0);

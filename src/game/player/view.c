@@ -1121,21 +1121,6 @@ ClientEndServerFrame(edict_t *ent)
 	// ********************************************************************************************
 
 	current_client->ps.NoOfItems = i = 0;
-
-	for(index = 0;index < MAX_ITEMS;index++)
-	{
-		if (current_client->playerinfo.pers.inventory[index] != current_client->playerinfo.pers.old_inventory[index])
-		{
-			current_client->ps.inventory_changes[i] = index;
-
-			current_client->ps.inventory_remaining[i] = current_client->playerinfo.pers.inventory[index];
-
-			current_client->playerinfo.pers.old_inventory[index] = current_client->playerinfo.pers.inventory[index];
-
-			i++;
-		}
-	}
-
 	current_client->ps.NoOfItems = i;
 
 	// ********************************************************************************************

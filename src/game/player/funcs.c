@@ -1290,7 +1290,7 @@ void G_PlayerActionSpellDefensive(edict_t *self)
 		it = FindItem("ring");
 		index = ITEM_INDEX(it);
 		if ((Defence_CurrentShotsLeft(&(self->client->playerinfo), 1) <=0)
-			&& self->client->playerinfo.pers.inventory[index])
+			&& self->client->pers.inventory[index])
 		{
 			Cmd_Use_f(self);
 		}

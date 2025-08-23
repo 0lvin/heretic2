@@ -550,16 +550,19 @@ void PlayerActionSpellSphereCreate(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 	// Drain mana while charging. If mana depleted, then the branch will set to launch the thing.
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
 			((pi.Weapon_CurrentShotsLeft(playerinfo)) ||
-					(playerinfo->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
+					(client->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
 	{
 		if (!(playerinfo->dmflags & DF_INFINITE_MANA))
 		{
-			playerinfo->pers.inventory[playerinfo->weap_ammo_index] -= SPHERE_MANA_PER_CHARGE;
+			client->pers.inventory[playerinfo->weap_ammo_index] -= SPHERE_MANA_PER_CHARGE;
 			playerinfo->weaponcharge++;
 
 			return;

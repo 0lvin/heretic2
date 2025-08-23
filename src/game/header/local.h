@@ -2006,11 +2006,9 @@ typedef struct
 {
 	/* values saved and restored from
 	   edicts when changing levels */
-	int inventory[MAX_ITEMS];
-
 	gitem_t *weapon;
 
-	// Visible model attributes.
+	/* Visible model attributes. */
 	int			weaponready;
 	byte		armortype;			// Current armour Corvus is wearing.
 	byte		bowtype;			// Current bow and what kind (when it is on Corvus' back too).
@@ -2019,10 +2017,6 @@ typedef struct
 	byte		handfxtype;			// Current spell effect Corvus has attached to his refpoints.
 	float		armor_count; 		// Not used on client.
 	unsigned int altparts;			// Missing hands, heads etc.
-
-	// Inventory.
-
-	int old_inventory[MAX_ITEMS];
 
 	// Ammo capacities.
 

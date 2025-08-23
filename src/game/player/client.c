@@ -1776,7 +1776,7 @@ Player_GiveStartItems(edict_t *ent, const char *ptr)
 
 				if (count == 0)
 				{
-					ent->client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 0;
+					ent->client->pers.inventory[ITEM_INDEX(item)] = 0;
 				}
 				else
 				{
@@ -1871,10 +1871,10 @@ InitClientPersistant(edict_t *ent)
 	// ********************************************************************************************
 
 	item = FindItem("Off-mana");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = client->playerinfo.pers.max_offmana / 2;
+	client->pers.inventory[ITEM_INDEX(item)] = client->playerinfo.pers.max_offmana / 2;
 
 	item = FindItem("Def-mana");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = client->playerinfo.pers.max_defmana / 2;
+	client->pers.inventory[ITEM_INDEX(item)] = client->playerinfo.pers.max_defmana / 2;
 
 #ifdef G_NOAMMO
 
@@ -1883,31 +1883,31 @@ InitClientPersistant(edict_t *ent)
 	gi.dprintf("Starting with unlimited ammo.\n");
 
 	item = FindItem("hell");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("array");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("rain");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("sphere");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("phoen");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("mace");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("fwall");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("meteor");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	item = FindItem("morph");
-	client->playerinfo.pers.inventory[ITEM_INDEX(item)] = 1;
+	client->pers.inventory[ITEM_INDEX(item)] = 1;
 
 	client->bowtype = BOW_TYPE_REDRAIN;
 	client->armortype = ARMOR_TYPE_SILVER;

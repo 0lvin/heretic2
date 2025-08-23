@@ -1242,9 +1242,9 @@ Pickup_Puzzle(edict_t *ent, edict_t *other)
 		return false;
 	}
 
-	if (!other->client->playerinfo.pers.inventory[ITEM_INDEX(ent->item)])
+	if (!other->client->pers.inventory[ITEM_INDEX(ent->item)])
 	{
-		other->client->playerinfo.pers.inventory[ITEM_INDEX(ent->item)] = 1;
+		other->client->pers.inventory[ITEM_INDEX(ent->item)] = 1;
 
 		G_CPrintf(other, PRINT_HIGH, ent->item->msg_pickup);
 
@@ -1263,9 +1263,9 @@ Pickup_Puzzle(edict_t *ent, edict_t *other)
 
 qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
 {
-	if (!player->client->playerinfo.pers.inventory[ITEM_INDEX(item)])
+	if (!player->client->pers.inventory[ITEM_INDEX(item)])
 	{
-		player->client->playerinfo.pers.inventory[ITEM_INDEX(item)]=1;
+		player->client->pers.inventory[ITEM_INDEX(item)]=1;
 
 		// Now decide if we want to swap defenses or not.
 
@@ -1319,13 +1319,13 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 
 	index = ITEM_INDEX(item);
 
-	if (ent->client->playerinfo.pers.inventory[index] == max)
+	if (ent->client->pers.inventory[index] == max)
 		return false;
 
-	ent->client->playerinfo.pers.inventory[index] += count;
+	ent->client->pers.inventory[index] += count;
 
-	if (ent->client->playerinfo.pers.inventory[index] > max)
-		ent->client->playerinfo.pers.inventory[index] = max;
+	if (ent->client->pers.inventory[index] > max)
+		ent->client->pers.inventory[index] = max;
 
 	return true;
 }
@@ -1525,16 +1525,16 @@ Drop_Ammo(edict_t *ent, gitem_t *item)
 	index = ITEM_INDEX(item);
 	dropped = Drop_Item(ent, item);
 
-	if (ent->client->playerinfo.pers.inventory[index] >= item->quantity)
+	if (ent->client->pers.inventory[index] >= item->quantity)
 	{
 		dropped->count = item->quantity;
 	}
 	else
 	{
-		dropped->count = ent->client->playerinfo.pers.inventory[index];
+		dropped->count = ent->client->pers.inventory[index];
 	}
 
-	ent->client->playerinfo.pers.inventory[index] -= dropped->count;
+	ent->client->pers.inventory[index] -= dropped->count;
 
 	ValidateSelectedItem(ent);
 }

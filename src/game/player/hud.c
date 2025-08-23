@@ -657,7 +657,7 @@ G_SetStats(edict_t *ent)
 	{
 		item = FindItem(ppers->weapon->ammo);
 		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
-		ps->stats[STAT_AMMO] = ppers->inventory[ITEM_INDEX(item)];
+		ps->stats[STAT_AMMO] = pers->inventory[ITEM_INDEX(item)];
 	}
 	else
 	{
@@ -671,7 +671,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_OFFMANA_ICON] = gi.imageindex("icons/green-mana");
 	ps->stats[STAT_OFFMANA_BACK] = gi.imageindex("icons/green-mana2");
 	item = FindItem("Off-mana");
-	ps->stats[STAT_OFFMANA] = (ppers->inventory[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
+	ps->stats[STAT_OFFMANA] = (pers->inventory[ITEM_INDEX(item)] * 100) / MAX_OFF_MANA;
 	if (ps->stats[STAT_OFFMANA] < 0)
 	{
 		ps->stats[STAT_OFFMANA] = 0;
@@ -684,7 +684,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_DEFMANA_ICON] = gi.imageindex("icons/blue-mana");
 	ps->stats[STAT_DEFMANA_BACK] = gi.imageindex("icons/blue-mana2");
 	item = FindItem("Def-mana");
-	ps->stats[STAT_DEFMANA] = (ppers->inventory[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
+	ps->stats[STAT_DEFMANA] = (pers->inventory[ITEM_INDEX(item)] * 100) / MAX_DEF_MANA;
 	if (ps->stats[STAT_DEFMANA] < 0)
 	{
 		ps->stats[STAT_DEFMANA] = 0;
@@ -767,7 +767,7 @@ G_SetStats(edict_t *ent)
 			break;
 		}
 
-		if ((item->flags & IT_PUZZLE) && ppers->inventory[i])
+		if ((item->flags & IT_PUZZLE) && pers->inventory[i])
 		{
 			 if(count > STAT_PUZZLE_ITEM4)
 			 {

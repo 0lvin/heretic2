@@ -410,12 +410,12 @@ void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec
 		}
 
 		// enough mana to do this ?
-		if (caster->client->playerinfo.pers.inventory[caster->client->playerinfo.def_ammo_index] < caster->client->playerinfo.pers.defence->quantity)
+		if (caster->client->pers.inventory[caster->client->playerinfo.def_ammo_index] < caster->client->playerinfo.pers.defence->quantity)
 			break;
 
 		// decrement our mana
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->playerinfo.pers.inventory[caster->client->playerinfo.def_ammo_index] -= caster->client->playerinfo.pers.defence->quantity;
+			caster->client->pers.inventory[caster->client->playerinfo.def_ammo_index] -= caster->client->playerinfo.pers.defence->quantity;
 
 		cast = true;
 		Meteor = G_Spawn();
