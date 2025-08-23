@@ -1215,14 +1215,14 @@ Cmd_WeapPrev_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
+	if (!cl->pers.weapon || sv_cinematicfreeze->value)
 	{
 		return;
 	}
 
-	if (cl->playerinfo.pers.weapon)
+	if (cl->pers.weapon)
 	{
-		it = cl->playerinfo.pers.weapon;
+		it = cl->pers.weapon;
 	}
 	else
 	{
@@ -1279,10 +1279,10 @@ Cmd_WeapNext_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || sv_cinematicfreeze->value)
+	if (!cl->pers.weapon || sv_cinematicfreeze->value)
 		return;
 
-	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
+	selected_weapon = ITEM_INDEX(cl->pers.weapon);
 
 	/* scan for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
@@ -1451,7 +1451,7 @@ Cmd_WeapLast_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || !cl->pers.lastweapon)
+	if (!cl->pers.weapon || !cl->pers.lastweapon)
 	{
 		return;
 	}

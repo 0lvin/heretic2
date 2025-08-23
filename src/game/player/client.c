@@ -1123,7 +1123,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 	if (throw_nodes)
 	{
 		self->pain_debounce_time = 0;
-		if (!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
+		if (!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->pers.weapon->tag))
 		{
 			playerExport->PlayerInterruptAction(&self->client->playerinfo);
 			playerExport->PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
@@ -1840,7 +1840,7 @@ InitClientPersistant(edict_t *ent)
 	// Give defensive and offensive weapons to player.
 	// ********************************************************************************************
 
-	client->playerinfo.pers.weapon = 0;
+	client->pers.weapon = 0;
 	client->playerinfo.pers.defence = 0;
 
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
@@ -1848,7 +1848,7 @@ InitClientPersistant(edict_t *ent)
 	item = FindItem("staff");
 	AddWeaponToInventory(item, ent);
 	client->pers.selected_item = ITEM_INDEX(item);
-	client->playerinfo.pers.weapon = item;
+	client->pers.weapon = item;
 	client->pers.lastweapon = item;
 	client->playerinfo.weap_ammo_index = 0;
 
@@ -1857,7 +1857,7 @@ InitClientPersistant(edict_t *ent)
 		item = FindItem("fball");
 		AddWeaponToInventory(item, ent);
 		client->pers.selected_item = ITEM_INDEX(item);
-		client->playerinfo.pers.weapon = item;
+		client->pers.weapon = item;
 		client->pers.lastweapon = item;
 		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(item->ammo));
 	}
@@ -3471,8 +3471,8 @@ PutClientInServer(edict_t *ent)
 
 	// Set the player's current offensive and defensive ammo indexes.
 
-	if (client->playerinfo.pers.weapon->ammo)
-		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.weapon->ammo));
+	if (client->pers.weapon->ammo)
+		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->pers.weapon->ammo));
 
 	if (client->playerinfo.pers.defence)
 		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.defence->ammo));
@@ -4010,7 +4010,7 @@ ClientConnect(edict_t *ent, char *userinfo)
 
 		InitClientResp(ent->client);
 
-		if (!ent->client->playerinfo.pers.weapon)
+		if (!ent->client->pers.weapon)
 		{
 			InitClientPersistant(ent);
 

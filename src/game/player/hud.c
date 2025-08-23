@@ -643,7 +643,7 @@ G_SetStats(edict_t *ent)
 	// Weapon / defence.
 	// ********************************************************************************************
 
-	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(ppers->weapon->icon);
+	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(pers->weapon->icon);
 	if (ppers->defence)
 	{
 		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(ppers->defence->icon);
@@ -653,9 +653,9 @@ G_SetStats(edict_t *ent)
 	// Weapon ammo.
 	// ********************************************************************************************
 
-	if (ppers->weapon->ammo && ppers->weapon->count_width)
+	if (pers->weapon->ammo && pers->weapon->count_width)
 	{
-		item = FindItem(ppers->weapon->ammo);
+		item = FindItem(pers->weapon->ammo);
 		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
 		ps->stats[STAT_AMMO] = ppers->inventory[ITEM_INDEX(item)];
 	}

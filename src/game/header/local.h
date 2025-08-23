@@ -2008,8 +2008,6 @@ typedef struct
 	   edicts when changing levels */
 	int inventory[MAX_ITEMS];
 
-	gitem_t *weapon;
-
 	// Visible model attributes.
 	int			weaponready;
 	byte		armortype;			// Current armour Corvus is wearing.
