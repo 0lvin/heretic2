@@ -1191,8 +1191,8 @@ void shrine_mana_core(edict_t *self, edict_t *other)
 
 	// Add mana.
 
-	other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] = 100;
-    other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] = 100;
+	other->client->pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] = 100;
+    other->client->pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] = 100;
 
 	// restore dismemberment, and stop us being on fire
 	shrine_restore_player(other);
@@ -1797,8 +1797,8 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 			possible_shrines[total_rand_count] = SHRINE_ARMOR_GOLD;
 			total_rand_count++;
 		}
-		if ((other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] < 100) ||
-		    (other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] < 100))
+		if ((other->client->pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] < 100) ||
+		    (other->client->pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] < 100))
 		{
 			possible_shrines[total_rand_count] = SHRINE_MANA;
 			total_rand_count++;

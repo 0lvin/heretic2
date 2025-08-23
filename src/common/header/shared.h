@@ -1647,9 +1647,7 @@ typedef struct
 
 	// Inventory changes.
 
-	byte			NoOfItems,
-		inventory_changes[256],
-		inventory_remaining[256];
+	byte			NoOfItems;
 
 	// Water attributes.
 
