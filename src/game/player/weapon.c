@@ -4494,21 +4494,25 @@ WeaponThink_Blast(edict_t *caster)
 // ************************************************************************************************
 
 void
-Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon)
+Weapon_Ready(gclient_t *client, gitem_t *weapon)
 {
-	assert(Weapon);
+	playerinfo_t *playerinfo;
+
+	playerinfo = &client->playerinfo;
+
+	assert(weapon);
 
 	// See if we're already using the weapon.
-	if (Weapon==playerinfo->pers.weapon)
+	if (weapon == playerinfo->pers.weapon)
 		return;
 
 	//Make sure we have an arm to do it
-	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
+	if (!playerExport->BranchCheckDismemberAction(playerinfo, weapon->tag))
 		return;
 
 	// Change to this weapon and set the weapon owner's ammo_index to reflect this.
-	playerinfo->pers.lastweapon=playerinfo->pers.weapon;
-	playerinfo->pers.weapon=Weapon;
+	client->pers.lastweapon = playerinfo->pers.weapon;
+	playerinfo->pers.weapon = weapon;
 
 	if (playerinfo->pers.weapon && playerinfo->pers.weapon->ammo)
 		playerinfo->weap_ammo_index = ITEM_INDEX(FindItem(playerinfo->pers.weapon->ammo));

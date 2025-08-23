@@ -144,7 +144,7 @@ SelectNextItem(edict_t *ent, int itflags)
 	/* scan  for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
 	{
-		index = (cl->playerinfo.pers.selected_item + i) % MAX_ITEMS;
+		index = (cl->pers.selected_item + i) % MAX_ITEMS;
 
 		if (!cl->playerinfo.pers.inventory[index])
 		{
@@ -163,11 +163,11 @@ SelectNextItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		cl->playerinfo.pers.selected_item = index;
+		cl->pers.selected_item = index;
 		return;
 	}
 
-	cl->playerinfo.pers.selected_item = -1;
+	cl->pers.selected_item = -1;
 }
 
 static void
@@ -203,7 +203,7 @@ SelectPrevItem(edict_t *ent, int itflags)
 	/* scan for the next valid one */
 	for (i = 1; i <= MAX_ITEMS; i++)
 	{
-		index = (cl->playerinfo.pers.selected_item + MAX_ITEMS - i) % MAX_ITEMS;
+		index = (cl->pers.selected_item + MAX_ITEMS - i) % MAX_ITEMS;
 
 		if (!cl->playerinfo.pers.inventory[index])
 		{
@@ -222,12 +222,12 @@ SelectPrevItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		cl->playerinfo.pers.selected_item = index;
+		cl->pers.selected_item = index;
 		cl->playerinfo.pers.defence = it;
 		return;
 	}
 
-	cl->playerinfo.pers.selected_item = -1;
+	cl->pers.selected_item = -1;
 }
 
 void
@@ -242,7 +242,7 @@ ValidateSelectedItem(edict_t *ent)
 
 	cl = ent->client;
 
-	if (cl->playerinfo.pers.inventory[cl->playerinfo.pers.selected_item])
+	if (cl->playerinfo.pers.inventory[cl->pers.selected_item])
 	{
 		return; /* valid */
 	}
@@ -1451,12 +1451,12 @@ Cmd_WeapLast_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.weapon || !cl->playerinfo.pers.lastweapon)
+	if (!cl->playerinfo.pers.weapon || !cl->pers.lastweapon)
 	{
 		return;
 	}
 
-	index = ITEM_INDEX(cl->playerinfo.pers.lastweapon);
+	index = ITEM_INDEX(cl->pers.lastweapon);
 
 	if (!cl->playerinfo.pers.inventory[index])
 	{

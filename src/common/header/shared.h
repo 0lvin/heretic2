@@ -1698,7 +1698,6 @@ typedef struct
 	byte			meteor_count;
 	byte			handfxtype;
 	byte			plaguelevel;
-	short			skintype;
 	unsigned int	altparts;
 
 	int				deadflag;

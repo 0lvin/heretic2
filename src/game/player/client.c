@@ -779,7 +779,6 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 
 	if (whichweaps & BIT_HELSTF && !(self->s.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
 	{
-//		self->client->playerinfo.helltype = 0;
 		ThrowWeapon(self, &handspot, BIT_HELSTF, damage, 0);
 		self->s.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
@@ -788,7 +787,6 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 
 	if (whichweaps & BIT_BOWACTV && !(self->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
 	{
-//		self->client->playerinfo.bowtype = 0;
 		ThrowWeapon(self, &handspot, BIT_BOFF, damage, 0);
 		self->s.fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
@@ -1854,18 +1852,18 @@ InitClientPersistant(edict_t *ent)
 
 	item = FindItem("staff");
 	AddWeaponToInventory(item, ent);
-	client->playerinfo.pers.selected_item = ITEM_INDEX(item);
+	client->pers.selected_item = ITEM_INDEX(item);
 	client->playerinfo.pers.weapon = item;
-	client->playerinfo.pers.lastweapon = item;
+	client->pers.lastweapon = item;
 	client->playerinfo.weap_ammo_index = 0;
 
 	if (!(((int)dmflags->value) & DF_NO_OFFENSIVE_SPELL))
 	{
 		item = FindItem("fball");
 		AddWeaponToInventory(item, ent);
-		client->playerinfo.pers.selected_item = ITEM_INDEX(item);
+		client->pers.selected_item = ITEM_INDEX(item);
 		client->playerinfo.pers.weapon = item;
-		client->playerinfo.pers.lastweapon = item;
+		client->pers.lastweapon = item;
 		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(item->ammo));
 	}
 

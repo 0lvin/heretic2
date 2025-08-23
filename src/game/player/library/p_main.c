@@ -656,63 +656,6 @@ void
 PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 {
 	int powerlevel;
-/*
-	// FIXME: This could be bad...
-
-	if (playerinfo->handfxtype==handfx)
-	{
-		// There should be nothing to do.
-
-		return;
-	}
-*/
-	// Check currently in place effects.
-
-/*	switch(playerinfo->pers.handfxtype)
-	{
-		case HANDFX_FIREBALL:
-		case HANDFX_MISSILE:
-		case HANDFX_MACEBALL:
-		case HANDFX_FIREWALL:
-		case HANDFX_STAFF1:
-		case HANDFX_STAFF2:
-		case HANDFX_STAFF3:
-			// Do nothing, these effects end on their own anyway.
-			break;
-
-		case HANDFX_SPHERE:
-			if (playerinfo->effects)
-				pi.G_RemoveEffects(EFFECT_PRED_ID31,
-											pi.G_GetEntityStatePtr(playerinfo->self),
-											FX_SPELLHANDS);
-			break;
-
-		case HANDFX_REDRAIN:
-		case HANDFX_POWERREDRAIN:
-
-			if (playerinfo->effects)
-				pi.G_RemoveEffects(EFFECT_PRED_ID32,
-											pi.G_GetEntityStatePtr(playerinfo->self),
-											FX_WEAPON_REDRAINGLOW);
-			break;
-
-		case HANDFX_PHOENIX:
-		case HANDFX_POWERPHOENIX:
-
-			if (playerinfo->effects)
-				pi.G_RemoveEffects(EFFECT_PRED_ID33,
-											pi.G_GetEntityStatePtr(playerinfo->self),
-											FX_FIREHANDS);
-			break;
-
-		case HANDFX_NONE:
-		default:
-
-			// Nothing to remove.
-
-			break;
-	}
-*/
 
 	// To kill previous effects, we just Reset the EF_FLAG
 

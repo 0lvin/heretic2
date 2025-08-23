@@ -2045,11 +2045,9 @@ typedef struct
 {
 	/* values saved and restored from
 	   edicts when changing levels */
-	int selected_item;
 	int inventory[MAX_ITEMS];
 
 	gitem_t *weapon;
-	gitem_t *lastweapon;
 
 	// Visible model attributes.
 	int			weaponready;
@@ -2059,7 +2057,6 @@ typedef struct
 	byte		helltype;			// Current skin on the hellstaff.
 	byte		handfxtype;			// Current spell effect Corvus has attached to his refpoints.
 	float		armor_count; 		// Not used on client.
-	short		skintype;			// Skin index that reflects plague stages and alternate skins
 	unsigned int altparts;			// Missing hands, heads etc.
 
 	// Inventory.
@@ -2332,7 +2329,7 @@ typedef struct
 	void (*dprintf)(const char *fmt, ...);
 	gitem_t *(*FindItem)(const char *pickup_name);
 	void (*Weapon_EquipSpell)(struct edict_s *ent, gitem_t *Weapon);
-	void (*Weapon_Ready)(playerinfo_t *playerinfo, gitem_t *Weapon);
+	void (*Weapon_Ready)(gclient_t *client, gitem_t *Weapon);
 	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
 	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
 	// ********************************************************************************************
@@ -2559,10 +2556,7 @@ struct gclient_s
 	qboolean damage_gas;            /* Did damage come from plague mist? */
 	// Damage stuff. Sum up damage over an entire frame.
 
-
-
 	//
-
 	usercmd_t			pcmd;
 	short				oldcmdangles[3];
 	vec3_t				aimangles;				// Spell / weapon aiming direction.
@@ -3443,7 +3437,7 @@ void G_ClearPersistantEffects(void);
 
 int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent);
 int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo);
-void Weapon_Ready(playerinfo_t *playerinfo, gitem_t *Weapon);
+void Weapon_Ready(gclient_t *client, gitem_t *Weapon);
 void Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon);
 void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon);
 void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon);

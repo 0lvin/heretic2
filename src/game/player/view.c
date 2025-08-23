@@ -1186,7 +1186,7 @@ ClientEndServerFrame(edict_t *ent)
 
 	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.weapon);
 	current_client->ps.defense = (byte)ITEM_INDEX(current_client->playerinfo.pers.defence);
-	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastweapon);
+	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->pers.lastweapon);
 	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->playerinfo.pers.lastdefence);
 	current_client->ps.weaponready = (byte)current_client->playerinfo.pers.weaponready;
 	current_client->ps.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
@@ -1201,7 +1201,6 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.meteor_count = (byte)current_client->playerinfo.meteor_count;
 	current_client->ps.handfxtype = (byte)current_client->playerinfo.pers.handfxtype;
 	current_client->ps.plaguelevel = (byte)current_client->playerinfo.plaguelevel;
-	current_client->ps.skintype = (byte)current_client->playerinfo.pers.skintype;
 	current_client->ps.altparts = (byte)current_client->playerinfo.pers.altparts;
 	current_client->ps.deadflag = current_client->playerinfo.deadflag;
 	current_client->ps.ideal_yaw = ent->ideal_yaw;

@@ -687,7 +687,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo->self->client->newweapon);
 
-	pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
+	pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
 	playerinfo->self->client->newweapon = NULL;
 
 	// Do some fancy effect.
@@ -757,7 +757,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo->self->client->newweapon);
 
-	pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
+	pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
 	playerinfo->self->client->newweapon = NULL;
 
 	// Do some fancy effect.
@@ -836,7 +836,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	else
 	{
 		assert(playerinfo->self->client->newweapon);
-		pi.Weapon_Ready(playerinfo, playerinfo->self->client->newweapon);
+		pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
 		playerinfo->pers.weaponready = playerinfo->switchtoweapon;
 		PlayerUpdateModelAttributes(playerinfo);
 		playerinfo->self->client->newweapon = NULL;
