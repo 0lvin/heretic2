@@ -745,6 +745,9 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 	vec3_t forward, right, spawnpoint;
 	gitem_t *weapon;
 	int color=0;
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 
 	assert(playerinfo);
 
@@ -755,10 +758,10 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		return;
 	}
 
-	assert(playerinfo->self->client->newweapon);
+	assert(client->newweapon);
 
-	pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
-	playerinfo->self->client->newweapon = NULL;
+	pi.Weapon_Ready(client, client->newweapon);
+	client->newweapon = NULL;
 
 	// Do some fancy effect.
 
@@ -786,7 +789,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 			color=7;
 		}
 
-		PlayerUpdateModelAttributes(playerinfo);
+		PlayerUpdateModelAttributes(client);
 	}
 
 	pi.G_Sound(SND_PRED_ID1,
@@ -813,13 +816,15 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	gitem_t *weapon;
 	vec3_t	spawnpoint, forward, right;
 	int		holdweapon;
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 
 	assert(playerinfo);
 
 	if (playerinfo->edictflags & FL_CHICKEN)
 	{
 		// Don't allow us to muck about with spells if we are a chicken.
-
 		return;
 	}
 
@@ -829,17 +834,17 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		holdweapon = playerinfo->pers.weaponready;
 
 		playerinfo->pers.weaponready = value;
-		PlayerUpdateModelAttributes(playerinfo);
+		PlayerUpdateModelAttributes(client);
 
 		playerinfo->pers.weaponready = holdweapon;
 	}
 	else
 	{
-		assert(playerinfo->self->client->newweapon);
-		pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
+		assert(client->newweapon);
+		pi.Weapon_Ready(client, client->newweapon);
 		playerinfo->pers.weaponready = playerinfo->switchtoweapon;
-		PlayerUpdateModelAttributes(playerinfo);
-		playerinfo->self->client->newweapon = NULL;
+		PlayerUpdateModelAttributes(client);
+		client->newweapon = NULL;
 	}
 
 	if (playerinfo->leveltime > 1.0)
@@ -888,7 +893,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						// Uh oh, change the phoenix into a red rain.
 
 						playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
-						PlayerUpdateModelAttributes(playerinfo);
+						PlayerUpdateModelAttributes(client);
 
 						pi.G_Sound(SND_PRED_ID2,
 											playerinfo->leveltime,
@@ -925,7 +930,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						// Uh oh, change the red rain to a phoenix.
 
 						playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
-						PlayerUpdateModelAttributes(playerinfo);
+						PlayerUpdateModelAttributes(client);
 
 						pi.G_Sound(SND_PRED_ID3,
 											playerinfo->leveltime,

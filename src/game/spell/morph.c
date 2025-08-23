@@ -177,7 +177,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->client->playerinfo.upperframe = 43;
 	ent->client->playerinfo.lowerframe = 43;
 
-	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(ent->client);
 	playerExport->PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_NONE);
 	playerExport->PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_IDLE_WIPE_BROW);
 

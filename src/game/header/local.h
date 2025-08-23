@@ -756,45 +756,6 @@ enum moveplus_e
 void P_Freelib(void);
 void* P_Load(void);
 
-void P_Init(void);
-void P_Shutdown(void);
-
-void PlayerReleaseRope(playerinfo_t* playerinfo);
-void KnockDownPlayer(playerinfo_t* playerinfo);
-void PlayFly(playerinfo_t* playerinfo, float dist);
-void PlaySlap(playerinfo_t* playerinfo, float dist);
-void PlayScratch(playerinfo_t* playerinfo, float dist);
-void PlaySigh(playerinfo_t* playerinfo, float dist);
-void SpawnDustPuff(playerinfo_t* playerinfo, float dist);
-void PlayerInterruptAction(playerinfo_t* playerinfo);
-
-qboolean BranchCheckDismemberAction(playerinfo_t* playerinfo, int weapon);
-
-void TurnOffPlayerEffects(playerinfo_t* playerinfo);
-void AnimUpdateFrame(playerinfo_t* playerinfo);
-void PlayerFallingDamage(playerinfo_t* playerinfo);
-
-void PlayerBasicAnimReset(playerinfo_t* playerinfo);
-void PlayerAnimReset(playerinfo_t* playerinfo);
-void PlayerAnimSetLowerSeq(playerinfo_t* playerinfo, int seq);
-void PlayerAnimSetUpperSeq(playerinfo_t* playerinfo, int seq);
-void PlayerAnimUpperIdle(playerinfo_t* playerinfo);
-void PlayerAnimLowerIdle(playerinfo_t* playerinfo);
-void PlayerAnimUpperUpdate(playerinfo_t* playerinfo);
-void PlayerAnimLowerUpdate(playerinfo_t* playerinfo);
-void PlayerAnimSetVault(playerinfo_t* playerinfo, int seq);
-void PlayerPlayPain(playerinfo_t* playerinfo, int type);
-
-void PlayerIntLand(playerinfo_t* playerinfo_t, float landspeed);
-
-void PlayerInit(playerinfo_t* playerinfo, int complete_reset);
-void PlayerClearEffects(playerinfo_t* playerinfo);
-void PlayerUpdate(playerinfo_t* playerinfo);
-void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
-void PlayerUpdateModelAttributes(playerinfo_t* playerinfo);
-
-const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
-
 #define	CONTENTS_EMPTY			0x00000000	// nothing
 // Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
 // only as an argument to trace fucntions.
@@ -2243,9 +2204,6 @@ typedef struct playerinfo_s
 
 typedef struct
 {
-	void (*Init)(void);
-	void (*Shutdown)(void);
-
 	void (*PlayerReleaseRope)(playerinfo_t *playerinfo);
 	void (*KnockDownPlayer)(playerinfo_t *playerinfo);
 	void (*PlayFly)(playerinfo_t *playerinfo, float dist);
@@ -2278,7 +2236,7 @@ typedef struct
 	void (*PlayerClearEffects)(playerinfo_t *playerinfo);
 	void (*PlayerUpdate)(playerinfo_t *playerinfo);
 	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
-	void (*PlayerUpdateModelAttributes)(playerinfo_t *playerinfo);
+	void (*PlayerUpdateModelAttributes)(gclient_t *client);
 } player_export_t;
 
 /* g_resourcemanagers.c */

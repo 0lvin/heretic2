@@ -305,7 +305,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 
 // This function should be called anytime the player's skin, armor, weapon, damaged parts, etc are changed.
 void
-PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
+PlayerUpdateModelAttributes(gclient_t *client)
 {
 	/*
 	 * FIXME: make sure to see if you HAVE the weapon node you turn off
@@ -313,6 +313,9 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	 */
 	int i;
 	qboolean inverttex;
+	playerinfo_t *playerinfo;
+
+	playerinfo = &(client->playerinfo);
 
 	assert(playerinfo);
 
@@ -582,16 +585,6 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 				// Empty left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 					playerinfo->fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
-/*
-				if (playerinfo->leveltime > 1.0)
-				{
-					pi.G_CreateEffect(pi.G_GetEntityStatePtr(playerinfo->self),
-											   FX_STAFF_CREATEPOOF,
-											   CEF_OWNERS_ORIGIN,
-											   NULL,
-											   "");
-				}
-*/
 				break;
 
 			case WEAPON_READY_HELLSTAFF:
@@ -607,16 +600,6 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 				// Empty left hand.
 				if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 					playerinfo->fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
-/*
-				if (playerinfo->leveltime > 1.0)
-				{
-					pi.G_CreateEffect(pi.G_GetEntityStatePtr(playerinfo->self),
-											   FX_STAFF_CREATEPOOF,
-											   CEF_OWNERS_ORIGIN|CEF_FLAG6,
-											   NULL,
-											   "");
-				}
-				*/
 
 				break;
 

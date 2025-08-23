@@ -453,14 +453,9 @@ IsNeutral(edict_t *ent)
 void
 ClientSetSkinType(edict_t *ent, char *skinname)
 {
-	playerinfo_t *playerinfo;
-
-	playerinfo = &(ent->client->playerinfo);
-
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(playerinfo);
+	playerExport->PlayerUpdateModelAttributes(ent->client);
 	WritePlayerinfo_effects(ent);
-
 }
 
 void
@@ -577,7 +572,7 @@ void player_repair_skin (edict_t *self)
 			}
 		}
 		SetupPlayerinfo_effects(self);
-		playerExport->PlayerUpdateModelAttributes(&self->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(self->client);
 		WritePlayerinfo_effects(self);
 		return;
 	}
@@ -631,7 +626,7 @@ void player_repair_skin (edict_t *self)
 	}
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(&self->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(self->client);
 	WritePlayerinfo_effects(self);
 }
 
@@ -686,7 +681,7 @@ ResetPlayerBaseNodes(edict_t *ent)
 	}
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(ent->client);
 	WritePlayerinfo_effects(ent);
 }
 
@@ -1142,7 +1137,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 finish:
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(&self->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(self->client);
 	WritePlayerinfo_effects(self);
 }
 
@@ -1178,7 +1173,7 @@ player_decap(edict_t *self, edict_t *other)
 	}
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(&self->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(self->client);
 	WritePlayerinfo_effects(self);
 }
 
@@ -1845,8 +1840,8 @@ InitClientPersistant(edict_t *ent)
 	// Give defensive and offensive weapons to player.
 	// ********************************************************************************************
 
-	client->playerinfo.pers.weapon=0;
-	client->playerinfo.pers.defence=0;
+	client->playerinfo.pers.weapon = 0;
+	client->playerinfo.pers.defence = 0;
 
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 
@@ -3172,7 +3167,7 @@ GiveLevelItems(edict_t *player)
 	}
 
 	SetupPlayerinfo_effects(player);
-	playerExport->PlayerUpdateModelAttributes(&player->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(player->client);
 	WritePlayerinfo_effects(player);
 }
 
@@ -3488,7 +3483,7 @@ PutClientInServer(edict_t *ent)
 	// Make the player have the right attributes - armor that sort of thing.
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(ent->client);
 	WritePlayerinfo_effects(ent);
 
 	// Make sure the skin attributes are transferred.
@@ -3512,7 +3507,7 @@ PutClientInServer(edict_t *ent)
 
 	SetupPlayerinfo(ent);
 
-	playerExport->PlayerInit(&ent->client->playerinfo,complete_reset);
+	playerExport->PlayerInit(&ent->client->playerinfo, complete_reset);
 
 	WritePlayerinfo(ent);
 

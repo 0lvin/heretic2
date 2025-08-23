@@ -602,7 +602,7 @@ void PlayerTimerUpdate(edict_t *ent)
 
 			// Unset the skin.
 
-			playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+			playerExport->PlayerUpdateModelAttributes(ent->client);
 		}
 	}
 

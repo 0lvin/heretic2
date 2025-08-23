@@ -355,7 +355,7 @@ Cmd_Give_f(edict_t *ent)
 		}
 
 		SetupPlayerinfo_effects(ent);
-		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(ent->client);
 		WritePlayerinfo_effects(ent);
 		return;
 	}
@@ -418,7 +418,7 @@ Cmd_Give_f(edict_t *ent)
 					ent->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
 
 				SetupPlayerinfo_effects(ent);
-				playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+				playerExport->PlayerUpdateModelAttributes(ent->client);
 				WritePlayerinfo_effects(ent);
 			}
 		}
@@ -542,7 +542,7 @@ Cmd_Give_f(edict_t *ent)
 		}
 
 		SetupPlayerinfo_effects(ent);
-		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(ent->client);
 		WritePlayerinfo_effects(ent);
 
 		if (!give_all)
@@ -584,7 +584,7 @@ Cmd_Give_f(edict_t *ent)
 		gi.dprintf("Setting staff level to %d\n", ent->client->playerinfo.pers.stafflevel);
 
 		SetupPlayerinfo_effects(ent);
-		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(ent->client);
 		WritePlayerinfo_effects(ent);
 
 		return;
@@ -663,7 +663,7 @@ Cmd_Give_f(edict_t *ent)
 		ClientUserinfoChanged (ent, userinfo);
 
 		SetupPlayerinfo_effects(ent);
-		playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+		playerExport->PlayerUpdateModelAttributes(ent->client);
 		WritePlayerinfo_effects(ent);
 
 		return;
@@ -2620,7 +2620,7 @@ Cmd_TestFX_f(edict_t *ent)
 	ent->client->playerinfo.pers.altparts |= 1<<i;
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(&ent->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(ent->client);
 	WritePlayerinfo_effects(ent);
 }
 

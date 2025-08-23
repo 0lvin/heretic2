@@ -5,16 +5,9 @@
 
 #include "../../header/local.h"
 #include "p_anim_data.h"
+#include "p_main.h"
 
 player_import_t pi;
-
-void P_Init(void)
-{
-}
-
-void P_Shutdown(void)
-{
-}
 
 static player_export_t pe;
 
@@ -22,9 +15,6 @@ Q2_DLL_EXPORTED player_export_t *
 GetPlayerAPI(player_import_t *import)
 {
 	pi = *import;
-
-	pe.Init = P_Init;
-	pe.Shutdown = P_Shutdown;
 
 	pe.PlayerReleaseRope = PlayerReleaseRope;
 	pe.KnockDownPlayer = KnockDownPlayer;

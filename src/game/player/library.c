@@ -52,11 +52,6 @@ void P_Freelib()
 		return;
 	}
 
-	if (playerExport)
-	{
-		playerExport->Shutdown();
-	}
-
 #if _WIN32
 	FreeLibrary(player_library);
 #else
@@ -268,7 +263,6 @@ P_Load(void)
 
 
 	playerExport = P_GetPlayerAPI(&playerImport);
-	playerExport->Init();
 
 	Com_Printf("------------------------------------\n");
 

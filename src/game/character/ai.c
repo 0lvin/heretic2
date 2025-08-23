@@ -135,7 +135,7 @@ void c_swapplayer(edict_t *Self,edict_t *Cinematic)
 		return;
 	}
 
-	playerExport->PlayerUpdateModelAttributes(&Self->client->playerinfo);
+	playerExport->PlayerUpdateModelAttributes(Self->client);
 
 //	Cinematic->s.skinnum = Self->client->playerinfo.skinnum;
 	// Add in plague level for the skin, since the cinematic players use six stock skins.

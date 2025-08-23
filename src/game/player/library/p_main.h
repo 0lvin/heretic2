@@ -47,12 +47,38 @@
 #define PLAYER_FLAG_KNOCKDOWN			0x08000000
 #define PLAYER_FLAG_RELEASEROPE			0x10000000
 
-extern void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
-extern void PlayerClearEffects(playerinfo_t *playerinfo);
-extern void PlayerUpdate(playerinfo_t *playerinfo);
-extern void PlayerUpdateCmdFlags(playerinfo_t *playerinfo);
-extern void PlayerUpdateModelAttributes(playerinfo_t *playerinfo);
-extern void PlayerSetHandFX(playerinfo_t *playerinfo, int handfxtype, int lifetime);
+void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
+void PlayerClearEffects(playerinfo_t *playerinfo);
+void PlayerUpdate(playerinfo_t *playerinfo);
+void PlayerUpdateCmdFlags(playerinfo_t *playerinfo);
+void PlayerUpdateModelAttributes(gclient_t *client);
+void PlayerSetHandFX(playerinfo_t *playerinfo, int handfxtype, int lifetime);
+void PlayerReleaseRope(playerinfo_t* playerinfo);
+void KnockDownPlayer(playerinfo_t* playerinfo);
+void PlayFly(playerinfo_t* playerinfo, float dist);
+void PlaySlap(playerinfo_t* playerinfo, float dist);
+void PlayScratch(playerinfo_t* playerinfo, float dist);
+void PlaySigh(playerinfo_t* playerinfo, float dist);
+void SpawnDustPuff(playerinfo_t* playerinfo, float dist);
+void PlayerInterruptAction(playerinfo_t* playerinfo);
+qboolean BranchCheckDismemberAction(playerinfo_t* playerinfo, int weapon);
+void TurnOffPlayerEffects(playerinfo_t* playerinfo);
+void AnimUpdateFrame(playerinfo_t* playerinfo);
+void PlayerFallingDamage(playerinfo_t* playerinfo);
+void PlayerBasicAnimReset(playerinfo_t* playerinfo);
+void PlayerAnimSetLowerSeq(playerinfo_t* playerinfo, int seq);
+void PlayerAnimSetUpperSeq(playerinfo_t* playerinfo, int seq);
+void PlayerAnimUpperIdle(playerinfo_t* playerinfo);
+void PlayerAnimLowerIdle(playerinfo_t* playerinfo);
+void PlayerAnimUpperUpdate(playerinfo_t* playerinfo);
+void PlayerAnimLowerUpdate(playerinfo_t* playerinfo);
+void PlayerAnimSetVault(playerinfo_t* playerinfo, int seq);
+void PlayerPlayPain(playerinfo_t* playerinfo, int type);
+void PlayerIntLand(playerinfo_t* playerinfo_t, float landspeed);
+void PlayerClearEffects(playerinfo_t* playerinfo);
+void PlayerUpdate(playerinfo_t* playerinfo);
+void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
+const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 
 // Information for creep fall checking.
 

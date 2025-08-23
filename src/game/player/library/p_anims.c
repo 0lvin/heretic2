@@ -142,7 +142,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	playerinfo->pers.weaponready = WEAPON_READY_HANDS;
 	playerinfo->switchtoweapon = WEAPON_READY_HANDS;
 	playerinfo->self->client->newweapon = NULL;
-	PlayerUpdateModelAttributes(playerinfo);
+	PlayerUpdateModelAttributes(playerinfo->self->client);
 	playerinfo->pers.handfxtype = HANDFX_NONE;
 
 	PlayerSetHandFX(playerinfo, HANDFX_NONE, -1);
@@ -152,10 +152,10 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. no torso aiming.
 
-	if (!(playerinfo->edictflags&FL_CHICKEN))
+	if (!(playerinfo->edictflags & FL_CHICKEN))
 		pi.ResetJointAngles(playerinfo->self);
 
-	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
+	memset(playerinfo->seqcmd,0,ACMD_MAX * sizeof(int));
 }
 
 int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
