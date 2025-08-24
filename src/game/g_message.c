@@ -208,7 +208,7 @@ void G_ClearMessageQueue(edict_t *self)
 		return;
 	}
 
-	while(!SLList_IsEmpty(msgs))
+	while (!SLList_IsEmpty(msgs))
 	{
 		msg = (G_Message_t*)SLList_Pop(msgs).t_void_p;
 

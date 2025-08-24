@@ -813,7 +813,7 @@ FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 
 			FXStaffElementThink(TrailEnt,owner);
 		}
-		else if(Self->classID == STAFF_TRAIL2)
+		else if (Self->classID == STAFF_TRAIL2)
 		{
 			float scale;
 
@@ -838,7 +838,7 @@ FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 
 			AddEffect(owner,TrailEnt);
 		}
-		else if(Self->classID == STAFF_TRAIL3)
+		else if (Self->classID == STAFF_TRAIL3)
 		{
 			TrailEnt->r.frame = 0;
 
@@ -906,7 +906,7 @@ void FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	if (Flags & CEF_FLAG7)//blue
 		stafffx->classID = STAFF_TRAIL3;
-	else if(Flags & CEF_FLAG8)//flames
+	else if (Flags & CEF_FLAG8)//flames
 		stafffx->classID = STAFF_TRAIL2;
 	else//normal
 		stafffx->classID = STAFF_TRAIL;
@@ -1059,7 +1059,7 @@ FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 			AddEffect(owner,TrailEnt);
 			FXStaffElementThink(TrailEnt,owner);
 		}
-		else if(Self->classID == STAFF_TRAIL2)
+		else if (Self->classID == STAFF_TRAIL2)
 		{
 			float scale;
 
@@ -1084,7 +1084,7 @@ FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 
 			AddEffect(owner,TrailEnt);
 		}
-		else if(Self->classID == STAFF_TRAIL3)
+		else if (Self->classID == STAFF_TRAIL3)
 		{
 			TrailEnt->r.frame = 0;
 
@@ -1154,7 +1154,7 @@ void FXStaffRemove(centity_t *owner,int Type,int Flags,vec3_t Origin)
 
 	if (Flags & CEF_FLAG7)//blue
 		stafffx->classID = STAFF_TRAIL3;
-	else if(Flags & CEF_FLAG8)//flames
+	else if (Flags & CEF_FLAG8)//flames
 		stafffx->classID = STAFF_TRAIL2;
 	else//normal
 		stafffx->classID = STAFF_TRAIL;

@@ -1757,7 +1757,7 @@ Cmd_CrazyMonsters_f(edict_t *ent)
 		if (searchent->svflags & SVF_MONSTER)
 		{
 			enemy_ent = NULL;
-			while(!enemy_ent || !enemy_ent->inuse || !(enemy_ent->svflags & SVF_MONSTER)||enemy_ent->health<0||enemy_ent == searchent)
+			while (!enemy_ent || !enemy_ent->inuse || !(enemy_ent->svflags & SVF_MONSTER)||enemy_ent->health<0||enemy_ent == searchent)
 			{
 				enemy_ent = &g_edicts[irand(0, globals.num_edicts)];
 			}

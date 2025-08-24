@@ -108,7 +108,7 @@ void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 		(other->svflags & SVF_MONSTER)))
 		;
 	// Player cannot trigger it
-	else if(strcmp(other->classname, "player") == 0)
+	else if (strcmp(other->classname, "player") == 0)
 	{
 		if (self->spawnflags & TRIGGER_NOT_PLAYER)
 		{
@@ -116,7 +116,7 @@ void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 		}
 	}
 	// Just monster will trigger it
-	else if(other->svflags & SVF_MONSTER)
+	else if (other->svflags & SVF_MONSTER)
 	{
 		if (!(self->spawnflags & TRIGGER_MONSTER))
 		{

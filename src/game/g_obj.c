@@ -721,7 +721,7 @@ void SpawnCorpse(edict_t *self)
 		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 	}
-	else if(chance < 2)
+	else if (chance < 2)
 	{
 		//show the hoe
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;

@@ -55,7 +55,7 @@ void AddParticleToList(client_entity_t *ce, client_particle_t *fx)
 		int					i = 0;
 		client_particle_t	*p = ce->p_root;
 
-		while(p)
+		while (p)
 		{
 			i++;
 			p = p->next;
@@ -77,7 +77,7 @@ void RemoveParticleList(client_particle_t **root)
 
 	next = *root;
 
-	while(next)
+	while (next)
 	{
 		toFree = next;
 

@@ -250,7 +250,7 @@ qboolean MG_GoToRandomBuoy(edict_t *self)
 		for(j = 0; j<MAX_BUOY_BRANCHES; j++)
 			branch_checked[j] = false;
 
-		while(searching)
+		while (searching)
 		{
 			nextbranch = irand(0, 2);
 			branch_checked[nextbranch] = true;
@@ -1030,7 +1030,7 @@ int MG_MakeConnection_Go(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 			dont_use_last = false;
 			self->lastbuoy = NULL_BUOY;//so forget last buoy I used
 		}
-		else if(self->monsterinfo.searchType == SEARCH_BUOY)
+		else if (self->monsterinfo.searchType == SEARCH_BUOY)
 			dont_use_last = true;
 		else
 			dont_use_last = false;
@@ -1258,7 +1258,7 @@ qboolean MG_MakeConnection(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 			self->ai_mood = AI_MOOD_PURSUE;
 			self->ai_mood_flags |= AIMF_SEARCHING;
 		}
-		else if(self->enemy &&
+		else if (self->enemy &&
 			self->ai_mood != AI_MOOD_FLEE &&
 			!(self->ai_mood_flags & AI_MOOD_FLAG_IGNORE_ENEMY) &&
 			self->monsterinfo.last_successful_enemy_tracking_time + MONSTER_SEARCH_TIME < level.time)
@@ -1281,7 +1281,7 @@ qboolean MG_MakeConnection(edict_t *self, buoy_t *first_buoy, qboolean skipjump)
 					self->ai_mood = AI_MOOD_WANDER;
 			}
 		}
-		else if(!result && self->ai_mood != AI_MOOD_FLEE && self->enemy)
+		else if (!result && self->ai_mood != AI_MOOD_FLEE && self->enemy)
 		{
 			self->monsterinfo.searchType = SEARCH_COMMON;
 			self->ai_mood = AI_MOOD_PURSUE;
@@ -1488,7 +1488,7 @@ qboolean MG_MonsterAttemptTeleport(edict_t *self, vec3_t destination, qboolean i
 	if (self->classID != CID_ASSASSIN)
 	{
 		//if still SEE monsters cheat, re-enable the following 2 lines
-		//if(skill->value < 2)
+		//if (skill->value < 2)
 		//	return false;//only cheat on hard
 
 		if (!ignoreLOS)
@@ -1569,7 +1569,7 @@ qboolean MG_MonsterAttemptTeleport(edict_t *self, vec3_t destination, qboolean i
 				return true;
 			}
 		}
-		else if(!trace.allsolid && !trace.startsolid)
+		else if (!trace.allsolid && !trace.startsolid)
 		{
 			bottom[2] -= self->mins[2];
 			if (self->classID == CID_ASSASSIN)
@@ -1696,7 +1696,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 
 		if (!clear_path)
 		{//this sucks- why should I do this every time pathfind is called- I need to know if the monster can get to the player directly.. if so, no Makeconnection attempt, less traces
-			if (!MG_MakeConnection(self, NULL, false))//if(!MG_MakeConnection(self, true, false))
+			if (!MG_MakeConnection(self, NULL, false))//if (!MG_MakeConnection(self, true, false))
 			{
 			}
 		}
@@ -1825,7 +1825,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 							gi.dprintf("Warning: %s found same next buoy as last buoy at jump buoy\n",self->classname);
 
 					}
-					else if(current_buoy->id == jump_buoy->jump_target_id)
+					else if (current_buoy->id == jump_buoy->jump_target_id)
 					{//go ahead and jump
 						if (self->groundentity)
 						{
@@ -1905,7 +1905,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 					return;
 				}
 			}
-			else if(cheating_monsters->value)
+			else if (cheating_monsters->value)
 			{
 				if (cheating_monsters->value < 2)
 				{
@@ -1934,7 +1934,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 			{
 			}
 		}
-		else if(!irand(0, 4) && !clear_visible_pos(self, current_buoy->origin))
+		else if (!irand(0, 4) && !clear_visible_pos(self, current_buoy->origin))
 		{//DAMN!  Lost sight of buoy, let's re-aquire
 			if (showbuoys->value)
 				gi.dprintf("%s Lost sight of buoy %s looking for another...\n",
@@ -2028,7 +2028,7 @@ void MG_BuoyNavigate(edict_t *self)
 				self->monsterinfo.searchType = SEARCH_BUOY;
 				return;
 			}
-			else if(self->ai_mood == AI_MOOD_FLEE)
+			else if (self->ai_mood == AI_MOOD_FLEE)
 			{//couldn't flee using buoys, use dumb fleeing
 				//FIXME: cowering if can't flee using buoys?
 				self->ai_mood_flags |= AI_MOOD_FLAG_DUMB_FLEE;
@@ -2112,7 +2112,7 @@ void MG_BuoyNavigate(edict_t *self)
 			self->ai_mood = AI_MOOD_STAND;
 		return;
 	}
-	else if(self->ai_mood_flags&AI_MOOD_FLAG_IGNORE_ENEMY)
+	else if (self->ai_mood_flags&AI_MOOD_FLAG_IGNORE_ENEMY)
 	{//have an enemy, but being forced to use buoys, and ignore enemy until get to forced_buoy
 		self->ai_mood = AI_MOOD_NAVIGATE;
 		MG_Pathfind(self, false);
@@ -2222,7 +2222,7 @@ void MG_GenericMoodSet(edict_t *self)
 					self->monsterinfo.searchType = SEARCH_BUOY;
 					return;
 				}
-				else if(self->ai_mood == AI_MOOD_FLEE)
+				else if (self->ai_mood == AI_MOOD_FLEE)
 				{//couldn't flee using buoys, use dumb fleeing
 					//FIXME: cowering if can't flee using buoys?
 					self->ai_mood_flags |= AI_MOOD_FLAG_DUMB_FLEE;
@@ -2308,7 +2308,7 @@ void MG_GenericMoodSet(edict_t *self)
 				self->ai_mood = AI_MOOD_STAND;
 			return;
 		}
-		else if(self->ai_mood_flags&AI_MOOD_FLAG_IGNORE_ENEMY)
+		else if (self->ai_mood_flags&AI_MOOD_FLAG_IGNORE_ENEMY)
 		{//have an enemy, but being forced to use buoys, and ignore enemy until get to forced_buoy
 			self->ai_mood = AI_MOOD_NAVIGATE;
 			MG_Pathfind(self, false);
@@ -2375,7 +2375,7 @@ checkattacks:
 			{
 				self->ai_mood_flags &= ~AI_MOOD_FLAG_BACKSTAB;
 			}
-			else if(infront(self->enemy, self))
+			else if (infront(self->enemy, self))
 			{
 				self->ai_mood = AI_MOOD_DELAY;
 				return;
@@ -2401,7 +2401,7 @@ checkattacks:
 				self->attack_debounce_time = level.time + (3 - skill->value)/2;
 				return;
 			}
-			else if(!can_attack_close)
+			else if (!can_attack_close)
 			{//too close and can't melee!
 				goto enemy_too_close;
 			}
@@ -2459,7 +2459,7 @@ checkattacks:
 		//OR: ok to missile too?
 		return;
 	}
-	else if(enemydist < self->min_melee_range)
+	else if (enemydist < self->min_melee_range)
 	{
 		goto enemy_too_close;
 		return;

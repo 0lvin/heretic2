@@ -2293,7 +2293,7 @@ char *CScript::ReadString(void)
 
 	Pos = (char *)&Data[Position];
 
-	while(ReadByte())
+	while (ReadByte())
 	{
 	}
 

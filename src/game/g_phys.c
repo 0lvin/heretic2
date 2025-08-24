@@ -1660,7 +1660,7 @@ void PhysicsCheckWaterTransition(edict_t *self)
 	size = ceil(VectorLength(self->size) + VectorLength(self->velocity)/10);
 	if (size<10)
 		size = 10;
-	else if(size>255)
+	else if (size>255)
 		size = 255;
 
 	gi.CreateEffect(NULL,
@@ -1872,7 +1872,7 @@ static void Physics_StepMove(edict_t *self)
 			G_QPostMessage(self, G_MSG_RESTSTATE, PRI_PHYSICS, "i", hasVel);
 		}
 	}
-	else if(!hasVel)
+	else if (!hasVel)
 	{	// started
 		G_QPostMessage(self, G_MSG_RESTSTATE, PRI_PHYSICS, "i", hasVel);
 	}
@@ -2034,7 +2034,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 			{
 				if (self->health>0)
 					impact_dmg = impact_dmg * self->health / 100;
-				else if(speed<300)
+				else if (speed<300)
 					return;
 
 				if ((!trace->ent->takedamage && self->health*10 > 1000) || self->health<=0)
@@ -2042,7 +2042,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 				else
 					tr_health = 1000;
 			}
-			else if(trace->ent->health>0)
+			else if (trace->ent->health>0)
 				tr_health = trace->ent->health * 0.5;
 			else
 				tr_health = 1;
@@ -2347,7 +2347,7 @@ void MoveEntity_Slide(edict_t *self)
 				if (dot < -0.05)
 				{ // the trace will fail, try to restructure inorder to skip it
 				}
-				else if(dot < 0.05) // parallel to ground
+				else if (dot < 0.05) // parallel to ground
 				{
 					slide = true;
 				}
@@ -2606,7 +2606,7 @@ void MoveEntity_Slide(edict_t *self)
 					assert(0);	// shouldn't happen
 #endif // ACCEL_A
 				}
-				else if(Q_fabs(dot) < 0.01) // parallel to surface
+				else if (Q_fabs(dot) < 0.01) // parallel to surface
 				{
 					slide = true;
 				}
@@ -2768,7 +2768,7 @@ void ActivateTriggers(edict_t *self)
 
 	G_FindEntitiesInBounds(self->mins, self->maxs, &list, AREA_TRIGGERS);
 
-	while(!SLList_IsEmpty(&list))
+	while (!SLList_IsEmpty(&list))
 	{
 		found = SLList_Pop(&list);
 

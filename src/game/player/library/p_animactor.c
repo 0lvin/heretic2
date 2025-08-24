@@ -54,7 +54,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=ANGLE_90;
-			else if(playerinfo->targetjointangles[PITCH]<-ANGLE_90)
+			else if (playerinfo->targetjointangles[PITCH]<-ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=-ANGLE_90;
 
 			if (playerinfo->targetjointangles[PITCH]>=0)
@@ -72,7 +72,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 				playerinfo->targetjointangles[PITCH]=-playerinfo->targetjointangles[PITCH];
 			}
 		}
-		else if(playerinfo->pm_flags&PMF_STANDSTILL)
+		else if (playerinfo->pm_flags&PMF_STANDSTILL)
 		{
 			// ...and we're standing still with our feet on something solid, so allow head and torso
 			// to PITCH and YAW.
@@ -94,7 +94,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			if (playerinfo->targetjointangles[YAW]<-ANGLE_180)
 				playerinfo->targetjointangles[YAW]+=ANGLE_360;
-			else if(playerinfo->targetjointangles[YAW]>ANGLE_180)
+			else if (playerinfo->targetjointangles[YAW]>ANGLE_180)
 				playerinfo->targetjointangles[YAW]-=ANGLE_360;
 
 			playerinfo->targetjointangles[YAW]/=3.0;
@@ -699,7 +699,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		{
 			PlayerIntLand(playerinfo,delta);
 		}
-		else if((playerinfo->waterlevel==3)&&(playerinfo->flags&PLAYER_FLAG_FALLING))
+		else if ((playerinfo->waterlevel==3)&&(playerinfo->flags&PLAYER_FLAG_FALLING))
 		{
 			// We were falling, and we're now underwater so we should STOP FALLING. Capiche?
 

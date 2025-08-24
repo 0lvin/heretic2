@@ -32,7 +32,7 @@ static void TornadoThink(edict_t *self)
 	vec3_t	endpos, angles;
 
 	// stolen wholesale from the ring of repulsion. Cheers Pat :)
-	while((ent = findringradius(ent, self->s.origin, TORN_EFFECT_RADIUS, self)))
+	while ((ent = findringradius(ent, self->s.origin, TORN_EFFECT_RADIUS, self)))
 	{
 		if (ent->mass && ent!=self->owner)
 		{

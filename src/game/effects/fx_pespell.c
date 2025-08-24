@@ -61,7 +61,7 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
-	while(i--)
+	while (i--)
 	{
 		paletteRGBA_t color;
 		float scale;
@@ -158,7 +158,7 @@ void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t 
 	LightColor.c = 0xff20a0ff;
 	lightrad = 150;
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -221,7 +221,7 @@ FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -313,7 +313,7 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	LightColor.c = 0xffff0077;		// purple
 	lightrad = 150;
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -379,7 +379,7 @@ void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 	LightColor.c = 0xffff6611;		// cyan
 	lightrad = 150;
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 

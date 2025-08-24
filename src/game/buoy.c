@@ -162,7 +162,7 @@ void info_buoy_link(edict_t *self)
 				self->ai_mood_flags |= SF_BROKEN;
 			}
 		}
-		else if(ent == self)
+		else if (ent == self)
 		{
 			gi.dprintf("info_buoy_link: %s(%s) target(%s) is self!!!\n", self->targetname, vtos(self->s.origin), self->target);
 			self->ai_mood_flags |= SF_BROKEN;
@@ -215,7 +215,7 @@ void info_buoy_link(edict_t *self)
 					self->ai_mood_flags |= SF_BROKEN;
 				}
 			}
-			else if(ent == self)
+			else if (ent == self)
 			{
 				gi.dprintf("info_buoy_link2: %s(%s) target2(%s) is self!!!\n", self->targetname, vtos(self->s.origin), self->target2);
 				self->ai_mood_flags |= SF_BROKEN;
@@ -270,7 +270,7 @@ void info_buoy_link(edict_t *self)
 						vec3_origin);
 				}
 			}
-			else if(showbuoys->value)
+			else if (showbuoys->value)
 			{
 				gi.dprintf("Buoy %s(%s) could not find jumptarget buoy %s\n", self->targetname, vtos(self->s.origin), self->combattarget);
 				self->ai_mood_flags |= SF_BROKEN;
@@ -525,7 +525,7 @@ void SP_info_buoy(edict_t *self)
 			gi.dprintf("Buoy %s(%s) in solid(%s)!!!\n", self->targetname, vtos(self->s.origin), trace.ent->classname);
 			self->ai_mood_flags |= SF_BROKEN;
 		}
-		else if(trace.fraction<1.0)
+		else if (trace.fraction<1.0)
 		{//buoy is in the ground
 			VectorCopy(trace.endpos, bottom);
 			bottom[2] += 24;
@@ -604,7 +604,7 @@ qboolean check_buoy_path(edict_t *self, int lb_id, int sb_id, int fb_id)
 
 			branch = irand(0, MAX_BUOY_BRANCHES - 1);
 		}
-		while(branch_checked[branch]);
+		while (branch_checked[branch]);
 
 		branch_checked[branch] = true;
 		num_branches_checked++;
@@ -709,7 +709,7 @@ buoy_t	*find_next_buoy_2(edict_t *self, int sb_id, int fb_id)
 
 			branch = irand(0, MAX_BUOY_BRANCHES - 1);
 		}
-		while(branch_checked[branch]);
+		while (branch_checked[branch]);
 
 		branch_checked[branch] = true;
 		num_branches_checked++;
@@ -853,7 +853,7 @@ buoy_t	*find_next_buoy(edict_t *self, int sb_id, int fb_id)
 
 		check_depth = 0;
 
-		while(check_depth < self->mintel && check_depth < MAX_PROGRESSIVE_CHECK_DEPTH)
+		while (check_depth < self->mintel && check_depth < MAX_PROGRESSIVE_CHECK_DEPTH)
 		{//only search to max of 20 buoys deep if doing a progressive depth check
 			check_depth++;
 			found = find_next_buoy_2(self, start_buoy->id, final_buoy->id);

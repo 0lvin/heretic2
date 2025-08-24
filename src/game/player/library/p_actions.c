@@ -53,7 +53,7 @@ float CL_NormaliseAngle(float Angle)
 	{
 		Angle+=-360.0;
 	}
-	else if(Angle<-180.0)
+	else if (Angle<-180.0)
 	{
 		Angle+=360.0;
 	}
@@ -999,7 +999,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 	{
 		flags |= CEF_FLAG7;
 
@@ -1012,7 +1012,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 	{
 		flags |= CEF_FLAG8;
 
@@ -1065,7 +1065,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 	{
 		flags |= CEF_FLAG7;
 
@@ -1078,7 +1078,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if(playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 	{
 		flags |= CEF_FLAG8;
 

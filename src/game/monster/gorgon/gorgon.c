@@ -226,7 +226,7 @@ void gorgonRoar (edict_t *self)
 	if (!self->enemy)
 		return;
 
-	while((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
+	while ((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
 		if (found->health>0)
 		{
@@ -262,7 +262,7 @@ qboolean gorgonFindAsleepGorgons (edict_t *self)
 {//sees if there are any gorgons in range that aren't awake
 	edict_t *found = NULL;
 
-	while((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
+	while ((found = newfindradius(found, self->s.origin, GORGON_ALERT_DIST)))
 	{
 		if (found!=self)
 		{
@@ -1155,7 +1155,7 @@ void gorgon_check_landed (edict_t *self)
 		else
 			SetAnim(self, GORGON_ANIM_LAND);
 	}
-	else if(self->velocity[2]<0)
+	else if (self->velocity[2]<0)
 	{
 		VectorCopy(self->s.origin, pos);
 		pos[2] += self->mins[2];
@@ -1168,7 +1168,7 @@ void gorgon_check_landed (edict_t *self)
 			else
 				SetAnim(self, GORGON_ANIM_LAND);
 		}
-		else if(contents&CONTENTS_WATER)
+		else if (contents&CONTENTS_WATER)
 			SetAnim(self, GORGON_ANIM_TO_SWIM);
 	}
 }
@@ -1867,7 +1867,7 @@ qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain)
 			SetAnim(self, GORGON_ANIM_SLIP_PAIN);
 			return true;
 		}
-		else if(self->monsterinfo.misc_debounce_time < level.time && !irand(0, 4))
+		else if (self->monsterinfo.misc_debounce_time < level.time && !irand(0, 4))
 		{
 			self->monsterinfo.misc_debounce_time = level.time + 7;
 			SetAnim(self, GORGON_ANIM_SLIP);
@@ -1978,7 +1978,7 @@ void gorgon_ai_swim (edict_t *self, float dist)
 								SetAnim(self, GORGON_ANIM_SWIM_BITE_B);
 							self->monsterinfo.attack_finished = level.time + flrand(0, 3 - skill->value);
 						}
-						else if(self->monsterinfo.jump_time < level.time)
+						else if (self->monsterinfo.jump_time < level.time)
 						{
 							if (!(self->enemy->flags & FL_INWATER))
 							{
@@ -2056,7 +2056,7 @@ void gorgon_ai_eat(edict_t *self, float crap)
 				return;
 			}
 		}
-		else if(self->curAnimID == GORGON_ANIM_EAT_LOOP && !irand(0, 5))
+		else if (self->curAnimID == GORGON_ANIM_EAT_LOOP && !irand(0, 5))
 		{
 			if (visible(self, self->enemy))
 			{
@@ -2096,15 +2096,15 @@ void gorgon_ai_eat(edict_t *self, float crap)
 	case GORGON_ANIM_EAT_LOOP:
 		if (irand(0, 1))
 			SetAnim(self, GORGON_ANIM_EAT_LOOP);
-		else if(irand(0, 1))
+		else if (irand(0, 1))
 			SetAnim(self, GORGON_ANIM_EAT_PULLBACK);
-		else if(irand(0, 1))
+		else if (irand(0, 1))
 			SetAnim(self, GORGON_ANIM_EAT_TEAR);
-		else if(irand(0, 1))//fixme- check gorgon to right
+		else if (irand(0, 1))//fixme- check gorgon to right
 			SetAnim(self, GORGON_ANIM_EAT_SNAP);
-		else if(irand(0, 1))//fixme- check if gorgon to left snapped
+		else if (irand(0, 1))//fixme- check if gorgon to left snapped
 			SetAnim(self, GORGON_ANIM_EAT_REACT);
-		else if(irand(0, 1))//fixme- check enemy
+		else if (irand(0, 1))//fixme- check enemy
 			SetAnim(self, GORGON_ANIM_EAT_LEFT);
 		else//fixme- check enemy
 			SetAnim(self, GORGON_ANIM_EAT_RIGHT);

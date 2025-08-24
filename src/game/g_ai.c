@@ -505,7 +505,7 @@ ai_walk(edict_t *self, float dist)
 			MG_Pathfind(self, false);
 		}
 	}
-	else if(!self->enemy && !self->pathtarget)
+	else if (!self->enemy && !self->pathtarget)
 	{
 		if (self->movetarget)
 		{
@@ -518,7 +518,7 @@ ai_walk(edict_t *self, float dist)
 				}
 			}
 		}
-		else if(!irand(0, 30) || (Vec3NotZero(self->monsterinfo.nav_goal) && MG_ReachedBuoy(self, self->monsterinfo.nav_goal)))
+		else if (!irand(0, 30) || (Vec3NotZero(self->monsterinfo.nav_goal) && MG_ReachedBuoy(self, self->monsterinfo.nav_goal)))
 		{
 			self->monsterinfo.pausetime = 0;
 			G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
@@ -1194,10 +1194,10 @@ alertloop:
 	}
 
 	//NEVER alert ambush monsters?
-	//if(!(self->spawnflags & MSF_AMBUSH))
+	//if (!(self->spawnflags & MSF_AMBUSH))
 	//	goto loopagain;
 
-	 if(!(self->svflags&SVF_MONSTER))
+	 if (!(self->svflags&SVF_MONSTER))
 		goto loopagain;
 
 	if (self->health<=0)
@@ -1208,7 +1208,7 @@ alertloop:
 		goto loopagain;
 
 	//should we keep track of owner in case they move to move the alert with them?  Only for monsters
-	//if(alerter->owner)
+	//if (alerter->owner)
 	//	VectorCopy(alerter->owner->s.origin, alerter->s.origin);
 
 	VectorSubtract(self->s.origin, alerter->origin, dir);
@@ -1364,7 +1364,7 @@ startcheck:
 		{//crazy monsters mode
 			int	checkcnt = 0;
 			client = self;
-			while((!client || !client->inuse || !(client->svflags & SVF_MONSTER)||client->health<=0||client == self) && checkcnt < globals.num_edicts)
+			while ((!client || !client->inuse || !(client->svflags & SVF_MONSTER)||client->health<=0||client == self) && checkcnt < globals.num_edicts)
 			{
 				client = &g_edicts[irand(0, globals.num_edicts)];
 				checkcnt++;
@@ -1397,7 +1397,7 @@ startcheck:
 				if ((self->monsterinfo.otherenemyname) && (self->monsterinfo.chase_finished < level.time))
 				{
 					ent = NULL;
-					while((ent = newfindradius(ent,self->s.origin,175)) != NULL)
+					while ((ent = newfindradius(ent,self->s.origin,175)) != NULL)
 					{
 						if (!strcmp(ent->classname,self->monsterinfo.otherenemyname)&&ent!=self)
 						{
@@ -2193,9 +2193,9 @@ ai_face_goal(edict_t *self)
 
 	if (self->monsterinfo.searchType == SEARCH_BUOY)
 		VectorSubtract(self->monsterinfo.nav_goal, self->s.origin, vec);
-	else if(self->goalentity)
+	else if (self->goalentity)
 		VectorSubtract(self->goalentity->s.origin, self->s.origin, vec);
-	else if(self->enemy)
+	else if (self->enemy)
 		VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 	else
 		return false;
@@ -2309,7 +2309,7 @@ old_ai_run(edict_t *self, float dist)
 			G_QPostMessage(self, MSG_MELEE, PRI_DIRECTIVE, NULL);
 			return;
 		}
-		else if(self->monsterinfo.otherenemyname)
+		else if (self->monsterinfo.otherenemyname)
 		{
 			if (!Q_stricmp(trace.ent->classname, self->monsterinfo.otherenemyname))//&&irand(0,10)<3)
 			{
@@ -2741,7 +2741,7 @@ AlertMonsters(edict_t *self, edict_t *enemy, float lifetime, qboolean ignore_sha
 	if (alerter)
 	{//go down the list and find an empty slot
 		//fixme: just store the entnum?
-		while(alerter->next_alert)
+		while (alerter->next_alert)
 		{
 			last_alert = alerter;
 			alerter = alerter->next_alert;
@@ -2792,7 +2792,7 @@ ai_have_enemy(edict_t *self)
 
 	if (!self->enemy)
 		enemy_gone = true;
-	else if(self->enemy->health <= 0)
+	else if (self->enemy->health <= 0)
 		enemy_gone = true;
 
 	if (!enemy_gone)
@@ -3246,7 +3246,7 @@ ok_to_wake(edict_t *monster, qboolean gorgon_roar, qboolean ignore_ambush)
 		if (monster->monsterinfo.c_mode)
 			return false;
 	}
-	else if(monster->monsterinfo.aiflags & AI_EATING ||//eating or perching
+	else if (monster->monsterinfo.aiflags & AI_EATING ||//eating or perching
 		monster->targetname ||//a monster that's supposed to be triggered - problem, one a monster is used and woken up, won't respond to alerts like others...?
 		monster->monsterinfo.c_mode ||//cinematic
 		monster->spawnflags & MSF_ASLEEP ||//shouldn't happen, but just in case
@@ -3860,7 +3860,7 @@ qboolean MG_GetGoalPos (edict_t *self, vec3_t goalpos)
 		VectorCopy(level.buoy_list[self->buoy_index].origin, self->monsterinfo.nav_goal);
 		VectorCopy(self->monsterinfo.nav_goal, goalpos);
 	}
-	else if(self->goalentity && !charge_enemy)
+	else if (self->goalentity && !charge_enemy)
 	{
 		if (self->goalentity == self->enemy && self->ai_mood_flags & AI_MOOD_FLAG_PREDICT && !(self->spawnflags & MSF_FIXED))
 		{//predict where he's goin
@@ -3871,7 +3871,7 @@ qboolean MG_GetGoalPos (edict_t *self, vec3_t goalpos)
 			VectorCopy(self->goalentity->s.origin, goalpos);
 		}
 	}
-	else if(self->enemy)
+	else if (self->enemy)
 	{
 		if (self->ai_mood_flags & AI_MOOD_FLAG_PREDICT && !(self->spawnflags & MSF_FIXED))
 		{//predict where he's goin
@@ -4220,7 +4220,7 @@ qboolean MG_ExtraCheckJump (edict_t *self)
 				}
 			}
 		}
-		else if(mgai_debug->value)
+		else if (mgai_debug->value)
 			gi.dprintf("checkdown: not clear infront\n");
 	}
 	else
@@ -4448,35 +4448,35 @@ qboolean MG_CheckJump (edict_t *self)
 	VectorMA(spot1, self->size[0] * 2, forward, vis_check_spot);
 	VectorMA(vis_check_spot, self->size[2] * 1.5, up, vis_check_spot);
 //also check to make sure you can't walkmove forward
-    if(self->monsterinfo.jump_time > level.time)            //Don't jump too many times in a row
+    if (self->monsterinfo.jump_time > level.time)            //Don't jump too many times in a row
 	{
 		if (mgai_debug->value)
 			gi.dprintf("just jumped\n");
 
 		return false;
 	}
-    else if(!ignore_height&&targ_absmin[2]+36>=self->absmin[2])//&&self->think!=SpiderJumpBegin&&self->classname!="monster_mezzoman"&&self->model!="models/yakman.mdl")
+    else if (!ignore_height&&targ_absmin[2]+36>=self->absmin[2])//&&self->think!=SpiderJumpBegin&&self->classname!="monster_mezzoman"&&self->model!="models/yakman.mdl")
 	{
 		if (mgai_debug->value)
 			gi.dprintf("not above goalentity, and not spider\n");
 
 		return false;
 	}
-    else if(!self->groundentity)//flags&FL_ONGROUND)
+    else if (!self->groundentity)//flags&FL_ONGROUND)
 	{
 		if (mgai_debug->value)
 			gi.dprintf("not on ground\n");
 
 		return false;
 	}
-    else if(sub_len>777 && !ignore_height)
+    else if (sub_len>777 && !ignore_height)
 	{
 		if (mgai_debug->value)
 			gi.dprintf("too far away\n");
 
 		return false;
 	}
-    else if(sub_len <= 100)//&&self->think!=SpiderMeleeBegin)
+    else if (sub_len <= 100)//&&self->think!=SpiderMeleeBegin)
 	{
 		if (mgai_debug->value)
 			gi.dprintf("too close & not spider\n");
@@ -4484,7 +4484,7 @@ qboolean MG_CheckJump (edict_t *self)
 		return false;
 	}
 	//sfs--sure, it's just a dotproduct, but the other checks are a little cheaper
-    else if(!infront_pos(self, targ_org))
+    else if (!infront_pos(self, targ_org))
 	{
 		if (mgai_debug->value)
 			gi.dprintf("goalentity not in front\n");
@@ -4492,7 +4492,7 @@ qboolean MG_CheckJump (edict_t *self)
 		return false;
 	}
 	//sfs--save the trace line for after the easy checks
-    else if(!clear_visible_pos(self, targ_org)&&!LOS(self, vis_check_spot, spot2))
+    else if (!clear_visible_pos(self, targ_org)&&!LOS(self, vis_check_spot, spot2))
 	{
 		if (mgai_debug->value)
 			gi.dprintf("can't see goalentity\n");
@@ -4540,7 +4540,7 @@ qboolean MG_CheckJump (edict_t *self)
 
 		trace = gi.trace(self->s.origin, self->mins, self->maxs, end_spot, self, MASK_MONSTERSOLID);
 
-	    if(trace.fraction<1.0||trace.allsolid||trace.startsolid)
+	    if (trace.fraction<1.0||trace.allsolid||trace.startsolid)
 		{
 			if (mgai_debug->value)
 				gi.dprintf("not enough room in front\n");
@@ -4701,10 +4701,10 @@ void MG_CheckEvade (edict_t *self)
 
 	if (!skill->value)
 		return;
-	//else if(flrand(0, 3) > skill->value)
+	//else if (flrand(0, 3) > skill->value)
 	//	return;
 
-	while((ent = newfindradius(ent, self->s.origin, 500)))
+	while ((ent = newfindradius(ent, self->s.origin, 500)))
 	{
 		if (ent->movetype == MOVETYPE_FLYMISSILE && ent->solid && ent->owner!=self)
 		{
@@ -4734,7 +4734,7 @@ void MG_CheckEvade (edict_t *self)
 					eta = VectorLength(total_dist)/VectorLength(ent->velocity);
 					G_QPostMessage(self, MSG_EVADE, PRI_DIRECTIVE, "eif", ent, hl, eta);
 				}
-				else if(!irand(0,2))
+				else if (!irand(0,2))
 				{
 					VectorSubtract(self->s.origin, ent->s.origin, bad_dir);
 					ent_dist = VectorNormalize(bad_dir);
@@ -4788,7 +4788,7 @@ ai_run(edict_t *self, float dist)
 		ai_flee(self, dist);
 		return;
 	}
-	else if(self->ai_mood_flags & AI_MOOD_FLAG_DUMB_FLEE)
+	else if (self->ai_mood_flags & AI_MOOD_FLAG_DUMB_FLEE)
 	{
 		if (MG_GoToRandomBuoy(self))
 			self->monsterinfo.searchType = SEARCH_BUOY;
@@ -5051,7 +5051,7 @@ void MG_PostDeathThink (edict_t *self)
 	{
 		if (cornerdist[RIGHT] > MIN_DROP_DIST)
 			whichtrace = 3;
-		else if(cornerdist[LEFT] > MIN_DROP_DIST)
+		else if (cornerdist[LEFT] > MIN_DROP_DIST)
 			whichtrace = 4;
 		else
 			return;
@@ -5061,7 +5061,7 @@ void MG_PostDeathThink (edict_t *self)
 	{
 		if (cornerdist[FRONT] > MIN_DROP_DIST)
 			whichtrace = 1;
-		else if(cornerdist[BACK] > MIN_DROP_DIST)
+		else if (cornerdist[BACK] > MIN_DROP_DIST)
 			whichtrace = 2;
 		else
 			return;
@@ -5211,7 +5211,7 @@ void MG_PostDeathThink (edict_t *self)
 		self->next_post_think = level.time + 2;
 		return;
 	}
-	else if(mgai_debug->value)
+	else if (mgai_debug->value)
 		gi.dprintf("Deadmonster slide = On ground (size was %4.2f)\n", self->dead_size);
 
 	self->friction = 1.0;
@@ -5246,7 +5246,7 @@ void MG_CheckLanded (edict_t *self, float next_anim)
 
 	if (self->groundentity)
 		SetAnim(self, (int)next_anim);
-	else if(self->velocity[2]<0)
+	else if (self->velocity[2]<0)
 	{
 		VectorCopy(self->s.origin, pos);
 		pos[2] += self->mins[2];
@@ -5323,19 +5323,19 @@ qboolean EqualAngle(float angle1, float angle2, float leniency)
 
 	if (angle1 < -180)
 		angle1 += 360;
-	else if(angle1 > 180)
+	else if (angle1 > 180)
 		angle1 -= 360;
 
 	if (angle2 < -180)
 		angle2 += 360;
-	else if(angle2 > 180)
+	else if (angle2 > 180)
 		angle2 -= 360;
 
 	diff = angle1 - angle2;
 
 	if (diff < -180)
 		diff += 360;
-	else if(diff > 180)
+	else if (diff > 180)
 		diff -= 360;
 
 	if (fabs(diff) > leniency)
@@ -5404,7 +5404,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 				return true;//so close to enemy, just turn, no movement - not if rat?
 			}
 		}
-		else if(self->enemy)
+		else if (self->enemy)
 		{
 			VectorSubtract(self->monsterinfo.nav_goal, self->s.origin, goal_dir);
 			goal_dist = VectorNormalize(goal_dir);
@@ -5425,7 +5425,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 		else
 			return true;
 	}
-	else if(self->monsterinfo.idle_time > level.time)
+	else if (self->monsterinfo.idle_time > level.time)
 	{//using best_move_yaw
 		if (EqualAngle(self->s.angles[YAW], self->best_move_yaw, 5))
 		{//do a test move in the direction I would like to go:
@@ -5464,7 +5464,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 
 		return true;
 	}
-	else if(self->classID == CID_TBEAST)
+	else if (self->classID == CID_TBEAST)
 	{
 		if (trace.fraction<1.0)
 			VectorCopy(trace.endpos, self->s.origin);
@@ -5504,7 +5504,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 				}
 			}
 		}
-		else if(trace.ent->svflags & SVF_MONSTER)
+		else if (trace.ent->svflags & SVF_MONSTER)
 		{//if bumped into a monster that's not after an enemy but not ambushing, bring him along
 			if (!trace.ent->enemy)
 			{
@@ -5528,7 +5528,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 /*
 //FIXME: this needs to make sure they can break it
 //also: do not do this if the monsters' enemy is visible (MASK_SOLID check, though)
-		else if(!irand(0, 5))
+		else if (!irand(0, 5))
 		{//fixme: need to make sure the melee anims can break this
 			if (self->classID > CID_RAT && classStatics[self->classID].msgReceivers[MSG_MELEE])
 			{
@@ -5567,7 +5567,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 			return false;
 		}
 
-		else if(mgai_debug->value)
+		else if (mgai_debug->value)
 			gi.dprintf("Bumped world - t_f: %f t_allsolid: %d, t_startsolid %d\n",trace.fraction, trace.allsolid, trace.startsolid);
 	}
 
@@ -5583,7 +5583,7 @@ qboolean MG_MoveToGoal (edict_t *self, float dist)
 
 				return true;
 			}
-			else if(self->classID == CID_ASSASSIN)
+			else if (self->classID == CID_ASSASSIN)
 			{
 				if (MG_ExtraCheckJump(self))
 				{
@@ -5794,7 +5794,7 @@ MG_SwimFlyToGoal(edict_t *self, float dist)
 				return true;//so close to enemy, just turn, no movement - not if rat?
 			}
 		}
-		else if(self->enemy)
+		else if (self->enemy)
 		{
 			VectorSubtract(self->monsterinfo.nav_goal, self->s.origin, goal_dir);
 			goal_dist = VectorNormalize(goal_dir);
@@ -5815,7 +5815,7 @@ MG_SwimFlyToGoal(edict_t *self, float dist)
 		else
 			return true;
 	}
-	else if(self->monsterinfo.idle_time > level.time)
+	else if (self->monsterinfo.idle_time > level.time)
 	{//using best_move_yaw
 		if (EqualAngle(self->s.angles[YAW], self->best_move_yaw, 5))
 		{//do a test move in the direction I would like to go:
@@ -5893,7 +5893,7 @@ MG_SwimFlyToGoal(edict_t *self, float dist)
 				}
 			}
 		}
-		else if(trace.ent->svflags & SVF_MONSTER)
+		else if (trace.ent->svflags & SVF_MONSTER)
 		{//if bumped into a monster that's not after an enemy but not ambushing, bring him along
 			if (!trace.ent->enemy)
 			{
@@ -5928,7 +5928,7 @@ MG_SwimFlyToGoal(edict_t *self, float dist)
 			return false;
 		}
 
-		else if(mgai_debug->value)
+		else if (mgai_debug->value)
 			gi.dprintf("Bumped world - t_f: %f t_allsolid: %d, t_startsolid %d\n",trace.fraction, trace.allsolid, trace.startsolid);
 
 	}

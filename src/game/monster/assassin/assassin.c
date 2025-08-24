@@ -419,7 +419,7 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 //doesn't make desired effect
 	if (right_ofs>0)
 		arrow->s.angles[ROLL] = flrand(0, 35);
-	else if(right_ofs<0)
+	else if (right_ofs<0)
 		arrow->s.angles[ROLL] = flrand(-35, 0);
 */
 
@@ -488,11 +488,11 @@ void assassindagger (edict_t *self, float right_ofs)
 
 			/*			if (self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 				damage-=5;
-			else if(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW)
+			else if (self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW)
 				damage+=5;
-			else if(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW)
+			else if (self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW)
 				damage+=7;
-			else if(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
+			else if (self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
 				damage+=10;*/
 
 			T_Damage (self->enemy, self, self, dir, org, vec3_origin, damage, 0, 0,MOD_DIED);
@@ -524,7 +524,7 @@ void assassindagger (edict_t *self, float right_ofs)
 
 		if (thrownum>1)
 			gi.sound(self, CHAN_WEAPON, Sounds[SND_THROW2], 1, ATTN_NORM, 0);
-		else if(thrownum>0)
+		else if (thrownum>0)
 			gi.sound(self, CHAN_WEAPON, Sounds[SND_THROW1], 1, ATTN_NORM, 0);
 	}
 }
@@ -585,7 +585,7 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 		}
 		/*
 		//backflip off walls!  Too late to implement
-		else if(trace->plane)
+		else if (trace->plane)
 		{
 			if (Vec3NotZero(trace->plane.normal))
 			{
@@ -727,7 +727,7 @@ void assassin_random_attack(edict_t *self)
 	{
 		SetAnim(self, ASSASSIN_ANIM_DAGGERL);
 	}
-	else if((chance < 2&&!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)) ||
+	else if ((chance < 2&&!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)) ||
 		(!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW) )
 	{
 		if (irand(0, 1))
@@ -735,7 +735,7 @@ void assassin_random_attack(edict_t *self)
 		else
 			SetAnim(self, ASSASSIN_ANIM_NEWDAGGER);
 	}
-	else if(!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&
+	else if (!(self->s.fmnodeinfo[MESH__R4ARM].flags&FMNI_NO_DRAW)&&
 		!(self->s.fmnodeinfo[MESH__L4ARM].flags&FMNI_NO_DRAW))
 	{
 		if (irand(0, 1))
@@ -760,7 +760,7 @@ void assassin_melee(edict_t *self, G_Message_t *msg)
 	{
 		if (!irand(0,7))
 		{
-			/*if(self->s.renderfx & RF_ALPHA_TEXTURE)
+			/*if (self->s.renderfx & RF_ALPHA_TEXTURE)
 			{
 				if (self->pre_think != assassinDeCloak)
 				{
@@ -798,7 +798,7 @@ void assassin_missile(edict_t *self, G_Message_t *msg)
 					return;
 				}
 			}
-			else if(!(self->s.renderfx & RF_ALPHA_TEXTURE))
+			else if (!(self->s.renderfx & RF_ALPHA_TEXTURE))
 			{//75% cloak
 				if (!(self->spawnflags&MSF_ASS_NOSHADOW))
 				{
@@ -818,7 +818,7 @@ void assassin_missile(edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void assassin_post_pain (edict_t *self)
 {
-	/*if(self->s.renderfx & RF_ALPHA_TEXTURE)
+	/*if (self->s.renderfx & RF_ALPHA_TEXTURE)
 	{
 		if (!irand(0,4))
 		{
@@ -1595,7 +1595,7 @@ void assassin_run(edict_t *self, G_Message_t *msg)
 //				gi.dprintf("run->teleport\n");
 				return;
 			}
-			else if(!irand(0, 3))
+			else if (!irand(0, 3))
 			{
 				if (!(self->s.renderfx & RF_ALPHA_TEXTURE))
 				{
@@ -1683,11 +1683,11 @@ void assassin_crouch_idle_decision (edict_t *self)
 	case ASSASSIN_ANIM_CROUCH_IDLE:
 		if (chance < 55)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_IDLE);
-		else if(chance < 75)
+		else if (chance < 75)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_POKE);
-		else if(chance < 85)
+		else if (chance < 85)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_RIGHT);
-		else if(chance < 95)
+		else if (chance < 95)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_LEFT);
 		else
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_END);
@@ -1698,7 +1698,7 @@ void assassin_crouch_idle_decision (edict_t *self)
 	case ASSASSIN_ANIM_CROUCH_LOOK_L2R:
 		if (chance < 60)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_RIGHT_IDLE);
-		else if(chance < 85)
+		else if (chance < 85)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_R2C);
 		else
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_R2L);
@@ -1709,7 +1709,7 @@ void assassin_crouch_idle_decision (edict_t *self)
 	case ASSASSIN_ANIM_CROUCH_LOOK_R2L:
 		if (chance < 60)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_LEFT_IDLE);
-		else if(chance < 85)
+		else if (chance < 85)
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_L2C);
 		else
 			SetAnim(self, ASSASSIN_ANIM_CROUCH_LOOK_L2R);
@@ -1751,7 +1751,7 @@ void assassin_ai_walk (edict_t *self, float dist)
 				return;
 			}
 		}
-		else if(self->oldenemy)
+		else if (self->oldenemy)
 		{
 			if (Vector2Length(self->s.origin, self->oldenemy->s.origin) < 48 && infront(self, self->oldenemy))
 			{
@@ -2075,7 +2075,7 @@ void assassinCrouchedCheckAttack (edict_t *self, float attack)
 
 	if (attack)
 		assassindagger(self, BIT_RKNIFE);
-	else if(attack == 2)//start crouched attack anim
+	else if (attack == 2)//start crouched attack anim
 		SetAnim(self, ASSASSIN_ANIM_DAGGERC);
 	else//loop back inside that anim
 		self->monsterinfo.currframeindex = 2;
@@ -2309,7 +2309,7 @@ qboolean assassinChooseTeleportDestination(edict_t *self, int type, qboolean imp
 			VectorMA(startpos, -tracedist, forward, endpos);
 			noblockent = self->enemy;
 		}
-		else if(chance<66)
+		else if (chance<66)
 		{//ANY to anywhere around enemy
 			VectorSet(teleport_angles, 0, anglemod(flrand(0, 360)), 0);
 			AngleVectors(teleport_angles, forward, NULL, NULL);
@@ -2518,7 +2518,7 @@ void assassinCloakThink (edict_t *self)
 		{
 			if (irand(0, 4 - skill->value) <= 0)
 			{//easy is 40% chance per second, hard is 60% chance to check per second
-				while((found = newfindradius(found, self->s.origin, 200 + skill->value * 50)))
+				while ((found = newfindradius(found, self->s.origin, 200 + skill->value * 50)))
 				{
 					if (!Q_stricmp(found->classname, "Spell_Maceball"))
 					{
@@ -2788,7 +2788,7 @@ void assassinCheckDefense(edict_t *self, float enemydist, qboolean enemyvis, qbo
 		if (assassinCheckTeleport(self, ASS_TP_DEF))
 			gi.dprintf("defense->teleport\n");
 	}
-	else if(!enemyvis && self->monsterinfo.last_successful_enemy_tracking_time + 6 - skill->value < level.time)
+	else if (!enemyvis && self->monsterinfo.last_successful_enemy_tracking_time + 6 - skill->value < level.time)
 	{
 		if (irand(0, 10) > 10 - (3 * (skill->value + 1)))//hard = 90%, med is 40%, easy is 30%
 		{
@@ -2934,7 +2934,7 @@ void SP_monster_assassin (edict_t *self)
 	{
 		G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 	}
-	else if(self->spawnflags & MSF_ASS_CINEMATIC)
+	else if (self->spawnflags & MSF_ASS_CINEMATIC)
 	{
 		self->monsterinfo.c_mode = 1;
 		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);

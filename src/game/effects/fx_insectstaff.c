@@ -113,7 +113,7 @@ FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 		Theta=fxi.cl->time*FIST_DELTA_THETA;
 		DeltaTheta=(fxi.cls->rframetime*FIST_DELTA_THETA)/NoOfIntervals;
 
-		while(TrailLength>0.0)
+		while (TrailLength>0.0)
 		{
 			float scale;
 
@@ -198,7 +198,7 @@ void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec
 
 	I = GetScaledCount(irand(8,12), 0.8);
 
-	while(I--)
+	while (I--)
 	{
 		if (!I)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);
@@ -277,7 +277,7 @@ FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
 	VectorScale(Trail,FX_GLOBE_FLY_SPEED,Trail);
 
 	i=0;
-	while(TrailLength>0.0)
+	while (TrailLength>0.0)
 	{
 		//
 		i++;

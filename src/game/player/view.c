@@ -1033,13 +1033,13 @@ ClientEndServerFrame(edict_t *ent)
 			bobmove = 0.0625;
 		}
 	}
-	else if(current_player->waterlevel)
+	else if (current_player->waterlevel)
 	{
 		// So bobbing only cycles when in water.
 
 		if (xyspeed > 100)
 			bobmove = 1.0;
-		else if(xyspeed > 50)
+		else if (xyspeed > 50)
 			bobmove = 0.5;
 		else
 			bobmove = 0.25;

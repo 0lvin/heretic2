@@ -316,12 +316,12 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 		d_time*=0.5;
 		d_time2*=0.5;
 	}
-	else if(self->SpawnInfo&SIF_INLAVA)
+	else if (self->SpawnInfo&SIF_INLAVA)
 	{
 		d_time*=0.01;
 		d_time2*=0.01;
 	}
-	else if(self->SpawnInfo&SIF_INMUCK)
+	else if (self->SpawnInfo&SIF_INMUCK)
 	{
 		//leave a ripple or two?
 		d_time*=0.05;
@@ -442,7 +442,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 			}
 			return false;//no need to update trace counter if not sending collision
 		}
-		else if(trace->contents & CONTENTS_SLIME&& !(self->SpawnInfo&SIF_INMUCK))
+		else if (trace->contents & CONTENTS_SLIME&& !(self->SpawnInfo&SIF_INMUCK))
 		{
 			if (self->flags&CEF_FLAG6)
 			{
@@ -485,7 +485,7 @@ qboolean Physics_MoveEnt(client_entity_t *self, float d_time, float d_time2, tra
 
 			return false;//no need to update trace counter if not sending collision
 		}
-		else if(trace->contents & CONTENTS_LAVA && !(self->SpawnInfo&SIF_INLAVA))
+		else if (trace->contents & CONTENTS_LAVA && !(self->SpawnInfo&SIF_INLAVA))
 		{
 			self->flags &= ~CEF_FLAG6;
 			self->SpawnInfo |= SIF_INLAVA;//in lava now, continue to burn

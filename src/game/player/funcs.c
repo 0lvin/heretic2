@@ -1119,7 +1119,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 
 	if (delta > 50)
 		damage = delta - 30;
-	else if((damage = (delta - 30) * 0.8) < 1.0f)
+	else if ((damage = (delta - 30) * 0.8) < 1.0f)
 		damage = 1;
 
 	VectorSet(dir,0.0,0.0,1.0);

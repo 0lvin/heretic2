@@ -294,7 +294,7 @@ void harpy_blocked (edict_t *self, trace_t *trace)
 		SetAnim(self, ANIM_FLYBACK1);
 		return;
 	}
-	else if(self->damage_debounce_time < level.time || dot>0)
+	else if (self->damage_debounce_time < level.time || dot>0)
 	{//only back up from a block once every 2 seconds
 		self->damage_debounce_time = level.time + 2;
 		SetAnim(self, ANIM_FLYBACK1);
@@ -710,7 +710,7 @@ void harpy_dead_pain(edict_t *self, G_Message_t *msg)
 		gi.linkentity(self);
 		return;
 	}
-	else if(msg)
+	else if (msg)
 		MG_parse_dismember_msg(self, msg);
 
 }
@@ -1015,12 +1015,12 @@ void harpy_pause (edict_t *self)
 {
 	if (M_ValidTarget(self, self->enemy))
 		G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
-	else if(self->curAnimID == ANIM_CIRCLING)
+	else if (self->curAnimID == ANIM_CIRCLING)
 	{
 		if (!irand(0, 6))
 			SetAnim(self, ANIM_CIRCLING_FLAP);
 	}
-	else if(self->curAnimID == ANIM_CIRCLING_FLAP && irand(0, 1))
+	else if (self->curAnimID == ANIM_CIRCLING_FLAP && irand(0, 1))
 		SetAnim(self, ANIM_CIRCLING);
 }
 

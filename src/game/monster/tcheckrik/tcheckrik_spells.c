@@ -385,9 +385,9 @@ void create_spearproj(edict_t *spearproj)
 
 	if (spearproj->count)
 		spearproj->dmg = irand(TC_DMG_YSPEAR_MIN, TC_DMG_YSPEAR_MAX);
-	else if(skill->value > 1)
+	else if (skill->value > 1)
 		spearproj->dmg = TC_DMG_SPEAR_MAX;
-	else if(!skill->value)
+	else if (!skill->value)
 		spearproj->dmg = TC_DMG_SPEAR_MIN;
 	else
 		spearproj->dmg = irand(TC_DMG_SPEAR_MIN, TC_DMG_SPEAR_MAX);
@@ -488,7 +488,7 @@ static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurf
 					other->enemy = self->owner;
 				}
 			}
-			else if(other->classID == CID_BBRUSH)
+			else if (other->classID == CID_BBRUSH)
 			{
 				self->dmg = 0;
 				VectorMA(self->s.origin, -4.0, self->movedir, self->s.origin);

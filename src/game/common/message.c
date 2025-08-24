@@ -29,7 +29,7 @@ size_t SetParms(SinglyLinkedList_t *_this, const char *format, va_list marker, q
 
 	SLList_Front(_this);
 
-	while((current = format[count]))
+	while ((current = format[count]))
 	{
 		switch(current)
 		{
@@ -128,7 +128,7 @@ int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 		return 0;
 	}
 
-	while((current = format[count]))
+	while ((current = format[count]))
 	{
 		switch(current)
 		{

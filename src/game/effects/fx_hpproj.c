@@ -125,7 +125,7 @@ FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
 
 		i =  GetScaledCount(8, 0.7);
 
-		while(i--)
+		while (i--)
 		{
 			p = ClientParticle_new(PART_4x4_WHITE, color, 2500);
 
@@ -161,7 +161,7 @@ FXHPTeleportLineThink(struct client_entity_s *self, centity_t *Owner)
 
 		i = GetScaledCount(5, 0.7);
 
-		while(i--)
+		while (i--)
 		{
 			float scale;
 
@@ -573,7 +573,7 @@ void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 
 	i = GetScaledCount(irand(6,8), 0.8);
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -618,7 +618,7 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 
 	i = GetScaledCount(irand(12,16), 0.8);
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 

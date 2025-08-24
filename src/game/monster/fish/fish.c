@@ -769,7 +769,7 @@ void fish_deadfloat(edict_t *self)
 		else
 			self->velocity[2] = 20;	// Just in case somethimg blocked it going up
 	}
-	else if(self->waterlevel < 2)
+	else if (self->waterlevel < 2)
 	{
 		if (self->velocity[2] > -150)
 			self->velocity[2] -= 50;	// Fall back in now!

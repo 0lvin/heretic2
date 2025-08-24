@@ -455,7 +455,7 @@ void elflord_FindMoveTarget (edict_t *self)
 	vec3_t	vel, target;
 	float	len;
 
-	while((movetarg = findradius(movetarg, self->s.origin, 640)) != NULL)
+	while ((movetarg = findradius(movetarg, self->s.origin, 640)) != NULL)
 	{
 		//Must be a path_corner
 		if (strcmp(movetarg->classname, "path_corner"))
@@ -570,7 +570,7 @@ void elflord_MoveToFinalPosition( edict_t *self )
 	vec3_t	vel, target;
 	float	len;
 
-	while((movetarg = findradius(movetarg, self->s.origin, 640)) != NULL)
+	while ((movetarg = findradius(movetarg, self->s.origin, 640)) != NULL)
 	{
 		//Must be a path_corner
 		if (strcmp(movetarg->classname, "path_corner"))
@@ -660,12 +660,12 @@ qboolean elfLordCheckAttack (edict_t *self)
 		SetAnim(self, ELFLORD_ANIM_ATTACK);
 		return false;
 	}
-	else if(irand(0,100) < beam_chance)
+	else if (irand(0,100) < beam_chance)
 	{
 		SetAnim(self, ELFLORD_ANIM_ATTACK_LS);
 		return false;
 	}
-	else if(irand(0,100) < soa_chance)
+	else if (irand(0,100) < soa_chance)
 	{
 		SetAnim(self, ELFLORD_ANIM_ATTACK_SOA_BTRANS);
 		return false;

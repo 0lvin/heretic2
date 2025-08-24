@@ -486,7 +486,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 //			gi.dprintf(" snatch extra high\n");
 			SetAnim(self, BEAST_ANIM_BITEUP2);
 		}
-		else if(self->enemy->absmin[2] > melee_point[2])
+		else if (self->enemy->absmin[2] > melee_point[2])
 		{
 //			gi.dprintf(" snatch high\n");
 			SetAnim(self, BEAST_ANIM_BITEUP);
@@ -500,7 +500,7 @@ void tbeast_melee(edict_t *self, G_Message_t *msg)
 		self->monsterinfo.attack_finished = level.time + flrand(2, 3);
 		return;
 	}
-	else if(len - seperation < self->melee_range && !irand(0,2))
+	else if (len - seperation < self->melee_range && !irand(0,2))
 	{
 //		gi.dprintf("walk attack\n");
 		SetAnim(self, BEAST_ANIM_WALKATK);
@@ -1028,7 +1028,7 @@ void tbeast_land(edict_t *self)
 
 	gi.sound(self, CHAN_ITEM, sounds[SND_LAND], 1, ATTN_NORM, 0);
 
-	while((found = newfindradius(found, self->s.origin, 512)))
+	while ((found = newfindradius(found, self->s.origin, 512)))
 	{
 		if (found->client)
 		{
@@ -1051,7 +1051,7 @@ void tbeast_roar_knockdown(edict_t *self)
 	if (irand(0, 2))
 		return;
 
-	while((found = newfindradius(found, self->s.origin, 512)))
+	while ((found = newfindradius(found, self->s.origin, 512)))
 	{
 		if (found->client && ahead(self, found))
 		{
@@ -1168,7 +1168,7 @@ qboolean TB_CheckBottom (edict_t *self)
 
 	if (trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
 	{
-		/*if(&trace.plane)
+		/*if (&trace.plane)
 		{
 			if (!Vec3IsZero(trace.plane.normal))
 			{
@@ -1204,14 +1204,14 @@ qboolean TB_CheckJump (edict_t *self)//, edict_t *other)
 				SetAnim(self, BEAST_ANIM_BITEUP2);
 				return true;
 			}
-			else if(Q_fabs(z_diff)<=32)
+			else if (Q_fabs(z_diff)<=32)
 			{
 				SetAnim(self, BEAST_ANIM_BITEUP);
 				return true;
 			}
-			else if(z_diff < -32 && z_diff > -200)
+			else if (z_diff < -32 && z_diff > -200)
 				skiplow = true;
-			else if(z_diff > 40 && z_diff < -24)
+			else if (z_diff > 40 && z_diff < -24)
 			{
 				SetAnim(self, BEAST_ANIM_BITELOW);
 				return true;
@@ -1450,7 +1450,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 	enemy_dist = VectorLength(endpos);
 	if (enemy_dist>ok_dist || flrand(0, 50)>self->enemy->health)
 	{//if missed or health is low, just chomp it now
-		while((found = newfindradius(found, startpos, ok_dist)))
+		while ((found = newfindradius(found, startpos, ok_dist)))
 		{
 			if (found->takedamage&&movable(found))
 			{
@@ -1488,7 +1488,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	if (ofsu == TB_HIBITE_U + 128)
 		SetAnim(self, BEAST_ANIM_BITEUP2_SFIN);
-	else if(ofsu == TB_HIBITE_U)
+	else if (ofsu == TB_HIBITE_U)
 		SetAnim(self, BEAST_ANIM_BITEUP_SFIN);
 	else
 		SetAnim(self, BEAST_ANIM_BITELOW_SFIN);
@@ -1756,12 +1756,12 @@ float LerpAngleChange (float curangle, float endangle, float step)
 
 	if (curangle>180)
 		curangle-=360;
-	else if(curangle<-180)
+	else if (curangle<-180)
 		curangle+=360;
 
 	if (endangle>180)
 		endangle-=360;
-	else if(endangle<-180)
+	else if (endangle<-180)
 		endangle+=360;
 
 	if (curangle == endangle)
@@ -1771,14 +1771,14 @@ float LerpAngleChange (float curangle, float endangle, float step)
 
 	if (diff > 180)
 		diff -= 360;
-	else if(diff < -180)
+	else if (diff < -180)
 		diff += 360;
 
 	final = anglemod(curangle + diff/step);
 
 	if (final>180)
 		final-=360;
-	else if(final<-180)
+	else if (final<-180)
 		final+=360;
 
 	return final;
@@ -1974,7 +1974,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 		if ((gi.pointcontents(rightpos) & MASK_SOLID) ||	(gi.pointcontents(leftpos) & MASK_SOLID))
 		{
 			gi.dprintf("Beast feet in ground, raising up\n");
-			while(((gi.pointcontents(rightpos) & MASK_SOLID) ||
+			while (((gi.pointcontents(rightpos) & MASK_SOLID) ||
 				(gi.pointcontents(leftpos) & MASK_SOLID)) && count < 10)
 			{
 				self->mins[2]++;
@@ -1992,7 +1992,7 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 			if (!(gi.pointcontents(rightpos) & MASK_SOLID) && !(gi.pointcontents(leftpos) & MASK_SOLID))
 			{
 				gi.dprintf("Beast feet not on ground, lowering\n");
-				while(!(gi.pointcontents(rightpos) & MASK_SOLID) &&
+				while (!(gi.pointcontents(rightpos) & MASK_SOLID) &&
 					!(gi.pointcontents(leftpos) & MASK_SOLID) && count < 10)
 				{
 					self->mins[2]--;
@@ -2051,7 +2051,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 			if (throwthem)
 				VectorScale(dir, 200, trace->ent->velocity);
 		}
-		else if(Vec3NotZero(self->velocity) && trace->fraction < 0.7)
+		else if (Vec3NotZero(self->velocity) && trace->fraction < 0.7)
 		{
 			if (infront(self, trace->ent))
 			{
@@ -2131,7 +2131,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 				{
 					if (crush)
 						damage = flrand(20, 100);
-					else if(trace->ent->health > 30)
+					else if (trace->ent->health > 30)
 						damage = flrand(10, 30) * skill->value/2;
 					else
 						damage = 0;
@@ -2436,7 +2436,7 @@ void tbeast_fake_touch(edict_t *self)
 					VectorAdd(other->s.origin, other->maxs, omaxs);
 					if (boxes_overlap(omins, omaxs, lfootmins, lfootmaxs))
 						hitme = true;
-					else if(boxes_overlap(omins, omaxs, rfootmins, rfootmaxs))
+					else if (boxes_overlap(omins, omaxs, rfootmins, rfootmaxs))
 						hitme = true;
 				}
 			}
@@ -2495,7 +2495,7 @@ void tbeast_post_think (edict_t *self)
 			M_ShowLifeMeter(self, (int)(ceil(self->volume/self->max_health*TBEAST_SBAR_SIZE)), (int)(ceil(self->volume/self->max_health*TBEAST_SBAR_SIZE)));
 			self->volume += (float)(self->max_health) / 10;
 		}
-		else if(self->health > 0)
+		else if (self->health > 0)
 		{
 			M_ShowLifeMeter(self, (int)(ceil((float)(self->health)/(float)(self->max_health)*TBEAST_SBAR_SIZE)), TBEAST_SBAR_SIZE);
 		}
@@ -2575,7 +2575,7 @@ edict_t *check_hit_beast(vec3_t start, vec3_t end)
 	VectorSubtract(end, start, shot_dir);
 	diff1 = VectorNormalize(shot_dir);
 
-	while((found = G_Find(found, FOFS(classname), "monster_trial_beast")))
+	while ((found = G_Find(found, FOFS(classname), "monster_trial_beast")))
 	{
 		VectorSubtract(found->s.origin, start, beast_dir);
 		diff2 = VectorLength(beast_dir) - 128;

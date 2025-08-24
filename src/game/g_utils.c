@@ -1160,7 +1160,7 @@ findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_
 
 	VectorCopy(startpos, curpos);
 	tracebuddy = startent;
-	while(1)
+	while (1)
 	{
 		trace = gi.trace(curpos, mins, maxs, endpos, tracebuddy, MASK_SHOT);
 

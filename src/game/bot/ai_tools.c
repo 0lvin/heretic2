@@ -142,7 +142,7 @@ void AITools_DrawPath(edict_t *self, int node_from, int node_to)
 		return;
 
 	//find position in stored path
-	while( self->ai.path->nodes[pos] != node_from )
+	while ( self->ai.path->nodes[pos] != node_from)
 	{
 		pos++;
 		if (self->ai.path->goalNode == self->ai.path->nodes[pos])
@@ -150,7 +150,7 @@ void AITools_DrawPath(edict_t *self, int node_from, int node_to)
 	}
 
 	// Now set up and display the path
-	while( self->ai.path->nodes[pos] != node_to && count < 32)
+	while ( self->ai.path->nodes[pos] != node_to && count < 32)
 	{
 		edict_t		*event;
 

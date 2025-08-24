@@ -521,9 +521,9 @@ void beetle_missile(edict_t *self,G_Message_t *Msg)
 			{
 				if (dist < self->missile_range)
 					SetAnim(self, GKROKON_ANIM_MISSILE1);
-				else if(self->curAnimID == GKROKON_ANIM_CROUCH1 && !irand(0, 2))
+				else if (self->curAnimID == GKROKON_ANIM_CROUCH1 && !irand(0, 2))
 					SetAnim(self, GKROKON_ANIM_CROUCH2);//go into stand
-				else if(self->curAnimID == GKROKON_ANIM_STAND3 && !irand(0, 10))
+				else if (self->curAnimID == GKROKON_ANIM_STAND3 && !irand(0, 10))
 					SetAnim(self, GKROKON_ANIM_CROUCH3);//go into a crouch
 				else
 					SetAnim(self, GKROKON_ANIM_DELAY);//stand around
@@ -749,7 +749,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH__HEAD_P1].skin = self->s.skinnum+1;
 				}
 			}
-			else if(canthrownode_gk(self, MESH__HEAD_P1, &throw_nodes))
+			else if (canthrownode_gk(self, MESH__HEAD_P1, &throw_nodes))
 			{
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
@@ -767,7 +767,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH__SPIKE_P1].skin = self->s.skinnum+1;
 				}
 			}
-			else if(canthrownode_gk(self, MESH__SPIKE_P1, &throw_nodes))
+			else if (canthrownode_gk(self, MESH__SPIKE_P1, &throw_nodes))
 			{
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
@@ -783,7 +783,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH__RPINCHERA_P1].skin = self->s.skinnum+1;
 				}
 			}
-			else if(canthrownode_gk(self, MESH__RPINCHERA_P1, &throw_nodes))
+			else if (canthrownode_gk(self, MESH__RPINCHERA_P1, &throw_nodes))
 			{
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
@@ -799,7 +799,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH__LPINCHERA_P1].skin = self->s.skinnum+1;
 				}
 			}
-			else if(canthrownode_gk(self, MESH__LPINCHERA_P1, &throw_nodes))
+			else if (canthrownode_gk(self, MESH__LPINCHERA_P1, &throw_nodes))
 			{
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
@@ -815,7 +815,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH__RPINCHERB_P1].skin = self->s.skinnum+1;
 				}
 			}
-			else if(canthrownode_gk(self, MESH__RPINCHERB_P1, &throw_nodes))
+			else if (canthrownode_gk(self, MESH__RPINCHERB_P1, &throw_nodes))
 			{
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
@@ -831,7 +831,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					self->s.fmnodeinfo[MESH__LPINCHERB_P1].skin = self->s.skinnum+1;
 				}
 			}
-			else if(canthrownode_gk(self, MESH__LPINCHERB_P1, &throw_nodes))
+			else if (canthrownode_gk(self, MESH__LPINCHERB_P1, &throw_nodes))
 			{
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
