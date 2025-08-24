@@ -82,9 +82,12 @@ qboolean LinkedEntityUpdatePlacement(client_entity_t *current, centity_t *owner)
 		AnglesFromDirAndUp(direction, up, current->r.angles);
 	}
 
-	current->r.origin[0] = owner->origin[0];
-	current->r.origin[1] = owner->origin[1];
-	current->r.origin[2] = owner->origin[2];
+	if (owner)
+	{
+		current->r.origin[0] = owner->origin[0];
+		current->r.origin[1] = owner->origin[1];
+		current->r.origin[2] = owner->origin[2];
+	}
 
 	return true;
 }
@@ -580,7 +583,7 @@ qboolean RefPointsValid(centity_t *owner)
 // FIXME Obsolete
 qboolean ReferencesInitialized(centity_t *owner)
 {
-	if (!owner->referenceInfo)
+	if (!owner || !owner->referenceInfo)
 	{	// _this probably shouldn't happen, if it does, let me know, JKH
 //		assert(0);
 		return false;

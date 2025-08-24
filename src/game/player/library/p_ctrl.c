@@ -189,9 +189,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	if (material)
 	{
-		pi.G_Sound(SND_PRED_ID51,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_VOICE,
 							pi.G_SoundIndex(LandSound),
 							1,
@@ -201,9 +199,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	if (hardfall)
 	{	// Grunt.
-		pi.G_Sound(SND_PRED_ID52,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_BODY,
 							pi.G_SoundIndex("*fall.wav"),
 							1,
@@ -217,9 +213,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	if (playerinfo->waterlevel == 0)
 	{
-		pi.G_CreateEffect(
-			EFFECT_PRED_ID15,
-			playerinfo->self,
+		pi.G_CreateEffect(playerinfo->self,
 			FX_DUST_PUFF,
 			CEF_OWNERS_ORIGIN,
 			playerinfo->origin,

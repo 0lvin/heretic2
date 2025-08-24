@@ -1367,9 +1367,7 @@ Cmd_DefPrev_f(edict_t *ent)
 	}
 
 	if ((selected_defence != 1) && (start_defence != selected_defence))
-		G_SoundEvent(SND_PRED_NULL,
-							   level.time,
-							   ent,
+		gi.sound(ent,
 							   CHAN_AUTO,
 							   gi.soundindex("Weapons/DefenseSelect.wav"),
 							   1,
@@ -1424,14 +1422,12 @@ Cmd_DefNext_f(edict_t *ent)
 	}
 
 	if ((selected_defence != 1) && (start_defence != selected_defence))
-		G_SoundEvent(SND_PRED_NULL,
-							   level.time,
-							   ent,
-							   CHAN_AUTO,
-							   gi.soundindex("Weapons/DefenseSelect.wav"),
-							   1,
-							   ATTN_NORM,
-							   0);
+		gi.sound(ent,
+			CHAN_AUTO,
+			gi.soundindex("Weapons/DefenseSelect.wav"),
+			1,
+			ATTN_NORM,
+			0);
 }
 
 static void

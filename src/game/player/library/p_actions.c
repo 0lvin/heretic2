@@ -729,16 +729,14 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 			break;
 	}
 
-	pi.G_Sound(SND_PRED_ID0,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex("Weapons/SpellChange.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
 
-	pi.G_CreateEffect(EFFECT_PRED_ID1,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
+	pi.G_CreateEffect(NULL, FX_SPELL_CHANGE, 0, spawnpoint, "db", right, color);
 }
 
 /*-----------------------------------------------
@@ -797,16 +795,14 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		PlayerUpdateModelAttributes(client);
 	}
 
-	pi.G_Sound(SND_PRED_ID1,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex("Weapons/SpellChange.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
 
-	pi.G_CreateEffect(EFFECT_PRED_ID2,NULL,FX_SPELL_CHANGE,0,spawnpoint,"db",right,color);
+	pi.G_CreateEffect(NULL, FX_SPELL_CHANGE, 0, spawnpoint, "db", right, color);
 }
 
 /*-----------------------------------------------
@@ -860,8 +856,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		{
 		case WEAPON_READY_SWORDSTAFF:
 
-			pi.G_CreateEffect(EFFECT_PRED_ID3,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_STAFF_CREATEPOOF,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -870,8 +865,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 		case WEAPON_READY_HELLSTAFF:
 
-			pi.G_CreateEffect(EFFECT_PRED_ID4,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_STAFF_CREATEPOOF,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 									   NULL,
@@ -900,9 +894,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						client->pers.bowtype = BOW_TYPE_REDRAIN;
 						PlayerUpdateModelAttributes(client);
 
-						pi.G_Sound(SND_PRED_ID2,
-											playerinfo->leveltime,
-											playerinfo->self,
+						pi.G_Sound(playerinfo->self,
 											CHAN_WEAPON,
 											pi.G_SoundIndex("Weapons/SpellChange.wav"),
 											1.0,
@@ -916,8 +908,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						pi.G_CreateEffect(EFFECT_PRED_ID5,
-												   NULL,
+						pi.G_CreateEffect(NULL,
 												   FX_SPELL_CHANGE,
 												   0,
 												   spawnpoint,
@@ -937,9 +928,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						client->pers.bowtype = BOW_TYPE_PHOENIX;
 						PlayerUpdateModelAttributes(client);
 
-						pi.G_Sound(SND_PRED_ID3,
-											playerinfo->leveltime,
-											playerinfo->self,
+						pi.G_Sound(playerinfo->self,
 											CHAN_WEAPON,
 											pi.G_SoundIndex("Weapons/SpellChange.wav"),
 											1.0,
@@ -953,8 +942,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						pi.G_CreateEffect(EFFECT_PRED_ID6,
-												   NULL,
+						pi.G_CreateEffect(NULL,
 												   FX_SPELL_CHANGE,
 												   0,
 												   spawnpoint,
@@ -991,9 +979,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	if (client->pers.stafflevel == STAFF_LEVEL_BASIC ||
 		value == WEAPON_READY_HELLSTAFF)
 	{
-		pi.G_Sound(SND_PRED_ID5,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff Ready.wav"),
 							1.0,
@@ -1004,9 +990,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG7;
 
-		pi.G_Sound(SND_PRED_ID6,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff2Ready.wav"),
 							1.0,
@@ -1017,9 +1001,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG8;
 
-		pi.G_Sound(SND_PRED_ID7,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff3Ready.wav"),
 							1.0,
@@ -1027,17 +1009,14 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 							0);
 	}
 	else
-		pi.G_Sound(SND_PRED_ID8,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff Ready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
 
-	pi.G_CreateEffect(EFFECT_PRED_ID7,
-							   playerinfo->self, // jmarshall: I think this is right.
+	pi.G_CreateEffect(playerinfo->self, // jmarshall: I think this is right.
 							   FX_STAFF_CREATE,
 							   flags,
 							   NULL,
@@ -1060,9 +1039,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 
 	if (client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 	{
-		pi.G_Sound(SND_PRED_ID9,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff Unready.wav"),
 							1.0,
@@ -1073,9 +1050,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG7;
 
-		pi.G_Sound(SND_PRED_ID10,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff2Unready.wav"),
 							1.0,
@@ -1086,9 +1061,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG8;
 
-		pi.G_Sound(SND_PRED_ID11,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff3Unready.wav"),
 							1.0,
@@ -1097,9 +1070,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 	}
 	else
 	{
-		pi.G_Sound(SND_PRED_ID12,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex("weapons/Staff Unready.wav"),
 							1.0,
@@ -1107,8 +1078,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							0);
 	}
 
-	pi.G_CreateEffect(EFFECT_PRED_ID8,
-							   playerinfo->self,
+	pi.G_CreateEffect(playerinfo->self,
 							   FX_STAFF_REMOVE,
 							   flags,
 							   NULL,
@@ -1121,9 +1091,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordTrailSound(playerinfo_t *playerinfo, char *name)
 {
-	pi.G_Sound(SND_PRED_ID13,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex(name),
 						1.0,
@@ -1341,9 +1309,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	pi.G_Sound(SND_PRED_ID14,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						channel,
 						pi.G_SoundIndex(WalkSound),
 						0.75,
@@ -1357,9 +1323,7 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimIdleSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(SND_PRED_ID15,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_VOICE,
 						pi.G_SoundIndex("player/swim idle.wav"),
 						0.4,
@@ -1399,9 +1363,7 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 		break;
 	}
 
-	pi.G_Sound(SND_PRED_ID16,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_AUTO,
 						pi.G_SoundIndex(name),
 						0.6,
@@ -1415,9 +1377,7 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(SND_PRED_ID17,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_VOICE,
 						pi.G_SoundIndex("swim backward.wav"),
 						0.6,
@@ -1431,9 +1391,7 @@ void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(SND_PRED_ID18,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_VOICE,
 						pi.G_SoundIndex("player/pullup 1.wav"),
 						1.0,
@@ -1447,9 +1405,7 @@ void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbFinishSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(SND_PRED_ID19,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_VOICE,
 						pi.G_SoundIndex("player/pullup 2.wav"),
 						1.0,
@@ -1466,10 +1422,10 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 	vec3_t	Origin,
 			Dir;
 
-	if (value==1.0)
+	if (value == 1.0)
 	{
-		VectorCopy(playerinfo->origin,Origin);
-		Origin[2]+=playerinfo->waterheight;
+		VectorCopy(playerinfo->origin, Origin);
+		Origin[2] += playerinfo->waterheight;
 
 		// Fixme: Need to determine the actual water surface normal - if we have any sloping water?
 
@@ -1478,8 +1434,7 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 		Dir[2]=1.0;
 
 		//
-		pi.G_CreateEffect(EFFECT_PRED_ID9,
-								   NULL,
+		pi.G_CreateEffect(NULL,
 								   FX_WATER_ENTRYSPLASH,
 								   0,
 								   Origin,
@@ -1866,9 +1821,7 @@ void PlayerActionCheckFallingGrab(playerinfo_t *playerinfo, float value)
 
 void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(SND_PRED_ID20,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex("weapons/bowdraw2.Wav"),
 						1.0,
@@ -2465,9 +2418,7 @@ void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 	strcat(VaultSound, Material);
 	strcat(VaultSound,"vault.wav");
 
-	pi.G_Sound(SND_PRED_ID21,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex(VaultSound),
 						1.0,
@@ -3042,9 +2993,7 @@ void KnockDownPlayer(playerinfo_t *playerinfo)
 
 void PlayFly(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(SND_PRED_ID22,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_BODY,
 						pi.G_SoundIndex("player/idle buzz.wav"),
 						1.0,
@@ -3058,9 +3007,7 @@ void PlayFly(playerinfo_t *playerinfo, float dist)
 
 void PlaySlap(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(SND_PRED_ID23,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_BODY,
 						pi.G_SoundIndex("player/idle slap.wav"),
 						1.0,
@@ -3074,9 +3021,7 @@ void PlaySlap(playerinfo_t *playerinfo, float dist)
 
 void PlaySigh(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(SND_PRED_ID24,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_BODY,
 						pi.G_SoundIndex("*phew.wav"),
 						0.75,
@@ -3089,9 +3034,7 @@ void PlaySigh(playerinfo_t *playerinfo, float dist)
 
 void PlayScratch(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(SND_PRED_ID25,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_BODY,
 						pi.G_SoundIndex("player/scratch.wav"),
 						1.0,
@@ -3107,8 +3050,7 @@ void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 {
 	if (playerinfo->waterlevel==0)
 	{
-		pi.G_CreateEffect(EFFECT_PRED_ID10,
-								   playerinfo->self,
+		pi.G_CreateEffect(playerinfo->self,
 								   FX_DUST_PUFF,
 								   CEF_OWNERS_ORIGIN,
 								   playerinfo->origin,
@@ -3261,7 +3203,7 @@ void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID26, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
+			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -3781,7 +3723,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID27, playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
+			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -4234,7 +4176,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID28, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -4394,14 +4336,14 @@ void PlayerActionClimbStartSound(playerinfo_t *playerinfo, float value)
 	if (irand(0,4))
 		return;
 
-	pi.G_Sound(SND_PRED_ID29, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*grab.wav"), 0.75, ATTN_NORM, 0);
+	pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*grab.wav"), 0.75, ATTN_NORM, 0);
 }
 
 void PlayerPlaySlide(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	pi.G_Sound(SND_PRED_ID30, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
+	pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
 }
 
 void PlayerInterruptAction(playerinfo_t *playerinfo)
@@ -4412,9 +4354,7 @@ void PlayerInterruptAction(playerinfo_t *playerinfo)
 	TurnOffPlayerEffects(playerinfo);
 
 	//Remove weapon sounds from the player (technically looping weapons should do this for us, but better safe than annoyed)
-	pi.G_Sound(SND_PRED_ID31,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex("misc/null.wav"),
 						1.0,

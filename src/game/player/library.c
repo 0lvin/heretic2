@@ -27,19 +27,6 @@ player_import_t	playerImport;
 
 static void *player_library;
 
-static void
-P_CreateEffectEvent(byte EventId, edict_t* ent, int type, int flags, vec3_t origin, char* format, ...)
-{
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
-}
-
-static void
-P_RemoveEffectsEvent(byte EventId, edict_t* ent, int type)
-{
-	Com_Printf("%s: TODO: Unimplemented\n", __func__);
-}
-
-
 // ************************************************************************************************
 // P_Freelib
 // ---------
@@ -207,10 +194,10 @@ P_Load(void)
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
 
 	playerImport.G_L_Sound = G_set_looping_sound;
-	playerImport.G_Sound = G_SoundEvent;
+	playerImport.G_Sound = gi.sound;
 	playerImport.G_Trace = gi.trace;
-	playerImport.G_CreateEffect = P_CreateEffectEvent;
-	playerImport.G_RemoveEffects = P_RemoveEffectsEvent;
+	playerImport.G_CreateEffect = gi.CreateEffect;
+	playerImport.G_RemoveEffects = G_RemoveEffects;
 
 	// Server (game) function callbacks that have no client side equivalent.
 

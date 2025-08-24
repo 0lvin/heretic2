@@ -29,9 +29,7 @@ entity_state_t *G_GetEntityStatePtr(edict_t *entity)
 
 void PlayerClimbSound(playerinfo_t *playerinfo, char *name)
 {
-	G_SoundEvent(SND_PRED_ID53,
-				playerinfo->leveltime,
-				(edict_t *)playerinfo->self,
+	gi.sound(playerinfo->self,
 				CHAN_VOICE,
 				gi.soundindex(name),
 				0.75,

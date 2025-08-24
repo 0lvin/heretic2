@@ -35,9 +35,7 @@ void ChickenStepSound(playerinfo_t *playerinfo, float value)
 	{
 		name = (irand(0,1)) ? "monsters/tbeast/step1.wav" : "monsters/tbeast/step2.wav";
 
-		pi.G_Sound(SND_PRED_ID46,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_WEAPON,
 							pi.G_SoundIndex(name),
 							1.0,
@@ -72,9 +70,7 @@ void PlayerChickenBite(playerinfo_t *playerinfo)
 
 void PlayerChickenSqueal(playerinfo_t *playerinfo)
 {
-	pi.G_Sound(SND_PRED_ID47,
-						playerinfo->leveltime,
-						playerinfo->self,
+	pi.G_Sound(playerinfo->self,
 						CHAN_WEAPON,
 						pi.G_SoundIndex(""),
 						1.0,
@@ -101,7 +97,7 @@ void PlayerChickenCluck(playerinfo_t *playerinfo, float force)
 	else
 		soundname = (irand(0,1)) ? "monsters/chicken/cluck1.wav" : "monsters/chicken/cluck2.wav";
 
-	pi.G_Sound(SND_PRED_ID48,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
+	pi.G_Sound(playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
 }
 
 // ***********************************************************************************************
@@ -176,7 +172,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		}
 	}
 
-	pi.G_Sound(SND_PRED_ID49,playerinfo->leveltime,playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
+	pi.G_Sound(playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
 
 	return ASEQ_FALL;
 }
@@ -196,8 +192,7 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 
 		playerinfo->velocity[2] += CHICKEN_GLIDE;
 
-		pi.G_CreateEffect(EFFECT_PRED_ID13,
-								   playerinfo->self,
+		pi.G_CreateEffect(playerinfo->self,
 								   FX_CHICKEN_EXPLODE,
 								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								   NULL,
@@ -220,8 +215,7 @@ void PlayerChickenFlap (playerinfo_t *playerinfo)
 
 	playerinfo->velocity[2] += CHICKEN_GLIDE;
 
-	pi.G_CreateEffect(EFFECT_PRED_ID14,
-							   playerinfo->self, // jmarshall: believe this is right.
+	pi.G_CreateEffect(playerinfo->self, // jmarshall: believe this is right.
 							   FX_CHICKEN_EXPLODE,
 							   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 							   NULL,

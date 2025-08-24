@@ -591,7 +591,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		}
 		else if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
-			pi.G_Sound(SND_PRED_ID32, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -931,7 +931,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID33, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1223,7 +1223,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID34, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//On a rope
 			return ASEQ_CLIMB_ON;
@@ -1259,7 +1259,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID35, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1369,7 +1369,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(SND_PRED_ID36, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}

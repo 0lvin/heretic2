@@ -27,8 +27,7 @@ void
 PlayerClearEffects(playerinfo_t *playerinfo)
 {
 	// Remove all special effects from the player.
-	pi.G_RemoveEffects(EFFECT_PRED_ID30,
-								playerinfo->self,
+	pi.G_RemoveEffects(playerinfo->self,
 								FX_REMOVE_EFFECTS);
 }
 
@@ -281,9 +280,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 			else
 			{
 				//Play a sound to tell the player they're out of mana
-				pi.G_Sound(SND_PRED_ID50,
-					playerinfo->leveltime,
-					playerinfo->self,
+				pi.G_Sound(playerinfo->self,
 					CHAN_VOICE,
 					pi.G_SoundIndex("*nomana.wav"), 0.75, ATTN_NORM, 0);
 			}
@@ -630,8 +627,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Red effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 4;		// .4 seconds is normal fireball throw time.
-			pi.G_CreateEffect(EFFECT_PRED_ID16,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_SPELLHANDS,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -643,8 +639,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Green effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 6;		// .6 seconds is normal fireball throw time
-			pi.G_CreateEffect(EFFECT_PRED_ID17,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_SPELLHANDS,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG8,
 									   NULL,
@@ -655,8 +650,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 		case HANDFX_FIREWALL:
 			if (lifetime == 0)
 				lifetime = 11;		// 1.1 seconds is normal fireball throw time
-			pi.G_CreateEffect(EFFECT_PRED_ID19,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_FIREHANDS,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 									   NULL,
@@ -677,8 +671,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (powerlevel >= STAFF_LEVEL_MAX)
 				powerlevel = STAFF_LEVEL_MAX-1;
 
-			pi.G_CreateEffect(EFFECT_PRED_ID20,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_STAFF,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -692,8 +685,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (lifetime == 0)
 				lifetime = 8;
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(EFFECT_PRED_ID18,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_SPELLHANDS,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG6|CEF_FLAG7,
 									   NULL,
@@ -703,8 +695,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_REDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(EFFECT_PRED_ID21,
-									   playerinfo->self,
+			pi.G_CreateEffect(playerinfo->self,
 									   FX_WEAPON_REDRAINGLOW,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -714,35 +705,32 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_POWERREDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(EFFECT_PRED_ID22,
-									   playerinfo->self,
-									   FX_WEAPON_REDRAINGLOW,
-									   CEF_OWNERS_ORIGIN | CEF_FLAG6,
-									   NULL,
-									   "b",
-									   -1);
+			pi.G_CreateEffect(playerinfo->self,
+								FX_WEAPON_REDRAINGLOW,
+								CEF_OWNERS_ORIGIN | CEF_FLAG6,
+								NULL,
+								"b",
+								-1);
 			break;
 
 		case HANDFX_PHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(EFFECT_PRED_ID23,
-									   playerinfo->self,
-									   FX_FIREHANDS,
-									   CEF_OWNERS_ORIGIN,
-									   NULL,
-									   "b",
-									   -1);
+			pi.G_CreateEffect(playerinfo->self,
+								FX_FIREHANDS,
+								CEF_OWNERS_ORIGIN,
+								NULL,
+								"b",
+								-1);
 			break;
 
 		case HANDFX_POWERPHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(EFFECT_PRED_ID24,
-									   playerinfo->self,
-									   FX_FIREHANDS,
-									   CEF_OWNERS_ORIGIN,
-									   NULL,
-									   "b",
-									   -1);
+			pi.G_CreateEffect(playerinfo->self,
+								FX_FIREHANDS,
+								CEF_OWNERS_ORIGIN,
+								NULL,
+								"b",
+								-1);
 			break;
 
 		case HANDFX_MACEBALL:

@@ -499,9 +499,9 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 
 			case 0:
 				if (chance < 50)
-					pi.G_Sound(SND_PRED_ID40,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
+					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
 				else
-					pi.G_Sound(SND_PRED_ID41,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
+					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
 
 				break;
 
@@ -509,18 +509,18 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 
 			case 1:
 				if (chance < 33)
-					pi.G_Sound(SND_PRED_ID42,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
+					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
 				else if (chance < 66)
-					pi.G_Sound(SND_PRED_ID43,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);
+					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);
 				else
-					pi.G_Sound(SND_PRED_ID44,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough3.wav"), 1.0, ATTN_NORM, 0);
+					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough3.wav"), 1.0, ATTN_NORM, 0);
 
 				break;
 
 			// Small.
 
 			case 2:
-				pi.G_Sound(SND_PRED_ID45,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*ow.wav"), 1.0, ATTN_NORM, 0);
+				pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*ow.wav"), 1.0, ATTN_NORM, 0);
 				break;
 		}
 	}

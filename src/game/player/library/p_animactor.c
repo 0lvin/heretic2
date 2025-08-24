@@ -177,9 +177,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(EFFECT_PRED_ID26,
-											playerinfo->self,
-											FX_SPELLHANDS);
+				pi.G_RemoveEffects(playerinfo->self, FX_SPELLHANDS);
 			}
 			break;
 
@@ -188,9 +186,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(EFFECT_PRED_ID27,
-											playerinfo->self,
-											FX_WEAPON_REDRAINGLOW);
+				pi.G_RemoveEffects(playerinfo->self, FX_WEAPON_REDRAINGLOW);
 			}
 			break;
 
@@ -200,9 +196,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(EFFECT_PRED_ID28,
-											playerinfo->self,
-											FX_FIREHANDS);
+				pi.G_RemoveEffects(playerinfo->self, FX_FIREHANDS);
 			}
 			break;
 
@@ -212,10 +206,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(EFFECT_PRED_ID29,
-											playerinfo->self,
-											FX_STAFF);
-
+				pi.G_RemoveEffects(playerinfo->self, FX_STAFF);
 				playerinfo->effects &= ~EF_BLOOD_ENABLED;
 			}
 
@@ -237,9 +228,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 {
 	panimmove_t	*move;
 	float		yaw_delta;
-	gclient_t *client;
 
-	client = playerinfo->self->client;
 	// Check for death.
 	if (playerinfo->deadflag == DEAD_DEAD)
 	{
@@ -280,18 +269,18 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		if (playerinfo->flags & PLAYER_FLAG_ONROPE)
 		{
 			//Turn off the rope graphic immediately
-			((edict_t *)playerinfo->self)->teamchain->count = 0;
-			((edict_t *)playerinfo->self)->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
-			((edict_t *)playerinfo->self)->teamchain->enemy = NULL;
-			((edict_t *)playerinfo->self)->teamchain = NULL;
+			playerinfo->self->teamchain->count = 0;
+			playerinfo->self->teamchain->teamchain->s.effects &= ~EF_ALTCLIENTFX;
+			playerinfo->self->teamchain->enemy = NULL;
+			playerinfo->self->teamchain = NULL;
 
-			((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
+			playerinfo->self->monsterinfo.jump_time = playerinfo->leveltime + 2;
 			playerinfo->flags &= ~PLAYER_FLAG_RELEASEROPE;
 			playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
 
 			if (!(playerinfo->edictflags & FL_CHICKEN))
 			{
-				if (((edict_t *)playerinfo->self)->health <= 0)
+				if (playerinfo->self->health <= 0)
 				{
 					PlayerAnimSetLowerSeq(playerinfo, ASEQ_DEATH_A);
 				}
@@ -310,16 +299,14 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			  (!(playerinfo->flags & PLAYER_FLAG_RELEASEROPE)) &&
 				(playerinfo->targetEnt) &&
 			  (!(playerinfo->groundentity)) &&
-				(((edict_t *)playerinfo->self)->monsterinfo.jump_time < playerinfo->leveltime) &&
+				(playerinfo->self->monsterinfo.jump_time < playerinfo->leveltime) &&
 				(PlayerActionCheckRopeGrab(playerinfo,0)) &&
 				(!(playerinfo->deadflag)) ) //Climb a rope?
 	{
-		((edict_t *)playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 4;
+		playerinfo->self->monsterinfo.jump_time = playerinfo->leveltime + 4;
 		playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-		pi.G_Sound(SND_PRED_ID37,
-							playerinfo->leveltime,
-							playerinfo->self,
+		pi.G_Sound(playerinfo->self,
 							CHAN_VOICE,
 							pi.G_SoundIndex("player/ropegrab.wav"),
 							0.75,
@@ -334,17 +321,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 
 	if (!(playerinfo->edictflags & FL_CHICKEN) && (!(playerinfo->deadflag)))
 	{
-		//FIXME: Implement this with a debounce time
-		/*
-		if (!playerinfo->groundentity)
-		{
-			if (playerinfo->velocity[2] < PLAYER_SCREAM_THRESHOLD)
-			{
-				pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/falldeath1.wav"), 0.75, ATTN_NORM, 0);
-			}
-		}
-		*/
-
 		if (playerinfo->flags & PLAYER_FLAG_SLIDE)
 		{
 			//Make sure the player doesn't try to slide underwater
@@ -370,7 +346,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 								playerinfo->upvel += 225;
 								PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-								pi.G_Sound(SND_PRED_ID38,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
+								pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
 								return;
 							}
 						}
@@ -427,7 +403,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 						playerinfo->upvel += 225;
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-						pi.G_Sound(SND_PRED_ID39,playerinfo->leveltime,playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
+						pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
 					}
 					else if (PlayerSeqData2[playerinfo->lowerseq].collideseq != ASEQ_NONE)
 					{
@@ -740,8 +716,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	if (delta<15.0)
 	{
 		// Unimplemented.
-		pi.G_CreateEffect(EFFECT_PRED_ID11,
-								   playerinfo->self,
+		pi.G_CreateEffect(playerinfo->self,
 								   FX_FOOTSTEP,
 								   CEF_OWNERS_ORIGIN,
 								   playerinfo->origin,
@@ -760,8 +735,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	{
 		// Unimplemented.
 
-		pi.G_CreateEffect(EFFECT_PRED_ID12,
-								   playerinfo->self,
+		pi.G_CreateEffect(playerinfo->self,
 								   FX_FALLSHORT,
 								   CEF_OWNERS_ORIGIN,
 								   playerinfo->origin,

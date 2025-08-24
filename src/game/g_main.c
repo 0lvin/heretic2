@@ -310,12 +310,6 @@ void G_CleanLevel(void)
 	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
 }
 
-void G_SoundEvent(byte EventId, float leveltime, edict_t* ent, int channel, int soundindex, float volume, float attenuation, float timeofs)
-{
-	gi.sound(ent, channel, soundindex, volume, attenuation, timeofs);
-}
-
-
 /* =================================================================== */
 
 static void
