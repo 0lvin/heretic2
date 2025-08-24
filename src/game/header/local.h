@@ -1961,10 +1961,6 @@ typedef struct playerinfo_s
 
 	player_persistant_t	pers;
 
-	// Last usercmd_t.
-
-	usercmd_t			pcmd;
-
 	// Status of controller buttons.
 
 	int					buttons;
@@ -2111,7 +2107,7 @@ typedef struct
 	void (*PlayerInit)(playerinfo_t *playerinfo, int complete_reset);
 	void (*PlayerClearEffects)(playerinfo_t *playerinfo);
 	void (*PlayerUpdate)(playerinfo_t *playerinfo);
-	void (*PlayerUpdateCmdFlags)(playerinfo_t *playerinfo);
+	void (*PlayerUpdateCmdFlags)(gclient_t *client);
 	void (*PlayerUpdateModelAttributes)(gclient_t *client);
 } player_export_t;
 

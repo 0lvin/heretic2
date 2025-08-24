@@ -50,7 +50,7 @@
 void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
 void PlayerClearEffects(playerinfo_t *playerinfo);
 void PlayerUpdate(playerinfo_t *playerinfo);
-void PlayerUpdateCmdFlags(playerinfo_t *playerinfo);
+void PlayerUpdateCmdFlags(gclient_t *client);
 void PlayerUpdateModelAttributes(gclient_t *client);
 void PlayerSetHandFX(playerinfo_t *playerinfo, int handfxtype, int lifetime);
 void PlayerReleaseRope(playerinfo_t* playerinfo);
@@ -77,7 +77,6 @@ void PlayerPlayPain(playerinfo_t* playerinfo, int type);
 void PlayerIntLand(playerinfo_t* playerinfo_t, float landspeed);
 void PlayerClearEffects(playerinfo_t* playerinfo);
 void PlayerUpdate(playerinfo_t* playerinfo);
-void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
 const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
 

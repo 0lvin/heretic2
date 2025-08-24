@@ -32,11 +32,13 @@ PlayerClearEffects(playerinfo_t *playerinfo)
 }
 
 void
-PlayerUpdateCmdFlags(playerinfo_t *playerinfo)
+PlayerUpdateCmdFlags(gclient_t *client)
 {
 	usercmd_t *pcmd;
+	playerinfo_t *playerinfo;
 
-	pcmd = &(playerinfo->pcmd);
+	playerinfo = &client->playerinfo;
+	pcmd = &(client->pcmd);
 
 	// Look for the attack button being pressed.
 	if (pcmd->buttons & BUTTON_ATTACK)

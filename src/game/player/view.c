@@ -406,16 +406,11 @@ SetupPlayerinfo(edict_t *ent)
 	// Basically, just killing all buttons pressed while a cinematic is running - Probably not the best way to do this
 	// Jake 9/28/98
 	// need to reget this constantly, since it changes on the fly.
-	memcpy(&ent->client->playerinfo.pcmd, &ent->client->pcmd, sizeof(usercmd_t));
-
 	if (sv_cinematicfreeze->value)
 	{
 		ent->client->pcmd.buttons = 0;
 		ent->client->pcmd.sidemove = 0;
 		ent->client->pcmd.forwardmove = 0;
-		ent->client->playerinfo.pcmd.buttons = 0;
-		ent->client->playerinfo.pcmd.sidemove = 0;
-		ent->client->playerinfo.pcmd.forwardmove = 0;
 		ent->client->playerinfo.buttons = 0;
 		ent->client->playerinfo.remember_buttons = 0;
 	}
@@ -463,8 +458,6 @@ WritePlayerinfo(edict_t *ent)
 	// ********************************************************************************************
 	// Inputs & outputs.
 	// ********************************************************************************************
-	memcpy(&ent->client->pcmd, &ent->client->playerinfo.pcmd, sizeof(usercmd_t));
-
 	// From edict_t.
 	VectorCopy(ent->client->playerinfo.origin, ent->s.origin);
 	VectorCopy(ent->client->playerinfo.angles, ent->s.angles);
@@ -1079,7 +1072,7 @@ ClientEndServerFrame(edict_t *ent)
 	// ********************************************************************************************
 	SetupPlayerinfo(ent); /* Animation check */
 
-	playerExport->PlayerUpdateCmdFlags(&ent->client->playerinfo);
+	playerExport->PlayerUpdateCmdFlags(ent->client);
 
 	if (showbuoys->value) // Note this is a bit of a hack
 	{

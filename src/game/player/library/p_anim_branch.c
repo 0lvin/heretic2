@@ -547,7 +547,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_LEFT;
 
-		if (playerinfo->pcmd.buttons & BUTTON_RUN)
+		if (client->pcmd.buttons & BUTTON_RUN)
 			return ASEQ_DASH_LEFT_GO;
 
 		return ASEQ_STRAFEL;
@@ -559,7 +559,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_RIGHT;
 
-		if (playerinfo->pcmd.buttons & BUTTON_RUN)
+		if (client->pcmd.buttons & BUTTON_RUN)
 			return ASEQ_DASH_RIGHT_GO;
 
 		return ASEQ_STRAFER;
@@ -591,8 +591,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		}
 		else if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
-
+			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 			return ASEQ_CLIMB_ON;
 		}
 		else if (playerinfo->upperidle && PlayerActionCheckJumpGrab(playerinfo, 0))
