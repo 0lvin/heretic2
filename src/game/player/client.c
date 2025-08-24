@@ -1809,18 +1809,30 @@ InitClientPersistant(edict_t *ent)
 		return;
 	}
 
+	memset(&client->pers, 0, sizeof(client->pers));
 	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
 
-	// ********************************************************************************************
-	// Set up player's health.
-	// ********************************************************************************************
+
+	// Give just the sword-staff and flying-fist to the player as starting weapons.
+	item = FindItem("staff");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 1;
+
+	client->playerinfo.pers.weapon = item;
+	client->pers.lastweapon = item;
+	client->playerinfo.weap_ammo_index = 0;
+
+	AddWeaponToInventory(item, ent);
+	client->pers.defence = 0;
+
+	if (ctf->value)
+	{
+		/* Provide Grapple for ctf only */
+		item = FindItem("Grapple");
+		client->pers.inventory[ITEM_INDEX(item)] = 1;
+	}
 
 	client->pers.health = 100;
-
-	// ********************************************************************************************
-	// Set up maximums amounts for health, mana and ammo for bows and hellstaff.
-	// ********************************************************************************************
-
 	client->pers.max_health = 100;
 	client->pers.max_offmana = MAX_OFF_MANA;
 	client->pers.max_defmana = MAX_DEF_MANA;
@@ -1828,21 +1840,19 @@ InitClientPersistant(edict_t *ent)
 	client->pers.max_phoenarr = MAX_PHOENIX_AMMO;
 	client->pers.max_hellstaff = MAX_HELL_AMMO;
 
-	// ********************************************************************************************
-	// Give defensive and offensive weapons to player.
-	// ********************************************************************************************
+	client->pers.max_bullets = 200;
+	client->pers.max_shells = 100;
+	client->pers.max_rockets = 50;
+	client->pers.max_grenades = 50;
+	client->pers.max_cells = 200;
+	client->pers.max_slugs = 50;
 
-	client->playerinfo.pers.weapon = 0;
-	client->pers.defence = 0;
-
-	// Give just the sword-staff and flying-fist to the player as starting weapons.
-
-	item = FindItem("staff");
-	AddWeaponToInventory(item, ent);
-	client->pers.selected_item = ITEM_INDEX(item);
-	client->playerinfo.pers.weapon = item;
-	client->pers.lastweapon = item;
-	client->playerinfo.weap_ammo_index = 0;
+	client->pers.max_magslug = 50;
+	client->pers.max_trap = 5;
+	client->pers.max_prox = 50;
+	client->pers.max_tesla = 50;
+	client->pers.max_flechettes = 200;
+	client->pers.max_rounds = 100;
 
 	if (!(((int)dmflags->value) & DF_NO_OFFENSIVE_SPELL))
 	{
@@ -1867,44 +1877,6 @@ InitClientPersistant(edict_t *ent)
 
 	item = FindItem("Def-mana");
 	client->pers.inventory[ITEM_INDEX(item)] = client->pers.max_defmana / 2;
-
-#ifdef G_NOAMMO
-
-	// Start with all weapons if G_NOAMMO is defined.
-
-	gi.dprintf("Starting with unlimited ammo.\n");
-
-	item = FindItem("hell");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("array");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("rain");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("sphere");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("phoen");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("mace");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("fwall");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("meteor");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	item = FindItem("morph");
-	client->pers.inventory[ITEM_INDEX(item)] = 1;
-
-	client->bowtype = BOW_TYPE_REDRAIN;
-	client->armortype = ARMOR_TYPE_SILVER;
-
-#endif // G_NOAMMO
 
 	client->pers.connected = true;
 

@@ -4529,7 +4529,7 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using the sword-staff.
-	if (Weapon==playerinfo->pers.weapon)
+	if (Weapon == playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
@@ -4559,7 +4559,7 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using this particular spell.
-	if (Weapon==playerinfo->pers.weapon)
+	if (Weapon == playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
@@ -4608,7 +4608,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using the hell-staff.
-	if (Weapon==playerinfo->pers.weapon)
+	if (Weapon == playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
@@ -4654,7 +4654,7 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 	assert(playerinfo);
 
 	// See if we're already using the bow.
-	if (Weapon==playerinfo->pers.weapon)
+	if (Weapon == playerinfo->pers.weapon)
 		return;
 
 	// See if we're already switching...
