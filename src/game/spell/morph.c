@@ -377,7 +377,7 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster)
 		return;
 
 	// remove any hand or weapon effects
-	playerExport->TurnOffPlayerEffects(&self->client->playerinfo);
+	playerExport->TurnOffPlayerEffects(self);
 
 	// remove any shrine effects he has
 	PlayerKillShrineFX(self);
@@ -435,7 +435,7 @@ void MorphPlayerToChicken2(edict_t *self, edict_t *caster)
 		return;
 
 	// remove any hand or weapon effects
-	playerExport->TurnOffPlayerEffects(&self->client->playerinfo);
+	playerExport->TurnOffPlayerEffects(self);
 
 	// remove any shrine effects he has
 	PlayerKillShrineFX(self);

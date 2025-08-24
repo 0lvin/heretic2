@@ -10,7 +10,6 @@
 
 #include "../../header/local.h"
 
-extern void TurnOffPlayerEffects(playerinfo_t *playerinfo);
 extern void AnimUpdateFrame(playerinfo_t *playerinfo);
 extern void PlayerFallingDamage(playerinfo_t *playerinfo);
 

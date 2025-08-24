@@ -4346,12 +4346,11 @@ void PlayerPlaySlide(playerinfo_t *playerinfo)
 	pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
 }
 
-void PlayerInterruptAction(playerinfo_t *playerinfo)
+void
+PlayerInterruptAction(playerinfo_t *playerinfo)
 {
-	void TurnOffPlayerEffects(playerinfo_t *playerinfo);
-
 	//Shut off player effects from weapons or the like
-	TurnOffPlayerEffects(playerinfo);
+	TurnOffPlayerEffects(playerinfo->self);
 
 	//Remove weapon sounds from the player (technically looping weapons should do this for us, but better safe than annoyed)
 	pi.G_Sound(playerinfo->self,

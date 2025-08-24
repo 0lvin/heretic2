@@ -626,7 +626,7 @@ void hanging_chicken_think(edict_t *self)
 						}
 						playerExport->PlayerAnimSetLowerSeq(&trace.ent->client->playerinfo,ASEQ_KNOCKDOWN);
 						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo,ASEQ_NONE);
-						playerExport->TurnOffPlayerEffects(&trace.ent->client->playerinfo);
+						playerExport->TurnOffPlayerEffects(trace.ent);
 						VectorMA (trace.ent->velocity, 3, kvel, trace.ent->velocity);
 						knockbacktime = level.time + 3.0;
 					}

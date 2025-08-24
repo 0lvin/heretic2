@@ -2068,7 +2068,7 @@ typedef struct
 
 	qboolean (*BranchCheckDismemberAction)(playerinfo_t *playerinfo, int weapon);
 
-	void (*TurnOffPlayerEffects)(playerinfo_t *playerinfo);
+	void (*TurnOffPlayerEffects)(edict_t *self);
 	void (*AnimUpdateFrame)(playerinfo_t *playerinfo);
 	void (*PlayerFallingDamage)(playerinfo_t *playerinfo);
 

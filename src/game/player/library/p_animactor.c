@@ -161,13 +161,15 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 	}
 }
 
-void TurnOffPlayerEffects(playerinfo_t *playerinfo)
+void TurnOffPlayerEffects(edict_t *self)
 {
+	playerinfo_t *playerinfo;
 	gclient_t *client;
 
-	client = playerinfo->self->client;
-	// Make sure all effects are removed.
+	client = self->client;
+	playerinfo = &client->playerinfo;
 
+	// Make sure all effects are removed.
 	switch (client->pers.handfxtype)
 	{
 		case HANDFX_FIREBALL:
@@ -177,7 +179,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(playerinfo->self, FX_SPELLHANDS);
+				pi.G_RemoveEffects(self, FX_SPELLHANDS);
 			}
 			break;
 
@@ -186,7 +188,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(playerinfo->self, FX_WEAPON_REDRAINGLOW);
+				pi.G_RemoveEffects(self, FX_WEAPON_REDRAINGLOW);
 			}
 			break;
 
@@ -196,7 +198,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(playerinfo->self, FX_FIREHANDS);
+				pi.G_RemoveEffects(self, FX_FIREHANDS);
 			}
 			break;
 
@@ -206,7 +208,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(playerinfo->self, FX_STAFF);
+				pi.G_RemoveEffects(self, FX_STAFF);
 				playerinfo->effects &= ~EF_BLOOD_ENABLED;
 			}
 
