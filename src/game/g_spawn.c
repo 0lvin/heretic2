@@ -1100,7 +1100,7 @@ G_FixTeams(void)
 		}
 	}
 
-	gi.dprintf("%i teams repaired\n", c);
+	gi.dprintf("%i teams repaired with %d entities\n", c, c2);
 }
 
 static void
@@ -2581,7 +2581,7 @@ DynamicSpawnInit(void)
 
 		/* get lines count */
 		curr = buf_ai;
-		while(*curr)
+		while (*curr)
 		{
 			size_t linesize = 0;
 
@@ -2608,7 +2608,7 @@ DynamicSpawnInit(void)
 
 		/* get lines count */
 		curr = buf_ent;
-		while(*curr)
+		while (*curr)
 		{
 			size_t linesize = 0;
 
@@ -2641,7 +2641,7 @@ DynamicSpawnInit(void)
 
 		/* get lines count */
 		curr = buf_ai;
-		while(*curr)
+		while (*curr)
 		{
 			size_t linesize = 0;
 
@@ -2748,7 +2748,7 @@ DynamicSpawnInit(void)
 
 		/* get lines count */
 		curr = buf_ent;
-		while(*curr)
+		while (*curr)
 		{
 			size_t linesize = 0;
 
