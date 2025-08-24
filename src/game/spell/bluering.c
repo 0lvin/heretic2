@@ -108,7 +108,7 @@ void RingThink(edict_t *self)
 	self->count--;
 
 	// Since find radius is not specific enough for our needs, here is
-	while((ent = findringradius(ent, self->s.origin, RING_EFFECT_RADIUS*0.25*(RING_THINKS-self->count), self)))
+	while ((ent = findringradius(ent, self->s.origin, RING_EFFECT_RADIUS*0.25*(RING_THINKS-self->count), self)))
 	{
 		hit = false;
 		reflect = NULL;

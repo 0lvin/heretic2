@@ -403,7 +403,7 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 
 	if (r_detail->value == DETAIL_UBERHIGH)
 		debris->LifeTime = fxi.cl->time + 10000;
-	else if(!r_detail->value)
+	else if (!r_detail->value)
 		debris->LifeTime = fxi.cl->time + 1000;
 	else
 		debris->LifeTime = fxi.cl->time + 3000;
@@ -611,7 +611,7 @@ void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int mater
 			{
 				DoBloodSplash(holdorigin, 5, true);
 			}
-			else if(irand(0, 1))
+			else if (irand(0, 1))
 			{
 				CreateSinglePuff(holdorigin, 20.0);
 			}
@@ -688,7 +688,7 @@ void FXDebris(centity_t *owner, int type, int flags, vec3_t origin)
 	scale = sqrt(scale) * 0.08;
 	if (r_detail->value < DETAIL_NORMAL)
 		num = ClampI(size, 1, 5);
-	else if(r_detail->value == DETAIL_NORMAL)
+	else if (r_detail->value == DETAIL_NORMAL)
 		num = ClampI(size, 1, 12);
 	else if (r_detail->value == DETAIL_HIGH)
 		num = ClampI(size, 1, 16);
@@ -714,7 +714,7 @@ void FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
 		flags &= ~CEF_FLAG8;
 		altskin = true;
 	}
-	else if(flags&CEF_FLAG8)
+	else if (flags&CEF_FLAG8)
 	{//normal insect
 		material = MAT_INSECT;
 		flags &= ~CEF_FLAG8;
@@ -728,7 +728,7 @@ void FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
 	Vec3ScaleAssign(mag, mins);
 	if (r_detail->value < DETAIL_NORMAL)
 		num = ClampI(size, 1, 5);
-	else if(r_detail->value == DETAIL_NORMAL)
+	else if (r_detail->value == DETAIL_NORMAL)
 		num = ClampI(size, 1, 12);
 	else if (r_detail->value == DETAIL_HIGH)
 		num = ClampI(size, 1, 16);
@@ -912,7 +912,7 @@ qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 			self->flags &= ~CEF_FLAG6;
 			self->d_alpha = -0.01;
 		}
-		else if(flrand(0.0, 0.3) > AVG_VEC3T(self->r.scale))
+		else if (flrand(0.0, 0.3) > AVG_VEC3T(self->r.scale))
 		{
 			self->dlight = NULL;
 			self->flags &= ~CEF_FLAG6;

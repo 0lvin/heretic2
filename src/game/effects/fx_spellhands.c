@@ -117,7 +117,7 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner
 	color.c = 0xffffffff;
 
 	// Now draw the trail.
-	while(TrailLength-->0.0f)
+	while (TrailLength-->0.0f)
 	{
 		ce = ClientParticle_new(part_type, color, 400);
 		VectorCopy(Real_Trailstart,ce->origin);

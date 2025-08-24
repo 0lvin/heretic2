@@ -125,7 +125,7 @@ void UpdateSkeletons()
 							*angle = destAngle;
 						}
 					}
-					else if(joint->angVels[j] < 0)
+					else if (joint->angVels[j] < 0)
 					{
 						if (*angle < destAngle)
 						{
@@ -162,7 +162,7 @@ qboolean SetJointAngVel(int jointIndex, int angleIndex, float destAngle, float a
 		skeletalJoints[jointIndex].changed[angleIndex] = true;
 		return true;
 	}
-	else if(destAngle > joint->destAngles[angleIndex])
+	else if (destAngle > joint->destAngles[angleIndex])
 	{
 		skeletalJoints[jointIndex].destAngles[angleIndex] = destAngle;
 		skeletalJoints[jointIndex].angVels[angleIndex] = angSpeed;

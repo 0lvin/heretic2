@@ -197,7 +197,7 @@ void mssithraSound(edict_t *self, float soundnum, float channel, float attenuati
 
 	if (!attenuation)
 		attenuation = ATTN_NORM;
-	else if(attenuation == -1)
+	else if (attenuation == -1)
 		attenuation = ATTN_NONE;
 
 	gi.sound(self, (int)channel, Sounds[(int)(soundnum)], 1, (int)attenuation, 0);
@@ -436,7 +436,7 @@ void mssithraArrow(edict_t *self)
 	VectorSubtract(targ_pos, fire_spot, Forward);
 	VectorNormalize2(Forward, fire_dir);
 
-	while(num_shots)
+	while (num_shots)
 	{
 		arrow = G_Spawn();
 
@@ -612,7 +612,7 @@ void mmssithraRandomGrowlSound (edict_t *self)
 {
 	if (!irand(0,2))
 		gi.sound(self, CHAN_VOICE, Sounds[SND_GROWL1], 1, ATTN_NORM, 0);
-	else if(!irand(0,1))
+	else if (!irand(0,1))
 		gi.sound(self, CHAN_VOICE, Sounds[SND_GROWL2], 1, ATTN_NORM, 0);
 	else
 		gi.sound(self, CHAN_VOICE, Sounds[SND_GROWL3], 1, ATTN_NORM, 0);

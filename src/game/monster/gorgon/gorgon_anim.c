@@ -49,11 +49,11 @@ void gorgon_ai_run (edict_t *self, float dist)
 		self->dmg++;
 		if (self->dmg<GORGON_STEPS_INT1)//<5
 			offset = (float)(self->dmg) * GORGON_SWERVE_MULT;//0->5 * 4 = 0->20
-		else if(self->dmg<GORGON_STEPS_INT2)
+		else if (self->dmg<GORGON_STEPS_INT2)
 			offset = GORGON_SWERVE - (((float)(self->dmg) - GORGON_SWERVE_INT1) * GORGON_SWERVE_MULT);//20 - ((0->10 - 5) * 4) = 20->0
-		else if(self->dmg<GORGON_STEPS_INT3)
+		else if (self->dmg<GORGON_STEPS_INT3)
 			offset = -(((float)(self->dmg) - GORGON_SWERVE_INT2) * GORGON_SWERVE_MULT);
-		else if(self->dmg<GORGON_STEPS_INT4)
+		else if (self->dmg<GORGON_STEPS_INT4)
 			offset = -(GORGON_SWERVE - (((float)(self->dmg) - GORGON_SWERVE_INT3) * GORGON_SWERVE_MULT));
 		else
 			self->dmg = 0;

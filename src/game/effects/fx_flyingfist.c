@@ -62,7 +62,7 @@ FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
 		trailscale = FIST_WIMPY_SCALE;
 	}
 
-	while(i--)
+	while (i--)
 	{
 		TrailEnt = ClientEntity_new(FX_WEAPON_FLYINGFIST, 0, self->r.origin, NULL, 1000);
 		TrailEnt->r.flags |= RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
@@ -218,7 +218,7 @@ void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 			lightrad = 150;
 	}
 
-	while(i--)
+	while (i--)
 	{
 		if (!i)
 			SmokePuff=ClientEntity_new(type,flags,origin,NULL,500);

@@ -34,7 +34,7 @@ void SpellLightningShieldAttack(edict_t *self)
 	assert(self->client);
 
 	// find all the foundities in the area
-	while((found = newfindradius(found, self->s.origin, SHIELD_DAMAGE_RADIUS)))
+	while ((found = newfindradius(found, self->s.origin, SHIELD_DAMAGE_RADIUS)))
 	{	// Only attack monsters and players in deathmatch
 		if (found == self)		// don't hurt yourself
 			continue;

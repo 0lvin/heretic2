@@ -174,11 +174,11 @@ void ssithra_stand(edict_t *self, G_Message_t *msg)
 			else
 				SetAnim(self, ANIM_IDLEBASIC);
 		}
-		else if(self->curAnimID == ANIM_IDLEBASIC)
+		else if (self->curAnimID == ANIM_IDLEBASIC)
 		{
 			SetAnim(self, ANIM_STAND1);
 		}
-		else if(self->curAnimID == ANIM_IDLERIGHT)
+		else if (self->curAnimID == ANIM_IDLERIGHT)
 		{
 			if ((frandk() * 10)<6)//7
 				SetAnim(self, ANIM_STAND1);
@@ -259,7 +259,7 @@ void ssithra_gallop(edict_t *self, G_Message_t *msg)
 		self->spawnflags &= ~MSF_SSITHRA_NAMOR;
 		SetAnim(self,ANIM_NAMOR);
 	}
-	else if(self->spawnflags&MSF_SSITHRA_SPIN)//Spin
+	else if (self->spawnflags&MSF_SSITHRA_SPIN)//Spin
 	{
 		self->spawnflags &= ~MSF_SSITHRA_SPIN;
 		if (irand(0,1))
@@ -298,14 +298,14 @@ void ssithra_decide_stand(edict_t *self)
 		{
 			if ((frandk() * 10)<7)//9
 				SetAnim(self, ANIM_STAND1);
-			else if((frandk() * 10)<7)//9
+			else if ((frandk() * 10)<7)//9
 				SetAnim(self, ANIM_IDLERIGHT);
-			else if((frandk() * 10)<5)//9
+			else if ((frandk() * 10)<5)//9
 				SetAnim(self, ANIM_LOOKRIGHT);
 			else
 				SetAnim(self, ANIM_LOOKLEFT);
 		}
-		else if(self->curAnimID == ANIM_IDLERIGHT||
+		else if (self->curAnimID == ANIM_IDLERIGHT||
 			self->curAnimID == ANIM_LOOKLEFT||
 			self->curAnimID == ANIM_LOOKRIGHT)
 		{
@@ -351,7 +351,7 @@ void ssithra_decide_swimforward(edict_t *self)
 	{//Not actually in water!
 		SetAnim(self, ANIM_RUN1);
 	}
-	else if(self->curAnimID == ANIM_WATER_SHOOT)
+	else if (self->curAnimID == ANIM_WATER_SHOOT)
 		SetAnim(self, ANIM_TRANSDOWN);
 
 	SsithraCheckMood(self);
@@ -893,7 +893,7 @@ void ssithraCheckJump (edict_t *self)
 				}
 			}
 		}
-		else if(mgai_debug->value)
+		else if (mgai_debug->value)
 		{
 			gi.dprintf("checkdown: not clear infront\n");
 		}
@@ -1905,7 +1905,7 @@ void ssithraSound(edict_t *self, float soundnum, float channel, float attenuatio
 
 	if (!attenuation)
 		attenuation = ATTN_NORM;
-	else if(attenuation == -1)
+	else if (attenuation == -1)
 		attenuation = ATTN_NONE;
 
 	if (soundnum == SND_SWIM)
@@ -2881,7 +2881,7 @@ qboolean ssithraAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 		else//spin around and wake up!
 			self->spawnflags |= MSF_SSITHRA_SPIN;
 	}
-	else if(!infront(self,enemy))
+	else if (!infront(self,enemy))
 	{
 		if (irand(0, 1)&&self->curAnimID!=ANIM_IDLEBASIC)
 		{//50% chance of startling them up if not already in startle anim

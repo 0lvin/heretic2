@@ -73,7 +73,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			strcat(LandSound,"land1.wav");
 		}
 	}
-	else if(playerinfo->lowerseq == ASEQ_FORWARD_FLIP_L ||
+	else if (playerinfo->lowerseq == ASEQ_FORWARD_FLIP_L ||
 		playerinfo->lowerseq == ASEQ_FORWARD_FLIP_R ||
 		playerinfo->upperseq == ASEQ_FORWARD_FLIP_L ||
 		playerinfo->upperseq == ASEQ_FORWARD_FLIP_R)

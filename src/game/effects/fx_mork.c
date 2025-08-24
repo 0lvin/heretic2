@@ -144,7 +144,7 @@ void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, ve
 
 	i = GetScaledCount(irand(12,16), 0.8);
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -284,7 +284,7 @@ qboolean FXMPPExplosionCoreUpdate (client_entity_t *self, centity_t *owner)
 
 	if (self->r.frame < 11)
 		self->r.frame++;
-	else if(self->r.frame == 11)
+	else if (self->r.frame == 11)
 	{
 		self->alpha = 0.0;
 		self->d_alpha = 0.0;
@@ -463,7 +463,7 @@ void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t
 
 	i = GetScaledCount(irand(12,16), 0.8);
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -683,7 +683,7 @@ qboolean MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
 		{
 			self->color.r-=dec_rate;
 		}
-		else if(self->color.r)
+		else if (self->color.r)
 			self->color.r--;
 		else
 			darken++;
@@ -707,7 +707,7 @@ qboolean MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
 			self->d_alpha = -0.01;
 			self->d_scale = 0.01;
 		}
-		else if(self->color.r<30 && self->d_alpha != -0.1)
+		else if (self->color.r<30 && self->d_alpha != -0.1)
 		{
 			self->d_alpha = -0.1;
 			self->d_scale = 0.1;
@@ -1112,7 +1112,7 @@ void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t d
 
 	i = GetScaledCount(irand(12,16), 0.8);
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 
@@ -1519,13 +1519,13 @@ void FXBuoy (centity_t *owner, int flags, vec3_t org, float white)
 
 	if (white)
 		fx->acceleration2[2] = BUOY_FX_ONEWAY;//white
-	else if(flags&CEF_FLAG6)
+	else if (flags&CEF_FLAG6)
 		fx->acceleration2[2] = BUOY_FX_START;//green
-	else if(flags&CEF_FLAG7)
+	else if (flags&CEF_FLAG7)
 		fx->acceleration2[2] = BUOY_FX_JUMP_FROM;//cyan
-	else if(flags&CEF_FLAG8)
+	else if (flags&CEF_FLAG8)
 		fx->acceleration2[2] = BUOY_FX_JUMP_TO;//blue - maybe 3 - yellow?
-	else if(flags&CEF_DONT_LINK)
+	else if (flags&CEF_DONT_LINK)
 		fx->acceleration2[2] = BUOY_FX_ACTIVATE;//magenta
 	else
 		fx->acceleration2[2] = BUOY_FX_END;//red

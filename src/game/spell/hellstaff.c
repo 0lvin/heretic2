@@ -254,7 +254,7 @@ void SpellCastHellstaff(edict_t *caster, vec3_t loc, vec3_t aimangles, vec3_t un
 					numHit++;
 				}
 
-			} while((trace.fraction < .99) && !(trace.contents & MASK_SOLID) && (numHit < HELLSTAFF_LASER_MAX_TARGETS) );
+			} while ((trace.fraction < .99) && !(trace.contents & MASK_SOLID) && (numHit < HELLSTAFF_LASER_MAX_TARGETS) );
 		}
 
 		// We altenate sound slots to make the quick-firing work well with the sounds.

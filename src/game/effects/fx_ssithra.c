@@ -58,7 +58,7 @@ FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 		self->SpawnInfo--;
 
 	i = GetScaledCount( irand(self->SpawnInfo >> 3, self->SpawnInfo >> 2), 0.8 );
-	while(i--)
+	while (i--)
 	{
 		TrailEnt = ClientEntity_new(FX_SSITHRA_ARROW, 0, self->r.origin, NULL, 1000);
 
@@ -192,7 +192,7 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 	LightColor.c = 0xff2040ff;
 	lightrad = 150;
 
-	while(i--)
+	while (i--)
 	{
 		paletteRGBA_t color;
 		float scale;
@@ -252,7 +252,7 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 	LightColor.c = 0xff0000ff;
 	lightrad = 200;
 
-	while(i--)
+	while (i--)
 	{
 		float scale;
 

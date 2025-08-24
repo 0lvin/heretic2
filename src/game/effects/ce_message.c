@@ -94,7 +94,7 @@ void ProcessMessages(client_entity_t *_this)
 
 	msgs = &_this->msgQ.msgs;
 
-	while(!SLList_IsEmpty(msgs))
+	while (!SLList_IsEmpty(msgs))
 	{
 		msg = (CE_Message_t*)SLList_Pop(msgs).t_void_p;
 
@@ -122,7 +122,7 @@ void ClearMessageQueue(client_entity_t *_this)
 
 	msgs = &_this->msgQ.msgs;
 
-	while(!SLList_IsEmpty(msgs))
+	while (!SLList_IsEmpty(msgs))
 	{
 		msg = (CE_Message_t*)SLList_Pop(msgs).t_void_p;
 

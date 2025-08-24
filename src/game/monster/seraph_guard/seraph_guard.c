@@ -561,7 +561,7 @@ void seraph_guard_melee(edict_t *self, G_Message_t *msg)
 			{
 				if (dist < 88 && !irand(0, 3))
 					SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);//punch
-				else if(irand(0, 4))
+				else if (irand(0, 4))
 				{
 					if (irand(0, 10))
 						SetAnim(self, SERAPH_GUARD_ANIM_MELEE1);
@@ -681,7 +681,7 @@ void seraph_guard_missile(edict_t *self, G_Message_t *msg)
 			else
 				SetAnim(self, SERAPH_GUARD_ANIM_MELEE2);
 		}
-		else if(ahead(self, self->enemy))
+		else if (ahead(self, self->enemy))
 			SetAnim(self, SERAPH_GUARD_ANIM_MISSILE);
 
 		return;

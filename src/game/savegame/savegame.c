@@ -267,7 +267,7 @@ Load_FileStrings(char *buffer, trig_message_t *msgtxt, int length)
 			p = strchr(startp,'@');	// Search for # which signifies a wav file
 			if (p)
 				*p = '\n';
-		} while(p);
+		} while (p);
 
 		return_p += 2;	// Hop over 13 10
 		startp = return_p;	// Advance to next string

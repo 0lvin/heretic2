@@ -3307,7 +3307,7 @@ BecomeDebris2(edict_t *self, float damage)
 
 		if (self->solid == SOLID_BSP)
 			size *= 3;
-		else if(self->classID == CID_MOTHER)
+		else if (self->classID == CID_MOTHER)
 			size *= 10;
 
 		if (!self->mass)
@@ -3355,7 +3355,7 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 		{
 			mat = MAT_STONE;
 		}
-		else if(violence > VIOLENCE_NORMAL)
+		else if (violence > VIOLENCE_NORMAL)
 		{
 			NoOfChunks *= (violence - VIOLENCE_NORMAL);
 			if (NoOfChunks > 255)

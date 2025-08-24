@@ -727,7 +727,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 			}
 		}
 	}
-	else if(self->fire_damage_time>0)
+	else if (self->fire_damage_time>0)
 	{
 		self->fire_damage_time = 0;
 //		G_RemoveEffects(self, FX_FIRE_ON_ENTITY);//turn off CFX too
@@ -932,7 +932,7 @@ G_RunFrame(void)
 			{
 				ent->groundentity = NULL;
 			}
-			else if(ent->groundentity->linkcount != ent->groundentity_linkcount)
+			else if (ent->groundentity->linkcount != ent->groundentity_linkcount)
 			{	// if the ground entity moved, make sure we are still on it
 				ent->groundentity = NULL;
 

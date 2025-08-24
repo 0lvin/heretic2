@@ -226,7 +226,7 @@ static void SpherePowerLaserThink(edict_t *self)
 		}
 		traceBuddy = tr.ent;
 		numHit++;
-	}while((tr.fraction < .99)&&(tr.contents != MASK_SOLID)&&(numHit < MAX_REFLECT));
+	}while ((tr.fraction < .99)&&(tr.contents != MASK_SOLID)&&(numHit < MAX_REFLECT));
 
 	VectorSubtract(tr.endpos, startPos, tempVect);
 	traceDist = VectorLength(tempVect);
@@ -401,7 +401,7 @@ void SphereExplodeThink(edict_t *self)
 {
 	edict_t *ent=NULL;
 
-	while((ent = newfindradius(ent, self->s.origin, self->dmg_radius)))
+	while ((ent = newfindradius(ent, self->s.origin, self->dmg_radius)))
 	{
 		if (ent->takedamage && ent != self->owner && ent->fire_timestamp < self->fire_timestamp)
 		{

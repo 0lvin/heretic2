@@ -305,7 +305,7 @@ void seraph_enforce(edict_t *self)
 
 	ogle = NULL;
 
-	while((ogle = newfindradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
+	while ((ogle = newfindradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
 	{
 		if (ogle->classID != CID_OGLE)
 			continue;
@@ -366,7 +366,7 @@ void seraph_oversee(edict_t *self)
 	edict_t	*ogle;
 	ogle=NULL;
 
-	while((ogle = newfindradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
+	while ((ogle = newfindradius(ogle, self->s.origin, OVERLORD_RADIUS)) != NULL)
 	{
 		if (ogle->ai_mood != AI_MOOD_REST)
 			continue;
@@ -669,7 +669,7 @@ void seraph_pain(edict_t *self, G_Message_t *msg)
 		{
 			if (!self->enemy)
 				self->enemy = attacker;
-			else if(M_DistanceToTarget(self, self->enemy) > self->melee_range)
+			else if (M_DistanceToTarget(self, self->enemy) > self->melee_range)
 			{
 				if (self->enemy->client)
 					self->oldenemy = self->enemy;

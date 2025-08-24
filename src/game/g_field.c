@@ -236,7 +236,7 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 		}
 		return;
 	}
-	else if(self->spawnflags & TSF_BUOY_TELEPORT_UNSAFE)
+	else if (self->spawnflags & TSF_BUOY_TELEPORT_UNSAFE)
 	{
 		if (MG_MonsterAttemptTeleport(monster, found_buoy->origin, true))
 		{
@@ -451,7 +451,7 @@ void SP_trigger_goto_buoy(edict_t *self)
 		G_FreeEdict(self);
 		return;
 	}
-	else if(showbuoys->value)
+	else if (showbuoys->value)
 	{
 		self->think = trigger_goto_buoy_find_target;
 		self->nextthink = level.time + 0.5;

@@ -369,9 +369,9 @@ void plagueElf_strike (edict_t *self)
 
 			if (!(self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW))
 				damage+=PLAGUEELF_DMG_HOE;
-			else if(!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
+			else if (!(self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW))
 				damage+=PLAGUEELF_DMG_GAFF;
-			else if(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
+			else if (self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
 				damage+=PLAGUEELF_DMG_HAMMER;
 
 			//Hurt whatever we were whacking away at
@@ -452,9 +452,9 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 		chance = irand(0,3);
 		if (chance == 0)
 			SetAnim(self, PLAGUEELF_ANIM_DIE1);
-		else if(chance == 1)
+		else if (chance == 1)
 			SetAnim(self, PLAGUEELF_ANIM_DIE2);
-		else if(chance == 2)
+		else if (chance == 2)
 			SetAnim(self, PLAGUEELF_ANIM_DIE3);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_DIE4);
@@ -463,9 +463,9 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 	{
 		if (self->count == 1)
 			SetAnim(self, PLAGUEELF_ANIM_DIE1);
-		else if(self->count == 2)
+		else if (self->count == 2)
 			SetAnim(self, PLAGUEELF_ANIM_DIE2);
-		else if(self->count == 3)
+		else if (self->count == 3)
 			SetAnim(self, PLAGUEELF_ANIM_DIE3);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_DIE4);
@@ -1204,7 +1204,7 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 		self->monsterinfo.aiflags |= AI_NO_MISSILE;
 	}
-	else if(self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
+	else if (self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
 	{
 		self->monsterinfo.aiflags |= AI_NO_MELEE;
 		if (self->missile_range)
@@ -1278,7 +1278,7 @@ void plagueElf_pause (edict_t *self)
 			if (self->s.color[3] > 50 && self->pre_think!=pelf_phase_out)
 				pelf_init_phase_out(self);
 		}
-		else if(self->s.color[3] && self->pre_think!=pelf_phase_out)
+		else if (self->s.color[3] && self->pre_think!=pelf_phase_out)
 			pelf_init_phase_out(self);
 	}
 
@@ -1332,7 +1332,7 @@ void plagueElf_pause (edict_t *self)
 			}
 			SetAnim(self, PLAGUEELF_ANIM_SCARED);
 		}
-		else if(irand(0,1))
+		else if (irand(0,1))
 			SetAnim(self, PLAGUEELF_ANIM_CRAZY_A);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_CRAZY_B);
@@ -1466,7 +1466,7 @@ void plagueElf_walk(edict_t *self, G_Message_t *msg)
 
 	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, PLAGUEELF_ANIM_DELAY);
-	else if(irand(0, 1))
+	else if (irand(0, 1))
 		SetAnim(self, PLAGUEELF_ANIM_WALK1);
 	else
 		SetAnim(self, PLAGUEELF_ANIM_WALK2);
@@ -1599,7 +1599,7 @@ void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float tim
 {
 	edict_t *ent = NULL, *last_valid = NULL;
 
-	while((ent = newfindradius(ent, self->s.origin, PLAGUEELF_SUPPORT_RADIUS)) != NULL)
+	while ((ent = newfindradius(ent, self->s.origin, PLAGUEELF_SUPPORT_RADIUS)) != NULL)
 	{
 		//Not us
 		if (ent==self)
@@ -2039,7 +2039,7 @@ void SP_monster_plagueElf (edict_t *self)
 	{
 		G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 	}
-	else if(self->spawnflags & MSF_PELF_CINEMATIC)
+	else if (self->spawnflags & MSF_PELF_CINEMATIC)
 	{
 		self->svflags|=SVF_FLOAT;
 		self->monsterinfo.c_mode = 1;
@@ -2082,7 +2082,7 @@ void SP_monster_plagueElf (edict_t *self)
 			self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 			self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 		}
-		else if(chance < 2)
+		else if (chance < 2)
 		{
 			//show the hoe
 			self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;

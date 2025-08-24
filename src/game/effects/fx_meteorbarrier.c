@@ -72,7 +72,7 @@ static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_
 		return true;
 	if (numtrails <= 0)
 		numtrails = 1;
-	while(numtrails-->0)
+	while (numtrails-->0)
 	{
 		paletteRGBA_t color;
 

@@ -769,7 +769,7 @@ G_SetStats(edict_t *ent)
 
 		if ((item->flags & IT_PUZZLE) && pers->inventory[i])
 		{
-			 if(count > STAT_PUZZLE_ITEM4)
+			 if (count > STAT_PUZZLE_ITEM4)
 			 {
 				break;
 			 }

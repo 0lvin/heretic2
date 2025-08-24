@@ -176,7 +176,7 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	{
 		return ASEQ_LSTAIR16;
 	}
-	else if((leftfoot.fraction == 1.0) && !leftfoot.startsolid && !leftfoot.allsolid)
+	else if ((leftfoot.fraction == 1.0) && !leftfoot.startsolid && !leftfoot.allsolid)
 	{
 		return ASEQ_RSTAIR16;
 	}
@@ -186,19 +186,19 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 
 		if (footdiff >= 13.0)			//right foot 13 or more higher
 			return ASEQ_RSTAIR16;
-		else if(footdiff >= 9.0)		//right foot 9 or more higher
+		else if (footdiff >= 9.0)		//right foot 9 or more higher
 			return ASEQ_RSTAIR12;
-		else if(footdiff >= 5.0)		//right foot 8 or more higher
+		else if (footdiff >= 5.0)		//right foot 8 or more higher
 			return ASEQ_RSTAIR8;
-		else if(footdiff >= 2.0)		//right foot 2 or more higher
+		else if (footdiff >= 2.0)		//right foot 2 or more higher
 			return ASEQ_RSTAIR4;
-		else if(footdiff >= -2.0)		//flat
+		else if (footdiff >= -2.0)		//flat
 			return ASEQ_NONE;
-		else if(footdiff >= -5.0)		//left foot 4 or less higher
+		else if (footdiff >= -5.0)		//left foot 4 or less higher
 			return ASEQ_LSTAIR4;
-		else if(footdiff >= -9.0)		//left foot 8 or less higher
+		else if (footdiff >= -9.0)		//left foot 8 or less higher
 			return ASEQ_LSTAIR8;
-		else if(footdiff >= -13.0)		//left foot 12 or less higher
+		else if (footdiff >= -13.0)		//left foot 12 or less higher
 			return ASEQ_LSTAIR12;
 
 		return ASEQ_LSTAIR16;
@@ -277,14 +277,14 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_FWD])
 			return ASEQ_USWIMF_GO;
 	}
-	else if(playerinfo->seqcmd[ACMDU_ATTACK])
+	else if (playerinfo->seqcmd[ACMDU_ATTACK])
 	{
 		if (playerinfo->seqcmd[ACMDL_FWD])
 			return(ASEQ_RUNF);
 		else
 			return(ASEQ_WSWORD_SPIN);
 	}
-	else if(playerinfo->seqcmd[ACMDL_JUMP])
+	else if (playerinfo->seqcmd[ACMDL_JUMP])
 	{
 		if (playerinfo->seqcmd[ACMDL_WALK_F])
 			return(ASEQ_JUMPFWD_WGO);
@@ -1930,7 +1930,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			{
 				return ASEQ_WSWORD_DOWNSTAB;
 			}
-			else if(!pi.irand(playerinfo,0, 4))
+			else if (!pi.irand(playerinfo,0, 4))
 			{
 				return(ASEQ_WSWORD_STEP);
 			}

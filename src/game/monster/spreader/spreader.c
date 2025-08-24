@@ -293,7 +293,7 @@ void spreader_duckpause(edict_t *self)
 			SetAnim(self, ANIM_DUCKATTACK);
 		else if ( !irand(0,10) || stay_duck)
 			SetAnim(self, ANIM_DUCKSTILL);
-		else if(spreader_check_uncrouch(self))
+		else if (spreader_check_uncrouch(self))
 			SetAnim(self, ANIM_DUCKUP);
 		else
 			SetAnim(self, ANIM_DUCKSTILL);
@@ -543,7 +543,7 @@ void spreader_missile(edict_t *self, G_Message_t *msg)
 			//See what the predicted outcome is
 			if (!(self->monsterinfo.aiflags & AI_NO_MELEE) && ret && (M_CheckMeleeHit( self, 200, &trace) == self->enemy) && (chance < 25))
 				SetAnim(self, ANIM_RUNATTACK);
-			else if(self->monsterinfo.aiflags & AI_NO_MISSILE)
+			else if (self->monsterinfo.aiflags & AI_NO_MISSILE)
 				SetAnim(self, ANIM_RUN1);
 			else
 				SetAnim(self, ANIM_ATTACK1);
@@ -559,7 +559,7 @@ void spreader_fallback(edict_t *self, G_Message_t *msg)
 {
 	if (self->spawnflags&MSF_FIXED)
 		SetAnim(self, ANIM_DELAY);
-	else if(!(self->monsterinfo.aiflags & AI_NO_MELEE))
+	else if (!(self->monsterinfo.aiflags & AI_NO_MELEE))
 		SetAnim(self, ANIM_BACKATTACK);
 	else
 		SetAnim(self, ANIM_BACKUP);
@@ -1160,7 +1160,7 @@ void spreaderFly (edict_t *self)
 		self->think = spreaderDropDown;
 		self->nextthink = level.time + flrand(1.5, 3);
 	}
-	else if(self->health<=0)
+	else if (self->health<=0)
 	{
 		VectorClear(self->avelocity);
 		//spreader_death(self);

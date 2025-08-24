@@ -83,7 +83,7 @@ static void RipperExplodeBallThink(edict_t *self)
 			tracebuddy = trace.ent;
 			numHit++;
 		}
-	} while((trace.fraction < .99) && !(trace.contents & MASK_SOLID) && (numHit < 6) );
+	} while ((trace.fraction < .99) && !(trace.contents & MASK_SOLID) && (numHit < 6) );
 
 	// Prevent any further transmission of this entity to clients.
 	self->svflags |= SVF_NOCLIENT;

@@ -275,11 +275,11 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	udot = DotProduct(up, point_dir);
 	if (udot>.666)
 		Vertical = 4;
-	else if(udot>.333)
+	else if (udot>.333)
 		Vertical = 3;
-	else if(udot>-.333)
+	else if (udot>-.333)
 		Vertical = 2;
-	else if(udot>-.666)
+	else if (udot>-.666)
 		Vertical = 1;
 	else
 		Vertical = 0;
@@ -288,11 +288,11 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	fdot = DotProduct(forward, point_dir);
 	if (fdot>.666)
 		Forward = 4;
-	else if(fdot>.333)
+	else if (fdot>.333)
 		Forward = 3;
-	else if(fdot>-.333)
+	else if (fdot>-.333)
 		Forward = 2;
-	else if(fdot>-.666)
+	else if (fdot>-.666)
 		Forward = 1;
 	else
 		Forward = 0;
@@ -301,11 +301,11 @@ HitLocation_t MG_GetHitLocation(edict_t *target, edict_t *inflictor, vec3_t ppoi
 	rdot = DotProduct(right, point_dir);
 	if (rdot>.666)
 		Lateral = 4;
-	else if(rdot>.333)
+	else if (rdot>.333)
 		Lateral = 3;
-	else if(rdot>-.333)
+	else if (rdot>-.333)
 		Lateral = 2;
-	else if(rdot>-.666)
+	else if (rdot>-.666)
 		Lateral = 1;
 	else
 		Lateral = 0;

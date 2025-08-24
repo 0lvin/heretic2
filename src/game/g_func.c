@@ -4878,7 +4878,7 @@ void monsterspawner_go(edict_t *self)
 		AngleVectors(angle, forward, NULL, NULL);
 		VectorMA(self->s.origin, self->attenuation, forward, monster->s.origin);
 	}
-	else if(self->spawnflags & 2)//randombuoy
+	else if (self->spawnflags & 2)//randombuoy
 	{
 		//STEP 0: who are we after?
 		if (self->enemy)
@@ -4942,7 +4942,7 @@ pickbuoy:
 
 		if (monster->mintel > 7)
 			o_mintel = 7;
-		else if(monster->mintel < 3)
+		else if (monster->mintel < 3)
 			o_mintel = 3;
 		else
 			o_mintel = monster->mintel;

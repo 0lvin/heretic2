@@ -113,7 +113,7 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 		dur = 500;
 
 	i=0;
-	while(TrailLength>0.0)
+	while (TrailLength>0.0)
 	{
 		i++;
 		if (i>=40)

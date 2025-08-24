@@ -78,7 +78,7 @@ client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t dir
 			newEnt->up[1] = 0;
 			newEnt->up[2] = 1;
 		}
-		else if(newEnt->direction[0] == 0 && newEnt->direction[1] == 0)
+		else if (newEnt->direction[0] == 0 && newEnt->direction[1] == 0)
 		{	//ceiling, floor
 			newEnt->up[0] = 1;
 			newEnt->up[1] = 0;
@@ -175,7 +175,7 @@ void RemoveEffectList(client_entity_t **root)
 	assert(root);
 	assert(*root);
 
-	while(*root)
+	while (*root)
 	{
 		RemoveEffectFromList(root, NULL);
 	}
@@ -189,7 +189,7 @@ void RemoveOwnedEffectList(centity_t *owner)
 	assert(root);
 	assert(*root);
 
-	while(*root)
+	while (*root)
 	{
 		RemoveEffectFromList(root, owner);
 	}

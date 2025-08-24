@@ -536,7 +536,7 @@ void ogle_init_overlord(edict_t *self)
 {
 	edict_t	*seraph = NULL;
 
-	while((seraph = G_Find(seraph, FOFS(targetname), self->target)) != NULL)
+	while ((seraph = G_Find(seraph, FOFS(targetname), self->target)) != NULL)
 	{
 		if (seraph->classID != CID_SERAPH_OVERLORD)
 			continue;
@@ -565,7 +565,7 @@ void ogle_sing (edict_t *self)
 	switch( self->noise_index )
 	{
 	case 0:
-		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
+		while ((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
 			if (!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS1], 0.25, ATTN_NORM, 0);
@@ -580,7 +580,7 @@ void ogle_sing (edict_t *self)
 		break;
 
 	case 2:
-		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
+		while ((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
 			if (!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS2], 0.25, ATTN_NORM, 0);
@@ -594,7 +594,7 @@ void ogle_sing (edict_t *self)
 		break;
 
 	case 4:
-		while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
+		while ((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 		{
 			if (!ogle->monsterinfo.awake)
 				gi.sound(ogle, CHAN_VOICE, sounds[SND_CHORUS3], 0.25, ATTN_NORM, 0);
@@ -1196,7 +1196,7 @@ void ogle_death_pain(edict_t *self, G_Message_t *msg)
 		BecomeDebris(self);
 		return;
 	}
-	else if(msg)
+	else if (msg)
 		MG_parse_dismember_msg(self, msg);
 }
 
@@ -1254,7 +1254,7 @@ qboolean ogle_findtarget (edict_t *self)
 	edict_t		*found = NULL;
 
 	//take down weak overlords
-	while((found = newfindradius(found, self->s.origin, 1024)))
+	while ((found = newfindradius(found, self->s.origin, 1024)))
 	{
 		if (found->classID == CID_SERAPH_OVERLORD && found->health > 0 && (found->health<SERAPH_HEALTH/2 || found->ai_mood == AI_MOOD_FLEE))
 		{
@@ -1267,7 +1267,7 @@ qboolean ogle_findtarget (edict_t *self)
 	/*//Used to go after other stuff and break it...
 	found = NULL;
 	//ok, search for utensils of their oppression
-	while(found = newfindradius(found, self->s.origin, 512))
+	while (found = newfindradius(found, self->s.origin, 512))
 	{
 		if (found->classID == CID_OBJECT)
 		{
@@ -1305,7 +1305,7 @@ qboolean ogle_findtarget (edict_t *self)
 
 	found = NULL;
 	//help out other ogles
-	while((found = newfindradius(found, self->s.origin, 1024)))
+	while ((found = newfindradius(found, self->s.origin, 1024)))
 	{
 		if (found->classID == CID_OGLE && found->health > 0 && found != self)
 		{
@@ -1495,7 +1495,7 @@ void ogle_check_leadsong (edict_t *self)
 {
 	edict_t *ogle = NULL;
 
-	while((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
+	while ((ogle = G_Find(ogle, FOFS(target), self->target)) != NULL)
 	{
 		if (ogle->monsterinfo.ogleflags & OF_SONG_LEADER)
 			return;
@@ -1508,7 +1508,7 @@ void ogle_start_push (edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!irand(0, 2))
 		SetAnim(self, ANIM_PUSH1);
-	else if(irand(0, 1))
+	else if (irand(0, 1))
 		SetAnim(self, ANIM_PUSH2);
 	else
 		SetAnim(self, ANIM_PUSH3);

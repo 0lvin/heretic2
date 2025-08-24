@@ -347,7 +347,7 @@ RedRainExplosionThink(client_entity_t *explosion, centity_t *owner)
 	{	// Vary intesity
 		explosion->alpha = 1.0 - AVG_VEC3T(explosion->r.scale) * 0.1;
 	}
-	else if(explosion->LifeTime == 1000)
+	else if (explosion->LifeTime == 1000)
 	{	// Fade them out
 		explosion->d_alpha = -0.5;
 		explosion->d_scale = -2.0;

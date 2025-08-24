@@ -2291,15 +2291,15 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_PUZZLE, CEF_BROADCAST, ent->s.origin, "bv", ent->item->tag,ent->s.angles);
 	}
-	else if(ent->item->flags & IT_WEAPON)
+	else if (ent->item->flags & IT_WEAPON)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_WEAPON, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
-	else if(ent->item->flags & IT_AMMO)
+	else if (ent->item->flags & IT_AMMO)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_AMMO, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
-	else if(ent->item->flags & IT_DEFENSE)
+	else if (ent->item->flags & IT_DEFENSE)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_DEFENSE, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}

@@ -4632,7 +4632,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 	AmmoItem = FindItem(Weapon->ammo);
 	AmmoIndex = ITEM_INDEX(AmmoItem);
 
-    if(!ent->client->pers.inventory[AmmoIndex])
+    if (!ent->client->pers.inventory[AmmoIndex])
 	{
 		G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;
@@ -4677,7 +4677,7 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 	AmmoItem = FindItem(Weapon->ammo);
 	AmmoIndex = ITEM_INDEX(AmmoItem);
 
-    if(!ent->client->pers.inventory[AmmoIndex])
+    if (!ent->client->pers.inventory[AmmoIndex])
 	{
 		G_CPrintf(playerinfo->self, PRINT_HIGH, GM_NOAMMO);
 		return;

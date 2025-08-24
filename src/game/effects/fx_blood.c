@@ -273,7 +273,7 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 
 	if (self->SpawnInfo>500)
 		return true;
-	while(self->SpawnInfo>0)
+	while (self->SpawnInfo>0)
 	{
 		if (r_detail->value != DETAIL_HIGH)
 		{

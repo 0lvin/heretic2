@@ -1300,7 +1300,7 @@ MG_CheckInGround(edict_t *self)
 		{
 			gi.dprintf("top of %s at %s in solid architecture(%s)!!!\n", self->classname, vtos(self->s.origin), trace.ent->classname);
 		}
-		else if(trace.fraction < 1.0f)
+		else if (trace.fraction < 1.0f)
 		{//buoy is in the ground
 			VectorCopy(trace.endpos, bottom);
 			bottom[2] -= self->mins[2];
@@ -1480,7 +1480,7 @@ MG_BBoxAndOriginAdjustForScale (edict_t *self)
 				self->monsterinfo.scale);
 		}
 	}
-	else if(!self->monsterinfo.scale)
+	else if (!self->monsterinfo.scale)
 	{
 		self->monsterinfo.scale = AVG_VEC3T(self->rrs.scale);
 	}
@@ -2449,7 +2449,7 @@ void M_StartDeath( edict_t *self,  int animID)
 {
 	self->msgHandler = DeadMsgHandler;
 
-	/*if(self->monsterinfo.aiflags & AI_DONT_THINK)
+	/*if (self->monsterinfo.aiflags & AI_DONT_THINK)
 	{
 		SetAnim(self, animID);
 		return;
@@ -2524,7 +2524,7 @@ int M_FindSupport( edict_t *self, int range )
 	edict_t *ent = NULL;
 	int		numSupport = 0;
 
-	while((ent = newfindradius(ent, self->s.origin, range)) != NULL)
+	while ((ent = newfindradius(ent, self->s.origin, range)) != NULL)
 	{
 		if (ent==self)
 			continue;
@@ -2557,7 +2557,7 @@ qboolean M_CheckAlert( edict_t *self, int range )
 {
 	edict_t *ent = NULL;
 
-	while((ent = newfindradius(ent, self->s.origin, range)) != NULL)
+	while ((ent = newfindradius(ent, self->s.origin, range)) != NULL)
 	{
 		if (ent==self)
 			continue;
@@ -2761,7 +2761,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 		VectorCopy(level.buoy_list[self->buoy_index].origin, self->monsterinfo.nav_goal);
 		VectorSubtract(self->monsterinfo.nav_goal, self->s.origin, vec);
 	}
-	else if(self->goalentity && !charge_enemy)
+	else if (self->goalentity && !charge_enemy)
 	{
 		if (mgai_debug->value)
 			gi.dprintf("Vec to goalentity!\n");
@@ -2777,7 +2777,7 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 
 		VectorSubtract(targVec, self->s.origin, vec);
 	}
-	else if(self->enemy)
+	else if (self->enemy)
 	{
 		if (mgai_debug->value)
 			gi.dprintf("Vec to enemy!\n");

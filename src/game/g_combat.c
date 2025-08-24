@@ -555,7 +555,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 					{
 						targ->monsterinfo.flee_finished = 0;
 					}
-					else if(targ->monsterinfo.flee_finished < level.time + 7.0)
+					else if (targ->monsterinfo.flee_finished < level.time + 7.0)
 					{
 						targ->monsterinfo.aiflags |= AI_FLEE;
 						targ->monsterinfo.flee_finished = level.time + flrand(3.0, 7.0);
@@ -564,7 +564,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 				targ->enemy = attacker;
 				FoundTarget (targ, true);
 			}
-			else if(attacker->enemy != targ && (!targ->enemy || targ->enemy->health <= 0))
+			else if (attacker->enemy != targ && (!targ->enemy || targ->enemy->health <= 0))
 			{//attacker wasn't after me and my enemy is invalid or don't have one... go after atacker's enemy
 				if (targ->enemy)
 				{
@@ -574,7 +574,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 				targ->enemy = attacker->enemy;
 				FoundTarget (targ, true);
 			}
-			else if( (attacker->classID!=targ->classID&&!irand(0,2)) ||anarchy->value)
+			else if ( (attacker->classID!=targ->classID&&!irand(0,2)) ||anarchy->value)
 			{//30% chance to get mad (only if they're not my class), or always get mad if anarchy->value
 				if (targ->enemy)
 				{
@@ -1058,7 +1058,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				targ->fire_damage_enemy = attacker;
 			}
 		}
-		else if(!(dflags & DAMAGE_NO_BLOOD))
+		else if (!(dflags & DAMAGE_NO_BLOOD))
 		{
 			if ((targ->svflags & SVF_MONSTER) || (client))
 			{
@@ -1090,7 +1090,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 				if (violence == VIOLENCE_NONE)
 					gi.CreateEffect(NULL, FX_HITPUFF, CEF_FLAG6, point, "db", dir, 5);
-				else if(targ->materialtype == MAT_INSECT)
+				else if (targ->materialtype == MAT_INSECT)
 					gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, loc, "ub", vel, bloodamt);
 				else
 					gi.CreateEffect(NULL, FX_BLOOD, 0, loc, "ub", vel, bloodamt);
@@ -1168,7 +1168,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 							targ->next_post_think = level.time;
 						}
 					}
-					else if(violence > VIOLENCE_BLOOD)
+					else if (violence > VIOLENCE_BLOOD)
 					{
 // jmarshall
 						//hl|=hl_MeleeHit;//force dismember

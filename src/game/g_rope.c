@@ -148,12 +148,12 @@ int sir_nate_of_the_embarassingly_shortshanks_pain (edict_t *self, edict_t *atta
 		G_CPrintf(attacker, PRINT_HIGH, GM_SIR_NATE_END);
 		self->count++;
 	}
-	else if(self->count > NUM_INSTRUCTIONS)
+	else if (self->count > NUM_INSTRUCTIONS)
 	{
 		msg = (short)(irand(NATE_SAYING_HITME_AGAIN1, NATE_SAYING_HITME_AGAIN10)  - 5 + GM_SIR_NATE_HIT_AGAIN0);
 		G_MsgVarCenterPrintf(attacker, msg, damage);
 	}
-	else if(UsedRightAttack(self->count, attacker, self->activator))
+	else if (UsedRightAttack(self->count, attacker, self->activator))
 	{
 		if (self->damage_debounce_time>level.time)
 			return false;
@@ -630,7 +630,7 @@ void hanging_chicken_think(edict_t *self)
 						VectorMA (trace.ent->velocity, 3, kvel, trace.ent->velocity);
 						knockbacktime = level.time + 3.0;
 					}
-					else if(force > 500)
+					else if (force > 500)
 						knockbacktime = level.time + 1.25;
 					else
 						knockbacktime = level.time + (force/400.0);

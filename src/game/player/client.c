@@ -601,7 +601,7 @@ void player_repair_skin (edict_t *self)
 
 	to_fix = found_dmg_skins - num_allowed_dmg_skins;
 
-	while(to_fix > 0 && checked<100)
+	while (to_fix > 0 && checked<100)
 	{//heal num damaged nodes over allowed
 		i = hurt_nodes[irand(0, (found_dmg_skins - 1))];
 		if (!(self->s.fmnodeinfo[i].flags&FMNI_NO_DRAW))
@@ -616,7 +616,7 @@ void player_repair_skin (edict_t *self)
 
 				if (i == MESH__LARM)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_LARM;
-				else if(i == MESH__RARM)
+				else if (i == MESH__RARM)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_RARM;
 
 				to_fix--;
@@ -753,7 +753,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 			}
 		}
 	}
-	else if(self->health > 0)
+	else if (self->health > 0)
 		return;
 
 	//FIXME: use refpoints for this?
@@ -861,7 +861,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 		}
 	}
-	else if(self->health > 0)// && !(self->flags&FL_GODMODE))
+	else if (self->health > 0)// && !(self->flags&FL_GODMODE))
 		dismember_ok = false;
 
 	if (!dismember_ok)
@@ -2602,7 +2602,7 @@ respawn(edict_t *self)
 
 			self->client->complete_reset=1;
 		}
-		else if(coop->value)
+		else if (coop->value)
 		{
 			// Respawning in coop always means a partial reset of the player's model.
 

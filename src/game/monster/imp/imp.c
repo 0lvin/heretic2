@@ -879,7 +879,7 @@ void imp_check_dodge(edict_t *self)
 			{
 				if (ddir[2] > 0.1)
 					SetAnim(self, ANIM_DUP);
-				else if(ddir[2] < -0.1)
+				else if (ddir[2] < -0.1)
 					SetAnim(self, ANIM_DDOWN);
 			}
 			VectorMA(self->velocity, irand(300, 500), ddir, self->velocity);
@@ -1004,7 +1004,7 @@ void move_imp_hover(edict_t *self)
 			//see if he's too close
 			if (enemy_dist < Q_fabs(self->melee_range))
 				SetAnim(self, ANIM_FLYBACK1);
-			else if(enemy_dist < self->missile_range)
+			else if (enemy_dist < self->missile_range)
 			{//see if we can and want to attack him
 				if (enemy_dist > self->min_missile_range)
 				{

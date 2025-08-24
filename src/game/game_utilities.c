@@ -637,7 +637,7 @@ edict_t *FindSpellTargetInRadius(edict_t *searchent, float radius, vec3_t search
 
 	best = NULL;
 	ent = NULL;
-	while((ent = newfindradius(ent, searchpos, radius)))
+	while ((ent = newfindradius(ent, searchpos, radius)))
 	{
 		// Ignore certain entities altogether.
 		if (ent == searchent || ent == searchent->owner)

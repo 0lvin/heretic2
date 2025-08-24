@@ -340,7 +340,7 @@ void insect_wait_twitch (edict_t *self)
 		SetAnim(self, ANIM_TWITCH);
 		self->nextthink = level.time + 0.1;
 	}
-	else if(irand(0, 5))
+	else if (irand(0, 5))
 	{
 		SetAnim(self, ANIM_TWITCH);
 		self->nextthink = level.time + flrand(0.2, 10);
@@ -509,7 +509,7 @@ void insect_melee(edict_t *self, G_Message_t *msg)
 	{//male
 		if (irand(0, 1)&&self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW)
 			SetAnim(self, ANIM_SPEAR);
-		else// if(self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
+		else// if (self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
 			SetAnim(self, ANIM_SWORD);
 	}
 	else//if no staff, diff spell?
@@ -616,7 +616,7 @@ void insectStaff(edict_t *self)
 		{
 			if (!skill->value)
 				SpellCastInsectSpear(self, org, self->s.angles, irand(1, 3));
-			else if(skill->value == 1)
+			else if (skill->value == 1)
 			{
 				SpellCastInsectSpear(self, org, self->s.angles, 1);
 				SpellCastInsectSpear(self, org, self->s.angles, 2);
@@ -1118,7 +1118,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 	if (throw_nodes)
 		self->pain_debounce_time = 0;
 
-	/*if(self->mass == MASS_TC_FEMALE)
+	/*if (self->mass == MASS_TC_FEMALE)
 	{
 		if (self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MISSILE;
@@ -1726,7 +1726,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	{
 		G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
 	}
-	else if(self->spawnflags & MSF_INSECT_CINEMATIC)
+	else if (self->spawnflags & MSF_INSECT_CINEMATIC)
 	{
 		self->monsterinfo.c_mode = 1;
 		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
