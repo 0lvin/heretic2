@@ -1922,35 +1922,25 @@ typedef struct
 typedef struct playerinfo_s
 {
 	// Pointer to the associated player's edict_t.
-
 	edict_t				*self;
 
 	// Game .dll variables.
-
 	float				leveltime;
 	float				quickturnEndTime;
 
 	// Server variables.
-
 	float				sv_gravity;
 	float				sv_cinematicfreeze;		// Not used on client.
 	float				sv_jumpcinematic;		// Jumping through cinematic. Not used on client.
 
 	// From edict_t.
-
 	float				ideal_yaw;
 	void				*groundentity;
 
 	// Pointer to entity_state_t of player's enemy edict.
-
 	entity_state_t		*enemystate;
 
-	// Spell / weapon aiming direction (from g_client_t).
-
-	vec3_t				aimangles;
-
 	// Deathmatch flags.
-
 	int	dmflags;
 
 	// ********************************************************************************************
@@ -1958,18 +1948,15 @@ typedef struct playerinfo_s
 	// ********************************************************************************************
 
 	// Data that must be maintatined over the duration of a level.
-
 	player_persistant_t	pers;
 
 	// Status of controller buttons.
-
 	int					buttons;
 	int					oldbuttons;
 	int					latched_buttons;
 	int					remember_buttons;
 
 	// Weapons & defenses.
-
 	qboolean			autoaim;				// Set on client from a flag.
 	int					switchtoweapon;
 	int					weap_ammo_index;
@@ -2033,7 +2020,6 @@ typedef struct playerinfo_s
 	fmnodeinfo_t		fmnodeinfo[MAX_FM_MESH_NODES];
 
 	// From pmove_state_t.
-
 	int					pm_flags,pm_w_flags;
 
 	// ********************************************************************************************
@@ -2041,14 +2027,11 @@ typedef struct playerinfo_s
 	// ********************************************************************************************
 
 	// From playerstate_t.
-
 	vec3_t				offsetangles;
-
 	qboolean			advancedstaff;
 
 	// Torso angle twisting stuff which is derived entirely from various inputs to the animation
 	// system.
-
 	qboolean			headjointonly;
 	vec3_t				targetjointangles;
 	qboolean			showscores;				// Set layout stat.
@@ -2057,7 +2040,6 @@ typedef struct playerinfo_s
 	// ********************************************************************************************
 	// Internal state info.
 	// ********************************************************************************************
-
 	int					seqcmd[20];
 	panimmove_t			*uppermove,*lowermove;
 	int					uppermove_index,lowermove_index;
@@ -2071,7 +2053,6 @@ typedef struct playerinfo_s
 
 	short camera_vieworigin[3];
 	short camera_viewangles[3];
-
 } playerinfo_t;
 
 typedef struct

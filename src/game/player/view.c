@@ -381,9 +381,6 @@ SetupPlayerinfo(edict_t *ent)
 		ent->client->playerinfo.enemystate = NULL;
 	}
 
-	// Spell / weapon aiming direction.
-	VectorCopy(ent->client->aimangles, ent->client->playerinfo.aimangles);
-
 	// Deathmatch flags - only set this if we are in death match.
 	if (deathmatch->value)
 	{

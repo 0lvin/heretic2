@@ -55,7 +55,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 
 		if (threshold < 300*300)
 		{
-			AngleVectors(playerinfo->aimangles, vf, NULL, NULL);
+			AngleVectors(playerinfo->self->client->aimangles, vf, NULL, NULL);
 			VectorMA(playerinfo->velocity, 200, vf, playerinfo->velocity);
 		}
 		else
@@ -82,7 +82,8 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	{
 		AngleVectors(playerinfo->angles, NULL, vr, NULL);
 		VectorScale(vr, -32, vr);
-		VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
+		VectorAdd((playerinfo->self)->teamchain->teamchain->velocity, vr,
+			(playerinfo->self)->teamchain->teamchain->velocity);
 
 		switch (playerinfo->lowerseq)
 		{
@@ -762,7 +763,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 	if (len1 < MAX_PUSH_BUTTON_RANGE)
 	{
-		VectorCopy((playerinfo->self)->client->playerinfo.aimangles, dir);
+		VectorCopy((playerinfo->self)->client->aimangles, dir);
 		dir[PITCH] = 0;
 
 		AngleVectors(dir, forward, NULL, NULL);
@@ -833,7 +834,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 	if (len1 < MAX_PUSH_LEVER_RANGE)
 	{
-		VectorCopy((playerinfo->self)->client->playerinfo.aimangles, dir);
+		VectorCopy((playerinfo->self)->client->aimangles, dir);
 		dir[PITCH] = 0;
 
 		AngleVectors(dir, forward, NULL, NULL);
@@ -1046,7 +1047,7 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 	trace_t	trace;
 	vec3_t	endpos, vf, mins;
 
-	AngleVectors(playerinfo->aimangles, vf, NULL, NULL);
+	AngleVectors(playerinfo->self->client->aimangles, vf, NULL, NULL);
 	VectorMA(playerinfo->origin, 64, vf, endpos);
 
 	//Account for step height
