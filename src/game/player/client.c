@@ -524,14 +524,6 @@ SpawnBleeder(edict_t *self, edict_t *other, vec3_t bleed_dir, vec3_t bleed_spot)
 	VectorCopy(bleed_dir, bleeder->movedir);
 	bleeder->think = BleederThink;
 	bleeder->nextthink = level.time + 0.1;
-//when refpoints on arms and head in for corvus, do this:
-/*	gi.CreateEffect(self.,
-			FX_LINKEDBLOOD,
-			0,
-			self->s.origin,
-			"bb",
-			180,
-			refpoint);*/
 }
 
 void player_repair_skin (edict_t *self)
@@ -566,7 +558,7 @@ void player_repair_skin (edict_t *self)
 			{
 				gi.dprintf("Healed player skin on node %d\n", i);
 
-				self->client->playerinfo.pers.altparts &= ~(1<<i);
+				self->client->pers.altparts &= ~(1<<i);
 				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
 				self->s.fmnodeinfo[i].skin = self->s.skinnum;
 			}
@@ -612,7 +604,7 @@ void player_repair_skin (edict_t *self)
 				self->s.fmnodeinfo[i].flags &= ~FMNI_USE_SKIN;
 				self->s.fmnodeinfo[i].skin = self->s.skinnum;
 
-				self->client->playerinfo.pers.altparts &= ~(1<<i);
+				self->client->pers.altparts &= ~(1<<i);
 
 				if (i == MESH__LARM)
 					self->client->playerinfo.flags &= ~PLAYER_FLAG_NO_LARM;
@@ -641,7 +633,7 @@ ResetPlayerBaseNodes(edict_t *ent)
 	ent->client->playerinfo.flags &= ~PLAYER_FLAG_NO_LARM;
 	ent->client->playerinfo.flags &= ~PLAYER_FLAG_NO_RARM;
 
-	ent->client->playerinfo.pers.altparts = 0;
+	ent->client->pers.altparts = 0;
 
 	ent->s.fmnodeinfo[MESH_BASE2].flags &= ~FMNI_NO_DRAW;
 	ent->s.fmnodeinfo[MESH__BACK].flags &= ~FMNI_NO_DRAW;
@@ -835,7 +827,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			if (inpolevault)
 			{
 				//Horizontal, in air, need to alter hitloc
-				switch(HitLocation)
+				switch (HitLocation)
 				{
 				case hl_Head:
 					HitLocation = hl_TorsoFront;
@@ -882,7 +874,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 //FIXME: special manipulations of hit locations depending on anim
 
 	VectorClear(gore_spot);
-	switch(HitLocation)
+	switch (HitLocation)
 	{
 		case hl_Head:
 			if (self->s.fmnodeinfo[MESH__HEAD].flags & FMNI_NO_DRAW)
@@ -916,7 +908,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{
 //				if ((frandk() * self->health)<damage*0.25)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
-				self->client->playerinfo.pers.altparts |= (1<<MESH__HEAD);
+				self->client->pers.altparts |= (1<<MESH__HEAD);
 				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
 			}
@@ -954,7 +946,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{
 //				if ((frandk() * self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
-				self->client->playerinfo.pers.altparts |= (1<<MESH_BASE2);
+				self->client->pers.altparts |= (1<<MESH_BASE2);
 				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH_BASE2].skin = self->s.skinnum+1;
 			}
@@ -992,7 +984,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{
 //				if ((frandk() * self->health)<damage*0.5)
 //					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
-				self->client->playerinfo.pers.altparts |= (1<<MESH__BACK);
+				self->client->pers.altparts |= (1<<MESH__BACK);
 				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BACK].skin = self->s.skinnum+1;
 			}
@@ -1024,7 +1016,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{
 //				if ((frandk() * self->health)<damage*0.4)
 //					player_dropweapon (self, (int)damage, BIT_BOWACTV);
-				self->client->playerinfo.pers.altparts |= (1<<MESH__LARM);
+				self->client->pers.altparts |= (1<<MESH__LARM);
 				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LARM].skin = self->s.skinnum+1;
 			}
@@ -1060,7 +1052,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{
 //				if ((frandk() * self->health)<damage*0.75)
 //					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
-				self->client->playerinfo.pers.altparts |= (1<<MESH__RARM);
+				self->client->pers.altparts |= (1<<MESH__RARM);
 				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RARM].skin = self->s.skinnum+1;
 			}
@@ -1072,7 +1064,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{//still alive
 				if (self->s.fmnodeinfo[MESH__LLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->client->playerinfo.pers.altparts |= (1<<MESH__LLEG);
+				self->client->pers.altparts |= (1<<MESH__LLEG);
 				self->s.fmnodeinfo[MESH__LLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LLEG].skin = self->s.skinnum+1;
 			}
@@ -1096,7 +1088,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			{//still alive
 				if (self->s.fmnodeinfo[MESH__RLEG].flags & FMNI_USE_SKIN)
 					break;
-				self->client->playerinfo.pers.altparts |= (1<<MESH__RLEG);
+				self->client->pers.altparts |= (1<<MESH__RLEG);
 				self->s.fmnodeinfo[MESH__RLEG].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RLEG].skin = self->s.skinnum+1;
 			}
@@ -1829,19 +1821,19 @@ InitClientPersistant(edict_t *ent)
 	// Set up maximums amounts for health, mana and ammo for bows and hellstaff.
 	// ********************************************************************************************
 
-	client->pers.max_health		= 100;
-	client->playerinfo.pers.max_offmana		= MAX_OFF_MANA;
-	client->playerinfo.pers.max_defmana		= MAX_DEF_MANA;
-	client->playerinfo.pers.max_redarrow	= MAX_RAIN_AMMO;
-	client->playerinfo.pers.max_phoenarr	= MAX_PHOENIX_AMMO;
-	client->playerinfo.pers.max_hellstaff	= MAX_HELL_AMMO;
+	client->pers.max_health = 100;
+	client->pers.max_offmana = MAX_OFF_MANA;
+	client->pers.max_defmana = MAX_DEF_MANA;
+	client->pers.max_redarrow = MAX_RAIN_AMMO;
+	client->pers.max_phoenarr = MAX_PHOENIX_AMMO;
+	client->pers.max_hellstaff = MAX_HELL_AMMO;
 
 	// ********************************************************************************************
 	// Give defensive and offensive weapons to player.
 	// ********************************************************************************************
 
 	client->playerinfo.pers.weapon = 0;
-	client->playerinfo.pers.defence = 0;
+	client->pers.defence = 0;
 
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 
@@ -1864,17 +1856,17 @@ InitClientPersistant(edict_t *ent)
 
 	item = FindItem("powerup");
 	AddDefenseToInventory(item, ent);
-	client->playerinfo.pers.defence = item;
+	client->pers.defence = item;
 
 	// ********************************************************************************************
 	// Start player with half offensive and defensive mana - as instructed by Brian P.
 	// ********************************************************************************************
 
 	item = FindItem("Off-mana");
-	client->pers.inventory[ITEM_INDEX(item)] = client->playerinfo.pers.max_offmana / 2;
+	client->pers.inventory[ITEM_INDEX(item)] = client->pers.max_offmana / 2;
 
 	item = FindItem("Def-mana");
-	client->pers.inventory[ITEM_INDEX(item)] = client->playerinfo.pers.max_defmana / 2;
+	client->pers.inventory[ITEM_INDEX(item)] = client->pers.max_defmana / 2;
 
 #ifdef G_NOAMMO
 
@@ -3256,7 +3248,6 @@ PutClientInServer(edict_t *ent)
 		ClientUserinfoChanged (ent, userinfo);
 	}
 
-
 	// Complete or partial reset of the player's model?
 
 	if (!deathmatch->value)
@@ -3355,7 +3346,6 @@ PutClientInServer(edict_t *ent)
 	/*
 	 * set ps.pmove.origin is not required as server uses ent.origin instead
 	 */
-
 
 	client->ps.fov = atoi(Info_ValueForKey(client->pers.userinfo, "fov"));
 
@@ -3475,8 +3465,8 @@ PutClientInServer(edict_t *ent)
 	if (client->playerinfo.pers.weapon->ammo)
 		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.weapon->ammo));
 
-	if (client->playerinfo.pers.defence)
-		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.defence->ammo));
+	if (client->pers.defence)
+		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->pers.defence->ammo));
 
 	VectorCopy(spawn_origin,client->playerinfo.origin);
 	VectorClear(client->playerinfo.velocity);
@@ -3754,7 +3744,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 		}
 
 		// Combine name and skin into a configstring.
-		switch(ent->client->playerinfo.plaguelevel)
+		switch (ent->client->playerinfo.plaguelevel)
 		{
 		case 1:		// Plague level 1
 			if (allowillegalskins->value)
@@ -3832,7 +3822,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 			}
 
 			// Combine name and skin into a configstring.
-			switch(ent->client->playerinfo.plaguelevel)
+			switch (ent->client->playerinfo.plaguelevel)
 			{
 			case 1:		// Plague level 1
 				sprintf(filename, "players/%sP1.m8", skin);
@@ -3886,7 +3876,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 		}
 		else
 		{	// JUST care about Corvus
-			switch(ent->client->playerinfo.plaguelevel)
+			switch (ent->client->playerinfo.plaguelevel)
 			{
 			case 1:		// Plague level 1
 				gi.configstring(CS_PLAYERSKINS + playernum,

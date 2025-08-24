@@ -1739,7 +1739,6 @@ SP_misc_explobox(edict_t *self)
 	gi.linkentity(self);
 }
 
-
 /* ===================================================== */
 
 /*
@@ -3778,8 +3777,6 @@ SP_misc_teleporter_dest(edict_t *ent)
 	ent->last_org[2] -= mins[2];
 }
 
-
-
 extern void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator);
 void
 misc_magic_portal_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
@@ -3884,8 +3881,6 @@ SP_misc_magic_portal(edict_t *self)
 	gi.linkentity(self);
 }
 
-
-
 void flame_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (other->damage_debounce_time < level.time)
@@ -3902,7 +3897,6 @@ flame_think(edict_t *self)
 	self->nextthink = level.time + 200;
 }
 
-
 void soundambient_think(edict_t *self)
 {
 	byte	style,wait,attenuation,volume;
@@ -3913,7 +3907,7 @@ void soundambient_think(edict_t *self)
 	self->s.sound_data = (volume & ENT_VOL_MASK) | attenuation;
 
 	// if its a looping sound, create it on this entity
-	switch((int)(self->style))
+	switch ((int)(self->style))
 	{
 	case AS_FIRE:
 		self->s.sound = gi.soundindex("ambient/fireplace.wav");
@@ -4003,7 +3997,6 @@ sound_ambient_use(edict_t *self, edict_t *other, edict_t *activator)
 		soundambient_think(self);
 }
 
-
 void sound_ambient_init(edict_t *self)
 {
 	VectorSet(self->mins,-4,-4,-4);
@@ -4085,7 +4078,6 @@ void SP_sound_ambient_cloudfortress (edict_t *self)
 	self->style = CloudSoundID[self->style];
 }
 
-
 /*QUAKED sound_ambient_mine (1 0 0) (-4 -4 0) (4 4 4) NON_LOCAL START_OFF
 Generates an ambient sound for mine levels
 -------  FLAGS  ------------------
@@ -4119,7 +4111,6 @@ void SP_sound_ambient_mine (edict_t *self)
 
 	self->style = MineSoundID[self->style];
 }
-
 
 /*QUAKED sound_ambient_hive (1 0 0) (-4 -4 0) (4 4 4) NON_LOCAL  START_OFF
 Generates an ambient sound for hive levels
@@ -4207,7 +4198,6 @@ style
 9 - wind, low, strong (looping)
 10 - wind, high, strong (looping)
 11 - wind, whistling, strong (looping)
-
 
 attenuation  (how quickly sound drops off from origin)
    0 - heard over entire level (default)
@@ -4593,10 +4583,11 @@ EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer)
 				return true;
 			}
 			// possibly, we might want to reflect this if the player has gold armor
-			else
-			if ((ent->client->playerinfo.pers.armortype == ARMOR_TYPE_GOLD) && (ent->client->playerinfo.pers.armor_count) && (irand(0,100) < 30))
+			else if ((ent->client->pers.armortype == ARMOR_TYPE_GOLD) &&
+				(ent->client->pers.armor_count) && (irand(0,100) < 30))
+			{
 				return true;
-
+			}
 		}
 	}
 

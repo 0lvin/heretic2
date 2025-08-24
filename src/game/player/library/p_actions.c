@@ -21,7 +21,6 @@
 
 qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
 
-
 vec3_t	handmins = {-2.0, -2.0, 0},
 		handmaxs = {2.0, 2.0, 2.0};
 
@@ -345,7 +344,7 @@ void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo)
 	else
 		sequence = playerinfo->upperseq;
 
-	switch(sequence)
+	switch (sequence)
 	{//choose a proper sequence to go into
 	case ASEQ_FORWARD_FLIP_L:
 	case ASEQ_FORWARD_FLIP_R:
@@ -387,7 +386,7 @@ void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo)
 	//Check to see if the player is still pressing jump, and is not trying to fire or grab a ledge (action)
 	if ( playerinfo->seqcmd[ACMDL_JUMP] && (!(playerinfo->seqcmd[ACMDU_ATTACK])) && (!(playerinfo->seqcmd[ACMDL_ACTION])))
 	{
-		switch(playerinfo->lowerseq)
+		switch (playerinfo->lowerseq)
 		{
 		case ASEQ_JUMPFWD:
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_FORWARD_FLIP_L_GO);
@@ -414,7 +413,10 @@ void PlayerActionCheckDoubleJump(playerinfo_t *playerinfo)
 // This is called during the hold ready bow sequence, so that we may interrupt it if necessary.
 void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 {
-	if (playerinfo->switchtoweapon != playerinfo->pers.weaponready ||
+	gclient_t *client;
+
+	client = playerinfo->self->client;
+	if (playerinfo->switchtoweapon != client->pers.weaponready ||
 		playerinfo->self->client->newweapon)
 	{	// Switching weapons is one reason to end the bow refire waiting.
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
@@ -460,7 +462,7 @@ void PlayerActionBreath(playerinfo_t *playerinfo, float value)
 
 void PlayerActionHandFXStart(playerinfo_t *playerinfo, float value)
 {
-	switch((int)value)
+	switch ((int)value)
 	{
 	case HANDFX_FIREBALL:
 		PlayerSetHandFX(playerinfo,(int)value, 4);
@@ -571,7 +573,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 
 	if ((!pi.Weapon_CurrentShotsLeft(playerinfo) && value != 4.0) || !(playerinfo->seqcmd[ACMDU_ATTACK]))
 	{	// If we are out of ammo, or if we have let go of the button, then fire.
-		switch((int)value)
+		switch ((int)value)
 		{
 		case 1:
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSPHERE_FIRE1);
@@ -700,7 +702,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-	switch(playerinfo->pers.weapon->tag)
+	switch (playerinfo->pers.weapon->tag)
 	{
 		case ITEM_WEAPON_FLYINGFIST:
 			color=1;
@@ -781,14 +783,14 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		{
 			// Set the bow type to phoenix.
 
-			playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
+			client->pers.bowtype = BOW_TYPE_PHOENIX;
 			color=6;
 		}
 		else
 		{
 			// Set the bow type to red-rain.
 
-			playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
+			client->pers.bowtype = BOW_TYPE_REDRAIN;
 			color=7;
 		}
 
@@ -834,18 +836,18 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	if (value)
 	{
 		// Don't REALLY change the weaponready, since the value indicates a cosmetic weapon change only (the real change is later)
-		holdweapon = playerinfo->pers.weaponready;
+		holdweapon = client->pers.weaponready;
 
-		playerinfo->pers.weaponready = value;
+		client->pers.weaponready = value;
 		PlayerUpdateModelAttributes(client);
 
-		playerinfo->pers.weaponready = holdweapon;
+		client->pers.weaponready = holdweapon;
 	}
 	else
 	{
 		assert(client->newweapon);
 		pi.Weapon_Ready(client, client->newweapon);
-		playerinfo->pers.weaponready = playerinfo->switchtoweapon;
+		client->pers.weaponready = playerinfo->switchtoweapon;
 		PlayerUpdateModelAttributes(client);
 		client->newweapon = NULL;
 	}
@@ -854,7 +856,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	{
 		// Weapon Changing effects.
 
-		switch(playerinfo->pers.weaponready)
+		switch (client->pers.weaponready)
 		{
 		case WEAPON_READY_SWORDSTAFF:
 
@@ -891,11 +893,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 				{
 					// Make sure we have the redrain visible.
 
-					if (playerinfo->pers.bowtype == BOW_TYPE_PHOENIX)
+					if (client->pers.bowtype == BOW_TYPE_PHOENIX)
 					{
 						// Uh oh, change the phoenix into a red rain.
 
-						playerinfo->pers.bowtype = BOW_TYPE_REDRAIN;
+						client->pers.bowtype = BOW_TYPE_REDRAIN;
 						PlayerUpdateModelAttributes(client);
 
 						pi.G_Sound(SND_PRED_ID2,
@@ -928,11 +930,11 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 				{
 					// Make sure we have the phoenix visible.
 
-					if (playerinfo->pers.bowtype == BOW_TYPE_REDRAIN)
+					if (client->pers.bowtype == BOW_TYPE_REDRAIN)
 					{
 						// Uh oh, change the red rain to a phoenix.
 
-						playerinfo->pers.bowtype = BOW_TYPE_PHOENIX;
+						client->pers.bowtype = BOW_TYPE_PHOENIX;
 						PlayerUpdateModelAttributes(client);
 
 						pi.G_Sound(SND_PRED_ID3,
@@ -962,13 +964,10 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 					}
 				}
 			}
-
 			break;
 
 		default:
-
 			// No nothing.
-
 			break;
 		}
 	}
@@ -981,11 +980,16 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 {
 	int flags = CEF_OWNERS_ORIGIN;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	if (value == WEAPON_READY_HELLSTAFF)
+	{
 		flags |= CEF_FLAG6;
+	}
 
-	if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+	if (client->pers.stafflevel == STAFF_LEVEL_BASIC ||
+		value == WEAPON_READY_HELLSTAFF)
 	{
 		pi.G_Sound(SND_PRED_ID5,
 							playerinfo->leveltime,
@@ -996,7 +1000,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+	else if (client->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 	{
 		flags |= CEF_FLAG7;
 
@@ -1009,7 +1013,7 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+	else if (client->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 	{
 		flags |= CEF_FLAG8;
 
@@ -1047,11 +1051,14 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 {
 	int flags = CEF_OWNERS_ORIGIN;
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 
 	if (value == WEAPON_READY_HELLSTAFF)
 		flags |= CEF_FLAG6;
 
-	if (playerinfo->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
+	if (client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 	{
 		pi.G_Sound(SND_PRED_ID9,
 							playerinfo->leveltime,
@@ -1062,7 +1069,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
+	else if (client->pers.stafflevel == STAFF_LEVEL_POWER1)//blue
 	{
 		flags |= CEF_FLAG7;
 
@@ -1075,7 +1082,7 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 							ATTN_NORM,
 							0);
 	}
-	else if (playerinfo->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
+	else if (client->pers.stafflevel == STAFF_LEVEL_POWER2)//flame
 	{
 		flags |= CEF_FLAG8;
 
@@ -1129,12 +1136,14 @@ void PlayerActionSwordTrailStart(playerinfo_t *playerinfo, float value)
 	int powerlevel;
 	int	length;
 	qboolean spin;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	// Add a trail effect to the staff.
 	if (playerinfo->powerup_timer > playerinfo->leveltime)
-		powerlevel = playerinfo->pers.stafflevel + 1;
+		powerlevel = client->pers.stafflevel + 1;
 	else
-		powerlevel = playerinfo->pers.stafflevel;
+		powerlevel = client->pers.stafflevel;
 
 	if (powerlevel >= STAFF_LEVEL_MAX)
 		powerlevel = STAFF_LEVEL_MAX-1;
@@ -1702,7 +1711,6 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 		return 0;
 	}
 
-
 	//one more check, make sure we can fit in there! --
 	//so we don't start climbing then fall back down- annoying
 	//get the z height
@@ -1792,7 +1800,7 @@ void PlayerActionCheckGrab(playerinfo_t *playerinfo, float value)
 	{
 		// Check 3 height zones for 3 results.
 
-		switch(i)
+		switch (i)
 		{
 			case 0:
 				v_adjust = GRAB_HAND_HEIGHT - 58;
@@ -1817,7 +1825,7 @@ void PlayerActionCheckGrab(playerinfo_t *playerinfo, float value)
 
 		if ((type=PlayerActionCheckGrab_(playerinfo,v_adjust)))
 		{
-			switch(i)
+			switch (i)
 			{
 				case 2:
 					if (type==2)
@@ -1972,7 +1980,6 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 		return false;
 	}
 
-
 	// If the clear rays from the player's hands, traced down, should hit a legal (almost level)
 	// surface within a certain distance, then a grab is possible!
 
@@ -2007,7 +2014,6 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	{	// hand stopped, but not on a grabbable surface.
 		return false;
 	}
-
 
 	// Now, finally, if we try tracing the player blocking forward a tad, we should be hitting
 	// an obstruction.
@@ -2316,7 +2322,6 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 			return (false);
 		}
 	}
-
 
 	grabfraction = grabtrace.fraction;
 
@@ -2855,7 +2860,6 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		}
 	}
 }
-
 
 /*-----------------------------------------------
 	PlayerActionCheckPushButton
@@ -3508,21 +3512,11 @@ void PlayerActionCheckCreepBackUnStrafe(playerinfo_t *playerinfo)
 	PlayerActionCheckCreep(playerinfo);
 }
 
-
-
-
-
-
 /*
 
 	Walk Forward
 
 */
-
-
-
-
-
 
 /*-----------------------------------------------
 	PlayerActionCheckWalk
@@ -3948,23 +3942,11 @@ void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 	PlayerActionCheckWalk(playerinfo);
 }
 
-
-
-
-
-
-
 /*
 
 	Walk Back
 
 */
-
-
-
-
-
-
 
 /*-----------------------------------------------
 	PlayerActionCheckWalkBack
@@ -4079,25 +4061,11 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 	PlayerActionCheckWalk(playerinfo);
 }
 
-
-
-
-
-
-
-
 /*
 
 	Run
 
 */
-
-
-
-
-
-
-
 
 /*-----------------------------------------------
 	PlayerActionCheckRun
@@ -4106,11 +4074,14 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 void PlayerActionCheckRun(playerinfo_t *playerinfo)
 {
 	int	curseq = playerinfo->lowerseq;
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 
 	//Check for an upper sequence interruption due to a staff attack
 	if ((	playerinfo->seqcmd[ACMDU_ATTACK] &&
 			playerinfo->seqcmd[ACMDL_RUN_F]) &&
-			(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
+			(client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 			(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) &&
 			!(playerinfo->edictflags & FL_CHICKEN))
 	{
@@ -4193,8 +4164,8 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		{
 			if (playerinfo->seqcmd[ACMDL_FWD])
 			{
-				if (	(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
-						(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) )
+				if ((client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
+					(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) )
 				{
 					PlayerAnimSetLowerSeq(playerinfo,  ASEQ_POLEVAULT1_W);
 					return;
@@ -4432,7 +4403,6 @@ void PlayerPlaySlide(playerinfo_t *playerinfo)
 
 	pi.G_Sound(SND_PRED_ID30, playerinfo->leveltime, playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
 }
-
 
 void PlayerInterruptAction(playerinfo_t *playerinfo)
 {

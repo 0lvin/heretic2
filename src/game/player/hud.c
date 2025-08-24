@@ -78,7 +78,6 @@ MoveClientToIntermission(edict_t *ent)
 
 	ent->client->ps.rdflags &= ~RDF_IRGOGGLES;
 
-
 	ent->viewheight = 0;
 	ent->s.modelindex = 0;
 	ent->s.modelindex2 = 0;
@@ -206,7 +205,6 @@ BeginIntermission(edict_t *targ)
 	}
 }
 
-
 /*
 ==================
 DeathmatchScoreboardMessage
@@ -247,7 +245,6 @@ DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer)
 	char *p;
 	team_scores_t team_scores[MAX_CLIENTS];
 	team_scores_t temp_point;
-
 
 	if (!ent) /* killer can be NULL */
 	{
@@ -551,7 +548,6 @@ DeathmatchScoreboard(edict_t *ent)
 	gi.unicast (ent, true);
 }
 
-
 /*
 ==================
 Cmd_Score_f
@@ -644,9 +640,9 @@ G_SetStats(edict_t *ent)
 	// ********************************************************************************************
 
 	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(ppers->weapon->icon);
-	if (ppers->defence)
+	if (pers->defence)
 	{
-		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(ppers->defence->icon);
+		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(pers->defence->icon);
 	}
 
 	// ********************************************************************************************
@@ -734,29 +730,26 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_ARMOUR_ICON] = 0;
 	ps->stats[STAT_ARMOUR] = 0;
 
-	if (ppers->armortype == ARMOR_TYPE_SILVER)
+	if (pers->armortype == ARMOR_TYPE_SILVER)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_silver");
-		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 100) / MAX_SILVER_ARMOR;
+		ps->stats[STAT_ARMOUR] = (pi->pers.armor_count * 100) / MAX_SILVER_ARMOR;
 	}
-
-	if (ppers->armortype == ARMOR_TYPE_GOLD)
+	else if (pers->armortype == ARMOR_TYPE_GOLD)
 	{
 		ps->stats[STAT_ARMOUR_ICON] = gi.imageindex("icons/arm_gold");
-		ps->stats[STAT_ARMOUR] = (pi->playerinfo.pers.armor_count * 250) / MAX_GOLD_ARMOR;
+		ps->stats[STAT_ARMOUR] = (pi->pers.armor_count * 250) / MAX_GOLD_ARMOR;
 	}
 
 	// ********************************************************************************************
 	// Puzzle items.
 	// ********************************************************************************************
-
 	ps->stats[STAT_PUZZLE_ITEM1] = 0;
 	ps->stats[STAT_PUZZLE_ITEM2] = 0;
 	ps->stats[STAT_PUZZLE_ITEM3] = 0;
 	ps->stats[STAT_PUZZLE_ITEM4] = 0;
 
 	// Scan through inventory to handle puzzle pieces.
-
 	item = itemlist;
 	count = STAT_PUZZLE_ITEM1;
 	ps->stats[STAT_PUZZLE_COUNT] = 0;

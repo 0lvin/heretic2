@@ -423,13 +423,13 @@ AddWeaponToInventory(gitem_t *item, edict_t *player)
 		else if (item->tag == ITEM_WEAPON_REDRAINBOW)
 		{
 			// give us the bowtype
-			player->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
+			player->client->pers.bowtype = BOW_TYPE_REDRAIN;
 			count = AMMO_COUNT_REDRAINBOW;
 		}
 		else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
 		{
 			// give us the bowtype
-			player->client->playerinfo.pers.bowtype = BOW_TYPE_PHOENIX;
+			player->client->pers.bowtype = BOW_TYPE_PHOENIX;
 			count = AMMO_COUNT_PHOENIXBOW;
 		}
 		else
@@ -3729,7 +3729,6 @@ enum swordpos_e
 	SWORD_ATK_STAB
 };
 
-
 vec3_t swordpositions[23] =
 {
 	{	0,		0,		0	},	// 0
@@ -3789,7 +3788,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 	playerinfo = &caster->client->playerinfo;
 	assert(playerinfo);
 
-	powerlevel = playerinfo->pers.stafflevel;
+	powerlevel = caster->client->pers.stafflevel;
 	if (playerinfo->powerup_timer > level.time)
 	{
 		powerlevel++;							// powerups now power up your staff, too.
@@ -3836,7 +3835,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 	endpos[2] += caster->viewheight;
 
 	// For showing where the sword attacks are.
-//	gi.CreateEffect(NULL, FX_TEST_BBOX, 0, endpos, "fff", maxs[0], mins[2], maxs[2]);
+	// gi.CreateEffect(NULL, FX_TEST_BBOX, 0, endpos, "fff", maxs[0], mins[2], maxs[2]);
 
 	VectorCopy(endpos, caster->client->laststaffpos);
 	caster->client->laststaffuse = level.time;
@@ -3892,7 +3891,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 					}
 
 					AlertMonsters(caster, caster, 1, true);
-					switch(irand(1,3))
+					switch (irand(1,3))
 					{
 					case 1:
 						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic1.wav"), 1, ATTN_NORM, 0);
@@ -3907,7 +3906,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 					caster->client->lastentityhit = trace.ent;
 
 					// Now we're in trouble, go into the attack recoil...
-					switch((locid-1)>>2)
+					switch ((locid-1)>>2)
 					{
 					case SWORD_ATK_L:
 						playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_L);
@@ -3971,7 +3970,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 					}
 
 					AlertMonsters (caster, caster, 1, true);
-					switch(irand(1,3))
+					switch (irand(1,3))
 					{
 					case 1:
 						gi.sound(caster,  CHAN_AUTO, gi.soundindex("weapons/ArmorRic1.wav"), 1, ATTN_NORM, 0);
@@ -3987,7 +3986,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 					trace.ent->client->lastentityhit = caster;
 
 					// Now we're in trouble, go into the attack recoil...
-					switch((locid-1)>>2)
+					switch ((locid-1)>>2)
 					{
 					case SWORD_ATK_L:
 						playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_L);
@@ -4035,7 +4034,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 
 				damage = irand(sworddamage[powerlevel][0], sworddamage[powerlevel][1]);
 				// Spin attacks should double damage
-				switch((locid-1)>>2)
+				switch ((locid-1)>>2)
 				{
 //				case SWORD_ATK_L:
 //					break;
@@ -4061,7 +4060,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 					}
 				}
 
-				switch(powerlevel)
+				switch (powerlevel)
 				{
 				case STAFF_LEVEL_BASIC:
 					dflags = DAMAGE_EXTRA_KNOCKBACK|DAMAGE_DISMEMBER;
@@ -4198,7 +4197,6 @@ WeaponThink_FlyingFist(edict_t *caster)
 						caster->client->playerinfo.pers.weapon->quantity;
 	}
 }
-
 
 // ************************************************************************************************
 // WeaponThink_Maceballs
@@ -4735,7 +4733,7 @@ int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 	gclient_t *client;
 
 	client = playerinfo->self->client;
-	Defence = playerinfo->pers.defence;
+	Defence = client->pers.defence;
 
 	// If the weapon uses ammo, return the number of shots left, else return -1 (e.g. Sword-staff).
 

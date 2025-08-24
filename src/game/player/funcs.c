@@ -284,7 +284,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 			}
 		}
 
-		switch( playerinfo->lowerseq )
+		switch ( playerinfo->lowerseq )
 		{
 		case ASEQ_CLIMB_UP_R:
 		case ASEQ_CLIMB_UP_START_R:
@@ -371,7 +371,6 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 				else
 					PlayerClimbSound(playerinfo, "player/ropefro.wav");
 
-
 				return ASEQ_CLIMB_SETTLE_R;
 				break;
 
@@ -384,13 +383,12 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 				else
 					PlayerClimbSound(playerinfo, "player/ropefro.wav");
 
-
 				return ASEQ_CLIMB_SETTLE_L;
 				break;
 			}
 		}
 
-		switch( playerinfo->lowerseq )
+		switch ( playerinfo->lowerseq )
 		{
 		case ASEQ_CLIMB_DOWN_R:
 		case ASEQ_CLIMB_DOWN_START_R:
@@ -1053,7 +1051,6 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 	AngleVectors(playerinfo->aimangles, vf, NULL, NULL);
 	VectorMA(playerinfo->origin, 64, vf, endpos);
 
-
 	//Account for step height
 	VectorSet(mins, playerinfo->mins[0], playerinfo->mins[1], playerinfo->mins[2] + 18);
 
@@ -1160,7 +1157,6 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 	}
 }
 
-
 // *******************************************************
 // G_PlayerVaultKick
 // -----------------------------
@@ -1238,7 +1234,6 @@ void G_PlayerSpellStopShieldAttack(edict_t *self)
 
 }
 
-
 // ************************************************************************************************
 // G_PlayerActionSwordAttack
 // -------------------------
@@ -1283,7 +1278,7 @@ void G_PlayerActionSpellDefensive(edict_t *self)
 	if (self->client->playerinfo.leveltime > self->client->playerinfo.defensive_debounce)
 	{
 //		playerinfo->pers.defence->use(playerinfo,playerinfo->pers.defence);
-		self->client->playerinfo.pers.defence->weaponthink(self);
+		self->client->pers.defence->weaponthink(self);
 		self->client->playerinfo.defensive_debounce = self->client->playerinfo.leveltime + DEFENSE_DEBOUNCE;
 
 		// if we've run out of defence shots, and we have the ring of repulsion - switch to that.

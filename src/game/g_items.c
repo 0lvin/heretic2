@@ -194,10 +194,6 @@ DoRespawn(edict_t *ent)
 	ent->solid = SOLID_TRIGGER;
 	gi.linkentity(ent);
 
-	// Create a respawn client-effect (this isn't currenlty doing anything on the client).
-
-	//gi.CreateEffect(ent,FX_ITEM_RESPAWN,CEF_OWNERS_ORIGIN,ent->s.origin,NULL);
-
 	// So it'll get sent to the client again.
 
 	// Re-enable the persistent effect.
@@ -1394,13 +1390,13 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 	else if ((item->tag == AMMO_MANA_OFFENSIVE_HALF) || (item->tag == AMMO_MANA_OFFENSIVE_FULL))
 	{
 		item = FindItemByClassname("item_mana_offensive_half");
-		max = ent->client->playerinfo.pers.max_offmana;
+		max = ent->client->pers.max_offmana;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if ((item->tag == AMMO_MANA_DEFENSIVE_HALF) || (item->tag == AMMO_MANA_DEFENSIVE_FULL))
 	{
 		item = FindItemByClassname("item_mana_defensive_half");
-		max = ent->client->playerinfo.pers.max_defmana;
+		max = ent->client->pers.max_defmana;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if ((item->tag == AMMO_MANA_COMBO_QUARTER) || (item->tag == AMMO_MANA_COMBO_HALF))
@@ -1408,29 +1404,29 @@ Add_Ammo(edict_t *ent, gitem_t *item, int count)
 		qboolean bo;
 
 		item = FindItemByClassname("item_mana_offensive_half");
-		max = ent->client->playerinfo.pers.max_offmana;
+		max = ent->client->pers.max_offmana;
 
 		bo = Add_AmmoToInventory (ent,item,count,max);
 
 		item = FindItemByClassname("item_mana_defensive_half");
-		max = ent->client->playerinfo.pers.max_defmana;
+		max = ent->client->pers.max_defmana;
 		bo |= Add_AmmoToInventory(ent, item, count, max);
 
 		return bo;
 	}
 	else if (item->tag == AMMO_REDRAIN)
 	{
-		max = ent->client->playerinfo.pers.max_redarrow;
+		max = ent->client->pers.max_redarrow;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if (item->tag == AMMO_PHOENIX)
 	{
-		max = ent->client->playerinfo.pers.max_phoenarr;
+		max = ent->client->pers.max_phoenarr;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else if (item->tag == AMMO_HELLSTAFF)
 	{
-		max = ent->client->playerinfo.pers.max_hellstaff;
+		max = ent->client->pers.max_hellstaff;
 		return Add_AmmoToInventory(ent, item, count, max);
 	}
 	else
@@ -1894,7 +1890,6 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 
 		return;
 	}
-
 
 	if (!ent->item->pickup)
 	{
@@ -2549,7 +2544,6 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	}
 }
 
-
 void
 P_ToggleFlashlight(edict_t *ent, qboolean state)
 {
@@ -2578,7 +2572,6 @@ static const gitem_t gameitemlist[] = {
 	{
 		NULL
 	}, /* leave index 0 alone */
-
 
 	/*
 	 * QUAKED weapon_swordstaff
@@ -3075,7 +3068,6 @@ static const gitem_t gameitemlist[] = {
 		1,										// Max uses (-1 = inifinite)
 	},
 
-
 	// =============================================================================================
 
 	// Ammo items.
@@ -3520,7 +3512,6 @@ static const gitem_t gameitemlist[] = {
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 		0,											// Max uses (-1 = inifinite)
 	},
-
 
 	/*
 	 * QUAKED item_puzzle_shield (.3 .3 1) (-2 -6 -12) (2 6 12)  x  NO_DROP

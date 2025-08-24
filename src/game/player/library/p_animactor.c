@@ -20,7 +20,6 @@
 
 #define PLAYER_SCREAM_THRESHOLD	-600
 
-
 // ************************************************************************************************
 // CalcJointAngles
 // ----------------
@@ -164,9 +163,12 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 	// Make sure all effects are removed.
 
-	switch(playerinfo->pers.handfxtype)
+	switch (client->pers.handfxtype)
 	{
 		case HANDFX_FIREBALL:
 		case HANDFX_MISSILE:
@@ -214,7 +216,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 											playerinfo->self,
 											FX_STAFF);
 
-				playerinfo->effects&=~EF_BLOOD_ENABLED;
+				playerinfo->effects &= ~EF_BLOOD_ENABLED;
 			}
 
 			break;
@@ -228,17 +230,21 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			break;
 	}
 
-	playerinfo->pers.handfxtype=HANDFX_NONE;
+	client->pers.handfxtype = HANDFX_NONE;
 }
 
 void AnimUpdateFrame(playerinfo_t *playerinfo)
 {
 	panimmove_t	*move;
 	float		yaw_delta;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	// Check for death.
-	if (playerinfo->deadflag==DEAD_DEAD)
+	if (playerinfo->deadflag == DEAD_DEAD)
+	{
 		return;
+	}
 
 	if ((playerinfo->flags & PLAYER_FLAG_KNOCKDOWN) && (!(playerinfo->deadflag)))
 	{
@@ -247,7 +253,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		PlayerInterruptAction(playerinfo);
 		if (!(playerinfo->deadflag))
 		{	// Don't do it if dying.
-			PlayerAnimSetLowerSeq(playerinfo,ASEQ_KNOCKDOWN);
+			PlayerAnimSetLowerSeq(playerinfo, ASEQ_KNOCKDOWN);
 		}
 		return;
 	}
@@ -347,7 +353,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				if (playerinfo->flags & PLAYER_FLAG_COLLISION)
 				{// See if the player is in a jump.
 
-					switch(playerinfo->lowerseq)
+					switch (playerinfo->lowerseq)
 					{
 						case ASEQ_POLEVAULT2:
 						case ASEQ_POLEVAULT1_W:
@@ -392,7 +398,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		{
 			// See if the player is in a jump.
 
-			switch(playerinfo->lowerseq)
+			switch (playerinfo->lowerseq)
 			{
 				//
 
@@ -479,7 +485,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	{
 		if (!(playerinfo->watertype & CONTENTS_SLIME))
 		{
-			switch( playerinfo->lowerseq )
+			switch (playerinfo->lowerseq)
 			{
 				case ASEQ_RUNF_GO:
 				case ASEQ_RUNF:

@@ -251,7 +251,6 @@ qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon)
 	return true;
 }
 
-
 /*-----------------------------------------------
 	ChickenBranchLwrStanding
 -----------------------------------------------*/
@@ -430,7 +429,9 @@ int ChickenBranchidle(playerinfo_t *playerinfo)
 int BranchLwrStanding(playerinfo_t *playerinfo)
 {
 	int	checksloped = ASEQ_NONE;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	if (playerinfo->deadflag)
 	{
 		//assert(0);
@@ -441,7 +442,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 
 	if (playerinfo->advancedstaff &&			// Special move
 			playerinfo->seqcmd[ACMDL_ACTION] &&
-			playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF &&
+			client->pers.weaponready == WEAPON_READY_SWORDSTAFF &&
 			playerinfo->seqcmd[ACMDU_ATTACK] &&
 			BranchCheckDismemberAction(playerinfo, ITEM_WEAPON_SWORDSTAFF))
 	{
@@ -513,7 +514,6 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		else
 			return ASEQ_STAND;
 	}
-
 
 	//BACKWARD
 
@@ -746,7 +746,9 @@ int BranchLwrStandingRun(playerinfo_t *playerinfo)
 int BranchLwrWalking(playerinfo_t *playerinfo)
 {
 	int	curseq = playerinfo->lowerseq;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	assert(playerinfo);
 
 	//Check for the player falling [LOW PROBABILITY, IMMEDIATE CONCERN]
@@ -767,8 +769,11 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 		if (curseq == ASEQ_PULLUP_HALFWALL)
 			return  ASEQ_PULLUP_HALFWALL;
 
-		if ( (playerinfo->seqcmd[ACMDL_ACTION]) && PlayerActionCheckJumpGrab(playerinfo, 0) )
+		if ((playerinfo->seqcmd[ACMDL_ACTION]) &&
+			PlayerActionCheckJumpGrab(playerinfo, 0))
+		{
 			return ASEQ_JUMPSTD_GO;
+		}
 	}
 
 	//Check for a jump [LOW PROBABILITY]
@@ -780,7 +785,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 			{
 				if (playerinfo->seqcmd[ACMDL_FWD])
 				{
-					if (	(playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
+					if ((client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 							(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) )
 						return ASEQ_POLEVAULT1_W;
 					else
@@ -1663,10 +1668,13 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 {
 	gitem_t		*Weapon;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	assert(playerinfo);
 
-	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
+	if ((client->pers.weaponready != WEAPON_READY_HANDS) &&
+		((Weapon = pi.FindItem("fball")) != NULL))
 	{
 		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
@@ -1676,11 +1684,6 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 
 		//Try and use a puzzle piece
 		PlayerActionUsePuzzle(playerinfo);
-
-//		if (PlayerActionCheckPuzzleGrab(playerinfo)) 	// Are you near a puzzle piece? Then try to take it
-//		{
-  //			return ASEQ_TAKEPUZZLEUNDERWATER;
-	//	}
 
 		PlayerActionCheckVault(playerinfo, 0);
 
@@ -1764,25 +1767,21 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 {
 	gitem_t	*Weapon;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	assert(playerinfo);
 
-	if ((playerinfo->pers.weaponready != WEAPON_READY_HANDS) && ((Weapon = pi.FindItem("fball"))!=NULL))
+	if ((client->pers.weaponready != WEAPON_READY_HANDS) &&
+		((Weapon = pi.FindItem("fball")) != NULL))
 	{
 		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-
 		//Try and use a puzzle piece
 		PlayerActionUsePuzzle(playerinfo);
-
-//		if (PlayerActionCheckPuzzleGrab(playerinfo)) 	// Are you near a puzzle piece? Then try to take it
-//		{
-  //			return ASEQ_TAKEPUZZLEUNDERWATER;
-	//	}
-
 	}
 	else if (playerinfo->seqcmd[ACMDL_FWD])
 	{
@@ -1791,10 +1790,15 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 			return ASEQ_SSWIM_RESURFACE;
 		}
 
-		if ((playerinfo->lowerseq == ASEQ_USWIMF_GO) || (playerinfo->lowerseq == ASEQ_USWIMF))
+		if ((playerinfo->lowerseq == ASEQ_USWIMF_GO) ||
+			(playerinfo->lowerseq == ASEQ_USWIMF))
+		{
 			return ASEQ_USWIMF;
+		}
 		else
+		{
 			return ASEQ_USWIMF_GO;
+		}
 	}
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 	{
@@ -1852,7 +1856,6 @@ int BranchLwrClimbing(playerinfo_t *playerinfo)
 {
 	return(pi.G_BranchLwrClimbing(playerinfo));
 }
-
 
 /*-----------------------------------------------
 	BranchUprReadyHands
@@ -2051,25 +2054,28 @@ int BranchCheckHellAmmo(playerinfo_t *playerinfo)
 	return(ASEQ_WHELL_END);
 }
 
-
 /*-----------------------------------------------
 	BranchUprReady
 -----------------------------------------------*/
 
 int BranchUprReady(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 	assert(playerinfo);
 
-	if ((playerinfo->switchtoweapon!=playerinfo->pers.weaponready||playerinfo->self->client->newweapon)&&
-		!(playerinfo->edictflags&FL_CHICKEN))
+	if ((playerinfo->switchtoweapon != client->pers.weaponready ||
+		playerinfo->self->client->newweapon) &&
+		!(playerinfo->edictflags & FL_CHICKEN))
 	{
 		// Not a chicken, so switch weapons.
-		playerinfo->idletime=playerinfo->leveltime;
+		playerinfo->idletime = playerinfo->leveltime;
 
-		return(PlayerAnimWeaponSwitch(playerinfo));
+		return PlayerAnimWeaponSwitch(playerinfo);
 	}
 
-	switch(playerinfo->pers.weaponready)
+	switch (client->pers.weaponready)
 	{
 		case WEAPON_READY_SWORDSTAFF:
 			return BranchUprReadySwordStaff(playerinfo);
@@ -2084,12 +2090,12 @@ int BranchUprReady(playerinfo_t *playerinfo)
 			return BranchUprReadyHands(playerinfo);
 			break;
 		default:		// In case Weapon_ready_none
-			playerinfo->pers.weaponready = WEAPON_READY_HANDS;
+			client->pers.weaponready = WEAPON_READY_HANDS;
 			return BranchUprReadyHands(playerinfo);
 			break;
 	}
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 // if we are out of offensive mana, then switch us to the next weapon
@@ -2103,7 +2109,6 @@ int BranchCheckMana(playerinfo_t *playerinfo)
 	return(ASEQ_NONE);
 }
 
-
 /*-----------------------------------------------
 	BranchIdle
 -----------------------------------------------*/
@@ -2111,7 +2116,9 @@ int BranchCheckMana(playerinfo_t *playerinfo)
 int BranchIdle(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	if (!playerinfo->sv_cinematicfreeze)
 	{
 		//Run special cases if we're in the ready position
@@ -2120,7 +2127,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 			playerinfo->lowerseq == ASEQ_IDLE_LOOKR ||
 			playerinfo->lowerseq == ASEQ_IDLE_LOOKL)
 		{
-			switch(pi.irand(playerinfo, 0, 6))
+			switch (pi.irand(playerinfo, 0, 6))
 			{
 			case 0:
 				return ASEQ_IDLE_LOOKR;
@@ -2136,10 +2143,10 @@ int BranchIdle(playerinfo_t *playerinfo)
 				break;
 			}
 		}
-		else if ((playerinfo->pers.weaponready == WEAPON_READY_BOW))
+		else if ((client->pers.weaponready == WEAPON_READY_BOW))
 		{
 			// Because the bow doesn't look right in some idles.
-			switch(pi.irand(playerinfo, 0, 10))
+			switch (pi.irand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_WIPE_BROW;
@@ -2157,10 +2164,11 @@ int BranchIdle(playerinfo_t *playerinfo)
 					break;
 			}
 		}
-		else if ( (playerinfo->pers.weaponready == WEAPON_READY_SWORDSTAFF) || (playerinfo->pers.weaponready == WEAPON_READY_HELLSTAFF))
+		else if ((client->pers.weaponready == WEAPON_READY_SWORDSTAFF) ||
+			(client->pers.weaponready == WEAPON_READY_HELLSTAFF))
 		{
 			// Because the staff doesn't look right in some idles.
-			switch(pi.irand(playerinfo, 0, 10))
+			switch (pi.irand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_FLY1;
@@ -2178,7 +2186,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 		}
 		else
 		{
-			switch(pi.irand(playerinfo, 0, 10))
+			switch (pi.irand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_FLY1;

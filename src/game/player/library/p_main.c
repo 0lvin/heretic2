@@ -12,11 +12,6 @@
 #include "p_anims.h"
 #include "p_main.h"
 
-//FIXME:  Include header
-qboolean BranchCheckDismemberAction(playerinfo_t *playerinfo, int weapon);
-
-void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
-
 void
 PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 {
@@ -208,7 +203,9 @@ PlayerUpdate(playerinfo_t *playerinfo)
 {
 	int		slideseq;
 	vec3_t	endpos;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	if (playerinfo->deadflag==DEAD_DEAD || playerinfo->deadflag==DEAD_DYING)
 		return;
 
@@ -275,7 +272,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	{
 		// Not a chicken, so...
 
-		if (playerinfo->pers.defence)
+		if (client->pers.defence)
 		{
 			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
@@ -331,30 +328,22 @@ PlayerUpdateModelAttributes(gclient_t *client)
 	playerinfo->fmnodeinfo[MESH__LHANDHI].flags |= FMNI_NO_DRAW;
 	playerinfo->fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
 
-	switch(playerinfo->pers.bowtype)
+	switch (client->pers.bowtype)
 	{
 		case BOW_TYPE_REDRAIN:
-
 			playerinfo->fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
-
 			// No special texture.
-
-			playerinfo->pers.altparts &= ~((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
-
+			client->pers.altparts &= ~((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
 			break;
 
 		case BOW_TYPE_PHOENIX:
-
 			playerinfo->fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
-			playerinfo->pers.altparts |= ((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
-
+			client->pers.altparts |= ((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
 			break;
 
 		case BOW_TYPE_NONE:
 		default:
-
 			playerinfo->fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
-
 			break;
 	}
 
@@ -368,56 +357,42 @@ PlayerUpdateModelAttributes(gclient_t *client)
 	if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 		playerinfo->fmnodeinfo[MESH__STOFF].flags &= ~FMNI_NO_DRAW;
 
-	switch(playerinfo->pers.stafflevel)
+	switch (client->pers.stafflevel)
 	{
 		case STAFF_LEVEL_POWER1:
 		case STAFF_LEVEL_POWER2:
-
 			// Use alternate power texture...
-
-			playerinfo->pers.altparts |= ((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
-
+			client->pers.altparts |= ((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
 			break;
 
 		case STAFF_LEVEL_BASIC:
 		default:
-
 			// No special texture
-
-			playerinfo->pers.altparts &= ~((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
-
+			client->pers.altparts &= ~((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
 			break;
 	}
 
 	// Check hellstaff for powerup.
 	// Assume the hellstaff is currently not readied.
-
 	playerinfo->fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
 
-	switch(playerinfo->pers.helltype)
+	switch (client->pers.helltype)
 	{
 		case HELL_TYPE_POWER:
-
 			// Use alternate power texutre...
-
-			playerinfo->pers.altparts |= (1<<MESH__HELSTF);
-
+			client->pers.altparts |= (1<<MESH__HELSTF);
 			break;
 
 		case HELL_TYPE_BASIC:
-
-			playerinfo->pers.altparts &= ~(1<<MESH__HELSTF);
-
+			client->pers.altparts &= ~(1<<MESH__HELSTF);
 			break;
 
 		case HELL_TYPE_NONE:
 		default:
-
 			break;
 	}
 
 	// Check if the player's a ghost.
-
 	if (playerinfo->ghost_timer > playerinfo->leveltime)
 	{
 		// Set the ghost time.
@@ -429,19 +404,17 @@ PlayerUpdateModelAttributes(gclient_t *client)
 	}
 
 	// Check armor and level...
-
-	switch(playerinfo->pers.armortype)
+	switch (client->pers.armortype)
 	{
 		case ARMOR_TYPE_SILVER:
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags &= ~FMNI_NO_DRAW;
-			playerinfo->pers.altparts &= ~(1<<MESH__ARMOR);
-
+			client->pers.altparts &= ~(1<<MESH__ARMOR);
 			break;
 
 		case ARMOR_TYPE_GOLD:
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags |= FMNI_USE_SKIN;
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags &= ~FMNI_NO_DRAW;
-			playerinfo->pers.altparts |= 1<<MESH__ARMOR;
+			client->pers.altparts |= 1<<MESH__ARMOR;
 			if (playerinfo->skinnum & 0x01)	// If the main skinnum is odd, then opposite
 				playerinfo->fmnodeinfo[MESH__ARMOR].skin = playerinfo->skinnum;
 			else
@@ -480,8 +453,7 @@ PlayerUpdateModelAttributes(gclient_t *client)
 
 		// Set normal skin texture.
 		// First check if the first "node" is damaged, because it is an exception to the rest.
-
-		if (playerinfo->pers.altparts & (1<<MESH_BASE2))
+		if (client->pers.altparts & (1<<MESH_BASE2))
 		{
 			// The front of the body is damaged.
 			// This is a little weird, because the player's main skin is what defines the damage to the front chest node.
@@ -513,10 +485,9 @@ PlayerUpdateModelAttributes(gclient_t *client)
 
 		// Set appropriate textures and pain skins.
 		// Fifteen other body parts.
-
-		for (i=1; i<16; i++)
+		for (i = 1; i < 16; i++)
 		{
-			if (playerinfo->pers.altparts & (1<<i))
+			if (client->pers.altparts & (1<<i))
 			{
 				// The part is damaged or powered.
 
@@ -555,7 +526,7 @@ PlayerUpdateModelAttributes(gclient_t *client)
 	if (BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
 	{//FIXME: doesn't allow for dropping of weapons
 		// Now turn on the appropriate weapon bits.
-		switch(playerinfo->pers.weaponready)
+		switch (client->pers.weaponready)
 		{
 			case WEAPON_READY_STAFFSTUB:
 
@@ -639,6 +610,9 @@ void
 PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 {
 	int powerlevel;
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 
 	// To kill previous effects, we just Reset the EF_FLAG
 
@@ -648,9 +622,9 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 	// 0 = red, 2 = green, 1 = blue 3 = yellow.
 
 	playerinfo->effects &= ~EF_TRAILS_ENABLED;
-	playerinfo->pers.handfxtype=handfx;
+	client->pers.handfxtype = handfx;
 
-	switch(handfx)
+	switch (handfx)
 	{
 		case HANDFX_FIREBALL:
 			// Red effect on the right throwing hand.
@@ -696,9 +670,9 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			playerinfo->effects &= ~EF_BLOOD_ENABLED;
 			// Add a trail effect to the staff.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
-				powerlevel = playerinfo->pers.stafflevel+1;
+				powerlevel = client->pers.stafflevel + 1;
 			else
-				powerlevel = playerinfo->pers.stafflevel;
+				powerlevel = client->pers.stafflevel;
 
 			if (powerlevel >= STAFF_LEVEL_MAX)
 				powerlevel = STAFF_LEVEL_MAX-1;

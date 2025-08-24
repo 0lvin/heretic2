@@ -113,30 +113,25 @@ void PlayerKillShrineFX(edict_t *self)
 
 	// Remove Armor.
 
-	self->client->playerinfo.pers.armor_count = 0;
+	self->client->pers.armor_count = 0;
 
 	// Turn off the armor at the model level.
-
-	playerinfo->pers.armortype = ARMOR_NONE;
+	self->client->pers.armortype = ARMOR_NONE;
 
 	SetupPlayerinfo_effects(self);
 	playerExport->PlayerUpdateModelAttributes(self->client);
 	WritePlayerinfo_effects(self);
 
 	// Remove Staff powerup.
-
-	self->client->playerinfo.pers.stafflevel = STAFF_LEVEL_BASIC;
+	self->client->pers.stafflevel = STAFF_LEVEL_BASIC;
 
 	// Remove Weapons powerup.
-
 	self->client->playerinfo.powerup_timer = level.time - 1.0;
 
 	// Kill any tomes that may already be out there for this player.
-
 	G_RemoveEffects(self, FX_TOME_OF_POWER);
 
 	// Turn off the tome at the client effect end through client flags that are passed down.
-
 	self->s.effects &= ~EF_POWERUP_ENABLED;
 }
 
@@ -201,7 +196,7 @@ void G_PlayerActionShrineEffect(playerinfo_t *playerinfo)
 
 	self=(edict_t *)playerinfo->self;
 
-	switch(self->shrine_type)
+	switch (self->shrine_type)
 	{
 		case SHRINE_ARMOR_SILVER:
 			player_shrine_armor_silver_effect(self);
@@ -261,7 +256,7 @@ void G_PlayerActionShrineEffect(playerinfo_t *playerinfo)
 
 void PlayerRandomShrineEffect(edict_t *self, int value)
 {
-	switch(value)
+	switch (value)
 	{
 		case SHRINE_ARMOR_SILVER:
 			player_shrine_armor_silver_effect(self);
@@ -632,19 +627,18 @@ void shrine_armor_silver_core(edict_t *self,edict_t *other)
 	}
 
 	// Add armor to player.
-	if ((other->client->playerinfo.pers.armortype == ARMOR_TYPE_GOLD) &&
-		(other->client->playerinfo.pers.armor_count >= gold_armor_info.max_armor / 2))
-		other->client->playerinfo.pers.armor_count = gold_armor_info.max_armor;
+	if ((other->client->pers.armortype == ARMOR_TYPE_GOLD) &&
+		(other->client->pers.armor_count >= gold_armor_info.max_armor / 2))
+		other->client->pers.armor_count = gold_armor_info.max_armor;
 	else
 	{
-		other->client->playerinfo.pers.armortype = ARMOR_TYPE_SILVER;
-		other->client->playerinfo.pers.armor_count = silver_armor_info.max_armor;
+		other->client->pers.armortype = ARMOR_TYPE_SILVER;
+		other->client->pers.armor_count = silver_armor_info.max_armor;
 	}
 
 	SetupPlayerinfo_effects(other);
 	playerExport->PlayerUpdateModelAttributes(other->client);
 	WritePlayerinfo_effects(other);
-
 
 	// restore dismemberment, and stop us being on fire
 	shrine_restore_player(other);
@@ -668,7 +662,7 @@ void shrine_armor_silver_touch	(edict_t *self, edict_t *other, cplane_t *plane, 
 
 	if (deathmatch->value || (other->flags & FL_CHICKEN) || (other->client->playerinfo.flags & PLAYER_FLAG_WATER))
 	{
-		if (other->client->playerinfo.pers.armortype == ARMOR_TYPE_SILVER)
+		if (other->client->pers.armortype == ARMOR_TYPE_SILVER)
 			player_shrine_armor_silver_effect(other);
 		else
 			player_shrine_armor_gold_effect(other);
@@ -748,8 +742,8 @@ void shrine_armor_gold_core(edict_t *self,edict_t *other)
 
 	// Add gold armor to player.
 
-	other->client->playerinfo.pers.armortype = ARMOR_TYPE_GOLD;
-	other->client->playerinfo.pers.armor_count = gold_armor_info.max_armor;
+	other->client->pers.armortype = ARMOR_TYPE_GOLD;
+	other->client->pers.armor_count = gold_armor_info.max_armor;
 
 	SetupPlayerinfo_effects(other);
 	playerExport->PlayerUpdateModelAttributes(other->client);
@@ -837,7 +831,7 @@ void player_shrine_staff_effect(edict_t *self)
 	int	flags = CEF_OWNERS_ORIGIN;
 	// Start up the shrine staff effect.
 
-	if (self->client->playerinfo.pers.stafflevel == STAFF_LEVEL_POWER2)
+	if (self->client->pers.stafflevel == STAFF_LEVEL_POWER2)
 	{
 		flags |= CEF_FLAG6;
 		gi.sound(self,CHAN_ITEM, gi.soundindex("weapons/FirewallPowerCast.wav"), 1, ATTN_NORM, 0);
@@ -865,9 +859,9 @@ void shrine_staff_core(edict_t *self,edict_t *other)
 
 	// Add onto his staff.
 
-	if (other->client->playerinfo.pers.stafflevel < STAFF_LEVEL_MAX-1)
+	if (other->client->pers.stafflevel < STAFF_LEVEL_MAX-1)
 	{
-		other->client->playerinfo.pers.stafflevel++;
+		other->client->pers.stafflevel++;
 
 		SetupPlayerinfo_effects(other);
 		playerExport->PlayerUpdateModelAttributes(other->client);
@@ -1733,7 +1727,6 @@ int	possible_shrines[POSSIBLE_RANDOM_SHRINES] =
 	SHRINE_ARMOR_GOLD,
 };
 
-
 // Fire off an effect and give us a powerup for a while powerup.
 void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
@@ -1791,8 +1784,8 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 				total_rand_count++;
 			}
 		}
-		if ((other->client->playerinfo.pers.armortype != ARMOR_TYPE_GOLD) ||
-			(!other->client->playerinfo.pers.armor_count))
+		if ((other->client->pers.armortype != ARMOR_TYPE_GOLD) ||
+			(!other->client->pers.armor_count))
 		{
 			possible_shrines[total_rand_count] = SHRINE_ARMOR_GOLD;
 			total_rand_count++;
@@ -1803,14 +1796,14 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 			possible_shrines[total_rand_count] = SHRINE_MANA;
 			total_rand_count++;
 		}
-		if (other->client->playerinfo.pers.stafflevel < STAFF_LEVEL_MAX-1)
+		if (other->client->pers.stafflevel < STAFF_LEVEL_MAX-1)
 		{
 			possible_shrines[total_rand_count] = SHRINE_STAFF;
 			total_rand_count++;
 		}
-		if (((other->client->playerinfo.pers.armortype != ARMOR_TYPE_GOLD) &&
-			(other->client->playerinfo.pers.armortype != ARMOR_TYPE_SILVER)) ||
-			(!other->client->playerinfo.pers.armor_count))
+		if (((other->client->pers.armortype != ARMOR_TYPE_GOLD) &&
+			(other->client->pers.armortype != ARMOR_TYPE_SILVER)) ||
+			(!other->client->pers.armor_count))
 		{
 			possible_shrines[total_rand_count] = SHRINE_ARMOR_SILVER;
 			total_rand_count++;
@@ -1825,7 +1818,7 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 
 	// Give us whatever we should have from this shrine.
 
-	switch(random_shrine_num)
+	switch (random_shrine_num)
 	{
 		case SHRINE_HEAL:
 

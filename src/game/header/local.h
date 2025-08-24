@@ -927,7 +927,6 @@ typedef struct
 	int		player_buoy[MAX_CLIENTS];				//stores current bestbuoy for a player enemy (if any)
 	int		player_last_buoy[MAX_CLIENTS];		//when player_buoy is invalid, saves it here so monsters can check it first instead of having to do a whole search
 
-
 	int		offensive_weapons,
 			defensive_weapons;
 
@@ -1999,6 +1998,26 @@ typedef struct
 	int autoweapon;
 	short mission_num1;
 	short mission_num2;
+
+	/* Visible model attributes. */
+	int weaponready;
+	byte armortype;     /* Current armour Corvus is wearing. */
+	byte bowtype;       /* Current bow and what kind (when it is on Corvus' back too). */
+	byte stafflevel;    /* Current powerup level for the staff. */
+	byte helltype;      /* Current skin on the hellstaff. */
+	byte handfxtype;    /* Current spell effect Corvus has attached to his refpoints. */
+	float armor_count;  /* Not used on client. */
+	unsigned altparts;  /* Missing hands, heads etc. */
+
+	/* Ammo capacities. */
+	int max_offmana;
+	int max_defmana;
+	int max_redarrow;
+	int max_phoenarr;
+	int max_hellstaff;
+
+	/* Offenses and defenses. */
+	gitem_t *defence, *lastdefence;
 } client_persistant_t;
 
 /* client data that stays across multiple level loads */
@@ -2007,28 +2026,6 @@ typedef struct
 	/* values saved and restored from
 	   edicts when changing levels */
 	gitem_t *weapon;
-
-	/* Visible model attributes. */
-	int			weaponready;
-	byte		armortype;			// Current armour Corvus is wearing.
-	byte		bowtype;			// Current bow and what kind (when it is on Corvus' back too).
-	byte		stafflevel;			// Current powerup level for the staff.
-	byte		helltype;			// Current skin on the hellstaff.
-	byte		handfxtype;			// Current spell effect Corvus has attached to his refpoints.
-	float		armor_count; 		// Not used on client.
-	unsigned int altparts;			// Missing hands, heads etc.
-
-	// Ammo capacities.
-
-	int			max_offmana;
-	int			max_defmana;
-	int			max_redarrow;
-	int			max_phoenarr;
-	int			max_hellstaff;
-
-	// Offenses and defenses.
-
-	gitem_t *defence, *lastdefence;
 } player_persistant_t;
 
 // ************************************************************************************************
@@ -3259,7 +3256,6 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
 #define OBJ_EXPLODING		4
 #define OBJ_NOPUSH			8
 
-
 // ************************************************************************************************
 // SIGHT_XXX
 // ------
@@ -3285,7 +3281,6 @@ typedef enum Box_BoundingForm_Sides_e
 	BOX_BOUNDINGFORM_SIDE_TOP,
 	NUM_BOX_BOUNDINGFORM_SIDES
 } Box_BoundingForm_Sides_t;
-
 
 void SpawnItemEffect(edict_t *ent, gitem_t *item);
 
