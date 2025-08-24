@@ -42,7 +42,6 @@ gitem_armor_t gold_armor_info	= {MAX_GOLD_ARMOR, GOLD_HIT_MULT, GOLD_SPELL_MULT}
 void pitch_roll_for_slope (edict_t *forwhom, vec3_t *slope);
 void MG_PostDeathThink (edict_t *self);
 
-
 /*
  * clean up heal targets for medic
  */
@@ -306,7 +305,7 @@ SpawnReward(edict_t *self, edict_t *attacker)
 	//Check the offensive mana amount on the attacker
 	lookup = FindItemByClassname("item_mana_offensive_half");
 	index = ITEM_INDEX(lookup);
-	off_max = attacker->client->playerinfo.pers.max_offmana;
+	off_max = attacker->client->pers.max_offmana;
 	off_amount = attacker->client->pers.inventory[index];
 
 	off_chance = (off_amount < off_max) ? ( (float) off_amount / (float) off_max ) : 9999;
@@ -314,7 +313,7 @@ SpawnReward(edict_t *self, edict_t *attacker)
 	//Check the offensive mana amount on the attacker
 	lookup = FindItemByClassname("item_mana_defensive_half");
 	index = ITEM_INDEX(lookup);
-	def_max = attacker->client->playerinfo.pers.max_defmana;
+	def_max = attacker->client->pers.max_defmana;
 	def_amount = attacker->client->pers.inventory[index];
 
 	def_chance = (def_amount < def_max) ? ( (float) def_amount / (float) def_max ) : 9999;
@@ -800,12 +799,12 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		// do we actually have any armor anyway ?
 		// dont let armor effect us if we are drowning, in slime, or in lava
 		if (!(dflags & DAMAGE_AVOID_ARMOR) &&
-			targ->client->playerinfo.pers.armor_count &&
+			targ->client->pers.armor_count &&
 			(dflags != DAMAGE_SUFFOCATION) &&
 			(dflags != DAMAGE_SLIME) &&
 			(dflags != DAMAGE_LAVA))
 		{
-			if (targ->client->playerinfo.pers.armortype == ARMOR_TYPE_SILVER)
+			if (targ->client->pers.armortype == ARMOR_TYPE_SILVER)
 				info = &silver_armor_info;
 			else
 				info = &gold_armor_info;
@@ -850,20 +849,20 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			else
 			{	// Everything not taken by the player is taken by the armor
 				armorabsorb -= damage;
-				if (armorabsorb > targ->client->playerinfo.pers.armor_count)
+				if (armorabsorb > targ->client->pers.armor_count)
 				{
-					damage += armorabsorb - targ->client->playerinfo.pers.armor_count;
-					armorabsorb = targ->client->playerinfo.pers.armor_count;
+					damage += armorabsorb - targ->client->pers.armor_count;
+					armorabsorb = targ->client->pers.armor_count;
 				}
 			}
 
-			targ->client->playerinfo.pers.armor_count -= armorabsorb;
+			targ->client->pers.armor_count -= armorabsorb;
 			// dec armor count. are we down to zero armor ?
-			if (targ->client->playerinfo.pers.armor_count <= 0)
+			if (targ->client->pers.armor_count <= 0)
 			{
 				// stop drawing the armor
-				targ->client->playerinfo.pers.armortype = ARMOR_NONE;
-				targ->client->playerinfo.pers.armor_count = 0;
+				targ->client->pers.armortype = ARMOR_NONE;
+				targ->client->pers.armor_count = 0;
 
 				SetupPlayerinfo_effects(targ);
 				playerExport->PlayerUpdateModelAttributes(targ->client);
@@ -1364,7 +1363,6 @@ T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edic
 	edict_t *ent = NULL;
 	vec3_t v, center, dir;
 	vec3_t hitspot;
-
 
 	assert(radius>0);
 

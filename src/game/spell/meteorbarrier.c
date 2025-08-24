@@ -118,7 +118,6 @@ static void MeteorBarrierHuntThink(edict_t *self)
 			if (dist > (METEOR_HUNT_SPEED * 0.1))
 				VectorScale(self->movedir, METEOR_HUNT_SPEED, self->velocity);
 
-
 			self->nextthink = level.time + 0.1;
 			self->accel = 1.0;		// Signal that we have already gotten a target speed.
 		}
@@ -155,8 +154,6 @@ static void MeteorBarrierBounceThink(edict_t *self)
 		MeteorBarrierDie(self, METEOR_BARRIER_DIE_EXPLODE);
 	}
 }
-
-
 
 // ************************************************************************************************
 // MeteorBarrierReflect
@@ -210,8 +207,6 @@ edict_t *MeteorBarrierReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	return(Meteor);
 }
-
-
 
 // ************************************************************************************************
 // MeteorBarrierTouch
@@ -410,12 +405,12 @@ void SpellCastMeteorBarrier(edict_t *caster,vec3_t StartPos,vec3_t AimAngles,vec
 		}
 
 		// enough mana to do this ?
-		if (caster->client->pers.inventory[caster->client->playerinfo.def_ammo_index] < caster->client->playerinfo.pers.defence->quantity)
+		if (caster->client->pers.inventory[caster->client->playerinfo.def_ammo_index] < caster->client->pers.defence->quantity)
 			break;
 
 		// decrement our mana
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			caster->client->pers.inventory[caster->client->playerinfo.def_ammo_index] -= caster->client->playerinfo.pers.defence->quantity;
+			caster->client->pers.inventory[caster->client->playerinfo.def_ammo_index] -= caster->client->pers.defence->quantity;
 
 		cast = true;
 		Meteor = G_Spawn();

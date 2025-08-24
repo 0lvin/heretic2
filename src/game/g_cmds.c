@@ -223,7 +223,7 @@ SelectPrevItem(edict_t *ent, int itflags)
 		}
 
 		cl->pers.selected_item = index;
-		cl->playerinfo.pers.defence = it;
+		cl->pers.defence = it;
 		return;
 	}
 
@@ -413,9 +413,9 @@ Cmd_Give_f(edict_t *ent)
 				// This is a bow, put the bow on his back.
 
 				if (it->tag == ITEM_WEAPON_PHOENIXBOW)
-					ent->client->playerinfo.pers.bowtype = BOW_TYPE_PHOENIX;
+					ent->client->pers.bowtype = BOW_TYPE_PHOENIX;
 				else
-					ent->client->playerinfo.pers.bowtype = BOW_TYPE_REDRAIN;
+					ent->client->pers.bowtype = BOW_TYPE_REDRAIN;
 
 				SetupPlayerinfo_effects(ent);
 				playerExport->PlayerUpdateModelAttributes(ent->client);
@@ -448,8 +448,8 @@ Cmd_Give_f(edict_t *ent)
 		}
 
 		// if we don't already have a defence item, make the ring default
-		if (ent->client->playerinfo.pers.defence == NULL)
-			ent->client->playerinfo.pers.defence=FindItem("ring");
+		if (ent->client->pers.defence == NULL)
+			ent->client->pers.defence=FindItem("ring");
 
 		if (!give_all)
 		{
@@ -529,15 +529,15 @@ Cmd_Give_f(edict_t *ent)
 			ent->client->pers.inventory[ITEM_INDEX(it)] = info->max_count;
 		}
 
-		if (ent->client->playerinfo.pers.armortype == ARMOR_TYPE_NONE)
+		if (ent->client->pers.armortype == ARMOR_TYPE_NONE)
 		{
-			ent->client->playerinfo.pers.armor_count = silver_armor_info.max_armor;
-			ent->client->playerinfo.pers.armortype = ARMOR_TYPE_SILVER;
+			ent->client->pers.armor_count = silver_armor_info.max_armor;
+			ent->client->pers.armortype = ARMOR_TYPE_SILVER;
 		}
 		else	// We'll assume there's armor, so load up with gold.
 		{
-			ent->client->playerinfo.pers.armor_count = gold_armor_info.max_armor;
-			ent->client->playerinfo.pers.armortype = ARMOR_TYPE_GOLD;
+			ent->client->pers.armor_count = gold_armor_info.max_armor;
+			ent->client->pers.armortype = ARMOR_TYPE_GOLD;
 
 		}
 
@@ -576,12 +576,12 @@ Cmd_Give_f(edict_t *ent)
 	// Give all does not give staff powerup
 	if (Q_stricmp(name, "staff") == 0)
 	{
-		if (ent->client->playerinfo.pers.stafflevel < (STAFF_LEVEL_MAX-1))
-			ent->client->playerinfo.pers.stafflevel++;
+		if (ent->client->pers.stafflevel < (STAFF_LEVEL_MAX-1))
+			ent->client->pers.stafflevel++;
 		else
-			ent->client->playerinfo.pers.stafflevel = STAFF_LEVEL_BASIC;
+			ent->client->pers.stafflevel = STAFF_LEVEL_BASIC;
 
-		gi.dprintf("Setting staff level to %d\n", ent->client->playerinfo.pers.stafflevel);
+		gi.dprintf("Setting staff level to %d\n", ent->client->pers.stafflevel);
 
 		SetupPlayerinfo_effects(ent);
 		playerExport->PlayerUpdateModelAttributes(ent->client);
@@ -745,8 +745,8 @@ Cmd_Give_f(edict_t *ent)
 	}
 
 	// if we don't already have a defence item, make this defence item default
-	if ((ent->client->playerinfo.pers.defence == NULL) && (it->flags & IT_DEFENSE))
-			ent->client->playerinfo.pers.defence=it;
+	if ((ent->client->pers.defence == NULL) && (it->flags & IT_DEFENSE))
+			ent->client->pers.defence=it;
 }
 
 /*
@@ -948,22 +948,24 @@ Cmd_Use_f(edict_t *ent)
 
 	if (castme && (it->flags & IT_DEFENSE) &&
 			it->weaponthink &&
-			ent->deadflag!=DEAD_DEAD && playerinfo->deadflag!=DEAD_DYING)
+			ent->deadflag != DEAD_DEAD &&
+			playerinfo->deadflag!=DEAD_DYING)
 	{
 		if (playerinfo->leveltime > playerinfo->defensive_debounce)
 		{	// Do something only if the debounce is okay.
-			playerinfo->pers.lastdefence = playerinfo->pers.defence;
-			playerinfo->pers.defence=it;
+			ent->client->pers.lastdefence = ent->client->pers.defence;
+			ent->client->pers.defence=it;
 
 			if (Defence_CurrentShotsLeft(playerinfo, 1) > 0)
 			{
 				/* Only if there is ammo */
 				it->weaponthink(ent);
 
-				if (playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
-					playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
+				if (ent->client->pers.defence &&
+					ent->client->pers.defence->ammo)
+					playerinfo->def_ammo_index = ITEM_INDEX(FindItem(ent->client->pers.defence->ammo));
 				else
-					playerinfo->def_ammo_index=0;
+					playerinfo->def_ammo_index = 0;
 
 				playerinfo->defensive_debounce = playerinfo->leveltime + DEFENSE_DEBOUNCE;
 			}
@@ -974,8 +976,8 @@ Cmd_Use_f(edict_t *ent)
 			}
 
 			// Put the ammo back.
-			playerinfo->pers.defence = playerinfo->pers.lastdefence;
-			playerinfo->pers.lastdefence = it;
+			ent->client->pers.defence = ent->client->pers.lastdefence;
+			ent->client->pers.lastdefence = it;
 		}
 		return;
 	}
@@ -1335,10 +1337,10 @@ Cmd_DefPrev_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.defence)
+	if (!cl->pers.defence)
 		selected_defence = 1;
 	else
-		selected_defence = ITEM_INDEX(cl->playerinfo.pers.defence);
+		selected_defence = ITEM_INDEX(cl->pers.defence);
 	start_defence = selected_defence;
 
 	// scan  for the next valid one
@@ -1357,7 +1359,7 @@ Cmd_DefPrev_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
-		if (cl->playerinfo.pers.defence == it)
+		if (cl->pers.defence == it)
 		{
 			selected_defence = index;
 			break;	// successful
@@ -1394,10 +1396,10 @@ Cmd_DefNext_f(edict_t *ent)
 
 	cl = ent->client;
 
-	if (!cl->playerinfo.pers.defence)
+	if (!cl->pers.defence)
 		selected_defence = 1;
 	else
-		selected_defence = ITEM_INDEX(cl->playerinfo.pers.defence);
+		selected_defence = ITEM_INDEX(cl->pers.defence);
 	start_defence = selected_defence;
 
 	// scan  for the next valid one
@@ -1414,7 +1416,7 @@ Cmd_DefNext_f(edict_t *ent)
 			continue;
 
 		it->use(ent, it);
-		if (cl->playerinfo.pers.defence == it)
+		if (cl->pers.defence == it)
 		{
 			selected_defence = index;
 			break;	// successful
@@ -1712,7 +1714,6 @@ Cmd_ToggleInventory_f(edict_t *ent)
 		cl->playerinfo.showpuzzleinventory = true;
 
 }
-
 
 /*
 ===================
@@ -2606,7 +2607,6 @@ Cmd_ShowCoords_f(edict_t *ent)
 	Com_Printf("       Angle:  Facing=%2.2f, Pitch=%2.2f\n", ent->client->aimangles[YAW], -ent->client->aimangles[PITCH]);
 }
 
-
 void
 Cmd_TestFX_f(edict_t *ent)
 {
@@ -2617,7 +2617,7 @@ Cmd_TestFX_f(edict_t *ent)
 
 	i = irand(0, 15);
 	gi.dprintf("Setting pain skin number %d\n", i);
-	ent->client->playerinfo.pers.altparts |= 1<<i;
+	ent->client->pers.altparts |= 1<<i;
 
 	SetupPlayerinfo_effects(ent);
 	playerExport->PlayerUpdateModelAttributes(ent->client);

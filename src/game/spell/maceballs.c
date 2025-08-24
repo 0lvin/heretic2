@@ -153,7 +153,7 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 			{
 				gitem_t *it;
 
-				Defence = trace->ent->client->playerinfo.pers.defence;
+				Defence = trace->ent->client->pers.defence;
 
 				it = FindItem("lshield");
 				if (it)
@@ -226,8 +226,6 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 	// Since we have an enemy, set the flag to readjust next think.
 	VectorCopy(trace->plane.normal, self->movedir);
 }
-
-
 
 // ****************************************************************************
 // SpellCastMaceballs
@@ -304,6 +302,5 @@ void SpellCastMaceball(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_
 	}
 	gi.sound(caster, CHAN_WEAPON, gi.soundindex("weapons/MaceBallCast.wav"), 1, ATTN_NORM, 0);
 }
-
 
 // end

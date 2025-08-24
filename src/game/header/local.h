@@ -927,7 +927,6 @@ typedef struct
 	int		player_buoy[MAX_CLIENTS];				//stores current bestbuoy for a player enemy (if any)
 	int		player_last_buoy[MAX_CLIENTS];		//when player_buoy is invalid, saves it here so monsters can check it first instead of having to do a whole search
 
-
 	int		offensive_weapons,
 			defensive_weapons;
 
@@ -1999,32 +1998,27 @@ typedef struct
 	int autoweapon;
 	short mission_num1;
 	short mission_num2;
-} client_persistant_t;
 
-/* client data that stays across multiple level loads */
-typedef struct
-{
-	int			weaponready;
-	byte		armortype;			// Current armour Corvus is wearing.
-	byte		bowtype;			// Current bow and what kind (when it is on Corvus' back too).
-	byte		stafflevel;			// Current powerup level for the staff.
-	byte		helltype;			// Current skin on the hellstaff.
-	byte		handfxtype;			// Current spell effect Corvus has attached to his refpoints.
-	float		armor_count; 		// Not used on client.
-	unsigned int altparts;			// Missing hands, heads etc.
+	/* Visible model attributes. */
+	int weaponready;
+	byte armortype;     /* Current armour Corvus is wearing. */
+	byte bowtype;       /* Current bow and what kind (when it is on Corvus' back too). */
+	byte stafflevel;    /* Current powerup level for the staff. */
+	byte helltype;      /* Current skin on the hellstaff. */
+	byte handfxtype;    /* Current spell effect Corvus has attached to his refpoints. */
+	float armor_count;  /* Not used on client. */
+	unsigned altparts;  /* Missing hands, heads etc. */
 
-	// Ammo capacities.
+	/* Ammo capacities. */
+	int max_offmana;
+	int max_defmana;
+	int max_redarrow;
+	int max_phoenarr;
+	int max_hellstaff;
 
-	int			max_offmana;
-	int			max_defmana;
-	int			max_redarrow;
-	int			max_phoenarr;
-	int			max_hellstaff;
-
-	// Offenses and defenses.
-
+	/* Offenses and defenses. */
 	gitem_t *defence, *lastdefence;
-} player_persistant_t;
+} client_persistant_t;
 
 // ************************************************************************************************
 // playerinfo_t
@@ -2070,12 +2064,7 @@ typedef struct playerinfo_s
 	// Inputs & outputs.
 	// ********************************************************************************************
 
-	// Data that must be maintatined over the duration of a level.
-
-	player_persistant_t	pers;
-
 	// Last usercmd_t.
-
 	usercmd_t			pcmd;
 
 	// Status of controller buttons.
@@ -3254,7 +3243,6 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
 #define OBJ_EXPLODING		4
 #define OBJ_NOPUSH			8
 
-
 // ************************************************************************************************
 // SIGHT_XXX
 // ------
@@ -3280,7 +3268,6 @@ typedef enum Box_BoundingForm_Sides_e
 	BOX_BOUNDINGFORM_SIDE_TOP,
 	NUM_BOX_BOUNDINGFORM_SIDES
 } Box_BoundingForm_Sides_t;
-
 
 void SpawnItemEffect(edict_t *ent, gitem_t *item);
 

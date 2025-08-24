@@ -79,6 +79,7 @@ void PlayerClearEffects(playerinfo_t* playerinfo);
 void PlayerUpdate(playerinfo_t* playerinfo);
 void PlayerUpdateCmdFlags(playerinfo_t* playerinfo);
 const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
+void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
 
 // Information for creep fall checking.
 

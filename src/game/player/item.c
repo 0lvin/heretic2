@@ -21,11 +21,11 @@ void Use_Defence(struct edict_s *ent, gitem_t *defence)
 {
 	playerinfo_t *playerinfo = &ent->client->playerinfo;
 
-	playerinfo->pers.lastdefence = playerinfo->pers.defence;
-	playerinfo->pers.defence=defence;
+	ent->client->pers.lastdefence = ent->client->pers.defence;
+	ent->client->pers.defence = defence;
 
-	if (playerinfo->pers.defence&&playerinfo->pers.defence->ammo)
-		playerinfo->def_ammo_index=ITEM_INDEX(FindItem(playerinfo->pers.defence->ammo));
+	if (ent->client->pers.defence && ent->client->pers.defence->ammo)
+		playerinfo->def_ammo_index = ITEM_INDEX(FindItem(ent->client->pers.defence->ammo));
 	else
 		playerinfo->def_ammo_index=0;
 }
@@ -40,13 +40,12 @@ void DefenceThink_Tornado(edict_t *Caster)
 
 	// Set up the Tornado's starting position and aiming angles then cast the spell.
 
-	SpellCastDropTornado(Caster,Caster->s.origin,Caster->client->aimangles,NULL,0.0);
+	SpellCastDropTornado(Caster, Caster->s.origin, Caster->client->aimangles, NULL, 0.0);
 
 	// Take off mana
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->pers.inventory[Caster->client->playerinfo.def_ammo_index]-= Caster->client->playerinfo.pers.defence->quantity;
+		Caster->client->pers.inventory[Caster->client->playerinfo.def_ammo_index] -= Caster->client->pers.defence->quantity;
 }
-
 
 // ************************************************************************************************
 
@@ -60,7 +59,7 @@ void DefenceThink_Powerup(edict_t *Caster)
 	assert(playerinfo->def_ammo_index);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= Caster->client->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -75,7 +74,7 @@ void DefenceThink_RingOfRepulsion(edict_t *Caster)
 	assert(playerinfo->def_ammo_index);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= Caster->client->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -92,7 +91,6 @@ void DefenceThink_MeteorBarrier(edict_t *Caster)
 
 }
 
-
 // ************************************************************************************************
 
 void DefenceThink_Morph(edict_t *Caster)
@@ -106,7 +104,7 @@ void DefenceThink_Morph(edict_t *Caster)
 
 	assert(playerinfo->def_ammo_index);
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= Caster->client->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -121,7 +119,7 @@ void DefenceThink_Teleport(edict_t *Caster)
 
 	assert(playerinfo->def_ammo_index);
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+		Caster->client->pers.inventory[playerinfo->def_ammo_index] -= Caster->client->pers.defence->quantity;
 }
 
 // ************************************************************************************************
@@ -140,6 +138,6 @@ void DefenceThink_Shield(edict_t *Caster)
 
 		assert(playerinfo->def_ammo_index);
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
-			Caster->client->pers.inventory[playerinfo->def_ammo_index] -= playerinfo->pers.defence->quantity;
+			Caster->client->pers.inventory[playerinfo->def_ammo_index] -= Caster->client->pers.defence->quantity;
 	}
 }
