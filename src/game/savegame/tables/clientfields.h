@@ -28,10 +28,10 @@
 
 {"newweapon", CLOFS(newweapon), F_ITEM},
 {"owned_sphere", CLOFS(owned_sphere), F_EDICT},
-{"pers.lastweapon", CLOFS(playerinfo.pers.lastweapon), F_ITEM},
-{"pers.weapon", CLOFS(playerinfo.pers.weapon), F_ITEM},
+{"pers.lastweapon", CLOFS(pers.lastweapon), F_ITEM},
+{"pers.weapon", CLOFS(pers.weapon), F_ITEM},
 {"resp.coop_respawn.lastweapon", CLOFS(resp.coop_respawn.lastweapon), F_ITEM, 0, 3},
 {"resp.coop_respawn.weapon", CLOFS(resp.coop_respawn.weapon), F_ITEM, 0, 3},
-{"", CLOFS(playerinfo.pers.defence), F_ITEM},
-{"", CLOFS(playerinfo.pers.lastdefence), F_ITEM},
+{"", CLOFS(pers.defence), F_ITEM},
+{"", CLOFS(pers.lastdefence), F_ITEM},
 {NULL, 0, F_INT, 0}

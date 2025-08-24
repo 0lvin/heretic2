@@ -2131,10 +2131,6 @@ typedef struct playerinfo_s
 	// Inputs & outputs.
 	// ********************************************************************************************
 
-	// Data that must be maintatined over the duration of a level.
-
-	client_persistant_t	pers;
-
 	// Last usercmd_t.
 
 	usercmd_t			pcmd;

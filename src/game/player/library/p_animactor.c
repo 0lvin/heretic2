@@ -166,7 +166,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 {
 	// Make sure all effects are removed.
 
-	switch(playerinfo->pers.handfxtype)
+	switch(playerinfo->self->client->pers.handfxtype)
 	{
 		case HANDFX_FIREBALL:
 		case HANDFX_MISSILE:
@@ -228,7 +228,7 @@ void TurnOffPlayerEffects(playerinfo_t *playerinfo)
 			break;
 	}
 
-	playerinfo->pers.handfxtype=HANDFX_NONE;
+	playerinfo->self->client->pers.handfxtype=HANDFX_NONE;
 }
 
 void AnimUpdateFrame(playerinfo_t *playerinfo)

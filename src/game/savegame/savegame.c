@@ -1524,7 +1524,7 @@ ReadLevel(const char *filename)
 	{
 		ent = &g_edicts[i + 1];
 		ent->client = game.clients + i;
-		ent->client->playerinfo.pers.connected = false;
+		ent->client->pers.connected = false;
 		SetupPlayerinfo(ent);
 		playerExport->PlayerBasicAnimReset(&ent->client->playerinfo);
 	}

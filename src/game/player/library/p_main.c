@@ -275,7 +275,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	{
 		// Not a chicken, so...
 
-		if (playerinfo->pers.defence)
+		if (playerinfo->self->client->pers.defence)
 		{
 			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
@@ -316,6 +316,11 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 	assert(playerinfo);
 
+	if (!playerinfo->self)
+	{
+		return;
+	}
+
 	// if we are chicken, we shouldn't be doing any of this stuff
 	if (playerinfo->edictflags & FL_CHICKEN)
 		return;
@@ -328,7 +333,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	playerinfo->fmnodeinfo[MESH__LHANDHI].flags |= FMNI_NO_DRAW;
 	playerinfo->fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
 
-	switch(playerinfo->pers.bowtype)
+	switch(playerinfo->self->client->pers.bowtype)
 	{
 		case BOW_TYPE_REDRAIN:
 
@@ -336,14 +341,14 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 			// No special texture.
 
-			playerinfo->pers.altparts &= ~((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
+			playerinfo->self->client->pers.altparts &= ~((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
 
 			break;
 
 		case BOW_TYPE_PHOENIX:
 
 			playerinfo->fmnodeinfo[MESH__BOFF].flags &= ~FMNI_NO_DRAW;
-			playerinfo->pers.altparts |= ((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
+			playerinfo->self->client->pers.altparts |= ((1<<MESH__BOWACTV) | (1<<MESH__BOFF));
 
 			break;
 
@@ -365,14 +370,14 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	if (!(playerinfo->flags & PLAYER_FLAG_NO_LARM))
 		playerinfo->fmnodeinfo[MESH__STOFF].flags &= ~FMNI_NO_DRAW;
 
-	switch(playerinfo->pers.stafflevel)
+	switch(playerinfo->self->client->pers.stafflevel)
 	{
 		case STAFF_LEVEL_POWER1:
 		case STAFF_LEVEL_POWER2:
 
 			// Use alternate power texture...
 
-			playerinfo->pers.altparts |= ((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
+			playerinfo->self->client->pers.altparts |= ((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
 
 			break;
 
@@ -381,7 +386,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 			// No special texture
 
-			playerinfo->pers.altparts &= ~((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
+			playerinfo->self->client->pers.altparts &= ~((1<<MESH__STAFACTV) | (1<<MESH__BLADSTF) | (1<<MESH__STOFF));
 
 			break;
 	}
@@ -391,19 +396,19 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 	playerinfo->fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
 
-	switch(playerinfo->pers.helltype)
+	switch(playerinfo->self->client->pers.helltype)
 	{
 		case HELL_TYPE_POWER:
 
 			// Use alternate power texutre...
 
-			playerinfo->pers.altparts |= (1<<MESH__HELSTF);
+			playerinfo->self->client->pers.altparts |= (1<<MESH__HELSTF);
 
 			break;
 
 		case HELL_TYPE_BASIC:
 
-			playerinfo->pers.altparts &= ~(1<<MESH__HELSTF);
+			playerinfo->self->client->pers.altparts &= ~(1<<MESH__HELSTF);
 
 			break;
 
@@ -427,18 +432,18 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 	// Check armor and level...
 
-	switch(playerinfo->pers.armortype)
+	switch(playerinfo->self->client->pers.armortype)
 	{
 		case ARMOR_TYPE_SILVER:
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags &= ~FMNI_NO_DRAW;
-			playerinfo->pers.altparts &= ~(1<<MESH__ARMOR);
+			playerinfo->self->client->pers.altparts &= ~(1<<MESH__ARMOR);
 
 			break;
 
 		case ARMOR_TYPE_GOLD:
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags |= FMNI_USE_SKIN;
 			playerinfo->fmnodeinfo[MESH__ARMOR].flags &= ~FMNI_NO_DRAW;
-			playerinfo->pers.altparts |= 1<<MESH__ARMOR;
+			playerinfo->self->client->pers.altparts |= 1<<MESH__ARMOR;
 			if (playerinfo->skinnum & 0x01)	// If the main skinnum is odd, then opposite
 				playerinfo->fmnodeinfo[MESH__ARMOR].skin = playerinfo->skinnum;
 			else
@@ -478,7 +483,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 		// Set normal skin texture.
 		// First check if the first "node" is damaged, because it is an exception to the rest.
 
-		if (playerinfo->pers.altparts & (1<<MESH_BASE2))
+		if (playerinfo->self->client->pers.altparts & (1<<MESH_BASE2))
 		{
 			// The front of the body is damaged.
 			// This is a little weird, because the player's main skin is what defines the damage to the front chest node.
@@ -513,7 +518,7 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 
 		for (i=1; i<16; i++)
 		{
-			if (playerinfo->pers.altparts & (1<<i))
+			if (playerinfo->self->client->pers.altparts & (1<<i))
 			{
 				// The part is damaged or powered.
 
@@ -549,10 +554,10 @@ PlayerUpdateModelAttributes(playerinfo_t *playerinfo)
 	}
 
 	//If the switch is valid
-	if (BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
+	if (BranchCheckDismemberAction(playerinfo, playerinfo->self->client->pers.weapon->tag))
 	{//FIXME: doesn't allow for dropping of weapons
 		// Now turn on the appropriate weapon bits.
-		switch(playerinfo->pers.weaponready)
+		switch(playerinfo->self->client->pers.weaponready)
 		{
 			case WEAPON_READY_STAFFSTUB:
 
@@ -668,7 +673,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 */
 	// Check currently in place effects.
 
-/*	switch(playerinfo->pers.handfxtype)
+/*	switch(playerinfo->self->client->pers.handfxtype)
 	{
 		case HANDFX_FIREBALL:
 		case HANDFX_MISSILE:
@@ -722,7 +727,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 	// 0 = red, 2 = green, 1 = blue 3 = yellow.
 
 	playerinfo->effects &= ~EF_TRAILS_ENABLED;
-	playerinfo->pers.handfxtype=handfx;
+	playerinfo->self->client->pers.handfxtype=handfx;
 
 	switch(handfx)
 	{
@@ -770,9 +775,9 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			playerinfo->effects &= ~EF_BLOOD_ENABLED;
 			// Add a trail effect to the staff.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
-				powerlevel = playerinfo->pers.stafflevel+1;
+				powerlevel = playerinfo->self->client->pers.stafflevel+1;
 			else
-				powerlevel = playerinfo->pers.stafflevel;
+				powerlevel = playerinfo->self->client->pers.stafflevel;
 
 			if (powerlevel >= STAFF_LEVEL_MAX)
 				powerlevel = STAFF_LEVEL_MAX-1;

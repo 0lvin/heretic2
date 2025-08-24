@@ -113,11 +113,11 @@ void PlayerKillShrineFX(edict_t *self)
 
 	// Remove Armor.
 
-	self->client->playerinfo.pers.armor_count = 0;
+	self->client->pers.armor_count = 0;
 
 	// Turn off the armor at the model level.
 
-	playerinfo->pers.armortype = ARMOR_NONE;
+	self->client->pers.armortype = ARMOR_NONE;
 
 	SetupPlayerinfo_effects(self);
 	playerExport->PlayerUpdateModelAttributes(&self->client->playerinfo);
@@ -125,7 +125,7 @@ void PlayerKillShrineFX(edict_t *self)
 
 	// Remove Staff powerup.
 
-	self->client->playerinfo.pers.stafflevel = STAFF_LEVEL_BASIC;
+	self->client->pers.stafflevel = STAFF_LEVEL_BASIC;
 
 	// Remove Weapons powerup.
 
@@ -632,13 +632,13 @@ void shrine_armor_silver_core(edict_t *self,edict_t *other)
 	}
 
 	// Add armor to player.
-	if ((other->client->playerinfo.pers.armortype == ARMOR_TYPE_GOLD) &&
-		(other->client->playerinfo.pers.armor_count >= gold_armor_info.max_armor / 2))
-		other->client->playerinfo.pers.armor_count = gold_armor_info.max_armor;
+	if ((other->client->pers.armortype == ARMOR_TYPE_GOLD) &&
+		(other->client->pers.armor_count >= gold_armor_info.max_armor / 2))
+		other->client->pers.armor_count = gold_armor_info.max_armor;
 	else
 	{
-		other->client->playerinfo.pers.armortype = ARMOR_TYPE_SILVER;
-		other->client->playerinfo.pers.armor_count = silver_armor_info.max_armor;
+		other->client->pers.armortype = ARMOR_TYPE_SILVER;
+		other->client->pers.armor_count = silver_armor_info.max_armor;
 	}
 
 	SetupPlayerinfo_effects(other);
@@ -668,7 +668,7 @@ void shrine_armor_silver_touch	(edict_t *self, edict_t *other, cplane_t *plane, 
 
 	if (deathmatch->value || (other->flags & FL_CHICKEN) || (other->client->playerinfo.flags & PLAYER_FLAG_WATER))
 	{
-		if (other->client->playerinfo.pers.armortype == ARMOR_TYPE_SILVER)
+		if (other->client->pers.armortype == ARMOR_TYPE_SILVER)
 			player_shrine_armor_silver_effect(other);
 		else
 			player_shrine_armor_gold_effect(other);
@@ -748,8 +748,8 @@ void shrine_armor_gold_core(edict_t *self,edict_t *other)
 
 	// Add gold armor to player.
 
-	other->client->playerinfo.pers.armortype = ARMOR_TYPE_GOLD;
-	other->client->playerinfo.pers.armor_count = gold_armor_info.max_armor;
+	other->client->pers.armortype = ARMOR_TYPE_GOLD;
+	other->client->pers.armor_count = gold_armor_info.max_armor;
 
 	SetupPlayerinfo_effects(other);
 	playerExport->PlayerUpdateModelAttributes(&other->client->playerinfo);
@@ -837,7 +837,7 @@ void player_shrine_staff_effect(edict_t *self)
 	int	flags = CEF_OWNERS_ORIGIN;
 	// Start up the shrine staff effect.
 
-	if (self->client->playerinfo.pers.stafflevel == STAFF_LEVEL_POWER2)
+	if (self->client->pers.stafflevel == STAFF_LEVEL_POWER2)
 	{
 		flags |= CEF_FLAG6;
 		gi.sound(self,CHAN_ITEM, gi.soundindex("weapons/FirewallPowerCast.wav"), 1, ATTN_NORM, 0);
@@ -865,9 +865,9 @@ void shrine_staff_core(edict_t *self,edict_t *other)
 
 	// Add onto his staff.
 
-	if (other->client->playerinfo.pers.stafflevel < STAFF_LEVEL_MAX-1)
+	if (other->client->pers.stafflevel < STAFF_LEVEL_MAX-1)
 	{
-		other->client->playerinfo.pers.stafflevel++;
+		other->client->pers.stafflevel++;
 
 		SetupPlayerinfo_effects(other);
 		playerExport->PlayerUpdateModelAttributes(&other->client->playerinfo);
@@ -1191,8 +1191,8 @@ void shrine_mana_core(edict_t *self, edict_t *other)
 
 	// Add mana.
 
-	other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] = 100;
-    other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] = 100;
+	other->client->pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] = 100;
+    other->client->pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] = 100;
 
 	// restore dismemberment, and stop us being on fire
 	shrine_restore_player(other);
@@ -1791,26 +1791,26 @@ void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 				total_rand_count++;
 			}
 		}
-		if ((other->client->playerinfo.pers.armortype != ARMOR_TYPE_GOLD) ||
-			(!other->client->playerinfo.pers.armor_count))
+		if ((other->client->pers.armortype != ARMOR_TYPE_GOLD) ||
+			(!other->client->pers.armor_count))
 		{
 			possible_shrines[total_rand_count] = SHRINE_ARMOR_GOLD;
 			total_rand_count++;
 		}
-		if ((other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] < 100) ||
-		    (other->client->playerinfo.pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] < 100))
+		if ((other->client->pers.inventory[ITEM_INDEX(FindItem("Off-mana"))] < 100) ||
+		    (other->client->pers.inventory[ITEM_INDEX(FindItem("Def-mana"))] < 100))
 		{
 			possible_shrines[total_rand_count] = SHRINE_MANA;
 			total_rand_count++;
 		}
-		if (other->client->playerinfo.pers.stafflevel < STAFF_LEVEL_MAX-1)
+		if (other->client->pers.stafflevel < STAFF_LEVEL_MAX-1)
 		{
 			possible_shrines[total_rand_count] = SHRINE_STAFF;
 			total_rand_count++;
 		}
-		if (((other->client->playerinfo.pers.armortype != ARMOR_TYPE_GOLD) &&
-			(other->client->playerinfo.pers.armortype != ARMOR_TYPE_SILVER)) ||
-			(!other->client->playerinfo.pers.armor_count))
+		if (((other->client->pers.armortype != ARMOR_TYPE_GOLD) &&
+			(other->client->pers.armortype != ARMOR_TYPE_SILVER)) ||
+			(!other->client->pers.armor_count))
 		{
 			possible_shrines[total_rand_count] = SHRINE_ARMOR_SILVER;
 			total_rand_count++;
