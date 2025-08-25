@@ -112,8 +112,8 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	char		*soundname;
 	int			id;
 
-	VectorCopy(playerinfo->origin,endpos);
-	endpos[2]+=(playerinfo->mins[2]-2.0);
+	VectorCopy(playerinfo->origin, endpos);
+	endpos[2] += (playerinfo->mins[2] - 2.0);
 
 	trace = pi.G_Trace(playerinfo->origin,
 							  playerinfo->mins,
@@ -122,7 +122,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
 
-	if ((playerinfo->groundentity||trace.fraction<0.2)&&playerinfo->waterlevel<2)
+	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel<2)
 		playerinfo->upvel=200;
 
 	PlayerAnimSetLowerSeq(playerinfo,ASEQ_FALL);
@@ -179,43 +179,49 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 
 void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 {
-	vec3_t	vf;
-
 	if (playerinfo->seqcmd[ACMDL_JUMP])
 	{
+		edict_t *self;
+		vec3_t	vf;
+
+		self = playerinfo->self;
+
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
-		AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
+		AngleVectors(self->s.angles, vf, NULL, NULL);
 		vf[2] = 0;
 
-		VectorScale(vf, CHICKEN_GLIDE_FORWARD, playerinfo->velocity);
+		VectorScale(vf, CHICKEN_GLIDE_FORWARD, self->velocity);
 
-		playerinfo->velocity[2] += CHICKEN_GLIDE;
+		self->velocity[2] += CHICKEN_GLIDE;
 
-		pi.G_CreateEffect(playerinfo->self,
+		pi.G_CreateEffect(self,
 								   FX_CHICKEN_EXPLODE,
 								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								   NULL,
 								   "");
 
-		PlayerAnimSetLowerSeq(playerinfo,ASEQ_JUMPFWD);
+		PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFWD);
 	}
 }
 
-void PlayerChickenFlap (playerinfo_t *playerinfo)
+void
+PlayerChickenFlap(playerinfo_t *playerinfo)
 {
+	edict_t *self;
 	vec3_t	vf;
 
+	self = playerinfo->self;
 	playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
-	AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
+	AngleVectors(self->s.angles, vf, NULL, NULL);
 	vf[2] = 0;
 
-	VectorScale(vf, CHICKEN_GLIDE_FORWARD, playerinfo->velocity);
+	VectorScale(vf, CHICKEN_GLIDE_FORWARD, self->velocity);
 
-	playerinfo->velocity[2] += CHICKEN_GLIDE;
+	self->velocity[2] += CHICKEN_GLIDE;
 
-	pi.G_CreateEffect(playerinfo->self, // jmarshall: believe this is right.
+	pi.G_CreateEffect(self, // jmarshall: believe this is right.
 							   FX_CHICKEN_EXPLODE,
 							   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 							   NULL,

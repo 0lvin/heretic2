@@ -1546,17 +1546,17 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	// First we must figure out how far down to look.
 
-	if (playerinfo->velocity[2] < 0)
+	if (playerinfo->self->velocity[2] < 0)
 	{
 		// If the player is going down, then check his intended speed over the next .1 sec.
 
-		vertlength = (playerinfo->sv_gravity*.5-playerinfo->velocity[2])*.1;
+		vertlength = (playerinfo->sv_gravity*.5- playerinfo->self->velocity[2])*.1;
 	}
 	else
 	{
 		// If the player is going up, then check his velocity over the LAST .1 sec.
 
-		vertlength = (playerinfo->sv_gravity*.5+playerinfo->velocity[2])*.1;
+		vertlength = (playerinfo->sv_gravity*.5+ playerinfo->self->velocity[2])*.1;
 	}
 
 	vertlength=Q_fabs(vertlength);
@@ -2483,7 +2483,7 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 void PlayerActionFlipForward(playerinfo_t *playerinfo, float value)
 {
 	playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
-	playerinfo->velocity[2] += value;
+	playerinfo->self->velocity[2] += value;
 }
 
 /*-----------------------------------------------
@@ -2493,7 +2493,7 @@ void PlayerActionFlipForward(playerinfo_t *playerinfo, float value)
 void PlayerActionFlip(playerinfo_t *playerinfo, float value)
 {
 	playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
-	playerinfo->velocity[2] += value;
+	playerinfo->self->velocity[2] += value;
 }
 
 /*-----------------------------------------------
@@ -2578,12 +2578,12 @@ void PlayerMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up)
 
 	AngleVectors(playerinfo->self->s.angles, fwdv, rightv, NULL);
 
-	VectorScale(fwdv, fwd, playerinfo->velocity);
+	VectorScale(fwdv, fwd, playerinfo->self->velocity);
 
 	if (right != 0)
-		VectorMA(playerinfo->velocity, right, rightv, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, right, rightv, playerinfo->self->velocity);
 
-	playerinfo->velocity[2] += up;
+	playerinfo->self->velocity[2] += up;
 }
 
 /*-----------------------------------------------
@@ -2606,11 +2606,11 @@ void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float
 	if (playerinfo->effects & EF_SPEED_ACTIVE)
 		fwd *=RUN_MULT;
 
-	VectorScale(fwdv, fwd, playerinfo->velocity);
+	VectorScale(fwdv, fwd, playerinfo->self->velocity);
 
 	//Check to see if we should bother
 	if (right)
-		VectorMA(playerinfo->velocity, right, rightv, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, right, rightv, playerinfo->self->velocity);
 
 	// If the player is strafing, move the player in that direction (diagonal jump)
 	if (fwd != 0)
@@ -2618,20 +2618,20 @@ void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float
 		if (playerinfo->seqcmd[ACMDL_STRAFE_R] && !playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
 			if (playerinfo->buttons & BUTTON_RUN)
-				VectorMA(playerinfo->velocity, 260, rightv, playerinfo->velocity);
+				VectorMA(playerinfo->self->velocity, 260, rightv, playerinfo->self->velocity);
 			else
-				VectorMA(playerinfo->velocity, 140, rightv, playerinfo->velocity);
+				VectorMA(playerinfo->self->velocity, 140, rightv, playerinfo->self->velocity);
 		}
 		else if (playerinfo->seqcmd[ACMDL_STRAFE_L] && !playerinfo->seqcmd[ACMDL_STRAFE_R])
 		{
 			if (playerinfo->buttons & BUTTON_RUN)
-				VectorMA(playerinfo->velocity, -260, rightv, playerinfo->velocity);
+				VectorMA(playerinfo->self->velocity, -260, rightv, playerinfo->self->velocity);
 			else
-				VectorMA(playerinfo->velocity, -140, rightv, playerinfo->velocity);
+				VectorMA(playerinfo->self->velocity, -140, rightv, playerinfo->self->velocity);
 		}
 	}
 
-	playerinfo->velocity[2] += up;
+	playerinfo->self->velocity[2] += up;
 }
 
 /*-----------------------------------------------
@@ -2646,7 +2646,7 @@ void PlayerJumpNudge(playerinfo_t *playerinfo, float fwd, float right, float up)
 
 	AngleVectors(playerinfo->self->s.angles, vf, vr, vu);
 
-	VectorCopy(playerinfo->velocity, vel);
+	VectorCopy(playerinfo->self->velocity, vel);
 	VectorNormalize(vel);
 
 	//Get the dot products of the main directions
@@ -2655,28 +2655,28 @@ void PlayerJumpNudge(playerinfo_t *playerinfo, float fwd, float right, float up)
 	du = DotProduct(vu, vel);
 
 	//Forward fraction of the velocity
-	VectorScale(playerinfo->velocity, df, vel);
+	VectorScale(playerinfo->self->velocity, df, vel);
 	ff = VectorLength(vel);
 
 	//Right fraction of the velocity
-	VectorScale(playerinfo->velocity, dr, vel);
+	VectorScale(playerinfo->self->velocity, dr, vel);
 	fr = VectorLength(vel);
 
 	//Up fraction of the velocity
-	VectorScale(playerinfo->velocity, du, vel);
+	VectorScale(playerinfo->self->velocity, du, vel);
 	fu = VectorLength(vel);
 
 	//If we're under the minimum, set the velocity to that minimum
 	if ( Q_fabs(ff) < Q_fabs(fwd) )
-		VectorMA(playerinfo->velocity, fwd, vf, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, fwd, vf, playerinfo->self->velocity);
 
 	//If we're under the minimum, set the velocity to that minimum
 	if ( Q_fabs(fr) < Q_fabs(right) )
-		VectorMA(playerinfo->velocity, right, vr, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, right, vr, playerinfo->self->velocity);
 
 	//If we're under the minimum, set the velocity to that minimum
 	if ( Q_fabs(fu) < Q_fabs(up) )
-		VectorMA(playerinfo->velocity, up, vu, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, up, vu, playerinfo->self->velocity);
 
 	//Cause the player to use this velocity
 	playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
@@ -2695,13 +2695,13 @@ void PlayerMoveALittle(playerinfo_t *playerinfo, float fwd, float right, float u
 	{
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 		AngleVectors(playerinfo->self->s.angles, fwdv, NULL, NULL);
-		VectorMA(playerinfo->velocity, fwd, fwdv, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, fwd, fwdv, playerinfo->self->velocity);
 	}
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 	{
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 		AngleVectors(playerinfo->self->s.angles, fwdv, NULL, NULL);
-		VectorMA(playerinfo->velocity, -fwd, fwdv, playerinfo->velocity);
+		VectorMA(playerinfo->self->velocity, -fwd, fwdv, playerinfo->self->velocity);
 	}
 }
 
@@ -2890,7 +2890,7 @@ void PlayerMoveAdd(playerinfo_t *playerinfo)
 
 	//Setup the information
 	AngleVectors(playerinfo->self->s.angles, vf, vr, NULL);
-	VectorCopy(playerinfo->velocity, dir);
+	VectorCopy(playerinfo->self->velocity, dir);
 	mag = VectorNormalize(dir);
 
 	fmove = (DotProduct(dir, vf) * mag);
@@ -2901,25 +2901,25 @@ void PlayerMoveAdd(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_FWD])
 	{
 		if ( fmove < AIRMOVE_THRESHOLD )
-			VectorMA(playerinfo->velocity, AIRMOVE_AMOUNT, vf, playerinfo->velocity);
+			VectorMA(playerinfo->self->velocity, AIRMOVE_AMOUNT, vf, playerinfo->self->velocity);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_BACK])
 	{
 		if ( fmove > -AIRMOVE_THRESHOLD )
-			VectorMA(playerinfo->velocity, -AIRMOVE_AMOUNT, vf, playerinfo->velocity);
+			VectorMA(playerinfo->self->velocity, -AIRMOVE_AMOUNT, vf, playerinfo->self->velocity);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
 		if ( rmove > -AIRMOVE_THRESHOLD )
-			VectorMA(playerinfo->velocity, -AIRMOVE_AMOUNT, vr, playerinfo->velocity);
+			VectorMA(playerinfo->self->velocity, -AIRMOVE_AMOUNT, vr, playerinfo->self->velocity);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		if ( rmove < AIRMOVE_THRESHOLD )
-			VectorMA(playerinfo->velocity,  AIRMOVE_AMOUNT, vr, playerinfo->velocity);
+			VectorMA(playerinfo->self->velocity,  AIRMOVE_AMOUNT, vr, playerinfo->self->velocity);
 	}
 
 	//Use the velocity to move the player

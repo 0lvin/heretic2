@@ -45,8 +45,8 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 			PlayerInterruptAction(playerinfo);
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_LOWERPULLOUT);
 			playerinfo->fwdvel = 0.0;
-			playerinfo->velocity[0] *= 0.5;
-			playerinfo->velocity[1] *= 0.5;
+			playerinfo->self->velocity[0] *= 0.5;
+			playerinfo->self->velocity[1] *= 0.5;
 			strcpy(LandSound,"*offwall.wav");
 		}
 		else
@@ -159,8 +159,8 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_LANDLIGHT);
 			playerinfo->fwdvel = 0.0;
-			playerinfo->velocity[0] *= 0.5;
-			playerinfo->velocity[1] *= 0.5;
+			playerinfo->self->velocity[0] *= 0.5;
+			playerinfo->self->velocity[1] *= 0.5;
 			strcat(LandSound,"land1.wav");
 		}
 		else if (landspeed < 600.0)
@@ -169,8 +169,8 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_LANDHEAVY);
 			playerinfo->fwdvel = 0.0;
-			playerinfo->velocity[0] *= 0.5;
-			playerinfo->velocity[1] *= 0.5;
+			playerinfo->self->velocity[0] *= 0.5;
+			playerinfo->self->velocity[1] *= 0.5;
 			strcat(LandSound,"land2.wav");
 		}
 		else

@@ -1995,7 +1995,6 @@ typedef struct playerinfo_s
 
 	// From edict_t.
 	vec3_t				origin;
-	vec3_t				velocity;
 	vec3_t				mins,maxs;
 	void				*enemy;					// Not used on client.
 	void				*target;				// Not used on client.
@@ -2019,7 +2018,7 @@ typedef struct playerinfo_s
 	fmnodeinfo_t		fmnodeinfo[MAX_FM_MESH_NODES];
 
 	// From pmove_state_t.
-	int					pm_flags,pm_w_flags;
+	int					pm_flags, pm_w_flags;
 
 	// ********************************************************************************************
 	// Outputs only.

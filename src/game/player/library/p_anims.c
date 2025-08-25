@@ -480,7 +480,7 @@ void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 	playerinfo->edictflags |= FL_FLY | FL_LOCKMOVE;
 	playerinfo->flags = PlayerSeqData[ASEQ_VAULT_LOW].playerflags | (playerinfo->flags & PLAYER_FLAG_PERSMASK);
 	playerinfo->pm_flags |= PMF_LOCKMOVE;
-	VectorClear(playerinfo->velocity);
+	VectorClear(playerinfo->self->velocity);
 
 	if (playerinfo->waterlevel>1)
 		playerinfo->waterlevel = 1;

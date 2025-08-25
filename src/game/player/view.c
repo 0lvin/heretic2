@@ -414,7 +414,6 @@ SetupPlayerinfo(edict_t *ent)
 
 	// From edict_t.
 	VectorCopy(ent->s.origin, ent->client->playerinfo.origin);
-	VectorCopy(ent->velocity, ent->client->playerinfo.velocity);
 	VectorCopy(ent->mins, ent->client->playerinfo.mins);
 	VectorCopy(ent->maxs, ent->client->playerinfo.maxs);
 	ent->client->playerinfo.enemy = ent->enemy;
@@ -456,7 +455,6 @@ WritePlayerinfo(edict_t *ent)
 	// ********************************************************************************************
 	// From edict_t.
 	VectorCopy(ent->client->playerinfo.origin, ent->s.origin);
-	VectorCopy(ent->client->playerinfo.velocity, ent->velocity);
 	VectorCopy(ent->client->playerinfo.mins, ent->mins);
 	VectorCopy(ent->client->playerinfo.maxs, ent->maxs);
 	ent->enemy = (edict_t *)ent->client->playerinfo.enemy;
@@ -733,7 +731,7 @@ P_WorldEffects(void)
 			vec3_t	Angles, Temp;
 			byte	angle_byte;
 
-			VectorCopy(current_player->velocity,Temp);
+			VectorCopy(current_player->velocity, Temp);
 
 			VectorNormalize(Temp);
 

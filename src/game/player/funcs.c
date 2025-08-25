@@ -50,20 +50,20 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
 	{
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
-		VectorCopy((playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
-		threshold = VectorLengthSquared(playerinfo->velocity);
+		VectorCopy((playerinfo->self)->teamchain->teamchain->velocity, playerinfo->self->velocity);
+		threshold = VectorLengthSquared(playerinfo->self->velocity);
 
 		if (threshold < 300*300)
 		{
 			AngleVectors(playerinfo->self->client->aimangles, vf, NULL, NULL);
-			VectorMA(playerinfo->velocity, 200, vf, playerinfo->velocity);
+			VectorMA(playerinfo->self->velocity, 200, vf, playerinfo->self->velocity);
 		}
 		else
 		{
-			VectorScale(playerinfo->velocity,0.75,playerinfo->velocity);
+			VectorScale(playerinfo->self->velocity,0.75, playerinfo->self->velocity);
 		}
 
-		playerinfo->velocity[2]=250.0;
+		playerinfo->self->velocity[2]=250.0;
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
 		(playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
@@ -438,8 +438,8 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 	else if ( (playerinfo->seqcmd[ACMDL_JUMP]) )
 	{
 		playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
-		VectorCopy((playerinfo->self)->teamchain->teamchain->velocity,playerinfo->velocity);
-		playerinfo->velocity[2]=150.0;
+		VectorCopy((playerinfo->self)->teamchain->teamchain->velocity, playerinfo->self->velocity);
+		playerinfo->self->velocity[2]=150.0;
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
 		(playerinfo->self)->monsterinfo.jump_time = playerinfo->leveltime + 2;
@@ -552,9 +552,9 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 		if (!(playerinfo->flags & PLAYER_FLAG_ONROPE))
 		{
-			VectorCopy(playerinfo->velocity,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
+			VectorCopy(playerinfo->self->velocity,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
 			VectorScale(((edict_t *)playerinfo->targetEnt)->teamchain->velocity,2,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
-			VectorClear(playerinfo->velocity);
+			VectorClear(playerinfo->self->velocity);
 			VectorCopy(playerinfo->origin,((edict_t *)playerinfo->targetEnt)->teamchain->s.origin);
 			VectorSubtract(playerinfo->origin,rope_top,vec);
 			rope->teamchain->viewheight=VectorLength(vec);

@@ -3440,8 +3440,8 @@ PutClientInServer(edict_t *ent)
 	if (client->pers.defence)
 		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->pers.defence->ammo));
 
-	VectorCopy(spawn_origin,client->playerinfo.origin);
-	VectorClear(client->playerinfo.velocity);
+	VectorCopy(spawn_origin, client->playerinfo.origin);
+	VectorClear(ent->velocity);
 
 	// Make the player have the right attributes - armor that sort of thing.
 
@@ -4282,7 +4282,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			client->playerinfo.flags &= ~PLAYER_FLAG_USE_ENT_POS;
 
 			VectorCopy(ent->s.origin, client->playerinfo.origin);
-			VectorCopy(ent->velocity, client->playerinfo.velocity);
 		}
 
 		// Check to add into movement velocity through crouch and duck if underwater.
@@ -4292,12 +4291,12 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 			if (client->playerinfo.seqcmd[ACMDL_CROUCH])
 			{
-				client->playerinfo.velocity[2] -= SWIM_ADJUST_AMOUNT;
+				ent->velocity[2] -= SWIM_ADJUST_AMOUNT;
 			}
 
 			if (client->playerinfo.seqcmd[ACMDL_JUMP])
 			{
-				client->playerinfo.velocity[2] += SWIM_ADJUST_AMOUNT;
+				ent->velocity[2] += SWIM_ADJUST_AMOUNT;
 			}
 		}
 		else if (!ent->deadflag && ent->waterlevel > 1)	// On the surface trying to go down???
@@ -4307,12 +4306,12 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			if (client->playerinfo.seqcmd[ACMDL_CROUCH])
 			{
 				ent->client->playerinfo.pm_w_flags |= WF_SINK;
-				client->playerinfo.velocity[2] -= SWIM_ADJUST_AMOUNT;
+				ent->velocity[2] -= SWIM_ADJUST_AMOUNT;
 			}
 
 			if (client->playerinfo.seqcmd[ACMDL_JUMP])
 			{
-				client->playerinfo.velocity[2] += SWIM_ADJUST_AMOUNT;
+				ent->velocity[2] += SWIM_ADJUST_AMOUNT;
 			}
 		}
 
@@ -4399,7 +4398,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
-		VectorCopy(pm.s.velocity, client->playerinfo.velocity);
 		if (ent->waterlevel)
 		{
 			client->playerinfo.flags |= FL_INWATER;
@@ -4422,7 +4420,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 		// jmarshall - this used to be done in the engine with the client prediction.
 		VectorCopy(ent->s.origin, client->playerinfo.origin);
-		VectorCopy(ent->velocity, client->playerinfo.velocity);
 		// jmarshall end
 
 		// If we're move-locked, don't update the edict's origin and velocity, otherwise copy the
@@ -4438,7 +4435,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			client->playerinfo.flags &= ~PLAYER_FLAG_LOCKMOVE_WAS_SET;
 
 			VectorCopy(client->playerinfo.origin, ent->s.origin);
-			VectorCopy(client->playerinfo.velocity, ent->velocity);
 		}
 
 		/* clean flags */

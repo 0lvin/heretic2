@@ -668,14 +668,14 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	float		delta;
 	vec3_t		endpos;
 
-	delta=playerinfo->velocity[2]-playerinfo->oldvelocity[2];//falling -200 to standstill 0 gives a delta of 200
-
+	/* falling -200 to standstill 0 gives a delta of 200 */
+	delta = playerinfo->self->velocity[2] - playerinfo->oldvelocity[2];
 	if (!playerinfo->groundentity)
 	{
 		// If we were falling, and we're now underwater, we should STOP FALLING, capiche?
 
-		VectorCopy(playerinfo->origin,endpos);
-		endpos[2]+=playerinfo->mins[2];
+		VectorCopy(playerinfo->origin, endpos);
+		endpos[2] += playerinfo->mins[2];
 
 		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
 		   (pi.PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
