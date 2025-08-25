@@ -229,7 +229,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin, startpos);
 
 	//Ignore the pitch of the player, we only want the yaw
-	VectorSet(ang, 0, playerinfo->angles[YAW], 0);
+	VectorSet(ang, 0, playerinfo->self->s.angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
 
 	//Trace ahead about one step
@@ -278,7 +278,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin, startpos);
 
 	//Ignore the pitch of the player, we only want the yaw
-	VectorSet(ang, 0, playerinfo->angles[YAW], 0);
+	VectorSet(ang, 0, playerinfo->self->s.angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
 
 	//Trace ahead about one step
@@ -697,7 +697,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 
 	// Do some fancy effect.
 
-	AngleVectors(playerinfo->angles, forward, right, NULL);
+	AngleVectors(playerinfo->self->s.angles, forward, right, NULL);
 	VectorMA(playerinfo->origin, -2.0, forward, spawnpoint);
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
@@ -768,7 +768,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 	// Do some fancy effect.
 
-	AngleVectors(playerinfo->angles, forward, right, NULL);
+	AngleVectors(playerinfo->self->s.angles, forward, right, NULL);
 	VectorMA(playerinfo->origin, -2.0, forward, spawnpoint);
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
@@ -903,7 +903,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 						// Do some fancy effect.
 
-						AngleVectors(playerinfo->angles, forward, right, NULL);
+						AngleVectors(playerinfo->self->s.angles, forward, right, NULL);
 						VectorMA(playerinfo->origin, -2.0, forward, spawnpoint);
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
@@ -937,7 +937,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 						// Do some fancy effect.
 
-						AngleVectors(playerinfo->angles, forward, right, NULL);
+						AngleVectors(playerinfo->self->s.angles, forward, right, NULL);
 						VectorMA(playerinfo->origin, -2.0, forward, spawnpoint);
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
@@ -1500,7 +1500,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	// width successfully clear any surface, then at least his hands are free enough to make the
 	// grab.
 
-	VectorCopy(playerinfo->angles,player_facing);
+	VectorCopy(playerinfo->self->s.angles, player_facing);
 	player_facing[PITCH]=player_facing[ROLL]=0;
 	AngleVectors(player_facing, forward, right, NULL);
 	VectorMA(playerinfo->origin, GRAB_HAND_WIDTH, right, righthand);
@@ -1656,7 +1656,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectoAngles(grabtrace.plane.normal, planedir);
 	playerinfo->grabangle = planedir[YAW] - 180.0;
 	playerinfo->grabangle = anglemod(playerinfo->grabangle);
-	yaw = planedir[YAW] - playerinfo->angles[YAW];
+	yaw = planedir[YAW] - playerinfo->self->s.angles[YAW];
 	yaw = anglemod(yaw) - 180.0;
 
 	if (yaw > 30.0 || yaw < -30.0)
@@ -1689,7 +1689,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(playerinfo->maxs, maxs);
 	maxs[2] -= 48;
 
-	AngleVectors(playerinfo->angles, forward, NULL, NULL);
+	AngleVectors(playerinfo->self->s.angles, forward, NULL, NULL);
 	VectorMA(playerinfo->origin, 32, forward, endpoint);
 
 	swingtrace = pi.G_Trace(playerinfo->origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
@@ -1718,8 +1718,8 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	if (grabtrace.fraction == 1.0)
 	{
 		VectorCopy(endpoint, playerinfo->origin);
-		playerinfo->offsetangles[YAW]=-((CL_NormaliseAngle(playerinfo->angles[YAW]))-playerinfo->grabangle);
-		playerinfo->angles[YAW] = playerinfo->grabangle;
+		playerinfo->offsetangles[YAW]=-((CL_NormaliseAngle(playerinfo->self->s.angles[YAW]))-playerinfo->grabangle);
+		playerinfo->self->s.angles[YAW] = playerinfo->grabangle;
 
 		if (swingable)
 		{
@@ -1906,7 +1906,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	// width successfully clear any surface, then at least his hands are free enough to make the
 	// grab.
 
-	VectorCopy(playerinfo->angles,player_facing);
+	VectorCopy(playerinfo->self->s.angles, player_facing);
 	player_facing[PITCH]=player_facing[ROLL]=0;
 	AngleVectors(player_facing, forward, right, NULL);
 	VectorMA(playerinfo->origin, GRAB_HAND_WIDTH, right, righthand);
@@ -2021,7 +2021,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	playerinfo->grabangle = planedir[YAW] - 180.0;
 	playerinfo->grabangle = anglemod(playerinfo->grabangle);
-	yaw = planedir[YAW] - playerinfo->angles[YAW];
+	yaw = planedir[YAW] - playerinfo->self->s.angles[YAW];
 	yaw = anglemod(yaw) - 180.0;
 	if (yaw > 30.0 || yaw < -30.0)
 	{
@@ -2057,7 +2057,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 
 	assert(playerinfo);
 
-	VectorCopy(playerinfo->angles,player_facing);
+	VectorCopy(playerinfo->self->s.angles, player_facing);
 	player_facing[PITCH]=player_facing[ROLL]=0;
 	AngleVectors(player_facing, forward, right, NULL);
 
@@ -2093,7 +2093,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 	// Parallel to each other?
 
 	VectoAngles(grabtrace.plane.normal, planedir);
-	yaw = planedir[YAW] - playerinfo->angles[YAW];
+	yaw = planedir[YAW] - playerinfo->self->s.angles[YAW];
 	yaw = anglemod(yaw) - 180.0;
 	if (yaw > 30.0 || yaw < -30.0)
 	{	//
@@ -2133,7 +2133,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	// Check in front of the player, and decide if there is a suitable wall here.
 
-	VectorCopy(playerinfo->angles,player_facing);
+	VectorCopy(playerinfo->self->s.angles, player_facing);
 	player_facing[PITCH]=player_facing[ROLL]=0;
 	AngleVectors(player_facing, forward, right, NULL);
 
@@ -2177,7 +2177,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectoAngles(grabtrace.plane.normal, planedir);
 	playerinfo->grabangle = planedir[YAW] - 180.0;
 	playerinfo->grabangle = anglemod(playerinfo->grabangle);
-	yaw = planedir[YAW] - playerinfo->angles[YAW];
+	yaw = planedir[YAW] - playerinfo->self->s.angles[YAW];
 	yaw = anglemod(yaw) - 180.0;
 	if (yaw > 30.0 || yaw < -30.0)
 	{
@@ -2283,7 +2283,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->maxs, maxs);
 	maxs[2] -= 48;
 
-	AngleVectors(playerinfo->angles, vf, NULL, NULL);
+	AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
 	VectorMA(playerinfo->origin, 32, vf, endpoint);
 
 	// Save the intended grab location (the endpoint).
@@ -2330,7 +2330,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 
 	// Check in front of the player for the wall position.
 
-	AngleVectors(playerinfo->angles, pushdir, NULL, NULL);
+	AngleVectors(playerinfo->self->s.angles, pushdir, NULL, NULL);
 	VectorMA(playerinfo->origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
 
 	trace = pi.G_Trace(playerinfo->origin,
@@ -2576,7 +2576,7 @@ void PlayerMoveForce(playerinfo_t *playerinfo, float fwd, float right, float up)
 
 	vec3_t fwdv, rightv;
 
-	AngleVectors(playerinfo->angles, fwdv, rightv, NULL);
+	AngleVectors(playerinfo->self->s.angles, fwdv, rightv, NULL);
 
 	VectorScale(fwdv, fwd, playerinfo->velocity);
 
@@ -2644,7 +2644,7 @@ void PlayerJumpNudge(playerinfo_t *playerinfo, float fwd, float right, float up)
 	vec3_t vel;
 	float ff,fr,fu, df, dr, du;
 
-	AngleVectors(playerinfo->angles, vf, vr, vu);
+	AngleVectors(playerinfo->self->s.angles, vf, vr, vu);
 
 	VectorCopy(playerinfo->velocity, vel);
 	VectorNormalize(vel);
@@ -2694,13 +2694,13 @@ void PlayerMoveALittle(playerinfo_t *playerinfo, float fwd, float right, float u
 	if (playerinfo->seqcmd[ACMDL_FWD] || playerinfo->seqcmd[ACMDL_ACTION])
 	{
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
-		AngleVectors(playerinfo->angles, fwdv, NULL, NULL);
+		AngleVectors(playerinfo->self->s.angles, fwdv, NULL, NULL);
 		VectorMA(playerinfo->velocity, fwd, fwdv, playerinfo->velocity);
 	}
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 	{
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
-		AngleVectors(playerinfo->angles, fwdv, NULL, NULL);
+		AngleVectors(playerinfo->self->s.angles, fwdv, NULL, NULL);
 		VectorMA(playerinfo->velocity, -fwd, fwdv, playerinfo->velocity);
 	}
 }
@@ -2780,7 +2780,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			else
 			{
 				VectorCopy(trace.endpos, savepos);
-				AngleVectors(playerinfo->angles, vf, NULL, NULL);
+				AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
 				VectorMA(trace.endpos, 32, vf, endpoint);
 				//playermin[2] -= 2;
 
@@ -2889,7 +2889,7 @@ void PlayerMoveAdd(playerinfo_t *playerinfo)
 		return;
 
 	//Setup the information
-	AngleVectors(playerinfo->angles, vf, vr, NULL);
+	AngleVectors(playerinfo->self->s.angles, vf, vr, NULL);
 	VectorCopy(playerinfo->velocity, dir);
 	mag = VectorNormalize(dir);
 

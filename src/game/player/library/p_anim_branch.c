@@ -86,7 +86,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 	VectorCopy(playerinfo->origin, startpos);
 
 	//Ignore the pitch of the player, we only want the yaw
-	VectorSet(ang, 0, playerinfo->angles[YAW], 0);
+	VectorSet(ang, 0, playerinfo->self->s.angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
 
 	//Trace ahead about one step (dir is 1 for forward, -1 for back)
@@ -146,7 +146,7 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	}
 #endif
 
-	VectorCopy(playerinfo->angles, player_facing);
+	VectorCopy(playerinfo->self->s.angles, player_facing);
 	player_facing[PITCH] = player_facing[ROLL] = 0.0;
 	AngleVectors(player_facing, forward, right, NULL);
 

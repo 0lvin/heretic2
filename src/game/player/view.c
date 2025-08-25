@@ -414,7 +414,6 @@ SetupPlayerinfo(edict_t *ent)
 
 	// From edict_t.
 	VectorCopy(ent->s.origin, ent->client->playerinfo.origin);
-	VectorCopy(ent->s.angles, ent->client->playerinfo.angles);
 	VectorCopy(ent->velocity, ent->client->playerinfo.velocity);
 	VectorCopy(ent->mins, ent->client->playerinfo.mins);
 	VectorCopy(ent->maxs, ent->client->playerinfo.maxs);
@@ -457,7 +456,6 @@ WritePlayerinfo(edict_t *ent)
 	// ********************************************************************************************
 	// From edict_t.
 	VectorCopy(ent->client->playerinfo.origin, ent->s.origin);
-	VectorCopy(ent->client->playerinfo.angles, ent->s.angles);
 	VectorCopy(ent->client->playerinfo.velocity, ent->velocity);
 	VectorCopy(ent->client->playerinfo.mins, ent->mins);
 	VectorCopy(ent->client->playerinfo.maxs, ent->maxs);

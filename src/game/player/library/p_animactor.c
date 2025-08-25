@@ -49,7 +49,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			// PITCH.
 
-			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->aimangles[PITCH]-playerinfo->angles[PITCH])*ANGLE_TO_RAD;
+			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->aimangles[PITCH]-playerinfo->self->s.angles[PITCH])*ANGLE_TO_RAD;
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=ANGLE_90;
@@ -78,7 +78,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			// PITCH.
 
-			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->aimangles[PITCH]-playerinfo->angles[PITCH])*ANGLE_TO_RAD;
+			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->aimangles[PITCH]-playerinfo->self->s.angles[PITCH])*ANGLE_TO_RAD;
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=ANGLE_90;
@@ -89,7 +89,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			// YAW.
 
-			playerinfo->targetjointangles[YAW]=((playerinfo->self->client->aimangles[YAW]-playerinfo->angles[YAW])*ANGLE_TO_RAD);
+			playerinfo->targetjointangles[YAW]=((playerinfo->self->client->aimangles[YAW]-playerinfo->self->s.angles[YAW])*ANGLE_TO_RAD);
 
 			if (playerinfo->targetjointangles[YAW]<-ANGLE_180)
 				playerinfo->targetjointangles[YAW]+=ANGLE_360;
@@ -106,7 +106,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			// PITCH.
 
-			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->aimangles[PITCH]-playerinfo->angles[PITCH])*ANGLE_TO_RAD;
+			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->aimangles[PITCH]-playerinfo->self->s.angles[PITCH])*ANGLE_TO_RAD;
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
 				playerinfo->targetjointangles[PITCH]=ANGLE_90;
@@ -134,7 +134,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			// PITCH.
 
-			playerinfo->targetjointangles[PITCH] -= playerinfo->angles[PITCH];
+			playerinfo->targetjointangles[PITCH] -= playerinfo->self->s.angles[PITCH];
 			playerinfo->targetjointangles[PITCH] *= ANGLE_TO_RAD;
 			playerinfo->targetjointangles[PITCH] = NormalizeAngle(playerinfo->targetjointangles[PITCH]);
 
@@ -147,7 +147,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 			// YAW.
 
-			playerinfo->targetjointangles[YAW] -= playerinfo->angles[YAW];
+			playerinfo->targetjointangles[YAW] -= playerinfo->self->s.angles[YAW];
 			playerinfo->targetjointangles[YAW] *= ANGLE_TO_RAD;
 			playerinfo->targetjointangles[YAW] = NormalizeAngle(playerinfo->targetjointangles[YAW]);
 
@@ -357,7 +357,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 					}
 				}
 
-				yaw_delta = (float) Q_fabs(playerinfo->ideal_yaw - playerinfo->angles[YAW]);
+				yaw_delta = (float) Q_fabs(playerinfo->ideal_yaw - playerinfo->self->s.angles[YAW]);
 
 				if (yaw_delta < 270.0 && yaw_delta > 90.0)
 				{

@@ -185,7 +185,7 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 	{
 		playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
-		AngleVectors(playerinfo->angles, vf, NULL, NULL);
+		AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
 		vf[2] = 0;
 
 		VectorScale(vf, CHICKEN_GLIDE_FORWARD, playerinfo->velocity);
@@ -208,7 +208,7 @@ void PlayerChickenFlap (playerinfo_t *playerinfo)
 
 	playerinfo->flags |= PLAYER_FLAG_USE_ENT_POS;
 
-	AngleVectors(playerinfo->angles, vf, NULL, NULL);
+	AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
 	vf[2] = 0;
 
 	VectorScale(vf, CHICKEN_GLIDE_FORWARD, playerinfo->velocity);

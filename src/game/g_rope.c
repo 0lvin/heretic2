@@ -387,7 +387,6 @@ void rope_end_think( edict_t *self )
 
 void rope_sway(edict_t *self)
 {
-	//edict_t	*end  = self->target_ent;
 	edict_t	*grab = self->teamchain;
 	vec3_t	rope_end, rope_top, grab_end;
 	vec3_t	v_rope, v_grab, v_dest, rope_rest, v_dir;

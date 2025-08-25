@@ -80,7 +80,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 	{
-		AngleVectors(playerinfo->angles, NULL, vr, NULL);
+		AngleVectors(playerinfo->self->s.angles, NULL, vr, NULL);
 		VectorScale(vr, -32, vr);
 		VectorAdd((playerinfo->self)->teamchain->teamchain->velocity, vr,
 			(playerinfo->self)->teamchain->teamchain->velocity);
@@ -107,7 +107,7 @@ void G_PlayerActionCheckRopeMove(playerinfo_t *playerinfo)
 	}
 	else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		AngleVectors(playerinfo->angles, NULL, vr, NULL);
+		AngleVectors(playerinfo->self->s.angles, NULL, vr, NULL);
 		VectorScale(vr, 32, vr);
 		VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
@@ -151,7 +151,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		if ((playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time < level.time)
 		{
 			(playerinfo->self)->teamchain->teamchain->monsterinfo.jump_time = level.time + 2;
-			AngleVectors(playerinfo->angles, vf, NULL, NULL);
+			AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
 			VectorMA(vf, 400, vf, vf);
 			VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vf,(playerinfo->self)->teamchain->teamchain->velocity);
 		}
@@ -163,7 +163,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		{
 			(playerinfo->self)->teamchain->teamchain->monsterinfo.search_time = level.time + 2;
 
-			AngleVectors(playerinfo->angles, NULL, vr, NULL);
+			AngleVectors(playerinfo->self->s.angles, NULL, vr, NULL);
 			VectorScale(vr, -64, vr);
 			VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
@@ -198,7 +198,7 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		{
 			(playerinfo->self)->teamchain->teamchain->monsterinfo.flee_finished = level.time + 2;
 
-			AngleVectors(playerinfo->angles, NULL, vr, NULL);
+			AngleVectors(playerinfo->self->s.angles, NULL, vr, NULL);
 			VectorScale(vr, 64, vr);
 			VectorAdd((playerinfo->self)->teamchain->teamchain->velocity,vr,(playerinfo->self)->teamchain->teamchain->velocity);
 
@@ -611,10 +611,10 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 			endpoint;
 	trace_t grabtrace;
 
-	VectorCopy(playerinfo->angles,player_facing);
-	player_facing[PITCH]=player_facing[ROLL]=0;
-	AngleVectors(player_facing,forward,NULL,NULL);
-	VectorMA(playerinfo->origin,32,forward,endpoint);
+	VectorCopy(playerinfo->self->s.angles, player_facing);
+	player_facing[PITCH] = player_facing[ROLL]=0;
+	AngleVectors(player_facing, forward, NULL,NULL);
+	VectorMA(playerinfo->origin, 32, forward, endpoint);
 
 	grabtrace = gi.trace(playerinfo->origin,
 					   playerinfo->mins,
@@ -707,11 +707,11 @@ void G_PlayerActionMoveItem(playerinfo_t *playerinfo,float distance)
 {
 	vec3_t player_facing,pushdir;
 
-	VectorCopy(playerinfo->angles,player_facing);
-	player_facing[PITCH]=player_facing[ROLL]=0;
+	VectorCopy(playerinfo->self->s.angles, player_facing);
+	player_facing[PITCH] = player_facing[ROLL]=0;
 	AngleVectors(player_facing, pushdir, NULL, NULL);
 
-	VectorScale (pushdir, distance, ((edict_t *)playerinfo->target_ent)->velocity);
+	VectorScale (pushdir, distance, (playerinfo->target_ent)->velocity);
 
 	((edict_t *)(playerinfo->self))->target_ent->think = PushPull_stop;
 	((edict_t *)(playerinfo->self))->target_ent->nextthink = level.time + 2 * FRAMETIME;
