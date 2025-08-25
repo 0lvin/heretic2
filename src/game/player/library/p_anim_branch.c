@@ -37,10 +37,10 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 	trace_t checktrace;
 	vec3_t endpos;
 
-	VectorCopy(playerinfo->origin, endpos);
+	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] -= FALL_MINHEIGHT;
 
-	checktrace = pi.G_Trace(playerinfo->origin, playerinfo->self->mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = pi.G_Trace(playerinfo->self->s.origin, playerinfo->self->mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (checktrace.fraction >= 1)
 	{
@@ -59,10 +59,10 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 	trace_t trace;
 	vec3_t	v;
 
-	VectorCopy(playerinfo->origin,v);
+	VectorCopy(playerinfo->self->s.origin,v);
 	v[2]+=25.0 - playerinfo->self->maxs[2];//was 25
 
-	trace = pi.G_Trace(playerinfo->origin, playerinfo->self->mins, playerinfo->self->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->self->s.origin, playerinfo->self->mins, playerinfo->self->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 		return false;
@@ -83,21 +83,21 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 	vec3_t startpos,endpos, vf, ang, mins;
 
 	//Scan out and down from the player
-	VectorCopy(playerinfo->origin, startpos);
+	VectorCopy(playerinfo->self->s.origin, startpos);
 
 	//Ignore the pitch of the player, we only want the yaw
 	VectorSet(ang, 0, playerinfo->self->s.angles[YAW], 0);
 	AngleVectors(ang, vf, NULL, NULL);
 
 	//Trace ahead about one step (dir is 1 for forward, -1 for back)
-	VectorMA(playerinfo->origin, dir*CREEP_STEPDIST, vf, startpos);
+	VectorMA(playerinfo->self->s.origin, dir*CREEP_STEPDIST, vf, startpos);
 
 	//Account for stepheight
 	VectorCopy(playerinfo->self->mins, mins);
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	checktrace = pi.G_Trace(playerinfo->origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = pi.G_Trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (checktrace.fraction == 1)
@@ -151,8 +151,8 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	AngleVectors(player_facing, forward, right, NULL);
 
 	// Get player origin
-	VectorCopy(playerinfo->origin, lspotmax);
-	VectorCopy(playerinfo->origin, rspotmax);
+	VectorCopy(playerinfo->self->s.origin, lspotmax);
+	VectorCopy(playerinfo->self->s.origin, rspotmax);
 
 	// Magic number calc for foot placement
 	VectorMA(lspotmax, -9.8, right, lspotmax);

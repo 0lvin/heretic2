@@ -1991,7 +1991,6 @@ typedef struct playerinfo_s
 	float				quickturn_rate;
 
 	// From edict_t.
-	vec3_t				origin;
 	char				*target;				// Not used on client.
 	edict_t				*target_ent;			// Not used on client.
 	edict_t				*teamchain;				// FIXME - always 0 on client, but checked by client.
@@ -2112,13 +2111,12 @@ extern void G_PlayerActionPushLever(playerinfo_t *playerinfo);
 extern qboolean G_HandleTeleport(edict_t *self);
 extern void G_SetJointAngles(edict_t *self);
 extern void G_ResetJointAngles(edict_t *self);
-extern void G_PlayerActionChickenBite(playerinfo_t *playerinfo);
+extern void G_PlayerActionChickenBite(edict_t *self);
 extern void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta);
 extern void G_PlayerActionSwordAttack(edict_t *self, int value);
 extern void G_PlayerActionSpellArray(edict_t *self, int value);
 extern void G_PlayerActionSpellSphereCreate(edict_t *self, qboolean *Charging);
 extern void G_PlayerActionSpellDefensive(edict_t *self);
-extern void G_PlayerActionChickenBite(playerinfo_t *playerinfo);
 extern void G_PlayerSpellShieldAttack(edict_t *self);
 extern void G_PlayerSpellStopShieldAttack(edict_t *self);
 extern void G_PlayerVaultKick(playerinfo_t *playerinfo);
@@ -2168,8 +2166,8 @@ typedef struct
 	void (*G_PlayerActionPushLever)(playerinfo_t *playerinfo);
 	qboolean (*G_HandleTeleport)(edict_t *self);
 	void (*G_PlayerActionShrineEffect)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionChickenBite)(playerinfo_t *playerinfo);
-	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo,float delta);
+	void (*G_PlayerActionChickenBite)(edict_t *self);
+	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo, float delta);
 	void (*G_PlayerSpellShieldAttack)(edict_t *self);
 	void (*G_PlayerSpellStopShieldAttack)(edict_t *self);
 	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);

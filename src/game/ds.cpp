@@ -1491,7 +1491,7 @@ byte *FieldDef::GetOffset(Variable *Var)
 			ent = Var->GetEdictValue();
 			if (ent && ent->client)
 			{
-				Dest = (byte *)&ent->client->playerinfo.origin;
+				Dest = (byte *)&ent->s.origin;
 			}
 			break;
 		default:

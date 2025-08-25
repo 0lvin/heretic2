@@ -129,7 +129,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			// ...and we aren't swimming, so calculate angles to target.
 
 			VectorCopy(playerinfo->self->enemy->s.origin, targetvector);
-			VectorSubtract(targetvector, playerinfo->origin, targetvector);
+			VectorSubtract(targetvector, playerinfo->self->s.origin, targetvector);
 			VectoAngles(targetvector, playerinfo->targetjointangles);
 
 			// PITCH.
@@ -674,7 +674,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	{
 		// If we were falling, and we're now underwater, we should STOP FALLING, capiche?
 
-		VectorCopy(playerinfo->origin, endpos);
+		VectorCopy(playerinfo->self->s.origin, endpos);
 		endpos[2] += playerinfo->self->mins[2];
 
 		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
@@ -721,7 +721,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		pi.G_CreateEffect(playerinfo->self,
 								   FX_FOOTSTEP,
 								   CEF_OWNERS_ORIGIN,
-								   playerinfo->origin,
+								   playerinfo->self->s.origin,
 								   "");
 
 		return;
@@ -740,7 +740,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		pi.G_CreateEffect(playerinfo->self,
 								   FX_FALLSHORT,
 								   CEF_OWNERS_ORIGIN,
-								   playerinfo->origin,
+								   playerinfo->self->s.origin,
 								   "");
 
 		return;

@@ -60,7 +60,7 @@ void ChickenAssert(playerinfo_t *playerinfo)
 
 void PlayerChickenBite(playerinfo_t *playerinfo)
 {
-	pi.G_PlayerActionChickenBite(playerinfo);
+	pi.G_PlayerActionChickenBite(playerinfo->self);
 }
 
 // ***********************************************************************************************
@@ -112,10 +112,10 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	char		*soundname;
 	int			id;
 
-	VectorCopy(playerinfo->origin, endpos);
+	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] += (playerinfo->self->mins[2] - 2.0);
 
-	trace = pi.G_Trace(playerinfo->origin,
+	trace = pi.G_Trace(playerinfo->self->s.origin,
 							  playerinfo->self->mins,
 							  playerinfo->self->maxs,
 							  endpos,

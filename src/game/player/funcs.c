@@ -230,13 +230,13 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_FWD])
 	{
-		VectorCopy(playerinfo->origin, endpoint);
+		VectorCopy(playerinfo->self->s.origin, endpoint);
 		endpoint[2] += 32;
 
 		VectorCopy(playerinfo->self->mins, playermin);
 		VectorCopy(playerinfo->self->maxs, playermax);
 
-		trace = gi.trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
+		trace = gi.trace(playerinfo->self->s.origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0)
 		{
@@ -333,13 +333,13 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 	}
 	else if (playerinfo->seqcmd[ACMDL_BACK])
 	{
-		VectorCopy(playerinfo->origin, endpoint);
+		VectorCopy(playerinfo->self->s.origin, endpoint);
 		endpoint[2] -= 32;
 
 		VectorCopy(playerinfo->self->mins, playermin);
 		VectorCopy(playerinfo->self->maxs, playermax);
 
-		trace = gi.trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
+		trace = gi.trace(playerinfo->self->s.origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction < 1.0 || trace.endpos[2] < (playerinfo->self)->teamchain->target_ent->s.origin[2])
 		{
@@ -523,13 +523,13 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	rope_top[2] += rope->maxs[2];
 
 	//If we're above the rope then we can't grab it
-	if (playerinfo->origin[2] > rope_top[2])
+	if (playerinfo->self->s.origin[2] > rope_top[2])
 	{
 		//(playerinfo->self)->teamchain = NULL;
 		return false;
 	}
 
-	VectorSubtract(playerinfo->origin, rope_top, vec);
+	VectorSubtract(playerinfo->self->s.origin, rope_top, vec);
 	len = VectorLength(vec);
 
 	VectorSubtract(rope_end, rope_top, vec);
@@ -544,7 +544,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 	VectorMA(rope_top, len, vec, rope_check);
 
-	dist = Vector2Length(playerinfo->origin, rope_check);
+	dist = Vector2Length(playerinfo->self->s.origin, rope_check);
 
 	if (dist < check_dist)
 	{
@@ -555,13 +555,13 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 			VectorCopy(playerinfo->self->velocity,playerinfo->teamchain->teamchain->velocity);
 			VectorScale(playerinfo->teamchain->teamchain->velocity,2,playerinfo->teamchain->teamchain->velocity);
 			VectorClear(playerinfo->self->velocity);
-			VectorCopy(playerinfo->origin,playerinfo->teamchain->teamchain->s.origin);
-			VectorSubtract(playerinfo->origin,rope_top,vec);
+			VectorCopy(playerinfo->self->s.origin,playerinfo->teamchain->teamchain->s.origin);
+			VectorSubtract(playerinfo->self->s.origin,rope_top,vec);
 			rope->teamchain->viewheight=VectorLength(vec);
 		}
 		else
 		{
-			trace = gi.trace(playerinfo->origin,
+			trace = gi.trace(playerinfo->self->s.origin,
 									  playerinfo->self->mins,
 									  playerinfo->self->maxs,
 									  playerinfo->teamchain->teamchain->s.origin,
@@ -571,7 +571,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 			if (trace.fraction < 1.0f || trace.startsolid || trace.allsolid)
 				return false;
 
-			VectorCopy(playerinfo->teamchain->teamchain->s.origin, playerinfo->origin);
+			VectorCopy(playerinfo->teamchain->teamchain->s.origin, playerinfo->self->s.origin);
 		}
 
 		return true;
@@ -614,9 +614,9 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->self->s.angles, player_facing);
 	player_facing[PITCH] = player_facing[ROLL]=0;
 	AngleVectors(player_facing, forward, NULL,NULL);
-	VectorMA(playerinfo->origin, 32, forward, endpoint);
+	VectorMA(playerinfo->self->s.origin, 32, forward, endpoint);
 
-	grabtrace = gi.trace(playerinfo->origin,
+	grabtrace = gi.trace(playerinfo->self->s.origin,
 					   playerinfo->self->mins,
 					   playerinfo->self->maxs,
 					   endpoint,
@@ -755,7 +755,7 @@ qboolean G_PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 		// Get center of button
 		VectorAverage(t->mins, t->maxs, v);
 		// Get distance from player origin to center of button
-		Vec3SubtractAssign(playerinfo->origin, v);
+		Vec3SubtractAssign(playerinfo->self->s.origin, v);
 		len1 = VectorLength(v);
 	}
 	else
@@ -826,7 +826,7 @@ qboolean G_PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 	if (t->classID == CID_LEVER)
 	{
 		// Get distance from player origin to center of lever
-		VectorSubtract(playerinfo->origin, t->s.origin,v);
+		VectorSubtract(playerinfo->self->s.origin, t->s.origin,v);
 		len1 = VectorLength(v);
 	}
 	else
@@ -1042,58 +1042,58 @@ void G_ResetJointAngles(edict_t *self)
 // -------------------------
 // ************************************************************************************************
 
-void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
+void G_PlayerActionChickenBite(edict_t *self)
 {
 	trace_t	trace;
 	vec3_t	endpos, vf, mins;
 
-	AngleVectors(playerinfo->self->client->aimangles, vf, NULL, NULL);
-	VectorMA(playerinfo->origin, 64, vf, endpos);
+	AngleVectors(self->client->aimangles, vf, NULL, NULL);
+	VectorMA(self->s.origin, 64, vf, endpos);
 
 	//Account for step height
-	VectorSet(mins, playerinfo->self->mins[0], playerinfo->self->mins[1], playerinfo->self->mins[2] + 18);
+	VectorSet(mins, self->mins[0], self->mins[1], self->mins[2] + 18);
 
-	trace = gi.trace(playerinfo->origin, mins, playerinfo->self->maxs, endpos, (playerinfo->self), MASK_SHOT);
+	trace = gi.trace(self->s.origin, mins, self->maxs, endpos, self, MASK_SHOT);
 
 	if (trace.ent && trace.ent->takedamage)
 	{
-		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
-			T_Damage(trace.ent, playerinfo->self, playerinfo->self,vf,trace.endpos,trace.plane.normal,500,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
+		if (self->flags & FL_SUPER_CHICKEN)
+			T_Damage(trace.ent, self, self, vf, trace.endpos, trace.plane.normal, 500, 0, DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 		else
-			T_Damage(trace.ent, playerinfo->self, playerinfo->self,vf,trace.endpos,trace.plane.normal,1,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
+			T_Damage(trace.ent, self, self, vf, trace.endpos, trace.plane.normal, 1, 0, DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 
-		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
+		if (self->flags & FL_SUPER_CHICKEN)
 		{
 			// Sound for hitting.
 			if (irand(0,1))
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/superchicken/bite2.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			// Sound for hitting.
 			if (irand(0,1))
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/chicken/bite1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/bite2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/chicken/bite2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 	else
 	{	// Sound for missing.
-		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
+		if (self->flags & FL_SUPER_CHICKEN)
 		{
 			if (irand(0,1))
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck2.wav"), 1, ATTN_NORM, 0);
 		}
 		else
 		{
 			if (irand(0,1))
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck1.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/chicken/peck1.wav"), 1, ATTN_NORM, 0);
 			else
-				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/chicken/peck2.wav"), 1, ATTN_NORM, 0);
+				gi.sound(self, CHAN_WEAPON, gi.soundindex("monsters/chicken/peck2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 }

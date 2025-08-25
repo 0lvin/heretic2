@@ -216,7 +216,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		pi.G_CreateEffect(playerinfo->self,
 			FX_DUST_PUFF,
 			CEF_OWNERS_ORIGIN,
-			playerinfo->origin,
+			playerinfo->self->s.origin,
 			"");
 	}
 }

@@ -3440,7 +3440,7 @@ PutClientInServer(edict_t *ent)
 	if (client->pers.defence)
 		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->pers.defence->ammo));
 
-	VectorCopy(spawn_origin, client->playerinfo.origin);
+	VectorCopy(spawn_origin, ent->s.origin);
 	VectorClear(ent->velocity);
 
 	// Make the player have the right attributes - armor that sort of thing.
@@ -4281,8 +4281,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			// be careful if you screw around with this crazy code.
 
 			client->playerinfo.flags &= ~PLAYER_FLAG_USE_ENT_POS;
-
-			VectorCopy(ent->s.origin, client->playerinfo.origin);
 		}
 
 		// Check to add into movement velocity through crouch and duck if underwater.
@@ -4419,10 +4417,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			client->playerinfo.flags |= PLAYER_FLAG_DIVE;
 		}
 
-		// jmarshall - this used to be done in the engine with the client prediction.
-		VectorCopy(ent->s.origin, client->playerinfo.origin);
-		// jmarshall end
-
 		// If we're move-locked, don't update the edict's origin and velocity, otherwise copy the
 		// origin and velocity from playerinfo (which have been written by Pmove()) into the edict's
 		// origin and velocity.
@@ -4434,8 +4428,6 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		else
 		{
 			client->playerinfo.flags &= ~PLAYER_FLAG_LOCKMOVE_WAS_SET;
-
-			VectorCopy(client->playerinfo.origin, ent->s.origin);
 		}
 
 		/* clean flags */

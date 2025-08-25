@@ -403,7 +403,6 @@ SetupPlayerinfo(edict_t *ent)
 	}
 
 	// From edict_t.
-	VectorCopy(ent->s.origin, ent->client->playerinfo.origin);
 	ent->client->playerinfo.target = ent->target;
 	ent->client->playerinfo.teamchain = ent->teamchain;
 	ent->client->playerinfo.target_ent = ent->target_ent;
@@ -440,10 +439,9 @@ WritePlayerinfo(edict_t *ent)
 	// Inputs & outputs.
 	// ********************************************************************************************
 	// From edict_t.
-	VectorCopy(ent->client->playerinfo.origin, ent->s.origin);
-	ent->teamchain = (edict_t*)ent->client->playerinfo.teamchain;
-	ent->target_ent = (edict_t*)ent->client->playerinfo.target_ent;
-	ent->target =  (char*)ent->client->playerinfo.target;
+	ent->teamchain = ent->client->playerinfo.teamchain;
+	ent->target_ent = ent->client->playerinfo.target_ent;
+	ent->target = ent->client->playerinfo.target;
 	ent->nextthink = ent->client->playerinfo.nextthink;
 	ent->viewheight = ent->client->playerinfo.viewheight;
 	ent->watertype = ent->client->playerinfo.watertype;

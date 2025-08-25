@@ -11,8 +11,6 @@
 #include "../header/g_teleport.h"
 #include "../player/library/p_main.h"
 
-extern void	SelectSpawnPoint (edict_t *ent,vec3_t origin, vec3_t angles);
-
 // PLAYER ONLY!!!
 // make the guy actually teleport from one place to another
 // called from ANIMACTOR
@@ -24,7 +22,6 @@ void Perform_Teleport(edict_t *self)
 	self->client->playerinfo.flags |= PLAYER_FLAG_RELEASEROPE;
 
 	//physically move the player, bearing in mind thats what a teleport is
-	VectorCopy(self->client->tele_dest, self->client->playerinfo.origin);
 	VectorCopy(self->client->tele_dest, self->s.origin);
 
 	// set angles
