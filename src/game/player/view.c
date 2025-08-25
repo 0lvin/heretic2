@@ -406,7 +406,6 @@ SetupPlayerinfo(edict_t *ent)
 	VectorCopy(ent->s.origin, ent->client->playerinfo.origin);
 	VectorCopy(ent->mins, ent->client->playerinfo.mins);
 	VectorCopy(ent->maxs, ent->client->playerinfo.maxs);
-	ent->client->playerinfo.enemy = ent->enemy;
 	ent->client->playerinfo.target = ent->target;
 	ent->client->playerinfo.teamchain = ent->teamchain;
 	ent->client->playerinfo.target_ent = ent->target_ent;
@@ -446,7 +445,6 @@ WritePlayerinfo(edict_t *ent)
 	VectorCopy(ent->client->playerinfo.origin, ent->s.origin);
 	VectorCopy(ent->client->playerinfo.mins, ent->mins);
 	VectorCopy(ent->client->playerinfo.maxs, ent->maxs);
-	ent->enemy = (edict_t *)ent->client->playerinfo.enemy;
 	ent->teamchain = (edict_t*)ent->client->playerinfo.teamchain;
 	ent->target_ent = (edict_t*)ent->client->playerinfo.target_ent;
 	ent->target =  (char*)ent->client->playerinfo.target;
