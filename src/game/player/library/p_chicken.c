@@ -113,11 +113,11 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	int			id;
 
 	VectorCopy(playerinfo->origin, endpos);
-	endpos[2] += (playerinfo->mins[2] - 2.0);
+	endpos[2] += (playerinfo->self->mins[2] - 2.0);
 
 	trace = pi.G_Trace(playerinfo->origin,
-							  playerinfo->mins,
-							  playerinfo->maxs,
+							  playerinfo->self->mins,
+							  playerinfo->self->maxs,
 							  endpos,
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);

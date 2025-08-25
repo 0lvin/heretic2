@@ -236,21 +236,21 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 	VectorMA(playerinfo->origin, CREEP_STEPDIST, vf, startpos);
 
 	//Account for stepheight
-	VectorCopy(playerinfo->mins, mins);
+	VectorCopy(playerinfo->self->mins, mins);
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
 	{
 		//Move the endpoint down the maximum amount
 		VectorCopy(startpos, endpos);
-		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
+		endpos[2] += (playerinfo->self->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -285,21 +285,21 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 	VectorMA(playerinfo->origin, -CREEP_STEPDIST, vf, startpos);
 
 	//Account for stepheight
-	VectorCopy(playerinfo->mins, mins);
+	VectorCopy(playerinfo->self->mins, mins);
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
 	{
 		//Move the endpoint down the maximum amount
 		VectorCopy(startpos, endpos);
-		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
+		endpos[2] += (playerinfo->self->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		trace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = pi.G_Trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -320,7 +320,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 
 void PlayerActionSetCrouchHeight(playerinfo_t *playerinfo)
 {
-	playerinfo->maxs[2] = 4;
+	playerinfo->self->maxs[2] = 4;
 }
 
 /*-----------------------------------------------
@@ -333,7 +333,7 @@ void PlayerActionCheckUncrouchToFinishSeq(playerinfo_t *playerinfo)
 
 	if (CheckUncrouch(playerinfo))
 	{
-		playerinfo->maxs[2] = 25;
+		playerinfo->self->maxs[2] = 25;
 		return;//ok to finish sequence
 	}
 
@@ -1617,8 +1617,8 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	// Now finally, if we try tracing the player blocking forward a tad, we should be hitting an
 	// obstruction.
 
-	VectorCopy(playerinfo->mins, playermin);
-	VectorCopy(playerinfo->maxs, playermax);
+	VectorCopy(playerinfo->self->mins, playermin);
+	VectorCopy(playerinfo->self->maxs, playermax);
 
 	// We need to take the player limits and extend them up to 83 in height.
 
@@ -1671,22 +1671,22 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	//get the z height
 	VectorCopy(playerinfo->origin, lastcheck_start);
 	if (lefthand[2] > righthand[2])
-		lastcheck_start[2] = lefthand[2] - playerinfo->mins[2];
+		lastcheck_start[2] = lefthand[2] - playerinfo->self->mins[2];
 	else
-		lastcheck_start[2] = righthand[2] - playerinfo->mins[2];
+		lastcheck_start[2] = righthand[2] - playerinfo->self->mins[2];
 
 	VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 	//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-	lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+	lasttrace = pi.G_Trace(lastcheck_start, playerinfo->self->mins, playerinfo->self->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		return (false);
 
 	//Now see if the surface is eligible for a overhanging swing vault
 	//Trace from about the player's waist to his feet to determine this
-	VectorCopy(playerinfo->mins, mins);
-	VectorCopy(playerinfo->maxs, maxs);
+	VectorCopy(playerinfo->self->mins, mins);
+	VectorCopy(playerinfo->self->maxs, maxs);
 	maxs[2] -= 48;
 
 	AngleVectors(playerinfo->self->s.angles, forward, NULL, NULL);
@@ -1884,8 +1884,8 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	VectorCopy(playerinfo->origin, endpoint);
 	endpoint[2] += GRAB_JUMP_HEIGHT;
-	VectorCopy(playerinfo->mins, playermin);
-	VectorCopy(playerinfo->maxs, playermax);
+	VectorCopy(playerinfo->self->mins, playermin);
+	VectorCopy(playerinfo->self->maxs, playermax);
 
 	// We need to take the player limits and extend them up to 83 in height (where the hands are).
 
@@ -1970,8 +1970,8 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	// Now, finally, if we try tracing the player blocking forward a tad, we should be hitting
 	// an obstruction.
-	VectorCopy(playerinfo->mins, playermin);
-	VectorCopy(playerinfo->maxs, playermax);
+	VectorCopy(playerinfo->self->mins, playermin);
+	VectorCopy(playerinfo->self->maxs, playermax);
 
 	// We need to take the player limits and extend them up to 83 in height.
 
@@ -2137,8 +2137,8 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	player_facing[PITCH]=player_facing[ROLL]=0;
 	AngleVectors(player_facing, forward, right, NULL);
 
-	VectorCopy(playerinfo->mins,vaultcheckmins);
-	VectorCopy(playerinfo->maxs,vaultcheckmaxs);
+	VectorCopy(playerinfo->self->mins,vaultcheckmins);
+	VectorCopy(playerinfo->self->maxs,vaultcheckmaxs);
 	vaultcheckmins[2]+=18;//don't try to vault stairs, man
 
 	VectorCopy(playerinfo->origin, start);
@@ -2261,14 +2261,14 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		//get the z height
 		VectorCopy(playerinfo->origin, lastcheck_start);
 		if (lefthand[2] > righthand[2])
-			lastcheck_start[2] = lefthand[2] - playerinfo->mins[2];
+			lastcheck_start[2] = lefthand[2] - playerinfo->self->mins[2];
 		else
-			lastcheck_start[2] = righthand[2] - playerinfo->mins[2];
+			lastcheck_start[2] = righthand[2] - playerinfo->self->mins[2];
 
 		VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 		//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-		lasttrace = pi.G_Trace(lastcheck_start, playerinfo->mins, playerinfo->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+		lasttrace = pi.G_Trace(lastcheck_start, playerinfo->self->mins, playerinfo->self->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		{
@@ -2280,7 +2280,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	//Now see if the surface is eligible for a overhanging swing vault
 	//Trace from about the player's waist to his feet to determine this
-	VectorCopy(playerinfo->maxs, maxs);
+	VectorCopy(playerinfo->self->maxs, maxs);
 	maxs[2] -= 48;
 
 	AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
@@ -2346,8 +2346,8 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 
 	// Try placing the entity in the new location.
 	trace = pi.G_Trace(endpos,
-							  playerinfo->mins,
-							  playerinfo->maxs,
+							  playerinfo->self->mins,
+							  playerinfo->self->maxs,
 							  endpos,
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
@@ -2436,11 +2436,11 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 	vec3_t		endpos;
 
 	VectorCopy(playerinfo->origin, endpos);
-	endpos[2] += (playerinfo->mins[2] - 2);
+	endpos[2] += (playerinfo->self->mins[2] - 2);
 
 	trace = pi.G_Trace(playerinfo->origin,
-							  playerinfo->mins,
-							  playerinfo->maxs,
+							  playerinfo->self->mins,
+							  playerinfo->self->maxs,
 							  endpos,
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
@@ -2461,11 +2461,11 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 	vec3_t		endpos;
 
 	VectorCopy(playerinfo->origin, endpos);
-	endpos[2] += (playerinfo->mins[2] - 2);
+	endpos[2] += (playerinfo->self->mins[2] - 2);
 
 	trace = pi.G_Trace(playerinfo->origin,
-							  playerinfo->mins,
-							  playerinfo->maxs,
+							  playerinfo->self->mins,
+							  playerinfo->self->maxs,
 							  endpos,
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
@@ -2723,11 +2723,11 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		// End Sequence.
 
 		VectorCopy(playerinfo->grabloc, endpoint);
-		endpoint[2] -= playerinfo->mins[2] + 2;
+		endpoint[2] -= playerinfo->self->mins[2] + 2;
 
 		trace = pi.G_Trace(playerinfo->origin,
-								  playerinfo->mins,
-								  playerinfo->maxs,
+								  playerinfo->self->mins,
+								  playerinfo->self->maxs,
 								  endpoint,
 								  playerinfo->self,
 								  MASK_PLAYERSOLID);
@@ -2762,8 +2762,8 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			VectorCopy(playerinfo->origin, endpoint);
 			endpoint[2] = playerinfo->grabloc[2] - height;
 
-			VectorCopy(playerinfo->mins, playermin);
-			VectorCopy(playerinfo->maxs, playermax);
+			VectorCopy(playerinfo->self->mins, playermin);
+			VectorCopy(playerinfo->self->maxs, playermax);
 
 			trace = pi.G_Trace(playerinfo->origin,
 									  playermin,

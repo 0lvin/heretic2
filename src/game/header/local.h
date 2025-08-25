@@ -1992,7 +1992,6 @@ typedef struct playerinfo_s
 
 	// From edict_t.
 	vec3_t				origin;
-	vec3_t				mins,maxs;
 	char				*target;				// Not used on client.
 	edict_t				*target_ent;			// Not used on client.
 	edict_t				*teamchain;				// FIXME - always 0 on client, but checked by client.

@@ -675,7 +675,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		// If we were falling, and we're now underwater, we should STOP FALLING, capiche?
 
 		VectorCopy(playerinfo->origin, endpos);
-		endpos[2] += playerinfo->mins[2];
+		endpos[2] += playerinfo->self->mins[2];
 
 		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
 		   (pi.PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&

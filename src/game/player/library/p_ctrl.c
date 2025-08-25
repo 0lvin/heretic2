@@ -79,7 +79,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		playerinfo->upperseq == ASEQ_FORWARD_FLIP_R)
 	{
 		PlayerInterruptAction(playerinfo);
-		if (playerinfo->maxs[2] == 25)//fixme!  have a global CROUCHING_MAX_Z and STANDING_MAX_Z
+		if (playerinfo->self->maxs[2] == 25)//fixme!  have a global CROUCHING_MAX_Z and STANDING_MAX_Z
 		{//already ready to stand up
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_CROUCH_GO);
 			strcat(LandSound,"land1.wav");

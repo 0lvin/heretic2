@@ -233,8 +233,8 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		VectorCopy(playerinfo->origin, endpoint);
 		endpoint[2] += 32;
 
-		VectorCopy(playerinfo->mins, playermin);
-		VectorCopy(playerinfo->maxs, playermax);
+		VectorCopy(playerinfo->self->mins, playermin);
+		VectorCopy(playerinfo->self->maxs, playermax);
 
 		trace = gi.trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
@@ -336,8 +336,8 @@ int G_BranchLwrClimbing(playerinfo_t *playerinfo)
 		VectorCopy(playerinfo->origin, endpoint);
 		endpoint[2] -= 32;
 
-		VectorCopy(playerinfo->mins, playermin);
-		VectorCopy(playerinfo->maxs, playermax);
+		VectorCopy(playerinfo->self->mins, playermin);
+		VectorCopy(playerinfo->self->maxs, playermax);
 
 		trace = gi.trace(playerinfo->origin, playermin, playermax, endpoint, (edict_t*)playerinfo->self, MASK_PLAYERSOLID);
 
@@ -562,8 +562,8 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 		else
 		{
 			trace = gi.trace(playerinfo->origin,
-									  playerinfo->mins,
-									  playerinfo->maxs,
+									  playerinfo->self->mins,
+									  playerinfo->self->maxs,
 									  playerinfo->teamchain->teamchain->s.origin,
 										(edict_t*)playerinfo->self,
 									  MASK_PLAYERSOLID);
@@ -617,8 +617,8 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 	VectorMA(playerinfo->origin, 32, forward, endpoint);
 
 	grabtrace = gi.trace(playerinfo->origin,
-					   playerinfo->mins,
-					   playerinfo->maxs,
+					   playerinfo->self->mins,
+					   playerinfo->self->maxs,
 					   endpoint,
 					   (edict_t *)playerinfo->self,
 					   MASK_PLAYERSOLID);
@@ -645,7 +645,7 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 void G_PlayerActionTakePuzzle(playerinfo_t *playerinfo)
 {
 	if ((playerinfo->self)->teamchain->use)
-		(playerinfo->self)->teamchain->use((playerinfo->self)->teamchain,(playerinfo->self),(playerinfo->self));
+		(playerinfo->self)->teamchain->use((playerinfo->self)->teamchain, playerinfo->self,(playerinfo->self));
 }
 
 // ************************************************************************************************
@@ -1051,16 +1051,16 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 	VectorMA(playerinfo->origin, 64, vf, endpos);
 
 	//Account for step height
-	VectorSet(mins, playerinfo->mins[0], playerinfo->mins[1], playerinfo->mins[2] + 18);
+	VectorSet(mins, playerinfo->self->mins[0], playerinfo->self->mins[1], playerinfo->self->mins[2] + 18);
 
-	trace = gi.trace(playerinfo->origin, mins, playerinfo->maxs, endpos, (playerinfo->self), MASK_SHOT);
+	trace = gi.trace(playerinfo->origin, mins, playerinfo->self->maxs, endpos, (playerinfo->self), MASK_SHOT);
 
 	if (trace.ent && trace.ent->takedamage)
 	{
 		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
-			T_Damage(trace.ent,(playerinfo->self),(playerinfo->self),vf,trace.endpos,trace.plane.normal,500,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
+			T_Damage(trace.ent, playerinfo->self, playerinfo->self,vf,trace.endpos,trace.plane.normal,500,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 		else
-			T_Damage(trace.ent,(playerinfo->self),(playerinfo->self),vf,trace.endpos,trace.plane.normal,1,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
+			T_Damage(trace.ent, playerinfo->self, playerinfo->self,vf,trace.endpos,trace.plane.normal,1,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 
 		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 		{

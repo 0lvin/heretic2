@@ -40,7 +40,7 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->origin, endpos);
 	endpos[2] -= FALL_MINHEIGHT;
 
-	checktrace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = pi.G_Trace(playerinfo->origin, playerinfo->self->mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (checktrace.fraction >= 1)
 	{
@@ -60,9 +60,9 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 	vec3_t	v;
 
 	VectorCopy(playerinfo->origin,v);
-	v[2]+=25.0 - playerinfo->maxs[2];//was 25
+	v[2]+=25.0 - playerinfo->self->maxs[2];//was 25
 
-	trace = pi.G_Trace(playerinfo->origin, playerinfo->mins, playerinfo->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
+	trace = pi.G_Trace(playerinfo->origin, playerinfo->self->mins, playerinfo->self->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 		return false;
@@ -93,21 +93,21 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 	VectorMA(playerinfo->origin, dir*CREEP_STEPDIST, vf, startpos);
 
 	//Account for stepheight
-	VectorCopy(playerinfo->mins, mins);
+	VectorCopy(playerinfo->self->mins, mins);
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	checktrace = pi.G_Trace(playerinfo->origin, mins, playerinfo->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = pi.G_Trace(playerinfo->origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (checktrace.fraction == 1)
 	{
 		//Move the endpoint down the maximum amount
 		VectorCopy(startpos, endpos);
-		endpos[2] += (playerinfo->mins[2] - CREEP_MAXFALL);
+		endpos[2] += (playerinfo->self->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		checktrace = pi.G_Trace(startpos, mins, playerinfo->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		checktrace = pi.G_Trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (checktrace.fraction == 1 || (checktrace.startsolid || checktrace.allsolid))
 		{
@@ -165,8 +165,8 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	VectorCopy(rspotmax, rspotmin);
 
 	// Go half player height below player
-	lspotmin[2] += playerinfo->mins[2] * 2.0;
-	rspotmin[2] += playerinfo->mins[2] * 2.0;
+	lspotmin[2] += playerinfo->self->mins[2] * 2.0;
+	rspotmin[2] += playerinfo->self->mins[2] * 2.0;
 
 	leftfoot = pi.G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
 
@@ -483,7 +483,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 	{
 		if (playerinfo->seqcmd[ACMDL_FWD])
 		{
-			playerinfo->maxs[2] = 4;
+			playerinfo->self->maxs[2] = 4;
 			return ASEQ_ROLLDIVEF_W;
 		}
 		else if (playerinfo->seqcmd[ACMDL_BACK])
@@ -1079,7 +1079,7 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 		else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 			return ASEQ_ROLL_R;
 
-		playerinfo->maxs[2] = 4;
+		playerinfo->self->maxs[2] = 4;
 
 		return ASEQ_ROLLDIVEF_R;
 	}
@@ -1145,7 +1145,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 			return ASEQ_ROLL_R;
 
-		playerinfo->maxs[2] = 4;
+		playerinfo->self->maxs[2] = 4;
 
 		return ASEQ_ROLLDIVEF_R;
 	}
@@ -1277,7 +1277,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 		else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 			return ASEQ_ROLL_R;
 
-		playerinfo->maxs[2] = 4;
+		playerinfo->self->maxs[2] = 4;
 
 		return ASEQ_ROLLDIVEF_R;
 	}
@@ -1564,9 +1564,9 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if (playerinfo->maxs[2] != 4)
+	if (playerinfo->self->maxs[2] != 4)
 	{
-		playerinfo->maxs[2] = 4;
+		playerinfo->self->maxs[2] = 4;
 	}
 
 	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2)
@@ -1616,7 +1616,7 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 			return ASEQ_CROUCH;
 		}
 
-		playerinfo->maxs[2] = 25;
+		playerinfo->self->maxs[2] = 25;
 
 		return ASEQ_CROUCH_END;
 	}

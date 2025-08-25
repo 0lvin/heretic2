@@ -219,7 +219,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	}
 
 	VectorCopy(playerinfo->origin, endpos);
-	endpos[2] += playerinfo->mins[2];
+	endpos[2] += playerinfo->self->mins[2];
 
 	if ((pi.PointContents(endpos) & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
