@@ -119,7 +119,7 @@ void PlayerKillShrineFX(edict_t *self)
 	self->client->pers.armortype = ARMOR_NONE;
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self->client);
+	playerExport->PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 
 	// Remove Staff powerup.
@@ -637,7 +637,7 @@ void shrine_armor_silver_core(edict_t *self,edict_t *other)
 	}
 
 	SetupPlayerinfo_effects(other);
-	playerExport->PlayerUpdateModelAttributes(other->client);
+	playerExport->PlayerUpdateModelAttributes(other);
 	WritePlayerinfo_effects(other);
 
 	// restore dismemberment, and stop us being on fire
@@ -746,7 +746,7 @@ void shrine_armor_gold_core(edict_t *self,edict_t *other)
 	other->client->pers.armor_count = gold_armor_info.max_armor;
 
 	SetupPlayerinfo_effects(other);
-	playerExport->PlayerUpdateModelAttributes(other->client);
+	playerExport->PlayerUpdateModelAttributes(other);
 	WritePlayerinfo_effects(other);
 
 	// restore dismemberment, and stop us being on fire
@@ -864,7 +864,7 @@ void shrine_staff_core(edict_t *self,edict_t *other)
 		other->client->pers.stafflevel++;
 
 		SetupPlayerinfo_effects(other);
-		playerExport->PlayerUpdateModelAttributes(other->client);
+		playerExport->PlayerUpdateModelAttributes(other);
 		WritePlayerinfo_effects(other);
 	}
 
@@ -1295,7 +1295,7 @@ void shrine_ghost_core(edict_t *self,edict_t *other)
 	// Update the model attributes for ghosting.
 
 	SetupPlayerinfo_effects(other);
-	playerExport->PlayerUpdateModelAttributes(other->client);
+	playerExport->PlayerUpdateModelAttributes(other);
 	WritePlayerinfo_effects(other);
 
 	// restore dismemberment, and stop us being on fire
@@ -1408,7 +1408,7 @@ void shrine_reflect_core(edict_t *self, edict_t *other)
 	// Update the model attributes for the reflection skin.
 
 	SetupPlayerinfo_effects(other);
-	playerExport->PlayerUpdateModelAttributes(other->client);
+	playerExport->PlayerUpdateModelAttributes(other);
 	WritePlayerinfo_effects(other);
 
 	// restore dismemberment, and stop us being on fire

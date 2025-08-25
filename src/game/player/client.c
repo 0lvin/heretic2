@@ -454,7 +454,7 @@ void
 ClientSetSkinType(edict_t *ent, char *skinname)
 {
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(ent->client);
+	playerExport->PlayerUpdateModelAttributes(ent);
 	WritePlayerinfo_effects(ent);
 }
 
@@ -564,7 +564,7 @@ void player_repair_skin (edict_t *self)
 			}
 		}
 		SetupPlayerinfo_effects(self);
-		playerExport->PlayerUpdateModelAttributes(self->client);
+		playerExport->PlayerUpdateModelAttributes(self);
 		WritePlayerinfo_effects(self);
 		return;
 	}
@@ -618,7 +618,7 @@ void player_repair_skin (edict_t *self)
 	}
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self->client);
+	playerExport->PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 }
 
@@ -673,7 +673,7 @@ ResetPlayerBaseNodes(edict_t *ent)
 	}
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(ent->client);
+	playerExport->PlayerUpdateModelAttributes(ent);
 	WritePlayerinfo_effects(ent);
 }
 
@@ -1129,7 +1129,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 finish:
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self->client);
+	playerExport->PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 }
 
@@ -1165,7 +1165,7 @@ player_decap(edict_t *self, edict_t *other)
 	}
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self->client);
+	playerExport->PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 }
 
@@ -1701,7 +1701,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 			// If we're not a chicken, don't set the dying flag.
 
-			if (!(self->client->playerinfo.edictflags & FL_CHICKEN))	// We're not set as a chicken
+			if (!(self->flags & FL_CHICKEN))	// We're not set as a chicken
 			{
 				// Not a chicken so set the dying flag.
 
@@ -1712,7 +1712,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 			{
 				// I WAS a chicken, but not any more, I'm dead and an Elf again.
 
-				self->client->playerinfo.edictflags &= ~FL_CHICKEN;
+				self->flags &= ~FL_CHICKEN;
 			}
 		}
 	}
@@ -3128,11 +3128,11 @@ GiveLevelItems(edict_t *player)
 	if (level.defensive_weapons&16)
 	{
 		item = FindItem("meteor");
-		AddDefenseToInventory(item,player);
+		AddDefenseToInventory(item, player);
 	}
 
 	SetupPlayerinfo_effects(player);
-	playerExport->PlayerUpdateModelAttributes(player->client);
+	playerExport->PlayerUpdateModelAttributes(player);
 	WritePlayerinfo_effects(player);
 }
 
@@ -3446,7 +3446,7 @@ PutClientInServer(edict_t *ent)
 	// Make the player have the right attributes - armor that sort of thing.
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(ent->client);
+	playerExport->PlayerUpdateModelAttributes(ent);
 	WritePlayerinfo_effects(ent);
 
 	// Make sure the skin attributes are transferred.
@@ -4206,7 +4206,8 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		{
 			client->ps.pmove.pm_type = PM_SPECTATOR;
 		}
-		else if ((ent->s.modelindex != CUSTOM_PLAYER_MODEL) && !(ent->flags & FL_CHICKEN))	// We're not set as a chicken
+		else if ((ent->s.modelindex != CUSTOM_PLAYER_MODEL) &&
+			!(ent->flags & FL_CHICKEN))	// We're not set as a chicken
 		{
 			client->ps.pmove.pm_type = PM_GIB;
 		}
@@ -4317,7 +4318,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 		// If not the chicken, and not explicitly resizing the bounding box...
 
-		if ( (!(client->playerinfo.edictflags & FL_CHICKEN)) && (!(client->playerinfo.flags & PLAYER_FLAG_RESIZED)) )
+		if ( (!(ent->flags & FL_CHICKEN)) && (!(client->playerinfo.flags & PLAYER_FLAG_RESIZED)) )
 		{
 			// Resize the player's bounding box.
 
@@ -4330,12 +4331,12 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		{
 			// Otherwise we don't want to resize.
 
-			if ( (client->playerinfo.edictflags & FL_AVERAGE_CHICKEN) )
+			if ( (ent->flags & FL_AVERAGE_CHICKEN) )
 			{
 				VectorSet(ent->mins, -8, -8, -14);
 				VectorSet(ent->maxs, 8, 8, 14);
 			}
-			else if ( (client->playerinfo.edictflags & FL_SUPER_CHICKEN) )
+			else if ( (ent->flags & FL_SUPER_CHICKEN) )
 			{
 				VectorSet(ent->mins, -16, -16, -36);
 				VectorSet(ent->maxs, 16, 16, 36);

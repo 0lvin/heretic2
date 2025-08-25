@@ -418,7 +418,7 @@ SetupPlayerinfo(edict_t *ent)
 	VectorCopy(ent->maxs, ent->client->playerinfo.maxs);
 	ent->client->playerinfo.enemy = ent->enemy;
 	ent->client->playerinfo.target = ent->target;
-	ent->client->playerinfo.targetEnt = ent->teamchain;
+	ent->client->playerinfo.teamchain = ent->teamchain;
 	ent->client->playerinfo.target_ent = ent->target_ent;
 	ent->client->playerinfo.nextthink = ent->nextthink;
 	ent->client->playerinfo.viewheight = ent->viewheight;
@@ -426,7 +426,6 @@ SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.waterlevel = ent->waterlevel;
 	ent->client->playerinfo.deadflag = ent->deadflag;
 	ent->client->playerinfo.movetype = ent->movetype;
-	ent->client->playerinfo.edictflags = ent->flags;
 
 	// From entity_state_t.
 	ent->client->playerinfo.frame = ent->s.frame,
@@ -458,7 +457,7 @@ WritePlayerinfo(edict_t *ent)
 	VectorCopy(ent->client->playerinfo.mins, ent->mins);
 	VectorCopy(ent->client->playerinfo.maxs, ent->maxs);
 	ent->enemy = (edict_t *)ent->client->playerinfo.enemy;
-	ent->teamchain = (edict_t*)ent->client->playerinfo.targetEnt;
+	ent->teamchain = (edict_t*)ent->client->playerinfo.teamchain;
 	ent->target_ent = (edict_t*)ent->client->playerinfo.target_ent;
 	ent->target =  (char*)ent->client->playerinfo.target;
 	ent->nextthink = ent->client->playerinfo.nextthink;
@@ -467,7 +466,6 @@ WritePlayerinfo(edict_t *ent)
 	ent->waterlevel = ent->client->playerinfo.waterlevel;
 	ent->deadflag = ent->client->playerinfo.deadflag;
 	ent->movetype = ent->client->playerinfo.movetype;
-	ent->flags = ent->client->playerinfo.edictflags;
 
 	// From entity_state_t.
 	ent->s.frame = ent->client->playerinfo.frame,
@@ -588,7 +586,7 @@ void PlayerTimerUpdate(edict_t *ent)
 
 			// Unset the skin.
 
-			playerExport->PlayerUpdateModelAttributes(ent->client);
+			playerExport->PlayerUpdateModelAttributes(ent);
 		}
 	}
 
@@ -1139,7 +1137,7 @@ ClientEndServerFrame(edict_t *ent)
 
 	current_client->ps.flags = current_client->playerinfo.flags;
 
-	current_client->ps.edictflags = current_client->playerinfo.edictflags;
+	current_client->ps.edictflags = ent->flags;
 
 	current_client->ps.oldvelocity_z = current_client->playerinfo.oldvelocity[2];
 

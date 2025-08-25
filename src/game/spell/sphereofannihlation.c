@@ -56,7 +56,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 
 	// if we have released, or we are dead, or a chicken, release the sphere
 	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
-		&& (self->owner->client && !(self->owner->client->playerinfo.edictflags & FL_CHICKEN)) &&
+		&& (self->owner->client && !(self->owner->flags & FL_CHICKEN)) &&
 		(!(self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
 		if (self->count < SPHERE_MAX_CHARGES)
@@ -269,7 +269,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 	// is unlikely to happen, sooooo...
 
 	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
-		&& (self->owner->client && !(self->owner->client->playerinfo.edictflags & FL_CHICKEN)) &&
+		&& (self->owner && !(self->owner->flags & FL_CHICKEN)) &&
 		(!(self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
 		if (self->count < SPHERE_MAX_CHARGES)

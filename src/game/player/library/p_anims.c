@@ -54,7 +54,7 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 		playerinfo->loweridle = false;
 	}
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 		playerinfo->lowermove = PlayerChickenData[seq].move;
 	else
 		playerinfo->lowermove = PlayerSeqData[seq].move;
@@ -65,7 +65,7 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 
 	// The lower two bytes of the player flags are stomped by the sequences' flags.
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		seqdata = &PlayerChickenData[seq];
 	}
@@ -80,9 +80,9 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	// Set / reset flag that says I am flying..
 
 	if (seqdata->fly)
-		playerinfo->edictflags |= FL_FLY;
+		playerinfo->self->flags |= FL_FLY;
 	else
-		playerinfo->edictflags &= ~FL_FLY;
+		playerinfo->self->flags &= ~FL_FLY;
 
 	// Set / reset flag that says I am standing still.
 
@@ -123,7 +123,7 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. reset torso twisting.
 
-	if (!(playerinfo->edictflags&FL_CHICKEN))
+	if (!(playerinfo->self->flags&FL_CHICKEN))
 		pi.ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
@@ -148,7 +148,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	client->pers.weaponready = WEAPON_READY_HANDS;
 	playerinfo->switchtoweapon = WEAPON_READY_HANDS;
 	playerinfo->self->client->newweapon = NULL;
-	PlayerUpdateModelAttributes(playerinfo->self->client);
+	PlayerUpdateModelAttributes(playerinfo->self);
 	client->pers.handfxtype = HANDFX_NONE;
 
 	PlayerSetHandFX(playerinfo, HANDFX_NONE, -1);
@@ -158,7 +158,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. no torso aiming.
 
-	if (!(playerinfo->edictflags & FL_CHICKEN))
+	if (!(playerinfo->self->flags & FL_CHICKEN))
 		pi.ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX * sizeof(int));
@@ -416,7 +416,7 @@ void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 	playerinfo->loweridle = false;
 
 	// Grab the sequence ctrl struct.
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 		seqctrl = &ChickenCtrl[playerinfo->lowerseq];
 	else
 		seqctrl = &SeqCtrl[playerinfo->lowerseq];
@@ -477,7 +477,7 @@ void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 	playerinfo->fwdvel	= 0.0;
 	playerinfo->sidevel = 0.0;
 	playerinfo->upvel	= 0.0;
-	playerinfo->edictflags |= FL_FLY | FL_LOCKMOVE;
+	playerinfo->self->flags |= FL_FLY | FL_LOCKMOVE;
 	playerinfo->flags = PlayerSeqData[ASEQ_VAULT_LOW].playerflags | (playerinfo->flags & PLAYER_FLAG_PERSMASK);
 	playerinfo->pm_flags |= PMF_LOCKMOVE;
 	VectorClear(playerinfo->self->velocity);
@@ -490,7 +490,7 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 {
 	int chance = irand(0,100);
 
-	if (!(playerinfo->edictflags & FL_CHICKEN))
+	if (!(playerinfo->self->flags & FL_CHICKEN))
 	{
 		// Chicken plays no pain sound.
 		switch (type)

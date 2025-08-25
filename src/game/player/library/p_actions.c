@@ -430,7 +430,7 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 	}
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
-		!(playerinfo->edictflags & FL_CHICKEN) &&
+		!(playerinfo->self->flags & FL_CHICKEN) &&
 		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{	// Shooting is the other!
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
@@ -683,7 +683,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo);
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		// Don't allow us to muck about with spells if we are a chicken.
 
@@ -754,7 +754,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo);
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		// Don't allow us to muck about with arrows if we are a chicken.
 
@@ -792,7 +792,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 			color=7;
 		}
 
-		PlayerUpdateModelAttributes(client);
+		PlayerUpdateModelAttributes(playerinfo->self);
 	}
 
 	pi.G_Sound(playerinfo->self,
@@ -823,7 +823,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo);
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		// Don't allow us to muck about with spells if we are a chicken.
 		return;
@@ -835,7 +835,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		holdweapon = client->pers.weaponready;
 
 		client->pers.weaponready = value;
-		PlayerUpdateModelAttributes(client);
+		PlayerUpdateModelAttributes(playerinfo->self);
 
 		client->pers.weaponready = holdweapon;
 	}
@@ -844,7 +844,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		assert(client->newweapon);
 		pi.Weapon_Ready(client, client->newweapon);
 		client->pers.weaponready = playerinfo->switchtoweapon;
-		PlayerUpdateModelAttributes(client);
+		PlayerUpdateModelAttributes(playerinfo->self);
 		client->newweapon = NULL;
 	}
 
@@ -892,7 +892,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						// Uh oh, change the phoenix into a red rain.
 
 						client->pers.bowtype = BOW_TYPE_REDRAIN;
-						PlayerUpdateModelAttributes(client);
+						PlayerUpdateModelAttributes(playerinfo->self);
 
 						pi.G_Sound(playerinfo->self,
 											CHAN_WEAPON,
@@ -926,7 +926,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						// Uh oh, change the red rain to a phoenix.
 
 						client->pers.bowtype = BOW_TYPE_PHOENIX;
-						PlayerUpdateModelAttributes(client);
+						PlayerUpdateModelAttributes(playerinfo->self);
 
 						pi.G_Sound(playerinfo->self,
 											CHAN_WEAPON,
@@ -3199,7 +3199,7 @@ void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
 		//Climb a rope?
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo, 0)) )
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo, 0)) )
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -3719,7 +3719,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
 		//Climb a rope?
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) )
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) )
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -4025,7 +4025,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 			playerinfo->seqcmd[ACMDL_RUN_F]) &&
 			(client->pers.weaponready == WEAPON_READY_SWORDSTAFF) &&
 			(!(playerinfo->flags & PLAYER_FLAG_NO_RARM)) &&
-			!(playerinfo->edictflags & FL_CHICKEN))
+			!(playerinfo->self->flags & FL_CHICKEN))
 	{
 		if (playerinfo->advancedstaff)
 		{
@@ -4172,7 +4172,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
 		//Climb a rope?
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) )
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) )
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 

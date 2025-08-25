@@ -32,7 +32,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 		strcat(LandSound, material);
 	}
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		playerinfo->flags &= ~ PLAYER_FLAG_FALLING;
 	}

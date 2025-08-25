@@ -589,7 +589,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		{
 			return ASEQ_NONE;	// Need anim to use puzzle piece
 		}
-		else if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		else if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 			return ASEQ_CLIMB_ON;
@@ -926,7 +926,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	//Look for the action key being pressed	[LOW PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -1019,7 +1019,7 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 	if ((	playerinfo->seqcmd[ACMDU_ATTACK] &&
 			playerinfo->seqcmd[ACMDL_RUN_F]) &&
 			(playerinfo->weaponready == WEAPON_READY_SWORDSTAFF) &&
-			!(playerinfo->edictflags & FL_CHICKEN))
+			!(playerinfo->self->flags & FL_CHICKEN))
 	{
 		return ASEQ_WSWORD_SPIN;
 	}
@@ -1087,7 +1087,7 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 	//Look for the action key being pressed	[LOW PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -1218,7 +1218,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 	//Look for the action key being pressed	[LOW PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -1254,7 +1254,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -1364,7 +1364,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -1525,7 +1525,7 @@ int BranchLwrJumping(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->targetEnt) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 			return ASEQ_CLIMB_ON;
@@ -1868,7 +1868,7 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 	if (!BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
 		return ASEQ_NONE;
 
-	if (playerinfo->seqcmd[ACMDU_ATTACK] && !(playerinfo->edictflags & FL_CHICKEN))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK] && !(playerinfo->self->flags & FL_CHICKEN))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -1900,7 +1900,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 	if (playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		playerinfo->upperidle=true;
 		return(ASEQ_NONE);
@@ -1962,7 +1962,7 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 	if (playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->self->flags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -1995,7 +1995,7 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 	pi.Weapon_CurrentShotsLeft(playerinfo);
 
-	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->edictflags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->self->flags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -2066,7 +2066,7 @@ int BranchUprReady(playerinfo_t *playerinfo)
 
 	if ((playerinfo->switchtoweapon != client->pers.weaponready ||
 		playerinfo->self->client->newweapon) &&
-		!(playerinfo->edictflags & FL_CHICKEN))
+		!(playerinfo->self->flags & FL_CHICKEN))
 	{
 		// Not a chicken, so switch weapons.
 		playerinfo->idletime = playerinfo->leveltime;

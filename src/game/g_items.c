@@ -1900,7 +1900,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 
 	assert(ent->item->pickup);
 
-	if ((other->client->playerinfo.edictflags & FL_CHICKEN) && (ent->item->pickup == Pickup_Health))
+	if ((other->flags & FL_CHICKEN) && (ent->item->pickup == Pickup_Health))
 	{
 		// chickens can't pickup health
 

@@ -280,7 +280,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			playerinfo->flags &= ~PLAYER_FLAG_RELEASEROPE;
 			playerinfo->flags &= ~PLAYER_FLAG_ONROPE;
 
-			if (!(playerinfo->edictflags & FL_CHICKEN))
+			if (!(playerinfo->self->flags & FL_CHICKEN))
 			{
 				if (playerinfo->self->health <= 0)
 				{
@@ -299,7 +299,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 	else if ( (!(playerinfo->flags & PLAYER_FLAG_ONROPE)) &&
 			  (!(playerinfo->flags & PLAYER_FLAG_RELEASEROPE)) &&
-				(playerinfo->targetEnt) &&
+				(playerinfo->teamchain) &&
 			  (!(playerinfo->groundentity)) &&
 				(playerinfo->self->monsterinfo.jump_time < playerinfo->leveltime) &&
 				(PlayerActionCheckRopeGrab(playerinfo,0)) &&
@@ -321,7 +321,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	// Think rate handled different on client.
 	playerinfo->nextthink=playerinfo->leveltime+0.1;//FRAMETIME;
 
-	if (!(playerinfo->edictflags & FL_CHICKEN) && (!(playerinfo->deadflag)))
+	if (!(playerinfo->self->flags & FL_CHICKEN) && (!(playerinfo->deadflag)))
 	{
 		if (playerinfo->flags & PLAYER_FLAG_SLIDE)
 		{
@@ -459,7 +459,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// If we are a chicken, don't do this.
-	if (playerinfo->seqcmd[ACMDL_JUMP] && !(playerinfo->edictflags & FL_CHICKEN))
+	if (playerinfo->seqcmd[ACMDL_JUMP] && !(playerinfo->self->flags & FL_CHICKEN))
 	{
 		if (!(playerinfo->watertype & CONTENTS_SLIME))
 		{
@@ -624,7 +624,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				playerinfo->frame = playerinfo->swapFrame;
 			}
 
-			if ((PlayerSeqData2[playerinfo->upperseq].nosplit)&&(!(playerinfo->edictflags&FL_CHICKEN)))
+			if ((PlayerSeqData2[playerinfo->upperseq].nosplit)&&(!(playerinfo->self->flags&FL_CHICKEN)))
 			{
 				// Straighten out joints, i.e. no torso aiming.
 
@@ -651,7 +651,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Handle torso twisting (but only when we are in Elven form).
-	if (!(playerinfo->edictflags&FL_CHICKEN))
+	if (!(playerinfo->self->flags&FL_CHICKEN))
 	{
 		// Calculate joint angle values.
 

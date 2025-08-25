@@ -1997,7 +1997,7 @@ void DoImpactDamage(edict_t *self, trace_t *trace)
 
 	if (self->client)
 	{
-		if (self->client->playerinfo.edictflags & FL_CHICKEN)
+		if (self->flags & FL_CHICKEN)
 		{
 			return;
 		}

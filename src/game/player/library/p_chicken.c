@@ -31,7 +31,7 @@ void ChickenStepSound(playerinfo_t *playerinfo, float value)
 {
 	char *name;
 
-	if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+	if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 	{
 		name = (irand(0,1)) ? "monsters/tbeast/step1.wav" : "monsters/tbeast/step2.wav";
 
@@ -92,7 +92,7 @@ void PlayerChickenCluck(playerinfo_t *playerinfo, float force)
 	if ( (!force) && (irand(0,10)) )
 		return;
 
-	if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+	if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 		soundname = (irand(0,1)) ? "monsters/superchicken/cluck1.wav" : "monsters/superchicken/cluck2.wav";
 	else
 		soundname = (irand(0,1)) ? "monsters/chicken/cluck1.wav" : "monsters/chicken/cluck2.wav";
@@ -129,7 +129,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 
 	id = irand(0,6);
 
-	if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+	if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 	{
 		switch ( id )
 		{

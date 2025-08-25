@@ -109,7 +109,7 @@ void CleanUpMorph(edict_t *self)
 {
 	self->client->tele_dest[0] = self->client->tele_dest[1] = self->client->tele_dest[2] = 0;
 	self->client->tele_count = 0;
-	self->client->playerinfo.edictflags &= ~FL_LOCKMOVE;
+	self->flags &= ~FL_LOCKMOVE;
 	self->client->playerinfo.renderfx &= ~RF_TRANSLUCENT;
 	self->client->playerinfo.flags &=~PLAYER_FLAG_MORPHING;
 	self->client->shrine_framenum = level.time - 1;;
@@ -160,7 +160,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->s.skeletalType = SKEL_CORVUS;
 	ent->client->playerinfo.effects|=(EF_SWAPFRAME|EF_JOINTED|EF_CAMERA_NO_CLIP|EF_PLAYER);
 	ent->client->playerinfo.effects&=~EF_CHICKEN;
-	ent->client->playerinfo.edictflags &= ~FL_CHICKEN;
+	ent->flags &= ~FL_CHICKEN;
 	ent->client->playerinfo.renderfx &= ~RF_IGNORE_REFS;
 
 	// reset our mins and max's. And then let the physics move us out of anyone elses bounding box
@@ -177,7 +177,7 @@ void reset_morph_to_elf(edict_t *ent)
 	ent->client->playerinfo.upperframe = 43;
 	ent->client->playerinfo.lowerframe = 43;
 
-	playerExport->PlayerUpdateModelAttributes(ent->client);
+	playerExport->PlayerUpdateModelAttributes(ent);
 	playerExport->PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_NONE);
 	playerExport->PlayerAnimSetLowerSeq(&ent->client->playerinfo, ASEQ_IDLE_WIPE_BROW);
 
@@ -314,7 +314,7 @@ void Perform_Morph(edict_t *self)
 		VectorSet(self->mins, -16, -16, -48);
 		VectorSet(self->maxs,  16,  16,  64);
 
-		self->client->playerinfo.edictflags |= FL_SUPER_CHICKEN;
+		self->flags |= FL_SUPER_CHICKEN;
 	}
 	else
 	{
@@ -329,7 +329,7 @@ void Perform_Morph(edict_t *self)
 		VectorSet(self->intentMins,-8,-8,-12);
 		VectorSet(self->intentMaxs,8,8,12);
 
-		self->client->playerinfo.edictflags |= FL_AVERAGE_CHICKEN;
+		self->flags |= FL_AVERAGE_CHICKEN;
 	}
 
 	// not being knocked back, and stepping like a chicken
@@ -535,7 +535,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 				((other->client)&&(deathmatch->value)))
 	{
 		//Don't turn a super chicken back to a player
-		if ( (other->client) && (other->client->playerinfo.edictflags & FL_SUPER_CHICKEN) )
+		if ( (other->client) && (other->flags & FL_SUPER_CHICKEN) )
 		{
 			// Turn off the client effect
 			gi.sound(other,CHAN_WEAPON, gi.soundindex("misc/null.wav"), 1, ATTN_NORM, 0);
@@ -576,7 +576,7 @@ void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_
 			//There shouldn't be any monsters in deathmatch.. but...
 			assert(other->client);
 
-			if ( (other->client) && (other->client->playerinfo.edictflags & FL_SUPER_CHICKEN) )
+			if ( (other->client) && (other->flags & FL_SUPER_CHICKEN) )
 				gi.sound(other,CHAN_VOICE, gi.soundindex("weapons/supercrow.wav"),1,ATTN_NONE,0);
 			else
 				gi.sound(other,CHAN_VOICE, gi.soundindex("weapons/crow.wav"),1,ATTN_NONE,0);
@@ -646,7 +646,7 @@ void SpellCastMorph(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t u
 	vec3_t		temp_angles;
 	short	morpharray[NUM_OF_OVUMS];
 
-//	if (!(Caster->client->playerinfo.edictflags & FL_CHICKEN))
+//	if (!(Caster->flags & FL_CHICKEN))
 //	{
 //		MorphPlayerToChicken2(Caster, Caster);
 //		return;

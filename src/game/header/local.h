@@ -1996,10 +1996,10 @@ typedef struct playerinfo_s
 	// From edict_t.
 	vec3_t				origin;
 	vec3_t				mins,maxs;
-	void				*enemy;					// Not used on client.
-	void				*target;				// Not used on client.
+	edict_t				*enemy;					// Not used on client.
+	char				*target;				// Not used on client.
 	edict_t				*target_ent;			// Not used on client.
-	void				*targetEnt;				// FIXME - always 0 on client, but checked by client.
+	edict_t				*teamchain;				// FIXME - always 0 on client, but checked by client.
 	float				nextthink;				// Not used on client.
 	float				viewheight;
 	float				knockbacktime;			// FIXME Used on client, but not transmitted yet?  --Pat
@@ -2007,7 +2007,6 @@ typedef struct playerinfo_s
 	int					waterlevel;
 	int					deadflag;
 	int					movetype;
-	int					edictflags;
 
 	// From entity_state_t.
 	int					frame,swapFrame;
@@ -2087,7 +2086,7 @@ typedef struct
 	void (*PlayerClearEffects)(playerinfo_t *playerinfo);
 	void (*PlayerUpdate)(playerinfo_t *playerinfo);
 	void (*PlayerUpdateCmdFlags)(gclient_t *client);
-	void (*PlayerUpdateModelAttributes)(gclient_t *client);
+	void (*PlayerUpdateModelAttributes)(edict_t *self);
 } player_export_t;
 
 /* g_resourcemanagers.c */

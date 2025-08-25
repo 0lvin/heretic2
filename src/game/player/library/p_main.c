@@ -301,7 +301,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 
 // This function should be called anytime the player's skin, armor, weapon, damaged parts, etc are changed.
 void
-PlayerUpdateModelAttributes(gclient_t *client)
+PlayerUpdateModelAttributes(edict_t *self)
 {
 	/*
 	 * FIXME: make sure to see if you HAVE the weapon node you turn off
@@ -309,14 +309,16 @@ PlayerUpdateModelAttributes(gclient_t *client)
 	 */
 	int i;
 	qboolean inverttex;
+	gclient_t *client;
 	playerinfo_t *playerinfo;
 
+	client = self->client;
 	playerinfo = &(client->playerinfo);
 
 	assert(playerinfo);
 
 	// if we are chicken, we shouldn't be doing any of this stuff
-	if (playerinfo->edictflags & FL_CHICKEN)
+	if (self->flags & FL_CHICKEN)
 		return;
 
 	// Start by setting all the attached weapon types.
@@ -348,7 +350,6 @@ PlayerUpdateModelAttributes(gclient_t *client)
 
 	// Check staff for powerup.
 	// Until later in this function, have the staff default to on the player's belt.
-
 	playerinfo->fmnodeinfo[MESH__RHANDHI].flags |= FMNI_NO_DRAW;
 	playerinfo->fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 	playerinfo->fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;

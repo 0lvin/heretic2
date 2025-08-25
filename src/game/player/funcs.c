@@ -514,7 +514,7 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	if (playerinfo->groundentity == NULL)
 		check_dist = 64;
 
-	rope = (edict_t *)playerinfo->targetEnt;
+	rope = (edict_t *)playerinfo->teamchain;
 
 	//Get the position of the rope's end
 	VectorCopy(rope->target_ent->s.origin, rope_end);
@@ -552,10 +552,10 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 
 		if (!(playerinfo->flags & PLAYER_FLAG_ONROPE))
 		{
-			VectorCopy(playerinfo->self->velocity,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
-			VectorScale(((edict_t *)playerinfo->targetEnt)->teamchain->velocity,2,((edict_t *)playerinfo->targetEnt)->teamchain->velocity);
+			VectorCopy(playerinfo->self->velocity,playerinfo->teamchain->teamchain->velocity);
+			VectorScale(playerinfo->teamchain->teamchain->velocity,2,playerinfo->teamchain->teamchain->velocity);
 			VectorClear(playerinfo->self->velocity);
-			VectorCopy(playerinfo->origin,((edict_t *)playerinfo->targetEnt)->teamchain->s.origin);
+			VectorCopy(playerinfo->origin,playerinfo->teamchain->teamchain->s.origin);
 			VectorSubtract(playerinfo->origin,rope_top,vec);
 			rope->teamchain->viewheight=VectorLength(vec);
 		}
@@ -564,14 +564,14 @@ qboolean G_PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 			trace = gi.trace(playerinfo->origin,
 									  playerinfo->mins,
 									  playerinfo->maxs,
-									  ((edict_t *)playerinfo->targetEnt)->teamchain->s.origin,
+									  playerinfo->teamchain->teamchain->s.origin,
 										(edict_t*)playerinfo->self,
 									  MASK_PLAYERSOLID);
 
 			if (trace.fraction < 1.0f || trace.startsolid || trace.allsolid)
 				return false;
 
-			VectorCopy(((edict_t *)playerinfo->targetEnt)->teamchain->s.origin, playerinfo->origin);
+			VectorCopy(playerinfo->teamchain->teamchain->s.origin, playerinfo->origin);
 		}
 
 		return true;
@@ -591,11 +591,11 @@ void G_PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2
 	// Pull Corvus into the rope.
 	G_PlayerActionCheckRopeGrab(playerinfo,1);
 
-	if (playerinfo->targetEnt)
+	if (playerinfo->teamchain)
 	{
 		//Update the rope's information about the player's position
-		((edict_t *)playerinfo->targetEnt)->teamchain->accel=((edict_t *)playerinfo->targetEnt)->teamchain->viewheight;
-		((edict_t *)playerinfo->targetEnt)->teamchain->viewheight-=height;
+		playerinfo->teamchain->teamchain->accel = playerinfo->teamchain->teamchain->viewheight;
+		playerinfo->teamchain->teamchain->viewheight -= height;
 	}
 }
 
@@ -632,7 +632,7 @@ qboolean G_PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 	if (grabtrace.ent->item->flags!=IT_PUZZLE)
 		return false;
 
-	playerinfo->targetEnt=grabtrace.ent;
+	playerinfo->teamchain=grabtrace.ent;
 
 	return true;
 }
@@ -894,7 +894,7 @@ G_HandleTeleport(edict_t *self)
 				}
 				else
 				{
-					if (self->client->playerinfo.edictflags & FL_CHICKEN)
+					if (self->flags & FL_CHICKEN)
 					{
 						// We're set as a chicken.
 
@@ -1057,12 +1057,12 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 
 	if (trace.ent && trace.ent->takedamage)
 	{
-		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 			T_Damage(trace.ent,(playerinfo->self),(playerinfo->self),vf,trace.endpos,trace.plane.normal,500,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 		else
 			T_Damage(trace.ent,(playerinfo->self),(playerinfo->self),vf,trace.endpos,trace.plane.normal,1,0,DAMAGE_AVOID_ARMOR,MOD_CHICKEN);
 
-		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 		{
 			// Sound for hitting.
 			if (irand(0,1))
@@ -1081,7 +1081,7 @@ void G_PlayerActionChickenBite(playerinfo_t *playerinfo)
 	}
 	else
 	{	// Sound for missing.
-		if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+		if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 		{
 			if (irand(0,1))
 				gi.sound((playerinfo->self), CHAN_WEAPON, gi.soundindex("monsters/superchicken/peck1.wav"), 1, ATTN_NORM, 0);
@@ -1128,7 +1128,7 @@ void G_PlayerFallingDamage(playerinfo_t *playerinfo,float delta)
 		{
 			vec3_t	victim_dir, impact_spot;
 
-			if (playerinfo->edictflags & FL_SUPER_CHICKEN)
+			if (playerinfo->self->flags & FL_SUPER_CHICKEN)
 			{
 				damage = 500;
 			}

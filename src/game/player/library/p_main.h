@@ -51,7 +51,7 @@ void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
 void PlayerClearEffects(playerinfo_t *playerinfo);
 void PlayerUpdate(playerinfo_t *playerinfo);
 void PlayerUpdateCmdFlags(gclient_t *client);
-void PlayerUpdateModelAttributes(gclient_t *client);
+void PlayerUpdateModelAttributes(edict_t *self);
 void PlayerSetHandFX(playerinfo_t *playerinfo, int handfxtype, int lifetime);
 void PlayerReleaseRope(playerinfo_t* playerinfo);
 void KnockDownPlayer(playerinfo_t* playerinfo);
