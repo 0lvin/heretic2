@@ -39,7 +39,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 
 	VectorClear(playerinfo->targetjointangles);
 
-	if (playerinfo->enemystate==NULL)
+	if (!playerinfo->self->enemy)
 	{
 		// No target to be seen...
 
@@ -128,7 +128,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 		{
 			// ...and we aren't swimming, so calculate angles to target.
 
-			VectorCopy(playerinfo->enemystate->origin,targetvector);
+			VectorCopy(playerinfo->self->enemy->s.origin, targetvector);
 			VectorSubtract(targetvector, playerinfo->origin, targetvector);
 			VectoAngles(targetvector, playerinfo->targetjointangles);
 

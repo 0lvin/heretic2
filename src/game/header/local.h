@@ -1937,9 +1937,6 @@ typedef struct playerinfo_s
 	float				ideal_yaw;
 	void				*groundentity;
 
-	// Pointer to entity_state_t of player's enemy edict.
-	entity_state_t		*enemystate;
-
 	// Deathmatch flags.
 	int	dmflags;
 

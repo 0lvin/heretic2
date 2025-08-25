@@ -371,16 +371,6 @@ SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.ideal_yaw = ent->ideal_yaw;
 	ent->client->playerinfo.groundentity = ent->groundentity;
 
-	// Pointer to entity_state_t of player's enemy edict.
-	if (ent->enemy)
-	{
-		ent->client->playerinfo.enemystate = &ent->enemy->s;
-	}
-	else
-	{
-		ent->client->playerinfo.enemystate = NULL;
-	}
-
 	// Deathmatch flags - only set this if we are in death match.
 	if (deathmatch->value)
 	{
