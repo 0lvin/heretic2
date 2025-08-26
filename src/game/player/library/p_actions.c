@@ -2617,14 +2617,14 @@ void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float
 	{	// DON'T do this during a normal side jump.
 		if (playerinfo->seqcmd[ACMDL_STRAFE_R] && !playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
-			if (playerinfo->buttons & BUTTON_RUN)
+			if (playerinfo->run)
 				VectorMA(playerinfo->self->velocity, 260, rightv, playerinfo->self->velocity);
 			else
 				VectorMA(playerinfo->self->velocity, 140, rightv, playerinfo->self->velocity);
 		}
 		else if (playerinfo->seqcmd[ACMDL_STRAFE_L] && !playerinfo->seqcmd[ACMDL_STRAFE_R])
 		{
-			if (playerinfo->buttons & BUTTON_RUN)
+			if (playerinfo->run)
 				VectorMA(playerinfo->self->velocity, -260, rightv, playerinfo->self->velocity);
 			else
 				VectorMA(playerinfo->self->velocity, -140, rightv, playerinfo->self->velocity);
@@ -3271,7 +3271,7 @@ void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 void PlayerActionCheckCreepUnStrafe(playerinfo_t *playerinfo)
 {
 	//Player has started running
-	if (playerinfo->buttons & BUTTON_RUN)
+	if (playerinfo->run)
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
@@ -3284,7 +3284,7 @@ void PlayerActionCheckCreepUnStrafe(playerinfo_t *playerinfo)
 			return;
 		}
 	}
-	else if (!(playerinfo->buttons & BUTTON_CREEP))
+	else if (!(playerinfo->creep))
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
@@ -3317,7 +3317,7 @@ void PlayerActionCheckCreepUnStrafe(playerinfo_t *playerinfo)
 	if (!playerinfo->seqcmd[ACMDL_FWD])
 	{
 		//Check for a transfer to a run
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{
@@ -3403,7 +3403,7 @@ void PlayerActionCheckCreepBackUnStrafe(playerinfo_t *playerinfo)
 	if (!playerinfo->seqcmd[ACMDL_BACK])
 	{
 		//Check for a transfer to a run
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{
@@ -3533,7 +3533,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 	//Check for a crouch	[Low probability]
 	if (playerinfo->seqcmd[ACMDL_CROUCH])
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			//Check crouch direction
 			if (playerinfo->seqcmd[ACMDL_BACK])
@@ -3600,12 +3600,12 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 	//Check for a transition to a walking strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_L] )
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_CSTRAFE_LEFT);
 			return;
 		}
-		else if (playerinfo->buttons & BUTTON_RUN)
+		else if (playerinfo->run)
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_RSTRAFE_LEFT);
 			return;
@@ -3623,12 +3623,12 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_CSTRAFE_RIGHT);
 			return;
 		}
-		else if (playerinfo->buttons & BUTTON_RUN)
+		else if (playerinfo->run)
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_RSTRAFE_RIGHT);
 			return;
@@ -3646,12 +3646,12 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 	//Check for a transition to a backward walking or running strafe	[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_L] )
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_CSTRAFEB_LEFT);
 			return;
 		}
-		else if (playerinfo->buttons & BUTTON_RUN)
+		else if (playerinfo->run)
 		{
 			//FIXME: There are no backwards run strafes!
 			return;
@@ -3670,12 +3670,12 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 	//Check for a transition to a backward walking or running strafe	[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_CSTRAFEB_RIGHT);
 			return;
 		}
-		else if (playerinfo->buttons & BUTTON_RUN)
+		else if (playerinfo->run)
 		{
 			//FIXME: There are no backwards run strafes!
 			return;
@@ -3790,7 +3790,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 {
 	//Player has started running
-	if (playerinfo->buttons & BUTTON_RUN)
+	if (playerinfo->run)
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
@@ -3833,7 +3833,7 @@ void PlayerActionCheckWalkUnStrafe(playerinfo_t *playerinfo)
 	if (!playerinfo->seqcmd[ACMDL_FWD])
 	{
 		//Check for a transfer to a run
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{
@@ -3899,7 +3899,7 @@ void PlayerActionCheckWalkBack(playerinfo_t *playerinfo)
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_L] && playerinfo->lowerseq != ASEQ_WSTRAFEB_LEFT)
 	{
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			//FIXME: There are no backwards run strafes!
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSTRAFEB_LEFT);
@@ -3918,7 +3918,7 @@ void PlayerActionCheckWalkBack(playerinfo_t *playerinfo)
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_BACK] && playerinfo->seqcmd[ACMDL_STRAFE_R] && playerinfo->lowerseq != ASEQ_WSTRAFEB_RIGHT)
 	{
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			//FIXME: There are no backwards run strafes!
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSTRAFEB_RIGHT);
@@ -3964,7 +3964,7 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
-			if (playerinfo->buttons & BUTTON_RUN)
+			if (playerinfo->run)
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_DASH_LEFT_GO);
 			else
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_STRAFEL);
@@ -3972,7 +3972,7 @@ void PlayerActionCheckWalkBackUnStrafe(playerinfo_t *playerinfo)
 		}
 		else if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 		{
-			if (playerinfo->buttons & BUTTON_RUN)
+			if (playerinfo->run)
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_DASH_RIGHT_GO);
 			else
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_STRAFER);
@@ -4065,7 +4065,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_L] && curseq != ASEQ_RSTRAFE_LEFT)
 	{
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			playerinfo->lowerseq = ASEQ_RSTRAFE_LEFT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
@@ -4083,7 +4083,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 	//Check for a transition to a walking or running strafe		[High probability]
 	if ( playerinfo->seqcmd[ACMDL_FWD] && playerinfo->seqcmd[ACMDL_STRAFE_R] && curseq != ASEQ_RSTRAFE_RIGHT)
 	{
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			playerinfo->lowerseq = ASEQ_RSTRAFE_RIGHT;
 			playerinfo->lowermove = PlayerSeqData[playerinfo->lowerseq].move;
@@ -4244,7 +4244,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo)
 {
 	//Player has stopped running
-	if (!(playerinfo->buttons & BUTTON_RUN))
+	if (!(playerinfo->run))
 	{
 		if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 		{
@@ -4277,7 +4277,7 @@ void PlayerActionCheckRunUnStrafe(playerinfo_t *playerinfo)
 	//Stopped moving forward, has gone to a side strafe
 	if (!playerinfo->seqcmd[ACMDL_FWD])
 	{
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if (playerinfo->seqcmd[ACMDL_STRAFE_L])
 			{

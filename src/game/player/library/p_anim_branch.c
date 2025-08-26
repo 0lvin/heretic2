@@ -547,7 +547,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_LEFT;
 
-		if (client->pcmd.buttons & BUTTON_RUN)
+		if (playerinfo->run)
 			return ASEQ_DASH_LEFT_GO;
 
 		return ASEQ_STRAFEL;
@@ -559,7 +559,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_RIGHT;
 
-		if (client->pcmd.buttons & BUTTON_RUN)
+		if (playerinfo->run)
 			return ASEQ_DASH_RIGHT_GO;
 
 		return ASEQ_STRAFER;
@@ -700,7 +700,7 @@ int BranchLwrStandingRun(playerinfo_t *playerinfo)
 		return ASEQ_RUNF;
 	else if (playerinfo->seqcmd[ACMDL_CREEP_F])
 		return ASEQ_CREEPF;
-	/*else if (((playerinfo->seqcmd[ACMDL_WALK_B]) && (playerinfo->buttons & BUTTON_RUN)) &&
+	/*else if (((playerinfo->seqcmd[ACMDL_WALK_B]) && (playerinfo->run)) &&
 			((!playerinfo->seqcmd[ACMDL_STRAFE_L]) && (!playerinfo->seqcmd[ACMDL_STRAFE_R])) )
 	{
 		if (!(playerinfo->seqcmd[ACMDU_ATTACK]) && playerinfo->upperidle)
@@ -780,7 +780,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	{
 		if (!(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 		{
-			if (playerinfo->buttons & BUTTON_RUN)
+			if (playerinfo->run)
 			{
 				if (playerinfo->seqcmd[ACMDL_FWD])
 				{
@@ -800,7 +800,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 				if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 					return ASEQ_JUMPRIGHT_RGO;
 			}
-			else if (playerinfo->buttons & BUTTON_CREEP)
+			else if (playerinfo->creep)
 			{
 				if (playerinfo->seqcmd[ACMDL_FWD])
 					return ASEQ_JUMPFWD_SGO;
@@ -889,7 +889,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	//Check for a crouch [LOW PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_CROUCH])
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			if (playerinfo->seqcmd[ACMDL_FWD])
 				return ASEQ_CROUCH_WALK_F;
@@ -1171,7 +1171,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_LEFT;
 
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if ( playerinfo->lowerseq == ASEQ_DASH_LEFT || playerinfo->lowerseq == ASEQ_DASH_LEFT_GO )
 				return ASEQ_NONE;
@@ -1189,7 +1189,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_RIGHT;
 
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if ( playerinfo->lowerseq == ASEQ_DASH_RIGHT || playerinfo->lowerseq == ASEQ_DASH_RIGHT_GO )
 				return ASEQ_NONE;
@@ -1298,7 +1298,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 	}
     else if ( playerinfo->seqcmd[ACMDL_STRAFE_L] )
 	{
-		if (playerinfo->buttons & BUTTON_RUN)
+		if (playerinfo->run)
 		{
 			if ( playerinfo->lowerseq == ASEQ_DASH_LEFT || playerinfo->lowerseq == ASEQ_DASH_LEFT_GO )
 				return ASEQ_NONE;
@@ -1400,7 +1400,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 	//Check for a crouch
 	if (playerinfo->seqcmd[ACMDL_CROUCH])
 	{
-		if (playerinfo->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			if (playerinfo->seqcmd[ACMDL_FWD])
 				return ASEQ_CROUCH_WALK_F;
@@ -1580,7 +1580,7 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 	{
 		if (!CheckUncrouch(playerinfo))
 		{
-			if (playerinfo->buttons & BUTTON_CREEP)
+			if (playerinfo->creep)
 			{
 				if (playerinfo->seqcmd[ACMDL_FWD])
 					return ASEQ_CROUCH_WALK_F;
@@ -1624,7 +1624,7 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_JUMP])
 		return ASEQ_JUMPSTD_GO;
 
-	if (playerinfo->buttons & BUTTON_CREEP)
+	if (playerinfo->creep)
 	{
 		if (playerinfo->seqcmd[ACMDL_FWD])
 			return ASEQ_CROUCH_WALK_F;

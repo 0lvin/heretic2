@@ -50,26 +50,6 @@ PlayerUpdateCmdFlags(gclient_t *client)
 		playerinfo->seqcmd[ACMDU_ATTACK] = false;
 	}
 
-	// Look for the action button being pressed.
-	if (pcmd->buttons & BUTTON_ACTION)
-	{
-		playerinfo->seqcmd[ACMDL_ACTION] = true;
-	}
-	else
-	{
-		playerinfo->seqcmd[ACMDL_ACTION] = false;
-	}
-
-	// Look for the quickturn button being pressed.
-	if (pcmd->buttons & BUTTON_QUICKTURN)
-	{
-		playerinfo->seqcmd[ACMDL_QUICKTURN] = true;
-	}
-	else
-	{
-		playerinfo->seqcmd[ACMDL_QUICKTURN] = false;
-	}
-
 	// Look for the jump / crouch buttons being pressed.
 	if (pcmd->upmove > 0)
 	{
@@ -115,16 +95,6 @@ PlayerUpdateCmdFlags(gclient_t *client)
 
 	playerinfo->turncmd = 0;
 
-	// Look for the autoaim button being pressed.
-	if (pcmd->buttons & BUTTON_AUTOAIM)
-	{
-		playerinfo->autoaim = true;
-	}
-	else
-	{
-		playerinfo->autoaim = false;
-	}
-
 	// Clear out ALL forward/backward movement flags.
 	memset(&(playerinfo->seqcmd[ACMDL_CREEP_F]), 0, (ACMDL_BACK-ACMDL_CREEP_F+1)*sizeof(int));
 
@@ -132,11 +102,11 @@ PlayerUpdateCmdFlags(gclient_t *client)
 	if (pcmd->forwardmove > 10)
 	{
 		playerinfo->seqcmd[ACMDL_FWD] = true;
-		if (pcmd->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			playerinfo->seqcmd[ACMDL_CREEP_F] = true;
 		}
-		else if (pcmd->buttons & BUTTON_RUN)
+		else if (playerinfo->run)
 		{
 			playerinfo->seqcmd[ACMDL_RUN_F] = true;
 		}
@@ -148,11 +118,11 @@ PlayerUpdateCmdFlags(gclient_t *client)
 	else if (pcmd->forwardmove < -10)
 	{
 		playerinfo->seqcmd[ACMDL_BACK] = true;
-		if (pcmd->buttons & BUTTON_CREEP)
+		if (playerinfo->creep)
 		{
 			playerinfo->seqcmd[ACMDL_CREEP_B] = true;
 		}
-		else if (pcmd->buttons & BUTTON_RUN)
+		else if (playerinfo->run)
 		{
 			playerinfo->seqcmd[ACMDL_RUN_B] = true;
 		}
@@ -180,12 +150,6 @@ PlayerUpdateCmdFlags(gclient_t *client)
 	{
 		playerinfo->seqcmd[ACMDL_STRAFE_L] = false;
 		playerinfo->seqcmd[ACMDL_STRAFE_R] = false;
-	}
-
-	playerinfo->showpuzzleinventory = false;
-	if (pcmd->buttons & BUTTON_INVENTORY)
-	{
-		playerinfo->showpuzzleinventory = true;
 	}
 
 	playerinfo->fwdvel = 0;
@@ -269,7 +233,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 		}
 	}
 
-	if (playerinfo->remember_buttons & BUTTON_DEFEND)
+	if (playerinfo->defend)
 	{
 		// Not a chicken, so...
 
@@ -287,12 +251,9 @@ PlayerUpdate(playerinfo_t *playerinfo)
 					pi.G_SoundIndex("*nomana.wav"), 0.75, ATTN_NORM, 0);
 			}
 		}
-
-		playerinfo->remember_buttons &= ~BUTTON_DEFEND;
 	}
 
 	// Check to see if the lightning shield is engaged.
-
 	if (playerinfo->shield_timer > playerinfo->leveltime)
 		pi.G_PlayerSpellShieldAttack(playerinfo->self);
 	else

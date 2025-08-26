@@ -588,8 +588,6 @@ typedef enum handfx_e
 
 #define IN_MOVE_THRESHOLD	IN_MOVE_CREEP_MIN
 
-#define BUTTON_WALK			0
-
 enum movefwd_e
 {
 	MOVE_BACK_RUN,
@@ -1955,6 +1953,9 @@ typedef struct playerinfo_s
 
 	// Weapons & defenses.
 	qboolean			autoaim;				// Set on client from a flag.
+	qboolean			defend;
+	qboolean			run;
+	qboolean			creep;
 	int					switchtoweapon;
 	int					weap_ammo_index;
 	int					def_ammo_index;			// Not used on client.

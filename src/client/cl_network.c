@@ -44,7 +44,21 @@ Cmd_ForwardToServer(void)
 
 	cmd = Cmd_Argv(0);
 
-	if ((cls.state <= ca_connected) || (*cmd == '-') || (*cmd == '+'))
+	if ((cls.state <= ca_connected) || (
+		((*cmd == '-') || (*cmd == '+')) &&
+			strcmp(cmd, "+inventory") &&
+			strcmp(cmd, "-inventory") &&
+			strcmp(cmd, "+action") &&
+			strcmp(cmd, "-action") &&
+			strcmp(cmd, "+quickturn") &&
+			strcmp(cmd, "-quickturn") &&
+			strcmp(cmd, "+creep") &&
+			strcmp(cmd, "-creep") &&
+			strcmp(cmd, "+run") &&
+			strcmp(cmd, "-run") &&
+			strcmp(cmd, "+defend") &&
+			strcmp(cmd, "-defend")
+	))
 	{
 		Com_Printf("Unknown command \"%s\"\n", cmd);
 		return;

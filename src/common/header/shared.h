@@ -664,21 +664,13 @@ typedef struct
 /* button bits */
 #define BUTTON_ATTACK 1
 #define BUTTON_USE 2
-#define BUTTON_DEFEND 2
-#define BUTTON_ACTION 4
-/* TODO: Rewrite and make next as commands */
-#define BUTTON_CREEP 8
-#define BUTTON_RUN 16
-#define BUTTON_AUTOAIM 32
-#define BUTTON_QUICKTURN 64
-#define BUTTON_INVENTORY 128
-#define BUTTON_ANY 256 /* any key whatsoever */
+#define BUTTON_ANY 128 /* any key whatsoever */
 
 /* usercmd_t is sent to the server each client frame */
 typedef struct usercmd_s
 {
 	byte msec;
-	short buttons;
+	byte buttons;
 	short angles[3];
 	short forwardmove, sidemove, upmove;
 	byte impulse;           /* remove? */

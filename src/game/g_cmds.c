@@ -2788,11 +2788,102 @@ ClientCommand(edict_t *ent)
 	{
 		gi.cprintf(ent, PRINT_HIGH, "%s : %s\n", GAMEVERSION, __DATE__);
 	}
+	/* Actions */
+	else if (Q_stricmp(cmd, "+inventory") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.showpuzzleinventory = true;
+		}
+	}
+	else if (Q_stricmp(cmd, "-inventory") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.showpuzzleinventory = false;
+		}
+	}
+	// Look for the action button being pressed.
+	else if (Q_stricmp(cmd, "+action") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.seqcmd[ACMDL_ACTION] = true;
+		}
+	}
+	else if (Q_stricmp(cmd, "-action") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.seqcmd[ACMDL_ACTION] = false;
+		}
+	}
+	// Look for the quickturn button being pressed.
+	else if (Q_stricmp(cmd, "+quickturn") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.seqcmd[ACMDL_QUICKTURN] = true;
+		}
+	}
+	else if (Q_stricmp(cmd, "-quickturn") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.seqcmd[ACMDL_QUICKTURN] = false;
+		}
+	}
+	/* creep */
+	else if (Q_stricmp(cmd, "+creep") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.creep = true;
+		}
+	}
+	else if (Q_stricmp(cmd, "-creep") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.creep = false;
+		}
+	}
+	/* run */
+	else if (Q_stricmp(cmd, "+run") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.run = true;
+		}
+	}
+	else if (Q_stricmp(cmd, "-run") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.run = false;
+		}
+	}
+	/* defend */
+	else if (Q_stricmp(cmd, "+defend") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.defend = true;
+		}
+	}
+	else if (Q_stricmp(cmd, "-defend") == 0)
+	{
+		if (ent->client)
+		{
+			ent->client->playerinfo.defend = false;
+		}
+	}
+	/* other commands */
 	else if (Q_stricmp(cmd, "powerup") == 0)
 	{
 		Cmd_Powerup_f(ent);
 	}
-	else if (Q_stricmp(cmd, "meatwagon") == 0)		//	else if (Q_stricmp(cmd, "killmonsters") == 0)
+	else if (Q_stricmp(cmd, "meatwagon") == 0)
 	{
 		Cmd_KillMonsters_f(ent);
 	}
