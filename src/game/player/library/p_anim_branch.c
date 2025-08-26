@@ -323,7 +323,7 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 		if (!temp)
 			return ASEQ_IDLE_LOOKL;
 	}
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 // This allows the chicken to interupt itself - if its idling.
@@ -419,7 +419,7 @@ int ChickenBranchidle(playerinfo_t *playerinfo)
 		return ASEQ_JUMPUP;
 	}
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 /*-----------------------------------------------
@@ -1173,7 +1173,8 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 
 		if (playerinfo->run)
 		{
-			if ( playerinfo->lowerseq == ASEQ_DASH_LEFT || playerinfo->lowerseq == ASEQ_DASH_LEFT_GO )
+			if (playerinfo->lowerseq == ASEQ_DASH_LEFT ||
+				playerinfo->lowerseq == ASEQ_DASH_LEFT_GO)
 				return ASEQ_NONE;
 
 			return ASEQ_DASH_LEFT_GO;
@@ -1184,14 +1185,15 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		}
 	}
 
-	if ( playerinfo->seqcmd[ACMDL_STRAFE_R] )
+	if (playerinfo->seqcmd[ACMDL_STRAFE_R])
 	{
 		if (playerinfo->seqcmd[ACMDL_BACK])
 			return ASEQ_WSTRAFEB_RIGHT;
 
 		if (playerinfo->run)
 		{
-			if ( playerinfo->lowerseq == ASEQ_DASH_RIGHT || playerinfo->lowerseq == ASEQ_DASH_RIGHT_GO )
+			if (playerinfo->lowerseq == ASEQ_DASH_RIGHT ||
+				playerinfo->lowerseq == ASEQ_DASH_RIGHT_GO)
 				return ASEQ_NONE;
 
 			return ASEQ_DASH_RIGHT_GO;
@@ -1205,12 +1207,16 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_QUICKTURN])
 		return ASEQ_TURN180;
 
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && !(playerinfo->seqcmd[ACMDL_FWD]) )
+	if (!(playerinfo->seqcmd[ACMDL_STRAFE_L]) &&
+		!(playerinfo->seqcmd[ACMDL_STRAFE_R]) &&
+		!(playerinfo->seqcmd[ACMDL_FWD]))
 	{//We've let go of the important buttons
 		return ASEQ_STAND;
 	}
 
-	if ( !(playerinfo->seqcmd[ACMDL_STRAFE_L]) && !(playerinfo->seqcmd[ACMDL_STRAFE_R]) && (playerinfo->seqcmd[ACMDL_FWD]) )
+	if (!(playerinfo->seqcmd[ACMDL_STRAFE_L]) &&
+		!(playerinfo->seqcmd[ACMDL_STRAFE_R]) &&
+		(playerinfo->seqcmd[ACMDL_FWD]))
 	{//We're just trying to go forward
 		return ASEQ_RUNF_GO;
 	}
@@ -1218,7 +1224,8 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 	//Look for the action key being pressed	[LOW PROBABILITY]
 	if (playerinfo->seqcmd[ACMDL_ACTION])
 	{
-		if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
+		if (playerinfo->teamchain &&
+			PlayerActionCheckRopeGrab(playerinfo,0)) //Climb a rope?
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
@@ -1229,7 +1236,9 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		}
 
 		//Check for a jump grab
-		if ( (playerinfo->flags & PLAYER_FLAG_COLLISION) && (playerinfo->upperidle) && (PlayerActionCheckJumpGrab(playerinfo, 0)) )
+		if ((playerinfo->flags & PLAYER_FLAG_COLLISION) &&
+			playerinfo->upperidle &&
+			PlayerActionCheckJumpGrab(playerinfo, 0))
 			return ASEQ_JUMPSTD_GO;
 	}
 
@@ -1842,9 +1851,9 @@ int BranchLwrHanging(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_FWD])
 		return(ASEQ_PULLUP_WALL);
 	else if (!playerinfo->seqcmd[ACMDL_ACTION] || playerinfo->seqcmd[ACMDL_JUMP])
-		return(ASEQ_FALLARMSUP);
+		return ASEQ_FALLARMSUP;
 	else
-		return(ASEQ_NONE);
+		return ASEQ_NONE;
 }
 
 /*-----------------------------------------------
@@ -1887,7 +1896,7 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 		playerinfo->upperidle = true;
 	}
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 /*-----------------------------------------------
@@ -1903,7 +1912,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		playerinfo->upperidle=true;
-		return(ASEQ_NONE);
+		return ASEQ_NONE;
 	}
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK])	// Not a chicken
@@ -1915,11 +1924,11 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			 // Make sure we're not about to do a spinning attack.
 			if (playerinfo->seqcmd[ACMDL_RUN_F] && playerinfo->groundentity)
 			{
-				return(ASEQ_NONE);
+				return ASEQ_NONE;
 			}
 			else if (playerinfo->advancedstaff && playerinfo->seqcmd[ACMDL_ACTION] && playerinfo->seqcmd[ACMDL_BACK])
 			{
-				return(ASEQ_WSWORD_BACK);
+				return ASEQ_WSWORD_BACK;
 			}
 			else if (playerinfo->advancedstaff && playerinfo->upperseq == ASEQ_WSWORD_STABHOLD)
 			{
@@ -1934,11 +1943,11 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			}
 			else if (!pi.irand(playerinfo,0, 4))
 			{
-				return(ASEQ_WSWORD_STEP);
+				return ASEQ_WSWORD_STEP;
 			}
 			else
 			{
-				return(ASEQ_WSWORD_STD1);
+				return ASEQ_WSWORD_STD1;
 			}
 		}
 	}
@@ -1949,7 +1958,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 		playerinfo->upperidle = true;
 	}
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 /*-----------------------------------------------
@@ -1980,7 +1989,7 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 		playerinfo->upperidle = true;
 	}
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 /*-----------------------------------------------
@@ -1995,22 +2004,24 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 	pi.Weapon_CurrentShotsLeft(playerinfo);
 
-	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->self->flags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK]  &&
+		!(playerinfo->self->flags & FL_CHICKEN) &&
+		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
 		// If powered up, use the alternate animation sequence.
 		if (playerinfo->powerup_timer > playerinfo->leveltime)
-			return(playerinfo->pers.weapon->altanimseq);
+			return playerinfo->pers.weapon->altanimseq;
 		else
-			return(playerinfo->pers.weapon->playeranimseq);
+			return playerinfo->pers.weapon->playeranimseq;
 	}
 	else
 	{
 		playerinfo->upperidle=true;
 	}
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 // if we are out of bow ammo, then switch us to the next weapon
@@ -2022,7 +2033,7 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 int BranchCheckAmmo(playerinfo_t *playerinfo)
 {
 	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
-		return(ASEQ_NONE);
+		return ASEQ_NONE;
 
 	pi.G_WeapNext(playerinfo->self);
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
@@ -2033,7 +2044,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 	else
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_END);
-		return(ASEQ_WPHBOW_END);
+		return ASEQ_WPHBOW_END;
 	}
 }
 
@@ -2046,7 +2057,7 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 int BranchCheckHellAmmo(playerinfo_t *playerinfo)
 {
 	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
-		return(ASEQ_NONE);
+		return ASEQ_NONE;
 
 	pi.G_WeapNext(playerinfo->self);
 	PlayerAnimSetUpperSeq(playerinfo, ASEQ_WHELL_END);
@@ -2105,7 +2116,7 @@ int BranchCheckMana(playerinfo_t *playerinfo)
 
 	pi.G_WeapNext(playerinfo->self);
 
-	return(ASEQ_NONE);
+	return ASEQ_NONE;
 }
 
 /*-----------------------------------------------

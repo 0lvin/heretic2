@@ -368,7 +368,6 @@ SetupPlayerinfo(edict_t *ent)
 	ent->client->playerinfo.sv_jumpcinematic = sv_jumpcinematic->value;
 
 	// From edict_t.
-	ent->client->playerinfo.ideal_yaw = ent->ideal_yaw;
 	ent->client->playerinfo.groundentity = ent->groundentity;
 
 	// Deathmatch flags - only set this if we are in death match.

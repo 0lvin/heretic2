@@ -357,7 +357,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 					}
 				}
 
-				yaw_delta = (float) Q_fabs(playerinfo->ideal_yaw - playerinfo->self->s.angles[YAW]);
+				yaw_delta = (float) Q_fabs(playerinfo->self->ideal_yaw - playerinfo->self->s.angles[YAW]);
 
 				if (yaw_delta < 270.0 && yaw_delta > 90.0)
 				{

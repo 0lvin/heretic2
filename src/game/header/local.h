@@ -1932,7 +1932,6 @@ typedef struct playerinfo_s
 	float				sv_jumpcinematic;		// Jumping through cinematic. Not used on client.
 
 	// From edict_t.
-	float				ideal_yaw;
 	void				*groundentity;
 
 	// Deathmatch flags.
@@ -1998,7 +1997,7 @@ typedef struct playerinfo_s
 	int					movetype;
 
 	// From entity_state_t.
-	int					frame,swapFrame;
+	int					frame, swapFrame;
 	int					effects;
 	int					renderfx;
 	int					skinnum;

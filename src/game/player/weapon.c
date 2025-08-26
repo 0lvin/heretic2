@@ -4694,8 +4694,7 @@ void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
 
 int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 {
-	gitem_t	*Weapon,
-			*AmmoItem;
+	gitem_t	*Weapon, *AmmoItem;
 	int		AmmoIndex;
 	gclient_t *client;
 
@@ -4709,7 +4708,8 @@ int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 		AmmoItem = FindItem(Weapon->ammo);
 		AmmoIndex = ITEM_INDEX(AmmoItem);
 
-		if (client->pers.weapon->tag == ITEM_WEAPON_MACEBALLS && playerinfo->powerup_timer > playerinfo->leveltime)
+		if (client->pers.weapon->tag == ITEM_WEAPON_MACEBALLS &&
+			playerinfo->powerup_timer > playerinfo->leveltime)
 			return(client->pers.inventory[AmmoIndex]/(Weapon->quantity*2.0));		// Double consumption for mace.
 		else
 			return(client->pers.inventory[AmmoIndex]/Weapon->quantity);
