@@ -398,8 +398,7 @@ SetupPlayerinfo(edict_t *ent)
 		ent->client->pcmd.buttons = 0;
 		ent->client->pcmd.sidemove = 0;
 		ent->client->pcmd.forwardmove = 0;
-		ent->client->playerinfo.buttons = 0;
-		ent->client->playerinfo.remember_buttons = 0;
+		ent->client->buttons = 0;
 	}
 
 	// From edict_t.

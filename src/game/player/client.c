@@ -4495,10 +4495,9 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		}
 	}
 
-	client->playerinfo.oldbuttons = client->playerinfo.buttons;
-	client->playerinfo.buttons = ucmd->buttons;
-	client->playerinfo.latched_buttons |= client->playerinfo.buttons & ~client->playerinfo.oldbuttons;
-	client->playerinfo.remember_buttons |= client->playerinfo.buttons;
+	client->oldbuttons = client->buttons;
+	client->buttons = ucmd->buttons;
+	client->latched_buttons |= client->buttons & ~client->oldbuttons;
 
 	/* save light level the player is standing
 	   on for monster sighting AI */
@@ -4624,19 +4623,19 @@ ClientBeginServerFrame(edict_t *ent)
 				buttonMask = -1;
 			}
 
-			if ((client->playerinfo.latched_buttons & buttonMask ) ||
+			if ((client->latched_buttons & buttonMask ) ||
 				(deathmatch->value &&
 				 ((int)dmflags->value & DF_FORCE_RESPAWN) ) )
 			{
 				respawn(ent);
-				client->playerinfo.latched_buttons = 0;
+				client->latched_buttons = 0;
 			}
 		}
 
 		return;
 	}
 
-	client->playerinfo.latched_buttons = 0;
+	client->latched_buttons = 0;
 }
 
 /*

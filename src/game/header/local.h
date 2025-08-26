@@ -1945,12 +1945,6 @@ typedef struct playerinfo_s
 	// Data that must be maintatined over the duration of a level.
 	player_persistant_t	pers;
 
-	// Status of controller buttons.
-	int					buttons;
-	int					oldbuttons;
-	int					latched_buttons;
-	int					remember_buttons;
-
 	// Weapons & defenses.
 	qboolean			autoaim;				// Set on client from a flag.
 	qboolean			defend;
