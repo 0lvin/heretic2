@@ -20,15 +20,7 @@ PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 	else
 		PlayerAnimReset(playerinfo);
 
-	playerinfo->flags=PLAYER_FLAG_NONE;
-}
-
-void
-PlayerClearEffects(playerinfo_t *playerinfo)
-{
-	// Remove all special effects from the player.
-	pi.G_RemoveEffects(playerinfo->self,
-								FX_REMOVE_EFFECTS);
+	playerinfo->flags = PLAYER_FLAG_NONE;
 }
 
 void
@@ -708,4 +700,21 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 			break;
 	}
+}
+
+int
+ClientServerRand(playerinfo_t *playerinfo,int mn, int mx)
+{
+	int t;
+
+	if (mn >= mx)
+	{
+		return(mn);
+	}
+
+	t = (int)(playerinfo->leveltime * 10.0f);
+	t = (t >> 7) ^ (t >> 10) ^ (t >> 5);
+	t %= (1 + mx - mn);
+
+	return(t + mn);
 }

@@ -255,7 +255,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			{
 				// Only certain idle should be called out of here.
 
-				switch(pi.irand(playerinfo, 0, 3))
+				switch(ClientServerRand(playerinfo, 0, 3))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_LOOKL);
@@ -279,7 +279,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			{
 				// Because the bow doesn't look right in some idles.
 
-				switch(pi.irand(playerinfo, 0, 2))
+				switch(ClientServerRand(playerinfo, 0, 2))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_SCRATCH_ASS);
@@ -296,7 +296,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			{
 				// Because the staff doesn't look right in some idles.
 
-				switch(pi.irand(playerinfo, 0, 3))
+				switch(ClientServerRand(playerinfo, 0, 3))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_FLY1);
@@ -314,7 +314,7 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			}
 			else
 			{
-				switch(pi.irand(playerinfo, 0, 6))
+				switch(ClientServerRand(playerinfo, 0, 6))
 				{
 					case 0:
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_IDLE_FLY1);

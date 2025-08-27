@@ -56,21 +56,6 @@ G_set_looping_sound(edict_t *self, int sound_num)
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
 }
 
-static int
-ClientServerRand(playerinfo_t *playerinfo,int mn, int mx)
-{
-	int t;
-
-	if (mn >= mx)
-		return(mn);
-
-	t = (int)(playerinfo->leveltime*10.0f);
-	t = (t>>7)^(t>>10)^(t>>5);
-	t %= (1+mx-mn);
-
-	return(t+mn);
-}
-
 // ************************************************************************************************
 // P_Load
 // ------
@@ -192,7 +177,6 @@ P_Load(void)
 	playerImport.FindItem = FindItem;
 
 	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
-
 	playerImport.G_L_Sound = G_set_looping_sound;
 	playerImport.G_Sound = gi.sound;
 	playerImport.G_Trace = gi.trace;
@@ -200,7 +184,6 @@ P_Load(void)
 	playerImport.G_RemoveEffects = G_RemoveEffects;
 
 	// Server (game) function callbacks that have no client side equivalent.
-
 	playerImport.G_SoundIndex = gi.soundindex;
 	playerImport.G_SoundRemove = G_SoundRemove;
 	playerImport.G_UseTargets = G_UseTargets;
@@ -246,7 +229,6 @@ P_Load(void)
 	playerImport.PlayerActionHellstaffAttack = WeaponThink_HellStaff;
 	playerImport.PlayerActionSpellDefensive = G_PlayerActionSpellDefensive;
 	playerImport.G_EntIsAButton = G_EntIsAButton;
-	playerImport.irand = ClientServerRand;
 
 
 	playerExport = P_GetPlayerAPI(&playerImport);

@@ -45,7 +45,6 @@ GetPlayerAPI(player_import_t *import)
 	pe.PlayerIntLand = PlayerIntLand;
 
 	pe.PlayerInit = PlayerInit;
-	pe.PlayerClearEffects = PlayerClearEffects;
 	pe.PlayerUpdate = PlayerUpdate;
 	pe.PlayerUpdateCmdFlags = PlayerUpdateCmdFlags;
 	pe.PlayerUpdateModelAttributes = PlayerUpdateModelAttributes;

@@ -47,8 +47,8 @@
 #define PLAYER_FLAG_KNOCKDOWN			0x08000000
 #define PLAYER_FLAG_RELEASEROPE			0x10000000
 
+int ClientServerRand(playerinfo_t *playerinfo,int mn, int mx);
 void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
-void PlayerClearEffects(playerinfo_t *playerinfo);
 void PlayerUpdate(playerinfo_t *playerinfo);
 void PlayerUpdateCmdFlags(gclient_t *client);
 void PlayerUpdateModelAttributes(edict_t *self);
@@ -66,6 +66,7 @@ void TurnOffPlayerEffects(edict_t *self);
 void AnimUpdateFrame(playerinfo_t* playerinfo);
 void PlayerFallingDamage(playerinfo_t* playerinfo);
 void PlayerBasicAnimReset(playerinfo_t* playerinfo);
+void PlayerAnimReset(playerinfo_t *playerinfo);
 void PlayerAnimSetLowerSeq(playerinfo_t* playerinfo, int seq);
 void PlayerAnimSetUpperSeq(playerinfo_t* playerinfo, int seq);
 void PlayerAnimUpperIdle(playerinfo_t* playerinfo);
@@ -73,10 +74,9 @@ void PlayerAnimLowerIdle(playerinfo_t* playerinfo);
 void PlayerAnimUpperUpdate(playerinfo_t* playerinfo);
 void PlayerAnimLowerUpdate(playerinfo_t* playerinfo);
 void PlayerAnimSetVault(playerinfo_t* playerinfo, int seq);
+int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo);
 void PlayerPlayPain(playerinfo_t* playerinfo, int type);
 void PlayerIntLand(playerinfo_t* playerinfo_t, float landspeed);
-void PlayerClearEffects(playerinfo_t* playerinfo);
-void PlayerUpdate(playerinfo_t* playerinfo);
 const char *GetClientGroundSurfaceMaterialName(playerinfo_t *playerinfo);
 void FMNodeUpdate(playerinfo_t *playerinfo,int weapon,int armor);
 

@@ -4036,7 +4036,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		}
 		else
 		{	// Not advanced staff
-			if (pi.irand(playerinfo,0,1))
+			if (ClientServerRand(playerinfo,0,1))
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPIN2);
 			else
 				PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPIN);

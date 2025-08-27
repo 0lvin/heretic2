@@ -10,6 +10,7 @@
 //==============================================================================
 
 #include "../../header/local.h"
+#include "p_main.h"
 #include "p_anims.h"
 #include "p_actions.h"
 #include "p_chicken.h"

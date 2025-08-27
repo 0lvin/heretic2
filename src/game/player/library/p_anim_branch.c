@@ -313,7 +313,7 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 
 // OK NOW?
 	{
-		temp = (pi.irand(playerinfo,0,5));
+		temp = (ClientServerRand(playerinfo,0,5));
 
 		if (!temp)
 			return ASEQ_IDLE_LOOKR;
@@ -1941,7 +1941,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			{
 				return ASEQ_WSWORD_DOWNSTAB;
 			}
-			else if (!pi.irand(playerinfo,0, 4))
+			else if (!ClientServerRand(playerinfo,0, 4))
 			{
 				return ASEQ_WSWORD_STEP;
 			}
@@ -2137,7 +2137,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 			playerinfo->lowerseq == ASEQ_IDLE_LOOKR ||
 			playerinfo->lowerseq == ASEQ_IDLE_LOOKL)
 		{
-			switch (pi.irand(playerinfo, 0, 6))
+			switch (ClientServerRand(playerinfo, 0, 6))
 			{
 			case 0:
 				return ASEQ_IDLE_LOOKR;
@@ -2156,13 +2156,13 @@ int BranchIdle(playerinfo_t *playerinfo)
 		else if ((client->pers.weaponready == WEAPON_READY_BOW))
 		{
 			// Because the bow doesn't look right in some idles.
-			switch (pi.irand(playerinfo, 0, 10))
+			switch (ClientServerRand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_WIPE_BROW;
 					break;
 				case 1:
-					if (pi.irand(playerinfo, 0, 1) == 1)
+					if (ClientServerRand(playerinfo, 0, 1) == 1)
 						return ASEQ_IDLE_SCRATCH_ASS;
 
 					break;
@@ -2178,7 +2178,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 			(client->pers.weaponready == WEAPON_READY_HELLSTAFF))
 		{
 			// Because the staff doesn't look right in some idles.
-			switch (pi.irand(playerinfo, 0, 10))
+			switch (ClientServerRand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_FLY1;
@@ -2196,7 +2196,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 		}
 		else
 		{
-			switch (pi.irand(playerinfo, 0, 10))
+			switch (ClientServerRand(playerinfo, 0, 10))
 			{
 				case 0:
 					return ASEQ_IDLE_FLY1;
@@ -2205,7 +2205,7 @@ int BranchIdle(playerinfo_t *playerinfo)
 					return ASEQ_IDLE_FLY2;
 					break;
 				case 2:
-					if (pi.irand(playerinfo, 0, 1) == 1)
+					if (ClientServerRand(playerinfo, 0, 1) == 1)
 						return ASEQ_IDLE_SCRATCH_ASS;
 
 					break;
