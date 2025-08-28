@@ -624,6 +624,7 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 	va_list args;
 	sizebuf_t msg;
 	int testflags;
+	vec3_t fake_origin = {0, 0, 0};
 
 	va_start(args, format);
 
@@ -689,6 +690,17 @@ SV_CreateEffect(edict_t* ent, int type, int flags, vec3_t origin, char* format, 
 	effect->data_size = msg.cursize;
 
 	va_end(args);
+
+	if (!origin && ent)
+	{
+		origin = ent->s.origin;
+	}
+	if (!origin)
+	{
+		origin = fake_origin;
+	}
+	printf("%s: %d -> %.2fx%.2fx%.2f\n",
+		__func__, type, origin[0], origin[1], origin[2]);
 }
 
 /*
