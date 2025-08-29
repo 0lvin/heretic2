@@ -85,7 +85,7 @@ void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
 {
 	char **toPop;
 
-	//	assert(size == resource->resSize);
+	assert(size <= resource->resSize);
 
 	assert(resource->free);	// constructor not called; possibly due to a static object
 								// containing a static ResourceManagerFastLarge member being

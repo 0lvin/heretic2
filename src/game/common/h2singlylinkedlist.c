@@ -15,7 +15,8 @@ static ResourceManager_t globalResourceManager;
 
 void SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
 {
-	this_ptr->rearSentinel = (SinglyLinkedListNode_t *)ResMngr_AllocateResource(&globalResourceManager, 0);
+	this_ptr->rearSentinel = (SinglyLinkedListNode_t *)ResMngr_AllocateResource(
+		&globalResourceManager, sizeof(GenericUnion4_t));
 	this_ptr->current = this_ptr->rearSentinel;
 	this_ptr->front = this_ptr->rearSentinel;
 }
@@ -27,10 +28,11 @@ void SLList_Des(SinglyLinkedList_t* this_ptr)
 	while (node != this_ptr->rearSentinel)
 	{
 		node = node->next;
-		ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here?
+		ResMngr_AllocateResource(
+			&globalResourceManager, sizeof(GenericUnion4_t));
 	}
 	this_ptr->current = this_ptr->rearSentinel;
-	ResMngr_AllocateResource(&globalResourceManager, 0); // jmarshall: why are these here?
+	ResMngr_AllocateResource(&globalResourceManager, sizeof(GenericUnion4_t));
 }
 
 qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr)
@@ -69,7 +71,7 @@ const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr)
 
 GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr)
 {
-	SinglyLinkedListNode_t* frontNode; // ecx
+	SinglyLinkedListNode_t* frontNode;
 
 	frontNode = this_ptr->front;
 	this_ptr->current = frontNode;
@@ -91,7 +93,8 @@ void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedListNode_t* emptyNode;
 
-	emptyNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(&globalResourceManager, 0);
+	emptyNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(
+		&globalResourceManager, sizeof(GenericUnion4_t));
 	emptyNode->next = this_ptr->front;
 	this_ptr->front = emptyNode;
 }
@@ -100,7 +103,8 @@ void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
 	SinglyLinkedListNode_t* newNode;
 
-	newNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(&globalResourceManager, 0);
+	newNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(
+		&globalResourceManager, sizeof(GenericUnion4_t));
 	newNode->value = toInsert;
 	newNode->next = this_ptr->front;
 	this_ptr->front = newNode;
@@ -120,7 +124,7 @@ GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
 	if (currentNode == frontNode)
 		this_ptr->current = nextNode;
 	value = frontNode->value;
-	ResMngr_DeallocateResource(&globalResourceManager, currentNode, 0);
+	ResMngr_DeallocateResource(&globalResourceManager, currentNode, sizeof(GenericUnion4_t));
 	return value;
 }
 
@@ -140,7 +144,7 @@ void SLList_Chop(SinglyLinkedList_t *this_ptr)
 		{
 			currentNode = nextNode;
 			nextNode = (SinglyLinkedList_t*)nextNode->front;
-			ResMngr_DeallocateResource(&globalResourceManager, currentNode, 0);
+			ResMngr_DeallocateResource(&globalResourceManager, currentNode, sizeof(GenericUnion4_t));
 		} while (nextNode != (SinglyLinkedList_t*)this_ptr->rearSentinel);
 		this_ptr->current = this_ptr->rearSentinel;
 	}
@@ -150,7 +154,8 @@ void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toIn
 {
 	SinglyLinkedListNode_t* newNode;
 
-	newNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(&globalResourceManager, 0);
+	newNode = (SinglyLinkedListNode_t*)ResMngr_AllocateResource(
+		&globalResourceManager, sizeof(GenericUnion4_t));
 	newNode->value = toInsert;
 	newNode->next = this_ptr->current->next;
 	this_ptr->current->next = newNode;
@@ -168,7 +173,7 @@ void InitResourceManager()
 	// this seems really small, in x64 this actually causes code to run past the block size. Which seems in line,
 	// with some of the crashes people have experienced with Raven's binaries. I'm increasing this limit,
 	// because were not that worried about OOMing, and seems safer then modifying a bunch of code on the game/client side.
-	ResMngr_Con(&globalResourceManager, 1024, 256);
+	ResMngr_Con(&globalResourceManager, sizeof(GenericUnion4_t), 256);
 }
 
 /*

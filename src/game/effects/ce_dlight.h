@@ -19,7 +19,3 @@ void ReleaseDLightMngr();
 
 struct CE_DLight_s *CE_DLight_new(paletteRGBA_t color, float intensity, float d_intensity);
 void CE_DLight_delete(struct CE_DLight_s *toDelete);
-
-#if 0
-dlight = CE_DLight_new(, , );
-#endif
