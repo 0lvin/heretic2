@@ -4708,7 +4708,7 @@ int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 		AmmoItem = FindItem(Weapon->ammo);
 		AmmoIndex = ITEM_INDEX(AmmoItem);
 
-		if (client->pers.weapon->tag == ITEM_WEAPON_MACEBALLS &&
+		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_MACEBALLS &&
 			playerinfo->powerup_timer > playerinfo->leveltime)
 			return(client->pers.inventory[AmmoIndex]/(Weapon->quantity*2.0));		// Double consumption for mace.
 		else

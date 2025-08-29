@@ -165,10 +165,13 @@ G_CPrintf(edict_t* ent, int printlevel, short stringid)
 		return;
 	}
 
-	gi.cprintf(ent, printlevel, "%s\n", game_msgtxt[stringid].string);
+	gi.cprintf(ent->client? ent : NULL, printlevel, "%s\n",
+		game_msgtxt[stringid].string);
+
 	if (game_msgtxt[stringid].wav && game_msgtxt[stringid].wav[0])
 	{
-		gi.sound(NULL, CHAN_AUTO, gi.soundindex(game_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
+		gi.sound(ent->client? ent : NULL, CHAN_AUTO,
+			gi.soundindex(game_msgtxt[stringid].wav), 1, ATTN_NORM, 0);
 	}
 }
 

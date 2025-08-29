@@ -606,6 +606,8 @@
 {"secret_touch", (byte *)secret_touch},
 {"shrine_heal_touch", (byte *)shrine_heal_touch},
 {"shrine_mana_touch", (byte *)shrine_mana_touch},
+{"shrine_staff_touch", (byte *)shrine_staff_touch},
+{"shrine_random_touch", (byte *)shrine_random_touch},
 {"smart_water_go_up", (byte *)smart_water_go_up},
 {"sound_ambient_use", (byte *)sound_ambient_use},
 {"soundambient_think", (byte *)soundambient_think},

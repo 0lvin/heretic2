@@ -538,7 +538,9 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	if (playerinfo->lowerframeptr->thinkfunc)
-		playerinfo->lowerframeptr->thinkfunc (playerinfo);
+	{
+		playerinfo->lowerframeptr->thinkfunc(playerinfo);
+	}
 
 	if (PlayerSeqData2[playerinfo->lowerseq].nosplit)
 	{
@@ -602,6 +604,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 					playerinfo->upperframeptr = move->frame + playerinfo->upperframe;
 				}
 			}
+
 			playerinfo->swapFrame = playerinfo->upperframeptr->framenum;
 
 			if (playerinfo->upperframeptr->movefunc)
@@ -609,6 +612,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				playerinfo->upperframeptr->movefunc(playerinfo,
 						playerinfo->upperframeptr->var1, playerinfo->upperframeptr->var2, playerinfo->upperframeptr->var3);
 			}
+
 			if (playerinfo->upperframeptr->actionfunc)
 			{
 				playerinfo->upperframeptr->actionfunc(playerinfo, playerinfo->upperframeptr->var4);

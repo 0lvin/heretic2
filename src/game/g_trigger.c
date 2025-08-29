@@ -52,6 +52,8 @@ void Trigger_Activate(edict_t *self, G_Message_t *msg);
 
 void trigger_enable(edict_t *self, edict_t *other, edict_t *activator);
 void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
+void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */);
 void InitField(edict_t *self);
 
 void TriggerStaticsInit()
@@ -60,93 +62,14 @@ void TriggerStaticsInit()
 	classStatics[CID_TRIGGER].msgReceivers[G_MSG_UNSUSPEND] = Trigger_Activate;
 }
 
-/*
- * The wait time has passed, so
- * set back up for another activation
- */
-void
-multi_wait(edict_t *self)
+static void
+InitTrigger(edict_t *self)
 {
-	self->think = NULL;
-	if (self->activator)
-	{
-		self->activator->target_ent = NULL;
-	}
-}
-
-// the trigger was just activated
-// self->activator should be set to the activator so it can be held through a delay
-// so wait for the delay time before firing
-void TriggerActivated(edict_t *self)
-{
-	if (self->think)
-	{
-		return;		// already been triggered
-	}
-
-	assert(self->TriggerActivated);
-
-	self->TriggerActivated(self, self->activator);
-
-	if (self->wait > 0)
-	{
-		self->think = multi_wait;
-		self->nextthink = level.time + self->wait;
-	}
-	else
-	{
-		self->touch = NULL;
-		self->nextthink = level.time + FRAMETIME;
-		self->think = G_FreeEdict;
-	}
-}
-
-void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	// Monsters or players can trigger it
-	if ((self->spawnflags & TRIGGER_TOGGLE) && ((strcmp(other->classname, "player") == 0) ||
-		(other->svflags & SVF_MONSTER)))
-		;
-	// Player cannot trigger it
-	else if (strcmp(other->classname, "player") == 0)
-	{
-		if (self->spawnflags & TRIGGER_NOT_PLAYER)
-		{
-			return;
-		}
-	}
-	// Just monster will trigger it
-	else if (other->svflags & SVF_MONSTER)
-	{
-		if (!(self->spawnflags & TRIGGER_MONSTER))
-		{
-			return;
-		}
-	}
-	else
+	if (!self)
 	{
 		return;
 	}
 
-	if (!Vec3IsZero(self->movedir))
-	{
-		vec3_t forward;
-
-		AngleVectors(other->s.angles, forward, NULL, NULL);
-
-		if (DotProduct(forward, self->movedir) < 0)
-		{
-			return;
-		}
-	}
-
-	self->activator = other;
-
-	TriggerActivated(self);
-}
-
-void InitTrigger(edict_t *self)
-{
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_TRIGGER;
 
@@ -180,13 +103,136 @@ void InitTrigger(edict_t *self)
 	gi.linkentity(self);
 }
 
+/*
+ * The wait time has passed, so
+ * set back up for another activation
+ */
+void
+multi_wait(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->think = NULL;
+	if (ent->activator)
+	{
+		ent->activator->target_ent = NULL;
+	}
+}
+
+/*
+ * The trigger was just activated
+ * ent->activator should be set to
+ * the activator so it can be held
+ * through a delay so wait for the
+ * delay time before firing
+ */
+void
+multi_trigger(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->think)
+	{
+		return; /* already been triggered */
+	}
+
+	assert(ent->TriggerActivated);
+
+	ent->TriggerActivated(ent, ent->activator);
+
+	if (ent->wait > 0)
+	{
+		ent->think = multi_wait;
+		ent->nextthink = level.time + ent->wait;
+	}
+	else
+	{
+		/* we can't just remove (self) here,
+		   because this is a touch function
+		   called while looping through area
+		   links... */
+		ent->touch = NULL;
+		ent->nextthink = level.time + FRAMETIME;
+		ent->think = G_FreeEdict;
+	}
+}
+
+void
+Use_Multi(edict_t *ent, edict_t *other /* unused */, edict_t *activator)
+{
+	if (!ent || !activator)
+	{
+		return;
+	}
+
+	ent->activator = activator;
+	multi_trigger(ent);
+}
+
+void
+Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	if (!self || !other)
+	{
+		return;
+	}
+
+	// Monsters or players can trigger it
+	if ((self->spawnflags & TRIGGER_TOGGLE) && ((strcmp(other->classname, "player") == 0) ||
+		(other->svflags & SVF_MONSTER)))
+		;
+	// Player cannot trigger it
+	else if (strcmp(other->classname, "player") == 0)
+	{
+		if (self->spawnflags & TRIGGER_NOT_PLAYER)
+		{
+			return;
+		}
+	}
+	// Just monster will trigger it
+	else if (other->svflags & SVF_MONSTER)
+	{
+		if (!(self->spawnflags & TRIGGER_MONSTER))
+		{
+			return;
+		}
+	}
+	else
+	{
+		return;
+	}
+
+	if (!Vec3IsZero(self->movedir))
+	{
+		vec3_t forward;
+
+		AngleVectors(other->s.angles, forward, NULL, NULL);
+
+		if (_DotProduct(forward, self->movedir) < 0)
+		{
+			return;
+		}
+	}
+
+	self->activator = other;
+	multi_trigger(self);
+}
+
 void Trigger_Deactivate(edict_t *self, G_Message_t *msg)
 {
 	self->solid = SOLID_NOT;
 	self->use = NULL;
 }
 
-void Trigger_Activate(edict_t *self, G_Message_t *msg)
+void
+Trigger_Activate(edict_t *self, G_Message_t *msg)
 {
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_Multi;
@@ -207,156 +253,169 @@ void Trigger_Sounds(edict_t *self)
 // One Time Trigger
 //----------------------------------------------------------------------
 
-/*QUAKED trigger_multiple (.5 .5 .5) ? MONSTER NOT_PLAYER TRIGGERED ANY
-Variable sized repeatable trigger.  Must be targeted at one or more entities.
--------SPAWN FLAGS-------------
-MONSTER - only a monster will trigger it
-NOT_PLAYER -  can't be triggered by player
-TRIGGERED - starts trigger deactivated
-ANY - anything can activate it
---------KEYS---------
-delay   - Time to wait after activating before firing.
-message - text string to display when activated
-wait    - Seconds between triggerings. (.2 default)
-sounds  - sound made when activating
-1)	secret
-2)	none
-3)	large switch
-*/
-void SP_trigger_multiple(edict_t *self)
+/*
+ * QUAKED trigger_multiple (.5 .5 .5) ? MONSTER NOT_PLAYER TRIGGERED ANY
+ * Variable sized repeatable trigger.  Must be targeted at one or more entities.
+ * -------SPAWN FLAGS-------------
+ * MONSTER - only a monster will trigger it
+ * NOT_PLAYER -  can't be triggered by player
+ * TRIGGERED - starts trigger deactivated
+ * ANY - anything can activate it
+ * --------KEYS---------
+ * delay   - Time to wait after activating before firing.
+ * message - text string to display when activated
+ * wait    - Seconds between triggerings. (.2 default)
+ * sounds  - sound made when activating
+ * 1)	secret
+ * 2)	none
+ * 3)	large switch
+ */
+void
+trigger_enable(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
 {
-	InitTrigger(self);
+	if (!self)
+	{
+		return;
+	}
 
-	self->TriggerActivated = G_UseTargets;
-
-	Trigger_Sounds(self);
-
-}
-
-void trigger_enable(edict_t *self, edict_t *other, edict_t *activator)
-{
 	self->solid = SOLID_TRIGGER;
 	self->use = Use_Multi;
 	gi.linkentity(self);
 }
 
-void Use_Multi(edict_t *self, edict_t *other, edict_t *activator)
+void
+SP_trigger_multiple(edict_t *ent)
 {
-	self->activator = activator;
-	TriggerActivated(self);
-}
+	if (!ent)
+	{
+		return;
+	}
 
+	InitTrigger(ent);
+
+	ent->TriggerActivated = G_UseTargets;
+
+	Trigger_Sounds(ent);
+
+}
 //----------------------------------------------------------------------
 // One Time Trigger
 //----------------------------------------------------------------------
 
-/*QUAKED trigger_once (.5 .5 .5) ? MONSTER NOT_PLAYER TRIGGERED ANY
-Triggers once, then removes itself.
-You must set the key "target" to the name of another object in the level that has a matching "targetname".
--------SPAWN FLAGS-------------
-MONSTER - only a monster will trigger it
-NOT_PLAYER -  can't be triggered by player
-TRIGGERED - starts trigger deactivated
-ANY - anything can activate it
-
-sounds
- 1)	secret
- 2)	no sound
- 3)	large switch
-
-"message"	string to be displayed when triggered
-*/
-
-void SP_trigger_once(edict_t *self)
-{
-	InitTrigger(self);
-
-	self->TriggerActivated = G_UseTargets;
-
-	self->wait = -1;
-
-	Trigger_Sounds(self);
-
-}
-
-//----------------------------------------------------------------------
-// Relay Trigger
-//----------------------------------------------------------------------
-
-void trigger_relay_use(edict_t *self, edict_t *other, edict_t *activator);
-
-/*QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
-This fixed size trigger cannot be touched, it can only be fired by other events.
-*/
-void
-SP_trigger_relay(edict_t *self)
-{
-	self->use = trigger_relay_use;
-}
+/*
+ * QUAKED trigger_once (.5 .5 .5) ? MONSTER NOT_PLAYER TRIGGERED ANY
+ * Triggers once, then removes itself.
+ *
+ * You must set the key "target" to the name of another
+ * object in the level that has a matching "targetname".
+ *
+ * -------SPAWN FLAGS-------------
+ * MONSTER - only a monster will trigger it
+ * NOT_PLAYER -  can't be triggered by player
+ * TRIGGERED - starts trigger deactivated
+ * ANY - anything can activate it
+ *
+ * sounds
+ *  1) secret
+ *  2) no sound
+ *  3) large switch
+ *
+ * "message" string to be displayed when triggered
+ */
 
 void
-trigger_relay_use(edict_t *self, edict_t *other, edict_t *activator)
+SP_trigger_once(edict_t *ent)
 {
+	if (!ent)
+	{
+		return;
+	}
+
+	InitTrigger(ent);
+	ent->TriggerActivated = G_UseTargets;
+
+	ent->wait = -1;
+
+	Trigger_Sounds(ent);
+}
+
+/*
+ * QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)
+ * This fixed size trigger cannot be touched,
+ * it can only be fired by other events.
+ */
+void
+trigger_relay_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator)
+{
+	if (!self || !activator)
+	{
+		return;
+	}
+
 	G_UseTargets(self, activator);
 }
 
-//----------------------------------------------------------------------
-// Key Trigger
-//----------------------------------------------------------------------
-
-void trigger_key_use(edict_t *self, edict_t *other, edict_t *activator);
-
-/*QUAKED trigger_puzzle (.5 .5 .5) (-8 -8 -8) (8 8 8)  NO_TEXT  NO_TAKE
-A relay trigger that only fires it's targets if player has the proper puzzle item.
-------KEYS--------------
-NO_TEXT - won't generate the "You need..." text when triggered
-NO_TAKE - don't take puzzle item from player inventory
-------FIELDS------------
-Use "item" to specify the required puzzle item, for example "key_data_cd"
-*/
-void SP_trigger_puzzle(edict_t *self)
+void
+SP_trigger_relay(edict_t *self)
 {
-	self->classID = CID_TRIGGER;
-
-	if (!st.item)
+	if (!self)
 	{
-		gi.dprintf("no key item for trigger_key at %s\n", vtos(self->s.origin));
-		return;
-	}
-	self->item = FindItemByClassname(st.item);
-
-	if (!self->item)
-	{
-		gi.dprintf("item %s not found for trigger_key at %s\n", st.item, vtos(self->s.origin));
 		return;
 	}
 
-	if (!self->target)
-	{
-		gi.dprintf("%s at %s has no target\n", self->classname, vtos(self->s.origin));
-		return;
-	}
-
-	self->use = trigger_key_use;
+	self->use = trigger_relay_use;
 }
 
+/*
+ * ==============================================================================
+ *
+ * trigger_key
+ *
+ * ==============================================================================
+ */
+
+/*
+ * QUAKED trigger_puzzle (.5 .5 .5) (-8 -8 -8) (8 8 8)  NO_TEXT  NO_TAKE
+ * A relay trigger that only fires it's targets if player has the proper puzzle item.
+ * ------KEYS--------------
+ * NO_TEXT - won't generate the "You need..." text when triggered
+ * NO_TAKE - don't take puzzle item from player inventory
+ * ------FIELDS------------
+ * Use "item" to specify the required puzzle item, for example "key_data_cd"
+ */
 void
-trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
+trigger_key_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator)
 {
-	int	index;
+	int index;
 	edict_t *puzzle;
 
+	if (!self || !activator)
+	{
+		return;
+	}
+
 	if (!self->item)
+	{
 		return;
+	}
+
 	if (!activator->client)
+	{
 		return;
+	}
 
 	index = ITEM_INDEX(self->item);
 
 	if (!activator->client->pers.inventory[index])
 	{
 		if (level.time < self->touch_debounce_time)
+		{
 			return;
+		}
+
 		self->touch_debounce_time = level.time + 5.0;
 		if (!(self->spawnflags & 1))
 			G_CPrintf(activator, PRINT_HIGH, self->item->msg_nouse);
@@ -393,21 +452,22 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 			}
 		}
 
-
-		for (i=0 ; i<maxclients->value ; i++)
+		for (i = 0; i < maxclients->value; i++)
 		{
 			ent = g_edicts + 1 + i;
 
 			if (!ent->inuse)
+			{
 				continue;
+			}
 
-			ent->client->pers.inventory[index]=0;
+			ent->client->pers.inventory[index] = 0;
 		}
 	}
 
 	gi.sound(self, CHAN_AUTO, gi.soundindex("player/useobject.wav"), 1, ATTN_NORM, 0);
 
-	G_UseTargets (self, activator);
+	G_UseTargets(self, activator);
 
 	self->use = NULL;
 
@@ -421,22 +481,97 @@ trigger_key_use(edict_t *self, edict_t *other, edict_t *activator)
 	}
 }
 
-//----------------------------------------------------------------------
-// Counter Trigger
-//----------------------------------------------------------------------
-
-void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator);
-
-#define TRIGGER_COUNTER_NOMESSAGE	1
-/*QUAKED trigger_counter (.5 .5 .5) ? NOMESSAGE
-Acts as an intermediary for an action that takes multiple inputs.
-
-If NOMESSAGE is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
-
-After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
-*/
-void SP_trigger_counter(edict_t *self)
+void
+SP_trigger_puzzle(edict_t *self)
 {
+	self->classID = CID_TRIGGER;
+
+	if (!st.item)
+	{
+		gi.dprintf("no key item for trigger_key at %s\n", vtos(self->s.origin));
+		return;
+	}
+
+	self->item = FindItemByClassname(st.item);
+
+	if (!self->item)
+	{
+		gi.dprintf("item %s not found for trigger_key at %s\n", st.item,
+				vtos(self->s.origin));
+		return;
+	}
+
+	if (!self->target)
+	{
+		gi.dprintf("%s at %s has no target\n", self->classname,
+				vtos(self->s.origin));
+		return;
+	}
+
+	self->use = trigger_key_use;
+}
+
+/*
+ * ==============================================================================
+ *
+ * trigger_counter
+ *
+ * ==============================================================================
+ */
+
+/*
+ * QUAKED trigger_counter (.5 .5 .5) ? NOMESSAGE
+ *
+ * Acts as an intermediary for an action that takes multiple inputs.
+ *
+ * If NOMESSAGE is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
+ *
+ * After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
+ */
+
+void
+trigger_counter_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator)
+{
+	if (!self || !activator)
+	{
+		return;
+	}
+
+	if (self->count == 0)
+	{
+		return;
+	}
+
+	self->count--;
+
+	if (self->count)
+	{
+		if (!(self->spawnflags & 1))
+		{
+			G_CPrintf(activator, PRINT_HIGH, (short)(self->count + GM_SEQCOMPLETE));
+		}
+
+		return;
+	}
+
+	if (!(self->spawnflags & 1))
+	{
+		G_CPrintf(activator, PRINT_HIGH, GM_SEQCOMPLETE);
+	}
+
+	self->activator = activator;
+	multi_trigger(self);
+}
+
+void
+SP_trigger_counter(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
 	self->classID = CID_TRIGGER;
 
 	self->wait = -1;
@@ -451,54 +586,84 @@ void SP_trigger_counter(edict_t *self)
 	self->TriggerActivated = G_UseTargets;
 }
 
-void trigger_counter_use(edict_t *self, edict_t *other, edict_t *activator)
+/*
+ * ==============================================================================
+ *
+ * trigger_always
+ *
+ * ==============================================================================
+ */
+
+/*
+ * QUAKED trigger_always (.5 .5 .5) (-8 -8 -8) (8 8 8)
+ *
+ * This trigger will always fire. It is activated by the world.
+ */
+void
+SP_trigger_always(edict_t *ent)
 {
-	if (self->count == 0)
+	if (!ent)
 	{
 		return;
 	}
 
-	self->count--;
+	ent->classID = CID_TRIGGER;
 
-	if (self->count)
+	/* we must have some delay to make
+	   sure our use targets are present */
+	if (ent->delay < 0.2)
 	{
-		if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
-		{
-			G_CPrintf(activator, PRINT_HIGH, (short)(self->count + GM_SEQCOMPLETE));
-//			gi.sound(activator, CHAN_AUTO, gi.soundindex("misc/talk1.wav"), 1, ATTN_NORM, 0);
-		}
-		return;
+		ent->delay = 0.2;
 	}
 
-	if (! (self->spawnflags & TRIGGER_COUNTER_NOMESSAGE))
-	{
-		G_CPrintf(activator, PRINT_HIGH, GM_SEQCOMPLETE);
-//		gi.sound(activator, CHAN_AUTO, gi.soundindex("misc/talk1.wav"), 1, ATTN_NORM, 0);
-	}
-
-	self->activator = activator;
-
-	TriggerActivated(self);
+	G_UseTargets(ent, ent);
 }
 
-//----------------------------------------------------------------------
-// Always Trigger
-//----------------------------------------------------------------------
+/*
+ * ==============================================================================
+ *
+ * trigger_push
+ *
+ * ==============================================================================
+ */
 
-/*QUAKED trigger_always (.5 .5 .5) (-8 -8 -8) (8 8 8)
-This trigger will always fire.  It is activated by the world.
-*/
-void SP_trigger_always(edict_t *self)
+
+#define FIELD_FORCE_ONCE		1
+
+void
+trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
 {
-	self->classID = CID_TRIGGER;
+	vec3_t forward,up;
 
-	// we must have some delay to make sure our use targets are present
-	if (self->delay < 0.2)
+	if (!self || !other)
 	{
-		self->delay = 0.2;
+		return;
+	}
+
+	if (other->health > 0)
+	{
+		if (other->client)	// A player???
+		{
+			// don't take falling damage immediately from this
+			VectorCopy(other->velocity, other->client->playerinfo.oldvelocity);
+			other->client->playerinfo.flags |= PLAYER_FLAG_USE_ENT_POS;
+			other->groundentity = NULL;
+		}
+
+		AngleVectors(self->s.angles,forward,NULL,up);
+
+		VectorMA(other->velocity,self->speed,forward,other->velocity);
+		VectorMA(other->velocity,self->speed,up,other->velocity);
+
 	}
 
 	G_UseTargets(self, self);
+
+	if (self->spawnflags & FIELD_FORCE_ONCE)
+	{
+		G_FreeEdict(self);
+	}
 }
 
 //----------------------------------------------------------------------
@@ -658,7 +823,8 @@ void ActivateTrigger_Activated(edict_t *self, edict_t *activator)
 	}
 }
 
-void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+trigger_quit_to_menu_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (!other->client)
 		return;
@@ -666,7 +832,8 @@ void trigger_quit_to_menu_touch (edict_t *self, edict_t *other, cplane_t *plane,
 	gi.AddCommandString("menu_main\n");
 }
 
-void trigger_quit_to_menu_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+trigger_quit_to_menu_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!activator->client)
 		return;
@@ -674,11 +841,12 @@ void trigger_quit_to_menu_use (edict_t *self, edict_t *other, edict_t *activator
 	gi.AddCommandString("menu_main\n");
 }
 
-/*QUAKED trigger_quit_to_menu (.5 .5 .5) ?
-Player only, quits to menu
-*/
-
-void SP_trigger_quit_to_menu(edict_t *self)
+/*
+ * QUAKED trigger_quit_to_menu (.5 .5 .5) ?
+ * Player only, quits to menu
+ */
+void
+SP_trigger_quit_to_menu(edict_t *self)
 {
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_TRIGGER;
@@ -765,6 +933,7 @@ void lightning_use (edict_t *self, edict_t *other)
 		gi.sound(self, CHAN_AUTO, gi.soundindex("world/lightningloop.wav"), 1, ATTN_NORM, 0);
 	}
 }
+
 void lightning_go (edict_t *self, edict_t *other, edict_t *activator)
 {
 	lightning_use (self,other);
@@ -1037,7 +1206,8 @@ void trigger_endgame_think(edict_t *self)
 	G_SetToFree(self);
 }
 
-void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	cvar_t *sv_loopcoop;
 
@@ -1077,12 +1247,12 @@ void Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 	else
 	{
 		gi.AddCommandString("endgame\n");
-
 		G_SetToFree(self);
 	}
 }
 
-void Use_endgame (edict_t *self, edict_t *other, edict_t *activator)
+void
+Use_endgame(edict_t *self, edict_t *other, edict_t *activator)
 {
 	cvar_t *sv_loopcoop;
 
@@ -1165,38 +1335,6 @@ void SP_trigger_PlayerPushLever(edict_t *self)
 // Force Field
 //----------------------------------------------------------------------
 
-#define FIELD_FORCE_ONCE		1
-
-
-void
-trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	vec3_t forward,up;
-
-	if (other->health > 0)
-	{
-		if (other->client)	// A player???
-		{
-			// don't take falling damage immediately from this
-			VectorCopy(other->velocity, other->client->playerinfo.oldvelocity);
-			other->client->playerinfo.flags |= PLAYER_FLAG_USE_ENT_POS;
-			other->groundentity = NULL;
-		}
-
-		AngleVectors(self->s.angles,forward,NULL,up);
-
-		VectorMA(other->velocity,self->speed,forward,other->velocity);
-		VectorMA(other->velocity,self->speed,up,other->velocity);
-
-	}
-
-	G_UseTargets(self, self);
-
-	if (self->spawnflags & FIELD_FORCE_ONCE)
-	{
-		G_FreeEdict(self);
-	}
-}
 
 void
 push_touch_trigger(edict_t *self, edict_t *activator)
@@ -1454,7 +1592,6 @@ trigger_gravity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused *
 
 	other->gravity = self->gravity;
 	G_UseTargets(self, self);
-
 }
 
 /*
@@ -1483,7 +1620,6 @@ SP_trigger_gravity(edict_t *self)
 	}
 
 	InitField(self);
-
 	self->gravity = (int)strtol(st.gravity, (char **)NULL, 10);
 
 	self->touch = trigger_gravity_touch;
@@ -1543,13 +1679,6 @@ SP_trigger_monsterjump(edict_t *self)
 		return;
 	}
 
-	if (self->s.angles[YAW] == 0)
-	{
-		self->s.angles[YAW] = 360;
-	}
-
-	InitField(self);
-
 	if (!self->speed)
 	{
 		self->speed = 200;
@@ -1562,6 +1691,12 @@ SP_trigger_monsterjump(edict_t *self)
 	else
 		self->accel = st.height;
 
+	if (self->s.angles[YAW] == 0)
+	{
+		self->s.angles[YAW] = 360;
+	}
+
+	InitField(self);
 	self->touch = trigger_monsterjump_touch;
 }
 

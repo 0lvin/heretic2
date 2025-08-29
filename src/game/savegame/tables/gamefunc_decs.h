@@ -1268,6 +1268,8 @@ extern void shambler_walk ( edict_t * self);
 extern void shambler_windup ( edict_t * self);
 extern void shrine_heal_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 extern void shrine_mana_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+extern void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+extern void shrine_staff_touch ( edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 extern void smart_water_blocked ( edict_t * self , edict_t * other ) ;
 extern void smart_water_go_up ( edict_t * self ) ;
 extern void soldier_attack ( edict_t * self ) ;
