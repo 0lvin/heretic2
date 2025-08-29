@@ -609,7 +609,6 @@ G_SetStats(edict_t *ent)
 	gclient_t			*pi;
 	player_state_t		*ps;
 	client_persistant_t	*pers;
-	player_persistant_t	*ppers;
 	float				time;
 
 	if (!ent)
@@ -620,7 +619,6 @@ G_SetStats(edict_t *ent)
 	pi = ent->client;
 	ps = &ent->client->ps;
 	pers = &ent->client->pers;
-	ppers = &ent->client->playerinfo.pers;
 
 	// ********************************************************************************************
 	// Frags
@@ -639,7 +637,7 @@ G_SetStats(edict_t *ent)
 	// Weapon / defence.
 	// ********************************************************************************************
 
-	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(ppers->weapon->icon);
+	ps->stats[STAT_WEAPON_ICON] = gi.imageindex(pers->weapon->icon);
 	if (pers->defence)
 	{
 		ps->stats[STAT_DEFENCE_ICON] = gi.imageindex(pers->defence->icon);
@@ -649,9 +647,9 @@ G_SetStats(edict_t *ent)
 	// Weapon ammo.
 	// ********************************************************************************************
 
-	if (ppers->weapon->ammo && ppers->weapon->count_width)
+	if (pers->weapon->ammo && pers->weapon->count_width)
 	{
-		item = FindItem(ppers->weapon->ammo);
+		item = FindItem(pers->weapon->ammo);
 		ps->stats[STAT_AMMO_ICON] = gi.imageindex(item->icon);
 		ps->stats[STAT_AMMO] = pers->inventory[ITEM_INDEX(item)];
 	}

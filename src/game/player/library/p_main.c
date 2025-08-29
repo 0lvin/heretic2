@@ -267,7 +267,6 @@ PlayerUpdateModelAttributes(edict_t *self)
 
 	client = self->client;
 	playerinfo = &(client->playerinfo);
-
 	assert(playerinfo);
 
 	// if we are chicken, we shouldn't be doing any of this stuff
@@ -476,7 +475,7 @@ PlayerUpdateModelAttributes(edict_t *self)
 	}
 
 	//If the switch is valid
-	if (BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
+	if (BranchCheckDismemberAction(playerinfo, client->pers.weapon->tag))
 	{//FIXME: doesn't allow for dropping of weapons
 		// Now turn on the appropriate weapon bits.
 		switch (client->pers.weaponready)
