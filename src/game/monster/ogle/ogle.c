@@ -14,7 +14,6 @@
 #include "../../header/g_monster.h"
 #include "../../common/h2rand.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../../character/ai.h"
 #include "../stats/stats.h"
 
@@ -479,13 +478,13 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 	{//Cast off the hammer and nail
 		throw_nodes |= BPN_NAIL;
 		self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
-		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
+		ThrowWeapon(self, vec3_origin, throw_nodes, 0, 0);
 
 		throw_nodes |= BPN_HAMMER | BPN_HANDLE;
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
-		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
+		ThrowWeapon(self, vec3_origin, throw_nodes, 0, 0);
 	}
 	else if (!(self->s.fmnodeinfo[MESH__PICK].flags & FMNI_NO_DRAW))
 	{//Cast off the pick
@@ -494,7 +493,7 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
-		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
+		ThrowWeapon(self, vec3_origin, throw_nodes, 0, 0);
 	}
 	else if (!(self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW))
 	{//Cast off the hammer
@@ -503,7 +502,7 @@ void ogle_cast_off_tools_of_oppression ( edict_t *self )
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 
-		ThrowWeapon(self, &vec3_origin, throw_nodes, 0, 0);
+		ThrowWeapon(self, vec3_origin, throw_nodes, 0, 0);
 	}
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
@@ -1040,7 +1039,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 				self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
 			}
 
-			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+			ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 		}
 		else
 		{
@@ -1069,7 +1068,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 				self->s.fmnodeinfo[MESH__NAIL].flags |= FMNI_NO_DRAW;
 			}
 
-			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+			ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 		}
 		else
 		{
@@ -1116,7 +1115,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 				self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 			}
 
-			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+			ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 			self->monsterinfo.aiflags |= AI_COWARD;
@@ -1160,7 +1159,7 @@ void ogle_dismember(edict_t *self, int damage, int HitLocation)
 				self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 			}
 
-			ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+			ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 			self->monsterinfo.aiflags |= AI_COWARD;

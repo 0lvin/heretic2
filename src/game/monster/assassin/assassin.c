@@ -35,7 +35,6 @@
 #include "assassin.h"
 #include "assassin_anim.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../../character/ai.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../../player/library/p_anims.h"
@@ -888,14 +887,14 @@ void assassin_dropweapon (edict_t *self, int whichknives)
 	{
 		VectorClear(handspot);
 		VectorMA(handspot, -12, right, handspot);
-		ThrowWeapon(self, &handspot, BIT_LKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
+		ThrowWeapon(self, handspot, BIT_LKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
 		self->s.fmnodeinfo[MESH__LKNIFE].flags |= FMNI_NO_DRAW;
 	}
 	if (!(self->s.fmnodeinfo[MESH__RKNIFE].flags & FMNI_NO_DRAW)&&whichknives & BIT_RKNIFE)
 	{
 		VectorClear(handspot);
 		VectorMA(handspot, 12, right, handspot);
-		ThrowWeapon(self, &handspot, BIT_RKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
+		ThrowWeapon(self, handspot, BIT_RKNIFE, 0, FRAME_prtfly);//FRAME_atakc3);
 		self->s.fmnodeinfo[MESH__RKNIFE].flags |= FMNI_NO_DRAW;
 	}
 
@@ -1031,7 +1030,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_as(self, MESH__HEAD,&throw_nodes);
 
 				gore_spot[2]+=18;
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_prtfly);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_prtfly);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
@@ -1069,7 +1068,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_as(self, MESH__RUPARM,&throw_nodes);
 
 				assassin_dropweapon (self, BIT_LKNIFE|BIT_RKNIFE);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_torsofly);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_torsofly);
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
@@ -1107,7 +1106,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_as(self, MESH__RUPARM,&throw_nodes);
 
 				assassin_dropweapon (self, BIT_LKNIFE|BIT_RKNIFE);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_torsofly);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_torsofly);
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
@@ -1143,7 +1142,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
 					assassin_dropweapon (self, BIT_LKNIFE);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_prtfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_prtfly);
 				}
 			}
 			else
@@ -1165,7 +1164,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
 					assassin_dropweapon (self, BIT_LKNIFE);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_prtfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_prtfly);
 				}
 			}
 			else
@@ -1186,7 +1185,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
 					assassin_dropweapon (self, BIT_RKNIFE);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_prtfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_prtfly);
 				}
 			}
 			else
@@ -1206,7 +1205,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
 					assassin_dropweapon (self, BIT_RKNIFE);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_prtfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_prtfly);
 				}
 			}
 			else
@@ -1235,7 +1234,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -1257,7 +1256,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -1281,7 +1280,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -1303,7 +1302,7 @@ void assassin_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}

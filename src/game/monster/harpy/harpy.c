@@ -19,7 +19,6 @@ Copyright 1998 Raven Software
 #include "../../header/g_monster.h"
 #include "../../common/h2rand.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../stats/stats.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../../player/library/p_anims.h"
@@ -135,7 +134,7 @@ void harpy_throw_wings(edict_t *self)
 	VectorCopy(vec3_origin, gore_spot);
 	gore_spot[2]+=10;
 
-	ThrowBodyPart(self, &gore_spot, throw_nodes, 50, FRAME_partfly1);
+	ThrowBodyPart(self, gore_spot, throw_nodes, 50, FRAME_partfly1);
 }
 
 void
@@ -837,7 +836,7 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 
 		MeshLoc = MESH_for_hitloc[HitLocation];
 
-		ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly1);
+		ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly1);
 
 		switch(MeshLoc)
 		{

@@ -15,7 +15,6 @@
 
 #include "mssithra.h"
 #include "mssithra_anim.h"
-#include "../../header/g_misc.h"
 #include "../../header/g_hitlocation.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../stats/stats.h"

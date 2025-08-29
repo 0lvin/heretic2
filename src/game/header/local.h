@@ -3156,6 +3156,14 @@ extern player_import_t playerImport;	// interface to player library.
 #define WALL_ENTITY (struct edict_s *)1
 #define AVG_VEC3T(scale) (((scale)[0] + (scale)[1] + (scale)[2]) / 3)
 
+/* g_misc.c */
+void BecomeDebris(edict_t *self);
+void SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage);
+void ThrowBodyPart(edict_t *self, vec3_t spot, int BodyPart, float damage, int frame);
+void ThrowWeapon(edict_t *self, vec3_t spot, int BodyPart, float damage, int frame);
+void DefaultObjectDieHandler(edict_t *self, struct G_Message_s *msg);
+void BboxYawAndScale(edict_t *self);
+
 trace_t MG_WalkMove(edict_t *self, float yaw, float dist, qboolean *trace_succeeded);
 trace_t MG_MoveStep(edict_t *self, vec3_t move, qboolean relink, qboolean *trace_succeeded);
 unsigned GenNoDrawInfo(fmnodeinfo_t *fmnodeinfo);

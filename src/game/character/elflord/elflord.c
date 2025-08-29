@@ -11,7 +11,6 @@
 #include "../../header/g_monster.h"
 #include "../../common/angles.h"
 #include "../../common/h2rand.h"
-#include "../../header/g_misc.h"
 #include "../../common/matrix.h"
 
 #include "elflord_anim.h"
@@ -60,7 +59,7 @@ void Elflord_c_throwhead(edict_t *self)
 	mist_yaw = 0;
 
 	VectorClear(gore_spot);
-	ThrowBodyPart(self, &gore_spot, 8, 15, FRAME_idle1);
+	ThrowBodyPart(self, gore_spot, 8, 15, FRAME_idle1);
 	gi.sound(self, CHAN_BODY, gi.soundindex("monsters/elflord/death1.wav"), 1, ATTN_NORM, 0);
 }
 

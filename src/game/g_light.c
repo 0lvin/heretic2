@@ -28,7 +28,6 @@
 
 #include "header/local.h"
 #include "common/effectflags.h"
-#include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
 
 #define LIGHT_STARTOFF	8

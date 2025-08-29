@@ -37,7 +37,6 @@
 #include "common/h2rand.h"
 
 //JWEIER START INCLUDES
-#include "header/g_misc.h"
 //JWEIER END INCLUDES
 #include "header/g_hitlocation.h"
 #include "header/mg_guide.h"

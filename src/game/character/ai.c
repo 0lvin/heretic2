@@ -10,7 +10,6 @@
 #include "../header/local.h"
 #include "../header/g_defaultmessagehandler.h"
 #include "../header/g_monster.h"
-#include "../header/g_misc.h"
 #include "corvus/corvus1_anim.h"
 #include "../player/library/p_main.h"
 

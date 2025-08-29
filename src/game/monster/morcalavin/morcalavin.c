@@ -15,7 +15,6 @@
 #include "../../common/h2rand.h"
 #include "../../header/g_hitlocation.h"
 #include "../../player/library/p_main.h"
-#include "../../header/g_misc.h"
 #include "../stats/stats.h"
 #include "../../header/g_playstats.h"
 #include "../../player/library/p_actions.h"

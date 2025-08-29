@@ -37,7 +37,6 @@
 #include "../common/h2rand.h"
 #include "../header/g_playstats.h"
 #include "../header/g_hitlocation.h"
-#include "../header/g_misc.h"
 #include "../header/g_physics.h"
 #include "../header/g_itemstats.h"
 #include "../common/cl_strings.h"
@@ -757,8 +756,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 
 	if (whichweaps & BIT_BLADSTF && !(self->s.fmnodeinfo[MESH__BLADSTF].flags & FMNI_NO_DRAW))
 	{
-//		self->client->playerinfo.stafflevel = 0;
-		ThrowWeapon(self, &handspot, BIT_BLADSTF, damage, 0);
+		ThrowWeapon(self, handspot, BIT_BLADSTF, damage, 0);
 		self->s.fmnodeinfo[MESH__BLADSTF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
@@ -766,7 +764,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 
 	if (whichweaps & BIT_HELSTF && !(self->s.fmnodeinfo[MESH__HELSTF].flags & FMNI_NO_DRAW))
 	{
-		ThrowWeapon(self, &handspot, BIT_HELSTF, damage, 0);
+		ThrowWeapon(self, handspot, BIT_HELSTF, damage, 0);
 		self->s.fmnodeinfo[MESH__HELSTF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__STAFACTV].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__RHANDHI].flags &= ~FMNI_NO_DRAW;
@@ -774,7 +772,7 @@ player_dropweapon(edict_t *self, int damage, int whichweaps)
 
 	if (whichweaps & BIT_BOWACTV && !(self->s.fmnodeinfo[MESH__BOWACTV].flags & FMNI_NO_DRAW))
 	{
-		ThrowWeapon(self, &handspot, BIT_BOFF, damage, 0);
+		ThrowWeapon(self, handspot, BIT_BOFF, damage, 0);
 		self->s.fmnodeinfo[MESH__BOFF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__BOWACTV].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__LHANDHI].flags &= ~FMNI_NO_DRAW;
@@ -891,7 +889,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				canthrownode_player(self, MESH__HEAD,&throw_nodes);
 
 				gore_spot[2]+=18;
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
@@ -931,7 +929,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				canthrownode_player(self, MESH__RHANDHI,&throw_nodes);
 
 //				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 1);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 1);
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
@@ -969,7 +967,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				canthrownode_player(self, MESH__RHANDHI,&throw_nodes);
 
 //				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 1);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 1);
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
 
@@ -1005,7 +1003,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 					VectorSet(blood_dir, 0, -1, 0);
 					VectorSet(blood_spot, 0, -12, 10);
@@ -1038,7 +1036,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 					VectorSet(blood_dir, 0, 1, 0);
 					VectorSet(blood_spot, 0, 12, 10);
@@ -1077,7 +1075,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -1101,7 +1099,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -1151,7 +1149,7 @@ player_decap(edict_t *self, edict_t *other)
 
 	gore_spot[2]+=18;
 
-	ThrowBodyPart(self, &gore_spot, throw_nodes, 0, 0);
+	ThrowBodyPart(self, gore_spot, throw_nodes, 0, 0);
 
 	VectorAdd(self->s.origin, gore_spot, gore_spot);
 

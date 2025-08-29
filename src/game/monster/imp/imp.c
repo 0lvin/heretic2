@@ -19,7 +19,6 @@ Copyright 1998 Raven Software
 #include "../../header/g_monster.h"
 #include "../../common/h2rand.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../stats/stats.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../../header/g_playstats.h"

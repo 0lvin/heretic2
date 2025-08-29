@@ -18,7 +18,6 @@ Copyright 1998 Raven Software
 #include "corvus2.h"
 #include "corvus2_anim.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../ai.h"
 
 /*----------------------------------------------------------------------

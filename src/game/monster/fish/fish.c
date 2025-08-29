@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "fish.h"
 #include "fish_anim.h"
-#include "../../header/g_misc.h"
 #include "../stats/stats.h"
 
 extern void M_MoveFrame (edict_t *self);

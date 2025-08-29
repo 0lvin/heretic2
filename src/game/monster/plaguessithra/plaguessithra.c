@@ -15,7 +15,6 @@
 
 #include "plaguessithra.h"
 #include "plaguessithra_anim.h"
-#include "../../header/g_misc.h"
 #include "../../header/g_hitlocation.h"
 #include "../stats/stats.h"
 
@@ -1460,7 +1459,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 				self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 				gore_spot[2] += 18;
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
@@ -1489,22 +1488,22 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 					if (irand(0,10)<3)
 					{
 						if (canthrownode(self, MESH__CENTERSPIKE, &throw_nodes))
-							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+							ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 					}
 					if (irand(0,10)<3)
 					{
 						if (canthrownode(self, MESH__RIGHT1SPIKE, &throw_nodes))
-							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+							ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 					}
 					if (irand(0,10)<3)
 					{
 						if (canthrownode(self, MESH__RIGHT2SPIKE, &throw_nodes))
-							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+							ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 					}
 					if (irand(0,10)<3)
 					{
 						if (canthrownode(self, MESH__LEFT1SPIKE, &throw_nodes))
-							ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+							ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 					}
 				}
 			}
@@ -1538,7 +1537,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 					ssithraSplit(self, throw_nodes);
 				else
 				{
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partrest1);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partrest1);
 
 					VectorAdd(self->s.origin, gore_spot, gore_spot);
 					SprayDebris(self,gore_spot,12,damage);
@@ -1566,7 +1565,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			else
@@ -1589,7 +1588,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			else
@@ -1619,7 +1618,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -1642,7 +1641,7 @@ void ssithra_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}

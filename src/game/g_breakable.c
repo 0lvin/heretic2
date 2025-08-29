@@ -10,7 +10,6 @@
 ==============================================================================
 */
 #include "header/local.h"
-#include "header/g_misc.h"
 #include "header/g_defaultmessagehandler.h"
 
 int BREAK_KILLALL		= 1;

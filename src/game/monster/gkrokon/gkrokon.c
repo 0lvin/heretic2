@@ -48,7 +48,6 @@ static mmove_t *Animations[GKROKON_NUM_ANIMS] =
 	&GkrokonMoveDelay
 };
 
-void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame);
 /*
 
 	Spoo functions
@@ -754,7 +753,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
 				VectorMA(gore_spot,-10,right,gore_spot);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				T_Damage(self, self->enemy, self->enemy, vec3_origin, vec3_origin, vec3_origin, 9999, 200, DAMAGE_NORMAL,MOD_DIED);
 				return;
 			}
@@ -772,7 +771,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
 				VectorMA(gore_spot,-10,right,gore_spot);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 			}
 
 			if (!(self->s.fmnodeinfo[MESH__RPINCHERA_P1].flags & FMNI_USE_SKIN))
@@ -788,7 +787,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
 				VectorMA(gore_spot,-10,right,gore_spot);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 			}
 
 			if (!(self->s.fmnodeinfo[MESH__LPINCHERA_P1].flags & FMNI_USE_SKIN))
@@ -804,7 +803,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
 				VectorMA(gore_spot,-10,right,gore_spot);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 			}
 
 			if (!(self->s.fmnodeinfo[MESH__RPINCHERB_P1].flags & FMNI_USE_SKIN))
@@ -820,7 +819,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
 				VectorMA(gore_spot,-10,right,gore_spot);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 			}
 
 			if (!(self->s.fmnodeinfo[MESH__LPINCHERB_P1].flags & FMNI_USE_SKIN))
@@ -836,7 +835,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 				AngleVectors(self->s.angles,NULL,right,NULL);
 				gore_spot[2]+=self->maxs[2]*0.3;
 				VectorMA(gore_spot,-10,right,gore_spot);
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 			}
 			break;
 		case hl_TorsoBack://split in half?
@@ -859,7 +858,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			else
@@ -881,7 +880,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			else
@@ -910,7 +909,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 				break;
 			}
@@ -932,7 +931,7 @@ void beetle_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			break;

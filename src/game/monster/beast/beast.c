@@ -22,7 +22,6 @@ TBEAST
 #include "../../player/library/p_anims.h"
 #include "../../player/library/p_anim_branch.h"
 #include "../../header/g_physics.h"
-#include "../../header/g_misc.h"
 #include "beast.h"
 #include "beast_anim.h"
 #include "../stats/stats.h"

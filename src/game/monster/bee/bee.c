@@ -12,7 +12,6 @@
 #include "../../header/g_monster.h"
 #include "../../common/h2rand.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../stats/stats.h"
 
 static ClassResourceInfo_t resInfo;

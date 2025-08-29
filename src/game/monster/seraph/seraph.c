@@ -15,7 +15,6 @@
 #include "../../header/g_monster.h"
 #include "../../common/h2rand.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 
 #include "../stats/stats.h"
 
@@ -773,7 +772,7 @@ void seraph_dropweapon (edict_t *self)
 		VectorMA(handspot,8,forward,handspot);
 		VectorMA(handspot,5,right,handspot);
 		VectorMA(handspot,12,up,handspot);
-		ThrowWeapon(self, &handspot, BIT_WHIP, 0, FRAME_partfly);
+		ThrowWeapon(self, handspot, BIT_WHIP, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__WHIP].flags |= FMNI_NO_DRAW;
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 		return;
@@ -813,7 +812,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_so(self, MESH__PITHEAD,&throw_nodes);
 
 				gore_spot[2]+=18;
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
@@ -870,7 +869,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 				}
 			}
 			else
@@ -897,7 +896,7 @@ void seraph_dismember(edict_t *self, int damage, int HitLocation)
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
 					seraph_dropweapon (self);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 				}
 			}
 			else

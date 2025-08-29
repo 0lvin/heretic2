@@ -47,7 +47,6 @@
 #include "../../common/h2rand.h"
 #include "rat.h"
 #include "rat_anim.h"
-#include "../../header/g_misc.h"
 #include "../stats/stats.h"
 
 void ai_runaway (edict_t *self, float dist);

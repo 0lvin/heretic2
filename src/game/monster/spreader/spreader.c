@@ -19,7 +19,6 @@
 #include "spreader_anim.h"
 #include "spreadermist.h"
 #include "../../common/matrix.h"
-#include "../../header/g_misc.h"
 #include "../../header/g_hitlocation.h"
 #include "../stats/stats.h"
 #include "../../player/library/p_anim_branch.h"
@@ -725,7 +724,7 @@ void spreader_dropweapon (edict_t *self)
 
 	VectorClear(handspot);
 	VectorMA(handspot, -12, right, handspot);
-	ThrowWeapon(self, &handspot, BIT_BOMB, 0, 0);
+	ThrowWeapon(self, handspot, BIT_BOMB, 0, 0);
 	self->s.fmnodeinfo[MESH__BOMB].flags |= FMNI_NO_DRAW;
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 }
@@ -771,7 +770,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_ps(self, MESH__HEAD,&throw_nodes);
 
 				gore_spot[2]+=18;
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self, gore_spot,(byte)(8),damage);
@@ -802,7 +801,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_ps(self, MESH__TANK1,&throw_nodes);
 				canthrownode_ps(self, MESH__HOSE,&throw_nodes);
 
-				ThrowWeapon(self, &gore_spot, throw_nodes, 0, FRAME_death17);
+				ThrowWeapon(self, gore_spot, throw_nodes, 0, FRAME_death17);
 
 				if (self->health>0)
 					spreaderTakeOff(self);
@@ -826,7 +825,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_ps(self, MESH__TANK1,&throw_nodes);
 				canthrownode_ps(self, MESH__HOSE,&throw_nodes);
 
-				ThrowWeapon(self, &gore_spot, throw_nodes, 0, FRAME_death17);
+				ThrowWeapon(self, gore_spot, throw_nodes, 0, FRAME_death17);
 
 				if (self->health>0)
 					spreaderTakeOff(self);
@@ -853,7 +852,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			else
@@ -875,7 +874,7 @@ void spreader_dismember(edict_t *self, int damage, int HitLocation)
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,10,right,gore_spot);
 					spreader_dropweapon (self);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, 0);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, 0);
 				}
 			}
 			else

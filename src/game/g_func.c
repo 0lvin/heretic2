@@ -26,7 +26,6 @@
  */
 
 #include "header/local.h"
-#include "header/g_misc.h"
 #include "common/h2rand.h"
 #include "header/g_defaultmessagehandler.h"
 #include "monster/stats/stats.h"

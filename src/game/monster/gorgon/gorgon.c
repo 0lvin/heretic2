@@ -49,7 +49,6 @@ GORGON
 #include "../../common/h2rand.h"
 #include "../../header/buoy.h"
 
-#include "../../header/g_misc.h"
 #include "gorgon.h"
 #include "gorgon_anim.h"
 #include "../stats/stats.h"

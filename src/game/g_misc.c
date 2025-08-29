@@ -195,7 +195,6 @@ gib_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unu
 }
 
 #include "header/g_defaultmessagehandler.h"
-#include "header/g_misc.h"
 #include "common/h2rand.h"
 #include "header/g_monster.h"
 #include "header/g_teleport.h"
@@ -3412,7 +3411,8 @@ DefaultObjectDieHandler(edict_t *self, G_Message_t *msg)
 }
 
 void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, int flags);
-void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
+
+void ThrowBodyPart(edict_t *self, vec3_t spot, int BodyPart, float damage, int frame)
 {//add blood spew to sever loc and blood trail on flying part
 	vec3_t	spot2;
 	int	flags;
@@ -3426,7 +3426,7 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/fleshbreak.wav"), 1, ATTN_NORM, 0);
 	}
 
-	VectorAdd(self->s.origin, *spot, spot2);
+	VectorAdd(self->s.origin, spot, spot2);
 
 	if (self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
 		flags = CEF_FLAG6;
@@ -3439,7 +3439,7 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 	if (give_head_to_harpy && take_head_from == self)
 	{
 		harpy_take_head(give_head_to_harpy, self, BodyPart, frame, flags);
-		SprayDebris(self, *spot, 5, damage);
+		SprayDebris(self, spot, 5, damage);
 		return;
 	}
 
@@ -3456,16 +3456,16 @@ void ThrowBodyPart(edict_t *self, vec3_t *spot, int BodyPart, float damage, int 
 }
 
 void
-ThrowWeapon(edict_t *self, vec3_t *spot, int BodyPart, float damage, int frame)
+ThrowWeapon(edict_t *self, vec3_t spot, int BodyPart, float damage, int frame)
 {//same but no blood and metal sound when hits ground
 	vec3_t	spot2;
 
-	if (damage>255)
+	if (damage > 255)
 	{
 		damage = 255;
 	}
 
-	VectorAdd(self->s.origin, *spot, spot2);
+	VectorAdd(self->s.origin, spot, spot2);
 	gi.CreateEffect(NULL,//owner
 					FX_THROWWEAPON,//type
 					0,//can't mess with this, sends only 1st byte and effects message

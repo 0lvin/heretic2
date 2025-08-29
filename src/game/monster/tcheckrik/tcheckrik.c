@@ -34,7 +34,6 @@
 #include "tcheckrik.h"
 #include "tcheckrik_anim.h"
 #include "../../header/g_hitlocation.h"
-#include "../../header/g_misc.h"
 #include "../../character/ai.h"
 
 #include "../stats/stats.h"
@@ -793,7 +792,7 @@ void insect_dropweapon (edict_t *self, int weapon)
 		VectorMA(handspot,8,forward,handspot);
 		VectorMA(handspot,5,right,handspot);
 		VectorMA(handspot,12,up,handspot);
-		ThrowWeapon(self, &handspot, BIT_STAFF, 0, FRAME_partfly);
+		ThrowWeapon(self, handspot, BIT_STAFF, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__STAFF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__GEM].flags |= FMNI_NO_DRAW;
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
@@ -805,7 +804,7 @@ void insect_dropweapon (edict_t *self, int weapon)
 	{
 		VectorMA(handspot,6,forward,handspot);
 		VectorMA(handspot,4,right,handspot);
-		ThrowWeapon(self, &handspot, BIT_SPEAR, 0, FRAME_partfly);
+		ThrowWeapon(self, handspot, BIT_SPEAR, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__SPEAR].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
 		self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
@@ -818,7 +817,7 @@ void insect_dropweapon (edict_t *self, int weapon)
 		VectorMA(handspot,6,forward,handspot);
 		VectorMA(handspot,-6,right,handspot);
 		VectorMA(handspot,-6,up,handspot);
-		ThrowWeapon(self, &handspot, BIT_SWORD, 0, FRAME_partfly);
+		ThrowWeapon(self, handspot, BIT_SWORD, 0, FRAME_partfly);
 		self->s.fmnodeinfo[MESH__MALEHAND].flags |= FMNI_NO_DRAW;
 //		self->s.fmnodeinfo[MESH__SWORD].flags |= FMNI_NO_DRAW;
 //		insect_chicken(self,2,4,flrand(3,8));
@@ -889,7 +888,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 				canthrownode_tc(self, MESH__RMANDIBLE,&throw_nodes);
 
 				gore_spot[2]+=24;
-				ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+				ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,8,damage);
@@ -982,7 +981,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 						gore_spot[2]+=self->maxs[2]*0.3;
 						VectorMA(gore_spot,-10,right,gore_spot);
 //						insect_chicken(self,6,8,flrand(7,15));
-						ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+						ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 						if (self->s.fmnodeinfo[MESH__R2NDARM].flags & FMNI_NO_DRAW&&
 							!(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
 							insect_dropweapon (self, BIT_SPEAR);
@@ -1047,7 +1046,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 						gore_spot[2]+=self->maxs[2]*0.3;
 						VectorMA(gore_spot,-10,right,gore_spot);
 //						insect_chicken(self,6,8,flrand(7,15));
-						ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+						ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 						if (self->s.fmnodeinfo[MESH__L2NDARM].flags & FMNI_NO_DRAW&&
 							!(self->s.fmnodeinfo[MESH__SPEAR].flags & FMNI_NO_DRAW))
 							insect_dropweapon (self, BIT_SPEAR);
@@ -1082,7 +1081,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 				}
 			}
 			break;
@@ -1105,7 +1104,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 					AngleVectors(self->s.angles,NULL,right,NULL);
 					gore_spot[2]+=self->maxs[2]*0.3;
 					VectorMA(gore_spot,-10,right,gore_spot);
-					ThrowBodyPart(self, &gore_spot, throw_nodes, damage, FRAME_partfly);
+					ThrowBodyPart(self, gore_spot, throw_nodes, damage, FRAME_partfly);
 				}
 			}
 			break;
