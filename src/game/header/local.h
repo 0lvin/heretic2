@@ -1189,7 +1189,6 @@ extern cvar_t *maxentities;
 extern cvar_t *deathmatch;
 extern cvar_t *coop;
 extern cvar_t *coop_baseq2;	/* treat spawnflags according to baseq2 rules */
-extern cvar_t *coop_pickup_weapons;
 extern cvar_t *coop_elevator_delay;
 extern cvar_t *coop_pickup_weapons;
 extern cvar_t *dmflags;
@@ -1603,7 +1602,6 @@ void InitClientPersistant(edict_t *ent);
 void InitClientResp(gclient_t *client);
 void InitBodyQue(void);
 void ClientBeginServerFrame(edict_t *ent);
-void ClientUserinfoChanged(edict_t *ent, char *userinfo);
 
 /* g_player.c */
 void player_pain(edict_t *self, edict_t *other, float kick, int damage);
@@ -2766,7 +2764,6 @@ extern dm_game_rt DMGame;
 
 void Tag_GameInit(void);
 void Tag_PostInitSetup(void);
-void Tag_PlayerDeath(edict_t *targ, edict_t *inflictor, edict_t *attacker);
 void Tag_Score(edict_t *attacker, edict_t *victim, int scoreChange);
 void Tag_PlayerEffects(edict_t *ent);
 void Tag_DogTag(edict_t *ent, edict_t *killer, char **pic);
@@ -3088,11 +3085,8 @@ edict_t *finddistance(edict_t *from, vec3_t org, float mindist, float maxdist);
 edict_t *findonpath(edict_t *startent, vec3_t startpos, vec3_t endpos, vec3_t mins, vec3_t maxs, vec3_t *resultpos);
 
 //commonly used functions
-int range(edict_t *self, edict_t *other);
 qboolean clear_visible(edict_t *self, edict_t *other);
-qboolean visible(edict_t *self, edict_t *other);
 qboolean visible_pos(edict_t *self, vec3_t spot2);
-qboolean infront(edict_t *self, edict_t *other);
 qboolean infront_pos(edict_t *self, vec3_t pos);
 qboolean ahead(edict_t *self, edict_t *other);
 
@@ -3107,7 +3101,6 @@ void T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker,
 							float maxdamage, float mindamage, int dflags,int MeansOfDeath);
 void PauseTime(edict_t *self, float time);
 
-qboolean FindTarget(edict_t *self);
 void MG_PostDeathThink(edict_t *self);
 qboolean movable (edict_t *ent);
 qboolean EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer);
