@@ -1,66 +1,50 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-#
-# Find more information at:
-# https://github.com/microsoft/msvc-code-analysis-action
-
-name: Microsoft C++ Code Analysis
-
+name: Coverity for Linux (aarch64)
+run-name: Coverity_linux_aarch64
 on:
   push:
-    branches: [ "master", "action" ]
-  pull_request:
-    branches: [ "master", "action" ]
-  schedule:
-    - cron: '31 12 * * 2'
-
-env:
-  # Path to the CMake build directory.
-  build: '${{ github.workspace }}/build'
-
-permissions:
-  contents: read
-
+    branches:
+      - 'master'
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
 jobs:
-  analyze:
+  build_ubuntu_aarch64:
+    runs-on: ubuntu-24.04-arm
     permissions:
-      contents: read # for actions/checkout to fetch code
-      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
-    name: Analyze
-    runs-on: windows-latest
-
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - env: ubuntu
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Configure CMake
-        run: cmake -B ${{ env.build }}
-
-      # Build is not required unless generated source files are used
-      # - name: Build CMake
-      #   run: cmake --build ${{ env.build }}
-
-      - name: Initialize MSVC Code Analysis
-        uses: microsoft/msvc-code-analysis-action@04825f6d9e00f87422d6bf04e1a38b1f3ed60d99
-        # Provide a unique ID to access the sarif output path
-        id: run-analysis
-        with:
-          cmakeBuildDirectory: ${{ env.build }}
-          # Ruleset file that will determine what checks will be run
-          ruleset: NativeRecommendedRules.ruleset
-
-      # Upload SARIF file to GitHub Code Scanning Alerts
-      - name: Upload SARIF to GitHub
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: ${{ steps.run-analysis.outputs.sarif }}
-
-      # Upload SARIF file as an Artifact to download and view
-      # - name: Upload SARIF as an Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: sarif-file
-      #     path: ${{ steps.run-analysis.outputs.sarif }}
+    - name: Install build dependencies
+      run: |
+        sudo apt update
+        sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev \
+            libavformat-dev libswscale-dev libvulkan-dev build-essential
+    - name: Check out repository code
+      uses: actions/checkout@v4
+    - name: Download coverity
+      run: |
+        wget https://scan.coverity.com/download/cxx/linux-ARM64 \
+          --post-data "token=${{secrets.COVERITY_SCAN_TOKEN}}&project=${{github.repository}}" \
+          -O coverity_tool.tgz -cq
+        tar -xf coverity_tool.tgz
+        mv -v cov-analysis-linux-arm64-* cov-analysis-linux-arm64
+    - name: Build
+      run: |
+        rm -rf cov-int
+        make clean
+        cov-analysis-linux-arm64/bin/cov-build --dir cov-int make -j 4
+    - name: Upload result
+      run: |
+        tar -czf cov-int.tgz cov-int
+        curl --form token=${{secrets.COVERITY_SCAN_TOKEN}} \
+          --form email=${{secrets.COVERITY_SCAN_EMAIL}} \
+          --form file=@cov-int.tgz \
+          --form version="${{github.sha}}" \
+          --form description="${{github.sha}}" \
+          https://scan.coverity.com/builds?project=${{github.repository}}
