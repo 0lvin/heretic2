@@ -10,11 +10,11 @@ name: Microsoft C++ Code Analysis
 
 on:
   push:
-    branches: [ "action" ]
+    branches: [ "master", "action" ]
   pull_request:
-    branches: [ "action" ]
+    branches: [ "master", "action" ]
   schedule:
-    - cron: '42 7 * * 1'
+    - cron: '31 12 * * 2'
 
 env:
   # Path to the CMake build directory.
