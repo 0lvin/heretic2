@@ -46,15 +46,11 @@ jobs:
     - name: Configure CMake
       run: cmake -A Win32 -DYQUAKE2LIBS="../dhewm3-libs-master/i686-w64-mingw32/" -S . -B build
 
-    - name: Build with MSVC
-      run: time cmake --build build/ --config RelWithDebInfo
-
     - name: Run MSVC Code Analysis
       uses: microsoft/msvc-code-analysis-action@04825f6d9e00f87422d6bf04e1a38b1f3ed60d99
       id: run-analysis
       with:
         cmakeBuildDirectory: build
-        buildConfiguration: RelWithDebInfo
         ruleset: NativeRecommendedRules.ruleset
 
     - name: Upload SARIF to GitHub Code Scanning
