@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'action'
   pull_request:
     types:
       - edited
