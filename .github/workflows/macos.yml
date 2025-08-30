@@ -20,7 +20,7 @@ jobs:
     runs-on: macos-latest
     permissions:
       actions: read
-      contents: read
+      contents: write
     strategy:
       fail-fast: false
       matrix:
