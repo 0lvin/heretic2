@@ -1,0 +1,59 @@
+name: Testbuild for x86 and x86_64 Windows with MSVC
+run-name: testbuild_windows
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  build_win_x86_msvc:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+
+    steps:
+    - name: Install build dependencies
+      run: |
+        cd ..
+        curl -o dhewm3libs.zip https://codeload.github.com/dhewm/dhewm3-libs/zip/refs/heads/master
+        unzip dhewm3libs.zip "dhewm3-libs-master/i686-w64-mingw32/**" -x "dhewm3-libs-master/i686-w64-mingw32/share/**"
+        curl -o vulkan_headers.zip https://codeload.github.com/KhronosGroup/Vulkan-Headers/zip/refs/heads/master
+        unzip vulkan_headers.zip "Vulkan-Headers-master/include/**"
+        cp -rv Vulkan-Headers-master/include/* dhewm3-libs-master/i686-w64-mingw32/include/
+
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Configure CMake
+      run: cmake -A Win32 -DYQUAKE2LIBS="../dhewm3-libs-master/i686-w64-mingw32/" -S . -B build
+
+    - name: Run MSVC Code Analysis
+      uses: microsoft/msvc-code-analysis-action@v0.1.1
+      id: run-analysis
+      with:
+        cmakeBuildDirectory: build
+        buildConfiguration: RelWithDebInfo
+        ruleset: NativeRecommendedRules.ruleset
+
+    - name: Upload SARIF to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.run-analysis.outputs.sarif }}
