@@ -10,9 +10,9 @@ name: Microsoft C++ Code Analysis
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "action" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "action" ]
   schedule:
     - cron: '42 7 * * 1'
 
