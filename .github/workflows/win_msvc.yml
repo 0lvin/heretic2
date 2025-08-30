@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'msvc'
+      - 'action'
   pull_request:
     types:
       - edited
@@ -45,13 +46,23 @@ jobs:
         cp -rv Vulkan-Headers-master/include/* dhewm3-libs-master/i686-w64-mingw32/include/
     - name: Check out repository code
       uses: actions/checkout@v4
-    - name: Build
+    - name: Configure CMake
       run: |
         # build with cmake and visual studio
         #echo $PWD # /d/a/dhewm3/dhewm3
         # NOTE: not setting -G "Visual Studio 17 2022" so it just uses the default VS version it can find
         cmake -A Win32 -DYQUAKE2LIBS="../dhewm3-libs-master/i686-w64-mingw32/" -S . -B build
-        time cmake --build build/ --config RelWithDebInfo
+    - name: Run MSVC Code Analysis
+      uses: microsoft/msvc-code-analysis-action@v0.1.1
+      id: run-analysis
+      with:
+        cmakeBuildDirectory: build
+        buildConfiguration: RelWithDebInfo
+        ruleset: NativeRecommendedRules.ruleset
+    - name: Upload SARIF to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.run-analysis.outputs.sarif }}
     - name: Create testbuild package
       run: |
         # Create release directory tree
@@ -131,12 +142,22 @@ jobs:
         cp -rv Vulkan-Headers-master/include/* dhewm3-libs-master/x86_64-w64-mingw32/include/
     - name: Check out repository code
       uses: actions/checkout@v4
-    - name: Build
+    - name: Configure CMake
       run: |
         # build with cmake and visual studio
         # NOTE: not setting -G "Visual Studio 17 2022" so it just uses the default VS version it can find
         cmake -A x64 -DYQUAKE2LIBS="../dhewm3-libs-master/x86_64-w64-mingw32/" -S . -B build
-        time cmake --build build/ --config RelWithDebInfo
+    - name: Run MSVC Code Analysis
+      uses: microsoft/msvc-code-analysis-action@v0.1.1
+      id: run-analysis
+      with:
+        cmakeBuildDirectory: build
+        buildConfiguration: RelWithDebInfo
+        ruleset: NativeRecommendedRules.ruleset
+    - name: Upload SARIF to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: ${{ steps.run-analysis.outputs.sarif }}
     - name: Create testbuild package
       run: |
         # Create release directory tree
