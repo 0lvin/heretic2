@@ -35,10 +35,11 @@ It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
 Drawbacks, sorted by priority:
- * [ ] fix attack angle direction,
- * [ ] no action on button press,
+ * [ ] remove client->playerinfo.c_mode hack,
+ * [ ] fix acrobatic
+ * [ ] fix rope
+ * [ ] fix puzzles
  * [ ] game memory management, fix or replace singlelinkedlist,
- * [ ] broken jumps,
  * [ ] save code broken as not all callbacks registered
  * [ ] effects is not started sometime,
  * [ ] only gl1 has full support render
@@ -54,6 +55,9 @@ Drawbacks, sorted by priority:
  * [ ] no menu implementations
  * [ ] no books implementations
  * [ ] code is little bit mess
+ * [x] fix attack angle direction,
+ * [x] no action on button press,
+ * [x] broken jumps,
  * [x] effects protocol is different to quake 2,
  * [x] code use different angles values to quake2,
  * [x] ANGLE_1 usage in client code,

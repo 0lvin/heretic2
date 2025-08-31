@@ -1591,7 +1591,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		int damage, vec3_t point /* unused */)
 {
 	//FIXME: Make sure you can still dismember and gib player while dying
-	int i;
+	int n;
 
 	if (!self || !inflictor || !attacker)
 	{
@@ -1659,18 +1659,18 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	}
 
 	// remove any persistant meteor effects
-	for (i = 0; i < 4; i++)
+	for (n = 0; n < 4; n++)
 	{
-		if (self->client->Meteors[i])
+		if (self->client->Meteors[n])
 		{
-			if (self->client->Meteors[i]->PersistantCFX)
+			if (self->client->Meteors[n]->PersistantCFX)
 			{
-				G_RemovePersistantEffect(self->client->Meteors[i]->PersistantCFX, REMOVE_METEOR);
-				G_RemoveEffects(self, FX_SPELL_METEORBARRIER+i);
-				self->client->Meteors[i]->PersistantCFX = 0;
+				G_RemovePersistantEffect(self->client->Meteors[n]->PersistantCFX, REMOVE_METEOR);
+				G_RemoveEffects(self, FX_SPELL_METEORBARRIER + n);
+				self->client->Meteors[n]->PersistantCFX = 0;
 			}
-			G_SetToFree(self->client->Meteors[i]);
-			self->client->Meteors[i] = NULL;
+			G_SetToFree(self->client->Meteors[n]);
+			self->client->Meteors[n] = NULL;
 		}
 	}
 
@@ -1900,7 +1900,6 @@ InitClientPersistant(edict_t *ent)
 	memset(&client->pers, 0, sizeof(client->pers));
 	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
 
-
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 	item = FindItem("staff");
 	client->pers.selected_item = ITEM_INDEX(item);
@@ -2045,7 +2044,7 @@ SaveClientData(void)
 			(ent->flags & (FL_FLASHLIGHT | FL_GODMODE | FL_NOTARGET | FL_POWER_ARMOR));
 
 		if (coop->value && game.clients[i].pers.health < 25)
-			game.clients[i].pers.health=25;
+			game.clients[i].pers.health = 25;
 		game.clients[i].pers.mission_num1 = ent->client->ps.mission_num1;
 		game.clients[i].pers.mission_num2 = ent->client->ps.mission_num2;
 
@@ -2733,12 +2732,10 @@ respawn(edict_t *self)
 
 		gi.sound(self,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 
-		// Add a teleportation effect.
-
+		/* add a teleportation effect */
 		gi.CreateEffect(self, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, self->s.origin, NULL);
 
-		// Hold in place briefly.
-
+		/* hold in place briefly */
 		self->client->ps.pmove.pm_time = 50;
 
 		return;
@@ -3408,7 +3405,7 @@ PutClientInServer(edict_t *ent)
 	saved = client->pers;
 	psaved = client->playerinfo.pers;
 	plaguelevel = client->playerinfo.plaguelevel;	// Save me too.
-	memset(client, 0, sizeof(gclient_t));
+	memset(client, 0, sizeof(*client));
 	client->playerinfo.pers = psaved;
 	client->pers = saved;
 
@@ -3476,6 +3473,9 @@ PutClientInServer(edict_t *ent)
 	VectorCopy(mins, ent->intentMins);
 	VectorCopy(maxs, ent->intentMaxs);
 	VectorClear(ent->velocity);
+
+	/* clear playerstate values */
+	memset(&ent->client->ps, 0, sizeof(client->ps));
 
 	// ********************************************************************************************
 	// Initialize the player's gclient_t and playerstate_t.
@@ -4667,14 +4667,22 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			ent->groundentity_linkcount = pm.groundentity->linkcount;
 		}
 
-		if (!ent->deadflag)
+		if (ent->deadflag)
+		{
+			client->ps.viewangles[ROLL] = 40;
+			client->ps.viewangles[PITCH] = -15;
+			client->ps.viewangles[YAW] = client->killer_yaw;
+		}
+		else
 		{
 			VectorCopy(pm.viewangles, client->v_angle);
+			VectorCopy(pm.viewangles, client->ps.viewangles);
+		}
 
-			client->aimangles[0] = SHORT2ANGLE(ucmd->angles[0]);
-			client->aimangles[1] = SHORT2ANGLE(ucmd->angles[1]);
-			client->aimangles[2] = SHORT2ANGLE(ucmd->angles[2]);
-			VectorCopy(client->aimangles, client->ps.viewangles);
+		if (client->playerinfo.c_mode)
+		{
+			/* Temporary hack for fix angles after cinematic */
+			VectorCopy(client->resp.cmd_angles, client->ps.viewangles);
 		}
 
 		if (client->ctf_grapple)
@@ -4745,8 +4753,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	if (client->playerinfo.autoaim)
 	{
-		// Autoaiming is active so look for an enemy to autotarget.
-
+		/* Autoaiming is active so look for an enemy to autotarget. */
 		TargetEnt=FindNearestVisibleActorInFrustum(ent,
 												   ent->client->ps.viewangles,
 												   0.0, 500.0,
@@ -4755,16 +4762,26 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 												   SVF_MONSTER,
 												   LOSOrigin,
 												   NULL,NULL);
-		if (TargetEnt!=NULL)
+		if (TargetEnt != NULL)
 		{
-			// An enemy was successfully autotargeted, so store away the pointer to our enemy.
-
+			/* An enemy was successfully autotargeted, so store away the pointer to our enemy. */
 			ent->enemy=TargetEnt;
 			client->ps.AutotargetEntityNum=ent->enemy->s.number;
 		}
 	}
 
 	CalculatePIV(ent);
+
+	/* update chase cam if being followed */
+	for (i = 1; i <= maxclients->value; i++)
+	{
+		other = g_edicts + i;
+
+		if (other->inuse && (other->client->chase_target == ent))
+		{
+			UpdateChaseCam(other);
+		}
+	}
 
 	//JABot[start]
 	AITools_DropNodes(ent);

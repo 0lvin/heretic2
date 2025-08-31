@@ -450,8 +450,6 @@ InitGame(void)
 
 	AI_Init();//JABot
 
-	level.cinActive = false;
-
 	Load_Strings();
 }
 

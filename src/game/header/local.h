@@ -800,8 +800,6 @@ typedef struct
 	float		fog;
 	float		fog_density;
 
-	qboolean	cinActive;
-
 	buoy_t		buoy_list[MAX_MAP_BUOYS];	//Buoy information for this map
 	int		active_buoys;				//Number of actual buoys on the level
 	int		fucked_buoys;				//Number of buoys that can't be fixed
@@ -2347,7 +2345,6 @@ struct gclient_s
 	//
 	usercmd_t			pcmd;
 	short				oldcmdangles[3];
-	vec3_t				aimangles;				// Spell / weapon aiming direction.
 
 	//  Remote and walkby camera stuff.
 	int					RemoteCameraLockCount;
