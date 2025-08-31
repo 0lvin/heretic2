@@ -3810,7 +3810,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 	locid=va_arg(Marker,int);
 	va_end(Marker);
 
-	AngleVectors(caster->client->aimangles, fwd, right, up);
+	AngleVectors(caster->client->ps.viewangles, fwd, right, up);
 
 	// Set up the area to check.
 	VectorCopy(swordpositions[locid], atkpos);
@@ -3859,12 +3859,12 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 				VectorSubtract(caster->s.origin, trace.ent->s.origin, hitdir);
 				VectorNormalize(hitdir);
 				VectoAngles(hitdir, hitangles);
-				diffangles[YAW] = hitangles[YAW] - trace.ent->client->aimangles[YAW];
+				diffangles[YAW] = hitangles[YAW] - trace.ent->client->ps.viewangles[YAW];
 				if (diffangles[YAW] > 180.0)
 					diffangles[YAW] -= 360.0;
 				else if (diffangles[YAW] < -180.0)
 					diffangles[YAW] += 360.0;
-				diffangles[PITCH] = hitangles[PITCH] - trace.ent->client->aimangles[PITCH];
+				diffangles[PITCH] = hitangles[PITCH] - trace.ent->client->ps.viewangles[PITCH];
 
 				if (diffangles[YAW] > -60.0 &&
 						diffangles[YAW] < 60.0 &&
@@ -4184,10 +4184,10 @@ WeaponThink_FlyingFist(edict_t *caster)
 
 	Weapon_CalcStartPos(OriginToLowerJoint, OriginToUpperJoint, DefaultStartPos, StartPos, caster);
 
-	AngleVectors(caster->client->aimangles,Forward,NULL,NULL);
+	AngleVectors(caster->client->ps.viewangles, Forward, NULL, NULL);
 
 	StartPos[2] += caster->viewheight - 14.0;
-	SpellCastFlyingFist(caster, StartPos,caster->client->aimangles,Forward,0.0);
+	SpellCastFlyingFist(caster, StartPos, caster->client->ps.viewangles, Forward,0.0);
 
 	// Take off mana, but if there is none, then fire a wimpy fizzle-weapon.
 	if (caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] > 0)
@@ -4220,10 +4220,10 @@ WeaponThink_Maceballs(edict_t *caster)
 		// Set up the ball's starting position and aiming angles then cast the spell.
 		Weapon_CalcStartPos(OriginToLowerJoint, OriginToUpperJoint, defaultstartpos2, startpos, caster);
 
-		AngleVectors(caster->client->aimangles, fwd, NULL, NULL);
+		AngleVectors(caster->client->ps.viewangles, fwd, NULL, NULL);
 		startpos[2] += caster->viewheight - 14.0;
 
-		SpellCastMaceball(caster, startpos, caster->client->aimangles, NULL, 0.0);
+		SpellCastMaceball(caster, startpos, caster->client->ps.viewangles, NULL, 0.0);
 		// Giant iron dooms require lotsa mana, but yer average ripper needs far less.
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 			caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
@@ -4234,10 +4234,10 @@ WeaponThink_Maceballs(edict_t *caster)
 		// Set up the ball's starting position and aiming angles then cast the spell.
 		Weapon_CalcStartPos(OriginToLowerJoint, OriginToUpperJoint,defaultstartpos,startpos,caster);
 
-		AngleVectors(caster->client->aimangles, fwd, NULL, NULL);
+		AngleVectors(caster->client->ps.viewangles, fwd, NULL, NULL);
 		startpos[2] += caster->viewheight - 14.0;
 
-		SpellCastRipper(caster, startpos, caster->client->aimangles, NULL);
+		SpellCastRipper(caster, startpos, caster->client->ps.viewangles, NULL);
 		if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 			caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -=
 					caster->client->playerinfo.pers.weapon->quantity;		// Un-powered
@@ -4283,7 +4283,7 @@ WeaponThink_MagicMissileSpreadEx(edict_t *caster,char *format,...)
 	Weapon_CalcStartPos(OriginToLowerJoint,OriginToUpperJoint,DefaultStartPos,StartPos,caster);
 	StartPos[2] += caster->viewheight - 14.0;
 
-	VectorCopy(caster->client->aimangles, fireangles);
+	VectorCopy(caster->client->ps.viewangles, fireangles);
 	fireangles[YAW] += missilepos*MISSILE_YAW;
 	fireangles[PITCH] += missilepos*MISSILE_PITCH;
 	AngleVectors(fireangles, fwd, NULL, NULL);
@@ -4328,11 +4328,11 @@ WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
 
 	// Set up the Sphere-of-annihilation's aiming angles then cast the spell.
 
-	AngleVectors(caster->client->aimangles,Forward,NULL,NULL);
+	AngleVectors(caster->client->ps.viewangles,Forward,NULL,NULL);
 
 	SpellCastSphereOfAnnihilation(caster,
 								 NULL,
-								 caster->client->aimangles,		//v_angle,
+								 caster->client->ps.viewangles,		//v_angle,
 								 Forward,
 								 0.0,
 								 ReleaseFlagsPtr);
@@ -4355,7 +4355,7 @@ WeaponThink_SphereOfAnnihilation(edict_t *caster)
 void
 WeaponThink_Firewall(edict_t *caster)
 {
-	SpellCastWall(caster, caster->s.origin, caster->client->aimangles, NULL, 0.0);
+	SpellCastWall(caster, caster->s.origin, caster->client->ps.viewangles, NULL, 0.0);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
@@ -4371,12 +4371,12 @@ WeaponThink_RedRainBow(edict_t *caster)
 {
 	vec3_t	StartPos, Forward, Right;
 
-	AngleVectors(caster->client->aimangles, Forward, Right, NULL);
+	AngleVectors(caster->client->ps.viewangles, Forward, Right, NULL);
 	VectorMA(caster->s.origin, 25.0F, Forward, StartPos);
 	VectorMA(StartPos, 6.0F, Right, StartPos);
 	StartPos[2] += caster->viewheight + 4.0;
 
-	SpellCastRedRain(caster, StartPos, caster->client->aimangles, NULL, 0.0F);
+	SpellCastRedRain(caster, StartPos, caster->client->ps.viewangles, NULL, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
@@ -4392,12 +4392,12 @@ WeaponThink_PhoenixBow(edict_t *caster)
 {
 	vec3_t	StartPos, Forward, Right;
 
-	AngleVectors(caster->client->aimangles, Forward, Right, NULL);
+	AngleVectors(caster->client->ps.viewangles, Forward, Right, NULL);
 	VectorMA(caster->s.origin, 25.0F, Forward, StartPos);
 	VectorMA(StartPos, 6.0F, Right, StartPos);
 	StartPos[2] += caster->viewheight + 4.0;
 
-	SpellCastPhoenix(caster, StartPos, caster->client->aimangles, Forward, 0.0F);
+	SpellCastPhoenix(caster, StartPos, caster->client->ps.viewangles, Forward, 0.0F);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
@@ -4416,11 +4416,11 @@ void WeaponThink_HellStaff(edict_t *caster)
 
 	// Set up the Hellstaff's starting position and aiming angles then cast the spell.
 //	VectorSet(off, 34.0, -6.0, 0.0);
-//	VectorGetOffsetOrigin(off, caster->s.origin, caster->client->aimangles[YAW], StartPos);
+//	VectorGetOffsetOrigin(off, caster->s.origin, caster->client->ps.viewangles[YAW], StartPos);
 
 	// Two-thirds of the player angle is torso movement.
-/*	startangle[PITCH] = (caster->client->aimangles[PITCH] - caster->s.angles[PITCH]) * 2.0 / 3.0;
-	startangle[YAW] = caster->client->aimangles[YAW] - caster->s.angles[YAW];
+/*	startangle[PITCH] = (caster->client->ps.viewangles[PITCH] - caster->s.angles[PITCH]) * 2.0 / 3.0;
+	startangle[YAW] = caster->client->ps.viewangles[YAW] - caster->s.angles[YAW];
 	if (startangle[YAW] > 180.0)
 		startangle[YAW] -= 360.0;
 	else if (startangle[YAW] < -180.0)
@@ -4430,12 +4430,12 @@ void WeaponThink_HellStaff(edict_t *caster)
 */
 //	VectorAdd(startangle, caster->s.angles, startangle);
 //	AngleVectors(startangle, fwd, right, NULL);
-	AngleVectors(caster->client->aimangles, fwd, right, NULL);
+	AngleVectors(caster->client->ps.viewangles, fwd, right, NULL);
 	VectorMA(caster->s.origin,30,fwd,StartPos);
 	VectorMA(StartPos,10,right,StartPos);
 	StartPos[2] += caster->viewheight - 14.0;
 
-	SpellCastHellstaff(caster, StartPos, caster->client->aimangles, NULL);
+	SpellCastHellstaff(caster, StartPos, caster->client->ps.viewangles, NULL);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;
@@ -4457,7 +4457,7 @@ WeaponThink_Blast(edict_t *caster)
 	assert(caster->client);
 
 	// Find the firing position first.
-	AngleVectors(caster->client->aimangles, fwd, right, NULL);
+	AngleVectors(caster->client->ps.viewangles, fwd, right, NULL);
 	VectorMA(caster->s.origin,10,fwd,startpos);
 	VectorMA(startpos, -4.0F, right, startpos);
 	startpos[2] += caster->viewheight;
@@ -4475,7 +4475,7 @@ WeaponThink_Blast(edict_t *caster)
 	}
 
 	// This weapon does not autotarget
-	SpellCastBlast(caster, startpos, caster->client->aimangles, NULL);
+	SpellCastBlast(caster, startpos, caster->client->ps.viewangles, NULL);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index] -= caster->client->playerinfo.pers.weapon->quantity;

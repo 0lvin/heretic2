@@ -4748,7 +4748,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		// Autoaiming is active so look for an enemy to autotarget.
 
 		TargetEnt=FindNearestVisibleActorInFrustum(ent,
-												   ent->client->aimangles,
+												   ent->client->ps.viewangles,
 												   0.0, 500.0,
 												   35 * ANGLE_TO_RAD,
 												   160 * ANGLE_TO_RAD,

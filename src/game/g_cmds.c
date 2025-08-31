@@ -2593,14 +2593,15 @@ Cmd_PrefWeap_f(edict_t *ent)
 	}
 }
 
-void
+static void
 Cmd_ShowCoords_f(edict_t *ent)
 {
 	assert(ent->client);
 
 	Com_Printf("Player Location:  (%d, %d, %d)\n",
 			(int)(ent->s.origin[0]), (int)(ent->s.origin[1]), (int)(ent->s.origin[2]));
-	Com_Printf("       Angle:  Facing=%2.2f, Pitch=%2.2f\n", ent->client->aimangles[YAW], -ent->client->aimangles[PITCH]);
+	Com_Printf("       Angle:  Facing=%2.2f, Pitch=%2.2f\n",
+		ent->client->ps.viewangles[YAW], -ent->client->ps.viewangles[PITCH]);
 }
 
 void

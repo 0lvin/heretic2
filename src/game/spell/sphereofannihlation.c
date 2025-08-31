@@ -46,7 +46,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 
 
 	if (self->owner->client)
-		AngleVectors(self->owner->client->aimangles,Forward,NULL,Up);
+		AngleVectors(self->owner->client->ps.viewangles,Forward,NULL,Up);
 	else
 		AngleVectors(self->owner->s.angles,Forward,NULL,Up);
 
@@ -102,7 +102,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 
 		//Check ahead first to see if it's going to hit anything at this angle
 		if (self->owner->client)
-			VectorCopy(self->owner->client->aimangles, angles);
+			VectorCopy(self->owner->client->ps.viewangles, angles);
 		else
 			VectorCopy(self->owner->s.angles, angles);
 		AngleVectors(angles, Forward, NULL, NULL);
@@ -114,7 +114,7 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 		}
 		else
 		{//autotarget current enemy
-			GetAimVelocity(self->owner->enemy, self->s.origin, SPHERE_FLY_SPEED, self->owner->client->aimangles, self->velocity);
+			GetAimVelocity(self->owner->enemy, self->s.origin, SPHERE_FLY_SPEED, self->owner->client->ps.viewangles, self->velocity);
 		}
 		VectorNormalize2(self->velocity, self->movedir);
 
@@ -260,7 +260,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 	edict_t *laser;
 
 	if (self->owner->client)
-		AngleVectors(self->owner->client->aimangles,Forward,Right,Up);
+		AngleVectors(self->owner->client->ps.viewangles,Forward,Right,Up);
 	else
 		AngleVectors(self->owner->s.angles,Forward,Right,Up);
 
@@ -307,7 +307,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 		laser->count = self->count-SPHERE_COUNT_MIN;
 		VectorMA(self->s.origin, 10.0, Right, laser->s.origin);
 		if (self->owner->client)
-			VectorCopy(self->owner->client->aimangles, laser->s.angles);
+			VectorCopy(self->owner->client->ps.viewangles, laser->s.angles);
 		else
 			VectorCopy(self->owner->s.angles, laser->s.angles);
 		VectorScale(Right, SPHERE_LASER_SPEED, laser->velocity);
@@ -326,7 +326,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 		laser->count = self->count-SPHERE_COUNT_MIN;
 		VectorMA(self->s.origin, -10.0, Right, laser->s.origin);
 		if (self->owner->client)
-			VectorCopy(self->owner->client->aimangles, laser->s.angles);
+			VectorCopy(self->owner->client->ps.viewangles, laser->s.angles);
 		else
 			VectorCopy(self->owner->s.angles, laser->s.angles);
 		VectorScale(Right, -SPHERE_LASER_SPEED, laser->velocity);
@@ -616,7 +616,7 @@ static void SphereWatcherGrowThink(edict_t *self)
 
 
 	if (self->owner->client)
-		AngleVectors(self->owner->client->aimangles,Forward,NULL,Up);
+		AngleVectors(self->owner->client->ps.viewangles,Forward,NULL,Up);
 	else
 		AngleVectors(self->owner->s.angles,Forward,NULL,Up);
 

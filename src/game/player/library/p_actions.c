@@ -2596,7 +2596,7 @@ void PlayerJumpMoveForce(playerinfo_t *playerinfo, float fwd, float right, float
 
 	vec3_t fwdv, rightv, angles;
 
-	VectorCopy(playerinfo->self->client->aimangles, angles);
+	VectorCopy(playerinfo->self->client->ps.viewangles, angles);
 	angles[PITCH] = 0;
 
 	AngleVectors(angles, fwdv, rightv, NULL);

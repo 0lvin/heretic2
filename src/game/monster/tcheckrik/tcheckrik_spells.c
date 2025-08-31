@@ -246,7 +246,7 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 	}
 
 	if (self->owner->client)
-		AngleVectors(self->owner->client->aimangles,Forward,NULL,Up);
+		AngleVectors(self->owner->client->ps.viewangles,Forward,NULL,Up);
 	else
 		AngleVectors(self->owner->s.angles,Forward,NULL,Up);
 
@@ -255,8 +255,6 @@ static void GlobeOfOuchinessGrowThink(edict_t *self)
 
 	if (!self->owner->damage_debounce_time)
 	{
-//		self->svflags |= SVF_NOCLIENT;
-
 		self->count+=irand(1,2);
 
 		if ((self->count > 10) && (AVG_VEC3T(self->rrs.scale) < GLOBE_MAX_SCALE))

@@ -40,7 +40,7 @@ void DefenceThink_Tornado(edict_t *Caster)
 
 	// Set up the Tornado's starting position and aiming angles then cast the spell.
 
-	SpellCastDropTornado(Caster, Caster->s.origin, Caster->client->aimangles, NULL, 0.0);
+	SpellCastDropTornado(Caster, Caster->s.origin, Caster->client->ps.viewangles, NULL, 0.0);
 
 	// Take off mana
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
@@ -100,7 +100,7 @@ void DefenceThink_Morph(edict_t *Caster)
 
 	// Set up the Meteor-barrier's aiming angles and starting position then cast the spell.
 
-	SpellCastMorph(Caster, Caster->s.origin, Caster->client->aimangles, NULL, 0.0F);
+	SpellCastMorph(Caster, Caster->s.origin, Caster->client->ps.viewangles, NULL, 0.0F);
 
 	assert(playerinfo->def_ammo_index);
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
