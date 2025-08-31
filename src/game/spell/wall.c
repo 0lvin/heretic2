@@ -220,10 +220,6 @@ void CastFireBlast(edict_t *caster, vec3_t startpos, vec3_t aimangles)
 }
 
 
-
-
-
-
 // ****************************************************************************
 // FireWall
 // Powered up
@@ -500,8 +496,6 @@ rightwall:
 
 	WallMissileThink(wall);
 }
-
-
 
 
 // ****************************************************************************

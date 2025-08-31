@@ -1000,7 +1000,6 @@ void fish_pause (edict_t *self)
 }
 
 
-
 // shall we chase after someone ?
 void fish_chase(edict_t *self)
 {

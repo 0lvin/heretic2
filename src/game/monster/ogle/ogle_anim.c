@@ -702,7 +702,6 @@ static mframe_t ogle_c_frames_action10[] =
 mmove_t ogle_c_move_action10 = {4, ogle_c_frames_action10, ai_c_cycleend};
 
 
-
 static mframe_t ogle_c_frames_action11[] =
 {
 	{FRAME_charga1,  ai_c_move, 10, 0, 0, NULL, 0,  NULL},
@@ -767,8 +766,6 @@ static mframe_t ogle_c_frames_action15[] =
 	{FRAME_charge8,  ai_c_move, 10, 0, 0, NULL,	0,  NULL},
 };
 mmove_t ogle_c_move_action15 = {8, ogle_c_frames_action15, ai_c_cycleend};
-
-
 
 
 static mframe_t ogle_c_frames_attack1[] =

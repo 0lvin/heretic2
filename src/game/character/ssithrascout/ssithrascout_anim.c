@@ -137,7 +137,6 @@ static mframe_t scout_frames_c_action2[] =
 mmove_t scout_move_c_action2 = { 60, scout_frames_c_action2, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
@@ -233,7 +232,6 @@ static mframe_t scout_frames_c_action3[] =
 mmove_t scout_move_c_action3 = { 86, scout_frames_c_action3, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
@@ -322,7 +320,6 @@ static mframe_t scout_frames_c_action5[] =
 mmove_t scout_move_c_action5 = { 26, scout_frames_c_action5, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
@@ -364,7 +361,6 @@ static mframe_t scout_frames_c_action6[] =
 	{FRAME_ss_noshe34, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t scout_move_c_action6 = { 34, scout_frames_c_action6, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -446,7 +442,6 @@ static mframe_t scout_frames_c_action7[] =
 mmove_t scout_move_c_action7 = { 70, scout_frames_c_action7, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
@@ -518,7 +513,6 @@ static mframe_t scout_frames_c_action8[] =
 mmove_t scout_move_c_action8 = { 62, scout_frames_c_action8, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
@@ -553,7 +547,6 @@ static mframe_t scout_frames_c_action9[] =
 mmove_t scout_move_c_action9 = { 25, scout_frames_c_action9, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
@@ -580,7 +573,6 @@ static mframe_t scout_frames_c_action10[] =
 	{FRAME_ss_coughB19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t scout_move_c_action10 = { 19, scout_frames_c_action10, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -709,7 +701,6 @@ static mframe_t scout_frames_c_idle2 [] =
 	{FRAME_ss_idleA16, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t scout_move_c_idle2 = { 16, scout_frames_c_idle2, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------

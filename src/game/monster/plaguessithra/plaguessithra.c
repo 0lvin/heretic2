@@ -738,7 +738,6 @@ void ssithraNamorJump (edict_t *self)
 }
 
 
-
 void ssithraCheckJump (edict_t *self)
 {
 	vec3_t		vf, source, source2;

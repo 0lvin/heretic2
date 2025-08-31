@@ -472,8 +472,6 @@ static mframe_t insect_frames_delay [] =
 mmove_t insect_delay = {50 , insect_frames_delay, insect_pause};
 
 
-
-
 /*----------------------------------------------------------------------
 //
 //  Cinematic Frames

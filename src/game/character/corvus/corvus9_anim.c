@@ -57,9 +57,6 @@ static mframe_t corvus9_frames_c_action1[] =
 mmove_t corvus9_move_c_action1 = {26, corvus9_frames_c_action1, ai_c_cycleend};
 
 
-
-
-
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
@@ -282,7 +279,6 @@ static mframe_t corvus9_frames_c_action6[] =
 mmove_t corvus9_move_c_action6 = {5, corvus9_frames_c_action6, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
@@ -302,7 +298,6 @@ static mframe_t corvus9_frames_c_action7[] =
 	{FRAME_kodown12, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus9_move_c_action7 = {12, corvus9_frames_c_action7, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------

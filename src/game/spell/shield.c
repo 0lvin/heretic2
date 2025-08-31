@@ -23,7 +23,6 @@ void SpellCastShield(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aim
 }
 
 
-
 void SpellLightningShieldAttack(edict_t *self)
 {
 	edict_t *found=NULL;

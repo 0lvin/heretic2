@@ -168,7 +168,6 @@ static mframe_t siernan1_frames_c_action5 [] =
 mmove_t siernan1_move_c_action5 = {37, siernan1_frames_c_action5, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/

@@ -147,7 +147,6 @@ static mframe_t morcalavin_frames_attack3[] =
 mmove_t morcalavin_move_attack3 = {21,morcalavin_frames_attack3, morcalavin_pause};
 
 
-
 static mframe_t morcalavin_frames_def1[] =
 {
 	{FRAME_defnsa1,	  NULL, 0, 0, 0, ai_charge, 0,  NULL},

@@ -92,7 +92,6 @@ void Siernan2CinStaticsInit()
 }
 
 
-
 /*QUAKED character_siernan2 (1 .5 0) (-17 -25 0) (22 12 16) INVISIBLE
 The cinematic siernan laying down
 */

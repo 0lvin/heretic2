@@ -581,8 +581,6 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 }
 
 
-
-
 //////////////////////////////////
 // For Celestial Watcher
 //////////////////////////////////
@@ -712,7 +710,6 @@ static void SphereWatcherGrowThink(edict_t *self)
 }
 
 
-
 edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
 {
 	edict_t	*Sphere;
@@ -764,7 +761,6 @@ edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	return(Sphere);
 }
-
 
 
 static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, csurface_t *surface)

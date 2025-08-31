@@ -46,7 +46,6 @@ static mframe_t priestess2_frames_c_action1[] =
 mmove_t priestess2_move_c_action1 = {27,priestess2_frames_c_action1, ai_c_cycleend};
 
 
-
 static mframe_t priestess2_frames_c_action2[] =
 {
 	{FRAME_hpod28,  ai_c_move, 1, 0, 0, NULL, 0, NULL},
@@ -62,7 +61,6 @@ static mframe_t priestess2_frames_c_action2[] =
 	{FRAME_hpod38,  ai_c_move, 1, 0, 0, NULL, 0, NULL},
 };
 mmove_t priestess2_move_c_action2 = {11,priestess2_frames_c_action2, ai_c_cycleend};
-
 
 
 static mframe_t priestess2_frames_c_action3[] =

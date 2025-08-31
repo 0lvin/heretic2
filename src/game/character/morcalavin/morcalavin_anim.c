@@ -43,7 +43,6 @@ static mframe_t morcalavin_frames_c_idle2 [] =
 mmove_t morcalavin_move_c_idle2 = {1, morcalavin_frames_c_idle2, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   morcalavin
 -----------------------------------------------------------------------*/

@@ -848,7 +848,6 @@ static mframe_t assassin_frames_cloak [] =
 mmove_t assassin_move_cloak = {3, assassin_frames_cloak, assassinUnCrouch};
 
 
-
 /************************************************************************
  *
  *  Cinematic Frames

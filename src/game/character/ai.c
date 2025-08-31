@@ -22,7 +22,6 @@ static	char *c_wavname[NUM_C_SOUNDS] =
 };
 
 
-
 void ai_c_wav (edict_t *self,float wav_num)
 {
 	gi.sound(self, CHAN_WEAPON, gi.soundindex(c_wavname[(int)wav_num]), 1, ATTN_NORM, 0);
@@ -40,7 +39,6 @@ void ai_c_readmessage(edict_t *self, G_Message_t *msg)
 	self->monsterinfo.c_repeat = repeat;
 	self->ideal_yaw = anglemod(self->s.angles[YAW] + turning);
 }
-
 
 
 // This is called at the end of each anim cycle

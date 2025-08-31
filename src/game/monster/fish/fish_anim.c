@@ -137,7 +137,6 @@ static mframe_t fish_frames_walk1 [] =
 mmove_t fish_move_walk1 = {24, fish_frames_walk1, finished_swim};
 
 
-
 /*----------------------------------------------------------------------
   Fish Walk2 - swim to the left
 -----------------------------------------------------------------------*/

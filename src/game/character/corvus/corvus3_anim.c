@@ -1736,7 +1736,6 @@ static mframe_t corvus3_frames_c_action17 [] =
 mmove_t corvus3_move_c_action17 = {20, corvus3_frames_c_action17, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
@@ -1917,7 +1916,6 @@ static mframe_t corvus3_frames_c_idle1 [] =
 mmove_t corvus3_move_c_idle1 = {23, corvus3_frames_c_idle1, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
@@ -2006,7 +2004,6 @@ static mframe_t corvus3_frames_c_pivotleftstop [] =
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus3_move_c_pivotleftstop = {1, corvus3_frames_c_pivotleftstop, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------

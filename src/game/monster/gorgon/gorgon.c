@@ -814,7 +814,6 @@ void gorgon_death(edict_t *self, G_Message_t *msg)
 }
 
 
-
 /*----------------------------------------------------------------------
 
   ACTION FUNCTIONS FOR THE MONSTER

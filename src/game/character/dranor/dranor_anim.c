@@ -297,7 +297,6 @@ static mframe_t dranor_frames_c_action3 [] =
 mmove_t dranor_move_c_action3 = { 52, dranor_frames_c_action3, ai_c_cycleend};
 
 
-
 static mframe_t dranor_frames_c_action4 [] =
 {
 	{FRAME_1iwas1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -417,7 +416,6 @@ static mframe_t dranor_frames_c_action6 [] =
 	{FRAME_1iwas1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t dranor_move_c_action6 = { 8, dranor_frames_c_action6, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -606,7 +604,6 @@ static mframe_t dranor_frames_c_action8 [] =
 mmove_t dranor_move_c_action8 = { 71, dranor_frames_c_action8, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
@@ -697,7 +694,6 @@ static mframe_t dranor_frames_c_action10 [] =
 mmove_t dranor_move_c_action10 = { 33, dranor_frames_c_action10, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
@@ -713,7 +709,6 @@ static mframe_t dranor_frames_c_action11 [] =
 	{FRAME_1insert8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t dranor_move_c_action11 = { 8, dranor_frames_c_action11, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------

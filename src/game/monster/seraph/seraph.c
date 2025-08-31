@@ -713,7 +713,6 @@ qboolean seraphAlerted (edict_t *self, alertent_t *alerter, edict_t *enemy)
 }
 
 
-
 int Bit_for_MeshNode_so [NUM_MESH_NODES] =
 {
 	BIT_BASEBIN,

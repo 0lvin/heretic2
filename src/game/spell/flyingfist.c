@@ -31,7 +31,6 @@ static void FlyingFistFizzleThink(edict_t *self)
 }
 
 
-
 // ****************************************
 // Creation functions
 // ****************************************
@@ -59,8 +58,6 @@ void CreateFlyingFist(edict_t *flyingfist)
 	flyingfist->solid = SOLID_BBOX;
 	flyingfist->clipmask = MASK_SHOT;
 }
-
-
 
 
 edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel)
@@ -97,7 +94,6 @@ edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 	return(flyingfist);
 }
-
 
 
 // ************************************************************************************************

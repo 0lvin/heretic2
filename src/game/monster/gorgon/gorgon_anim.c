@@ -475,7 +475,6 @@ static mframe_t gorgon_frames_run2 [] =
 mmove_t gorgon_move_run2 = {12, gorgon_frames_run2, gorgon_mood};
 
 
-
 /*----------------------------------------------------------------------
   Gorgon Running
 -----------------------------------------------------------------------*/
@@ -535,9 +534,6 @@ static mframe_t gorgon_frames_pain3 [] =
 	{FRAME_painc5, NULL, 0, 0, 0, NULL, 0,  NULL},
 };
 mmove_t gorgon_move_pain3 = {5, gorgon_frames_pain3, gorgon_mood};
-
-
-
 
 
 void gorgon_smoke(edict_t *self)
@@ -802,7 +798,6 @@ static mframe_t gorgon_frames_snatchlow [] =
 	{FRAME_eatingb4, gorgon_toy_ofs, 56, 0, 24,  NULL, 0,  NULL},
 };
 mmove_t gorgon_move_snatchlow = {9, gorgon_frames_snatchlow, gorgon_go_snatch};
-
 
 
 /*----------------

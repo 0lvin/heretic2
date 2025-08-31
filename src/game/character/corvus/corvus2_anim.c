@@ -220,7 +220,6 @@ static mframe_t corvus2_frames_c_pivotleftstop [] =
 mmove_t corvus2_move_c_pivotleftstop = {1, corvus2_frames_c_pivotleftstop, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus - starting his pivot to the right
 -----------------------------------------------------------------------*/

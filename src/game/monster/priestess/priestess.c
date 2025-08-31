@@ -910,44 +910,6 @@ void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 
 	Priestess Helper Functions

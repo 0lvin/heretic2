@@ -176,7 +176,6 @@ void insect_c_anims(edict_t *self, G_Message_t *msg)
 }
 
 
-
 /*-------------------------------------------------------------------------
 	insect_c_pause
 -------------------------------------------------------------------------*/
@@ -185,10 +184,6 @@ void insect_c_reallydead (edict_t *self)
 	self->nextthink = level.time;
 	self->think = NULL;
 }
-
-
-
-
 
 
 /*----------------------------------------------------------------------
@@ -1358,7 +1353,6 @@ void insect_run(edict_t *self, G_Message_t *msg)
 		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 	}
 }
-
 
 
 /*----------------------------------------------------------------------

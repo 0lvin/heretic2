@@ -89,7 +89,6 @@ static mframe_t corvus4_frames_c_action2 [] =
 mmove_t corvus4_move_c_action2 = {40, corvus4_frames_c_action2, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus -
 -----------------------------------------------------------------------*/
@@ -113,7 +112,6 @@ static mframe_t corvus4_frames_c_action3 [] =
 	{FRAME_ss_arethe16, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus4_move_c_action3 = {16, corvus4_frames_c_action3, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -195,7 +193,6 @@ static mframe_t corvus4_frames_c_action5 [] =
 	{FRAME_ss_getup39, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus4_move_c_action5 = {39, corvus4_frames_c_action5, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -282,7 +279,6 @@ static mframe_t corvus4_frames_c_pivotleftstop [] =
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus4_move_c_pivotleftstop = {1, corvus4_frames_c_pivotleftstop, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------

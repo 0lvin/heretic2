@@ -34,8 +34,6 @@ static void MagicMissileThink2(edict_t *self)
 }
 
 
-
-
 edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 {
 	edict_t	*magicmissile;
@@ -81,11 +79,9 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 }
 
 
-
 // ****************************************************************************
 // MagicMissileTouch
 // ****************************************************************************
-
 
 
 static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface)

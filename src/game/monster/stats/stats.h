@@ -193,7 +193,6 @@ extern struct MonsterShadow_s G_MonsterShadow[NUM_CLASSIDS];
 #define GKROKON_DMG_BITE_MAX	10
 
 
-
 //**********
 //**GORGON
 //**********
@@ -218,7 +217,6 @@ extern struct MonsterShadow_s G_MonsterShadow[NUM_CLASSIDS];
 #define HARPY_MASS				100
 #define HARPY_DMG_MIN			10
 #define HARPY_DMG_MAX			20
-
 
 
 //**********

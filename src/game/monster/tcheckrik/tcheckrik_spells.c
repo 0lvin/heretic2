@@ -224,7 +224,6 @@ void SpellCastInsectStaff(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_
 }
 
 
-
 #define GLOBE_MAX_SCALE				1.8
 #define GLOBE_SCALE_RANGE				0.8
 #define GLOBE_FLY_SPEED				600.0

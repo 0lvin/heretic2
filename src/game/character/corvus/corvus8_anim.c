@@ -38,7 +38,6 @@ static mframe_t corvus8_frames_c_action1 [] =
 mmove_t corvus8_move_c_action1 = {8, corvus8_frames_c_action1, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus Standing -
 -----------------------------------------------------------------------*/
@@ -61,7 +60,6 @@ static mframe_t corvus8_frames_c_action2 [] =
 mmove_t corvus8_move_c_action2 = {13, corvus8_frames_c_action2, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus Standing -
 -----------------------------------------------------------------------*/
@@ -81,8 +79,6 @@ static mframe_t corvus8_frames_c_action3 [] =
 	{FRAME_knlcyc12, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus8_move_c_action3 = {12, corvus8_frames_c_action3, ai_c_cycleend};
-
-
 
 
 /*----------------------------------------------------------------------
@@ -117,7 +113,6 @@ static mframe_t corvus8_frames_c_action5 [] =
 mmove_t corvus8_move_c_action5 = {8, corvus8_frames_c_action5, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus -
 -----------------------------------------------------------------------*/
@@ -149,8 +144,6 @@ static mframe_t corvus8_frames_c_action6 [] =
 	{FRAME_butits24, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus8_move_c_action6 = {24, corvus8_frames_c_action6, ai_c_cycleend};
-
-
 
 
 /*----------------------------------------------------------------------
@@ -275,8 +268,6 @@ static mframe_t corvus8_frames_c_action11 [] =
 mmove_t corvus8_move_c_action11 = {9, corvus8_frames_c_action11, ai_c_cycleend};
 
 
-
-
 /*----------------------------------------------------------------------
   Corvus -
 -----------------------------------------------------------------------*/
@@ -293,7 +284,6 @@ static mframe_t corvus8_frames_c_action12 [] =
 	{FRAME_bytome18, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus8_move_c_action12 = {9, corvus8_frames_c_action12, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -704,7 +694,6 @@ static mframe_t corvus8_frames_c_pivotleftstop [] =
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus8_move_c_pivotleftstop = {1, corvus8_frames_c_pivotleftstop, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------

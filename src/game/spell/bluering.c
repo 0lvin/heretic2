@@ -28,7 +28,6 @@ extern edict_t *MssithraAlphaArrowReflect(edict_t *self, edict_t *other, vec3_t 
 extern edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel);
 
 
-
 // Since findradius is not specific enough for our needs
 // This, for one, will seek out player maceballs, arrows, and meteors.
 edict_t *findringradius (edict_t *from, vec3_t org, float rad, edict_t *ringent)

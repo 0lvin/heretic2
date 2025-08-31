@@ -36,7 +36,6 @@ static mframe_t corvus5_frames_c_action1 [] =
 mmove_t corvus5_move_c_action1 = {8, corvus5_frames_c_action1, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus Standing -
 -----------------------------------------------------------------------*/
@@ -93,8 +92,6 @@ static mframe_t corvus5_frames_c_action2 [] =
 mmove_t corvus5_move_c_action2 = {47, corvus5_frames_c_action2, ai_c_cycleend};
 
 
-
-
 /*----------------------------------------------------------------------
   Corvus -
 -----------------------------------------------------------------------*/
@@ -109,8 +106,6 @@ static mframe_t corvus5_frames_c_action3 [] =
 	{FRAME_spared7, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus5_move_c_action3 = {7, corvus5_frames_c_action3, ai_c_cycleend};
-
-
 
 
 /*----------------------------------------------------------------------
@@ -143,7 +138,6 @@ static mframe_t corvus5_frames_c_action4 [] =
 	{FRAME_itsnot23, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus5_move_c_action4 = {23, corvus5_frames_c_action4, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -274,7 +268,6 @@ static mframe_t corvus5_frames_c_idle1 [] =
 mmove_t corvus5_move_c_idle1 = {23, corvus5_frames_c_idle1, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus Standing -
 -----------------------------------------------------------------------*/
@@ -283,7 +276,6 @@ static mframe_t corvus5_frames_c_idle2 [] =
 	{FRAME_who1, ai_c_move, 0, 0, 0,  NULL, 0, NULL},
 };
 mmove_t corvus5_move_c_idle2 = {1, corvus5_frames_c_idle2, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
@@ -319,7 +311,6 @@ static mframe_t corvus5_frames_c_idle3 [] =
 mmove_t corvus5_move_c_idle3 = {24, corvus5_frames_c_idle3, ai_c_cycleend};
 
 
-
 /*----------------------------------------------------------------------
   Corvus - starting his pivot to the left
 -----------------------------------------------------------------------*/
@@ -343,7 +334,6 @@ static mframe_t corvus5_frames_c_pivotleftstop [] =
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus5_move_c_pivotleftstop = {1, corvus5_frames_c_pivotleftstop, ai_c_cycleend};
-
 
 
 /*----------------------------------------------------------------------
