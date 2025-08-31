@@ -2781,7 +2781,6 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 				VectorCopy(trace.endpos, savepos);
 				AngleVectors(playerinfo->self->s.angles, vf, NULL, NULL);
 				VectorMA(trace.endpos, 32, vf, endpoint);
-				//playermin[2] -= 2;
 
 				//Move to the correct distance away from the wall
 				trace = pi.G_Trace(trace.endpos,

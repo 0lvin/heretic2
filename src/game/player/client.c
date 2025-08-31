@@ -51,6 +51,8 @@ extern qboolean AddWeaponToInventory(gitem_t *item,edict_t *player);
 extern qboolean AddDefenseToInventory(gitem_t *item,edict_t *player);
 extern void CheckContinuousAutomaticEffects(edict_t *self);
 extern void CalculatePIV(edict_t *player);
+extern void PlayerKillShrineFX(edict_t *self);
+static void player_leader_effect(void);
 
 #define SWIM_ADJUST_AMOUNT	16
 #define FOV_DEFAULT			75.0
@@ -59,7 +61,6 @@ extern void CalculatePIV(edict_t *player);
 /* Recheck with pmove */
 vec3_t	mins = {-14, -14, -34};
 vec3_t	maxs = { 14,  14,  25};
-extern void PlayerKillShrineFX(edict_t *self);
 
 static edict_t *pm_passent;
 
@@ -449,6 +450,191 @@ IsNeutral(edict_t *ent)
 	return false;
 }
 
+static const short KillSelf[MOD_MAX] =
+{
+	0,			// MOD_UNKNOWN
+
+	0,			// MOD_STAFF
+	0,			// MOD_FIREBALL
+	0,			// MOD_MMISSILE
+	0,			// MOD_SPHERE
+	0,			// MOD_SPHERE_SPL
+	0,			// MOD_IRONDOOM
+	0,			// MOD_FIREWALL
+	0,			// MOD_STORM
+	0,			// MOD_PHOENIX
+	0,			// MOD_PHOENIX_SPL
+	0,			// MOD_HELLSTAFF
+
+	0,			// MOD_P_STAFF
+	0,			// MOD_P_FIREBALL
+	0,			// MOD_P_MMISSILE
+	0,			// MOD_P_SPHERE
+	0,			// MOD_P_SPHERE_SPL
+	0,			// MOD_P_IRONDOOM
+	0,			// MOD_P_FIREWALL
+	0,			// MOD_P_STORM
+	0,			// MOD_P_PHOENIX
+	0,			// MOD_P_PHOENIX_SPL
+	0,			// MOD_P_HELLSTAFF
+
+	0,			// MOD_KICKED
+	0,			// MOD_METEORS
+	0,			// MOD_ROR
+	0,			// MOD_SHIELD
+	0,			// MOD_CHICKEN
+	0,			// MOD_TELEFRAG
+	GM_OBIT_WATER,			// MOD_WATER
+	GM_OBIT_SLIME,			// MOD_SLIME
+	GM_OBIT_LAVA,			// MOD_LAVA
+	GM_OBIT_CRUSH,			// MOD_CRUSH
+	GM_OBIT_FALLING,		// MOD_FALLING
+	GM_OBIT_SUICIDE,		// MOD_SUICIDE
+	GM_OBIT_BARREL,			// MOD_BARREL
+	GM_OBIT_EXIT,			// MOD_EXIT
+	GM_OBIT_BURNT,			// MOD_BURNT
+	GM_OBIT_BLEED,			// MOD_BLEED
+	0,			// MOD_SPEAR
+	0,			// MOD_DIED
+	GM_OBIT_EXPL,			// MOD_KILLED_SLF
+	0,			// MOD_DECAP
+	GM_OBIT_TORN_SELF	//MOD_TORN
+};
+
+static const short KillBy[MOD_MAX] =
+{
+	0,			// MOD_UNKNOWN
+
+	GM_OBIT_STAFF,			// MOD_STAFF
+	GM_OBIT_FIREBALL,		// MOD_FIREBALL
+	GM_OBIT_MMISSILE,		// MOD_MMISSILE
+	GM_OBIT_SPHERE,			// MOD_SPHERE
+	GM_OBIT_SPHERE_SPL,		// MOD_SPHERE_SPL
+	GM_OBIT_IRONDOOM,		// MOD_IRONDOOM
+	GM_OBIT_FIREWALL,		// MOD_FIREWALL
+	GM_OBIT_STORM,			// MOD_STORM
+	GM_OBIT_PHOENIX,		// MOD_PHOENIX
+	GM_OBIT_PHOENIX_SPL,	// MOD_PHOENIX_SPL
+	GM_OBIT_HELLSTAFF,		// MOD_HELLSTAFF
+
+	GM_OBIT_STAFF,			// MOD_P_STAFF
+	GM_OBIT_FIREBALL,		// MOD_P_FIREBALL
+	GM_OBIT_MMISSILE,		// MOD_P_MMISSILE
+	GM_OBIT_SPHERE,			// MOD_P_SPHERE
+	GM_OBIT_SPHERE_SPL,		// MOD_P_SPHERE_SPL
+	GM_OBIT_IRONDOOM,		// MOD_P_IRONDOOM
+	GM_OBIT_FIREWALL,		// MOD_P_FIREWALL
+	GM_OBIT_STORM,			// MOD_P_STORM
+	GM_OBIT_PHOENIX,		// MOD_P_PHOENIX
+	GM_OBIT_PHOENIX_SPL,	// MOD_P_PHOENIX_SPL
+	GM_OBIT_HELLSTAFF,		// MOD_P_HELLSTAFF
+
+	GM_OBIT_KICKED,			// MOD_KICKED
+	GM_OBIT_METEORS,		// MOD_METEORS
+	GM_OBIT_ROR,			// MOD_ROR
+	GM_OBIT_SHIELD,			// MOD_SHIELD
+	GM_OBIT_CHICKEN,		// MOD_CHICKEN
+	GM_OBIT_TELEFRAG,		// MOD_TELEFRAG
+	0,			// MOD_WATER
+	0,			// MOD_SLIME
+	0,			// MOD_LAVA
+	0,			// MOD_CRUSH
+	0,			// MOD_FALLING
+	0,			// MOD_SUICIDE
+	0,			// MOD_BARREL
+	0,			// MOD_EXIT
+	GM_OBIT_BURNT,			// MOD_BURNT
+	GM_OBIT_BLEED,			// MOD_BLEED
+	0,			// MOD_SPEAR
+	0,			// MOD_DIED
+	0,			// MOD_KILLED_SLF
+	0,			// MOD_DECAP
+	GM_OBIT_TORN	//MOD_TORN
+};
+
+void
+ClientObituary(edict_t *self, edict_t *inflictor /* unused */,
+		edict_t *attacker)
+{
+	short message;
+	int friendlyFire;
+
+
+	if (!self || !attacker || !inflictor)
+	{
+		return;
+	}
+
+	if (coop->value && attacker && attacker->client)
+	{
+		meansOfDeath |= MOD_FRIENDLY_FIRE;
+	}
+
+	if (!(deathmatch->value || coop->value))
+	{
+		// No obituaries in single player.
+
+		return;
+	}
+
+	friendlyFire=self->client->meansofdeath&MOD_FRIENDLY_FIRE;
+// jmarshall - c++ bit operator
+	//self->client->meansofdeath&=~MOD_FRIENDLY_FIRE;
+	self->client->meansofdeath = (MOD_t)((int)self->client->meansofdeath & ~MOD_FRIENDLY_FIRE);
+// jmarshall end
+
+	if (deathmatch->value || coop->value)
+	{
+		self->enemy = attacker;
+
+		if (attacker && attacker->client && attacker != self)
+		{
+			message = KillBy[self->client->meansofdeath];
+
+			if (message)
+			{
+				G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, attacker->s.number);
+
+				if (deathmatch->value)
+				{
+					if (friendlyFire)
+						attacker->client->resp.score--;
+					else
+						attacker->client->resp.score++;
+
+					player_leader_effect();
+				}
+				return;
+			}
+		}
+
+		// Wasn't an awarded a frag, check for suicide messages.
+		message = KillSelf[self->client->meansofdeath];
+
+		if (message)
+		{
+			G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, 0);
+
+			if (deathmatch->value)
+			{
+				self->client->resp.score--;
+				player_leader_effect();
+			}
+
+			self->enemy = NULL;
+			return;
+		}
+	}
+
+	G_BroadcastObituary(PRINT_MEDIUM, (short)(GM_OBIT_DIED + irand(0, 2)), self->s.number, 0);
+
+	if (deathmatch->value)
+	{
+		self->client->resp.score--;
+		player_leader_effect();
+	}
+}
+
 void
 ClientSetSkinType(edict_t *ent, char *skinname)
 {
@@ -525,7 +711,8 @@ SpawnBleeder(edict_t *self, edict_t *other, vec3_t bleed_dir, vec3_t bleed_spot)
 	bleeder->nextthink = level.time + 0.1;
 }
 
-void player_repair_skin (edict_t *self)
+void
+player_repair_skin(edict_t *self)
 {//FIXME: make sure it doesn't turn on a hand without the arm!
 	int i, num_allowed_dmg_skins, to_fix;
 	int	found_dmg_skins = 0;
@@ -881,11 +1068,8 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				damage*=1.5;//greater chance to cut off if previously damaged
 
 			// NOTE I AM CUTTING DOWN THE DECAP CHANCE JUST A LITTLE BIT...  HAPPENED TOO OFTEN.
-//			if ((frandk() * self->health) < damage*0.5 && dismember_ok)
 			if ((frandk() * self->health) < damage*0.4 && dismember_ok)
 			{
-//				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
-
 				canthrownode_player(self, MESH__HEAD,&throw_nodes);
 
 				gore_spot[2]+=18;
@@ -904,8 +1088,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if ((frandk() * self->health)<damage*0.25)
-//					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->pers.altparts |= (1<<MESH__HEAD);
 				self->s.fmnodeinfo[MESH__HEAD].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__HEAD].skin = self->s.skinnum+1;
@@ -942,8 +1124,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if ((frandk() * self->health)<damage*0.5)
-//					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->pers.altparts |= (1<<MESH_BASE2);
 				self->s.fmnodeinfo[MESH_BASE2].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH_BASE2].skin = self->s.skinnum+1;
@@ -966,7 +1146,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				canthrownode_player(self, MESH__LHANDHI,&throw_nodes);
 				canthrownode_player(self, MESH__RHANDHI,&throw_nodes);
 
-//				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 1);
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
@@ -980,8 +1159,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if ((frandk() * self->health)<damage*0.5)
-//					player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				self->client->pers.altparts |= (1<<MESH__BACK);
 				self->s.fmnodeinfo[MESH__BACK].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__BACK].skin = self->s.skinnum+1;
@@ -1012,8 +1189,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if ((frandk() * self->health)<damage*0.4)
-//					player_dropweapon (self, (int)damage, BIT_BOWACTV);
 				self->client->pers.altparts |= (1<<MESH__LARM);
 				self->s.fmnodeinfo[MESH__LARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__LARM].skin = self->s.skinnum+1;
@@ -1048,8 +1223,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			}
 			else
 			{
-//				if ((frandk() * self->health)<damage*0.75)
-//					player_dropweapon (self, (int)damage, BIT_HELSTF|BIT_BLADSTF);
 				self->client->pers.altparts |= (1<<MESH__RARM);
 				self->s.fmnodeinfo[MESH__RARM].flags |= FMNI_USE_SKIN;
 				self->s.fmnodeinfo[MESH__RARM].skin = self->s.skinnum+1;
@@ -1106,10 +1279,9 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 			break;
 
 		default:
-//			if ((frandk() * self->health)<damage*0.25)
-//				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 			break;
 	}
+
 	if (throw_nodes)
 	{
 		self->pain_debounce_time = 0;
@@ -1167,7 +1339,8 @@ player_decap(edict_t *self, edict_t *other)
 	WritePlayerinfo_effects(self);
 }
 
-void player_leader_effect(void)
+static void
+player_leader_effect(void)
 {
 	int			i;
 	int			score = 1;
@@ -1181,7 +1354,7 @@ void player_leader_effect(void)
 
 	// now we decide if anyone is a leader here, and if they are, we put the glow around them.
 	// first, search through all clients and see what the leading score is.
-	for (i=0; i<game.maxclients; i++)
+	for (i = 0; i < game.maxclients; i++)
 	{
 		ent = &g_edicts[i];
 		// are we a player thats playing ?
@@ -1226,191 +1399,10 @@ void player_leader_effect(void)
 				G_RemoveEffects(ent, FX_SHOW_LEADER);
 				ent->Leader_PersistantCFX = 0;
 			}
-
 		}
 	}
-
 }
 
-// ************************************************************************************************
-// ClientObituary
-// --------------
-// ************************************************************************************************
-
-static const short KillSelf[MOD_MAX] =
-{
-	0,			// MOD_UNKNOWN
-
-	0,			// MOD_STAFF
-	0,			// MOD_FIREBALL
-	0,			// MOD_MMISSILE
-	0,			// MOD_SPHERE
-	0,			// MOD_SPHERE_SPL
-	0,			// MOD_IRONDOOM
-	0,			// MOD_FIREWALL
-	0,			// MOD_STORM
-	0,			// MOD_PHOENIX
-	0,			// MOD_PHOENIX_SPL
-	0,			// MOD_HELLSTAFF
-
-	0,			// MOD_P_STAFF
-	0,			// MOD_P_FIREBALL
-	0,			// MOD_P_MMISSILE
-	0,			// MOD_P_SPHERE
-	0,			// MOD_P_SPHERE_SPL
-	0,			// MOD_P_IRONDOOM
-	0,			// MOD_P_FIREWALL
-	0,			// MOD_P_STORM
-	0,			// MOD_P_PHOENIX
-	0,			// MOD_P_PHOENIX_SPL
-	0,			// MOD_P_HELLSTAFF
-
-	0,			// MOD_KICKED
-	0,			// MOD_METEORS
-	0,			// MOD_ROR
-	0,			// MOD_SHIELD
-	0,			// MOD_CHICKEN
-	0,			// MOD_TELEFRAG
-	GM_OBIT_WATER,			// MOD_WATER
-	GM_OBIT_SLIME,			// MOD_SLIME
-	GM_OBIT_LAVA,			// MOD_LAVA
-	GM_OBIT_CRUSH,			// MOD_CRUSH
-	GM_OBIT_FALLING,		// MOD_FALLING
-	GM_OBIT_SUICIDE,		// MOD_SUICIDE
-	GM_OBIT_BARREL,			// MOD_BARREL
-	GM_OBIT_EXIT,			// MOD_EXIT
-	GM_OBIT_BURNT,			// MOD_BURNT
-	GM_OBIT_BLEED,			// MOD_BLEED
-	0,			// MOD_SPEAR
-	0,			// MOD_DIED
-	GM_OBIT_EXPL,			// MOD_KILLED_SLF
-	0,			// MOD_DECAP
-	GM_OBIT_TORN_SELF	//MOD_TORN
-};
-
-static const short KillBy[MOD_MAX] =
-{
-	0,			// MOD_UNKNOWN
-
-	GM_OBIT_STAFF,			// MOD_STAFF
-	GM_OBIT_FIREBALL,		// MOD_FIREBALL
-	GM_OBIT_MMISSILE,		// MOD_MMISSILE
-	GM_OBIT_SPHERE,			// MOD_SPHERE
-	GM_OBIT_SPHERE_SPL,		// MOD_SPHERE_SPL
-	GM_OBIT_IRONDOOM,		// MOD_IRONDOOM
-	GM_OBIT_FIREWALL,		// MOD_FIREWALL
-	GM_OBIT_STORM,			// MOD_STORM
-	GM_OBIT_PHOENIX,		// MOD_PHOENIX
-	GM_OBIT_PHOENIX_SPL,	// MOD_PHOENIX_SPL
-	GM_OBIT_HELLSTAFF,		// MOD_HELLSTAFF
-
-	GM_OBIT_STAFF,			// MOD_P_STAFF
-	GM_OBIT_FIREBALL,		// MOD_P_FIREBALL
-	GM_OBIT_MMISSILE,		// MOD_P_MMISSILE
-	GM_OBIT_SPHERE,			// MOD_P_SPHERE
-	GM_OBIT_SPHERE_SPL,		// MOD_P_SPHERE_SPL
-	GM_OBIT_IRONDOOM,		// MOD_P_IRONDOOM
-	GM_OBIT_FIREWALL,		// MOD_P_FIREWALL
-	GM_OBIT_STORM,			// MOD_P_STORM
-	GM_OBIT_PHOENIX,		// MOD_P_PHOENIX
-	GM_OBIT_PHOENIX_SPL,	// MOD_P_PHOENIX_SPL
-	GM_OBIT_HELLSTAFF,		// MOD_P_HELLSTAFF
-
-	GM_OBIT_KICKED,			// MOD_KICKED
-	GM_OBIT_METEORS,		// MOD_METEORS
-	GM_OBIT_ROR,			// MOD_ROR
-	GM_OBIT_SHIELD,			// MOD_SHIELD
-	GM_OBIT_CHICKEN,		// MOD_CHICKEN
-	GM_OBIT_TELEFRAG,		// MOD_TELEFRAG
-	0,			// MOD_WATER
-	0,			// MOD_SLIME
-	0,			// MOD_LAVA
-	0,			// MOD_CRUSH
-	0,			// MOD_FALLING
-	0,			// MOD_SUICIDE
-	0,			// MOD_BARREL
-	0,			// MOD_EXIT
-	GM_OBIT_BURNT,			// MOD_BURNT
-	GM_OBIT_BLEED,			// MOD_BLEED
-	0,			// MOD_SPEAR
-	0,			// MOD_DIED
-	0,			// MOD_KILLED_SLF
-	0,			// MOD_DECAP
-	GM_OBIT_TORN	//MOD_TORN
-};
-
-void
-ClientObituary(edict_t *self, edict_t *inflictor, edict_t *attacker)
-{
-	short		message;
-	int			friendlyFire;
-
-	assert(self->client);
-
-	if (!(deathmatch->value || coop->value))
-	{
-		// No obituaries in single player.
-
-		return;
-	}
-
-	friendlyFire=self->client->meansofdeath&MOD_FRIENDLY_FIRE;
-// jmarshall - c++ bit operator
-	//self->client->meansofdeath&=~MOD_FRIENDLY_FIRE;
-	self->client->meansofdeath = (MOD_t)((int)self->client->meansofdeath & ~MOD_FRIENDLY_FIRE);
-// jmarshall end
-
-	if (deathmatch->value || coop->value)
-	{
-		self->enemy = attacker;
-
-		if (attacker && attacker->client && attacker != self)
-		{
-			message = KillBy[self->client->meansofdeath];
-
-			if (message)
-			{
-				G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, attacker->s.number);
-
-				if (deathmatch->value)
-				{
-					if (friendlyFire)
-						attacker->client->resp.score--;
-					else
-						attacker->client->resp.score++;
-
-					player_leader_effect();
-				}
-				return;
-			}
-		}
-
-		// Wasn't an awarded a frag, check for suicide messages.
-		message = KillSelf[self->client->meansofdeath];
-
-		if (message)
-		{
-			G_BroadcastObituary(PRINT_MEDIUM, (short)(message + irand(0, 2)), self->s.number, 0);
-
-			if (deathmatch->value)
-			{
-				self->client->resp.score--;
-				player_leader_effect();
-			}
-
-			self->enemy = NULL;
-			return;
-		}
-	}
-
-	G_BroadcastObituary(PRINT_MEDIUM, (short)(GM_OBIT_DIED + irand(0, 2)), self->s.number, 0);
-
-	if (deathmatch->value)
-	{
-		self->client->resp.score--;
-		player_leader_effect();
-	}
-}
 
 void player_make_gib(edict_t *self, edict_t *attacker)
 {
@@ -1438,6 +1430,104 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 					irand(10, 30), self->mins, magb);
 
 	self->takedamage = DAMAGE_NO;
+}
+
+void
+TossClientWeapon(edict_t *self)
+{
+	gitem_t *item;
+	edict_t *drop;
+	qboolean quad;
+	qboolean quadfire;
+	float spread;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (!deathmatch->value)
+	{
+		return;
+	}
+
+	item = self->client->pers.weapon;
+
+	if (!self->client->pers.inventory[self->client->ammo_index])
+	{
+		item = NULL;
+	}
+
+	if (item && (strcmp(item->pickup_name, "Blaster") == 0))
+	{
+		item = NULL;
+	}
+
+	if (!((int)(dmflags->value) & DF_QUAD_DROP))
+	{
+		quad = false;
+	}
+	else
+	{
+		quad = (self->client->quad_framenum > (level.framenum + 10));
+	}
+
+	if (!((int)(dmflags->value) & DF_QUADFIRE_DROP))
+	{
+		quadfire = false;
+	}
+	else
+	{
+		quadfire = (self->client->quadfire_framenum > (level.framenum + 10));
+	}
+
+	if (item && quad)
+	{
+		spread = 22.5;
+	}
+	else if (item && quadfire)
+	{
+		spread = 12.5;
+	}
+	else
+	{
+		spread = 0.0;
+	}
+
+	if (item)
+	{
+		self->client->v_angle[YAW] -= spread;
+		drop = Drop_Item(self, item);
+		self->client->v_angle[YAW] += spread;
+		drop->spawnflags = DROPPED_PLAYER_ITEM;
+	}
+
+	if (quad)
+	{
+		self->client->v_angle[YAW] += spread;
+		drop = Drop_Item(self, FindItemByClassname("item_quad"));
+		self->client->v_angle[YAW] -= spread;
+		drop->spawnflags |= DROPPED_PLAYER_ITEM;
+
+		drop->touch = Touch_Item;
+		drop->nextthink = level.time +
+						(self->client->quad_framenum -
+						   level.framenum) * FRAMETIME;
+		drop->think = G_FreeEdict;
+	}
+
+	if (quadfire)
+	{
+		self->client->v_angle[YAW] += spread;
+		drop = Drop_Item(self, FindItemByClassname("item_quadfire"));
+		self->client->v_angle[YAW] -= spread;
+		drop->spawnflags |= DROPPED_PLAYER_ITEM;
+
+		drop->touch = Touch_Item;
+		drop->nextthink = level.time + (self->client->quadfire_framenum -
+						   level.framenum) * FRAMETIME;
+		drop->think = G_FreeEdict;
+	}
 }
 
 void
@@ -1910,9 +2000,21 @@ InitClientResp(gclient_t *client)
 		return;
 	}
 
+	int ctf_team = client->resp.ctf_team;
+	qboolean id_state = client->resp.id_state;
+
 	memset(&client->resp, 0, sizeof(client->resp));
+
+	client->resp.ctf_team = ctf_team;
+	client->resp.id_state = id_state;
+
 	client->resp.enterframe = level.framenum;
 	client->resp.coop_respawn = client->pers;
+
+	if (ctf->value && (client->resp.ctf_team < CTF_TEAM1))
+	{
+		CTFAssignTeam(client);
+	}
 }
 
 /*
@@ -1938,10 +2040,12 @@ SaveClientData(void)
 
 		game.clients[i].pers.chasetoggle = ent->client->chasetoggle;
 		game.clients[i].pers.health = ent->health;
+		game.clients[i].pers.max_health = ent->max_health;
+		game.clients[i].pers.savedFlags =
+			(ent->flags & (FL_FLASHLIGHT | FL_GODMODE | FL_NOTARGET | FL_POWER_ARMOR));
+
 		if (coop->value && game.clients[i].pers.health < 25)
 			game.clients[i].pers.health=25;
-		game.clients[i].pers.max_health = ent->max_health;
-
 		game.clients[i].pers.mission_num1 = ent->client->ps.mission_num1;
 		game.clients[i].pers.mission_num2 = ent->client->ps.mission_num2;
 
@@ -1961,11 +2065,13 @@ FetchClientEntData(edict_t *ent)
 	}
 
 	ent->health = ent->client->pers.health;
+	ent->max_health = ent->client->pers.max_health;
+	ent->flags |= ent->client->pers.savedFlags;
+
 	if (coop->value && ent->health < 25)
 	{
 		ent->health = 25;
 	}
-	ent->max_health = ent->client->pers.max_health;
 
 	ent->client->ps.mission_num1 = ent->client->pers.mission_num1;
 	ent->client->ps.mission_num2 = ent->client->pers.mission_num2;
@@ -2344,6 +2450,11 @@ void
 SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 {
 	edict_t *spot = NULL;
+	edict_t *coopspot = NULL;
+	int dist;
+	int index;
+	int counter = 0;
+	vec3_t d;
 	trace_t	tr;
 	vec3_t endpos;
 
@@ -2394,20 +2505,65 @@ SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 		}
 	}
 
+	/* If we are in coop and we didn't find a coop
+	   spawnpoint due to map bugs (not correctly
+	   connected or the map was loaded via console
+	   and thus no previously map is known to the
+	   client) use one in 550 units radius. */
+	if (coop->value)
+	{
+		index = ent->client - game.clients;
+
+		if (Q_stricmp(spot->classname, "info_player_start") == 0 && index != 0)
+		{
+			while (counter < 3)
+			{
+				coopspot = G_Find(coopspot, FOFS(classname), "info_player_coop");
+
+				if (!coopspot)
+				{
+					break;
+				}
+
+				VectorSubtract(coopspot->s.origin, spot->s.origin, d);
+
+				/* In xship the coop spawnpoints are farther
+				   away than in other maps. Quirk around this.
+				   Oh well... */
+				if (Q_stricmp(level.mapname, "xship") == 0)
+				{
+					dist = 2500;
+				}
+				else
+				{
+					dist = 550;
+				}
+
+				if ((VectorLength(d) < dist))
+				{
+					if (index == counter)
+					{
+						spot = coopspot;
+						break;
+					}
+					else
+					{
+						counter++;
+					}
+				}
+			}
+		}
+	}
+
 	//debounce tim eon use to help prevent telefragging
 	//spot->damage_debounce_time = level.time + 0.3;
-
 	// Do a trace to the floor to find where to put player.
-
 	VectorCopy(spot->s.origin, endpos);
 	endpos[2] -= 1000;
 	tr = gi.trace (spot->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID);
 
 	VectorCopy(tr.endpos, origin);
 	origin[2] -= mins[2];
-
-	// ???
-
 	VectorCopy(spot->s.angles, angles);
 }
 
@@ -3197,11 +3353,24 @@ PutClientInServer(edict_t *ent)
 	}
 	else if (coop->value)
 	{
+		int n;
 		char userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
 		memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
+		resp.coop_respawn.game_helpchanged = client->pers.game_helpchanged;
+		resp.coop_respawn.helpchanged = client->pers.helpchanged;
 
+		/* this is kind of ugly, but it's how we want to handle keys in coop */
+		for (n = 0; n < MAX_ITEMS; n++)
+		{
+			if (itemlist[n].flags & IT_KEY)
+			{
+				resp.coop_respawn.inventory[n] = client->pers.inventory[n];
+			}
+		}
+
+		client->pers = resp.coop_respawn;
 		ClientUserinfoChanged(ent, userinfo);
 
 		if (resp.score > client->pers.score)
@@ -3235,19 +3404,18 @@ PutClientInServer(edict_t *ent)
 	// Initialise the player's gclient_t.
 	// ********************************************************************************************
 
-	// Clear everything but the persistant data.
-
-	plaguelevel = client->playerinfo.plaguelevel;	// Save me too.
+	/* clear everything but the persistant data */
 	saved = client->pers;
 	psaved = client->playerinfo.pers;
+	plaguelevel = client->playerinfo.plaguelevel;	// Save me too.
 	memset(client, 0, sizeof(gclient_t));
 	client->playerinfo.pers = psaved;
 	client->pers = saved;
 
-	// Initialise...
-
 	if (client->pers.health <= 0)
+	{
 		InitClientPersistant(ent);
+	}
 
 	client->resp = resp;
 	client->pers.chasetoggle = chasetoggle;
@@ -3334,8 +3502,15 @@ PutClientInServer(edict_t *ent)
 	// Initialize the player's entity_state_t.
 	// ********************************************************************************************
 
+	/* clear entity state values */
+	ent->s.effects = 0;
+	ent->s.skinnum = ent - g_edicts - 1;
 	ent->s.modelindex = CUSTOM_PLAYER_MODEL; /* will use the skin specified model */
 	ent->s.modelindex2 = CUSTOM_PLAYER_MODEL; /* custom gun model */
+
+	/* sknum is player num and weapon number
+	   weapon number will be added in changeweapon */
+	ent->s.skinnum = ent - g_edicts - 1;
 
 	ent->s.frame = 0;
 	VectorCopy(spawn_origin, ent->s.origin);
@@ -3505,6 +3680,11 @@ ClientBeginDeathmatch(edict_t *ent)
 	G_InitEdict(ent);
 	InitClientResp(ent->client);
 
+	if (gamerules && gamerules->value && DMGame.ClientBegin)
+	{
+		DMGame.ClientBegin(ent);
+	}
+
 	/* locate ent at a spawn point */
 	PutClientInServer(ent);
 
@@ -3558,15 +3738,14 @@ ClientBegin(edict_t *ent)
 		for (i = 0; i < 3; i++)
 		{
 			ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(
-					ent->client->v_angle[i]);
+					ent->client->ps.viewangles[i]);
 		}
 
 		SpawnInitialPlayerEffects(ent);
 
 		// The player has a body waiting from a (just) loaded game, so we want to do just a partial
 		// reset of the player's model.
-
-		ent->client->complete_reset=0;
+		ent->client->complete_reset = 0;
 	}
 	else
 	{
@@ -3597,7 +3776,10 @@ ClientBegin(edict_t *ent)
 
 			gi.sound(ent,CHAN_WEAPON, gi.soundindex("weapons/teleport.wav"), 1, ATTN_NORM, 0);
 			gi.CreateEffect(ent, FX_PLAYER_TELEPORT_IN, CEF_OWNERS_ORIGIN, ent->s.origin, NULL);
-			G_BroadcastObituary (PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
+			G_BroadcastObituary(PRINT_HIGH, GM_ENTERED, ent->s.number, 0);
+
+			gi.bprintf(PRINT_HIGH, "%s entered the game\n",
+					ent->client->pers.netname);
 		}
 	}
 
@@ -3884,6 +4066,14 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 		ent->client->pers.autoweapon = atoi(s);
 	}
 
+	/* handedness */
+	s = Info_ValueForKey(userinfo, "hand");
+
+	if (strlen(s))
+	{
+		ent->client->pers.hand = (int)strtol(s, (char **)NULL, 10);
+	}
+
 	/* save off the userinfo in case we want to check something later */
 	Q_strlcpy(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
 }
@@ -3968,10 +4158,12 @@ ClientConnect(edict_t *ent, char *userinfo)
 	if (ent->inuse == false)
 	{
 		/* clear the respawning variables */
+		ent->client->resp.ctf_team = -1;
+		ent->client->resp.id_state = true;
 
 		InitClientResp(ent->client);
 
-		if (!ent->client->playerinfo.pers.weapon)
+		if (!game.autosaved || !ent->client->playerinfo.pers.weapon)
 		{
 			InitClientPersistant(ent);
 
@@ -4025,9 +4217,37 @@ ClientDisconnect(edict_t *ent)
 		ChasecamRemove(ent);
 	}
 
-	// Inform other players that the disconnecting client has left the game.
+	gi.bprintf(PRINT_HIGH, "%s disconnected\n", ent->client->pers.netname);
 
-	G_BroadcastObituary (PRINT_HIGH, GM_DISCON, ent->s.number, 0);
+	if (ctf->value)
+	{
+		CTFDeadDropFlag(ent);
+		CTFDeadDropTech(ent);
+	}
+
+	/* make sure no trackers are still hurting us. */
+	if (ent->client->tracker_pain_framenum)
+	{
+		RemoveAttackingPainDaemons(ent);
+	}
+
+	if (ent->client->owned_sphere)
+	{
+		if (ent->client->owned_sphere->inuse)
+		{
+			G_FreeEdict(ent->client->owned_sphere);
+		}
+
+		ent->client->owned_sphere = NULL;
+	}
+
+	if (gamerules && gamerules->value)
+	{
+		if (DMGame.PlayerDisconnect)
+		{
+			DMGame.PlayerDisconnect(ent);
+		}
+	}
 
 	// Do the teleport sound.
 
@@ -4457,6 +4677,11 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 			VectorCopy(client->aimangles, client->ps.viewangles);
 		}
 
+		if (client->ctf_grapple)
+		{
+			CTFGrapplePull(client->ctf_grapple);
+		}
+
 		gi.linkentity(ent);
 
 		ent->gravity = 1.0;
@@ -4621,9 +4846,10 @@ ClientBeginServerFrame(edict_t *ent)
 				buttonMask = -1;
 			}
 
-			if ((client->latched_buttons & buttonMask ) ||
+			if ((client->latched_buttons & buttonMask) ||
 				(deathmatch->value &&
-				 ((int)dmflags->value & DF_FORCE_RESPAWN) ) )
+				 ((int)dmflags->value & DF_FORCE_RESPAWN)) ||
+				CTFMatchOn())
 			{
 				respawn(ent);
 				client->latched_buttons = 0;
@@ -4631,6 +4857,15 @@ ClientBeginServerFrame(edict_t *ent)
 		}
 
 		return;
+	}
+
+	/* add player trail so monsters can follow */
+	if (!deathmatch->value)
+	{
+		if (!visible(ent, PlayerTrail_LastSpot()))
+		{
+			PlayerTrail_Add(ent->s.old_origin);
+		}
 	}
 
 	client->latched_buttons = 0;

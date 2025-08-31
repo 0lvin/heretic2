@@ -104,7 +104,8 @@ edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel)
 // FlyingFistTouch
 // ************************************************************************************************
 
-static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+static void
+FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
 {
 	int			damage;
 	vec3_t		planedir;
@@ -123,18 +124,18 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 
 	if (self->health)
 	{	// Powered up meteor
-		powerup=true;
+		powerup = true;
 		flags = CEF_FLAG7;
 	}
 	else
 	{	// Unpowered fireball
-		powerup=false;
+		powerup = false;
 		flags = 0;
 	}
 
 	if (self->flags & FL_NO_KNOCKBACK)
 	{	// Wimpy out-of-ammo weapon.
-		wimpy=true;
+		wimpy = true;
 		flags |= CEF_FLAG8;
 	}
 	else
@@ -149,7 +150,7 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
 			// scale speed down
-			Vec3ScaleAssign(FLYING_FIST_SPEED/2, self->velocity);
+			Vec3ScaleAssign(FLYING_FIST_SPEED / 2, self->velocity);
 			FlyingFistReflect(self, other, self->velocity);
 
 			return;
@@ -182,7 +183,7 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 		else
 		{
 			if (deathmatch->value)
-				damage = irand(FIREBALL_DAMAGE_MIN/2, FIREBALL_DAMAGE_MAX/2);
+				damage = irand(FIREBALL_DAMAGE_MIN / 2, FIREBALL_DAMAGE_MAX / 2);
 			else
 				damage = irand(FIREBALL_DAMAGE_MIN, FIREBALL_DAMAGE_MAX);
 			if (wimpy)	// Wimpy (no mana) shots do half damage
@@ -201,7 +202,8 @@ static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 		flags |= CEF_FLAG6;
 	}
 
-	gi.CreateEffect(NULL, FX_WEAPON_FLYINGFISTEXPLODE, flags, self->s.origin, "d", self->movedir);
+	gi.CreateEffect(NULL, FX_WEAPON_FLYINGFISTEXPLODE, flags,
+		self->s.origin, "d", self->movedir);
 
 	G_SetToFree(self);
 }
