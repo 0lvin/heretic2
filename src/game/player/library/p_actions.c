@@ -462,17 +462,19 @@ void PlayerActionBreath(playerinfo_t *playerinfo, float value)
 
 void PlayerActionHandFXStart(playerinfo_t *playerinfo, float value)
 {
-	int handfx, lifetime;
+	int lifetime = 0;
 
-	handfx = value;
-	switch (handfx)
+	switch ((int)value)
 	{
 		case HANDFX_FIREBALL: lifetime = 4; break;
 		case HANDFX_MISSILE: lifetime = 6; break;
 		case HANDFX_FIREWALL: lifetime = 10; break;
 	}
 
-	PlayerSetHandFX(playerinfo, handfx, lifetime);
+	if (lifetime)
+	{
+		PlayerSetHandFX(playerinfo, (int)value, lifetime);
+	}
 }
 
 /*-----------------------------------------------
