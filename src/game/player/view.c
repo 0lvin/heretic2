@@ -1133,7 +1133,7 @@ ClientEndServerFrame(edict_t *ent)
 	current_client->ps.uppermove_index = current_client->playerinfo.uppermove_index;
 	current_client->ps.lowermove_index = current_client->playerinfo.lowermove_index;
 
-	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.weapon);
+	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->pers.weapon);
 	current_client->ps.defense = (byte)ITEM_INDEX(current_client->pers.defence);
 	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->pers.lastweapon);
 	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->pers.lastdefence);

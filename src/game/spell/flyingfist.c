@@ -224,7 +224,7 @@ void SpellCastFlyingFist(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec
 
 	playerinfo = &caster->client->playerinfo;
 
-	if (caster->client->pers.inventory[playerinfo->weap_ammo_index] < playerinfo->pers.weapon->quantity)
+	if (caster->client->pers.inventory[playerinfo->weap_ammo_index] < caster->client->pers.weapon->quantity)
 	{
 		wimpy = true;
 		flags = CEF_FLAG8;

@@ -1871,24 +1871,28 @@ int BranchLwrClimbing(playerinfo_t *playerinfo)
 
 int BranchUprReadyHands(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
+
 	assert(playerinfo);
 
 	//See if we have the arm to do that magic
-	if (!BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, client->pers.weapon->tag))
 		return ASEQ_NONE;
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] && !(playerinfo->self->flags & FL_CHICKEN))	// Not a chicken
 	{
-		playerinfo->idletime=playerinfo->leveltime;
+		playerinfo->idletime = playerinfo->leveltime;
 
 		// Check Offensive mana.
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || pi.Weapon_CurrentShotsLeft(playerinfo))
+		if (client->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || pi.Weapon_CurrentShotsLeft(playerinfo))
 		{
 			// Fireballs have free mana, but if powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
-				return playerinfo->pers.weapon->altanimseq;
+				return client->pers.weapon->altanimseq;
 			else
-				return playerinfo->pers.weapon->playeranimseq;
+				return client->pers.weapon->playeranimseq;
 		}
 	}
 	else
@@ -1905,6 +1909,9 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 
 int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
 	//No arm, no shot
 	if (playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
@@ -1917,7 +1924,7 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK])	// Not a chicken
 	{
-		if (!strcmp(playerinfo->pers.weapon->classname, "Weapon_SwordStaff"))
+		if (!strcmp(client->pers.weapon->classname, "Weapon_SwordStaff"))
 		{
 			playerinfo->idletime=playerinfo->leveltime;
 
@@ -1926,7 +1933,8 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 			{
 				return ASEQ_NONE;
 			}
-			else if (playerinfo->advancedstaff && playerinfo->seqcmd[ACMDL_ACTION] && playerinfo->seqcmd[ACMDL_BACK])
+			else if (playerinfo->advancedstaff && playerinfo->seqcmd[ACMDL_ACTION] &&
+				playerinfo->seqcmd[ACMDL_BACK])
 			{
 				return ASEQ_WSWORD_BACK;
 			}
@@ -1937,7 +1945,9 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 				else
 					return ASEQ_WSWORD_PULLOUT;
 			}
-			else if (playerinfo->advancedstaff && playerinfo->lowerseq == ASEQ_JUMPFWD && playerinfo->seqcmd[ACMDL_FWD])
+			else if (playerinfo->advancedstaff &&
+				playerinfo->lowerseq == ASEQ_JUMPFWD &&
+				playerinfo->seqcmd[ACMDL_FWD])
 			{
 				return ASEQ_WSWORD_DOWNSTAB;
 			}
@@ -1967,21 +1977,27 @@ int BranchUprReadySwordStaff(playerinfo_t *playerinfo)
 
 int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
+
 	//No arm, no shot
 	if (playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->self->flags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
+		!(playerinfo->self->flags & FL_CHICKEN) &&
+		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
-		playerinfo->idletime=playerinfo->leveltime;
+		playerinfo->idletime = playerinfo->leveltime;
 
-		if (!strcmp(playerinfo->pers.weapon->classname, "item_weapon_hellstaff"))
+		if (!strcmp(client->pers.weapon->classname, "item_weapon_hellstaff"))
 		{
 			// If powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
-				return playerinfo->pers.weapon->altanimseq;
+				return client->pers.weapon->altanimseq;
 			else
-				return playerinfo->pers.weapon->playeranimseq;
+				return client->pers.weapon->playeranimseq;
 		}
 	}
 	else
@@ -1998,6 +2014,10 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 
 int BranchUprReadyBow(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
+
 	//No arm, no shot
 	if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
@@ -2012,9 +2032,9 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 		// If powered up, use the alternate animation sequence.
 		if (playerinfo->powerup_timer > playerinfo->leveltime)
-			return playerinfo->pers.weapon->altanimseq;
+			return client->pers.weapon->altanimseq;
 		else
-			return playerinfo->pers.weapon->playeranimseq;
+			return client->pers.weapon->playeranimseq;
 	}
 	else
 	{
@@ -2032,11 +2052,15 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 int BranchCheckAmmo(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
+
 	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return ASEQ_NONE;
 
 	pi.G_WeapNext(playerinfo->self);
-	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
+	if (client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
 		return(ASEQ_WRRBOW_END);

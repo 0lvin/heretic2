@@ -416,14 +416,15 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 	gclient_t *client;
 
 	client = playerinfo->self->client;
+
 	if (playerinfo->switchtoweapon != client->pers.weaponready ||
-		playerinfo->self->client->newweapon)
+		client->newweapon)
 	{	// Switching weapons is one reason to end the bow refire waiting.
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
+		if (client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
 		}
-		else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
+		else if (client->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_END);
 		}
@@ -433,11 +434,11 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 		!(playerinfo->self->flags & FL_CHICKEN) &&
 		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{	// Shooting is the other!
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
+		if (client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_DRAW);
 		}
-		else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
+		else if (client->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW)
 		{
 			PlayerAnimSetUpperSeq(playerinfo, ASEQ_WPHBOW_DRAW);
 		}
@@ -681,7 +682,9 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 {
 	vec3_t	forward, right, spawnpoint;
 	int		color;
+	gclient_t *client;
 
+	client = playerinfo->self->client;
 	assert(playerinfo);
 
 	if (playerinfo->self->flags & FL_CHICKEN)
@@ -691,19 +694,18 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 		return;
 	}
 
-	assert(playerinfo->self->client->newweapon);
+	assert(client->newweapon);
 
-	pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
-	playerinfo->self->client->newweapon = NULL;
+	pi.Weapon_Ready(client, client->newweapon);
+	client->newweapon = NULL;
 
-	// Do some fancy effect.
-
+	/* Do some fancy effect. */
 	AngleVectors(playerinfo->self->s.angles, forward, right, NULL);
 	VectorMA(playerinfo->self->s.origin, -2.0, forward, spawnpoint);
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-	switch (playerinfo->pers.weapon->tag)
+	switch (client->pers.weapon->tag)
 	{
 		case ITEM_WEAPON_FLYINGFIST:
 			color=1;
@@ -752,7 +754,6 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 	gclient_t *client;
 
 	client = playerinfo->self->client;
-
 	assert(playerinfo);
 
 	if (playerinfo->self->flags & FL_CHICKEN)
@@ -774,7 +775,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 	VectorMA(spawnpoint, -7, right, spawnpoint);
 	spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-	weapon = playerinfo->pers.weapon;
+	weapon = client->pers.weapon;
 
 	if (weapon)
 	{
@@ -821,7 +822,6 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	gclient_t *client;
 
 	client = playerinfo->self->client;
-
 	assert(playerinfo);
 
 	if (playerinfo->self->flags & FL_CHICKEN)
@@ -878,7 +878,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 			// Make sure we have the right bow color
 
-			weapon = playerinfo->pers.weapon;
+			weapon = client->pers.weapon;
 
 			if (weapon)
 			{
@@ -4349,6 +4349,10 @@ void PlayerPlaySlide(playerinfo_t *playerinfo)
 void
 PlayerInterruptAction(playerinfo_t *playerinfo)
 {
+	gclient_t *client;
+
+	client = playerinfo->self->client;
+
 	//Shut off player effects from weapons or the like
 	TurnOffPlayerEffects(playerinfo->self);
 
@@ -4361,15 +4365,15 @@ PlayerInterruptAction(playerinfo_t *playerinfo)
 						0);
 
 	//Release any held weapons
-	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
+	if (client->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
 	{
 		pi.PlayerActionRedRainBowAttack(playerinfo->self);
 	}
-	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
+	else if (client->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
 	{
 		pi.PlayerActionPhoenixBowAttack(playerinfo->self);
 	}
-	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
+	else if (client->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
 	{
 		playerinfo->chargingspell=false;
 		pi.PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);

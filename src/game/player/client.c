@@ -1285,7 +1285,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 	if (throw_nodes)
 	{
 		self->pain_debounce_time = 0;
-		if (!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
+		if (!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->pers.weapon->tag))
 		{
 			playerExport->PlayerInterruptAction(&self->client->playerinfo);
 			playerExport->PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
@@ -1898,14 +1898,13 @@ InitClientPersistant(edict_t *ent)
 	}
 
 	memset(&client->pers, 0, sizeof(client->pers));
-	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
 
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 	item = FindItem("staff");
 	client->pers.selected_item = ITEM_INDEX(item);
 	client->pers.inventory[client->pers.selected_item] = 1;
 
-	client->playerinfo.pers.weapon = item;
+	client->pers.weapon = item;
 	client->pers.lastweapon = item;
 	client->playerinfo.weap_ammo_index = 0;
 
@@ -1946,7 +1945,7 @@ InitClientPersistant(edict_t *ent)
 		item = FindItem("fball");
 		AddWeaponToInventory(item, ent);
 		client->pers.selected_item = ITEM_INDEX(item);
-		client->playerinfo.pers.weapon = item;
+		client->pers.weapon = item;
 		client->pers.lastweapon = item;
 		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(item->ammo));
 	}
@@ -3301,7 +3300,6 @@ PutClientInServer(edict_t *ent)
 	gclient_t *client;
 	int i, chasetoggle;
 	client_persistant_t saved;
-	player_persistant_t psaved;
 	client_respawn_t resp;
 	int					complete_reset;
 	int					plaguelevel;
@@ -3403,10 +3401,8 @@ PutClientInServer(edict_t *ent)
 
 	/* clear everything but the persistant data */
 	saved = client->pers;
-	psaved = client->playerinfo.pers;
 	plaguelevel = client->playerinfo.plaguelevel;	// Save me too.
 	memset(client, 0, sizeof(*client));
-	client->playerinfo.pers = psaved;
 	client->pers = saved;
 
 	if (client->pers.health <= 0)
@@ -3607,8 +3603,8 @@ PutClientInServer(edict_t *ent)
 
 	// Set the player's current offensive and defensive ammo indexes.
 
-	if (client->playerinfo.pers.weapon->ammo)
-		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->playerinfo.pers.weapon->ammo));
+	if (client->pers.weapon->ammo)
+		client->playerinfo.weap_ammo_index = ITEM_INDEX(FindItem(client->pers.weapon->ammo));
 
 	if (client->pers.defence)
 		client->playerinfo.def_ammo_index = ITEM_INDEX(FindItem(client->pers.defence->ammo));
@@ -4163,7 +4159,7 @@ ClientConnect(edict_t *ent, char *userinfo)
 
 		InitClientResp(ent->client);
 
-		if (!game.autosaved || !ent->client->playerinfo.pers.weapon)
+		if (!game.autosaved || !ent->client->pers.weapon)
 		{
 			InitClientPersistant(ent);
 
