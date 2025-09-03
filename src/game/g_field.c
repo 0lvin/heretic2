@@ -33,43 +33,6 @@ InitField(edict_t *self)
 }
 
 
-
-void FogDensity_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	player_state_t		*ps;
-
-	// Only players can know about fog density changes
-	if (other->client)
-	{
-		ps = &other->client->ps;
-
-		if (!self->target)
-		{
-			ps->fog_density = 0.0;
-			return;
-		}
-		ps->fog_density = strtod(self->target, NULL);
-	}
-}
-
-/*QUAKED trigger_fogdensity (.5 .5 .5) ?
-Sets the value of r_fog_density
-and the fog color
----------KEY----------------
-target - fog density (.01 - .0001)
-color - red green blue values (0 0 0)
-        range of 1.0 - 0
-----------------------------
-*/
-void SP_trigger_fogdensity(edict_t *self)
-{
-	InitField(self);
-
-	self->touch = FogDensity_touch;
-	self->solid = SOLID_TRIGGER;
-}
-
-
 //----------------------------------------------------------------------
 // Damage Field
 //----------------------------------------------------------------------

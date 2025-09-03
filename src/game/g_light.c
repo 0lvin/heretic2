@@ -212,6 +212,16 @@ void firemove_think(edict_t *self)
 	self->think = NULL;
 }
 
+void
+env_fire_think(edict_t *self)
+{
+	self->nextthink = level.time + FRAMETIME;
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_FLAME);
+	gi.WritePosition(self->s.origin);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
+}
+
 /*
  * QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0)  INVULNERABLE ANIMATE EXPLODING  FIRE_OFF MOVEABLE LIGHT_ON
  * Heretic 2: Flame effect. Does not emit light.

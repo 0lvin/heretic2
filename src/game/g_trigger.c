@@ -2041,6 +2041,45 @@ SP_trigger_fog(edict_t *self)
 }
 
 /*
+ * QUAKED trigger_fogdensity (.5 .5 .5) ?
+ * Heretic 2: Sets r_fog_density
+ *
+ * target: Fog density (.01 - .0001)
+ */
+void
+trigger_fogdensity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	float density;
+	int i;
+
+	if (!self || !other || !other->client)
+	{
+		return;
+	}
+
+	density = (float)strtod(self->target, (char **)NULL) * 100;
+	other->client->pers.wanted_fog[0] = density;
+	other->client->pers.wanted_fog[4] = 1.0;
+	for (i = 0; i < 3; i++)
+	{
+		other->client->pers.wanted_fog[i + 1] = 0.75;
+	}
+}
+
+void
+SP_trigger_fogdensity(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+	self->touch = trigger_fogdensity_touch;
+}
+
+/*
  * QUAKED choose_cdtrack (.5 .5 .5) ?
  * Heretic 2: Sets CD track
  *

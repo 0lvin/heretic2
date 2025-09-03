@@ -624,6 +624,7 @@ extern void dying_elf_reach_anim(edict_t *self) ;
 extern void dying_elf_sounds (edict_t *self, int type) ;
 extern void dying_elf_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf) ;
 extern void dynamicspawn_touch ( edict_t * ent , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
+extern void dynamicspawn_think ( edict_t *self );
 extern void enfbolt_touch ( edict_t * self , edict_t * other , cplane_t * plane, csurface_t *surf);
 extern void enforcer_attack ( edict_t * self ) ;
 extern void enforcer_die ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
@@ -1499,6 +1500,7 @@ extern void trigger_goto_buoy_touch (edict_t *self, edict_t *other, cplane_t *pl
 extern void trigger_goto_buoy_touch_go (edict_t *self);
 extern void trigger_goto_buoy_use (edict_t *self, edict_t *other, edict_t *activator);
 extern void trigger_goto_buoy_use_go (edict_t *self);
+extern void trigger_fogdensity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */);
 extern void trigger_gravity_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void trigger_gravity_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void trigger_key_use ( edict_t * self , edict_t * other , edict_t * activator ) ;

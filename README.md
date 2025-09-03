@@ -109,6 +109,7 @@ Goals:
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win32.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win32.yml)
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win64.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win64.yml)
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win_msvc.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win_msvc.yml)
+[![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/codeql.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/codeql.yml)
 
 This is an experimental fork of Yamagi Quake II with ongoing work to add
 support for Quake II Enhanced aka Q2 Remaster(ed). This enhanced version
@@ -209,8 +210,6 @@ Note:
    with tranparency or some animations flags and properties.
 * If you like support some other maps type, create pull request for Mod_Load2QBSP
    function and provide a link to demo maps.
-* Use `maptype 1` before load any Heretic 2 maps, or place game data to `heretic2` directory.
-   Look to [maptype_t](src/common/header/cmodel.h#L42) for more info.
 
 Games:
 
@@ -256,6 +255,7 @@ Games check videos:
 
 [![Quake I + Half Life 1 Demo](https://img.youtube.com/vi/_KY4bQpij0c/0.jpg)](https://www.youtube.com/watch?v=_KY4bQpij0c)
 [![Quake I + Hexen 2](https://img.youtube.com/vi/uU87u1iEBeg/0.jpg)](https://www.youtube.com/watch?v=uU87u1iEBeg)
+[![Heretic 2 Book / Translate](https://img.youtube.com/vi/4Sr_rhYP2lo/0.jpg)](https://www.youtube.com/watch?v=4Sr_rhYP2lo)
 
 * 8.52RR12:
 
@@ -300,7 +300,6 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 * [ ] soft: fix crash with md5 models in player model select and ASAN=1
 * [ ] soft: q64/outpost scale textures unsupported,
 * [ ] soft: broken wall light and wall glitch,
-* [x] soft: build with SDL3 has glitch in menu,
 * [ ] soft: rework 32bit color cinema workarrounds,
 * [ ] soft: support scalled textures for models and walls, and fix
     lighting with remastered maps,
@@ -341,7 +340,6 @@ Other games support goals:
 * [ ] Jabot: fix crash in SZ_GetSpace,
 * [ ] Quake, Half-Life, Hexen 2: fix brush flags,
 * [ ] Half-Life: support mdl,
-* [x] Heretic 2: combine all tiles in book sprite,
 * [ ] Anachronox: load atd as sprite,
 * [ ] Anachronox: skins load broken with mingw win64 build,
 * [ ] Anachronox: rowdys map models disappear on dance space,

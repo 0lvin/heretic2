@@ -452,7 +452,7 @@ extern void SP_trigger_endgame(edict_t *self);
 extern void SP_trigger_farclip (edict_t *ent);
 extern void SP_trigger_flashlight(edict_t * self);
 extern void SP_trigger_fog(edict_t * self);
-extern void SP_trigger_fogdensity(edict_t *self);
+extern void SP_trigger_fogdensity(edict_t * self);
 extern void SP_trigger_goto_buoy(edict_t *self);
 extern void SP_trigger_gravity(edict_t * self);
 extern void SP_trigger_hurt(edict_t * self);
