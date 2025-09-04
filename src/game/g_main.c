@@ -159,7 +159,9 @@ qboolean MonsterAdvanceFrame = false;
 void
 G_CPrintf(edict_t* ent, int printlevel, short stringid)
 {
-	if (stringid > MAX_MESSAGESTRINGS || !game_msgtxt[stringid].string[0])
+	if (stringid > MAX_MESSAGESTRINGS ||
+		!game_msgtxt[stringid].string ||
+		!game_msgtxt[stringid].string[0])
 	{
 		gi.dprintf("%s: Unknow message %d\n", __func__, stringid);
 		return;
@@ -599,6 +601,25 @@ CheckDMRules(void)
 		return;
 	}
 
+	if (gamerules && gamerules->value && DMGame.CheckDMRules)
+	{
+		if (DMGame.CheckDMRules())
+		{
+			return;
+		}
+	}
+
+	if (ctf->value && CTFCheckRules())
+	{
+		EndDMLevel();
+		return;
+	}
+
+	if (CTFInMatch())
+	{
+		return; /* no checking in match mode */
+	}
+
 	if (timelimit->value)
 	{
 		if (level.time >= timelimit->value * 60)
@@ -633,6 +654,8 @@ CheckDMRules(void)
 static void
 ExitLevel(void)
 {
+	int i;
+	edict_t *ent;
 	char command[256];
 
 	level.exitintermission = 0;
@@ -653,6 +676,25 @@ ExitLevel(void)
 	level.exitintermission = 0;
 	level.intermissiontime = 0;
 	ClientEndServerFrames();
+
+	/* clear some things before going to next level */
+	for (i = 0; i < maxclients->value; i++)
+	{
+		ent = g_edicts + 1 + i;
+
+		if (!ent->inuse)
+		{
+			continue;
+		}
+
+		if (ent->health > ent->max_health)
+		{
+			ent->health = ent->max_health;
+		}
+	}
+
+	debristhisframe = 0;
+	gibsthisframe = 0;
 
 	G_ClearMessageQueues();
 }
@@ -918,10 +960,9 @@ G_RunFrame(void)
 			continue;
 		}
 
-		// Remember original origin
 		VectorCopy(ent->s.origin, ent->s.old_origin);
 
-		// Make sure the entity still has something to stand on
+		/* if the ground entity moved, make sure we are still on it */
 		if (ent->groundentity)
 		{
 			// check for the groundentity being freed
