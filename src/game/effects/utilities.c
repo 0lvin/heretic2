@@ -21,7 +21,6 @@
 client_entity_t *CircularList[MAX_ENTRIES_IN_CIRCLE_LIST + 1];
 int				CurrentCirclePointer = 0;
 int				total_circle_entries;
-extern void RemoveEffectFromList(client_entity_t **root, centity_t *owner);
 
 //------------------------------------------------------------------
 // Update funcs
@@ -31,6 +30,7 @@ qboolean RemoveSelfAI(client_entity_t *_this, centity_t *owner)
 {
 	return false;	// removed after one think (nextThinkTime is lifetime)
 }
+
 qboolean KeepSelfAI(client_entity_t *_this, centity_t *owner)
 {
 	return true;	// Remain alive forever

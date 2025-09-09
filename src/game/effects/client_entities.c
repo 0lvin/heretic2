@@ -146,7 +146,8 @@ void ClientEntity_delete(client_entity_t *toDelete, centity_t *owner)
 	ResMngr_DeallocateResource(&EntityMngr, toDelete, sizeof(*toDelete));
 }
 
-void AddEffectToList(client_entity_t **root, client_entity_t *fx)
+static void
+AddEffectToList(client_entity_t **root, client_entity_t *fx)
 {
 	assert(root);
 
@@ -154,7 +155,8 @@ void AddEffectToList(client_entity_t **root, client_entity_t *fx)
 	*root = fx;
 }
 
-void RemoveEffectFromList(client_entity_t **root, centity_t *owner)
+void
+RemoveEffectFromList(client_entity_t **root, centity_t *owner)
 {
 	client_entity_t *toFree;
 
@@ -170,7 +172,8 @@ void RemoveEffectFromList(client_entity_t **root, centity_t *owner)
 	ClientEntity_delete(toFree, owner);
 }
 
-void RemoveEffectList(client_entity_t **root)
+void
+RemoveEffectList(client_entity_t **root)
 {
 	assert(root);
 	assert(*root);
@@ -181,7 +184,8 @@ void RemoveEffectList(client_entity_t **root)
 	}
 }
 
-void RemoveOwnedEffectList(centity_t *owner)
+void
+RemoveOwnedEffectList(centity_t *owner)
 {
 	client_entity_t **root;
 
@@ -197,8 +201,8 @@ void RemoveOwnedEffectList(centity_t *owner)
 
 // fx = type of effect to remove
 //    = 0, remove all effects
-
-void RemoveEffectTypeList(client_entity_t **root, FX_Type_t fx, centity_t *owner)
+void
+RemoveEffectTypeList(client_entity_t **root, FX_Type_t fx, centity_t *owner)
 {
 	client_entity_t **prev;
 	client_entity_t *current;
@@ -219,7 +223,8 @@ void RemoveEffectTypeList(client_entity_t **root, FX_Type_t fx, centity_t *owner
 vec3_t viewDir;
 float viewFOV;
 
-void PrepAddEffectsToView()
+void
+PrepAddEffectsToView()
 {
 	refdef_t *refDef;
 
@@ -234,10 +239,11 @@ void PrepAddEffectsToView()
 		viewFOV = cos(refDef->fov_y * 0.5 * ANGLE_TO_RAD * 1.2);
 	}
 
-	AngleVectors (refDef->viewangles, viewDir, NULL, NULL);
+	AngleVectors(refDef->viewangles, viewDir, NULL, NULL);
 }
 
-int AddEffectsToView(client_entity_t **root, centity_t *owner)
+int
+AddEffectsToView(client_entity_t **root, centity_t *owner)
 {
 	client_entity_t *current;
 	vec3_t dir;
@@ -364,24 +370,25 @@ int AddEffectsToView(client_entity_t **root, centity_t *owner)
 	return numFX;
 }
 
-void AddEffect(centity_t* owner, client_entity_t* fx)
+void
+AddEffect(centity_t* owner, client_entity_t* fx)
+{
+	if (owner)
 	{
-		if (owner)
+		AddEffectToList(&owner->effects, fx);
+		if (owner->referenceInfo && fx->refMask)
 		{
-			AddEffectToList(&owner->effects, fx);
-			if (owner->referenceInfo && fx->refMask)
-			{
-				EnableRefPoints(owner->referenceInfo, fx->refMask);
-			}
+			EnableRefPoints(owner->referenceInfo, fx->refMask);
 		}
-		else
-		{
-			AddEffectToList(&clientEnts, fx);
-		}
-
-		// copy up the scale on a model so it can be culled properly
-		VectorCopy(fx->r.scale, fx->r.scale);
 	}
+	else
+	{
+		AddEffectToList(&clientEnts, fx);
+	}
+
+	// copy up the scale on a model so it can be culled properly
+	VectorCopy(fx->r.scale, fx->r.scale);
+}
 
 #define NUM_TRACES 100		// I really, really hope we don't ever see more than _this
 
@@ -520,7 +527,8 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 					}
 					else
 					{
-						fxi.Com_Printf("Max Client Collisions exceeded by %d\n", curTrace - (NUM_TRACES - 1));
+						fxi.Com_Printf("%s: Max Client Collisions exceeded by %d\n",
+							__func__, curTrace - (NUM_TRACES - 1));
 						++curTrace;
 					}
 				}
@@ -590,17 +598,20 @@ int UpdateEffects(client_entity_t **root, centity_t *owner)
 	return numFX;
 }
 
-qboolean AddEntityToView(entity_t *ent)
+qboolean
+AddEntityToView(entity_t *ent)
 {
 	paletteRGBA_t color;
 
 	if (!ent->model)
 	{
-		fxi.Com_Printf("AddEntityToView: NULL Model\n");
+		fxi.Com_Printf("%s: NULL Model\n", __func__);
 	}
+
 	if ((ent->flags & RF_TRANS_ADD) && (ent->flags & RF_ALPHA_TEXTURE))
 	{
-		fxi.Com_Printf("AddEntityToView: Cannot have additive alpha mapped image. UNSUPPORTED !!\n");
+		fxi.Com_Printf("%s: Cannot have additive alpha mapped image. UNSUPPORTED !!\n",
+			__func__);
 	}
 
 	color.c = ent->color;

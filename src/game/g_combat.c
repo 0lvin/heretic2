@@ -753,7 +753,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	else
 		VectorSet(dir, 0, 0, -1);
 
-	if (Vec3NotZero(pnormal))
+	if (pnormal && Vec3NotZero(pnormal))
 		VectorCopy(pnormal, normal);
 	else
 		VectorSet(normal, 0, 0, 1);

@@ -159,7 +159,7 @@ void ReleaseEntityMngr(void);
 void ReleaseFMNodeInfoMngr(void);
 void DoWaterSplash(client_entity_t *effect, paletteRGBA_t color, int count);
 client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t direction, int nextThinkTime);
-void AddEffectToList(client_entity_t **root, client_entity_t *fx);
+void RemoveEffectFromList(client_entity_t **root, centity_t *owner);
 void RemoveEffectList(client_entity_t **root);
 void RemoveOwnedEffectList(centity_t *owner);
 void RemoveEffectTypeList(client_entity_t** root, FX_Type_t fx, centity_t* owner);

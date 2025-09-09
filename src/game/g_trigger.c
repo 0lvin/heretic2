@@ -1053,8 +1053,6 @@ void mission_give_use (edict_t *self, edict_t *other)
 	int				num, i;
 	player_state_t	*ps;
 
-	gi.dprintf("TODO: mission changed %s\n", self->message);
-
 	num = atoi(self->message);
 	for (i = 1; i <= game.maxclients; i++)
 	{
@@ -1076,6 +1074,9 @@ void mission_give_use (edict_t *self, edict_t *other)
 				ps->mission_num2 = num;
 			}
 			G_CPrintf(other, PRINT_HIGH, GM_NEWOBJ);
+
+			gi.dprintf("TODO: mission changed %s to '%s'\n", self->message,
+				LocalizationMessage(self->message, NULL));
 		}
 	}
 
