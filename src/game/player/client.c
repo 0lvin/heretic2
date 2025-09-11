@@ -2045,8 +2045,6 @@ SaveClientData(void)
 
 		if (coop->value && game.clients[i].pers.health < 25)
 			game.clients[i].pers.health = 25;
-		game.clients[i].pers.mission_num1 = ent->client->ps.mission_num1;
-		game.clients[i].pers.mission_num2 = ent->client->ps.mission_num2;
 
 		if (coop->value)
 		{
@@ -2071,9 +2069,6 @@ FetchClientEntData(edict_t *ent)
 	{
 		ent->health = 25;
 	}
-
-	ent->client->ps.mission_num1 = ent->client->pers.mission_num1;
-	ent->client->ps.mission_num2 = ent->client->pers.mission_num2;
 
 	if (coop->value)
 	{

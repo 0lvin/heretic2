@@ -1596,35 +1596,21 @@ typedef struct
 	short stats[MAX_STATS];     /* fast status bar updates */
 
 	// Deltas added to the player model's client determined angles.
-
 	vec3_t			offsetangles;
 
 	// Index of edict currently targeted by the player's auto-targeting facility.
-
 	int				AutotargetEntityNum;
 
 	// For showing the amount of current level completed.
-
 	byte			map_percentage;
-
-	// Current fog density for the player.
-
-	float			fog_density;
-
-	// Id number for primary and secondary mission statments in strings.txt.
-
-	short			mission_num1;
-	short			mission_num2;
 
 	byte			cinematicfreeze;	// Shows if currently in a cinematic
 
 	// Current state of players in this clients view (one bit per player).
-
 	int				PIV;
 
 	// These are NEVER sent accross the net, but are purely client-side repositiories needed by
 	// prediction and are filled from the player's entity_state_t.
-
 	int				frame, swapFrame;
 	vec3_t			angles;
 	int				effects,
@@ -1639,38 +1625,30 @@ typedef struct
 	// ********************************************************************************************
 
 	// Inventory changes.
-
 	byte			NoOfItems;
 
 	// Water attributes.
-
 	int				watertype;
 	int				waterlevel;
 	float			waterheight;
 
 	// Grabbing / pullup stuff.
-
 	vec3_t			grabloc;
 	float			grabangle;
 
 	// Velocities imparted on a per animation frame basis.
-
 	float			fwdvel, sidevel, upvel;
 
 	// PLAYER_FLAG_XXX.
-
 	int				flags;
 
 	// FL_XXX.
-
 	int				edictflags;
 
 	// Player edict's oldvelocity.
-
 	float			oldvelocity_z;
 
 	// Animation sequencing state.
-
 	int				upperseq, lowerseq;
 	int				upperframe, lowerframe;
 	byte			upperidle, loweridle;		// boolean
@@ -1700,9 +1678,7 @@ typedef struct
 	float			powerup_timer;
 
 	// Deathmatch flags.
-
 	int				dmflags;
-
 } player_state_t;
 
 /* Fog */

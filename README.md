@@ -39,6 +39,8 @@ Drawbacks, sorted by priority:
  * [ ] fix acrobatic
  * [ ] fix rope
  * [ ] fix puzzles
+ * [ ] implement `menu_help` to show level goals,
+ * [ ] keep old mission goals if map is not provided new one, look to `trigger_mission_*`,
  * [ ] game memory management, fix or replace singlelinkedlist,
  * [ ] save code broken as not all callbacks registered
  * [ ] effects is not started sometime,

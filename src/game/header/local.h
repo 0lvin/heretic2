@@ -1871,8 +1871,6 @@ typedef struct
 
 	/* Heretic2 */
 	int autoweapon;
-	short mission_num1;
-	short mission_num2;
 
 	/* Visible model attributes. */
 	int weaponready;
