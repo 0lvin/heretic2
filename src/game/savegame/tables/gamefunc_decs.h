@@ -1504,6 +1504,8 @@ extern void trigger_fogdensity_touch(edict_t *self, edict_t *other, cplane_t *pl
 extern void trigger_gravity_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void trigger_gravity_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void trigger_key_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
+extern void trigger_mission_give_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */);
+extern void trigger_mission_take_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */);
 extern void trigger_monsterjump_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void trigger_playerpushbutton(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface);
 extern void trigger_push_active ( edict_t * self ) ;

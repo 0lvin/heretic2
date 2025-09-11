@@ -88,3 +88,104 @@ Com_Error(int code, const char *fmt, ...)
 /* shared variables */
 refdef_t r_newrefdef;
 viddef_t vid;
+
+static void
+R_GetHeightFog(float *color)
+{
+	float factor;
+
+	color[3] = 0;
+	if (r_newrefdef.fog.hf_start_dist < r_newrefdef.fog.hf_end_dist)
+	{
+		if (r_newrefdef.vieworg[2] >= r_newrefdef.fog.hf_end_dist ||
+			r_newrefdef.vieworg[2] <= r_newrefdef.fog.hf_start_dist)
+		{
+			return;
+		}
+	}
+	else
+	{
+		if (r_newrefdef.vieworg[2] <= r_newrefdef.fog.hf_end_dist ||
+			r_newrefdef.vieworg[2] >= r_newrefdef.fog.hf_start_dist)
+		{
+			color[3] = 0;
+			return;
+		}
+	}
+
+	factor = (r_newrefdef.vieworg[2] - r_newrefdef.fog.hf_start_dist) /
+		(r_newrefdef.fog.hf_end_dist - r_newrefdef.fog.hf_start_dist);
+
+	factor = Q_clamp(factor, 0.0f, 1.0f);
+	factor = pow(factor, r_newrefdef.fog.hf_falloff);
+	color[0] = Q_lerp(r_newrefdef.fog.hf_start_r / 255.0f,
+		r_newrefdef.fog.hf_end_r / 255.0f, factor);
+	color[1] = Q_lerp(r_newrefdef.fog.hf_start_g / 255.0f,
+		r_newrefdef.fog.hf_end_g / 255.0f, factor);
+	color[2] = Q_lerp(r_newrefdef.fog.hf_start_b / 255.0f,
+		r_newrefdef.fog.hf_end_b / 255.0f, factor);
+	color[3] = r_newrefdef.fog.hf_density * factor;
+}
+
+static void
+R_CombineBlends(const float *add, float *v_blend)
+{
+	if (add[3])
+	{
+		int i;
+
+		v_blend[3] += add[3];
+		for (i = 0; i < 3; i++)
+		{
+			v_blend[i] += add[i] * add[3];
+		}
+	}
+}
+
+void
+R_CombineBlendWithFog(float *v_blend)
+{
+	float hf_color[4];
+	int i;
+
+	for (i = 0; i < 4; i++)
+	{
+		v_blend[i] = 0;
+	}
+
+	/* blend */
+	R_CombineBlends(r_newrefdef.blend, v_blend);
+
+	/* fog */
+	if (r_newrefdef.fog.density)
+	{
+		float fog_density;
+
+		fog_density = r_newrefdef.fog.density * 10;
+		v_blend[3]  += fog_density;
+
+		v_blend[0] += (r_newrefdef.fog.red / 255.0) * fog_density;
+		v_blend[1] += (r_newrefdef.fog.green / 255.0) * fog_density;
+		v_blend[2] += (r_newrefdef.fog.blue / 255.0) * fog_density;
+	}
+
+	/* height fog */
+	R_GetHeightFog(hf_color);
+	R_CombineBlends(hf_color, v_blend);
+
+	if (v_blend[3])
+	{
+		for (i = 0; i < 3; i++)
+		{
+			v_blend[i] /= v_blend[3];
+		}
+	}
+
+	for (i = 0; i < 4; i++)
+	{
+		if (v_blend[i] > 1.0)
+		{
+			v_blend[i] = 1.0;
+		}
+	}
+}

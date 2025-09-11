@@ -1048,115 +1048,8 @@ void SP_trigger_quake (edict_t *self)
 	self->TriggerActivated = quake_use;
 }
 
-void mission_give_use (edict_t *self, edict_t *other)
-{
-	int				num, i;
-	player_state_t	*ps;
-
-	num = atoi(self->message);
-	for (i = 1; i <= game.maxclients; i++)
-	{
-		other = &g_edicts[i];
-		if (!other->inuse)
-			continue;
-		if (!other->client)
-			continue;
-
-		ps = &other->client->ps;
-		if ((ps->mission_num1 != num) && (ps->mission_num2 != num))
-		{
-			if (!ps->mission_num1)
-			{
-				ps->mission_num1 = num;
-			}
-			else
-			{
-				ps->mission_num2 = num;
-			}
-			G_CPrintf(other, PRINT_HIGH, GM_NEWOBJ);
-
-			gi.dprintf("TODO: mission changed %s to '%s'\n", self->message,
-				LocalizationMessage(self->message, NULL));
-		}
-	}
-
-	G_UseTargets(self, self);
-}
-
-/*QUAKED trigger_mission_give (0.3 0.1 0.6) ? MONSTER NOT_PLAYER TRIGGERED ANY
-Gives player(s) the current mission objectives
--------SPAWN FLAGS-------------
-MONSTER - only a monster will trigger it
-NOT_PLAYER -  can't be triggered by player
-TRIGGERED - starts trigger deactivated
-ANY - anything can activate it
--------KEYS--------------------
-message - number of line from strings.txt, put in objectives
-wait - amount of time until it will become active again (default 10).
-*/
-void SP_trigger_mission_give (edict_t *self)
-{
-	InitTrigger(self);
-
-	if (!self->wait)
-		self->wait = 10;
-
-	self->TriggerActivated = mission_give_use;
-}
-
-#define MISSION_TAKE1 16
-#define MISSION_TAKE2 32
-
 void
-mission_take_use(edict_t *self, edict_t *other)
-{
-	player_state_t		*ps;
-	int					i;
-
-	for (i = 1; i <= game.maxclients; i++)
-	{
-		other = &g_edicts[i];
-		if (!other->inuse)
-			continue;
-		if (!other->client)
-			continue;
-
-		ps = &other->client->ps;
-
-		if (self->spawnflags & MISSION_TAKE1)
-			ps->mission_num1 = 0;
-
-		if (self->spawnflags & MISSION_TAKE2)
-			ps->mission_num2 = 0;
-	}
-
-
-	G_UseTargets(self, self);
-}
-
-/*QUAKED trigger_mission_take (0.3 0.1 0.6) ? MONSTER NOT_PLAYER TRIGGERED ANY TAKE1  TAKE2
-Removes player(s) the current mission objectives
--------SPAWN FLAGS-------------
-MONSTER - only a monster will trigger it
-NOT_PLAYER -  can't be triggered by player
-TRIGGERED - starts trigger deactivated
-ANY - anything can activate it
-TAKE1 mission statement 1
-TAKE2 mission statement 2
--------KEYS--------------------
-wait - amount of time until it will become active again (default 10).
-*/
-void SP_trigger_mission_take (edict_t *self)
-{
-	InitTrigger(self);
-
-	if (!self->wait)
-		self->wait = 10;
-
-	self->TriggerActivated = mission_take_use;
-}
-
-void ClipDistance_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+ClipDistance_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	char temp[10];
 	cvar_t *r_farclipdist;
@@ -1791,12 +1684,6 @@ SP_trigger_flashlight(edict_t *self)
 #define SPAWNFLAG_FOG_FORCE 8
 #define SPAWNFLAG_FOG_BLEND 16
 
-static vec_t
-lerp(vec_t from, vec_t to, float t)
-{
-	return (to * t) + (from * (1.f - t));
-}
-
 void
 trigger_fog_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */)
 {
@@ -1864,15 +1751,15 @@ trigger_fog_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, c
 
 		if (self->spawnflags & SPAWNFLAG_FOG_AFFECT_FOG)
 		{
-			other->client->pers.wanted_fog[0] = lerp(
+			other->client->pers.wanted_fog[0] = Q_lerp(
 				fog_value_storage->fog.density_off, fog_value_storage->fog.density, dist);
-			other->client->pers.wanted_fog[1] = lerp(
+			other->client->pers.wanted_fog[1] = Q_lerp(
 				fog_value_storage->fog.color_off[0], fog_value_storage->fog.color[0], dist);
-			other->client->pers.wanted_fog[2] = lerp(
+			other->client->pers.wanted_fog[2] = Q_lerp(
 				fog_value_storage->fog.color_off[1], fog_value_storage->fog.color[1], dist);
-			other->client->pers.wanted_fog[3] = lerp(
+			other->client->pers.wanted_fog[3] = Q_lerp(
 				fog_value_storage->fog.color_off[2], fog_value_storage->fog.color[2], dist);
-			other->client->pers.wanted_fog[4] = lerp(
+			other->client->pers.wanted_fog[4] = Q_lerp(
 				fog_value_storage->fog.sky_factor_off, fog_value_storage->fog.sky_factor, dist);
 		}
 
@@ -1892,16 +1779,16 @@ trigger_fog_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, c
 				other->client->pers.wanted_heightfog.end
 			);
 
-			other->client->pers.wanted_heightfog.start[3] = lerp(
+			other->client->pers.wanted_heightfog.start[3] = Q_lerp(
 				fog_value_storage->heightfog.start_dist_off,
 				fog_value_storage->heightfog.start_dist, dist);
-			other->client->pers.wanted_heightfog.end[3] = lerp(
+			other->client->pers.wanted_heightfog.end[3] = Q_lerp(
 				fog_value_storage->heightfog.end_dist_off,
 				fog_value_storage->heightfog.end_dist, dist);
-			other->client->pers.wanted_heightfog.falloff = lerp(
+			other->client->pers.wanted_heightfog.falloff = Q_lerp(
 				fog_value_storage->heightfog.falloff_off,
 				fog_value_storage->heightfog.falloff, dist);
-			other->client->pers.wanted_heightfog.density = lerp(
+			other->client->pers.wanted_heightfog.density = Q_lerp(
 				fog_value_storage->heightfog.density_off,
 				fog_value_storage->heightfog.density, dist);
 		}
@@ -2059,7 +1946,7 @@ trigger_fogdensity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unuse
 		return;
 	}
 
-	density = (float)strtod(self->target, (char **)NULL) * 100;
+	density = (float)strtod(self->target, (char **)NULL) * 10;
 	other->client->pers.wanted_fog[0] = density;
 	other->client->pers.wanted_fog[4] = 1.0;
 	for (i = 0; i < 3; i++)
@@ -2147,4 +2034,118 @@ SP_choose_cdtrack(edict_t *self)
 
 	gi.setmodel(self, self->model);
 	gi.linkentity(self);
+}
+
+/*
+ * QUAKED trigger_mission_give (0.3 0.1 0.6) ? MONSTER NOT_PLAYER TRIGGERED ANY
+ * Heretic 2: Gives mission objectives
+ *
+ * -------SPAWN FLAGS-------------
+ * MONSTER - only a monster will trigger it
+ * NOT_PLAYER -  can't be triggered by player
+ * TRIGGERED - starts trigger deactivated
+ * ANY - anything can activate it
+ * -------KEYS--------------------
+ * message: "Message (index in strings.txt)"
+ * wait - amount of time until it will become active again (default 10).
+ */
+void
+trigger_mission_give_touch(edict_t *self, edict_t *other)
+{
+	const char *message;
+
+	if (!self)
+	{
+		return;
+	}
+
+	message = LocalizationMessage(self->message, NULL);
+
+	if (strncmp(message, game.helpmessage1, sizeof(game.helpmessage1)) &&
+		strncmp(message, game.helpmessage2, sizeof(game.helpmessage2)))
+	{
+		if (!game.helpmessage1[0])
+		{
+			strncpy(game.helpmessage1, message, sizeof(game.helpmessage1));
+		}
+		else
+		{
+			strncpy(game.helpmessage2, message, sizeof(game.helpmessage2));
+		}
+
+		gi.centerprintf(other, message);
+	}
+
+	G_UseTargets(self, self);
+}
+
+void
+SP_trigger_mission_give(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+
+	if (!self->wait)
+	{
+		self->wait = 10;
+	}
+
+	self->TriggerActivated = trigger_mission_give_touch;
+}
+
+/*
+ * QUAKED trigger_mission_take (0.3 0.1 0.6) ? MONSTER NOT_PLAYER TRIGGERED ANY TAKE1  TAKE2
+ * Heretic 2: Removes mission objectives
+ *
+ * spawnflags:
+ *  MONSTER - only a monster will trigger it
+ *  NOT_PLAYER -  can't be triggered by player
+ *  TRIGGERED - starts trigger deactivated
+ *  ANY - anything can activate it
+ *  16: Take objective 1
+ *  32: Take objective 2
+ * keys:
+ *  wait - amount of time until it will become active again (default 10).
+ */
+void
+trigger_mission_take_touch(edict_t *self, edict_t *other)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->spawnflags & 16)
+	{
+		game.helpmessage1[0] = 0;
+	}
+
+	if (self->spawnflags & 32)
+	{
+		game.helpmessage2[0] = 0;
+	}
+
+	G_UseTargets(self, self);
+}
+
+void
+SP_trigger_mission_take(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+
+	if (!self->wait)
+	{
+		self->wait = 10;
+	}
+
+	self->TriggerActivated = trigger_mission_take_touch;
 }
