@@ -64,10 +64,6 @@ vec3_t	maxs = { 14,  14,  25};
 
 static edict_t *pm_passent;
 
-void ClientUserinfoChanged(edict_t *ent, char *userinfo);
-void SP_misc_teleporter_dest(edict_t *ent);
-void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
-
 /*
  * The ugly as hell coop spawnpoint fixup function.
  * While coop was planed by id, it wasn't part of
@@ -2437,6 +2433,35 @@ SelectSpawnPointByTarget(const char *spawnpoint)
 	return spot;
 }
 
+edict_t *
+SP_GetSpawnPoint(void)
+{
+	edict_t *spot = NULL;
+
+	spot = SelectSpawnPointByTarget(game.spawnpoint);
+	if (!spot)
+	{
+		/* previous map use incorrect target, use default */
+		spot = SelectSpawnPointByTarget("");
+	}
+
+	if (!spot)
+	{
+		if (!game.spawnpoint[0])
+		{
+			/* there wasn't a spawnpoint without a target, so use any */
+			spot = G_Find(spot, FOFS(classname), "info_player_start");
+		}
+
+		if (!spot)
+		{
+			gi.error("Couldn't find spawn point '%s'\n", game.spawnpoint);
+		}
+	}
+
+	return spot;
+}
+
 /*
  * Chooses a player start, deathmatch start, coop start, etc
  */
@@ -2476,27 +2501,7 @@ SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 	/* find a single player start spot */
 	if (!spot)
 	{
-		spot = SelectSpawnPointByTarget(game.spawnpoint);
-
-		if (!spot)
-		{
-			/* previous map use incorrect target, use default */
-			spot = SelectSpawnPointByTarget("");
-		}
-
-		if (!spot)
-		{
-			if (!game.spawnpoint[0])
-			{
-				/* there wasn't a spawnpoint without a target, so use any */
-				spot = G_Find(spot, FOFS(classname), "info_player_start");
-			}
-
-			if (!spot)
-			{
-				gi.error("Couldn't find spawn point '%s'\n", game.spawnpoint);
-			}
-		}
+		spot = SP_GetSpawnPoint();
 	}
 
 	/* If we are in coop and we didn't find a coop

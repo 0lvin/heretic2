@@ -792,7 +792,7 @@ Cmd_CompleteCommand(const char *partial)
 	int i, o, p;
 	cmdalias_t *a;
 	cvar_t *cvar;
-	const char *pmatch[1024];
+	const char **pmatch;
 	qboolean diff = false;
 
 	len = strlen(partial);
@@ -802,6 +802,8 @@ Cmd_CompleteCommand(const char *partial)
 		return NULL;
 	}
 
+	i = 0;
+
 	/* check for exact match */
 	for (cmd = cmd_functions; cmd; cmd = cmd->next)
 	{
@@ -809,6 +811,8 @@ Cmd_CompleteCommand(const char *partial)
 		{
 			return cmd->name;
 		}
+
+		i++;
 	}
 
 	for (a = cmd_alias; a; a = a->next)
@@ -817,6 +821,8 @@ Cmd_CompleteCommand(const char *partial)
 		{
 			return a->name;
 		}
+
+		i++;
 	}
 
 	for (cvar = cvar_vars; cvar; cvar = cvar->next)
@@ -825,12 +831,24 @@ Cmd_CompleteCommand(const char *partial)
 		{
 			return cvar->name;
 		}
+
+		i++;
 	}
 
-	for (i = 0; i < 1024; i++)
+	if (!i)
 	{
-		pmatch[i] = NULL;
+		return NULL;
 	}
+
+	pmatch = malloc(i * sizeof(char *));
+	YQ2_COM_CHECK_OOM(pmatch, "malloc()", i * sizeof(char *))
+	if (!pmatch)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
+
+	memset(pmatch, 0, i * sizeof(char *));
 
 	i = 0;
 
@@ -866,45 +884,53 @@ Cmd_CompleteCommand(const char *partial)
 	{
 		if (i == 1)
 		{
-			return pmatch[0];
+			Q_strlcpy(retval, pmatch[0], sizeof(retval));
 		}
-
-		/* Sort it */
-		qsort(pmatch, i, sizeof(pmatch[0]), Q_sort_strcomp);
-
-		Com_Printf("\n\n");
-
-		for (o = 0; o < i; o++)
+		else
 		{
-			Com_Printf("  %s\n", pmatch[o]);
-		}
+			/* Sort it */
+			qsort(pmatch, i, sizeof(pmatch[0]), Q_sort_strcomp);
 
-		strcpy(retval, "");
-		p = 0;
-
-		while (!diff && p < 256)
-		{
-			retval[p] = pmatch[0][p];
+			Com_Printf("\n\n");
 
 			for (o = 0; o < i; o++)
 			{
-				if (p > strlen(pmatch[o]))
-				{
-					continue;
-				}
-
-				if (retval[p] != pmatch[o][p])
-				{
-					retval[p] = 0;
-					diff = true;
-				}
+				Com_Printf("  %s\n", pmatch[o]);
 			}
 
-			p++;
+			strcpy(retval, "");
+			p = 0;
+
+			while (!diff && p < 256)
+			{
+				retval[p] = pmatch[0][p];
+
+				for (o = 0; o < i; o++)
+				{
+					if (p > strlen(pmatch[o]))
+					{
+						continue;
+					}
+
+					if (retval[p] != pmatch[o][p])
+					{
+						retval[p] = 0;
+						diff = true;
+					}
+				}
+
+				p++;
+			}
 		}
+
+		/* remove list */
+		free(pmatch);
 
 		return retval;
 	}
+
+	/* remove list */
+	free(pmatch);
 
 	return NULL;
 }
@@ -913,18 +939,28 @@ const char *
 Cmd_CompleteMapCommand(const char *partial)
 {
 	char **mapNames;
-	int i, j, k, nbMatches, nMaps;
-	char *mapName, *lastsep;
-	char *pmatch[1024];
-	qboolean partialFillContinue = true;
+	int nMaps;
 
 	if ((mapNames = FS_ListFiles2("maps/*.bsp", &nMaps, 0, 0)) != NULL)
 	{
 		size_t len;
+		int i, j, k, nbMatches;
+		char *mapName, *lastsep;
+		const char **pmatch;
+		qboolean partialFillContinue = true;
 
 		len = strlen(partial);
 		nbMatches = 0;
 		memset(retval, 0, sizeof(retval));
+
+		pmatch = malloc(nMaps * sizeof(char*));
+		YQ2_COM_CHECK_OOM(pmatch, "malloc()", nMaps * sizeof(char*))
+		if (!pmatch)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			FS_FreeList(mapNames, nMaps);
+			return retval;
+		}
 
 		for (i = 0; i < nMaps - 1; i++)
 		{
@@ -944,6 +980,7 @@ Cmd_CompleteMapCommand(const char *partial)
 			{
 				Q_strlcpy(retval, partial, sizeof(retval));
 			}
+
 			/* check for partial match */
 			else if (!Q_strncasecmp(partial, mapName, len))
 			{
@@ -959,6 +996,9 @@ Cmd_CompleteMapCommand(const char *partial)
 		else if (nbMatches > 1)
 		{
 			Com_Printf("\n=================\n\n");
+
+			/* Sort it */
+			qsort(pmatch, nbMatches, sizeof(pmatch[0]), Q_sort_strcomp);
 
 			for (j = 0; j < nbMatches; j++)
 			{
@@ -988,6 +1028,7 @@ Cmd_CompleteMapCommand(const char *partial)
 			}
 		}
 
+		free(pmatch);
 		FS_FreeList(mapNames, nMaps);
 	}
 

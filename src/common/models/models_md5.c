@@ -426,6 +426,14 @@ ReadMD5Anim(md5_model_t *anim, const char *buffer, size_t size)
 		else if (!strcmp(token, "numFrames"))
 		{
 			token = COM_Parse(&curr_buff);
+			if (anim->skelFrames)
+			{
+				/* To insure analysers as we are in a loop */
+				Com_Printf("Error: several numFrames sections");
+				/* broken file */
+				FreeModelMd5Frames(anim);
+				break;
+			}
 			anim->num_frames = (int)strtol(token, (char **)NULL, 10);
 
 			/* Allocate memory for skeleton frames and bounding boxes */
@@ -438,6 +446,14 @@ ReadMD5Anim(md5_model_t *anim, const char *buffer, size_t size)
 		else if (!strcmp(token, "numJoints"))
 		{
 			token = COM_Parse(&curr_buff);
+			if (jointInfos || baseFrame)
+			{
+				/* To insure analysers as we are in a loop */
+				Com_Printf("Error: several numJoints sections");
+				/* broken file */
+				FreeModelMd5Frames(anim);
+				break;
+			}
 			anim->num_joints = (int)strtol(token, (char **)NULL, 10);
 
 			if (anim->num_joints > 0)
@@ -463,6 +479,14 @@ ReadMD5Anim(md5_model_t *anim, const char *buffer, size_t size)
 		else if (!strcmp(token, "numAnimatedComponents"))
 		{
 			token = COM_Parse(&curr_buff);
+			if (animFrameData)
+			{
+				/* To insure analysers as we are in a loop */
+				Com_Printf("Error: several numAnimatedComponents sections");
+				/* broken file */
+				FreeModelMd5Frames(anim);
+				break;
+			}
 			numAnimatedComponents = (int)strtol(token, (char **)NULL, 10);
 
 			if (numAnimatedComponents > 0)
@@ -911,11 +935,25 @@ ReadMD5Model(const char *buffer, size_t size)
 			/* more meshes than originally provided */
 			if (curr_mesh >= mdl->num_meshes)
 			{
+				md5_mesh_t *tmp;
+
 				mdl->num_meshes = curr_mesh + 1;
 
 				/* Allocate memory for meshes */
-				mdl->meshes = (md5_mesh_t *)
+				tmp = (md5_mesh_t *)
 					realloc(mdl->meshes, mdl->num_meshes * sizeof(md5_mesh_t));
+				YQ2_COM_CHECK_OOM(tmp, "realloc()",
+					mdl->num_meshes * sizeof(md5_mesh_t))
+				if (!tmp)
+				{
+					/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+					FreeModelMd5(mdl);
+					free(safe_buffer);
+
+					return NULL;
+				}
+
+				mdl->meshes = tmp;
 				memset(mdl->meshes + curr_mesh, 0, sizeof(md5_mesh_t));
 			}
 
@@ -1299,7 +1337,7 @@ Mod_LoadModel_MD5(const char *mod_name, const void *buffer, int modfilelen)
 	{
 		size_t size;
 
-		Com_Printf("init: no animation loaded.\n");
+		Com_Printf("%s: no animation loaded.\n", __func__);
 		md5file->num_frames = 1;
 
 		size = sizeof(md5_frame_t) * md5file->num_frames;

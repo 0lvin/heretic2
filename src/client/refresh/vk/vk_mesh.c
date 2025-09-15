@@ -66,6 +66,8 @@ Mesh_VertsRealloc(int count)
 	verts_count = ROUNDUP(count * 2, 256);
 
 	ptr = realloc(shadowverts, verts_count * sizeof(vec3_t));
+	YQ2_COM_CHECK_OOM(ptr, "realloc()",
+					verts_count * sizeof(vec3_t))
 	if (!ptr)
 	{
 		return -1;
@@ -73,6 +75,8 @@ Mesh_VertsRealloc(int count)
 	shadowverts = ptr;
 
 	ptr = realloc(verts_buffer, verts_count * sizeof(mvtx_t));
+	YQ2_COM_CHECK_OOM(ptr, "realloc()",
+					verts_count * sizeof(mvtx_t))
 	if (!ptr)
 	{
 		return -1;
@@ -80,6 +84,8 @@ Mesh_VertsRealloc(int count)
 	verts_buffer = ptr;
 
 	ptr = realloc(vertList, verts_count * sizeof(modelvert));
+	YQ2_COM_CHECK_OOM(ptr, "realloc()",
+					verts_count * sizeof(modelvert))
 	if (!ptr)
 	{
 		return -1;
@@ -87,6 +93,8 @@ Mesh_VertsRealloc(int count)
 	vertList = ptr;
 
 	ptr = realloc(vertIdxData, verts_count * sizeof(uint16_t));
+	YQ2_COM_CHECK_OOM(ptr, "realloc()",
+					verts_count * sizeof(uint16_t))
 	if (!ptr)
 	{
 		return -1;
@@ -485,14 +493,14 @@ R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
 
 	if ((e->frame >= paliashdr->num_frames) || (e->frame < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "%s %s: no such frame %d\n",
+		Com_DPrintf("%s %s: no such frame %d\n",
 				__func__, currentmodel->name, e->frame);
 		e->frame = 0;
 	}
 
 	if ((e->oldframe >= paliashdr->num_frames) || (e->oldframe < 0))
 	{
-		R_Printf(PRINT_DEVELOPER, "%s %s: no such oldframe %d\n",
+		Com_DPrintf("%s %s: no such oldframe %d\n",
 				__func__, currentmodel->name, e->oldframe);
 		e->oldframe = 0;
 	}

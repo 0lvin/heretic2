@@ -3584,59 +3584,6 @@ SP_item_spitter(edict_t *self)
 
 //=================================================================================
 
-// update the spawner so that we will rematerialise in a different position
-void respawner_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	edict_t	*spot = NULL;
-
-	// if we aren't a player, forget it
-	if (!other->client)
-		return;
-
-	while ((spot = G_Find (spot, FOFS(classname), "info_player_start")) != NULL)
-	{
-		if (!game.spawnpoint[0] && !spot->targetname)
-			break;
-
-		if (!game.spawnpoint[0] || !spot->targetname)
-			continue;
-
-		if (Q_stricmp(game.spawnpoint, spot->targetname) == 0)
-			break;
-	}
-
-	if (!spot)
-	{
-		if (!game.spawnpoint[0])
-		{	// there wasn't a spawnpoint without a target, so use any
-			spot = G_Find (spot, FOFS(classname), "info_player_start");
-		}
-		if (!spot)
-			gi.error ("Couldn't find spawn point %s\n", game.spawnpoint);
-	}
-
-	VectorSet(spot->s.origin, self->mins[0]+((self->size[0]) /2), self->mins[1]+((self->size[1]) /2) ,self->mins[2]+self->size[2]);
-	VectorCopy(self->s.angles, spot->s.angles);
-
-	G_FreeEdict(self);
-}
-
-/*QUAKED misc_update_spawner (.5 .5 .5) ?
-	This creates the spawner update entity, which upates the spawner position when triggered
-*/
-void misc_update_spawner (edict_t *ent)
-{
-
-	ent->movetype = MOVETYPE_NONE;
-	ent->svflags |= SVF_NOCLIENT;
-	ent->solid = SOLID_TRIGGER;
-	ent->touch = respawner_touch;
-
-	gi.setmodel(ent,ent->model);
-	gi.linkentity(ent);
-
-}
-
 void Teleporter_Deactivate(edict_t *self, G_Message_t *msg)
 {
 	self->touch = NULL;

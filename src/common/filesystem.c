@@ -790,6 +790,10 @@ FS_Read(void *buffer, int size, fileHandle_t f)
 		}
 		else
 		{
+			if (buffer != compressed_buf)
+			{
+				free(compressed_buf);
+			}
 			return 0;
 		}
 
@@ -879,6 +883,10 @@ FS_FRead(void *buffer, int size, int count, fileHandle_t f)
 			}
 			else
 			{
+				if (buffer != compressed_buf)
+				{
+					free(compressed_buf);
+				}
 				return 0;
 			}
 
@@ -1951,6 +1959,11 @@ FS_ListFiles(const char *findname, int *numfiles,
 	/* Allocate the list. */
 	list = calloc(nfiles, sizeof(char *));
 	YQ2_COM_CHECK_OOM(list, "calloc()", (size_t)nfiles*sizeof(char*))
+	if (!list)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
 
 	/* Fill the list. */
 	s = Sys_FindFirst(findname, musthave, canthave);
@@ -2054,11 +2067,18 @@ FS_ListFiles2(const char *findname, int *numfiles,
 	nfiles = 0;
 	list = malloc(sizeof(char *));
 	YQ2_COM_CHECK_OOM(list, "malloc()", sizeof(char*))
+	if (!list)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
 
 	for (search = fs_searchPaths; search != NULL; search = search->next)
 	{
 		if (search->pack != NULL)
 		{
+			char **tmp;
+
 			if (canthave & SFF_INPACK)
 			{
 				continue;
@@ -2079,8 +2099,16 @@ FS_ListFiles2(const char *findname, int *numfiles,
 			}
 
 			nfiles += j;
-			list = realloc(list, nfiles * sizeof(char *));
-			YQ2_COM_CHECK_OOM(list, "realloc()", (size_t)nfiles*sizeof(char*))
+			tmp = realloc(list, nfiles * sizeof(char *));
+			YQ2_COM_CHECK_OOM(tmp, "realloc()", (size_t)nfiles*sizeof(char*))
+			if (!tmp)
+			{
+				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+				free(list);
+				return NULL;
+			}
+
+			list = tmp;
 
 			for (i = 0, j = nfiles - j; i < search->pack->numFiles; i++)
 			{
@@ -2102,10 +2130,21 @@ FS_ListFiles2(const char *findname, int *numfiles,
 
 		if (tmplist != NULL)
 		{
+			char **tmp;
+
 			tmpnfiles--;
 			nfiles += tmpnfiles;
-			list = realloc(list, nfiles * sizeof(char *));
-			YQ2_COM_CHECK_OOM(list, "2nd realloc()", (size_t)nfiles*sizeof(char*))
+			tmp = realloc(list, nfiles * sizeof(char *));
+			YQ2_COM_CHECK_OOM(tmp, "2nd realloc()", (size_t)nfiles*sizeof(char*))
+			if (!tmp)
+			{
+				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+				FS_FreeList(tmplist, tmpnfiles + 1);
+				free(list);
+				return NULL;
+			}
+
+			list = tmp;
 
 			for (i = 0, j = nfiles - tmpnfiles; i < tmpnfiles; i++, j++)
 			{
@@ -2143,6 +2182,12 @@ FS_ListFiles2(const char *findname, int *numfiles,
 		nfiles -= tmpnfiles;
 		tmplist = malloc(nfiles * sizeof(char *));
 		YQ2_COM_CHECK_OOM(tmplist, "malloc()", (size_t)nfiles*sizeof(char*))
+		if (!tmplist)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			free(list);
+			return NULL;
+		}
 
 		for (i = 0, j = 0; i < nfiles + tmpnfiles; i++)
 		{
@@ -2159,9 +2204,19 @@ FS_ListFiles2(const char *findname, int *numfiles,
 	/* Add a guard. */
 	if (nfiles > 0)
 	{
+		char **tmp;
+
 		nfiles++;
-		list = realloc(list, nfiles * sizeof(char *));
-		YQ2_COM_CHECK_OOM(list, "3rd realloc()", (size_t)nfiles*sizeof(char*))
+		tmp = realloc(list, nfiles * sizeof(char *));
+		YQ2_COM_CHECK_OOM(tmp, "3rd realloc()", (size_t)nfiles*sizeof(char*))
+		if (!tmp)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			free(list);
+			return NULL;
+		}
+
+		list = tmp;
 		list[nfiles - 1] = NULL;
 	}
 

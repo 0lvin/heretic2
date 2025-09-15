@@ -1076,6 +1076,7 @@ extern void misc_viper_bomb_touch ( edict_t * self , edict_t * other , cplane_t 
 extern void misc_viper_bomb_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void misc_viper_missile_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void misc_viper_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
+extern void misc_update_spawner_touch(edict_t *self, edict_t *other, cplane_t *plane ,  csurface_t *surf ) ;
 extern void monster_dabeam ( edict_t * self ) ;
 extern void monster_death_use ( edict_t * self ) ;
 extern void monster_done_dodge ( edict_t * self ) ;
@@ -1225,7 +1226,6 @@ extern void ratsqueal (edict_t *self);
 extern void ratswallow (edict_t *self);
 extern void reloogie ( edict_t * self ) ;
 extern void respawn ( edict_t * self ) ;
-extern void respawner_touch  (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 extern void roam_goal ( edict_t * self ) ;
 extern void rocket_touch ( edict_t * ent , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void rope_sway (edict_t *self);

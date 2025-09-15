@@ -1343,6 +1343,7 @@ void ClientDisconnect(edict_t *ent);
 void ClientUserinfoChanged(edict_t *ent, char *userinfo);
 qboolean ClientConnect(edict_t *ent, char *userinfo);
 void ClientThink(edict_t *ent, usercmd_t *cmd);
+edict_t *SP_GetSpawnPoint(void);
 
 /* g_cmds.c */
 qboolean CheckFlood(edict_t *ent);
@@ -1526,6 +1527,7 @@ void BecomeExplosion1(edict_t *self);
 void ThrowHeadACID(edict_t *self, const char *gibname, int damage, int type);
 void ThrowGibACID(edict_t *self, const char *gibname, int damage, int type);
 void barrel_delay (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
+void SP_misc_teleporter_dest(edict_t *ent);
 
 /* g_ai.c */
 void AI_SetSightClient(void);

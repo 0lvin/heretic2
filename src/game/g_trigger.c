@@ -2066,11 +2066,11 @@ trigger_mission_give_touch(edict_t *self, edict_t *other)
 	{
 		if (!game.helpmessage1[0])
 		{
-			strncpy(game.helpmessage1, message, sizeof(game.helpmessage1));
+			Q_strlcpy(game.helpmessage1, message, sizeof(game.helpmessage1));
 		}
 		else
 		{
-			strncpy(game.helpmessage2, message, sizeof(game.helpmessage2));
+			Q_strlcpy(game.helpmessage2, message, sizeof(game.helpmessage2));
 		}
 
 		gi.centerprintf(other, message);
@@ -2148,4 +2148,52 @@ SP_trigger_mission_take(edict_t *self)
 	}
 
 	self->TriggerActivated = trigger_mission_take_touch;
+}
+
+/*
+ * QUAKED misc_update_spawner (.5 .5 .5) ?
+ *
+ * Heretic 2: Updates level spawn point to trigger's position. Relevant for
+ * teleport spell.
+ *
+ * Replaced spawn points to map submodel position.
+ */
+void
+misc_update_spawner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+		csurface_t *surf /* unused */)
+{
+	edict_t	*spot = NULL;
+	int i;
+
+	if (!self || !other || !other->client)
+	{
+		return;
+	}
+
+	spot = SP_GetSpawnPoint();
+
+	if (spot)
+	{
+		/* copy trigger position and angles to spawn point */
+		for (i = 0; i < 3; i++)
+		{
+			spot->s.origin[i] = (self->mins[i] + self->maxs[i]) / 2;
+		}
+
+		VectorCopy(self->s.angles, spot->s.angles);
+	}
+
+	G_FreeEdict(self);
+}
+
+void
+SP_misc_update_spawner(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	InitTrigger(self);
+	self->touch = misc_update_spawner_touch;
 }
