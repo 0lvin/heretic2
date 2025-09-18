@@ -122,7 +122,7 @@ Have a look at the yquake2 repository for the "normal" Yamagi Quake II:
 <https://github.com/yquake2/yquake2>
 
 * Alpha windows 64 bit [binaries](https://github.com/yquake2/yquake2remaster/releases).
-* Saves format is unstabled and could change between alpha releases.
+* Saves format is unstable and could change between alpha releases.
 * MacOS build is only build tested and run is not checked.
 
 Models support:
@@ -328,20 +328,23 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 * [ ] ReRelease: console `~` incorrectly show multibyte characters,
 * [ ] ReRelease: basicsjam1_detrohogga: fix droptofloor startsolid,
 * [ ] ReRelease: fully implement `dynamic_light`,
-* [x] ReRelease: fully implement `trigger_fog`,
 * [ ] gl3, gl4: implement color multiplication and alpha gradient for `misc_flare`,
 * [ ] gl3, gl4: add fog distance effect,
 * [ ] soft, vulkan: implement color multiplication and alpha combine or make black
       parts transparent for `misc_flare`,
 * [ ] ReRelease: single player support,
-* [ ] ReRelease: support effects and additional flags when possible.
+* [ ] ReRelease: support effects and additional flags when possible,
 * [ ] ReRelease: implement demo protocol based on https://github.com/res2k/q2proto
-      and https://github.com/Paril/quake2-rerelease-dll
-* [ ] ReRelease: modified game code support with removed KEX only related code.
+      and https://github.com/Paril/quake2-rerelease-dll,
+* [ ] ReRelease: modified game code support with removed KEX only related code,
+* [x] ReRelease: fully implement `trigger_fog`.
 
 Other games support goals:
 
 * [ ] Jabot: fix crash in SZ_GetSpace,
+* [ ] Heretic 2, Kingpin: use nor all surface flags to detect map type
+* [ ] Doom: implement map load logic,
+* [ ] Quake 3: finish map load logic,
 * [ ] Quake, Half-Life, Hexen 2: fix brush flags,
 * [ ] Half-Life: support mdl,
 * [ ] Anachronox: load atd as sprite,

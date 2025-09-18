@@ -25,6 +25,7 @@
  * =======================================================================
  */
 
+#include <errno.h>
 #include "header/client.h"
 #include "input/header/input.h"
 #include "../game/header/client_effects.h"
@@ -305,7 +306,11 @@ CL_Setenv_f(void)
 			Q_strlcat(buffer, " ", sizeof(buffer));
 		}
 
-		putenv(buffer);
+		if (putenv(buffer))
+		{
+			Com_Printf("%s: putenv is failed: %s\n",
+				__func__, strerror(errno));
+		}
 	}
 
 	else if (argc == 2)

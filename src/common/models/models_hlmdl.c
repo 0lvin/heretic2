@@ -81,8 +81,10 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 	hlmdl_bodypart_t *bodyparts;
 	dstvert_t *st_tmp = NULL;
 	dtriangle_t *tri_tmp = NULL;
+	dmdx_vert_t *vert_tmp = NULL;
 	int num_st = 0, st_size = 0;
 	int num_tris = 0, tri_size = 0;
+	int num_verts = 0, verts_size = 0;
 
 	Mod_LittleHeader((int *)buffer, sizeof(pinmodel) / sizeof(int),
 		(int *)&pinmodel);
@@ -154,9 +156,11 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 				short *trivert;
 				int l;
 
+				/*
 				Com_Printf("%s: %s: mesh #%d tris %d, ofs: %d, skin: %d, norms: %d\n",
 					__func__, mod_name, k, mesh_nodes[k].num_tris,
 						mesh_nodes[k].ofs_tris, mesh_nodes[k].skinref, mesh_nodes[k].num_norms);
+				*/
 
 				trivert = (short *)((byte *)buffer + mesh_nodes[k].ofs_tris);
 				while ((l = *(trivert++)))
@@ -164,8 +168,10 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 					int g, count = l, st_prefix = num_st;
 					int *verts = NULL;
 
+					/*
 					Com_Printf("%s: %s: tris %d\n",
 						__func__, mod_name, l);
+					*/
 
 					if (count < 0)
 					{
@@ -216,10 +222,12 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 
 						verts[g] = trivert[0];
 
+						/*
 						Com_Printf("%s: %s: tris #%d vert: %d, norm: %d, s: %d, t: %d\n",
 							__func__, mod_name, l,
 							trivert[0], trivert[1],
 							trivert[2], trivert[3]);
+						*/
 					}
 
 					/* Reconstruct triangles */
@@ -269,10 +277,33 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 			}
 
 			in_verts = (vec3_t *)((byte *)buffer + bodymodels[j].ofs_vert);
+			if (!vert_tmp || (num_verts + bodymodels[j].num_verts) >= verts_size)
+			{
+				dmdx_vert_t *tmp = NULL;
+
+				verts_size = num_verts + bodymodels[j].num_verts * 2;
+				tmp = realloc(vert_tmp, verts_size * sizeof(*vert_tmp));
+				YQ2_COM_CHECK_OOM(tmp, "realloc()", verts_size * sizeof(*vert_tmp))
+				if (!tmp)
+				{
+					/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+					verts_size = num_verts;
+					break;
+				}
+
+				vert_tmp = tmp;
+			}
+
 			for (k = 0; k < bodymodels[j].num_verts; k++)
 			{
-				Com_Printf("%s: vert[%03ld]: %.2fx%.2fx%.2fx\n",
-					__func__, i, in_verts[k][0], in_verts[k][1], in_verts[k][2]);
+				VectorCopy(in_verts[k], vert_tmp[num_verts].xyz);
+				num_verts++;
+
+				/*
+				 Com_Printf("%s: vert[%03ld]: %.2fx%.2fx%.2fx\n",
+					__func__, k,
+					in_verts[k][0], in_verts[k][1], in_verts[k][2]);
+				*/
 			}
 		}
 
@@ -288,7 +319,7 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 
 	/* Calculate frame size */
 	framesize = sizeof(daliasxframe_t) - sizeof(dxtrivertx_t);
-	framesize += pinmodel.num_bones * sizeof(dxtrivertx_t);
+	framesize += num_verts * sizeof(dxtrivertx_t);
 
 	/* copy back all values */
 	memset(&dmdxheader, 0, sizeof(dmdxheader));
@@ -298,13 +329,13 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 
 	dmdxheader.num_meshes = pinmodel.num_bodyparts;
 	dmdxheader.num_skins = pinmodel.num_skins;
-	dmdxheader.num_xyz = pinmodel.num_bones;
+	dmdxheader.num_xyz = num_verts;
 	dmdxheader.num_st = num_st;
 	dmdxheader.num_tris = num_tris;
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * num_tris) + 1 * pinmodel.num_bodyparts;
 	dmdxheader.num_imgbit = 0;
-	dmdxheader.num_frames = 0; /* total_frames; */
+	dmdxheader.num_frames = total_frames;
 	dmdxheader.num_animgroup = pinmodel.num_seq;
 
 	Com_DPrintf("%s: %s has %d frames\n",
@@ -325,6 +356,26 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 		num_tris * sizeof(dtriangle_t));
 	free(tri_tmp);
 
+	total_frames = 0;
+	for (i = 0; i < pinmodel.num_seq; i++)
+	{
+		int j;
+
+		for(j = 0; j < sequences[i].num_frames; j ++)
+		{
+			daliasxframe_t *frame = (daliasxframe_t *)(
+				(byte *)pheader + pheader->ofs_frames + total_frames * pheader->framesize);
+
+			/* limit frame ids to 2**16 */
+			snprintf(frame->name, sizeof(frame->name), "%s%d",
+				sequences[i].name, j % 0xFF);
+
+			PrepareFrameVertex(vert_tmp, num_verts, frame);
+			total_frames++;
+		}
+	}
+	free(vert_tmp);
+
 	in_skins = (hlmdl_texture_t *)((byte *)buffer + pinmodel.ofs_texture);
 	for (i = 0; i < pinmodel.num_skins; i++)
 	{
@@ -339,6 +390,7 @@ Mod_LoadModel_HLMDL(const char *mod_name, const void *buffer, int modfilelen)
 	}
 
 	Mod_LoadHLMDLAnimGroupList(pheader, sequences, pinmodel.num_seq);
+	Mod_LoadFixNormals(pheader);
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixImages(mod_name, pheader, false);
 

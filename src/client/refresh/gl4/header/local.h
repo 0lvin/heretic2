@@ -224,7 +224,7 @@ typedef struct
 	gl4ShaderInfo_t si2DpostProcessWater; // shader to apply water-warp postprocess effect
 
 	gl4ShaderInfo_t si3Dlm;        // a regular opaque face (e.g. from brush) with lightmap
-	// TODO: lm-only variants for gl_lightmap 1
+	// TODO: lm-only variants for r_lightmap 1
 	gl4ShaderInfo_t si3Dtrans;     // transparent is always w/o lightmap
 	gl4ShaderInfo_t si3DcolorOnly; // used for beams - no lightmaps
 	gl4ShaderInfo_t si3Dturb;      // for water etc - always without lightmap
@@ -492,55 +492,17 @@ extern void GL4_UpdateUBOLights(void);
 
 // ############ Cvars ###########
 
-extern cvar_t *gl_msaa_samples;
 extern cvar_t *gl_version_override;
-extern cvar_t *r_vsync;
-extern cvar_t *r_retexturing;
-extern cvar_t *r_scale8bittextures;
-extern cvar_t *vid_fullscreen;
-extern cvar_t *r_mode;
-extern cvar_t *r_customwidth;
-extern cvar_t *r_customheight;
-
-extern cvar_t *r_2D_unfiltered;
-extern cvar_t *r_videos_unfiltered;
-extern cvar_t *r_nolerp_list;
-extern cvar_t *r_lerp_list;
 extern cvar_t *gl_nobind;
-extern cvar_t *r_lockpvs;
-extern cvar_t *r_novis;
-
-extern cvar_t *r_cull;
 extern cvar_t *gl_zfix;
-extern cvar_t *r_fullbright;
-
-extern cvar_t *r_norefresh;
-extern cvar_t *gl_lefthand;
-extern cvar_t *r_gunfov;
-extern cvar_t *r_farsee;
-extern cvar_t *r_drawworld;
-
-extern cvar_t *vid_gamma;
 extern cvar_t *gl4_intensity;
 extern cvar_t *gl4_intensity_2D;
-extern cvar_t *gl_anisotropic;
 extern cvar_t *gl_texturemode;
-
-extern cvar_t *r_lightlevel;
 extern cvar_t *gl4_overbrightbits;
 extern cvar_t *gl4_particle_fade_factor;
 extern cvar_t *gl4_particle_square;
 extern cvar_t *gl4_colorlight;
 extern cvar_t *gl_polyblend;
-
-extern cvar_t *r_modulate;
-extern cvar_t *gl_lightmap;
-extern cvar_t *gl_shadows;
-extern cvar_t *r_fixsurfsky;
-extern cvar_t *r_ttffont;
-extern cvar_t *r_palettedtexture;
-extern cvar_t *r_validation;
-
 extern cvar_t *gl4_debugcontext;
 
 #endif /* SRC_CLIENT_REFRESH_GL4_HEADER_LOCAL_H_ */

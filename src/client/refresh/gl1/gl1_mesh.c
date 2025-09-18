@@ -369,7 +369,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 	if (currententity->flags & RF_WEAPONMODEL)
 	{
-		if (gl_lefthand->value == 2)
+		if (r_lefthand->value == 2)
 		{
 			return;
 		}
@@ -617,7 +617,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		glEnable(GL_CULL_FACE);
 	}
 
-	if (gl_shadows->value &&
+	if (r_shadows->value &&
 		!(currententity->flags & (RF_TRANSLUCENT | RF_WEAPONMODEL | RF_NOSHADOW)))
 	{
 		glPushMatrix();
