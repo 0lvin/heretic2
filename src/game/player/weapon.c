@@ -43,7 +43,7 @@ extern void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngl
 extern void SpellCastMagicMissileSpread(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
 										float NoOfMissiles,float Separation);
 extern void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-										 float Value, qboolean *ReleaseFlagsPtr);
+										 float Value, float value);
 extern void SpellCastMaceball(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 extern void SpellCastWall(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_t AimDir, float Value);
 extern void SpellCastRipper(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);
@@ -4285,19 +4285,19 @@ WeaponThink_MagicMissileSpread(edict_t *caster)
 // ************************************************************************************************
 
 void
-WeaponThink_SphereOfAnnihilationEx(edict_t *caster, qboolean *Charging)
+WeaponThink_SphereOfAnnihilationEx(edict_t *caster, float value)
 {
 	vec3_t		Forward;
 
 	// Set up the Sphere-of-annihilation's aiming angles then cast the spell.
-	AngleVectors(caster->client->ps.viewangles,Forward,NULL,NULL);
+	AngleVectors(caster->client->ps.viewangles,Forward, NULL, NULL);
 
 	SpellCastSphereOfAnnihilation(caster,
 								 NULL,
 								 caster->client->ps.viewangles,		//v_angle,
 								 Forward,
 								 0.0,
-								 Charging);
+								 value);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
@@ -4306,8 +4306,7 @@ WeaponThink_SphereOfAnnihilationEx(edict_t *caster, qboolean *Charging)
 void
 WeaponThink_SphereOfAnnihilation(edict_t *caster)
 {
-	qboolean ReleaseFlags = false;
-	WeaponThink_SphereOfAnnihilationEx(caster, &ReleaseFlags);
+	WeaponThink_SphereOfAnnihilationEx(caster, 1.0);
 }
 
 // ************************************************************************************************

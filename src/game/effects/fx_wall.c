@@ -593,6 +593,11 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 	paletteRGBA_t		color;
 	float				dtime, detailscale;
 
+	if (!owner)
+	{
+		return false;
+	}
+
 	if (owner->current.effects & EF_ALTCLIENTFX)
 	{	// Time for _this wall to die.
 		if (wall->SpawnInfo != 1)

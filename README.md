@@ -39,7 +39,7 @@ Drawbacks, sorted by priority:
  * [ ] fix acrobatic,
  * [ ] fix rope,
  * [ ] fix puzzles,
- * [ ] fix SpellCastSphereOfAnnihilation qboolean as char*,
+ * [ ] fix invisible FXSphereOfAnnihilation spell (bind 8),
  * [ ] implement `menu_help` to show level goals,
  * [ ] keep old mission goals if map is not provided new one, look to `trigger_mission_*`,
  * [ ] game memory management, fix or replace singlelinkedlist,

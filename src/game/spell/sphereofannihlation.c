@@ -48,14 +48,10 @@ static void SphereOfAnnihilationGrowThink(edict_t *self)
 	if (self->owner->client)
 		AngleVectors(self->owner->client->ps.viewangles,Forward,NULL,Up);
 	else
-		AngleVectors(self->owner->s.angles,Forward,NULL,Up);
-
-	// NOTE: 'edict_t'->combattarget is used as a pointer to a 'qboolean' which flags
-	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
-	// is unlikely to happen, sooooo...
+		AngleVectors(self->owner->s.angles, Forward, NULL, Up);
 
 	// if we have released, or we are dead, or a chicken, release the sphere
-	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
+	if (self->show_hostile && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
 		&& (self->owner->client && !(self->owner->flags & FL_CHICKEN)) &&
 		(!(self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
@@ -264,11 +260,7 @@ static void SphereOfAnnihilationGrowThinkPower(edict_t *self)
 	else
 		AngleVectors(self->owner->s.angles,Forward,Right,Up);
 
-	// NOTE: 'edict_t'->combattarget is used as a pointer to a 'qboolean' which flags
-	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
-	// is unlikely to happen, sooooo...
-
-	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
+	if (self->show_hostile && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD))
 		&& (self->owner && !(self->owner->flags & FL_CHICKEN)) &&
 		(!(self->owner->client->playerinfo.flags & PLAYER_FLAG_KNOCKDOWN)))
 	{
@@ -497,14 +489,13 @@ void create_sphere(edict_t *Sphere)
 // ****************************************************************************
 
 void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-								  float Value, qboolean *ReleaseFlagsPtr)
+								  float Value, float value)
 {
 	edict_t	*Sphere;
 	int	flags;
 
 	// Spawn the sphere of annihilation as an invisible entity (i.e. modelindex=0).
-
-	Sphere=G_Spawn();
+	Sphere = G_Spawn();
 
 	if (Caster->client)
 	{
@@ -514,19 +505,16 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 		Sphere->s.origin[2] += Caster->viewheight-5.0;
 	}
 	else
+	{
 		VectorCopy(StartPos, Sphere->s.origin);
+	}
 
 	VectorCopy(AimAngles,Sphere->s.angles);
 
 	Sphere->avelocity[YAW]=100.0;
 	Sphere->avelocity[ROLL]=100.0;
 
-	// NOTE: 'edict_t'->combattarget is used as a pointer to a 'qboolean' which flags
-	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
-	// is unlikely to happen, sooooo...
-
-
-	Sphere->combattarget=(char *)ReleaseFlagsPtr;
+	Sphere->show_hostile = value;
 
 	Sphere->count = 0;
 	Sphere->solid = SOLID_NOT;
@@ -547,7 +535,7 @@ void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAng
 		if (Caster->client)
 			Sphere->think=SphereOfAnnihilationGrowThink;
 		else	// The celestial watcher can also cast a sphere, but a different kind of one.
-			Sphere->think=SphereWatcherGrowThink;
+			Sphere->think = SphereWatcherGrowThink;
 	}
 
 	gi.linkentity(Sphere);
@@ -620,12 +608,8 @@ static void SphereWatcherGrowThink(edict_t *self)
 	else
 		AngleVectors(self->owner->s.angles,Forward,NULL,Up);
 
-	// NOTE: 'edict_t'->combattarget is used as a pointer to a 'qboolean' which flags
-	// whether or not I have been released. Would like a dedicated value in the 'edict_t' but this
-	// is unlikely to happen, sooooo...
-
 	// if we have released, or we are dead, or a chicken, release the sphere
-	if (*(qboolean *)self->combattarget && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD)))
+	if (self->show_hostile && !(self->owner->deadflag & (DEAD_DYING|DEAD_DEAD)))
 	{
 
 		self->count+=irand(1,2);

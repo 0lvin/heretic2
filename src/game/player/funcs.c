@@ -1258,10 +1258,10 @@ void G_PlayerActionSpellArray(edict_t *self, int value)
 // -------------------------------
 // ************************************************************************************************
 
-void G_PlayerActionSpellSphereCreate(edict_t *self, qboolean *Charging)
+void G_PlayerActionSpellSphereCreate(edict_t *self, float value)
 {
 	// Start a glow effect.
-	WeaponThink_SphereOfAnnihilationEx(self, Charging);
+	WeaponThink_SphereOfAnnihilationEx(self, value);
 }
 
 // ************************************************************************************************

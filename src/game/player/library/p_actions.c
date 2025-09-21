@@ -544,7 +544,7 @@ void PlayerActionSpellSphereCreate(playerinfo_t *playerinfo, float value)
 
 	playerinfo->chargingspell=true;
 	playerinfo->weaponcharge = 1;
-	pi.PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
+	pi.PlayerActionSpellSphereCreate(playerinfo->self, 1.0);
 }
 
 /*-----------------------------------------------
@@ -4371,8 +4371,8 @@ PlayerInterruptAction(playerinfo_t *playerinfo)
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
 	{
-		playerinfo->chargingspell=false;
-		pi.PlayerActionSpellSphereCreate(playerinfo->self, &playerinfo->chargingspell);
+		playerinfo->chargingspell = false;
+		pi.PlayerActionSpellSphereCreate(playerinfo->self, 0.0);
 	}
 
 	//Clear out any pending animations

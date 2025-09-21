@@ -87,8 +87,10 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 
 	//
 	// no aura trail on low level
-	if (r_detail->value == DETAIL_LOW)
+	if (!Owner || r_detail->value == DETAIL_LOW)
+	{
 		return true;
+	}
 
 	VectorCopy(Owner->origin,TrailStart);
 	VectorSubtract(Owner->lerp_origin,Owner->origin,Trail);
@@ -158,7 +160,8 @@ FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner)
 // FXSphereOfAnnihilation -
 // ****************************************************************************
 
-void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXSphereOfAnnihilation(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t	*SphereThinker,
 					*AuraThinker;
@@ -166,7 +169,12 @@ void FXSphereOfAnnihilation(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
 	int				caster_update;
 
-	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_SPHERE].formatString,&CasterEntnum);
+	FXGetEffect(Owner, Flags, clientEffectSpawners[FX_WEAPON_SPHERE].formatString, &CasterEntnum);
+
+	if (!Owner)
+	{
+		return;
+	}
 
 	// Create a fiery blue aura around the sphere.
 
