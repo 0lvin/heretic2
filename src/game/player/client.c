@@ -2456,6 +2456,7 @@ SP_GetSpawnPoint(void)
 		if (!spot)
 		{
 			gi.error("Couldn't find spawn point '%s'\n", game.spawnpoint);
+			return NULL;
 		}
 	}
 

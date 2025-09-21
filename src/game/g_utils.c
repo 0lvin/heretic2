@@ -375,7 +375,7 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 
 			if (t == ent)
 			{
-				gi.dprintf ("WARNING: %s used itself.\n", t->classname);
+				gi.dprintf("WARNING: %s used itself.\n", t->classname);
 			}
 			else
 			{

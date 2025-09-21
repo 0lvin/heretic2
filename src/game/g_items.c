@@ -2378,6 +2378,7 @@ PrecacheItem(gitem_t *it)
 		if ((len >= MAX_QPATH) || (len < 5))
 		{
 			gi.error("PrecacheItem: %s has bad precache string", it->classname);
+			return;
 		}
 
 		memcpy(data, start, len);
@@ -6204,6 +6205,7 @@ InitItems(void)
 	if (sizeof(gameitemlist) > sizeof(itemlist))
 	{
 		gi.error("Defined items more than %d\n", MAX_ITEMS);
+		return;
 	}
 
 	memset(itemlist, 0, sizeof(itemlist));
