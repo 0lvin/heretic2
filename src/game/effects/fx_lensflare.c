@@ -394,7 +394,8 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		}
 
 		VectorCopy(Origin, Explosion->origin);
-		Explosion->up[0] = flare_loc[I + useOther];
+		Explosion->up[0] = flare_loc[(I + useOther) % (
+			sizeof(flare_loc) / sizeof(*flare_loc))];
 
 		if (owner)
 		{

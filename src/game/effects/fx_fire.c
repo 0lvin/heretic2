@@ -163,32 +163,46 @@ void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, spawner);
 }
 
-qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
+qboolean
+FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*flame;
 	int					i, count, white;
 	float				radius;
 	paletteRGBA_t		color;
 
+	if (!owner)
+	{
+		return false;
+	}
+
 	// For framerate-sensitive effect spawning
 	count = GetScaledCount(FLAME_COUNT, 0.9);
-	if (count>FLAME_COUNT)		// Don't go over flame count
-		count=FLAME_COUNT;
+	if (count > FLAME_COUNT)
+	{
+		// Don't go over flame count
+		count = FLAME_COUNT;
+	}
+
 	VectorCopy(owner->origin, spawner->origin);
 	VectorCopy(owner->origin, spawner->r.origin);
 
 	if (!(owner->current.effects & EF_ON_FIRE) && (spawner->nextEventTime - fxi.cl->time >= 1000))
-	{	// Set up the fire to finish early.
+	{
+		// Set up the fire to finish early.
 		spawner->nextEventTime = fxi.cl->time + 999;
 		spawner->dlight->d_intensity = -200;
 	}
 
-	if (spawner->nextEventTime - fxi.cl->time > 1000)		// Until 1 second before finish.
+	if (spawner->nextEventTime - fxi.cl->time > 1000)
 	{
+		// Until 1 second before finish.
+
 		for(i = 0; i < count; i++)
 		{
-			if (!irand(0,15) && (r_detail->value >= DETAIL_NORMAL))		// no steam in software, its around too long and doesn't do enough for us
+			if (!irand(0,15) && (r_detail->value >= DETAIL_NORMAL))
 			{
+				// no steam in software, its around too long and doesn't do enough for us
 				white = irand(8, 16);
 
 				color.r = color.g = color.b = white;
@@ -248,7 +262,8 @@ qboolean FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 	}
 }
 
-qboolean FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
+qboolean
+FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*flame;
 	int					i, count;

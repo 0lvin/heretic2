@@ -43,7 +43,7 @@ extern void SpellCastMagicMissile(edict_t *Caster,vec3_t StartPos,vec3_t AimAngl
 extern void SpellCastMagicMissileSpread(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
 										float NoOfMissiles,float Separation);
 extern void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-										 float Value, float *ReleaseFlagsPtr);
+										 float Value, qboolean *ReleaseFlagsPtr);
 extern void SpellCastMaceball(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 extern void SpellCastWall(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_t AimDir, float Value);
 extern void SpellCastRipper(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir);
@@ -3770,11 +3770,9 @@ int sworddamage[STAFF_LEVEL_MAX][2] =
 };
 
 void
-WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
+WeaponThink_SwordStaffEx(edict_t *caster, int locid)
 {
-	va_list Marker;
 	char CurrentChar;
-		int locid;
 	vec3_t fwd, right, up;
 	vec3_t atkpos, startpos, endpos, hitdir, hitangles, diffangles;
 	vec3_t mins = { -12, -12, -12};
@@ -3802,13 +3800,6 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 	{
 		powerlevel = STAFF_LEVEL_MAX-1;
 	}
-
-	assert(strlen(Format));
-	va_start(Marker,Format);
-	CurrentChar=Format[0];
-	assert(CurrentChar=='i');
-	locid=va_arg(Marker,int);
-	va_end(Marker);
 
 	AngleVectors(caster->client->ps.viewangles, fwd, right, up);
 
@@ -4164,7 +4155,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, char *Format, ...)
 void
 WeaponThink_SwordStaff(edict_t *caster)
 {
-	WeaponThink_SwordStaffEx(caster, "");
+	WeaponThink_SwordStaffEx(caster, 0);
 }
 
 // ************************************************************************************************
@@ -4252,28 +4243,14 @@ WeaponThink_Maceballs(edict_t *caster)
 #define MISSILE_PITCH 2.0
 #define MISSILE_SEP	4.0
 void
-WeaponThink_MagicMissileSpreadEx(edict_t *caster,char *format,...)
+WeaponThink_MagicMissileSpreadEx(edict_t *caster, int missilepos)
 {
-	va_list marker;
-	int		missilepos;
 	char	curchar;
 	vec3_t	OriginToLowerJoint={0.945585,2.26076,0.571354},
 			OriginToUpperJoint={1.80845,2.98912,3.27800},
 			DefaultStartPos={8.0,0.0,5.0},
 			StartPos;
 	vec3_t	fireangles, fwd;
-
-	// Get number of missiles to fire off and get the separation between missiles.
-
-	assert(strlen(format));
-
-	missilepos=1;
-
-	va_start(marker,format);
-	curchar=format[0];
-	assert(curchar=='i');
-	missilepos=va_arg(marker,int);
-	va_end(marker);
 
 	// Set up the Magic-missile's starting position and aiming angles then cast the spell.
 
@@ -4299,7 +4276,7 @@ WeaponThink_MagicMissileSpreadEx(edict_t *caster,char *format,...)
 void
 WeaponThink_MagicMissileSpread(edict_t *caster)
 {
-	WeaponThink_MagicMissileSpreadEx(caster, "");
+	WeaponThink_MagicMissileSpreadEx(caster, 1);
 }
 
 // ************************************************************************************************
@@ -4308,26 +4285,11 @@ WeaponThink_MagicMissileSpread(edict_t *caster)
 // ************************************************************************************************
 
 void
-WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
+WeaponThink_SphereOfAnnihilationEx(edict_t *caster, qboolean *Charging)
 {
-	va_list		Marker;
-	float	*ReleaseFlagsPtr;
 	vec3_t		Forward;
 
-	// Get pointer to missile's release flag.
-
-	assert(strlen(Format));
-
-	va_start(Marker,Format);
-
-	assert(*Format=='g');
-
-	ReleaseFlagsPtr = va_arg(Marker, float *);
-
-	va_end(Marker);
-
 	// Set up the Sphere-of-annihilation's aiming angles then cast the spell.
-
 	AngleVectors(caster->client->ps.viewangles,Forward,NULL,NULL);
 
 	SpellCastSphereOfAnnihilation(caster,
@@ -4335,7 +4297,7 @@ WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
 								 caster->client->ps.viewangles,		//v_angle,
 								 Forward,
 								 0.0,
-								 ReleaseFlagsPtr);
+								 Charging);
 
 	if (!deathmatch->value || (deathmatch->value && !((int)dmflags->value & DF_INFINITE_MANA)))
 		caster->client->pers.inventory[caster->client->playerinfo.weap_ammo_index]-= caster->client->playerinfo.pers.weapon->quantity;
@@ -4344,7 +4306,8 @@ WeaponThink_SphereOfAnnihilationEx(edict_t *caster, char *Format, ...)
 void
 WeaponThink_SphereOfAnnihilation(edict_t *caster)
 {
-	WeaponThink_SphereOfAnnihilationEx(caster, "");
+	qboolean ReleaseFlags = false;
+	WeaponThink_SphereOfAnnihilationEx(caster, &ReleaseFlags);
 }
 
 // ************************************************************************************************

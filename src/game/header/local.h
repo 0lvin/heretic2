@@ -3200,12 +3200,12 @@ void DefenceThink_Tornado(edict_t *Caster);
 // ************************************************************************************************
 
 void WeaponThink_SwordStaff(edict_t *Caster);
-void WeaponThink_SwordStaffEx(edict_t *Caster,char *Format,...);
+void WeaponThink_SwordStaffEx(edict_t *Caster, int value);
 void WeaponThink_FlyingFist(edict_t *Caster);
 void WeaponThink_MagicMissileSpread(edict_t *Caster);
-void WeaponThink_MagicMissileSpreadEx(edict_t *Caster,char *Format,...);
+void WeaponThink_MagicMissileSpreadEx(edict_t *Caster, int value);
 void WeaponThink_SphereOfAnnihilation(edict_t *Caster);
-void WeaponThink_SphereOfAnnihilationEx(edict_t *Caster, char *Format,...);
+void WeaponThink_SphereOfAnnihilationEx(edict_t *Caster, qboolean *Charging);
 void WeaponThink_Maceballs(edict_t *Caster);
 void WeaponThink_Firewall(edict_t *Caster);
 void WeaponThink_Blast(edict_t *Caster);

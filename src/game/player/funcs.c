@@ -1240,7 +1240,7 @@ void G_PlayerSpellStopShieldAttack(edict_t *self)
 
 void G_PlayerActionSwordAttack(edict_t *self, int value)
 {
-	WeaponThink_SwordStaffEx(self, "i", value);
+	WeaponThink_SwordStaffEx(self, value);
 }
 
 // ************************************************************************************************
@@ -1250,7 +1250,7 @@ void G_PlayerActionSwordAttack(edict_t *self, int value)
 
 void G_PlayerActionSpellArray(edict_t *self, int value)
 {
-	WeaponThink_MagicMissileSpreadEx(self,"i",value);
+	WeaponThink_MagicMissileSpreadEx(self, value);
 }
 
 // ************************************************************************************************
@@ -1261,7 +1261,7 @@ void G_PlayerActionSpellArray(edict_t *self, int value)
 void G_PlayerActionSpellSphereCreate(edict_t *self, qboolean *Charging)
 {
 	// Start a glow effect.
-	WeaponThink_SphereOfAnnihilationEx(self, "g", Charging);
+	WeaponThink_SphereOfAnnihilationEx(self, Charging);
 }
 
 // ************************************************************************************************

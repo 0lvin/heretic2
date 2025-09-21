@@ -36,9 +36,10 @@ crashes. That's all what is good.
 
 Drawbacks, sorted by priority:
  * [ ] remove client->playerinfo.c_mode hack,
- * [ ] fix acrobatic
- * [ ] fix rope
- * [ ] fix puzzles
+ * [ ] fix acrobatic,
+ * [ ] fix rope,
+ * [ ] fix puzzles,
+ * [ ] fix SpellCastSphereOfAnnihilation qboolean as char*,
  * [ ] implement `menu_help` to show level goals,
  * [ ] keep old mission goals if map is not provided new one, look to `trigger_mission_*`,
  * [ ] game memory management, fix or replace singlelinkedlist,

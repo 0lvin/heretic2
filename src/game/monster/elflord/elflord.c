@@ -27,7 +27,7 @@ enum cwatcher_elflord_effect_id_s
 } cwatcher_elflord_effect_id_t;
 
 void SpellCastSphereOfAnnihilation(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,
-								  float Value, float *ReleaseFlagsPtr);
+								  float Value, qboolean *ReleaseFlagsPtr);
 
 /*----------------------------------------------------------------------
   Elf Lord Base Info
@@ -370,7 +370,7 @@ void elflord_soa_start(edict_t *self, G_Message_t *msg)
 								 self->s.angles,		//v_angle,
 								 forward,
 								 0.0,
-								 &self->show_hostile);
+								 (qboolean *)&self->show_hostile);
 	SetAnim(self, ELFLORD_ANIM_ATTACK_SOA_BTRANS);
 }
 
@@ -400,7 +400,7 @@ void elflord_soa_go(edict_t *self)
 								 self->s.angles,		//v_angle,
 								 forward,
 								 0.0,
-								 &self->show_hostile);
+								 (qboolean *)&self->show_hostile);
 }
 
 /*-----------------------------------------------
