@@ -366,7 +366,6 @@ InitGame(void)
 	g_machinegun_norecoil = gi.cvar("g_machinegun_norecoil", "0", CVAR_ARCHIVE);
 	g_quick_weap = gi.cvar("g_quick_weap", "1", CVAR_ARCHIVE);
 	g_swap_speed = gi.cvar("g_swap_speed", "1", CVAR_ARCHIVE);
-	g_language = gi.cvar("g_language", "english", CVAR_ARCHIVE);
 	g_itemsbobeffect = gi.cvar("g_itemsbobeffect", "0", CVAR_ARCHIVE);
 	g_game = gi.cvar("game", "", 0);
 	g_start_items = gi.cvar("g_start_items", "", 0);
@@ -409,9 +408,6 @@ InitGame(void)
 	no_irondoom = gi.cvar("no_irondoom","0",0);
 	no_morph = gi.cvar("no_morph","0",0);
 	no_shield = gi.cvar("no_shield","0",0);
-
-	/* initilize localization */
-	LocalizationInit();
 
 	/* initilize dynamic object spawn */
 	SpawnInit();

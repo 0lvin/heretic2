@@ -46,6 +46,41 @@ extern viddef_t viddef;
 #define VID_WIDTH viddef.width
 #define VID_HEIGHT viddef.height
 
+static size_t
+StrLenUTF8(const char *src)
+{
+	size_t symbols = 0;
+
+	while (*src)
+	{
+		size_t size = 1;
+
+		if (!(*src & 0x80))
+		{
+			size = 1;
+		}
+		else if ((*src & 0xE0) == 0xC0)
+		{
+			size = 2;
+		}
+		else if ((*src & 0xF0) == 0xE0)
+		{
+			size = 3;
+		}
+		else if ((*src & 0xF8) == 0xF0)
+		{
+			size = 4;
+		}
+
+		src += size;
+
+		symbols ++;
+	}
+
+	return symbols;
+}
+
+
 float
 ClampCvar(float min, float max, float value)
 {
@@ -81,12 +116,12 @@ Bitmap_Draw(menubitmap_s * item)
 		(Menu_ItemAtCursor(item->generic.parent) == item)))
 	{
 		Draw_PicScaledAltText(x * scale, y * scale, item->focuspic, scale,
-			item->alttext);
+			item->generic.alttext);
 	}
 	else if (item->generic.name)
 	{
 		Draw_PicScaledAltText(x * scale, y * scale, ( char * )item->generic.name, scale,
-			item->alttext);
+			item->generic.alttext);
 	}
 }
 
@@ -105,13 +140,13 @@ Action_Draw(menuaction_s *a)
 		if (a->generic.flags & QMF_GRAYED)
 		{
 			Menu_DrawStringDark(x + (LCOLUMN_OFFSET * scale),
-				y, a->generic.name);
+				y, SV_LocalizationUIMessage(a->generic.alttext, a->generic.name));
 		}
 
 		else
 		{
 			Menu_DrawString(x + (LCOLUMN_OFFSET * scale),
-				y, a->generic.name);
+				y, SV_LocalizationUIMessage(a->generic.alttext, a->generic.name));
 		}
 	}
 	else
@@ -119,13 +154,13 @@ Action_Draw(menuaction_s *a)
 		if (a->generic.flags & QMF_GRAYED)
 		{
 			Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
-				y, a->generic.name);
+				y, SV_LocalizationUIMessage(a->generic.alttext, a->generic.name));
 		}
 
 		else
 		{
 			Menu_DrawStringR2L(x + (LCOLUMN_OFFSET * scale),
-				y, a->generic.name);
+				y, SV_LocalizationUIMessage(a->generic.alttext, a->generic.name));
 		}
 	}
 
@@ -150,7 +185,7 @@ Field_Draw(menufield_s *f)
 	if (f->generic.name)
 	{
 		Menu_DrawStringR2LDark(x + LCOLUMN_OFFSET * scale,
-			y, f->generic.name);
+			y, SV_LocalizationUIMessage(f->generic.alttext, f->generic.name));
 	}
 
 	n = f->visible_length + 1;
@@ -511,7 +546,7 @@ Menu_DrawStatusBar(const char *string)
 
 	if (string)
 	{
-		int l = (int)strlen(string);
+		int l = (int)StrLenUTF8(string);
 		int col = (VID_WIDTH / 2) - (l*8 / 2) * scale;
 
 		Draw_Fill(0, VID_HEIGHT - 8 * scale, VID_WIDTH, 8 * scale, 4);
@@ -542,17 +577,27 @@ Menu_DrawStringDark(int x, int y, const char *string)
 void
 Menu_DrawStringR2L(int x, int y, const char *string)
 {
-	float scale = SCR_GetMenuScale();
+	char message[161];
+	float scale;
+	int pos;
 
-	Draw_StringScaled(x - 8 * scale * strlen(string), y * scale, scale, false, string);
+	scale = SCR_GetMenuScale();
+
+	pos = SCR_CopyUtf8(string, message, Q_min(40, x / (8 * scale)));
+	Draw_StringScaled(x - 8 * scale * pos, y * scale, scale, false, message);
 }
 
 void
 Menu_DrawStringR2LDark(int x, int y, const char *string)
 {
-	float scale = SCR_GetMenuScale();
+	char message[161];
+	float scale;
+	int pos;
 
-	Draw_StringScaled(x - 8 * scale * strlen(string), y * scale, scale, true, string);
+	scale = SCR_GetMenuScale();
+
+	pos = SCR_CopyUtf8(string, message, Q_min(40, x / (8 * scale)));
+	Draw_StringScaled(x - 8 * scale * pos, y * scale, scale, true, message);
 }
 
 void *
@@ -618,7 +663,7 @@ MenuList_Draw(menulist_s *l)
 	y = l->generic.parent->y + l->generic.y;
 
 	Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
-		y, l->generic.name);
+		y, SV_LocalizationUIMessage(l->generic.alttext, l->generic.name));
 
 	n = l->itemnames;
 
@@ -647,7 +692,7 @@ Separator_Draw(menuseparator_s *s)
 	if (s->generic.name)
 	{
 		Menu_DrawStringR2LDark(x,
-			y, s->generic.name);
+			y, SV_LocalizationUIMessage(s->generic.alttext, s->generic.name));
 	}
 }
 
@@ -694,7 +739,7 @@ Slider_Draw(menuslider_s *s)
 			(s->maxvalue - s->minvalue);
 
 	Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
-		y, s->generic.name);
+		y, SV_LocalizationUIMessage(s->generic.alttext, s->generic.name));
 
 	Draw_CharScaled(x_rcol,
 		y * scale, 128, scale);
@@ -751,7 +796,7 @@ SpinControl_Draw(menulist_s *s)
 	if (s->generic.name)
 	{
 		Menu_DrawStringR2LDark(x + (LCOLUMN_OFFSET * scale),
-			y, s->generic.name);
+			y, SV_LocalizationUIMessage(s->generic.alttext, s->generic.name));
 	}
 
 	if (!strchr(s->itemnames[s->curvalue], '\n'))

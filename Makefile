@@ -1077,7 +1077,6 @@ GAME_OBJS_ = \
 	src/game/g_stateinfo.o \
 	src/game/g_svcmds.o \
 	src/game/g_target.o \
-	src/game/g_translate.o \
 	src/game/g_trigger.o \
 	src/game/g_turret.o \
 	src/game/g_utils.o \
@@ -1459,6 +1458,7 @@ CLIENT_OBJS_ := \
 	src/server/sv_main.o \
 	src/server/sv_save.o \
 	src/server/sv_send.o \
+	src/server/sv_translate.o \
 	src/server/sv_user.o \
 	src/server/sv_world.o
 
@@ -1753,6 +1753,7 @@ SERVER_OBJS_ := \
 	src/server/sv_main.o \
 	src/server/sv_save.o \
 	src/server/sv_send.o \
+	src/server/sv_translate.o \
 	src/server/sv_user.o \
 	src/server/sv_world.o
 

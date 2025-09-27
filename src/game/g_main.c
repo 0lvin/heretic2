@@ -110,7 +110,6 @@ cvar_t *aimfix;
 cvar_t *g_machinegun_norecoil;
 cvar_t *g_quick_weap;
 cvar_t *g_swap_speed;
-cvar_t *g_language;
 cvar_t *g_itemsbobeffect;
 cvar_t *g_start_items;
 cvar_t *ai_model_scale;
@@ -184,7 +183,7 @@ G_BCaption(int printlevel, short stringid)
 	int sound_index = 0;
 
 	snprintf(message, sizeof(message), "%d", stringid);
-	gi.bprintf(printlevel, "%s", LocalizationMessage(message, &sound_index));
+	gi.bprintf(printlevel, "%s", gi.LocalizationMessage(message, &sound_index));
 
 	if (sound_index)
 	{
@@ -199,7 +198,7 @@ G_LevelMsgCenterPrintf(edict_t* ent, short stringid)
 	int sound_index = 0;
 
 	snprintf(message, sizeof(message), "%d", stringid);
-	gi.centerprintf(ent, "%s", LocalizationMessage(message, &sound_index));
+	gi.centerprintf(ent, "%s", gi.LocalizationMessage(message, &sound_index));
 
 	if (sound_index)
 	{
@@ -214,7 +213,7 @@ G_CaptionPrintf(edict_t* ent, short stringid)
 	int sound_index = 0;
 
 	snprintf(message, sizeof(message), "%d", stringid);
-	gi.centerprintf(ent, "%s", LocalizationMessage(message, &sound_index));
+	gi.centerprintf(ent, "%s", gi.LocalizationMessage(message, &sound_index));
 
 	if (sound_index)
 	{
@@ -229,7 +228,7 @@ G_BroadcastObituary(int printlevel, short stringid, short client1, short client2
 	int sound_index = 0;
 
 	snprintf(message, sizeof(message), "%d", stringid);
-	gi.bprintf(printlevel, "%s", LocalizationMessage(message, &sound_index));
+	gi.bprintf(printlevel, "%s", gi.LocalizationMessage(message, &sound_index));
 
 	if (sound_index)
 	{
@@ -275,7 +274,7 @@ void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari)
 	int sound_index = 0;
 
 	snprintf(message, sizeof(message), "%d", msg);
-	gi.centerprintf(ent, "%s", LocalizationMessage(message, &sound_index));
+	gi.centerprintf(ent, "%s", gi.LocalizationMessage(message, &sound_index));
 
 	if (sound_index)
 	{
@@ -288,9 +287,9 @@ void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
 	char message[10];
 
 	snprintf(message, sizeof(message), "%d", msg1);
-	gi.centerprintf(ent, "%s", LocalizationMessage(message, NULL));
+	gi.centerprintf(ent, "%s", gi.LocalizationMessage(message, NULL));
 	snprintf(message, sizeof(message), "%d", msg2);
-	gi.centerprintf(ent, "%s", LocalizationMessage(message, NULL));
+	gi.centerprintf(ent, "%s", gi.LocalizationMessage(message, NULL));
 }
 
 qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
@@ -348,7 +347,6 @@ ShutdownGame(void)
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);
 	SpawnFree();
-	LocalizationFree();
 
 	P_Freelib();	// free the player lib
 }

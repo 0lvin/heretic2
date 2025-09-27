@@ -341,6 +341,7 @@ FS_GetFileByHandle(fileHandle_t f)
 	if ((f < 0) || (f > MAX_HANDLES))
 	{
 		Com_Error(ERR_DROP, "%s: out of range", __func__);
+		return NULL;
 	}
 
 	if (f == 0)
@@ -590,6 +591,7 @@ FS_FOpenFile(const char *rawname, fileHandle_t *f, qboolean gamedir_only)
 				}
 
 				Com_Error(ERR_FATAL, "Couldn't reopen '%s'", pack->name);
+				return 0;
 			}
 		}
 		else
@@ -785,6 +787,14 @@ FS_Read(void *buffer, int size, fileHandle_t f)
 		{
 			/* compressed chunk bigger than provided buffer */
 			compressed_buf = malloc(handle->compressed_size);
+			if (!compressed_buf)
+			{
+				Com_Error(ERR_DROP, "%s: can't allocate compressed buffer\n",
+				__func__);
+				return 0;
+			}
+
+			memset(compressed_buf, 0, handle->compressed_size);
 			buf = compressed_buf;
 		}
 	}
@@ -821,6 +831,11 @@ FS_Read(void *buffer, int size, fileHandle_t f)
 			}
 			else
 			{
+				if (buffer != compressed_buf)
+				{
+					free(compressed_buf);
+				}
+
 				/* Already tried once. */
 				Com_Error(ERR_FATAL, "%s: 0 bytes read from '%s'",
 					__func__, handle->name);
@@ -829,8 +844,14 @@ FS_Read(void *buffer, int size, fileHandle_t f)
 		}
 		else if (r == -1)
 		{
+			if (buffer != compressed_buf)
+			{
+				free(compressed_buf);
+			}
+
 			Com_Error(ERR_FATAL, "%s: -1 bytes read from '%s'",
 				__func__, handle->name);
+			return 0;
 		}
 
 		remaining -= r;
@@ -914,15 +935,27 @@ FS_FRead(void *buffer, int size, int count, fileHandle_t f)
 				}
 				else
 				{
+					if (buffer != compressed_buf)
+					{
+						memcpy(buffer, compressed_buf, size - remaining);
+						free(compressed_buf);
+					}
+
 					/* Already tried once. */
 					return size - remaining;
 				}
 			}
 			else if (r == -1)
 			{
+				if (buffer != compressed_buf)
+				{
+					free(compressed_buf);
+				}
+
 				Com_Error(ERR_FATAL,
 						"%s: -1 bytes read from '%s'",
 						__func__, handle->name);
+				return 0;
 			}
 
 			remaining -= r;
@@ -1091,6 +1124,7 @@ FS_LoadWAD(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
 				__func__, packPath);
+		return NULL;
 	}
 
 	if (numFiles > MAX_FILES_IN_PACK)
@@ -1104,6 +1138,7 @@ FS_LoadWAD(const char *packPath)
 	{
 		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
 				__func__, packPath, header.dirlen);
+		return NULL;
 	}
 
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
@@ -1113,6 +1148,7 @@ FS_LoadWAD(const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
 	}
 
 	if (fread(info, header.dirlen, 1, handle) != 1)
@@ -1120,6 +1156,7 @@ FS_LoadWAD(const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
 	}
 
 	/* Parse the directory. */
@@ -1323,6 +1360,7 @@ FS_LoadDAT(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
 				__func__, packPath);
+		return NULL;
 	}
 
 	if (numFiles > MAX_FILES_IN_PACK)
@@ -1336,6 +1374,7 @@ FS_LoadDAT(const char *packPath)
 	{
 		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
 				__func__, packPath, header.dirlen);
+		return NULL;
 	}
 
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
@@ -1345,6 +1384,7 @@ FS_LoadDAT(const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
 	}
 
 	if (fread(info, header.dirlen, 1, handle) != 1)
@@ -1352,6 +1392,7 @@ FS_LoadDAT(const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
 	}
 
 	prefixpos = pos = packPath;
@@ -1431,12 +1472,14 @@ FS_LoadSIN(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' too short file",
 			__func__, packPath);
+		return NULL;
 	}
 
 	if (LittleLong(header.ident) != SINHEADER)
 	{
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is not a pack file", __func__, packPath);
+		return NULL;
 	}
 
 	header.dirofs = LittleLong(header.dirofs);
@@ -1449,6 +1492,7 @@ FS_LoadSIN(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
 				__func__, packPath);
+		return NULL;
 	}
 
 	numFiles = header.dirlen / sizeof(*info);
@@ -1464,6 +1508,7 @@ FS_LoadSIN(const char *packPath)
 	{
 		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
 				__func__, packPath, header.dirlen);
+		return NULL;
 	}
 
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
@@ -1473,6 +1518,7 @@ FS_LoadSIN(const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
 	}
 
 	if (fread(info, header.dirlen, 1, handle) != 1)
@@ -1480,6 +1526,7 @@ FS_LoadSIN(const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
 	}
 
 	/* Parse the directory. */
@@ -1528,6 +1575,7 @@ FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
 				__func__, packPath);
+		return NULL;
 	}
 
 	if (numFiles > MAX_FILES_IN_PACK)
@@ -1539,8 +1587,10 @@ FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 	info = malloc(header->dirlen);
 	if (!info)
 	{
+		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
 				__func__, packPath, header->dirlen);
+		return NULL;
 	}
 
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
@@ -1550,6 +1600,7 @@ FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
 	}
 
 	if (fread(info, header->dirlen, 1, handle) != 1)
@@ -1557,6 +1608,7 @@ FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
 	}
 
 	/* Parse the directory. */
@@ -1599,6 +1651,7 @@ FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
 				__func__, packPath);
+		return NULL;
 	}
 
 	if (numFiles > MAX_FILES_IN_PACK)
@@ -1612,6 +1665,7 @@ FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 	{
 		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
 				__func__, packPath, header->dirlen);
+		return NULL;
 	}
 
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
@@ -1621,6 +1675,7 @@ FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
 	}
 
 	if (fread(info, header->dirlen, 1, handle) != 1)
@@ -1628,6 +1683,7 @@ FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 		free(info);
 		Z_Free(files);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
 	}
 
 	/* Parse the directory. */
@@ -1686,6 +1742,7 @@ FS_LoadPAK(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' too short file",
 			__func__, packPath);
+		return NULL;
 	}
 
 	if (LittleLong(header.ident) != IDPAKHEADER)
@@ -1693,6 +1750,7 @@ FS_LoadPAK(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is not a pack file",
 			__func__, packPath);
+		return NULL;
 	}
 
 	header.dirofs = LittleLong(header.dirofs);
@@ -1703,6 +1761,7 @@ FS_LoadPAK(const char *packPath)
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
 				__func__, packPath);
+		return NULL;
 	}
 
 	if ((header.dirlen % sizeof(dpackfile_t)) == 0)
@@ -1756,6 +1815,7 @@ FS_LoadPK3(const char *packPath)
 	{
 		unzClose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' is not a pack file", __func__, packPath);
+		return NULL;
 	}
 
 	numFiles = global.number_entry;
@@ -1765,6 +1825,7 @@ FS_LoadPK3(const char *packPath)
 		unzClose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' has %i files",
 				__func__, packPath, numFiles);
+		return NULL;
 	}
 
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
@@ -2935,16 +2996,7 @@ FS_BuildGameSpecificSearchPath(const char *dir)
 
 	// ...and the current list of maps in the "start network server" menu is
 	// cleared so that it will be re-initialized when the menu is accessed
-	if (mapnames != NULL)
-	{
-		for (i = 0; i < nummaps; i++)
-		{
-			free(mapnames[i]);
-		}
-
-		free(mapnames);
-		mapnames = NULL;
-	}
+	CleanCachedMapsList();
 
 	// Start the demoloop, if requested. This is kind of hacky: Normaly the
 	// demo loop would be started by the menu, after changeing the 'game'

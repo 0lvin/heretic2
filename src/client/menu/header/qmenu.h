@@ -72,6 +72,7 @@ typedef struct
 {
 	int type;
 	const char *name;
+	const char *alttext;
 	int x, y;
 	menuframework_s *parent;
 	int cursor_offset;
@@ -91,7 +92,6 @@ typedef struct
 	menucommon_s    generic;
 	char *          focuspic;
 	char *          errorpic;
-	char *          alttext;
 	int             width;
 	int             height;
 } menubitmap_s;
@@ -137,6 +137,12 @@ typedef struct
 	menucommon_s generic;
 } menuseparator_s;
 
+void IN_ApplyJoyPreset(void);
+qboolean IN_MatchJoyPreset(void);
+float CalcFov(float fov_x, float w, float h);
+
+void M_PopMenu(void);
+void M_ForceMenuOff(void);
 void M_PushMenu(menuframework_s* menu);
 
 void Field_ResetCursor(menuframework_s *m);

@@ -240,6 +240,9 @@ typedef struct
 	void (*GetModelFrameInfo)(int index, int num, float *mins, float *maxs);
 	void (*PmoveEx)(pmove_t *pmove, int *origin);
 
+	const char* (*LocalizationMessage)(const char *message, int *sound_index);
+	const char* (*LocalizationUIMessage)(const char *message, const char *default_message);
+
 	/* Heretic 2 specific */
 	void	(*CreateEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	int		(*CreatePersistantEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);

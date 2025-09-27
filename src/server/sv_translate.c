@@ -25,7 +25,7 @@
  * =======================================================================
  */
 
-#include "header/local.h"
+#include "header/server.h"
 
 typedef struct
 {
@@ -53,36 +53,48 @@ LocalizationFileRead(const char *filename, int *len)
 	byte *raw = NULL;
 	char *buf = NULL;
 
-	*len = gi.LoadFile(filename, (void **)&raw);
+	*len = FS_LoadFile(filename, (void **)&raw);
 	if (*len > 1)
 	{
 		buf = malloc(*len + 1);
 		if (!buf)
 		{
-			gi.error("%s: can't allocate space for file\n");
+			Com_Error(ERR_DROP, "%s: can't allocate space for file\n",
+				__func__);
 			return NULL;
 		}
 
 		memcpy(buf, raw, *len);
 		buf[*len] = 0;
-		gi.FreeFile(raw);
+		FS_FreeFile(raw);
 	}
 
 	return buf;
 }
 
 void
-LocalizationInit(void)
+SV_LocalizationInit(void)
+{
+	localmessages = NULL;
+	nlocalmessages = 0;
+}
+
+static void
+SV_LocalizationReload(void)
 {
 	char *buf_local = NULL, *buf_level = NULL, *buf_strings = NULL;
 	int len_local, len_level, len_strings, curr_pos;
 	char loc_name[MAX_QPATH];
 
-	localmessages = NULL;
+	if (localmessages)
+	{
+		return;
+	}
+
 	nlocalmessages = 0;
 
 	/* load the localization file */
-	snprintf(loc_name, sizeof(loc_name) - 1, "localization/loc_%s.txt", g_language->string);
+	snprintf(loc_name, sizeof(loc_name) - 1, "localization/loc_%s.txt", sv_language->string);
 	buf_local = LocalizationFileRead(loc_name, &len_local);
 	/* load the heretic 2 messages file */
 	buf_level = LocalizationFileRead("levelmsg.txt", &len_level);
@@ -175,7 +187,8 @@ LocalizationInit(void)
 		localmessages = malloc((nlocalmessages + 1) * sizeof(*localmessages));
 		if (!localmessages)
 		{
-			gi.error("%s: can't allocate messages\n");
+			Com_Error(ERR_DROP, "%s: can't allocate messages\n",
+				__func__);
 			return;
 		}
 		memset(localmessages, 0, (nlocalmessages + 1) * sizeof(*localmessages));
@@ -184,7 +197,7 @@ LocalizationInit(void)
 	curr_pos = 0;
 
 	/* localization load */
-	if (buf_local)
+	if (buf_local && localmessages)
 	{
 		char *curr;
 
@@ -194,7 +207,7 @@ LocalizationInit(void)
 		{
 			size_t linesize = 0;
 
-			if (curr_pos == nlocalmessages)
+			if (curr_pos >= nlocalmessages)
 			{
 				break;
 			}
@@ -270,7 +283,8 @@ LocalizationInit(void)
 					localmessages[curr_pos].key = malloc(strlen(curr) + 2);
 					if (!localmessages[curr_pos].key)
 					{
-						gi.error("%s: can't allocate messages key\n");
+						Com_Error(ERR_DROP, "%s: can't allocate messages key\n",
+							__func__);
 						break;
 					}
 					localmessages[curr_pos].key[0] = '$';
@@ -279,7 +293,8 @@ LocalizationInit(void)
 					localmessages[curr_pos].value = malloc(strlen(sign) + 1);
 					if (!localmessages[curr_pos].value)
 					{
-						gi.error("%s: can't allocate messages value\n");
+						Com_Error(ERR_DROP, "%s: can't allocate messages value\n",
+							__func__);
 						break;
 					}
 					strcpy(localmessages[curr_pos].value, sign);
@@ -301,7 +316,7 @@ LocalizationInit(void)
 	}
 
 	/* heretic 2 translate load */
-	if (buf_level)
+	if (buf_level && localmessages)
 	{
 		char *curr;
 		int i;
@@ -312,6 +327,11 @@ LocalizationInit(void)
 		{
 			char *sign, *currend;
 			size_t linesize = 0;
+
+			if (curr_pos >= nlocalmessages)
+			{
+				break;
+			}
 
 			linesize = strcspn(curr, "\n");
 			curr[linesize] = 0;
@@ -358,7 +378,8 @@ LocalizationInit(void)
 				localmessages[curr_pos].key = malloc(6);
 				if (!localmessages[curr_pos].key)
 				{
-					gi.error("%s: can't allocate messages key\n");
+					Com_Error(ERR_DROP, "%s: can't allocate messages key\n",
+						__func__);
 					break;
 				}
 
@@ -366,7 +387,8 @@ LocalizationInit(void)
 				localmessages[curr_pos].value = malloc(strlen(curr) + 1);
 				if (!localmessages[curr_pos].value)
 				{
-					gi.error("%s: can't allocate messages value\n");
+					Com_Error(ERR_DROP, "%s: can't allocate messages value\n",
+						__func__);
 					break;
 				}
 				strcpy(localmessages[curr_pos].value, curr);
@@ -378,7 +400,8 @@ LocalizationInit(void)
 					localmessages[curr_pos].sound = malloc(strlen(sign) + 1);
 					if (!localmessages[curr_pos].sound)
 					{
-						gi.error("%s: can't allocate messages sound\n");
+						Com_Error(ERR_DROP, "%s: can't allocate messages sound\n",
+							__func__);
 						break;
 					}
 					strcpy(localmessages[curr_pos].sound, sign);
@@ -401,7 +424,7 @@ LocalizationInit(void)
 	}
 
 	/* hexen 2 translate load */
-	if (buf_strings)
+	if (buf_strings && localmessages)
 	{
 		char *curr;
 		int i;
@@ -412,6 +435,11 @@ LocalizationInit(void)
 		{
 			char *currend;
 			size_t linesize = 0;
+
+			if (curr_pos >= nlocalmessages)
+			{
+				break;
+			}
 
 			linesize = strcspn(curr, "\n");
 			curr[linesize] = 0;
@@ -437,7 +465,8 @@ LocalizationInit(void)
 			localmessages[curr_pos].key = malloc(6);
 			if (!localmessages[curr_pos].key)
 			{
-				gi.error("%s: can't allocate messages key\n");
+				Com_Error(ERR_DROP, "%s: can't allocate messages key\n",
+					__func__);
 				break;
 			}
 			snprintf(localmessages[curr_pos].key, 5, "%d", i);
@@ -445,7 +474,8 @@ LocalizationInit(void)
 			localmessages[curr_pos].value = malloc(strlen(curr) + 1);
 			if (!localmessages[curr_pos].value)
 			{
-				gi.error("%s: can't allocate messages value\n");
+				Com_Error(ERR_DROP, "%s: can't allocate messages value\n",
+					__func__);
 				break;
 			}
 			strcpy(localmessages[curr_pos].value, curr);
@@ -470,21 +500,29 @@ LocalizationInit(void)
 	/* save last used position */
 	nlocalmessages = curr_pos;
 
-	if (!curr_pos)
+	if (!curr_pos && !localmessages)
 	{
+		localmessages = malloc(sizeof(*localmessages));
+		if (!localmessages)
+		{
+			Com_Error(ERR_DROP, "%s: can't allocate messages\n",
+				__func__);
+			return;
+		}
+		memset(localmessages, 0, sizeof(*localmessages));
 		return;
 	}
 
-	gi.dprintf("Found %d translated lines\n", nlocalmessages);
+	Com_Printf("Found %d translated lines\n", nlocalmessages);
 
 	/* sort messages */
 	qsort(localmessages, nlocalmessages, sizeof(localmessages_t), LocalizationSort);
 }
 
 void
-LocalizationFree(void)
+SV_LocalizationFree(void)
 {
-	if (localmessages && nlocalmessages)
+	if (localmessages)
 	{
 		int i;
 
@@ -507,7 +545,7 @@ LocalizationFree(void)
 		}
 		free(localmessages);
 
-		gi.dprintf("Free %d translated lines\n", nlocalmessages);
+		Com_Printf("Free %d translated lines\n", nlocalmessages);
 	}
 	localmessages = NULL;
 	nlocalmessages = 0;
@@ -545,9 +583,11 @@ LocalizationSearch(const char *name)
 	return -1;
 }
 
-const char*
-LocalizationUIMessage(const char *message, const char *default_message)
+const char *
+SV_LocalizationUIMessage(const char *message, const char *default_message)
 {
+	SV_LocalizationReload();
+
 	if (!message || !localmessages || !nlocalmessages)
 	{
 		return default_message;
@@ -569,8 +609,10 @@ LocalizationUIMessage(const char *message, const char *default_message)
 }
 
 const char*
-LocalizationMessage(const char *message, int *sound_index)
+SV_LocalizationMessage(const char *message, const char **sound)
 {
+	SV_LocalizationReload();
+
 	if (!message || !localmessages || !nlocalmessages)
 	{
 		return message;
@@ -584,9 +626,9 @@ LocalizationMessage(const char *message, int *sound_index)
 		i = LocalizationSearch(message);
 		if (i >= 0)
 		{
-			if (sound_index && localmessages[i].sound)
+			if (sound && localmessages[i].sound)
 			{
-				*sound_index = gi.soundindex(localmessages[i].sound);
+				*sound = localmessages[i].sound;
 			}
 
 			return localmessages[i].value;

@@ -103,6 +103,7 @@ PF_cprintf(edict_t *ent, int level, const char *fmt, ...)
 		if ((n < 1) || (n > maxclients->value))
 		{
 			Com_Error(ERR_DROP, "cprintf to a non-client");
+			return;
 		}
 	}
 
@@ -209,6 +210,7 @@ PF_Configstring(int index, const char *val)
 	if ((internal_index < 0) || (internal_index >= MAX_CONFIGSTRINGS))
 	{
 		Com_Error(ERR_DROP, "configstring: bad index %i\n", internal_index);
+		return;
 	}
 
 	/* change the string in sv */
@@ -235,6 +237,7 @@ PF_ConfigStringGet(int index)
 	if ((index < 0) || (index >= MAX_CONFIGSTRINGS))
 	{
 		Com_Error(ERR_DROP, "configstring: bad index %i\n", index);
+		return NULL;
 	}
 
 	/* change the string in sv */
@@ -433,6 +436,21 @@ PF_StartSound(edict_t *entity, int channel, int sound_num,
 
 	SV_StartSound(NULL, entity, channel, sound_num,
 			volume, attenuation, timeofs);
+}
+
+static const char*
+PF_LocalizationMessage(const char *message, int *sound_index)
+{
+	const char *sound = NULL, *localmessage;
+
+	localmessage = SV_LocalizationMessage(message, &sound);
+
+	if (sound_index && sound)
+	{
+		*sound_index = SV_SoundIndex(sound);
+	}
+
+	return localmessage;
 }
 
 /*
@@ -773,6 +791,8 @@ SV_InitGameProgs(void)
 	import.GetModelInfo = PF_GetModelInfo;
 	import.GetModelFrameInfo = PF_GetModelFrameInfo;
 	import.PmoveEx = PmoveEx;
+	import.LocalizationMessage = PF_LocalizationMessage;
+	import.LocalizationUIMessage = SV_LocalizationUIMessage;
 
 	/* Heretic 2 specific */
 	import.FS_NextPath = FS_NextPath;
@@ -785,13 +805,21 @@ SV_InitGameProgs(void)
 	if (!ge)
 	{
 		Com_Error(ERR_DROP, "failed to load game DLL");
+		return;
 	}
 
 	if (ge->apiversion != GAME_API_VERSION &&
 		ge->apiversion != GAME_API_R97_VERSION)
 	{
-		Com_Error(ERR_DROP, "game is version %i, not %i", ge->apiversion,
-				GAME_API_VERSION);
+		int version;
+
+		version = ge->apiversion;
+		Sys_UnloadGame();
+		ge = NULL;
+
+		Com_Error(ERR_DROP, "game is version %i, not %i",
+			version, GAME_API_VERSION);
+		return;
 	}
 
 	ge->Init();

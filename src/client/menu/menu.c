@@ -69,8 +69,6 @@ static void M_Menu_ControllerButtons_f(void);
 static void M_Menu_ControllerAltButtons_f(void);
 static void M_Menu_Quit_f(void);
 
-void M_Menu_Credits(void);
-
 qboolean m_entersound; /* play after drawing a frame, so caching won't disrupt the sound */
 
 /* Maximal number of submenus */
@@ -82,8 +80,8 @@ typedef struct
 	const char *(*key)(int k);
 } menulayer_t;
 
-static menulayer_t m_layers[MAX_MENU_DEPTH];
-static menulayer_t m_active;		/* active menu layer */
+static menulayer_t m_layers[MAX_MENU_DEPTH] = {0};
+static menulayer_t m_active = {0};		/* active menu layer */
 static int m_menudepth;
 
 static qboolean
@@ -145,6 +143,7 @@ M_PopMenu(void)
 	if (m_menudepth < 1)
 	{
 		Com_Error(ERR_FATAL, "%s: depth < 1", __func__);
+		return;
 	}
 
 	m_menudepth--;
@@ -171,6 +170,7 @@ M_PopMenuSilent(void)
 	if (m_menudepth < 1)
 	{
 		Com_Error(ERR_FATAL, "%s: depth < 1", __func__);
+		return;
 	}
 
 	m_menudepth--;
@@ -347,7 +347,7 @@ Key_GetMenuKey(int key)
 	return key;
 }
 
-const char *
+static const char *
 Default_MenuKey(menuframework_s *m, int key)
 {
 	const char *sound = NULL;
@@ -609,14 +609,14 @@ M_Popup(void)
  * MAIN MENU
  */
 
-static menuframework_s s_main;
-static menubitmap_s s_plaque;
-static menubitmap_s s_logo;
-static menubitmap_s s_game;
-static menubitmap_s s_multiplayer;
-static menubitmap_s s_options;
-static menubitmap_s s_video;
-static menubitmap_s s_quit;
+static menuframework_s s_main = {0};
+static menubitmap_s s_plaque = {0};
+static menubitmap_s s_logo = {0};
+static menubitmap_s s_game = {0};
+static menubitmap_s s_multiplayer = {0};
+static menubitmap_s s_options = {0};
+static menubitmap_s s_video = {0};
+static menubitmap_s s_quit = {0};
 
 static void
 GameFunc(void *unused)
@@ -692,7 +692,7 @@ InitMainMenu(void)
 	s_plaque.generic.name = "m_main_plaque";
 	s_plaque.generic.callback = 0;
 	s_plaque.focuspic = 0;
-	s_plaque.alttext = NULL;
+	s_plaque.generic.alttext = NULL;
 
 	s_logo.generic.type = MTYPE_BITMAP;
 	s_logo.generic.flags = QMF_LEFT_JUSTIFY | QMF_INACTIVE;
@@ -701,7 +701,7 @@ InitMainMenu(void)
 	s_logo.generic.name = "m_main_logo";
 	s_logo.generic.callback = 0;
 	s_logo.focuspic = 0;
-	s_logo.alttext = NULL;
+	s_logo.generic.alttext = NULL;
 
 	y += 10;
 
@@ -712,7 +712,7 @@ InitMainMenu(void)
 	s_game.generic.name = "m_main_game";
 	s_game.generic.callback = GameFunc;
 	s_game.focuspic = "m_main_game_sel";
-	s_game.alttext = "Game";
+	s_game.generic.alttext = "Game";
 
 	Draw_GetPicSize(&w, &h, ( char * )s_game.generic.name);
 	y += h + 8;
@@ -724,7 +724,7 @@ InitMainMenu(void)
 	s_multiplayer.generic.name = "m_main_multiplayer";
 	s_multiplayer.generic.callback = MultiplayerFunc;
 	s_multiplayer.focuspic = "m_main_multiplayer_sel";
-	s_multiplayer.alttext = "Multiplayer";
+	s_multiplayer.generic.alttext = "Multiplayer";
 
 	Draw_GetPicSize(&w, &h, ( char * )s_multiplayer.generic.name);
 	y += h + 8;
@@ -736,7 +736,7 @@ InitMainMenu(void)
 	s_options.generic.name = "m_main_options";
 	s_options.generic.callback = OptionsFunc;
 	s_options.focuspic = "m_main_options_sel";
-	s_options.alttext = "Options";
+	s_options.generic.alttext = "Options";
 
 	Draw_GetPicSize(&w, &h, ( char * )s_options.generic.name);
 	y += h + 8;
@@ -748,7 +748,7 @@ InitMainMenu(void)
 	s_video.generic.name = "m_main_video";
 	s_video.generic.callback = VideoFunc;
 	s_video.focuspic = "m_main_video_sel";
-	s_video.alttext = "Video";
+	s_video.generic.alttext = "Video";
 
 	Draw_GetPicSize(&w, &h, ( char * )s_video.generic.name);
 	y += h + 8;
@@ -760,7 +760,7 @@ InitMainMenu(void)
 	s_quit.generic.name = "m_main_quit";
 	s_quit.generic.callback = QuitFunc;
 	s_quit.focuspic = "m_main_quit_sel";
-	s_quit.alttext = "Quit";
+	s_quit.generic.alttext = "Quit";
 
 	Menu_AddItem(&s_main, (void *)&s_plaque);
 	Menu_AddItem(&s_main, (void *)&s_logo);
@@ -832,11 +832,11 @@ M_Menu_Main_f(void)
  * MULTIPLAYER MENU
  */
 
-static menuframework_s s_multiplayer_menu;
-static menuaction_s s_join_network_server_action;
-static menuaction_s s_start_network_server_action;
-static menuaction_s s_player_setup_action;
-static menuaction_s s_customize_options_action;
+static menuframework_s s_multiplayer_menu = {0};
+static menuaction_s s_join_network_server_action = {0};
+static menuaction_s s_start_network_server_action = {0};
+static menuaction_s s_player_setup_action = {0};
+static menuaction_s s_customize_options_action = {0};
 
 static void
 Multiplayer_MenuDraw(void)
@@ -969,9 +969,9 @@ char *bindnames[][2] =
 int keys_cursor;
 static int menukeyitem_bind;
 
-static menuframework_s s_keys_menu;
-static menuframework_s s_joy_menu;
-static menuaction_s s_keys_actions[NUM_BINDNAMES];
+static menuframework_s s_keys_menu = {0};
+static menuframework_s s_joy_menu = {0};
+static menuaction_s s_keys_actions[NUM_BINDNAMES] = {0};
 
 static void
 M_UnbindCommand(char *command, int scope)
@@ -1219,8 +1219,8 @@ char *multiplayer_key_bindnames[][2] =
 };
 #define NUM_MULTIPLAYER_KEY_BINDNAMES (sizeof multiplayer_key_bindnames / sizeof multiplayer_key_bindnames[0])
 
-static menuframework_s s_multiplayer_keys_menu;
-static menuaction_s s_multiplayer_keys_actions[NUM_MULTIPLAYER_KEY_BINDNAMES];
+static menuframework_s s_multiplayer_keys_menu = {0};
+static menuaction_s s_multiplayer_keys_actions[NUM_MULTIPLAYER_KEY_BINDNAMES] = {0};
 
 static void
 MultiplayerDrawKeyBindingFunc(void *self)
@@ -1417,8 +1417,8 @@ char *controller_bindnames[][2] =
 };
 #define NUM_CONTROLLER_BINDNAMES (sizeof controller_bindnames / sizeof controller_bindnames[0])
 
-static menuframework_s s_controller_buttons_menu;
-static menuaction_s s_controller_buttons_actions[NUM_CONTROLLER_BINDNAMES];
+static menuframework_s s_controller_buttons_menu = {0};
+static menuaction_s s_controller_buttons_actions[NUM_CONTROLLER_BINDNAMES] = {0};
 
 static void
 DrawControllerButtonBindingFunc(void *self)
@@ -1591,8 +1591,8 @@ char *controller_alt_bindnames[][2] =
 };
 #define NUM_CONTROLLER_ALT_BINDNAMES (sizeof controller_alt_bindnames / sizeof controller_alt_bindnames[0])
 
-static menuframework_s s_controller_alt_buttons_menu;
-static menuaction_s s_controller_alt_buttons_actions[NUM_CONTROLLER_ALT_BINDNAMES];
+static menuframework_s s_controller_alt_buttons_menu = {0};
+static menuaction_s s_controller_alt_buttons_actions[NUM_CONTROLLER_ALT_BINDNAMES] = {0};
 
 static void
 DrawControllerAltButtonBindingFunc(void *self)
@@ -1733,13 +1733,13 @@ M_Menu_ControllerAltButtons_f(void)
  * STICKS CONFIGURATION MENU
  */
 
-static menuframework_s s_sticks_config_menu;
+static menuframework_s s_sticks_config_menu = {0};
 
-static menulist_s s_stk_layout_box;
-static menuseparator_s s_stk_title_text[3];
-static menuslider_s s_stk_expo_slider[2];
-static menuslider_s s_stk_deadzone_slider[4];
-static menuslider_s s_stk_threshold_slider;
+static menulist_s s_stk_layout_box = {0};
+static menuseparator_s s_stk_title_text[3] = {0};
+static menuslider_s s_stk_expo_slider[2] = {0};
+static menuslider_s s_stk_deadzone_slider[4] = {0};
+static menuslider_s s_stk_threshold_slider = {0};
 
 extern qboolean show_gyro;
 
@@ -1901,21 +1901,21 @@ M_Menu_Stick_f(void)
  * GYRO OPTIONS MENU
  */
 
-static menuframework_s s_gyro_menu;
+static menuframework_s s_gyro_menu = {0};
 
-static menulist_s s_gyro_mode_box;
-static menulist_s s_gyro_space_box;
-static menulist_s s_gyro_local_roll_box;
-static menuslider_s s_gyro_yawsensitivity_slider;
-static menuslider_s s_gyro_pitchsensitivity_slider;
-static menuslider_s s_gyro_tightening_slider;
-static menuslider_s s_gyro_smoothing_slider;
-static menulist_s s_gyro_acceleration_box;
-static menuslider_s s_gyro_accel_mult_slider;
-static menuslider_s s_gyro_accel_lower_thresh_slider;
-static menuslider_s s_gyro_accel_upper_thresh_slider;
-static menuseparator_s s_calibrating_text[2];
-static menuaction_s s_calibrate_gyro;
+static menulist_s s_gyro_mode_box = {0};
+static menulist_s s_gyro_space_box = {0};
+static menulist_s s_gyro_local_roll_box = {0};
+static menuslider_s s_gyro_yawsensitivity_slider = {0};
+static menuslider_s s_gyro_pitchsensitivity_slider = {0};
+static menuslider_s s_gyro_tightening_slider = {0};
+static menuslider_s s_gyro_smoothing_slider = {0};
+static menulist_s s_gyro_acceleration_box = {0};
+static menuslider_s s_gyro_accel_mult_slider = {0};
+static menuslider_s s_gyro_accel_lower_thresh_slider = {0};
+static menuslider_s s_gyro_accel_upper_thresh_slider = {0};
+static menuseparator_s s_calibrating_text[2] = {0};
+static menuaction_s s_calibrate_gyro = {0};
 
 extern void StartCalibration(void);
 extern qboolean IsCalibrationZero(void);
@@ -2220,25 +2220,22 @@ M_Menu_Gyro_f(void)
 /*
  * JOY MENU
  */
-static menuslider_s s_joy_preset_slider;
-static menulist_s s_joy_preset_box;
-static menulist_s s_joy_advanced_box;
-static menulist_s s_joy_invertpitch_box;
-static menuslider_s s_joy_yawspeed_slider;
-static menuslider_s s_joy_pitchspeed_slider;
-static menuslider_s s_joy_extra_yawspeed_slider;
-static menuslider_s s_joy_extra_pitchspeed_slider;
-static menuslider_s s_joy_ramp_time_slider;
-static menuslider_s s_joy_forwardsensitivity_slider;
-static menuslider_s s_joy_sidesensitivity_slider;
-static menuslider_s s_joy_haptic_slider;
-static menuaction_s s_joy_stickcfg_action;
-static menuaction_s s_joy_gyro_action;
-static menuaction_s s_joy_customize_buttons_action;
-static menuaction_s s_joy_customize_alt_buttons_action;
-
-extern void IN_ApplyJoyPreset(void);
-extern qboolean IN_MatchJoyPreset(void);
+static menuslider_s s_joy_preset_slider = {0};
+static menulist_s s_joy_preset_box = {0};
+static menulist_s s_joy_advanced_box = {0};
+static menulist_s s_joy_invertpitch_box = {0};
+static menuslider_s s_joy_yawspeed_slider = {0};
+static menuslider_s s_joy_pitchspeed_slider = {0};
+static menuslider_s s_joy_extra_yawspeed_slider = {0};
+static menuslider_s s_joy_extra_pitchspeed_slider = {0};
+static menuslider_s s_joy_ramp_time_slider = {0};
+static menuslider_s s_joy_forwardsensitivity_slider = {0};
+static menuslider_s s_joy_sidesensitivity_slider = {0};
+static menuslider_s s_joy_haptic_slider = {0};
+static menuaction_s s_joy_stickcfg_action = {0};
+static menuaction_s s_joy_gyro_action = {0};
+static menuaction_s s_joy_customize_buttons_action = {0};
+static menuaction_s s_joy_customize_alt_buttons_action = {0};
 
 static void
 RefreshJoyMenuFunc(void *unused)
@@ -2513,23 +2510,23 @@ M_Menu_Joy_f(void)
  * CONTROLS MENU
  */
 
-static menuframework_s s_options_menu;
-static menuaction_s s_options_defaults_action;
-static menuaction_s s_options_customize_options_action;
-static menuaction_s s_options_customize_joy_action;
-static menuslider_s s_options_sensitivity_slider;
-static menulist_s s_options_freelook_box;
-static menulist_s s_options_alwaysrun_box;
-static menulist_s s_options_invertmouse_box;
-static menulist_s s_options_lookstrafe_box;
-static menulist_s s_options_crosshair_box;
-static menuslider_s s_options_sfxvolume_slider;
-static menulist_s s_options_oggshuffle_box;
-static menuslider_s s_options_oggvolume_slider;
-static menulist_s s_options_oggenable_box;
-static menulist_s s_options_quality_list;
-static menulist_s s_options_console_action;
-static menulist_s s_options_pauseonfocus_box;
+static menuframework_s s_options_menu = {0};
+static menuaction_s s_options_defaults_action = {0};
+static menuaction_s s_options_customize_options_action = {0};
+static menuaction_s s_options_customize_joy_action = {0};
+static menuslider_s s_options_sensitivity_slider = {0};
+static menulist_s s_options_freelook_box = {0};
+static menulist_s s_options_alwaysrun_box = {0};
+static menulist_s s_options_invertmouse_box = {0};
+static menulist_s s_options_lookstrafe_box = {0};
+static menulist_s s_options_crosshair_box = {0};
+static menuslider_s s_options_sfxvolume_slider = {0};
+static menulist_s s_options_oggshuffle_box = {0};
+static menuslider_s s_options_oggvolume_slider = {0};
+static menulist_s s_options_oggenable_box = {0};
+static menulist_s s_options_quality_list = {0};
+static menulist_s s_options_console_action = {0};
+static menulist_s s_options_pauseonfocus_box = {0};
 
 static void
 CrosshairFunc(void *unused)
@@ -2736,6 +2733,7 @@ Options_MenuInit(void)
 	s_options_sfxvolume_slider.generic.x = 0;
 	s_options_sfxvolume_slider.generic.y = y;
 	s_options_sfxvolume_slider.generic.name = "effects volume";
+	s_options_sfxvolume_slider.generic.alttext = "$m_sound_volume";
 	s_options_sfxvolume_slider.cvar = "s_volume";
 	s_options_sfxvolume_slider.minvalue = 0.0f;
 	s_options_sfxvolume_slider.maxvalue = 1.0f;
@@ -2744,6 +2742,7 @@ Options_MenuInit(void)
 	s_options_oggvolume_slider.generic.x = 0;
 	s_options_oggvolume_slider.generic.y = (y += 10);
 	s_options_oggvolume_slider.generic.name = "OGG volume";
+	s_options_oggvolume_slider.generic.alttext = "$m_music_volume";
 	s_options_oggvolume_slider.cvar = "ogg_volume";
 	s_options_oggvolume_slider.minvalue = 0.0f;
 	s_options_oggvolume_slider.maxvalue = 1.0f;
@@ -2773,6 +2772,7 @@ Options_MenuInit(void)
 	s_options_sensitivity_slider.generic.x = 0;
 	s_options_sensitivity_slider.generic.y = (y += 20);
 	s_options_sensitivity_slider.generic.name = "mouse speed";
+	s_options_sensitivity_slider.generic.alttext = "$m_sensitivity";
 	s_options_sensitivity_slider.cvar = "sensitivity";
 	s_options_sensitivity_slider.minvalue = 0;
 	s_options_sensitivity_slider.maxvalue = 11;
@@ -2782,6 +2782,7 @@ Options_MenuInit(void)
 	s_options_alwaysrun_box.generic.x = 0;
 	s_options_alwaysrun_box.generic.y = (y += 10);
 	s_options_alwaysrun_box.generic.name = "always run";
+	s_options_alwaysrun_box.generic.alttext = "$m_always_run";
 	s_options_alwaysrun_box.generic.callback = AlwaysRunFunc;
 	s_options_alwaysrun_box.itemnames = yesno_names;
 
@@ -2789,6 +2790,7 @@ Options_MenuInit(void)
 	s_options_invertmouse_box.generic.x = 0;
 	s_options_invertmouse_box.generic.y = (y += 10);
 	s_options_invertmouse_box.generic.name = "invert mouse";
+	s_options_invertmouse_box.generic.alttext = "$m_invert_look";
 	s_options_invertmouse_box.generic.callback = InvertMouseFunc;
 	s_options_invertmouse_box.itemnames = yesno_names;
 
@@ -2810,6 +2812,7 @@ Options_MenuInit(void)
 	s_options_crosshair_box.generic.x = 0;
 	s_options_crosshair_box.generic.y = (y += 10);
 	s_options_crosshair_box.generic.name = "crosshair";
+	s_options_crosshair_box.generic.alttext = "$m_crosshair_style";
 	s_options_crosshair_box.generic.callback = CrosshairFunc;
 	s_options_crosshair_box.itemnames = crosshair_names;
 
@@ -2840,6 +2843,7 @@ Options_MenuInit(void)
 	s_options_defaults_action.generic.x = 0;
 	s_options_defaults_action.generic.y = (y += 10);
 	s_options_defaults_action.generic.name = "reset defaults";
+	s_options_defaults_action.generic.alttext = "$m_reset_settings";
 	s_options_defaults_action.generic.callback = ControlsResetDefaultsFunc;
 
 	s_options_console_action.generic.type = MTYPE_ACTION;
@@ -3416,10 +3420,10 @@ M_Menu_Credits_f(void)
  * MODS MENU
  */
 
-static menuframework_s s_mods_menu;
-static menulist_s s_mods_list;
-static menuaction_s s_mods_apply_action;
-static char mods_statusbar[64];
+static menuframework_s s_mods_menu = {0};
+static menulist_s s_mods_list = {0};
+static menuaction_s s_mods_apply_action = {0};
+static char mods_statusbar[64] = {0};
 
 static char **modnames = NULL;
 static int nummods;
@@ -3470,6 +3474,10 @@ ModsListFunc(void *unused)
 	{
 		strcpy(mods_statusbar, "Quake II Mission Pack: The Reckoning");
 	}
+	else if (strcmp("zaero", modnames[s_mods_list.curvalue]) == 0)
+	{
+		strcpy(mods_statusbar, "Unofficial: Team Evolve's Zaero");
+	}
 	else
 	{
 		strcpy(mods_statusbar, "\0");
@@ -3481,6 +3489,9 @@ ModsApplyActionFunc(void *unused)
 {
 	if (!M_IsGame(modnames[s_mods_list.curvalue]))
 	{
+		/* Unload localization */
+		SV_LocalizationFree();
+
 		if(Com_ServerState())
 		{
 			// equivalent to "killserver" cmd, but avoids cvar latching below
@@ -3516,6 +3527,12 @@ Mods_MenuInit(void)
 
 	/* create array of bracketed display names from folder names - TG626 */
 	displaynames = malloc(sizeof(*displaynames) * (nummods + 1));
+	YQ2_COM_CHECK_OOM(displaynames, "malloc()", sizeof(*displaynames) * (nummods + 1))
+	if (!displaynames)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return;
+	}
 
 	for (i = 0; i < nummods; i++)
 	{
@@ -3535,9 +3552,15 @@ Mods_MenuInit(void)
 		}
 		strcat(modname, "]");
 
-		displaynames[i] = malloc(strlen(modname) + 1);
-		strcpy(displaynames[i], modname);
+		displaynames[i] = strdup(modname);
+		YQ2_COM_CHECK_OOM(displaynames[i], "strdup()", strlen(modname) + 1)
+		if (!displaynames[i])
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return;
+		}
 	}
+
 	displaynames[nummods] = NULL;
 	/* end TG626 */
 
@@ -3565,6 +3588,7 @@ Mods_MenuInit(void)
 
 	s_mods_apply_action.generic.type = MTYPE_ACTION;
 	s_mods_apply_action.generic.name = "apply";
+	s_mods_apply_action.generic.alttext = "$m_apply_settings";
 	s_mods_apply_action.generic.x = x;
 	s_mods_apply_action.generic.y = y;
 	s_mods_apply_action.generic.callback = ModsApplyActionFunc;
@@ -3609,16 +3633,16 @@ M_Menu_Mods_f(void)
 
 static int m_game_cursor;
 
-static menuframework_s s_game_menu;
-static menuaction_s s_easy_game_action;
-static menuaction_s s_medium_game_action;
-static menuaction_s s_hard_game_action;
-static menuaction_s s_hardp_game_action;
-static menuaction_s s_load_game_action;
-static menuaction_s s_save_game_action;
-static menuaction_s s_credits_action;
-static menuaction_s s_mods_action;
-static menuseparator_s s_blankline;
+static menuframework_s s_game_menu = {0};
+static menuaction_s s_easy_game_action = {0};
+static menuaction_s s_medium_game_action = {0};
+static menuaction_s s_hard_game_action = {0};
+static menuaction_s s_hardp_game_action = {0};
+static menuaction_s s_load_game_action = {0};
+static menuaction_s s_save_game_action = {0};
+static menuaction_s s_credits_action = {0};
+static menuaction_s s_mods_action = {0};
+static menuseparator_s s_blankline = {0};
 
 static void
 StartGame(void)
@@ -3703,6 +3727,7 @@ Game_MenuInit(void)
 	s_easy_game_action.generic.x = 0;
 	s_easy_game_action.generic.y = 0;
 	s_easy_game_action.generic.name = "easy";
+	s_easy_game_action.generic.alttext = "$m_easy";
 	s_easy_game_action.generic.callback = EasyGameFunc;
 
 	s_medium_game_action.generic.type = MTYPE_ACTION;
@@ -3710,6 +3735,7 @@ Game_MenuInit(void)
 	s_medium_game_action.generic.x = 0;
 	s_medium_game_action.generic.y = 10;
 	s_medium_game_action.generic.name = "medium";
+	s_medium_game_action.generic.alttext = "$m_medium";
 	s_medium_game_action.generic.callback = MediumGameFunc;
 
 	s_hard_game_action.generic.type = MTYPE_ACTION;
@@ -3717,6 +3743,7 @@ Game_MenuInit(void)
 	s_hard_game_action.generic.x = 0;
 	s_hard_game_action.generic.y = 20;
 	s_hard_game_action.generic.name = "hard";
+	s_hard_game_action.generic.alttext = "$m_hard";
 	s_hard_game_action.generic.callback = HardGameFunc;
 
 	s_hardp_game_action.generic.type = MTYPE_ACTION;
@@ -3724,6 +3751,7 @@ Game_MenuInit(void)
 	s_hardp_game_action.generic.x = 0;
 	s_hardp_game_action.generic.y = 30;
 	s_hardp_game_action.generic.name = "hard+";
+	s_hardp_game_action.generic.alttext = "$m_nightmare";
 	s_hardp_game_action.generic.callback = HardpGameFunc;
 
 	s_blankline.generic.type = MTYPE_SEPARATOR;
@@ -3733,6 +3761,7 @@ Game_MenuInit(void)
 	s_load_game_action.generic.x = 0;
 	s_load_game_action.generic.y = 50;
 	s_load_game_action.generic.name = "load game";
+	s_load_game_action.generic.alttext = "$m_load_game";
 	s_load_game_action.generic.callback = LoadGameFunc;
 
 	s_save_game_action.generic.type = MTYPE_ACTION;
@@ -3740,6 +3769,7 @@ Game_MenuInit(void)
 	s_save_game_action.generic.x = 0;
 	s_save_game_action.generic.y = 60;
 	s_save_game_action.generic.name = "save game";
+	s_save_game_action.generic.alttext = "$m_save_game";
 	s_save_game_action.generic.callback = SaveGameFunc;
 
 	s_credits_action.generic.type = MTYPE_ACTION;
@@ -3747,6 +3777,7 @@ Game_MenuInit(void)
 	s_credits_action.generic.x = 0;
 	s_credits_action.generic.y = 70;
 	s_credits_action.generic.name = "credits";
+	s_credits_action.generic.alttext = "$m_credits";
 	s_credits_action.generic.callback = CreditsFunc;
 
 	Menu_AddItem(&s_game_menu, (void *)&s_easy_game_action);
@@ -3810,20 +3841,20 @@ M_Menu_Game_f(void)
 // The magic comment string length of 32 is the same as
 // the comment string length set in SV_WriteServerFile()!
 
-static char m_quicksavestring[32];
+static char m_quicksavestring[32] = {0};
 static qboolean m_quicksavevalid;
 
-static char m_savestrings[MAX_SAVESLOTS][32];
+static char m_savestrings[MAX_SAVESLOTS][32] = {0};
 static qboolean m_savevalid[MAX_SAVESLOTS];
 
 static int m_loadsave_page;
-static char m_loadsave_statusbar[32];
+static char m_loadsave_statusbar[32] = {0};
 
-static menuframework_s s_loadgame_menu;
-static menuaction_s s_loadgame_actions[MAX_SAVESLOTS + 1]; // One for quick
+static menuframework_s s_loadgame_menu = {0};
+static menuaction_s s_loadgame_actions[MAX_SAVESLOTS + 1] = {0}; // One for quick
 
-static menuframework_s s_savegame_menu;
-static menuaction_s s_savegame_actions[MAX_SAVESLOTS + 1]; // One for quick
+static menuframework_s s_savegame_menu = {0};
+static menuaction_s s_savegame_actions[MAX_SAVESLOTS + 1] = {0}; // One for quick
 
 /* DELETE SAVEGAME */
 
@@ -4291,11 +4322,11 @@ M_Menu_SaveGame_f(void)
 
 #define MAX_LOCAL_SERVERS 8
 
-static menuframework_s s_joinserver_menu;
-static menuseparator_s s_joinserver_server_title;
-static menuaction_s s_joinserver_search_action;
-static menuaction_s s_joinserver_address_book_action;
-static menuaction_s s_joinserver_server_actions[MAX_LOCAL_SERVERS];
+static menuframework_s s_joinserver_menu = {0};
+static menuseparator_s s_joinserver_server_title = {0};
+static menuaction_s s_joinserver_search_action = {0};
+static menuaction_s s_joinserver_address_book_action = {0};
+static menuaction_s s_joinserver_server_actions[MAX_LOCAL_SERVERS] = {0};
 
 int m_num_servers;
 #define NO_SERVER_STRING "<no server>"
@@ -4431,6 +4462,7 @@ JoinServer_MenuInit(void)
 
 	s_joinserver_server_title.generic.type = MTYPE_SEPARATOR;
 	s_joinserver_server_title.generic.name = "connect to...";
+	s_joinserver_server_title.generic.alttext = "$m_connecting";
 	s_joinserver_server_title.generic.y = 30;
 	s_joinserver_server_title.generic.x = 80 * scale;
 
@@ -4493,19 +4525,19 @@ M_Menu_JoinServer_f(void)
  * START SERVER MENU
  */
 
-static menuframework_s s_startserver_menu;
-char **mapnames = NULL;
-int nummaps;
+static menuframework_s s_startserver_menu = {0};
+static char **mapnames = NULL;
+static int nummaps;
 
-static menuaction_s s_startserver_start_action;
-static menuaction_s s_startserver_dmoptions_action;
-static menufield_s s_timelimit_field;
-static menufield_s s_fraglimit_field;
-static menufield_s s_capturelimit_field;
-static menufield_s s_maxclients_field;
-static menufield_s s_hostname_field;
-static menulist_s s_startmap_list;
-static menulist_s s_rules_box;
+static menuaction_s s_startserver_start_action = {0};
+static menuaction_s s_startserver_dmoptions_action = {0};
+static menufield_s s_timelimit_field = {0};
+static menufield_s s_fraglimit_field = {0};
+static menufield_s s_capturelimit_field = {0};
+static menufield_s s_maxclients_field = {0};
+static menufield_s s_hostname_field = {0};
+static menulist_s s_startmap_list = {0};
+static menulist_s s_rules_box = {0};
 
 static void
 DMOptionsFunc(void *self)
@@ -4630,6 +4662,174 @@ StartServerActionFunc(void *self)
 	M_ForceMenuOff();
 }
 
+void
+CleanCachedMapsList(void)
+{
+	if (mapnames != NULL)
+	{
+		int i;
+
+		for (i = 0; i < nummaps; i++)
+		{
+			free(mapnames[i]);
+		}
+
+		free(mapnames);
+		mapnames = NULL;
+	}
+}
+
+static char**
+GetMapsList(int *num)
+{
+	int length;
+	char *buffer;
+
+	/* load the list of map names */
+	if ((length = FS_LoadFile("maps.lst", (void **)&buffer)) != -1)
+	{
+		char **mapnames = NULL;
+		size_t nummapslen;
+		int i, nummaps = 0;
+
+		char *s;
+
+		s = buffer;
+		i = 0;
+
+		while (i < length)
+		{
+			if (s[i] == '\n')
+			{
+				nummaps++;
+			}
+
+			i++;
+		}
+
+		if (nummaps == 0)
+		{
+			Com_Printf("no maps in maps.lst\n");
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return NULL;
+		}
+
+		nummapslen = sizeof(char *) * (nummaps + 1);
+		mapnames = malloc(nummapslen);
+
+		YQ2_COM_CHECK_OOM(mapnames, "malloc(sizeof(char *) * (nummaps + 1))", nummapslen)
+		if (!mapnames)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return NULL;
+		}
+
+		memset(mapnames, 0, nummapslen);
+
+		s = buffer;
+
+		for (i = 0; i < nummaps; i++)
+		{
+			char shortname[MAX_TOKEN_CHARS];
+			char longname[MAX_TOKEN_CHARS];
+			char scratch[200];
+			size_t j, l;
+
+			Q_strlcpy(shortname, COM_Parse(&s), sizeof(shortname));
+			l = strlen(shortname);
+
+			for (j = 0; j < l; j++)
+			{
+				shortname[j] = toupper((unsigned char)shortname[j]);
+			}
+
+			Q_strlcpy(longname, COM_Parse(&s), sizeof(longname));
+			Com_sprintf(scratch, sizeof(scratch), "%s\n%s", longname, shortname);
+
+			mapnames[i] = strdup(scratch);
+			YQ2_COM_CHECK_OOM(mapnames[i], "strdup(scratch)", strlen(scratch)+1)
+			if (!mapnames[i])
+			{
+				free(mapnames);
+				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+				return NULL;
+			}
+		}
+
+		mapnames[nummaps] = NULL;
+		FS_FreeFile(buffer);
+
+		*num = nummaps;
+		return mapnames;
+	}
+
+	return NULL;
+}
+
+static char**
+GetMapsInFolderList(int *nummaps)
+{
+	/* Generate list by bsp files in maps/ directory */
+	size_t nummapslen;
+	char **list = NULL, **mapnames = NULL;
+	int num = 0, i;
+
+	list = FS_ListFiles2("maps/*.bsp", &num, 0, 0);
+	if (!list)
+	{
+		Com_Printf("couldn't find maps/*.bsp\n");
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
+
+	nummapslen = sizeof(char *) * (num);
+	mapnames = malloc(nummapslen);
+	YQ2_COM_CHECK_OOM(mapnames, "malloc(sizeof(char *) * (num))", nummapslen)
+	if (!mapnames)
+	{
+		FS_FreeList(list, num);
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
+
+	memset(mapnames, 0, nummapslen);
+
+	for (i = 0; i < num - 1; i++)
+	{
+		char scratch[200], shortname[MAX_QPATH];
+		int len;
+
+		len = strlen(list[i]);
+		if (len > 9 && len < MAX_QPATH)
+		{
+			/* maps/ + .bsp */
+			Q_strlcpy(shortname, list[i] + 5, sizeof(shortname));
+			shortname[len - 9]  = 0;
+
+			Com_sprintf(scratch, sizeof(scratch), "%s\n%s", shortname, shortname);
+
+			mapnames[i] = strdup(scratch);
+			YQ2_COM_CHECK_OOM(mapnames[i], "strdup(scratch)", strlen(scratch)+1)
+			if (!mapnames[i])
+			{
+				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+				return NULL;
+			}
+		}
+	}
+
+	mapnames[num - 1] = NULL;
+
+	/* sort maps names alphabetically */
+	qsort(mapnames, num - 1, sizeof(char*), Q_sort_stricmp);
+
+	/* free file list */
+	FS_FreeList(list, num);
+	*nummaps = num;
+
+	return mapnames;
+}
+
 static void
 StartServer_MenuInit(void)
 {
@@ -4647,140 +4847,19 @@ StartServer_MenuInit(void)
 	/* initialize list of maps once, reuse it afterwards (=> it isn't freed unless the game dir is changed) */
 	if (mapnames == NULL)
 	{
-		int i, length;
-		size_t nummapslen;
-		char *buffer;
-
 		nummaps = 0;
 		s_startmap_list.curvalue = 0;
 
-		/* load the list of map names */
-		if ((length = FS_LoadFile("maps.lst", (void **)&buffer)) == -1)
+		mapnames = GetMapsList(&nummaps);
+		if (!mapnames || !nummaps)
 		{
-			/* Generate list by bsp files in maps/ directory */
-			char** list = NULL;
-			int num = 0, i;
-
-			list = FS_ListFiles2("maps/*.bsp", &num, 0, 0);
-			if (!list)
-			{
-				Com_Error(ERR_DROP, "couldn't find maps.lst\n");
-				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-				return;
-			}
-
-			nummapslen = sizeof(char *) * (num);
-			mapnames = malloc(nummapslen);
-
-			YQ2_COM_CHECK_OOM(mapnames, "malloc(sizeof(char *) * (num))", nummapslen)
-			if (!mapnames)
-			{
-				FS_FreeList(list, num);
-				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-				return;
-			}
-
-			memset(mapnames, 0, nummapslen);
-
-			for (i = 0; i < num - 1; i++)
-			{
-				char scratch[200], shortname[MAX_QPATH];
-				int len;
-
-				len = strlen(list[i]);
-				if (len > 9 && len < MAX_QPATH)
-				{
-					/* maps/ + .bsp */
-					Q_strlcpy(shortname, list[i] + 5, sizeof(shortname));
-					shortname[len - 9]  = 0;
-
-					Com_sprintf(scratch, sizeof(scratch), "%s\n%s", shortname, shortname);
-
-					mapnames[i] = strdup(scratch);
-					YQ2_COM_CHECK_OOM(mapnames[i], "strdup(scratch)", strlen(scratch)+1)
-					if (!mapnames[i])
-					{
-						/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-						return;
-					}
-				}
-			}
-
-			mapnames[num - 1] = NULL;
-
-			/* sort maps names alphabetically */
-			qsort(mapnames, num - 1, sizeof(char*), Q_sort_stricmp);
-
-			/* free file list */
-			FS_FreeList(list, num);
+			mapnames = GetMapsInFolderList(&nummaps);
 		}
-		else
+
+		if (!mapnames || !nummaps)
 		{
-			char *s;
-
-			s = buffer;
-			i = 0;
-
-			while (i < length)
-			{
-				if (s[i] == '\n')
-				{
-					nummaps++;
-				}
-
-				i++;
-			}
-
-			if (nummaps == 0)
-			{
-				Com_Error(ERR_DROP, "no maps in maps.lst\n");
-				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-				return;
-			}
-
-			nummapslen = sizeof(char *) * (nummaps + 1);
-			mapnames = malloc(nummapslen);
-
-			YQ2_COM_CHECK_OOM(mapnames, "malloc(sizeof(char *) * (nummaps + 1))", nummapslen)
-			if (!mapnames)
-			{
-				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-				return;
-			}
-
-			memset(mapnames, 0, nummapslen);
-
-			s = buffer;
-
-			for (i = 0; i < nummaps; i++)
-			{
-				char shortname[MAX_TOKEN_CHARS];
-				char longname[MAX_TOKEN_CHARS];
-				char scratch[200];
-				size_t j, l;
-
-				Q_strlcpy(shortname, COM_Parse(&s), sizeof(shortname));
-				l = strlen(shortname);
-
-				for (j = 0; j < l; j++)
-				{
-					shortname[j] = toupper((unsigned char)shortname[j]);
-				}
-
-				Q_strlcpy(longname, COM_Parse(&s), sizeof(longname));
-				Com_sprintf(scratch, sizeof(scratch), "%s\n%s", longname, shortname);
-
-				mapnames[i] = strdup(scratch);
-				YQ2_COM_CHECK_OOM(mapnames[i], "strdup(scratch)", strlen(scratch)+1)
-				if (!mapnames[i])
-				{
-					/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-					return;
-				}
-			}
-
-			mapnames[nummaps] = NULL;
-			FS_FreeFile(buffer);
+			Com_Error(ERR_DROP, "no maps in maps.lst\n");
+			return;
 		}
 	}
 
@@ -4803,6 +4882,7 @@ StartServer_MenuInit(void)
 	{
 		s_capturelimit_field.generic.type = MTYPE_FIELD;
 		s_capturelimit_field.generic.name = "capture limit";
+		s_capturelimit_field.generic.alttext = "$m_capturelimit";
 		s_capturelimit_field.generic.flags = QMF_NUMBERSONLY;
 		s_capturelimit_field.generic.x = 0;
 		s_capturelimit_field.generic.y = 18;
@@ -4843,6 +4923,7 @@ StartServer_MenuInit(void)
 
 	s_timelimit_field.generic.type = MTYPE_FIELD;
 	s_timelimit_field.generic.name = "time limit";
+	s_timelimit_field.generic.alttext = "$m_timelimit";
 	s_timelimit_field.generic.flags = QMF_NUMBERSONLY;
 	s_timelimit_field.generic.x = 0;
 	s_timelimit_field.generic.y = 36;
@@ -4854,6 +4935,7 @@ StartServer_MenuInit(void)
 
 	s_fraglimit_field.generic.type = MTYPE_FIELD;
 	s_fraglimit_field.generic.name = "frag limit";
+	s_fraglimit_field.generic.alttext = "$m_fraglimit";
 	s_fraglimit_field.generic.flags = QMF_NUMBERSONLY;
 	s_fraglimit_field.generic.x = 0;
 	s_fraglimit_field.generic.y = 54;
@@ -4869,6 +4951,7 @@ StartServer_MenuInit(void)
 	   Clamping will be done when the server is actually started. */
 	s_maxclients_field.generic.type = MTYPE_FIELD;
 	s_maxclients_field.generic.name = "max players";
+	s_maxclients_field.generic.alttext = "$m_max_players";
 	s_maxclients_field.generic.flags = QMF_NUMBERSONLY;
 	s_maxclients_field.generic.x = 0;
 	s_maxclients_field.generic.y = 72;
@@ -4963,29 +5046,29 @@ M_Menu_StartServer_f(void)
  * DMOPTIONS BOOK MENU
  */
 
-static char dmoptions_statusbar[128];
+static char dmoptions_statusbar[128] = {0};
 
-static menuframework_s s_dmoptions_menu;
+static menuframework_s s_dmoptions_menu = {0};
 
-static menulist_s s_friendlyfire_box;
-static menulist_s s_falls_box;
-static menulist_s s_weapons_stay_box;
-static menulist_s s_instant_powerups_box;
-static menulist_s s_powerups_box;
-static menulist_s s_health_box;
-static menulist_s s_spawn_farthest_box;
-static menulist_s s_teamplay_box;
-static menulist_s s_samelevel_box;
-static menulist_s s_force_respawn_box;
-static menulist_s s_armor_box;
-static menulist_s s_allow_exit_box;
-static menulist_s s_infinite_ammo_box;
-static menulist_s s_fixed_fov_box;
-static menulist_s s_quad_drop_box;
-static menulist_s s_no_mines_box;
-static menulist_s s_no_nukes_box;
-static menulist_s s_stack_double_box;
-static menulist_s s_no_spheres_box;
+static menulist_s s_friendlyfire_box = {0};
+static menulist_s s_falls_box = {0};
+static menulist_s s_weapons_stay_box = {0};
+static menulist_s s_instant_powerups_box = {0};
+static menulist_s s_powerups_box = {0};
+static menulist_s s_health_box = {0};
+static menulist_s s_spawn_farthest_box = {0};
+static menulist_s s_teamplay_box = {0};
+static menulist_s s_samelevel_box = {0};
+static menulist_s s_force_respawn_box = {0};
+static menulist_s s_armor_box = {0};
+static menulist_s s_allow_exit_box = {0};
+static menulist_s s_infinite_ammo_box = {0};
+static menulist_s s_fixed_fov_box = {0};
+static menulist_s s_quad_drop_box = {0};
+static menulist_s s_no_mines_box = {0};
+static menulist_s s_no_nukes_box = {0};
+static menulist_s s_stack_double_box = {0};
+static menulist_s s_no_spheres_box = {0};
 
 static void
 DMFlagCallback(void *self)
@@ -5197,6 +5280,7 @@ DMOptions_MenuInit(void)
 	s_falls_box.generic.x = 0;
 	s_falls_box.generic.y = y;
 	s_falls_box.generic.name = "falling damage";
+	s_falls_box.generic.alttext = "$m_falling_damage";
 	s_falls_box.generic.callback = DMFlagCallback;
 	s_falls_box.itemnames = yes_no_names;
 	s_falls_box.curvalue = (dmflags & DF_NO_FALLING) == 0;
@@ -5205,6 +5289,7 @@ DMOptions_MenuInit(void)
 	s_weapons_stay_box.generic.x = 0;
 	s_weapons_stay_box.generic.y = y += 10;
 	s_weapons_stay_box.generic.name = "weapons stay";
+	s_weapons_stay_box.generic.alttext = "$m_weapons_stay";
 	s_weapons_stay_box.generic.callback = DMFlagCallback;
 	s_weapons_stay_box.itemnames = yes_no_names;
 	s_weapons_stay_box.curvalue = (dmflags & DF_WEAPONS_STAY) != 0;
@@ -5287,6 +5372,7 @@ DMOptions_MenuInit(void)
 	s_infinite_ammo_box.generic.x = 0;
 	s_infinite_ammo_box.generic.y = y += 10;
 	s_infinite_ammo_box.generic.name = "infinite ammo";
+	s_infinite_ammo_box.generic.alttext = "$m_infinite_ammo";
 	s_infinite_ammo_box.generic.callback = DMFlagCallback;
 	s_infinite_ammo_box.itemnames = yes_no_names;
 	s_infinite_ammo_box.curvalue = (dmflags & DF_INFINITE_AMMO) != 0;
@@ -5313,6 +5399,7 @@ DMOptions_MenuInit(void)
 		s_friendlyfire_box.generic.x = 0;
 		s_friendlyfire_box.generic.y = y += 10;
 		s_friendlyfire_box.generic.name = "friendly fire";
+		s_friendlyfire_box.generic.alttext = "$m_friendly_fire";
 		s_friendlyfire_box.generic.callback = DMFlagCallback;
 		s_friendlyfire_box.itemnames = yes_no_names;
 		s_friendlyfire_box.curvalue = (dmflags & DF_NO_FRIENDLY_FIRE) == 0;
@@ -5451,19 +5538,19 @@ M_Menu_DMOptions_f(void)
  * DOWNLOADOPTIONS BOOK MENU
  */
 
-static menuframework_s s_downloadoptions_menu;
+static menuframework_s s_downloadoptions_menu = {0};
 
-static menuseparator_s s_download_title;
-static menulist_s s_allow_download_box;
+static menuseparator_s s_download_title = {0};
+static menulist_s s_allow_download_box = {0};
 
 #ifdef USE_CURL
-static menulist_s s_allow_download_http_box;
+static menulist_s s_allow_download_http_box = {0};
 #endif
 
-static menulist_s s_allow_download_maps_box;
-static menulist_s s_allow_download_models_box;
-static menulist_s s_allow_download_players_box;
-static menulist_s s_allow_download_sounds_box;
+static menulist_s s_allow_download_maps_box = {0};
+static menulist_s s_allow_download_models_box = {0};
+static menulist_s s_allow_download_players_box = {0};
+static menulist_s s_allow_download_sounds_box = {0};
 
 static void
 DownloadCallback(void *self)
@@ -5621,8 +5708,8 @@ M_Menu_DownloadOptions_f(void)
 
 #define NUM_ADDRESSBOOK_ENTRIES 9
 
-static menuframework_s s_addressbook_menu;
-static menufield_s s_addressbook_fields[NUM_ADDRESSBOOK_ENTRIES];
+static menuframework_s s_addressbook_menu = {0};
+static menufield_s s_addressbook_fields[NUM_ADDRESSBOOK_ENTRIES] = {0};
 
 static void
 AddressBook_MenuInit(void)
@@ -5647,7 +5734,7 @@ AddressBook_MenuInit(void)
 		f = &s_addressbook_fields[i];
 
 		f->generic.type = MTYPE_FIELD;
-		f->generic.name = 0;
+		f->generic.name = NULL;
 		f->generic.callback = 0;
 		f->generic.x = 0;
 		f->generic.y = i * 18 + 0;
@@ -5702,18 +5789,18 @@ M_Menu_AddressBook_f(void)
  * PLAYER CONFIG MENU
  */
 
-static menuframework_s s_player_config_menu;
-static menufield_s s_player_name_field;
-static menubitmap_s s_player_icon_bitmap;
-static menulist_s s_player_model_box;
-static menulist_s s_player_skin_box;
-static menulist_s s_player_handedness_box;
-static menulist_s s_player_rate_box;
-static menuseparator_s s_player_skin_title;
-static menuseparator_s s_player_model_title;
-static menuseparator_s s_player_hand_title;
-static menuseparator_s s_player_rate_title;
-static menuaction_s s_player_download_action;
+static menuframework_s s_player_config_menu = {0};
+static menufield_s s_player_name_field = {0};
+static menubitmap_s s_player_icon_bitmap = {0};
+static menulist_s s_player_model_box = {0};
+static menulist_s s_player_skin_box = {0};
+static menulist_s s_player_handedness_box = {0};
+static menulist_s s_player_rate_box = {0};
+static menuseparator_s s_player_skin_title = {0};
+static menuseparator_s s_player_model_title = {0};
+static menuseparator_s s_player_hand_title = {0};
+static menuseparator_s s_player_rate_title = {0};
+static menuaction_s s_player_download_action = {0};
 
 #define MAX_PLAYERMODELS 1024
 
@@ -6053,8 +6140,11 @@ PlayerDirectoryList(void)
 	// free file list
 	FS_FreeList(list, num);
 
-	// sort them male, female, alphabetical
-	qsort(s_directory.data, s_directory.num - 1, sizeof(char*), dircmp_func);
+	/* sort them male, female, alphabetical */
+	if (s_directory.num > 2)
+	{
+		qsort(s_directory.data, s_directory.num - 1, sizeof(char*), dircmp_func);
+	}
 
 	return true;
 }
@@ -6102,14 +6192,14 @@ HasSkinsInDir(const char *dirname, int *num)
 	if (*num)
 	{
 		curr = list = malloc(sizeof(char *) * (*num + 1));
-		YQ2_COM_CHECK_OOM(list, "realloc()", (size_t)sizeof(char *) * (*num + 1))
+		YQ2_COM_CHECK_OOM(list, "malloc()", (size_t)sizeof(char *) * (*num + 1))
 		if (!list)
 		{
 			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
 			return false;
 		}
 
-		if (list_png)
+		if (list_png && num_png)
 		{
 			int j;
 
@@ -6131,7 +6221,7 @@ HasSkinsInDir(const char *dirname, int *num)
 			}
 		}
 
-		if (list_pcx)
+		if (list_pcx && num_pcx)
 		{
 			int j;
 
@@ -6153,7 +6243,7 @@ HasSkinsInDir(const char *dirname, int *num)
 			}
 		}
 
-		if (list_m8)
+		if (list_m8 && num_m8)
 		{
 			int j;
 
@@ -6481,6 +6571,7 @@ PlayerConfig_MenuInit(void)
 
 	s_player_name_field.generic.type = MTYPE_FIELD;
 	s_player_name_field.generic.name = "name";
+	s_player_name_field.generic.alttext = "$m_name";
 	s_player_name_field.generic.callback = 0;
 	s_player_name_field.generic.x = 0;
 	s_player_name_field.generic.y = 0;
@@ -6500,6 +6591,7 @@ PlayerConfig_MenuInit(void)
 
 	s_player_model_title.generic.type = MTYPE_SEPARATOR;
 	s_player_model_title.generic.name = "model";
+	s_player_model_title.generic.alttext = "$m_model";
 	s_player_model_title.generic.x = -8 * scale;
 	s_player_model_title.generic.y = 60;
 
@@ -6513,6 +6605,7 @@ PlayerConfig_MenuInit(void)
 
 	s_player_skin_title.generic.type = MTYPE_SEPARATOR;
 	s_player_skin_title.generic.name = "skin";
+	s_player_skin_title.generic.alttext = "$m_skin";
 	s_player_skin_title.generic.x = -16 * scale;
 	s_player_skin_title.generic.y = 84;
 
@@ -6588,8 +6681,6 @@ PlayerConfig_MenuInit(void)
 
 	return true;
 }
-
-extern float CalcFov(float fov_x, float w, float h);
 
 /*
  * Model animation

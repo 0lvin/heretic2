@@ -51,7 +51,7 @@ int self_spawn = false;
 gitem_t *CTFWhat_Tech(edict_t *ent);
 
 static char *
-ClientTeam(edict_t *ent, char* value)
+ClientTeam(const edict_t *ent, char* value, size_t val_len)
 {
 	char *p;
 
@@ -67,7 +67,7 @@ ClientTeam(edict_t *ent, char* value)
 		return value;
 	}
 
-	strcpy(value, Info_ValueForKey(ent->client->pers.userinfo, "skin"));
+	Q_strlcpy(value, Info_ValueForKey(ent->client->pers.userinfo, "skin"), val_len);
 	p = strchr(value, '/');
 
 	if (!p)
@@ -100,8 +100,8 @@ OnSameTeam(edict_t *ent1, edict_t *ent2)
 		return false;
 	}
 
-	ClientTeam(ent1, ent1Team);
-	ClientTeam(ent2, ent2Team);
+	ClientTeam(ent1, ent1Team, sizeof(ent1Team));
+	ClientTeam(ent2, ent2Team, sizeof(ent2Team));
 
 	if (ent1Team[0] != '\0' && strcmp(ent1Team, ent2Team) == 0)
 	{

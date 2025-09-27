@@ -185,7 +185,7 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
 	float *v;
 	vec3_t front[64], back[64];
 	int f, b;
-	float dist[64];
+	float dist[64] = {0};
 	float frac;
 	mpoly_t *poly;
 	vec3_t total;
@@ -197,6 +197,7 @@ R_SubdividePolygon(int numverts, float *verts, msurface_t *warpface)
 	if (numverts > MAX_SUBDIVIDE_VERTS)
 	{
 		Com_Error(ERR_DROP, "%s: numverts = %i", __func__, numverts);
+		return;
 	}
 
 	R_BoundPoly(numverts, verts, mins, maxs);

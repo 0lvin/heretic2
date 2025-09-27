@@ -93,6 +93,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -145,6 +146,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 		{
 			Com_Error(ERR_DROP, "%s: Incorrect %d < %d planenum.",
 					__func__, planenum, numplanes);
+			return;
 		}
 		out->plane = planes + planenum;
 
@@ -164,6 +166,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 				{
 					Com_Error(ERR_DROP, "%s: Incorrect %d nodenum as leaf.",
 							__func__, leafnum);
+					return;
 				}
 
 				out->children[j] = *nodes + leafnum;
@@ -175,6 +178,7 @@ Mod_LoadQNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *leafs
 				{
 					Com_Error(ERR_DROP, "%s: Incorrect %d leafnum.",
 							__func__, leafnum);
+					return;
 				}
 
 				out->children[j] = (mnode_t *)(leafs + leafnum);
@@ -195,6 +199,8 @@ Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes, mleaf_t *le
 	r_vistoleaf = malloc(numleafs * sizeof(int));
 	if (!r_leaftovis || !r_vistoleaf)
 	{
+		free(r_leaftovis);
+		free(r_vistoleaf);
 		Com_Error(ERR_DROP, "%s: Can't allocate %d leaf temporary buf.",
 				__func__, numleafs);
 		return;
@@ -233,6 +239,7 @@ Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -323,6 +330,7 @@ Mod_CalcSurfaceExtents(const int *surfedges, int numsurfedges, mvertex_t *vertex
 		{
 			Com_Error(ERR_DROP, "%s: incorect edge value %d > %d",
 					__func__, (s->firstedge + i), numsurfedges);
+			return;
 		}
 
 		e = surfedges[s->firstedge + i];
@@ -359,13 +367,13 @@ Mod_CalcSurfaceExtents(const int *surfedges, int numsurfedges, mvertex_t *vertex
 
 	for (i = 0; i < 2; i++)
 	{
-		int bmins[2], bmaxs[2];
+		int bmins, bmaxs;
 
-		bmins[i] = floor(mins[i] / (1 << s->lmshift));
-		bmaxs[i] = ceil(maxs[i] / (1 << s->lmshift));
+		bmins = floor(mins[i] / (1 << s->lmshift));
+		bmaxs = ceil(maxs[i] / (1 << s->lmshift));
 
-		s->texturemins[i] = bmins[i] * (1 << s->lmshift);
-		s->extents[i] = (bmaxs[i] - bmins[i]) * (1 << s->lmshift);
+		s->texturemins[i] = bmins * (1 << s->lmshift);
+		s->extents[i] = (bmaxs - bmins) * (1 << s->lmshift);
 		if (s->extents[i] < 16)
 		{
 			/* take at least one cache block */
@@ -389,6 +397,7 @@ Mod_LoadTexinfoQ2(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -493,6 +502,7 @@ Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -527,6 +537,7 @@ Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -726,6 +737,7 @@ Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned 
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -743,6 +755,7 @@ Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned 
 		{
 			Com_Error(ERR_DROP, "%s: bad surface number",
 					__func__);
+			return;
 		}
 
 		out[i] = surfaces + j;
@@ -764,6 +777,7 @@ Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 	{
 		Com_Error(ERR_DROP, "%s: funny lump size in %s",
 				__func__, name);
+		return;
 	}
 
 	count = l->filelen / sizeof(*in);
@@ -795,6 +809,7 @@ Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 		{
 			Com_Error(ERR_DROP, "%s: wrong marksurfaces position in %s",
 				__func__, name);
+			return;
 		}
 
 		if (out->cluster >= *numclusters)
@@ -817,6 +832,7 @@ Mod_LoadBSPXReadByte(struct rctx_s *ctx)
 	{
 		Com_Error(ERR_DROP, "%s: Read from outside %d\n",
 			__func__, ctx->ofs);
+		return 0;
 	}
 
 	return ctx->data[ctx->ofs++];

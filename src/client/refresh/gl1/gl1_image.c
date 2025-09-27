@@ -728,6 +728,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 	{
 		// this can't really happen (because they're clamped to 256 above), but whatever
 		Com_Error(ERR_DROP, "%s: too big", __func__);
+		return false;
 	}
 
 	/* scan the texture for any non-255 alpha */
@@ -901,6 +902,14 @@ R_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
 	{
 		unsigned *trans = malloc(s * sizeof(unsigned));
 
+		YQ2_COM_CHECK_OOM(trans, "malloc()",
+			s * sizeof(unsigned))
+		if (!trans)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return false;
+		}
+
 		for (int i = 0; i < s; i++)
 		{
 			int p = data[i];
@@ -992,6 +1001,7 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 			{
 				Com_Error(ERR_DROP, "%s: load %s is failed MAX_TEXTURES",
 					__func__, name);
+				return NULL;
 			}
 
 			numgltextures++;
@@ -1003,6 +1013,7 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	if (strlen(name) >= sizeof(image->name))
 	{
 		Com_Error(ERR_DROP, "%s: \"%s\" is too long", __func__, name);
+		return NULL;
 	}
 
 	strcpy(image->name, name);

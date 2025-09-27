@@ -2998,7 +2998,7 @@ void CScript::HandlePrint(void)
 
 		TextIndex = Text->GetIntValue();
 		snprintf(message, sizeof(message), "%d", TextIndex);
-		TextValue = LocalizationMessage(message, NULL);
+		TextValue = gi.LocalizationMessage(message, NULL);
 	}
 
 	if (Flags & PRINT_LEVEL)

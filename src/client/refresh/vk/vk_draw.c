@@ -315,6 +315,7 @@ RE_Draw_Fill(int x, int y, int w, int h, int c)
 	if ((unsigned)c > 255)
 	{
 		Com_Error(ERR_FATAL, "%s: bad color", __func__);
+		return;
 	}
 
 	color.c = d_8to24table[c];
@@ -416,6 +417,13 @@ RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *d
 		}
 
 		raw_image32 = malloc(cols * rows * sizeof(unsigned));
+		YQ2_COM_CHECK_OOM(raw_image32, "malloc()",
+			cols * rows * sizeof(unsigned))
+		if (!raw_image32)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return;
+		}
 
 		source = image_scaled;
 		dest = raw_image32;

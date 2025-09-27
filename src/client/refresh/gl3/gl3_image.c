@@ -241,10 +241,18 @@ GL3_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 static qboolean
 GL3_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
 {
-	int s = width * height;
+	size_t i, s = width * height;
 	unsigned *trans = malloc(s * sizeof(unsigned));
 
-	for (int i = 0; i < s; i++)
+	YQ2_COM_CHECK_OOM(trans, "malloc()",
+		s * sizeof(unsigned))
+	if (!trans)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return false;
+	}
+
+	for (i = 0; i < s; i++)
 	{
 		int p = data[i];
 		trans[i] = d_8to24table[p];
@@ -416,6 +424,7 @@ GL3_LoadPic(char *name, byte *pic, int width, int realwidth,
 		if (numgl3textures == MAX_TEXTURES)
 		{
 			Com_Error(ERR_DROP, "MAX_TEXTURES");
+			return NULL;
 		}
 
 		numgl3textures++;
@@ -426,6 +435,7 @@ GL3_LoadPic(char *name, byte *pic, int width, int realwidth,
 	if (strlen(name) >= sizeof(image->name))
 	{
 		Com_Error(ERR_DROP, "%s: \"%s\" is too long", __func__, name);
+		return NULL;
 	}
 
 	strcpy(image->name, name);

@@ -54,6 +54,7 @@ cvar_t *hostname;
 cvar_t *public_server; /* should heartbeats be sent */
 cvar_t *sv_entfile; /* External entity files. */
 cvar_t *sv_downloadserver; /* Download server. */
+cvar_t *sv_language; /* Server message language. */
 
 /*
  * Called when the player is totally leaving the server, either willingly
@@ -635,7 +636,8 @@ SV_Init(void)
 	allow_download_models = Cvar_Get("allow_download_models", "1", CVAR_ARCHIVE);
 	allow_download_sounds = Cvar_Get("allow_download_sounds", "1", CVAR_ARCHIVE);
 	allow_download_maps = Cvar_Get("allow_download_maps", "1", CVAR_ARCHIVE);
-	sv_downloadserver = Cvar_Get ("sv_downloadserver", "", 0);
+	sv_downloadserver = Cvar_Get("sv_downloadserver", "", 0);
+	sv_language = Cvar_Get("language", "english", CVAR_ARCHIVE);
 
 	sv_noreload = Cvar_Get("sv_noreload", "0", 0);
 
@@ -756,4 +758,3 @@ SV_Shutdown(char *finalmsg, qboolean reconnect)
 
 	SV_SendFreeBuffers();
 }
-

@@ -1167,7 +1167,7 @@ static void
 R_CalcPalette (void)
 {
 	static qboolean modified;
-	byte	palette[256][4], *in, *out;
+	byte	palette[256][4] = {0}, *in, *out;
 	int		i, j;
 	float	alpha, one_minus_alpha, v_blend[4];
 	vec3_t	premult;
@@ -1288,6 +1288,7 @@ RE_RenderFrame(refdef_t *fd)
 	if (!r_worldmodel && !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
 	{
 		Com_Error(ERR_FATAL, "%s: NULL worldmodel", __func__);
+		return;
 	}
 
 	// Need to rerender whole frame
