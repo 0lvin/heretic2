@@ -298,12 +298,6 @@ qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
 	return false;
 }
 
-qboolean G_CheckDistances(vec3_t origin, float dist)
-{
-	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
-	return false;
-}
-
 void G_SoundRemove(char* name)
 {
 	gi.dprintf("%s: TODO: Unimplemented (%s)\n", __func__, name);

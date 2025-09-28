@@ -3160,7 +3160,6 @@ void G_TraceBoundingForm(FormMove_t* formMove);
 void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari);
 void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2);
 qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove);
-qboolean G_CheckDistances(vec3_t origin, float dist);
 void G_SoundRemove(char* name);
 void G_CleanLevel(void);
 void G_RemoveEffects(edict_t* ent, int type);

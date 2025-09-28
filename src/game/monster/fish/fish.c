@@ -39,7 +39,6 @@ void fish_think(edict_t *self);
 #define FISH_FAST 160
 #define FISH_HUNT (40 + FISH_FAST)
 #define FISH_SLOW 100
-#define FISH_ACTIVATE_DIST 3000.0
 #define FISH_SKIN1			0
 #define FISH_SKIN2			2
 
@@ -308,20 +307,6 @@ float M_ChangeFishPitch (edict_t *ent)
 	return move;
 }
 
-// fish check to see if we are within ACTIVATE_DIST of the player
-void fish_check_distance(edict_t *self)
-{
-	self->nextthink = level.time + 2.0;
-
-	// determine if we are too far from the camera to warrant animating or ai
-	if (G_CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
-	{
-		self->nextthink = level.time + FRAMETIME;
-		self->think = fish_think;
-	}
-
-}
-
 
 /*-------------------------------------------------------------------------
 	monster_think
@@ -343,13 +328,6 @@ void fish_think (edict_t *self)
 	{//let's not hunt things out of water!
 		if (!self->enemy->waterlevel)
 			self->enemy = NULL;
-	}
-	// determine if we are too far from the camera to warrant animating or ai
-	if (!G_CheckDistances(self->s.origin, FISH_ACTIVATE_DIST))
-	{
-		self->think = fish_check_distance;
-		VectorClear(self->velocity);
-		return;
 	}
 
 	// animate us
@@ -1149,7 +1127,7 @@ void SP_monster_fish (edict_t *self)
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_FISH;
-	self->think = fish_check_distance;
+	self->think = fish_think;
 	self->nextthink = level.time + FRAMETIME;
 
 	self->yaw_speed = 11;
