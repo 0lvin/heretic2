@@ -185,7 +185,6 @@ P_Load(void)
 
 	// Server (game) function callbacks that have no client side equivalent.
 	playerImport.G_SoundIndex = gi.soundindex;
-	playerImport.G_SoundRemove = G_SoundRemove;
 	playerImport.G_UseTargets = G_UseTargets;
 	playerImport.G_GetEntityStatePtr = G_GetEntityStatePtr;
 	playerImport.G_BranchLwrClimbing = G_BranchLwrClimbing;

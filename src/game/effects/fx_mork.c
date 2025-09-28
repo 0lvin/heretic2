@@ -1698,7 +1698,8 @@ int water_particle [6] =
 	PART_32x32_BUBBLE
 };
 
-qboolean FXUnderWaterWakeUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean
+FXUnderWaterWakeUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	vec3_t				right;
@@ -1743,9 +1744,15 @@ qboolean FXUnderWaterWakeUpdate (struct client_entity_s *self, centity_t *owner)
 	return (true);
 }
 
-void FXUnderWaterWake (centity_t *owner)
+void
+FXUnderWaterWake(centity_t *owner)
 {
 	client_entity_t	*fx;
+
+	if (!owner)
+	{
+		return;
+	}
 
 	fx = ClientEntity_new(FX_M_EFFECTS, CEF_OWNERS_ORIGIN|CEF_NO_DRAW|CEF_ABSOLUTE_PARTS, owner->current.origin, NULL, 20);
 

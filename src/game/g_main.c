@@ -292,22 +292,6 @@ void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2)
 	gi.centerprintf(ent, "%s", gi.LocalizationMessage(message, NULL));
 }
 
-qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
-{
-	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
-	return false;
-}
-
-void G_SoundRemove(char* name)
-{
-	gi.dprintf("%s: TODO: Unimplemented (%s)\n", __func__, name);
-}
-
-void G_CleanLevel(void)
-{
-	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
-}
-
 /* =================================================================== */
 
 static void

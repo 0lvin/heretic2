@@ -1621,6 +1621,18 @@ SV_Physics_NewToss(edict_t *ent)
 	}
 }
 
+static qboolean
+G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove)
+{
+	/*
+	 * attempts to resize an entity’s bounding box (self) to match its intended
+	 * dimensions (intentMins/intentMaxs) while checking for collisions along
+	 * each axis. It ensures the new size doesn't intersect solid geometry.
+	 */
+	gi.dprintf("%s: TODO: Unimplemented\n", __func__);
+	return false;
+}
+
 static void Physics_None(edict_t *self);
 static void Physics_Static(edict_t *self);
 static void Physics_NoclipMove(edict_t *self);

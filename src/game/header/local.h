@@ -2125,7 +2125,6 @@ typedef struct
 
 	// Server (game) function callbacks that have no client side equivalent.
 	int (*G_SoundIndex)(const char *name);
-	void (*G_SoundRemove)(char *name);
 	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
 	entity_state_t *(*G_GetEntityStatePtr)(edict_t *entity);
 	int (*G_BranchLwrClimbing)(playerinfo_t *playerinfo);
@@ -3159,9 +3158,6 @@ int G_FindEntitiesInBounds(vec3_t mins, vec3_t maxs, struct SinglyLinkedList_s* 
 void G_TraceBoundingForm(FormMove_t* formMove);
 void G_MsgVarCenterPrintf(edict_t* ent, short msg, int vari);
 void G_MsgDualCenterPrintf(edict_t* ent, short msg1, short msg2);
-qboolean G_ResizeBoundingForm(edict_t* self, struct FormMove_s* formMove);
-void G_SoundRemove(char* name);
-void G_CleanLevel(void);
 void G_RemoveEffects(edict_t* ent, int type);
 qboolean G_RemovePersistantEffect(int toRemove, int call_from);
 void G_ClearPersistantEffects(void);

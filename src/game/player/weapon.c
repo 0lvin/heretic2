@@ -3772,7 +3772,6 @@ int sworddamage[STAFF_LEVEL_MAX][2] =
 void
 WeaponThink_SwordStaffEx(edict_t *caster, int locid)
 {
-	char CurrentChar;
 	vec3_t fwd, right, up;
 	vec3_t atkpos, startpos, endpos, hitdir, hitangles, diffangles;
 	vec3_t mins = { -12, -12, -12};
@@ -4242,10 +4241,10 @@ WeaponThink_Maceballs(edict_t *caster)
 #define MISSILE_YAW 7.0
 #define MISSILE_PITCH 2.0
 #define MISSILE_SEP	4.0
+
 void
 WeaponThink_MagicMissileSpreadEx(edict_t *caster, int missilepos)
 {
-	char	curchar;
 	vec3_t	OriginToLowerJoint={0.945585,2.26076,0.571354},
 			OriginToUpperJoint={1.80845,2.98912,3.27800},
 			DefaultStartPos={8.0,0.0,5.0},
