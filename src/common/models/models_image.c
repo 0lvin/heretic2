@@ -162,6 +162,13 @@ Mod_LoadBKImage(const char *mod_name, int texture_index, byte *buffer, int modfi
 	*width = header.width;
 	*height = header.height;
 	pic = malloc(header.width * header.height * 4);
+	YQ2_COM_CHECK_OOM(pic, "malloc()", header.width * header.height * 4)
+	if (!pic)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
+
 	memset(pic, 0, header.width * header.height * 4);
 
 	for (i = 0; i < header.numframes; i++)
@@ -250,6 +257,13 @@ Mod_LoadSPRImage(const char *mod_name, int texture_index, byte *buffer, int modf
 			curr_pos += sizeof(int) * 5;
 
 			pic = malloc(size);
+			YQ2_COM_CHECK_OOM(pic, "malloc()", size)
+			if (!pic)
+			{
+				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+				return NULL;
+			}
+
 			memcpy(pic, curr_pos, size);
 
 			Com_DPrintf("%s Loaded embeded %s#%d image %dx%d\n",
@@ -366,6 +380,12 @@ Mod_LoadBSPImage(const char *mod_name, int texture_index, byte *raw, int len,
 
 		*bitsPerPixel = 32;
 		dst = pic = malloc(size * 4);
+		YQ2_COM_CHECK_OOM(pic, "malloc()", size * 4)
+		if (!pic)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return NULL;
+		}
 
 		src = (raw + miptex_offset + texture_offset + image_offset);
 		for (i = 0; i < size; i++)
@@ -384,6 +404,13 @@ Mod_LoadBSPImage(const char *mod_name, int texture_index, byte *raw, int len,
 	{
 		*bitsPerPixel = 8;
 		pic = malloc(size);
+		YQ2_COM_CHECK_OOM(pic, "malloc()", size)
+		if (!pic)
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return NULL;
+		}
+
 		memcpy(pic, (raw + miptex_offset + texture_offset + image_offset), size);
 	}
 
@@ -423,20 +450,34 @@ Mod_LoadMDLImage(const char *mod_name, int texture_index, byte *raw, int len,
 		return NULL;
 	}
 
+	if (!pheader->num_imgbit)
+	{
+		Com_Printf("%s: Map %s has no embeded textures\n",
+			__func__, mod_name);
+		return NULL;
+	}
+
 	size = (pheader->skinheight * pheader->skinwidth * pheader->num_imgbit / 8);
 
 	images = (byte *)pheader + pheader->ofs_imgbit;
 	images += (texture_index * size);
 
 	pic = malloc(size);
+	YQ2_COM_CHECK_OOM(pic, "malloc()", size)
+	if (!pic)
+	{
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		return NULL;
+	}
+
 	memcpy(pic, images, size);
 
 	*width = pheader->skinwidth;
 	*height = pheader->skinheight;
 	*bitsPerPixel = pheader->num_imgbit;
 
-	Com_DPrintf("%s Loaded embeded %s image %dx%d\n",
-		__func__, mod_name, *width, *height);
+	Com_DPrintf("%s Loaded embeded %s image %dx%d@%d\n",
+		__func__, mod_name, *width, *height, *bitsPerPixel);
 
 	return pic;
 }

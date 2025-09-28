@@ -550,7 +550,12 @@ CL_ParsePacketEntities(frame_t *oldframe, frame_t *newframe)
 				fxe->RemoveClientEffects(&cl_entities[newnum]);
 			}
 
-			if (oldframe && oldindex >= oldframe->num_entities)
+			if (!oldframe)
+			{
+				continue;
+			}
+
+			if (oldindex >= oldframe->num_entities)
 			{
 				oldnum = 99999;
 			}
