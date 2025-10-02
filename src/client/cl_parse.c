@@ -1371,7 +1371,8 @@ CL_ParseConfigString(void)
 		return;
 	}
 
-	strcpy(cl.configstrings[i], s);
+	Q_strlcpy(cl.configstrings[i], s,
+		(MAX_CONFIGSTRINGS - i) * sizeof(*cl.configstrings));
 
 	/* do something apropriate */
 	if ((i >= CS_LIGHTS) && (i < CS_LIGHTS + MAX_LIGHTSTYLES))

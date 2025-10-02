@@ -2101,19 +2101,21 @@ FixEntityPosition(edict_t *ent)
 
 		for (j = 0; j < 3; j++)
 		{
-			vec3_t pos;
+			vec3_t pos, diff;
 			trace_t tr_pos;
 			int k;
 
 			VectorCopy(ent->s.origin, pos);
 
-			/* move by min */
+			VectorSubtract(ent->maxs, ent->mins, diff);
+
+			/* move by up */
 			for (k = 0; k < i + 1; k++)
 			{
 				int v;
 
 				v = (j + k) % 3;
-				pos[v] = ent->s.origin[v] - ent->mins[v];
+				pos[v] = ent->s.origin[v] + diff[v];
 			}
 
 			tr_pos = gi.trace(pos, ent->mins, ent->maxs, ent->s.origin, ent, MASK_SOLID);
@@ -2123,14 +2125,15 @@ FixEntityPosition(edict_t *ent)
 				return;
 			}
 
-			/* move by max */
+			/* move by down */
 			for (k = 0; k < i + 1; k++)
 			{
 				int v;
 
 				v = (j + k) % 3;
-				pos[v] = ent->s.origin[v] - ent->maxs[v];
+				pos[v] = ent->s.origin[v] - diff[v];
 			}
+
 			tr_pos = gi.trace(pos, ent->mins, ent->maxs, ent->s.origin, ent, MASK_SOLID);
 			if (!tr_pos.startsolid)
 			{
@@ -6180,6 +6183,56 @@ SP_item_health_mega(edict_t *self)
 	SpawnItem(self, FindItem("Health"));
 	gi.soundindex("items/m_health.wav");
 	self->style = HEALTH_IGNORE_MAX | HEALTH_TIMED;
+}
+
+/*
+ * QUAKED item_health_half (.3 .3 1) (-10 -10 -10) (10 10 10) TRIGGER_SPAWN
+ *
+ * Heretic 2: health full pack (30)
+ */
+void
+SP_item_health_half(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->count = 10;
+	SpawnItem(self, FindItem("Health"));
+	self->s.effects |= EF_ROTATE;
+	gi.soundindex("items/l_health.wav");
+}
+
+/*
+ * QUAKED item_health_full (.3 .3 1) (-10 -10 -10) (10 10 10) TRIGGER_SPAWN
+ *
+ * Heretic 2: health full pack (30)
+ */
+void
+SP_item_health_full(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (deathmatch->value && ((int)dmflags->value & DF_NO_HEALTH))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->count = 30;
+	SpawnItem(self, FindItem("Health"));
+	self->s.effects |= EF_ROTATE;
+	gi.soundindex("items/l_health.wav");
 }
 
 void
