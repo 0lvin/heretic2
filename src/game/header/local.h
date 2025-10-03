@@ -343,8 +343,6 @@ typedef struct gitem_s
 	vec3_t maxs;                /* Bounding box */
 	int playeranimseq;          /* The ASEQ_ player sequence that should be engaged when this item is used. */
 	int altanimseq;             /* Powerup animation sequence */
-	int MaxActive;              /* Maximum allowable active uses of items of this type by a single
-				 	player, at any instant in time. -1 indicates no limit. */
 } gitem_t;
 
 /* this structure is left intact through an entire game

@@ -2588,7 +2588,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"Weapon_SwordStaff",					// Spawnname (char *)
-		Pickup_Weapon,	 						// Pickup (f)
+		Pickup_Weapon,							// Pickup (f)
 		Weapon_EquipSwordStaff,					// Use (f)
 		NULL,									// Drop	(f)
 		WeaponThink_SwordStaff,					// Think (f)
@@ -2612,7 +2612,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WSWORD_STD1,						// Player animation sequence to engage when used
 		ASEQ_WSWORD_STD1,						// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2620,7 +2619,7 @@ static const gitem_t gameitemlist[] = {
 	 * This can't be placed in the editor
 	 */
 	{
-		"Weapon_FlyingFist", 					// Spawnname
+		"Weapon_FlyingFist",					// Spawnname
 		Pickup_Weapon,							// Pickup (f)
 		Weapon_EquipSpell,						// Use (f)
 		NULL,									// Drop	(f)
@@ -2629,13 +2628,13 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// world model (char *)
 		0,										// world model flags
 		NULL,									// view model
-		"icons/i_fball.m8",   			// Icon name (char *)
+		"icons/i_fball.m8",						// Icon name (char *)
 		"fball",								// Pickup name (char *)
 		0,										// Number of digits to display
 		AMMO_USE_FIREBALL,						// Ammo/ammo use per shot
 		"Off-mana",								// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_FLYINGFIST,					// tag ?
 		NULL,									// precaches
@@ -2645,7 +2644,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WFIREBALL,							// Player animation sequence to engage when used
 		ASEQ_WFIREBALL,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2654,7 +2652,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_weapon_hellstaff",				// Spawnname
-		Pickup_Weapon,	 						// Pickup (f)
+		Pickup_Weapon,							// Pickup (f)
 		Weapon_EquipHellStaff,					// Use (f)
 		Drop_Weapon,							// Drop	(f)
 		WeaponThink_HellStaff,					// Think (f)
@@ -2662,13 +2660,13 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// world model (char *)
 		0,										// world model flags
 		NULL,									// view model
-		"icons/i_hell.m8",				// Icon name (char *)
+		"icons/i_hell.m8",						// Icon name (char *)
 		"hell",									// Pickup name (char *)
 		2,										// Number of digits to display
 		AMMO_USE_HELLSTAFF,						// Ammo/ammo use per shot
 		"Hell-staff-ammo",						// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_HELLSTAFF,					// tag ?
 		NULL,									// precaches
@@ -2678,7 +2676,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WHELL_GO,							// Player animation sequence to engage when used
 		ASEQ_WHELL_GO,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = infinite)
 	},
 
 	/*
@@ -2705,13 +2702,12 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// void * ?
 		ITEM_WEAPON_MAGICMISSILE,				// tag ?
 		NULL,									// precaches
-		GM_FORCEBLAST, 							// pickup message
+		GM_FORCEBLAST,							// pickup message
 		GM_NOFORCE,								// can`t use message
 		PICKUP_MIN,								// Bounding box mins
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WBLAST,							// Player animation sequence to engage when used
 		ASEQ_WARRAY,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2719,8 +2715,8 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup for the Red Rain Bow weapon.
 	 */
 	{
-		"item_weapon_redrain_bow", 				// Spawnname
-		Pickup_Weapon,	 						// Pickup (f)
+		"item_weapon_redrain_bow",				// Spawnname
+		Pickup_Weapon,							// Pickup (f)
 		Weapon_EquipBow,						// Use (f)
 		Drop_Weapon,							// Drop	(f)
 		WeaponThink_RedRainBow,					// Think (f)
@@ -2744,7 +2740,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WRRBOW_GO,							// Player animation sequence to engage when used
 		ASEQ_WRRBOW_GO,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2777,7 +2772,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WFIREWALL,							// Player animation sequence to engage when used
 		ASEQ_WFIREWALL,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2785,8 +2779,8 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup for the Phoenix Bow weapon.
 	 */
 	{
-		"item_weapon_phoenixbow", 				// Spawnname
-		Pickup_Weapon,	 						// Pickup (f)
+		"item_weapon_phoenixbow",				// Spawnname
+		Pickup_Weapon,							// Pickup (f)
 		Weapon_EquipBow,						// Use (f)
 		Drop_Weapon,							// Drop	(f)
 		WeaponThink_PhoenixBow,					// Think (f)
@@ -2794,7 +2788,7 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// world model (char *)
 		0,										// world model flags
 		NULL,									// view model
-		"icons/i_phoen.m8", 					// Icon name (char *)
+		"icons/i_phoen.m8",					// Icon name (char *)
 		"phoen",								// Pickup name (char *)
 		2,										// Number of digits to display
 		AMMO_USE_PHOENIX,						// Ammo/ammo use per shot
@@ -2810,7 +2804,6 @@ static const gitem_t gameitemlist[] = {
 		{0, 0, 0},								// Bounding box maxs
 		ASEQ_WPHBOW_GO,							// Player animation sequence to engage when used
 		ASEQ_WPHBOW_GO,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2843,7 +2836,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WSPHERE_GO,						// Player animation sequence to engage when used
 		ASEQ_WSPHERE_GO,						// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2876,7 +2868,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_WRIPPER,							// Player animation sequence to engage when used
 		ASEQ_WBIGBALL,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2903,13 +2894,12 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// void * ?
 		ITEM_DEFENSE_POWERUP,					// tag ?
 		NULL,									// precaches
-		GM_TOME, 								// pickup message
+		GM_TOME,								// pickup message
 		GM_NOTOME,								// can`t use message
 		PICKUP_MIN,								// Bounding box mins
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2942,7 +2932,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -2975,7 +2964,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3008,7 +2996,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3041,7 +3028,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3074,7 +3060,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		1,										// Max uses (-1 = inifinite)
 	},
 
 	// =============================================================================================
@@ -3087,7 +3072,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_mana_offensive_half",				// Spawnname
-		Pickup_Mana, 							// Pickup (f)
+		Pickup_Mana,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -3111,7 +3096,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_NONE,								// Player animation sequence to engage when used
 		ASEQ_NONE,								// Alternate player animation sequence to engage when used
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3120,7 +3104,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_mana_offensive_full",				// Spawnname
-		Pickup_Mana, 									// Pickup (f)
+		Pickup_Mana,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -3144,7 +3128,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_NONE,								// Player animation sequence to engage when used
 		ASEQ_NONE,								// Alternate player animation sequence to engage when used
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3177,7 +3160,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_NONE,								// Player animation sequence to engage when used
 		ASEQ_NONE,								// Alternate player animation sequence to engage when used
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3210,7 +3192,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_NONE,								// Player animation sequence to engage when used
 		ASEQ_NONE,								// Alternate player animation sequence to engage when used
-		-1,										// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3243,7 +3224,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		-1,											  // Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3276,7 +3256,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		-1,											  // Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3309,7 +3288,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		-1,											  // Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3342,7 +3320,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,										// Alternate player animation sequence to engage when used
-		-1,											  // Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3375,7 +3352,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		-1,											  // Max uses (-1 = inifinite)
 	},
 
 	// ============================================================================================
@@ -3388,7 +3364,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_health_half",							// Spawnname
-		Pickup_Health, 								// Pickup (f)
+		Pickup_Health,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3401,7 +3377,7 @@ static const gitem_t gameitemlist[] = {
 		0,											// Number of digits to display
 		10,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
-		IT_HEALTH | EF_ALWAYS_ADD_EFFECTS, 			// flags
+		IT_HEALTH | EF_ALWAYS_ADD_EFFECTS,			// flags
 		0,									// weapon model index
 		NULL,										// void * ?
 		ITEM_HEALTH1,								// tag ?
@@ -3412,7 +3388,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		-1,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3421,7 +3396,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_health_full",							// Spawnname
-		Pickup_Health, 								// Pickup (f)
+		Pickup_Health,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3434,7 +3409,7 @@ static const gitem_t gameitemlist[] = {
 		0,											// Number of digits to display
 		30,										// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
-		IT_HEALTH | EF_ALWAYS_ADD_EFFECTS, 			// flags
+		IT_HEALTH | EF_ALWAYS_ADD_EFFECTS,			// flags
 		0,									// weapon model index
 		NULL,										// void * ?
 		ITEM_HEALTH2,								// tag ?
@@ -3445,7 +3420,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	// ============================================================================================
@@ -3460,7 +3434,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_townkey",						// Spawnname
-		Pickup_Puzzle,		 						// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3484,7 +3458,6 @@ static const gitem_t gameitemlist[] = {
 		{8,  8,  4},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3495,7 +3468,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_cog",							// Spawnname
-		Pickup_Puzzle,		 						// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3519,7 +3492,6 @@ static const gitem_t gameitemlist[] = {
 		{10,  10,  20},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3530,7 +3502,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_shield",						// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3546,7 +3518,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_SHIELD,				 							// tag ?
+		ITEM_SHIELD,											// tag ?
 		NULL,									// precaches
 		GM_F_SHIELD,								// pickup message
 		GM_NEED_SHIELD,								// can`t use message
@@ -3554,7 +3526,6 @@ static const gitem_t gameitemlist[] = {
 		{2,  6,  12},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3565,7 +3536,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_potion",						// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3581,7 +3552,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_POTION,				 							// tag ?
+		ITEM_POTION,											// tag ?
 		NULL,									// precaches
 		GM_F_POTION,								// pickup message
 		GM_NEED_POTION,								// can`t use message
@@ -3589,7 +3560,6 @@ static const gitem_t gameitemlist[] = {
 		{3,  3,  10},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3600,7 +3570,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_plazacontainer",				// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3616,7 +3586,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_CONT,				 							// tag ?
+		ITEM_CONT,											// tag ?
 		NULL,									// precaches
 		GM_F_CONT,										// pickup message
 		GM_NEED_CONT,										// can`t use message
@@ -3624,7 +3594,6 @@ static const gitem_t gameitemlist[] = {
 		{6,  6,  6},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3635,7 +3604,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_slumcontainer",				// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3659,7 +3628,6 @@ static const gitem_t gameitemlist[] = {
 		{6,  6,  6},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3670,7 +3638,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_crystal",						// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3686,7 +3654,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_CRYSTAL,				 							// tag ?
+		ITEM_CRYSTAL,											// tag ?
 		NULL,									// precaches
 		GM_F_CRYSTAL,										// pickup message
 		GM_NEED_CRYSTAL,										// can`t use message
@@ -3694,7 +3662,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3705,7 +3672,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_canyonkey",					// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3721,7 +3688,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_CANKEY,				 							// tag ?
+		ITEM_CANKEY,											// tag ?
 		NULL,									// precaches
 		GM_F_CANYONKEY,										// pickup message
 		GM_NEED_CANYONKEY,										// can`t use message
@@ -3729,7 +3696,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3740,7 +3706,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_hive2amulet",					// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3756,7 +3722,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_AMULET,				 							// tag ?
+		ITEM_AMULET,											// tag ?
 		NULL,									// precaches
 		GM_F_AMULET,										// pickup message
 		GM_NEED_AMULET,										// can`t use message
@@ -3764,7 +3730,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3775,7 +3740,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_hive2spear",					// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3791,7 +3756,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_SPEAR,				 							// tag ?
+		ITEM_SPEAR,											// tag ?
 		NULL,									// precaches
 		GM_F_SPEAR,										// pickup message
 		GM_NEED_SPEAR,										// can`t use message
@@ -3799,7 +3764,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3810,7 +3774,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_hive2gem",						// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3826,7 +3790,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_GEM,				 							// tag ?
+		ITEM_GEM,											// tag ?
 		NULL,									// precaches
 		GM_F_GEM,										// pickup message
 		GM_NEED_GEM,										// can`t use message
@@ -3834,7 +3798,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3845,7 +3808,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_minecartwheel",				// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3861,7 +3824,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_WHEEL,				 					// tag ?
+		ITEM_WHEEL,									// tag ?
 		NULL,									// precaches
 		GM_F_CARTWHEEL,										// pickup message
 		GM_NEED_CARTWHEEL,										// can`t use message
@@ -3869,7 +3832,6 @@ static const gitem_t gameitemlist[] = {
 		{1, 6, 6},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3880,7 +3842,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_ore",							// Spawnname
-		NULL,		 						// Pickup (f)
+		NULL,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3896,7 +3858,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_ORE	,				 							// tag ?
+		ITEM_ORE	,											// tag ?
 		NULL,									// precaches
 		GM_F_UNREFORE,										// pickup message
 		GM_NEED_UNREFORE,										// can`t use message
@@ -3904,7 +3866,6 @@ static const gitem_t gameitemlist[] = {
 		{10, 10, 8},							// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3915,7 +3876,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_refinedore",					// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3931,7 +3892,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_REF_ORE,	 							// tag ?
+		ITEM_REF_ORE,								// tag ?
 		NULL,									// precaches
 		GM_F_REFORE,								// pickup message
 		GM_NEED_REFORE,								// can`t use message
@@ -3939,7 +3900,6 @@ static const gitem_t gameitemlist[] = {
 		{3, 12, 2},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3950,7 +3910,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_dungeonkey",					// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -3966,7 +3926,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_DUNKEY,	 							// tag ?
+		ITEM_DUNKEY,								// tag ?
 		NULL,									// precaches
 		GM_F_DUNGEONKEY,										// pickup message
 		GM_NEED_DUNGEONKEY,										// can`t use message
@@ -3974,7 +3934,6 @@ static const gitem_t gameitemlist[] = {
 		{1, 18, 9},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -3985,7 +3944,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_cloudkey",						// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -4001,7 +3960,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_CLOUDKEY,				 							// tag ?
+		ITEM_CLOUDKEY,											// tag ?
 		NULL,									// precaches
 		GM_F_CLOUDKEY,										// pickup message
 		GM_NEED_CLOUDKEY,										// can`t use message
@@ -4009,7 +3968,6 @@ static const gitem_t gameitemlist[] = {
 		{8,  8,  3},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -4020,7 +3978,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_highpriestesskey",				// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -4036,7 +3994,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_HIVEKEY,				 							// tag ?
+		ITEM_HIVEKEY,											// tag ?
 		NULL,									// precaches
 		GM_F_HIGHKEY,										// pickup message
 		GM_NEED_HIGHKEY,										// can`t use message
@@ -4044,7 +4002,6 @@ static const gitem_t gameitemlist[] = {
 		{12, 12,  6},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -4055,7 +4012,7 @@ static const gitem_t gameitemlist[] = {
 	*/
 	{
 		"item_puzzle_highpriestesssymbol",			// Spawnname
-		Pickup_Puzzle,	 							// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -4071,7 +4028,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_HPSYM,				 							// tag ?
+		ITEM_HPSYM,											// tag ?
 		NULL,									// precaches
 		GM_F_SYMBOL,								// pickup message
 		GM_NEED_SYMBOL,								// can`t use message
@@ -4079,7 +4036,6 @@ static const gitem_t gameitemlist[] = {
 		{12, 12, 4},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -4090,7 +4046,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_tome",							// Spawnname
-		Pickup_Puzzle,		 						// Pickup (f)
+		Pickup_Puzzle,								// Pickup (f)
 		NULL,										// Use (f)
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
@@ -4106,7 +4062,7 @@ static const gitem_t gameitemlist[] = {
 		IT_PUZZLE,									// flags
 		0,									// weapon model index
 		NULL,										// void * ?
-		ITEM_TOME,		 							// tag ?
+		ITEM_TOME,									// tag ?
 		NULL,									// precaches
 		GM_F_TOME,									// pickup message
 		GM_NEED_TOME,								// can`t use message
@@ -4114,7 +4070,6 @@ static const gitem_t gameitemlist[] = {
 		{12, 12, 4},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
 	},
 
 	/*
@@ -4125,7 +4080,7 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_puzzle_tavernkey",				// Spawnname
-		Pickup_Puzzle,		 					// Pickup (f)
+		Pickup_Puzzle,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
@@ -4135,21 +4090,20 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// view model
 		"icons/p_tavernkey.m8",					// Icon name (char *)
 		"Tavern Key",							// Pickup name (char *)
-		0,											// Number of digits to display
-		0,											// Ammo/ammo use per shot
-		NULL,										// Ammo (char *)
-		IT_PUZZLE,									// flags
-		0,									// weapon model index
-		NULL,										// void * ?
-		ITEM_TAVERNKEY,				 				// tag ?
+		0,										// Number of digits to display
+		0,										// Ammo/ammo use per shot
+		NULL,									// Ammo (char *)
+		IT_PUZZLE,								// flags
+		0,										// weapon model index
+		NULL,									// void * ?
+		ITEM_TAVERNKEY,							// tag ?
 		NULL,									// precaches
 		GM_F_TAVERNKEY,							// pickup message
 		GM_NEED_TAVERNKEY,						// can`t use message
 		{-12,-12,-4},							// Bounding box mins
-		{12, 12, 4},								// Bounding box maxs
-		ASEQ_NONE,									// Player animation sequence to engage when used
-		ASEQ_NONE,									// Alternate player animation sequence to engage when used
-		0,											// Max uses (-1 = inifinite)
+		{12, 12, 4},							// Bounding box maxs
+		ASEQ_NONE,								// Player animation sequence to engage when used
+		ASEQ_NONE,								// Alternate player animation sequence to engage when used
 	},
 
 	/*
@@ -4182,7 +4136,6 @@ static const gitem_t gameitemlist[] = {
 		PICKUP_MAX,								// Bounding box maxs
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when used
 		ASEQ_SPELL_DEF,							// Player animation sequence to engage when powered
-		1,										// Max uses (-1 = inifinite)
 	},
 
 	/*

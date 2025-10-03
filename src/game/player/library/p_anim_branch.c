@@ -1882,7 +1882,8 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 		playerinfo->idletime=playerinfo->leveltime;
 
 		// Check Offensive mana.
-		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST || pi.Weapon_CurrentShotsLeft(playerinfo))
+		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST ||
+			pi.Weapon_CurrentShotsLeft(playerinfo))
 		{
 			// Fireballs have free mana, but if powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
