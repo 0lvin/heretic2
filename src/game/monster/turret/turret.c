@@ -43,8 +43,6 @@ extern qboolean FindTarget(edict_t *self);
 
 void turret_run(edict_t *self);
 void TurretAim(edict_t *self);
-void turret_sight(edict_t *self, edict_t *other);
-void turret_search(edict_t *self);
 void turret_stand(edict_t *self);
 void turret_wake(edict_t *self);
 void turret_ready_gun(edict_t *self);
@@ -354,16 +352,6 @@ TurretAim(edict_t *self)
 
 		self->s.angles[YAW] = anglemod(current + move);
 	}
-}
-
-void
-turret_sight(edict_t *self, edict_t *other)
-{
-}
-
-void
-turret_search(edict_t *self)
-{
 }
 
 static mframe_t turret_frames_stand[] = {
@@ -760,12 +748,6 @@ turret_attack(edict_t *self)
 }
 
 void
-turret_pain(edict_t *self, edict_t *other, float kick, int damage)
-{
-	return;
-}
-
-void
 turret_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
 		int damage /* unused */, vec3_t point /* unused */)
 {
@@ -904,8 +886,8 @@ turret_wake(edict_t *self)
 	self->monsterinfo.dodge = NULL;
 	self->monsterinfo.attack = turret_attack;
 	self->monsterinfo.melee = NULL;
-	self->monsterinfo.sight = turret_sight;
-	self->monsterinfo.search = turret_search;
+	self->monsterinfo.sight = monster_dynamic_sight;
+	self->monsterinfo.search = monster_dynamic_search;
 	self->monsterinfo.currentmove = &turret_move_stand;
 
 	self->takedamage = DAMAGE_AIM;
@@ -1160,7 +1142,7 @@ SP_monster_turret(edict_t *self)
 
 	self->flags |= FL_MECHANICAL;
 
-	self->pain = turret_pain;
+	self->pain = monster_dynamic_pain_noanim;
 	self->die = turret_die;
 
 	/* map designer didn't specify weapon type. set it now. */
@@ -1183,8 +1165,8 @@ SP_monster_turret(edict_t *self)
 		self->monsterinfo.dodge = NULL;
 		self->monsterinfo.attack = turret_attack;
 		self->monsterinfo.melee = NULL;
-		self->monsterinfo.sight = turret_sight;
-		self->monsterinfo.search = turret_search;
+		self->monsterinfo.sight = monster_dynamic_sight;
+		self->monsterinfo.search = monster_dynamic_search;
 		self->monsterinfo.currentmove = &turret_move_stand;
 	}
 

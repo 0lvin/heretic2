@@ -41,7 +41,7 @@ void FXWaterWake(centity_t *owner, int type, int flags, vec3_t origin)
 
 	YawAngle = (blah /255.0) * 6.283185;
 
-	CreatorClientEntity=&fxi.server_entities[CreatorEntNum];
+	CreatorClientEntity = *fxi.cl_entities + CreatorEntNum;
 
 	// Create a water wake.
 

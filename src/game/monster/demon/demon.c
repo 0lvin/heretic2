@@ -29,40 +29,6 @@ static int sound_pain;
 static int sound_sight;
 static int sound_search;
 
-// Stand
-static mframe_t demon_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-};
-mmove_t demon_move_stand =
-{
-	FRAME_stand1,
-	FRAME_stand13,
-	demon_frames_stand,
-	NULL
-};
-
-void
-demon_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &demon_move_stand;
-}
-
 // Run
 static mframe_t demon_frames_run [] =
 {
@@ -256,40 +222,35 @@ demon_melee(edict_t *self)
 }
 
 // Pain
-static mframe_t demon_frames_pain [] =
-{
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL}
-};
-mmove_t demon_move_pain =
-{
-	FRAME_pain1,
-	FRAME_pain6,
-	demon_frames_pain,
-	demon_run
-};
 
 void
 demon_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	// decino: No pain animations in Nightmare mode
 	if (skill->value == SKILL_HARDPLUS)
+	{
 		return;
+	}
+
 	if (self->touch == demon_jump_touch)
+	{
 		return;
+	}
+
 	if (self->pain_debounce_time > level.time)
+	{
 		return;
+	}
+
 	self->pain_debounce_time = level.time + 1.0;
-    gi.sound(self, CHAN_VOICE, sound_pain, 1, ATTN_NORM, 0);
+	gi.sound(self, CHAN_VOICE, sound_pain, 1, ATTN_NORM, 0);
 
 	if (random() * 200 > damage)
+	{
 		return;
-	self->monsterinfo.currentmove = &demon_move_pain;
+	}
+
+	monster_dynamic_pain(self, other, kick, damage);
 }
 
 void
@@ -297,10 +258,7 @@ demon_dead(edict_t *self)
 {
 	VectorSet(self->mins, -32, -32, -24);
 	VectorSet(self->maxs, 32, 32, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 // Death
@@ -364,6 +322,11 @@ demon_sight(edict_t *self, edict_t *other /* unused */)
 void
 demon_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
@@ -392,7 +355,8 @@ SP_monster_demon(edict_t *self)
 	self->gib_health = -80;
 	self->mass = 300;
 
-	self->monsterinfo.stand = demon_stand;
+	monster_dynamic_setinfo(self);
+
 	self->monsterinfo.walk = demon_run;
 	self->monsterinfo.run = demon_run;
 	self->monsterinfo.attack = demon_attack;

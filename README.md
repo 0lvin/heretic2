@@ -348,6 +348,7 @@ Goals, fully finished goals could be checked in [here](CHANGELOG):
 Other games support goals:
 
 * [ ] Jabot: fix crash in SZ_GetSpace,
+* [ ] Jabot: dynamic allocations,
 * [ ] Heretic 2, Kingpin: use nor all surface flags to detect map type
 * [ ] Doom: implement map load logic,
 * [ ] Quake 3: finish map load logic,
@@ -419,6 +420,9 @@ Additional models:
 | monster_widow2   | Rogue widow 2                  |
 | monster_zombie   | Quake 1 zombie                 |
 | npc_timeminder   | Anachronox save menu           |
+
+ReRelease has updated Shambler that does not have animation groups and
+frame names, and uses `fr_` frame prefixes.
 
 Full list of supported entities [classnames](stuff/models/entity.dat).
 

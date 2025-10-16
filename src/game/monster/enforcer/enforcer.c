@@ -32,67 +32,6 @@ static int sound_sight2;
 static int sound_sight3;
 static int sound_sight4;
 
-// Stand
-static mframe_t enforcer_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-};
-mmove_t enforcer_move_stand =
-{
-	FRAME_stand1,
-	FRAME_stand7,
-	enforcer_frames_stand,
-	NULL
-};
-
-void
-enforcer_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &enforcer_move_stand;
-}
-
-// Walk
-static mframe_t enforcer_frames_walk [] =
-{
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL}
-};
-
-mmove_t enforcer_move_walk =
-{
-	FRAME_walk1,
-	FRAME_walk16,
-	enforcer_frames_walk,
-	NULL
-};
-
-void
-enforcer_walk(edict_t *self)
-{
-	self->monsterinfo.currentmove = &enforcer_move_walk;
-}
-
 // Run
 static mframe_t enforcer_frames_run [] =
 {
@@ -290,6 +229,11 @@ enforcer_sight(edict_t *self, edict_t *other /* unused */)
 void
 enforcer_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
@@ -392,15 +336,26 @@ enforcer_pain(edict_t *self, edict_t *other /* unused */,
 
 	// decino: No pain animations in Nightmare mode
 	if (skill->value == SKILL_HARDPLUS)
+	{
 		return;
+	}
+
 	if (level.time < self->pain_debounce_time)
+	{
 		return;
+	}
+
 	r = random();
 
 	if (r < 0.5)
+	{
 		gi.sound(self, CHAN_VOICE, sound_pain1, 1, ATTN_NORM, 0);
+	}
 	else
+	{
 		gi.sound(self, CHAN_VOICE, sound_pain2, 1, ATTN_NORM, 0);
+	}
+
 	if (r < 0.2)
 	{
 		self->pain_debounce_time = level.time + 1.0;
@@ -428,10 +383,7 @@ enforcer_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 // Death (1)
@@ -547,8 +499,8 @@ SP_monster_enforcer(edict_t *self)
 	self->gib_health = -35;
 	self->mass = 80;
 
-	self->monsterinfo.stand = enforcer_stand;
-	self->monsterinfo.walk = enforcer_walk;
+	monster_dynamic_setinfo(self);
+
 	self->monsterinfo.run = enforcer_run;
 	self->monsterinfo.attack = enforcer_attack;
 	self->monsterinfo.sight = enforcer_sight;

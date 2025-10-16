@@ -31,7 +31,7 @@ void FXRemoteCamera(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_REMOTE_CAMERA].formatString,&TargetEntNum);
 
-	TargetEnt=(&fxi.server_entities[TargetEntNum]);
+	TargetEnt=(*fxi.cl_entities + TargetEntNum);
 
 	VectorSubtract(Owner->origin,TargetEnt->origin,Forward);
 

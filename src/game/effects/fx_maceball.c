@@ -314,7 +314,7 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 		// Add to the entity passed in, not the "owner".
 		assert(ballarray[i]);
-		AddEffect((centity_t *)(&fxi.server_entities[ballarray[i]]), ripper);
+		AddEffect((centity_t *)(*fxi.cl_entities + ballarray[i]), ripper);
 
 		curyaw += RIPPER_BALL_ANGLE;
 	}

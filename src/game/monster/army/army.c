@@ -28,33 +28,6 @@ static int sound_pain2;
 static int sound_attack;
 static int sound_sight;
 
-// Stand
-static mframe_t army_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-};
-mmove_t army_move_stand =
-{
-	FRAME_stand1,
-	FRAME_stand8,
-	army_frames_stand,
-	NULL
-};
-
-void
-army_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &army_move_stand;
-}
-
 // Run
 static mframe_t army_frames_run [] =
 {
@@ -139,6 +112,11 @@ army_sight(edict_t *self, edict_t *other /* unused */)
 void
 army_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
@@ -256,10 +234,7 @@ army_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 // Death (1)
@@ -379,7 +354,8 @@ SP_monster_army(edict_t *self)
 	self->gib_health = -35;
 	self->mass = 30;
 
-	self->monsterinfo.stand = army_stand;
+	monster_dynamic_setinfo(self);
+
 	self->monsterinfo.walk = army_run;
 	self->monsterinfo.run = army_run;
 	self->monsterinfo.attack = army_attack;

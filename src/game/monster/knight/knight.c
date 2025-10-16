@@ -30,35 +30,6 @@ static int sound_melee2;
 
 void knight_attack(edict_t *self);
 
-// Stand
-static mframe_t knight_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-};
-mmove_t knight_move_stand =
-{
-	FRAME_stand1,
-	FRAME_stand9,
-	knight_frames_stand,
-	NULL
-};
-
-void
-knight_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &knight_move_stand;
-}
-
 // Run
 static mframe_t knight_frames_run [] =
 {
@@ -260,10 +231,7 @@ knight_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 // Death (1)
@@ -349,6 +317,11 @@ knight_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 void
 knight_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
@@ -356,6 +329,11 @@ knight_search(edict_t *self)
 void
 knight_sight(edict_t *self, edict_t *other /* unused */)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
 }
 
@@ -383,7 +361,8 @@ SP_monster_knight(edict_t *self)
 	self->gib_health = -40;
 	self->mass = 75;
 
-	self->monsterinfo.stand = knight_stand;
+	monster_dynamic_setinfo(self);
+
 	self->monsterinfo.walk = knight_run;
 	self->monsterinfo.run = knight_run;
 	self->monsterinfo.attack = knight_attack;

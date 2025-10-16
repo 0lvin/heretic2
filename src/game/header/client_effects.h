@@ -52,7 +52,8 @@ typedef struct
 
 	// Client versions of the game entities.
 
-	centity_t		*server_entities;
+	centity_t		**cl_entities;
+	int 		*cl_numentities;
 
 	// Buffer into which net stuff is parsed.
 

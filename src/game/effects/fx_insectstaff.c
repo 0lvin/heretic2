@@ -551,7 +551,7 @@ void FXInsectGlow(centity_t *owner,int type,int flags,vec3_t origin, short Caste
 	GlowballSpawner->flags|=CEF_NO_DRAW;
 	GlowballSpawner->color.g=0;
 	GlowballSpawner->Update=FXGlobeOfOuchinessGlowballSpawnerThink;
-	GlowballSpawner->extra=(void *)(&fxi.server_entities[CasterEntnum]);
+	GlowballSpawner->extra=(void *)(*fxi.cl_entities + CasterEntnum);
 
 	AddEffect(owner,GlowballSpawner);
 }

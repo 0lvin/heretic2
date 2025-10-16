@@ -95,11 +95,6 @@ void widow_start_run_12(edict_t *self);
 void WidowCalcSlots(edict_t *self);
 
 void
-widow_search(edict_t *self)
-{
-}
-
-void
 widow_sight(edict_t *self, edict_t *other /* unused */)
 {
 	if (!self)
@@ -1384,10 +1379,7 @@ widow_dead(edict_t *self)
 
 	VectorSet(self->mins, -56, -56, 0);
 	VectorSet(self->maxs, 56, 56, 80);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 #if 0
@@ -1915,7 +1907,7 @@ SP_monster_widow(edict_t *self)
 	self->monsterinfo.walk = widow_walk;
 	self->monsterinfo.run = widow_run;
 	self->monsterinfo.attack = widow_attack;
-	self->monsterinfo.search = widow_search;
+	self->monsterinfo.search = monster_dynamic_search;
 	self->monsterinfo.checkattack = Widow_CheckAttack;
 	self->monsterinfo.sight = widow_sight;
 

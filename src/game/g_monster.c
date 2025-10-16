@@ -1046,6 +1046,7 @@ void
 M_MoveFrame(edict_t *self)
 {
 	mmove_t *move;
+#if 1
 	int index;
 
 	if (!self)
@@ -1139,6 +1140,378 @@ M_MoveFrame(edict_t *self)
 		if (move->frame[index].thinkfunc)
 		{
 			move->frame[index].thinkfunc(self);
+		}
+	}
+#else
+	int index, firstframe, lastframe;
+
+	if (!self)
+	{
+		return;
+	}
+
+	move = self->monsterinfo.currentmove;
+	if (move)
+	{
+		firstframe = move->firstframe;
+		lastframe = move->lastframe;
+	}
+	else if (self->monsterinfo.action)
+	{
+		M_SetAnimGroupFrameValues(self, self->monsterinfo.action, &firstframe, &lastframe);
+		lastframe += firstframe - 1;
+	}
+	else
+	{
+		return;
+	}
+
+	self->nextthink = level.time + FRAMETIME;
+
+	if ((self->monsterinfo.nextframe) &&
+		(self->monsterinfo.nextframe >= firstframe) &&
+		(self->monsterinfo.nextframe <= lastframe))
+	{
+		if (self->s.frame != self->monsterinfo.nextframe)
+		{
+			self->s.frame = self->monsterinfo.nextframe;
+			self->monsterinfo.aiflags &= ~AI_HOLD_FRAME;
+		}
+
+		self->monsterinfo.nextframe = 0;
+	}
+	else
+	{
+		/* prevent nextframe from leaking into a future move */
+		self->monsterinfo.nextframe = 0;
+
+		if (self->s.frame == lastframe)
+		{
+			if (move && move->endfunc)
+			{
+				move->endfunc(self);
+
+				/* regrab move, endfunc is very likely to change it */
+				move = self->monsterinfo.currentmove;
+
+				/* check for death */
+				if (self->svflags & SVF_DEADMONSTER)
+				{
+					return;
+				}
+			}
+			else if (self->monsterinfo.action &&
+				self->monsterinfo.run &&
+				(!strcmp(self->monsterinfo.action, "attack") ||
+				 !strcmp(self->monsterinfo.action, "pain")))
+			{
+				/* last frame in pain / attack go to run action */
+				self->monsterinfo.run(self);
+			}
+			else if (self->monsterinfo.action &&
+				!strcmp(self->monsterinfo.action, "death"))
+			{
+				/* last frame in pain go to death action */
+				monster_dynamic_dead(self);
+			}
+		}
+
+		if ((self->s.frame < firstframe) ||
+			(self->s.frame > lastframe))
+		{
+			self->monsterinfo.aiflags &= ~AI_HOLD_FRAME;
+			self->s.frame = firstframe;
+		}
+		else
+		{
+			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
+			{
+				self->s.frame++;
+
+				if (self->s.frame > lastframe)
+				{
+					self->s.frame = firstframe;
+				}
+			}
+		}
+	}
+
+	index = self->s.frame - firstframe;
+
+	if (move && move->frame[index].aifunc)
+	{
+		if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
+		{
+			move->frame[index].aifunc(self,
+					move->frame[index].dist * self->monsterinfo.scale);
+		}
+		else
+		{
+			move->frame[index].aifunc(self, 0);
+		}
+	}
+	else if (self->monsterinfo.action)
+	{
+		if (!strcmp(self->monsterinfo.action, "run") ||
+			!strcmp(self->monsterinfo.action, "swim") ||
+			!strcmp(self->monsterinfo.action, "fly"))
+		{
+			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
+			{
+				ai_run(self,
+					self->monsterinfo.run_dist * self->monsterinfo.scale);
+			}
+			else
+			{
+				ai_run(self, 0);
+			}
+		}
+		else if (!strcmp(self->monsterinfo.action, "walk"))
+		{
+			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
+			{
+				ai_walk(self,
+					self->monsterinfo.walk_dist * self->monsterinfo.scale);
+			}
+			else
+			{
+				ai_walk(self, 0);
+			}
+		}
+		else if (!strcmp(self->monsterinfo.action, "stand") ||
+			!strcmp(self->monsterinfo.action, "hover") ||
+			!strcmp(self->monsterinfo.action, "idle"))
+		{
+			ai_stand(self, 0);
+		}
+		else if (!strcmp(self->monsterinfo.action, "pain") ||
+			!strcmp(self->monsterinfo.action, "death"))
+		{
+			ai_move(self, 0);
+		}
+		else if (!strcmp(self->monsterinfo.action, "attack"))
+		{
+			ai_charge(self, 0);
+		}
+	}
+
+	if (move && move->frame[index].thinkfunc)
+	{
+		move->frame[index].thinkfunc(self);
+	}
+
+#endif
+}
+
+void
+monster_dynamic_walk(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.currentmove = NULL;
+
+	if (self->flags & FL_FLY)
+	{
+		self->monsterinfo.action = "fly";
+	}
+	else if (self->flags & FL_SWIM)
+	{
+		self->monsterinfo.action = "swim";
+	}
+	else
+	{
+		self->monsterinfo.action = "walk";
+	}
+}
+
+void
+monster_dynamic_run(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.currentmove = NULL;
+
+	if (self->flags & FL_FLY)
+	{
+		self->monsterinfo.action = "fly";
+	}
+	else if (self->flags & FL_SWIM)
+	{
+		self->monsterinfo.action = "swim";
+	}
+	else
+	{
+		self->monsterinfo.action = "run";
+	}
+}
+
+void
+monster_dynamic_idle(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.currentmove = NULL;
+	self->monsterinfo.action = "idle";
+}
+
+void
+monster_dynamic_attack(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.currentmove = NULL;
+	self->monsterinfo.action = "attack";
+}
+
+void
+monster_dynamic_dead(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_TOSS;
+	self->svflags |= SVF_DEADMONSTER;
+	self->nextthink = 0;
+	gi.linkentity(self);
+}
+
+void
+monster_dynamic_die_noanim(edict_t *self, edict_t *inflictor, edict_t *attacker,
+	int damage, vec3_t point)
+{
+	monster_dynamic_dead(self);
+}
+
+void
+monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
+	int damage, vec3_t point)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.currentmove = NULL;
+	self->monsterinfo.action = "death";
+}
+
+void
+monster_dynamic_pain_noanim(edict_t *self, edict_t *other /* unused */,
+		float kick /* unused */, int damage)
+{
+}
+
+void
+monster_dynamic_pain(edict_t *self, edict_t *other /* unused */,
+		float kick /* unused */, int damage)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (skill->value == SKILL_HARDPLUS)
+	{
+		return; /* no pain anims in nightmare */
+	}
+
+	self->monsterinfo.currentmove = NULL;
+
+	self->monsterinfo.action = "pain";
+}
+
+void
+monster_dynamic_stand(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.currentmove = NULL;
+
+	if (self->flags & FL_FLY)
+	{
+		self->monsterinfo.action = "hover";
+	}
+	else if (self->flags & FL_SWIM)
+	{
+		self->monsterinfo.action = "swim";
+	}
+	else
+	{
+		self->monsterinfo.action = "stand";
+	}
+}
+
+void
+monster_dynamic_search(edict_t *self)
+{
+}
+
+void
+monster_dynamic_sight(edict_t *self, edict_t *other /* unused */)
+{
+}
+
+void
+monster_dynamic_setinfo(edict_t *self)
+{
+	const dmdxframegroup_t * frames;
+	int num;
+
+	if (!self)
+	{
+		return;
+	}
+
+	self->monsterinfo.walk = monster_dynamic_walk;
+	self->monsterinfo.run = monster_dynamic_run;
+	self->monsterinfo.stand = monster_dynamic_stand;
+	self->monsterinfo.search = monster_dynamic_search;
+	self->monsterinfo.sight = monster_dynamic_sight;
+	self->monsterinfo.attack = monster_dynamic_attack;
+	self->pain = monster_dynamic_pain_noanim;
+	self->die = monster_dynamic_die_noanim;
+
+	/* Check frame names for optional move animation */
+	frames = gi.GetModelInfo(self->s.modelindex, &num, NULL, NULL);
+	if (frames && num)
+	{
+		size_t i;
+
+		for (i = 0; i < num; i++)
+		{
+			if (!strcmp(frames[i].name, "idle"))
+			{
+				self->monsterinfo.idle = monster_dynamic_idle;
+			}
+			else if (!strcmp(frames[i].name, "pain"))
+			{
+				self->pain = monster_dynamic_pain;
+			}
+			else if (!strcmp(frames[i].name, "attack"))
+			{
+				self->monsterinfo.attack = monster_dynamic_attack;
+			}
+			else if (!strcmp(frames[i].name, "death"))
+			{
+				self->die = monster_dynamic_die;
+			}
 		}
 	}
 }
@@ -1472,9 +1845,23 @@ monster_start(edict_t *self)
 		}
 	}
 
+#if 0
 	/* randomize what frame they start on */
-//	if (self->monsterinfo.currentmove)
-//		self->s.frame = self->monsterinfo.currentmove->firstframe + (rand() % (self->monsterinfo.currentmove->lastframe - self->monsterinfo.currentmove->firstframe + 1));
+	if (self->monsterinfo.currentmove)
+	{
+		self->s.frame = self->monsterinfo.currentmove->firstframe +
+			(randk() % (self->monsterinfo.currentmove->lastframe -
+					   self->monsterinfo.currentmove->firstframe + 1));
+	}
+	else if (self->monsterinfo.action)
+	{
+		int ofs_frames = 0, num_frames = 1;
+
+		M_SetAnimGroupFrameValues(self, self->monsterinfo.action, &ofs_frames, &num_frames);
+
+		self->s.frame = ofs_frames + (randk() % num_frames);
+	}
+#endif
 
 	if (!self->mass)
 		self->mass = 200;

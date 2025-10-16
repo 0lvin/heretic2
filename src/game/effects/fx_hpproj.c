@@ -1192,7 +1192,7 @@ void FXHPStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 		self->Update = NULL;
 		self->AddToView = PriestessFirstSeenInit;
 		self->Update = PriestessEffectStayAlive;
-		self->extra=(void *)(&fxi.server_entities[entID]);
+		self->extra=(void *)(*fxi.cl_entities + entID);
 
 		AddEffect(Owner, self);
 

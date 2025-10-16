@@ -189,7 +189,7 @@ FXSphereOfAnnihilation(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	if (r_detail->value != DETAIL_LOW)
 		AuraThinker->dlight=CE_DLight_new(LightColor,150.0,0.0);
 	AuraThinker->Update=FXSphereOfAnnihilationAuraThink;
-	AuraThinker->extra=(void *)(&fxi.server_entities[CasterEntnum]);// The caster's centity_t.
+	AuraThinker->extra=(void *)(*fxi.cl_entities + CasterEntnum);// The caster's centity_t.
 	AuraThinker->AddToView = LinkedEntityUpdatePlacement;
 
 	AddEffect(Owner,AuraThinker);
@@ -444,7 +444,7 @@ void FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t 
 	if (CasterEntnum == -1)
 		GlowballSpawner->extra=NULL;
 	else
-		GlowballSpawner->extra=(void *)(&fxi.server_entities[CasterEntnum]);
+		GlowballSpawner->extra=(void *)(*fxi.cl_entities + CasterEntnum);
 
 	AddEffect(Owner,GlowballSpawner);
 }

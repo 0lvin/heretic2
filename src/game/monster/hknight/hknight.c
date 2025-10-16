@@ -32,35 +32,6 @@ static int sound_pain;
 void hknight_run(edict_t *self);
 void swing_sword_step(edict_t *self);
 
-// Stand
-static mframe_t hknight_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-};
-mmove_t hknight_move_stand =
-{
-	FRAME_stand1,
-	FRAME_stand9,
-	hknight_frames_stand,
-	NULL
-};
-
-void
-hknight_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &hknight_move_stand;
-}
-
 // Charge
 static mframe_t hknight_frames_charge [] =
 {
@@ -420,10 +391,7 @@ hknight_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 // Death (1)
@@ -516,6 +484,11 @@ hknight_sight(edict_t *self, edict_t *other /* unused */)
 void
 hknight_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
@@ -544,7 +517,8 @@ SP_monster_hknight(edict_t *self)
 	self->gib_health = -40;
 	self->mass = 250;
 
-	self->monsterinfo.stand = hknight_stand;
+	monster_dynamic_setinfo(self);
+
 	self->monsterinfo.walk = hknight_run;
 	self->monsterinfo.run = hknight_run;
 	self->monsterinfo.attack = hknight_attack;

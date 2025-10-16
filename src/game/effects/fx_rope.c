@@ -51,7 +51,7 @@ qboolean RopeCheckToHide(struct client_entity_s *self, centity_t *owner)
 	centity_t	*grab;
 
 	//Get the entity
-	grab = &fxi.server_entities[self->LifeTime];
+	grab = *fxi.cl_entities + self->LifeTime;
 
 	//If the flag isn't set, then we're supposed to disappear
 	if ( (!(grab->current.effects & EF_ALTCLIENTFX)) && (self->SpawnInfo < fxi.cl->time) )
@@ -232,7 +232,7 @@ FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
 	centity_t		*end, *grab;
 
 	end  = (centity_t *)self->extra;
-	grab = &fxi.server_entities[self->LifeTime];
+	grab = *fxi.cl_entities + self->LifeTime;
 
 	//If the rope entity has requested it, hide these segments
 	if (grab->current.effects & EF_ALTCLIENTFX)
@@ -327,11 +327,11 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		rope->AddToView = FXRopeTopDraw;
 
 		//End of the rope
-		rope->extra = (void *) &fxi.server_entities[end_id];
+		rope->extra = (void *)(*fxi.cl_entities + end_id);
 		rope->LifeTime = grab_id;
 
 		// Set up the end vector start and endpos, for linear interpolation.
-		VectorCopy(fxi.server_entities[end_id].current.origin, rope->startpos);
+		VectorCopy((*fxi.cl_entities)[end_id].current.origin, rope->startpos);
 		VectorCopy(rope->startpos, rope->endpos);
 
 		rope->lastThinkTime = fxi.cl->time;
@@ -426,7 +426,7 @@ void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
 			ropeb->AddToView = FXRopeBottomDrawAttached;
 
 			//End of the ropeb
-			ropeb->extra = (void *) &fxi.server_entities[end_id];
+			ropeb->extra = (void *)(*fxi.cl_entities + end_id);
 			ropeb->LifeTime = grab_id;
 
 			// Set up the end vector start and endpos, for linear interpolation.

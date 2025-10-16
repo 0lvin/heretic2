@@ -1001,6 +1001,11 @@ typedef struct
 	void (*dismember)(edict_t *self, int damage, int HitLocation);
 	qboolean (*alert)(edict_t *self, alertent_t *alerter, edict_t *enemy);
 
+	/* dynamic actions */
+	const char *action;
+	float walk_dist;
+	float run_dist;
+
 	float pausetime;
 	float attack_finished;
 
@@ -1495,6 +1500,23 @@ void monster_fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damag
 		int speed, int flashtype, int effect);
 
 void M_droptofloor(edict_t *ent);
+void monster_dynamic_run(edict_t *self);
+void monster_dynamic_walk(edict_t *self);
+void monster_dynamic_idle(edict_t *self);
+void monster_dynamic_stand(edict_t *self);
+void monster_dynamic_search(edict_t *self);
+void monster_dynamic_setinfo(edict_t *self);
+void monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
+	int damage, vec3_t point);
+void monster_dynamic_die_noanim(edict_t *self, edict_t *inflictor, edict_t *attacker,
+	int damage, vec3_t point);
+void monster_dynamic_dead(edict_t *self);
+void monster_dynamic_attack(edict_t *self);
+void monster_dynamic_pain(edict_t *self, edict_t *other /* unused */,
+		float kick /* unused */, int damage);
+void monster_dynamic_pain_noanim(edict_t *self, edict_t *other /* unused */,
+		float kick /* unused */, int damage);
+void monster_dynamic_sight(edict_t *self, edict_t *other /* unused */);
 void monster_think(edict_t *self);
 void walkmonster_start(edict_t *self);
 void swimmonster_start(edict_t *self);

@@ -83,9 +83,9 @@ Clear(void)
 		RemoveEffectList(&clientEnts);
 	}
 
-	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
+		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
 	{
-		if (owner->effects)
+		if (owner && owner->effects)
 		{
 			RemoveOwnedEffectList(owner);
 		}
@@ -182,7 +182,7 @@ void AddEffects(void)
 
 	// Add all effects which are attatched to entities, that have no model.
 
-	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)
+		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
 	{
 		// gak, think something else need to be done... maybe a list of centities with effects.
 
@@ -221,7 +221,7 @@ PostRenderUpdate(void)
 		num_free_active += UpdateEffects(&clientEnts, NULL);
 	}
 
-	for(i = 0, owner = fxi.server_entities; i < MAX_EDICTS; ++i, ++owner)	// gak, think something else need to be done
+		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)	// gak, think something else need to be done
 	{											// maybe a list of centities with effects. . .
 		if (owner->effects)
 		{
@@ -294,7 +294,7 @@ ParseEffects(sizebuf_t *msg_read, int num)
 					return;
 				}
 
-				tempOwner = fxi.server_entities + index;
+				tempOwner = *fxi.cl_entities + index;
 			}
 		}
 
@@ -459,7 +459,7 @@ AddServerEntities(frame_t *frame)
 		s1 = &fxi.parse_entities[(frame->parse_entities +
 				pnum) & (MAX_PARSE_ENTITIES - 1)];
 
-		cent = fxi.server_entities + s1->number;
+		cent = *fxi.cl_entities + s1->number;
 
 		if ((fxi.cl_predict->value) && (s1->number == fxi.cl->playernum+1))
 		{

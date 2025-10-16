@@ -273,7 +273,8 @@ E_Load(void)
 	cl_game_import.r_numparticles = &r_numparticles;
 	cl_game_import.r_particles = r_particles;
 
-	cl_game_import.server_entities = cl_entities;
+	cl_game_import.cl_entities = &cl_entities;
+	cl_game_import.cl_numentities = &cl_numentities;
 	cl_game_import.parse_entities = cl_parse_entities;
 	cl_game_import.leveltime = (float*)&cl.time;
 	cl_game_import.net_message = &net_message;

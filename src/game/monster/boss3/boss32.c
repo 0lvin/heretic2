@@ -787,11 +787,6 @@ makron_pain(edict_t *self, edict_t *other /* unused */,
 }
 
 void
-makron_sight(edict_t *self, edict_t *other /* unused */)
-{
-}
-
-void
 makron_attack(edict_t *self)
 {
 	float r;
@@ -951,10 +946,7 @@ makron_dead(edict_t *self)
 
 	VectorSet(self->mins, -48, -48, 0);
 	VectorSet(self->maxs, 48, 48, 24);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 void
@@ -1182,7 +1174,7 @@ SP_monster_makron(edict_t *self)
 	self->monsterinfo.dodge = NULL;
 	self->monsterinfo.attack = makron_attack;
 	self->monsterinfo.melee = NULL;
-	self->monsterinfo.sight = makron_sight;
+	self->monsterinfo.sight = monster_dynamic_sight;
 	self->monsterinfo.checkattack = Makron_CheckAttack;
 
 	gi.linkentity(self);

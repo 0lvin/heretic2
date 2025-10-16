@@ -33,42 +33,6 @@ static int sound_hit;
 static void zombie_down(edict_t *self);
 static void zombie_get_up_attempt(edict_t *self);
 
-/* Stand */
-static mframe_t zombie_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-};
-mmove_t zombie_move_stand =
-{
-	FRAME_stand1,
-	FRAME_stand15,
-	zombie_frames_stand,
-	NULL
-};
-
-void
-zombie_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &zombie_move_stand;
-}
-
 /* Run */
 static mframe_t zombie_frames_run[] =
 {
@@ -108,48 +72,6 @@ void
 zombie_run(edict_t *self)
 {
 	self->monsterinfo.currentmove = &zombie_move_run;
-}
-
-/* Walk */
-static mframe_t zombie_frames_walk[] =
-{
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL},
-	{ai_walk, 0, NULL}
-};
-
-mmove_t zombie_move_walk =
-{
-	FRAME_walk1,
-	FRAME_walk19,
-	zombie_frames_walk,
-	NULL
-};
-
-void
-zombie_walk(edict_t *self)
-{
-	self->monsterinfo.currentmove = &zombie_move_walk;
 }
 
 /* Sight */
@@ -712,6 +634,11 @@ zombie_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 void
 zombie_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	if (random() < 0.2)
 	{
 		gi.sound(self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
@@ -748,8 +675,9 @@ SP_monster_zombie(edict_t *self)
 	self->gib_health = -5;
 	self->mass = 60;
 
-	self->monsterinfo.stand = zombie_stand;
-	self->monsterinfo.walk = zombie_walk;
+	monster_dynamic_setinfo(self);
+	self->monsterinfo.walk_dist = 0;
+
 	self->monsterinfo.run = zombie_run;
 	self->monsterinfo.attack = zombie_attack;
 	self->monsterinfo.sight = zombie_sight;

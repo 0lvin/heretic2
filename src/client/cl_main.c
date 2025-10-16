@@ -89,7 +89,11 @@ cvar_t *cl_vwep;
 client_static_t cls;
 client_state_t cl;
 
-centity_t cl_entities[MAX_EDICTS];
+/* initialize the entities array to at least this many entities */
+#define ALLOC_ENTITIES_MIN 32
+
+centity_t *cl_entities;
+int cl_numentities;
 
 entity_xstate_t cl_parse_entities[MAX_PARSE_ENTITIES];
 
@@ -108,6 +112,40 @@ extern cvar_t *allow_download_players;
 extern cvar_t *allow_download_models;
 extern cvar_t *allow_download_sounds;
 extern cvar_t *allow_download_maps;
+
+void
+CL_ClearEntities(void)
+{
+	if (cl_entities)
+	{
+		Z_Free(cl_entities);
+		cl_entities = NULL;
+	}
+
+	cl_numentities = 0;
+}
+
+centity_t *
+CL_AllocEntity(int entnum)
+{
+	int nextpow2;
+
+	if ((entnum < 0) || (entnum > MAX_CL_ENTNUM))
+	{
+		return NULL;
+	}
+
+	if (entnum >= cl_numentities)
+	{
+		nextpow2 = (cl_numentities || (entnum >= ALLOC_ENTITIES_MIN)) ?
+			(int)NextPow2(entnum) : ALLOC_ENTITIES_MIN;
+
+		cl_entities = Z_Realloc(cl_entities, nextpow2 * sizeof(centity_t));
+		cl_numentities = nextpow2;
+	}
+
+	return &cl_entities[entnum];
+}
 
 /*
  * Returns max clients in the current session
@@ -254,7 +292,7 @@ CL_Record_f(void)
 	/* baselines */
 	memset(&nullstate, 0, sizeof(nullstate));
 
-	for (i = 0; i < MAX_EDICTS; i++)
+	for (i = 0; i < cl_numentities; i++)
 	{
 		ent = &cl_entities[i].baseline;
 
@@ -405,7 +443,7 @@ CL_ClearState(void)
 
 	/* wipe the entire cl structure */
 	memset(&cl, 0, sizeof(cl));
-	memset(&cl_entities, 0, sizeof(cl_entities));
+	CL_ClearEntities();
 
 	SZ_Clear(&cls.netchan.message);
 }
@@ -1053,5 +1091,6 @@ CL_Shutdown(void)
 	IN_Shutdown();
 	VID_Shutdown();
 
+	CL_ClearEntities();
 	Mods_NamesFinish();
 }

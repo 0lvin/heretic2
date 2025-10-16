@@ -29,78 +29,6 @@ static int sound_idle2;
 static int sound_pain;
 static int sound_sight;
 
-// Stand
-static mframe_t wizard_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-};
-mmove_t wizard_move_stand =
-{
-	FRAME_hover1,
-	FRAME_hover15,
-	wizard_frames_stand,
-	NULL
-};
-
-void
-wizard_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &wizard_move_stand;
-}
-
-// Run
-static mframe_t wizard_frames_run [] =
-{
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL},
-	{ai_run, 16, NULL}
-};
-mmove_t wizard_move_run =
-{
-	FRAME_fly1,
-	FRAME_fly14,
-	wizard_frames_run,
-	NULL
-};
-
-void
-wizard_run(edict_t *self)
-{
-	self->monsterinfo.currentmove = &wizard_move_run;
-}
-
 static void
 wizard_frame(edict_t *self)
 {
@@ -130,7 +58,7 @@ mmove_t wizard_move_finish =
 	FRAME_magatt1,
 	FRAME_magatt5,
 	wizard_frames_finish,
-	wizard_run
+	monster_dynamic_run
 };
 
 void
@@ -264,34 +192,19 @@ wizard_attack(edict_t *self)
 }
 
 // Pain
-static mframe_t wizard_frames_pain [] =
-{
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL}
-};
-mmove_t wizard_move_pain =
-{
-	FRAME_pain1,
-	FRAME_pain4,
-	wizard_frames_pain,
-	wizard_run
-};
-
 void
 wizard_pain(edict_t *self, edict_t *other /* unused */,
 		float kick /* unused */, int damage)
 {
 	if (level.time < self->pain_debounce_time)
+	{
 		return;
+	}
+
 	self->pain_debounce_time = level.time + 3;
 	gi.sound(self, CHAN_VOICE, sound_pain, 1, ATTN_NORM, 0);
 
-	// decino: No pain animations in Nightmare mode
-	if (skill->value == SKILL_HARDPLUS)
-		return;
-	self->monsterinfo.currentmove = &wizard_move_pain;
+	monster_dynamic_pain(self, other, kick, damage);
 }
 
 static void
@@ -306,13 +219,6 @@ wizard_fling(edict_t *self)
 
 	self->movetype = MOVETYPE_TOSS;
 	self->svflags |= SVF_DEADMONSTER;
-}
-
-void
-wizard_dead(edict_t *self)
-{
-	self->nextthink = 0;
-	gi.linkentity(self);
 }
 
 // Death
@@ -333,7 +239,7 @@ mmove_t wizard_move_death =
 	FRAME_death1,
 	FRAME_death8,
 	wizard_frames_death,
-	wizard_dead
+	monster_dynamic_dead
 };
 
 void
@@ -365,19 +271,33 @@ wizard_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 void
 wizard_sight(edict_t *self, edict_t *other /* unused */)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
 }
 
 void
 wizard_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	float r;
 	r = random() * 5;
 
 	if (r > 4.5)
+	{
 		gi.sound(self, CHAN_VOICE, sound_idle1, 1, ATTN_NORM, 0);
-	if (r < 1.5)
+	}
+	else if (r < 1.5)
+	{
 		gi.sound(self, CHAN_VOICE, sound_idle2, 1, ATTN_NORM, 0);
+	}
 }
 
 /*
@@ -405,9 +325,10 @@ SP_monster_wizard(edict_t *self)
 	self->gib_health = -40;
 	self->mass = 80;
 
-	self->monsterinfo.stand = wizard_stand;
-	self->monsterinfo.walk = wizard_run;
-	self->monsterinfo.run = wizard_run;
+	monster_dynamic_setinfo(self);
+
+	self->monsterinfo.run_dist = 16;
+
 	self->monsterinfo.attack = wizard_attack;
 	self->monsterinfo.sight = wizard_sight;
 	self->monsterinfo.search = wizard_search;

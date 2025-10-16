@@ -25,86 +25,6 @@ static int sound_search;
 static int sound_death;
 static int sound_melee;
 
-// Stand
-static mframe_t fish_frames_stand [] =
-{
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-
-	{ai_stand, 0, NULL},
-	{ai_stand, 0, NULL},
-};
-mmove_t fish_move_stand =
-{
-	FRAME_swim1,
-	FRAME_swim18,
-	fish_frames_stand,
-	NULL
-};
-
-void
-fish_stand(edict_t *self)
-{
-	self->monsterinfo.currentmove = &fish_move_stand;
-}
-
-// Run
-static mframe_t fish_frames_run [] =
-{
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL},
-
-	{ai_run, 12, NULL},
-	{ai_run, 12, NULL}
-};
-mmove_t fish_move_run =
-{
-	FRAME_swim1,
-	FRAME_swim18,
-	fish_frames_run,
-	NULL
-};
-
-void
-fish_run(edict_t *self)
-{
-	self->monsterinfo.currentmove = &fish_move_run;
-}
-
 static void
 fish_bite_step(edict_t *self)
 {
@@ -156,7 +76,7 @@ mmove_t fish_move_melee =
 	FRAME_attack1,
 	FRAME_attack18,
 	fish_frames_melee,
-	fish_run
+	monster_dynamic_run
 };
 
 void
@@ -169,6 +89,11 @@ fish_melee(edict_t *self)
 void
 fish_search(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
@@ -177,10 +102,7 @@ fish_dead(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity(self);
+	monster_dynamic_dead(self);
 }
 
 // Death
@@ -238,8 +160,12 @@ fish_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_
 		self->deadflag = DEAD_DEAD;
 		return;
 	}
+
 	if (self->deadflag == DEAD_DEAD)
+	{
 		return;
+	}
+
 	gi.sound(self, CHAN_VOICE, sound_death, 1, ATTN_NORM, 0);
 
 	self->deadflag = DEAD_DEAD;
@@ -248,51 +174,19 @@ fish_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_
 }
 
 // Pain
-static mframe_t fish_frames_pain [] =
-{
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL},
-
-	{ai_move, 0, NULL},
-	{ai_move, 0, NULL}
-};
-mmove_t fish_move_pain =
-{
-	FRAME_pain1,
-	FRAME_pain9,
-	fish_frames_pain,
-	fish_run
-};
 
 void
 fish_pain(edict_t *self, edict_t *other /* unused */,
 		float kick /* unused */, int damage)
 {
 	if (level.time < self->pain_debounce_time)
+	{
 		return;
+	}
+
 	self->pain_debounce_time = level.time + 3;
 
-	// decino: No pain animations in Nightmare mode
-	if (skill->value == SKILL_HARDPLUS)
-		return;
-	self->monsterinfo.currentmove = &fish_move_pain;
+	monster_dynamic_pain(self, other, kick, damage);
 }
 
 /*
@@ -316,9 +210,10 @@ SP_monster_rotfish(edict_t *self)
 	self->gib_health = -25;
 	self->mass = 25;
 
-	self->monsterinfo.stand = fish_stand;
-	self->monsterinfo.walk = fish_run;
-	self->monsterinfo.run = fish_run;
+	monster_dynamic_setinfo(self);
+
+	self->monsterinfo.run_dist = 12;
+
 	self->monsterinfo.melee = fish_melee;
 	self->monsterinfo.search = fish_search;
 
@@ -328,5 +223,5 @@ SP_monster_rotfish(edict_t *self)
 	self->monsterinfo.scale = MODEL_SCALE;
 	gi.linkentity(self);
 
-	flymonster_start(self);
+	swimmonster_start(self);
 }

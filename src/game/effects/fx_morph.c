@@ -178,7 +178,7 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 		missile->radius = 32.0F;
 		missile->color.c = MORPH_COL;
 		missile->dlight = CE_DLight_new(missile->color, 110.0F, 00.0F);
-		AddEffect((centity_t *)(&fxi.server_entities[morpharray[i]]), missile);
+		AddEffect((centity_t *)(*fxi.cl_entities + morpharray[i]), missile);
 		yawf += MORPH_ANGLE_INC;
 	}
 

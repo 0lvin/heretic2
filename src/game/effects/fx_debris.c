@@ -279,7 +279,7 @@ void FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
 	//increase count on owner so that can have multiple effects?
 	FXGetEffect(owner, flags, clientEffectSpawners[FX_BODYPART].formatString, &frame, &BodyPart, &damage, &modelindex, &OwnerEntnum);
 
-	realowner = &fxi.server_entities[OwnerEntnum];
+	realowner = *fxi.cl_entities + OwnerEntnum;
 
 	ke = damage * 10000.0f;
 	if (ke < 10000.0f)
