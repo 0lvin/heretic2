@@ -83,11 +83,14 @@ Clear(void)
 		RemoveEffectList(&clientEnts);
 	}
 
-		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
+	if (*fxi.cl_entities && *fxi.cl_numentities)
 	{
-		if (owner && owner->effects)
+		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
 		{
-			RemoveOwnedEffectList(owner);
+			if (owner->effects)
+			{
+				RemoveOwnedEffectList(owner);
+			}
 		}
 	}
 
@@ -182,13 +185,16 @@ void AddEffects(void)
 
 	// Add all effects which are attatched to entities, that have no model.
 
-		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
+	if (*fxi.cl_entities && *fxi.cl_numentities)
 	{
-		// gak, think something else need to be done... maybe a list of centities with effects.
-
-		if (owner->effects && (owner->current.effects & EF_ALWAYS_ADD_EFFECTS))
+		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
 		{
-			num_owned_inview += AddEffectsToView(&owner->effects, owner);
+			// gak, think something else need to be done... maybe a list of centities with effects.
+
+			if (owner->effects && (owner->current.effects & EF_ALWAYS_ADD_EFFECTS))
+			{
+				num_owned_inview += AddEffectsToView(&owner->effects, owner);
+			}
 		}
 	}
 
@@ -221,11 +227,16 @@ PostRenderUpdate(void)
 		num_free_active += UpdateEffects(&clientEnts, NULL);
 	}
 
-		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)	// gak, think something else need to be done
-	{											// maybe a list of centities with effects. . .
-		if (owner->effects)
+	if (*fxi.cl_entities && *fxi.cl_numentities)
+	{
+		// gak, think something else need to be done
+		for(i = 0, owner = *fxi.cl_entities; i < *fxi.cl_numentities; ++i, ++owner)
 		{
-			num_owned_active += UpdateEffects(&owner->effects, owner);
+			// maybe a list of centities with effects. . .
+			if (owner->effects)
+			{
+				num_owned_active += UpdateEffects(&owner->effects, owner);
+			}
 		}
 	}
 
