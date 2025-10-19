@@ -793,6 +793,7 @@ SV_InitGameProgs(void)
 	import.PmoveEx = PmoveEx;
 	import.LocalizationMessage = PF_LocalizationMessage;
 	import.LocalizationUIMessage = SV_LocalizationUIMessage;
+	import.TagRealloc = Z_TagRealloc;
 
 	/* Heretic 2 specific */
 	import.FS_NextPath = FS_NextPath;

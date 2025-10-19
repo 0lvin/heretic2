@@ -1506,6 +1506,9 @@ void monster_dynamic_idle(edict_t *self);
 void monster_dynamic_stand(edict_t *self);
 void monster_dynamic_search(edict_t *self);
 void monster_dynamic_setinfo(edict_t *self);
+void monster_dynamic_melee(edict_t *self);
+void monster_dynamic_dodge(edict_t *self, edict_t *attacker, float eta,
+	trace_t *tr /* unused */);
 void monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	int damage, vec3_t point);
 void monster_dynamic_die_noanim(edict_t *self, edict_t *inflictor, edict_t *attacker,
@@ -1714,6 +1717,7 @@ void WriteLevel(const char *filename);
 void ReadGame(const char *filename);
 void WriteGame(const char *filename, qboolean autosave);
 void SpawnEntities(const char *mapname, char *entities, const char *spawnpoint);
+void ReinitGameEntities(int ent_cnt);
 
 void fire_flechette(edict_t *self, vec3_t start, vec3_t dir, int damage,
 		int speed, int kick);
