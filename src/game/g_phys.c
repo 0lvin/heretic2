@@ -2562,27 +2562,8 @@ void MoveEntity_Slide(edict_t *self)
 
 			assert(Vec3NotZero(planes[i]));
 
-#if 0
-#define ACCEL_A // velocity is maintained throughout, otherwise, elasticity is accounted for
-#endif
-
-#ifdef ACCEL_A	// top version is better for testing sliding with sv_friction at 0
-			speed = VectorNormalize2(original_velocity, dir);
-
-//			gi.dprintf("Speed %f\n", speed);
-
-			BounceVelocity(dir, planes[i], dir, 1.0001f);	// only works with an elasticity a bit greater than 1.0
-																	// going to need a different func
-																	// for bouncing stuff
-
-			dirMag = VectorNormalize(dir);
-
-#else
 			BounceVelocity(original_velocity, planes[i], new_velocity, self->elasticity);
-
 			dirMag = speed = VectorNormalize2(new_velocity, dir);
-
-#endif // ACCEL_A
 
 			if (FloatIsZeroEpsilon(dirMag))
 			{	// smacked into something exactly head on
@@ -2616,9 +2597,6 @@ void MoveEntity_Slide(edict_t *self)
 			{
 				if (dot < -0.01)
 				{ // the trace will fail, try to restructure inorder to skip it
-#ifdef ACCEL_A
-					assert(0);	// shouldn't happen
-#endif // ACCEL_A
 				}
 				else if (Q_fabs(dot) < 0.01) // parallel to surface
 				{
@@ -2631,31 +2609,6 @@ void MoveEntity_Slide(edict_t *self)
 			else
 			{	// easy case, fall straight down, no surface friction needed
 			}
-
-#ifdef ACCEL_A
-			if (slide)
-			{	// moving along ground, apply gravity and friction appropriatly
-				assert(Q_fabs(DotProduct(dir, planes[i])) < 0.1);
-
-				accel = -friction * planes[i][2] - gravity * dir[2];
-				speed += accel * timeRemaining;
-				VectorScale(dir, speed, new_velocity);
-//				gi.dprintf("Velocity slid, accel %f, speed %f\n", accel, speed);
-			}
-			else
-			{	// else apply gravity straight down, no friction
-				VectorScale(dir, speed, new_velocity);
-				new_velocity[2] -= gravity * timeRemaining;
-//				gi.dprintf("Velocity dropped 1, bump %i, plane %i\n", bumpcount, i);
-//				gi.dprintf("dir %f, %f, %f\n", dir[0], dir[1], dir[2]);
-			}
-
-#endif // ACCEL_A
-
-//			gi.dprintf("dirMag %f\n", dirMag);
-//			gi.dprintf("Speed %f\n", VectorLength(new_velocity));
-
-//			gi.dprintf("Bounce dot %f\n", dot);
 
 			for(j = 0; j < numplanes; ++j)
 			{
@@ -2700,18 +2653,12 @@ void MoveEntity_Slide(edict_t *self)
 
 			if (dir[2] <= 0)
 			{
-#ifdef ACCEL_A
-				accel = -friction * (1 - dir[2]) - gravity * dir[2];
-				speed += accel * timeRemaining;
-#else
 				slide = true;
-#endif // ACCEL_A
 			}
 
 			VectorScale(dir, speed, self->velocity);
 		}
 
-#ifndef ACCEL_A
 		speed = VectorNormalize2(self->velocity, dir);
 
 		if (slide)
@@ -2719,29 +2666,15 @@ void MoveEntity_Slide(edict_t *self)
 			accel = -friction * (1 - dir[2]) - gravity * dir[2];
 			speed += accel * timeRemaining;
 			VectorScale(dir, speed, new_velocity);
-//				gi.dprintf("Velocity slid, accel %f, speed %f\n", accel, speed);
 		}
 		else
 		{	// else apply gravity straight down, no friction
 			VectorScale(dir, speed, new_velocity);
 			new_velocity[2] -= gravity * timeRemaining;
-//			gi.dprintf("Velocity dropped 2, bump %i, plane %i\n", bumpcount, i);
-//			gi.dprintf("dir %f, %f, %f\n", dir[0], dir[1], dir[2]);
 		}
-
-#endif // ACCEL_A
 
 		// if velocity is against the original velocity, stop dead
 		// to avoid tiny occilations in sloping corners
-#if 0	// haven't seen a problem with it yet. . .
-		if (DotProduct(self->velocity, primal_velocity) <= 0)
-		{
-			gi.dprintf("Velocity was cleared at bump %i\n", bumpcount);
-
-			VectorClear(self->velocity);
-			break;
-		}
-#endif
 	}
 
 	if (formMove.trace.fraction < 1)
@@ -2751,7 +2684,6 @@ void MoveEntity_Slide(edict_t *self)
 		if (Vec3NotZero(self->velocity))
 		{
 			VectorClear(self->velocity);
-//			gi.dprintf("Unsuccesful move with %i bumps and %i planes\n", bumpcount, numplanes);
 		}
 
 		if (formMove.trace.plane.normal[2] > GROUND_NORMAL)	// hit the floor

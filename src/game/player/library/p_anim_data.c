@@ -3482,30 +3482,10 @@ static panimframe_t player_frames_resurface[] =
 };
 panimmove_t	player_move_resurface = {5, player_frames_resurface, PlayerAnimLowerUpdate};
 
-
-
 //----------------------------------------------------------------------------
 //  PLAYER GRAB AND PULL UP ANIMATIONS
-//    grabstartwall - transition from jumping up to grabbing a wall ledge
-//    grabhold - single frame of holding onto a wall
 //    pullupwall - transition, pulling himself up wall to standing
 //----------------------------------------------------------------------------
-#if 0
-static panimframe_t player_frames_grabstartwall [] =
-{
-	{FRAMEH2_grab6, NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAMEH2_grab7, NULL, 0, 0, 0, NULL, 0, NULL},
-};
-panimmove_t player_move_grabstartwall = {2, player_frames_grabstartwall, PlayerAnimLowerUpdate};
-
-
-static panimframe_t player_frames_grabhold [] =
-{
-	{FRAMEH2_grab8, NULL, 0, 0, 0, NULL, 0, NULL},
-};
-panimmove_t player_move_grabhold = {1, player_frames_grabhold, PlayerAnimLowerUpdate};
-#endif
-
 static panimframe_t player_frames_pullupwall [] =
 {
 	{FRAMEH2_pullup1, PlayerPullupHeight, 40, 0, 0, PlayerActionClimbStartSound, 0, NULL},

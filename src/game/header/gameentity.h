@@ -13,8 +13,6 @@ typedef struct sv_entity_s
 									// of gclient_s to be a player_state_t
 									// but the rest of it is opaque
 
-//	qboolean	inuse;				// replace with svflags & SVF_INUSE
-
 	int			linkcount;
 
 	// FIXME: move these fields to a server private sv_entity_t (probably not necessary)
@@ -36,7 +34,6 @@ typedef struct sv_entity_s
 typedef struct g_PolyInfo_s
 {
 	char		*message;			// text printed to con for door, polys, triggers, etc.
-
 } g_PolyInfo_t;
 
 typedef struct g_PhysicsInfo_s
@@ -48,24 +45,6 @@ typedef struct g_PhysicsInfo_s
 	vec3_t		velocity;
 	vec3_t		avelocity;
 } g_PhysicsInfo_t;
-
-#if 0
-typedef struct g_PlayerInfo_s
-{
-} g_PlayerInfo_s;
-
-typedef struct g_MonsterInfo_s
-{
-} g_MonsterInfo_s;
-
-typedef struct g_ActorInfo_s
-{
-} g_ActorInfo_s;
-
-typedef struct g_ItemInfo_s
-{
-} g_ItemInfo_t;
-#endif
 
 typedef struct GameEntity_s
 {
@@ -89,6 +68,4 @@ typedef struct GameEntity_s
 	};
 
 	char		*classname;
-
 } GameEntity_t;
-

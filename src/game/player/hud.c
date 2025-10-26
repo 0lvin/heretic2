@@ -516,7 +516,6 @@ HelpComputerMessage(edict_t *ent)
 void
 InventoryMessage(edict_t *ent)
 {
-#if 0
 	int i;
 
 	if (!ent)
@@ -530,7 +529,6 @@ InventoryMessage(edict_t *ent)
 	{
 		gi.WriteShort(ent->client->pers.inventory[i]);
 	}
-#endif
 }
 
 /*
