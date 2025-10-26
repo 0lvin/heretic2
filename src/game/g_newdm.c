@@ -323,7 +323,6 @@ void
 doppleganger_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
 		int damage, vec3_t point)
 {
-#if 0
 	edict_t *sphere;
 	float dist;
 	vec3_t dir;
@@ -356,7 +355,6 @@ doppleganger_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attack
 	}
 
 	BecomeExplosion1(self);
-#endif
 }
 
 void
@@ -389,6 +387,7 @@ doppleganger_timeout(edict_t *self)
 void
 body_think(edict_t *self)
 {
+	int firstframe = FRAME_stand01, lastframe = FRAME_stand40;
 	float r;
 
 	if (fabsf(self->ideal_yaw - anglemod(self->s.angles[YAW])) < 2)
@@ -409,14 +408,16 @@ body_think(edict_t *self)
 		M_ChangeYaw(self);
 	}
 
+	lastframe -= firstframe;
+	M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe);
+	lastframe += firstframe;
+
 	self->s.frame++;
 
-#if 0
-	if (self->s.frame > FRAME_stand40)
+	if (self->s.frame > lastframe)
 	{
-		self->s.frame = FRAME_stand01;
+		self->s.frame = firstframe;
 	}
-#endif
 
 	self->nextthink = level.time + 0.1;
 }

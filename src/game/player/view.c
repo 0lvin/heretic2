@@ -890,10 +890,164 @@ G_SetClientSound(edict_t *ent)
 void
 G_SetClientFrame(edict_t *ent, float speed)
 {
+	const char *animname = NULL;
+	int firstframe, lastframe;
+	gclient_t *client;
+	qboolean duck, run;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->s.modelindex != CUSTOM_PLAYER_MODEL)
+	{
+		return; /* not in the player model */
+	}
+
 	if (speed)
 	{
 		xyspeed = speed;
 	}
+
+	client = ent->client;
+
+	if (client->ps.pmove.pm_flags & PMF_DUCKED)
+	{
+		duck = true;
+	}
+	else
+	{
+		duck = false;
+	}
+
+	if (xyspeed)
+	{
+		run = true;
+	}
+	else
+	{
+		run = false;
+	}
+
+	/* check for stand/duck and stop/go transitions */
+	if ((duck != client->anim_duck) && (client->anim_priority < ANIM_DEATH))
+	{
+		goto newanim;
+	}
+
+	if ((run != client->anim_run) && (client->anim_priority == ANIM_BASIC))
+	{
+		goto newanim;
+	}
+
+	if (!ent->groundentity && (client->anim_priority <= ANIM_WAVE))
+	{
+		goto newanim;
+	}
+
+	if (client->anim_priority == ANIM_REVERSE)
+	{
+		if (ent->s.frame > client->anim_end)
+		{
+			ent->s.frame--;
+			return;
+		}
+	}
+	else if (ent->s.frame < client->anim_end)
+	{
+		/* continue an animation */
+		ent->s.frame++;
+		return;
+	}
+
+	if (client->anim_priority == ANIM_DEATH)
+	{
+		return; /* stay there */
+	}
+
+	if (client->anim_priority == ANIM_JUMP)
+	{
+		if (!ent->groundentity)
+		{
+			return; /* stay there */
+		}
+
+		ent->client->anim_priority = ANIM_WAVE;
+		ent->s.frame = FRAME_jump3;
+		ent->client->anim_end = FRAME_jump6;
+		return;
+	}
+
+newanim:
+
+	/* return to either a running or standing frame */
+	client->anim_priority = ANIM_BASIC;
+	client->anim_duck = duck;
+	client->anim_run = run;
+
+	if (!ent->groundentity)
+	{
+		/* if on grapple, don't go into jump
+		   frame, go into standing frame */
+		if (client->ctf_grapple)
+		{
+			firstframe = FRAME_stand01;
+			lastframe = FRAME_stand40;
+			animname = "stand";
+		}
+		else
+		{
+			client->anim_priority = ANIM_JUMP;
+
+			if (ent->s.frame != FRAME_jump2)
+			{
+				ent->s.frame = FRAME_jump1;
+			}
+
+			client->anim_end = FRAME_jump2;
+			return;
+		}
+	}
+	else if (run)
+	{
+		/* running */
+		if (duck)
+		{
+			firstframe = FRAME_crwalk1;
+			lastframe = FRAME_crwalk6;
+			animname = "crwalk";
+		}
+		else
+		{
+			firstframe = FRAME_run1;
+			lastframe = FRAME_run6;
+			animname = "run";
+		}
+	}
+	else
+	{
+		/* standing */
+		if (duck)
+		{
+			firstframe = FRAME_crstnd01;
+			lastframe = FRAME_crstnd19;
+			animname = "crstnd";
+		}
+		else
+		{
+			firstframe = FRAME_stand01;
+			lastframe = FRAME_stand40;
+			animname = "stand";
+		}
+	}
+
+	lastframe -= firstframe;
+	M_SetAnimGroupFrameValues(ent, animname, &firstframe, &lastframe);
+	lastframe += firstframe;
+
+	ent->s.frame = firstframe;
+	client->anim_end = lastframe;
 }
 
 /*
