@@ -3194,9 +3194,6 @@ void SP_monster_ssithra (edict_t *self)
 	G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 	self->svflags |= SVF_WAIT_NOTSOLID;
 	self->flags |= FL_AMPHIBIAN;
-
-//	if (self->spawnflags & MSF_SSITHRA_NAMOR)
-//		self->use = ssithraNamorTriggered;
 }
 
 

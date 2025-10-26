@@ -37,7 +37,6 @@
 void TorchUse (edict_t *self, edict_t *other, edict_t *activator);
 void TorchStart (edict_t *self);
 void SpawnClientAnim(edict_t *self, byte type, char *sound);
-void create_fire_touch (edict_t *owner,vec3_t origin);
 
 void LightStaticsInit()
 {

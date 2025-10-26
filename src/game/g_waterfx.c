@@ -254,10 +254,7 @@ void SP_obj_fishhead2 (edict_t *self)
 
 	BboxYawAndScale(self);
 
-
-
 	gi.linkentity(self);
-//	ObjectInit(self,100,500,MAT_GREYSTONE,SOLID_BBOX);
 }
 
 /*
