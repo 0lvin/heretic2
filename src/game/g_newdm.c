@@ -39,7 +39,6 @@ InitGameRules(void)
 
 		switch (gameNum)
 		{
-#if 0
 			case RDM_TAG:
 				DMGame.GameInit = Tag_GameInit;
 				DMGame.PostInitSetup = Tag_PostInitSetup;
@@ -60,7 +59,6 @@ InitGameRules(void)
 				DMGame.PostInitSetup = DBall_PostInitSetup;
 				DMGame.CheckDMRules = DBall_CheckDMRules;
 				break;
-#endif
 
 			/* reset gamerules if it's not a valid number */
 			default:
@@ -79,7 +77,6 @@ InitGameRules(void)
 static char *
 FindSubstituteItem(edict_t *ent)
 {
-#if 0
 	int i;
 	int itflags, myflags;
 	float rnd;
@@ -254,7 +251,6 @@ FindSubstituteItem(edict_t *ent)
 			}
 		}
 	}
-#endif
 
 	return NULL;
 }
@@ -298,7 +294,6 @@ DoRandomRespawn(edict_t *ent)
 void
 PrecacheForRandomRespawn(void)
 {
-#if 0
 	gitem_t *it;
 	int i;
 	int itflags;
@@ -316,7 +311,6 @@ PrecacheForRandomRespawn(void)
 
 		PrecacheItem(it);
 	}
-#endif
 }
 
 void
