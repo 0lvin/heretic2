@@ -39,7 +39,6 @@ InitGameRules(void)
 
 		switch (gameNum)
 		{
-#if 0
 			case RDM_TAG:
 				DMGame.GameInit = Tag_GameInit;
 				DMGame.PostInitSetup = Tag_PostInitSetup;
@@ -60,7 +59,6 @@ InitGameRules(void)
 				DMGame.PostInitSetup = DBall_PostInitSetup;
 				DMGame.CheckDMRules = DBall_CheckDMRules;
 				break;
-#endif
 
 			/* reset gamerules if it's not a valid number */
 			default:
@@ -79,7 +77,6 @@ InitGameRules(void)
 static char *
 FindSubstituteItem(edict_t *ent)
 {
-#if 0
 	int i;
 	int itflags, myflags;
 	float rnd;
@@ -254,7 +251,6 @@ FindSubstituteItem(edict_t *ent)
 			}
 		}
 	}
-#endif
 
 	return NULL;
 }
@@ -298,7 +294,6 @@ DoRandomRespawn(edict_t *ent)
 void
 PrecacheForRandomRespawn(void)
 {
-#if 0
 	gitem_t *it;
 	int i;
 	int itflags;
@@ -316,14 +311,12 @@ PrecacheForRandomRespawn(void)
 
 		PrecacheItem(it);
 	}
-#endif
 }
 
 void
 doppleganger_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
 		int damage, vec3_t point)
 {
-#if 0
 	edict_t *sphere;
 	float dist;
 	vec3_t dir;
@@ -356,7 +349,6 @@ doppleganger_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attack
 	}
 
 	BecomeExplosion1(self);
-#endif
 }
 
 void
@@ -389,6 +381,7 @@ doppleganger_timeout(edict_t *self)
 void
 body_think(edict_t *self)
 {
+	int firstframe = FRAME_stand01, lastframe = FRAME_stand40;
 	float r;
 
 	if (fabsf(self->ideal_yaw - anglemod(self->s.angles[YAW])) < 2)
@@ -409,14 +402,16 @@ body_think(edict_t *self)
 		M_ChangeYaw(self);
 	}
 
+	lastframe -= firstframe;
+	M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe);
+	lastframe += firstframe;
+
 	self->s.frame++;
 
-#if 0
-	if (self->s.frame > FRAME_stand40)
+	if (self->s.frame > lastframe)
 	{
-		self->s.frame = FRAME_stand01;
+		self->s.frame = firstframe;
 	}
-#endif
 
 	self->nextthink = level.time + 0.1;
 }

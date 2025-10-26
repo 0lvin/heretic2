@@ -34,18 +34,43 @@
 #include "header/g_playstats.h"
 #include "monster/stats/stats.h"
 
-
 void SpawnFlame(edict_t *self,vec3_t origin);
 void SpawnClientAnim(edict_t *self, byte type, char *sound);
 
+void
+destructible_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+{
+	// Play explosion or debris effect
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_EXPLOSION1);
+	gi.WritePosition(self->s.origin);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
 
-void ObjectStaticsInit(void)
+	G_FreeEdict(self); // Remove object
+}
+
+void
+DynamicObjectSpawn(edict_t *self)
+{
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_BBOX;
+	self->takedamage = DAMAGE_YES;
+
+	self->die = destructible_die;
+
+	gi.linkentity(self);
+}
+
+void
+ObjectStaticsInit(void)
 {
 	classStatics[CID_OBJECT].msgReceivers[MSG_DEATH] = DefaultObjectDieHandler;
 }
 
-void objpush_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{//FIXME: make player push?
+void
+objpush_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	//FIXME: make player push?
 	float	ratio;
 
 	if ((!other->groundentity) || (other->groundentity == self))
@@ -80,17 +105,17 @@ void BboxYawAndScale(edict_t *self)
 
 	AngleVectors(self->s.angles,forward, right,NULL);
 
-	VectorMA (self->s.origin, holdmins[0],forward, point[0]);
-	VectorMA (point[0], holdmins[1],right, point[0]);
+	VectorMA(self->s.origin, holdmins[0],forward, point[0]);
+	VectorMA(point[0], holdmins[1],right, point[0]);
 
-	VectorMA (self->s.origin, holdmaxs[0],forward, point[1]);
-	VectorMA (point[1], holdmaxs[1],right, point[1]);
+	VectorMA(self->s.origin, holdmaxs[0],forward, point[1]);
+	VectorMA(point[1], holdmaxs[1],right, point[1]);
 
-	VectorMA (self->s.origin, holdmins[0],forward, point[2]);
-	VectorMA (point[2], holdmaxs[1],right, point[2]);
+	VectorMA(self->s.origin, holdmins[0],forward, point[2]);
+	VectorMA(point[2], holdmaxs[1],right, point[2]);
 
-	VectorMA (self->s.origin, holdmaxs[0],forward, point[3]);
-	VectorMA (point[3], holdmins[1],right, point[3]);
+	VectorMA(self->s.origin, holdmaxs[0],forward, point[3]);
+	VectorMA(point[3], holdmins[1],right, point[3]);
 
 	minpoint[0] = point[0][0];
 	minpoint[1] = point[0][1];
@@ -127,7 +152,6 @@ void BboxYawAndScale(edict_t *self)
 	self->maxs[0] = (maxpoint[0] - self->s.origin[0]) * scale;
 	self->maxs[1] = (maxpoint[1] - self->s.origin[1]) * scale;
 	self->maxs[2] = self->maxs[2] * scale;
-
 }
 
 /*--------------------------------------
@@ -147,17 +171,17 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 
 	AngleVectors(self->s.angles,forward, right,NULL);
 
-	VectorMA (self->s.origin, holdmins[0],forward, point[0]);
-	VectorMA (point[0], holdmins[1],right, point[0]);
+	VectorMA(self->s.origin, holdmins[0],forward, point[0]);
+	VectorMA(point[0], holdmins[1],right, point[0]);
 
-	VectorMA (self->s.origin, holdmaxs[0],forward, point[1]);
-	VectorMA (point[1], holdmaxs[1],right, point[1]);
+	VectorMA(self->s.origin, holdmaxs[0],forward, point[1]);
+	VectorMA(point[1], holdmaxs[1],right, point[1]);
 
-	VectorMA (self->s.origin, holdmins[0],forward, point[2]);
-	VectorMA (point[2], holdmaxs[1],right, point[2]);
+	VectorMA(self->s.origin, holdmins[0],forward, point[2]);
+	VectorMA(point[2], holdmaxs[1],right, point[2]);
 
-	VectorMA (self->s.origin, holdmaxs[0],forward, point[3]);
-	VectorMA (point[3], holdmins[1],right, point[3]);
+	VectorMA(self->s.origin, holdmaxs[0],forward, point[3]);
+	VectorMA(point[3], holdmins[1],right, point[3]);
 
 	minpoint[0] = point[0][0];
 	minpoint[1] = point[0][1];
@@ -194,7 +218,6 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 	self->maxs[0] = (maxpoint[0] - self->s.origin[0]) * scale;
 	self->maxs[1] = (maxpoint[1] - self->s.origin[1]) * scale;
 	self->maxs[2] = self->maxs[2] * scale;
-
 }
 
 void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid)
@@ -244,34 +267,29 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid)
 	}
 }
 
-
-
 //============================================================================
 //
 //  OBJECTS
 //
 //============================================================================
 
-
 /*
- * QUAKED obj_banner (1 .5 0) (-8 -44 -296) (8 44 0) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A really big banner.
--------  FIELDS  ------------------
-INVULNERABLE - N/A (it can't ever be hurt)
-ANIMATE - makes it flutter in the breeze, just like a...banner
-EXPLODING - N/A
-NOPUSH - N/A (banner can't be pushed)
--------  KEYS  ------------------
-skinnum = 0 : blue
-          1 : red
------------------------------------
-*/
-void SP_obj_banner (edict_t *self)
+ * QUAKED obj_banner (1 .5 0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A really big banner.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (it can't ever be hurt)
+ * ANIMATE - makes it flutter in the breeze, just like a...banner
+ * EXPLODING - N/A
+ * NOPUSH - N/A (banner can't be pushed)
+ * -------  KEYS  ------------------
+ * skinnum = 0 : blue
+ *           1 : red
+ * -----------------------------------
+ */
+void
+SP_obj_banner(edict_t *self)
 {
-
-//	G_FreeEdict(self);
-//	return;
-
 	VectorSet(self->mins, -8, -44, -296);
 	VectorSet(self->maxs, 8, 44, 0);
 
@@ -284,15 +302,17 @@ void SP_obj_banner (edict_t *self)
 
 /*
  * QUAKED obj_banneronpole (1 .5 0) (-8 -28 -30) (8 28 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A banner on a pole sticking out of a wall.
--------  FIELDS  ------------------
-INVULNERABLE - can it be hurt
-ANIMATE - makes it flutter in the breeze
-EXPLODING - N/A
-NOPUSH - N/A (banner can't be pushed)
------------------------------------
-*/
-void SP_obj_banneronpole (edict_t *self)
+ *
+ * Heretic 2: A banner on a pole sticking out of a wall.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can it be hurt
+ * ANIMATE - makes it flutter in the breeze
+ * EXPLODING - N/A
+ * NOPUSH - N/A (banner can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_banneronpole(edict_t *self)
 {
 	VectorSet(self->mins, -8, -28, -30);
 	VectorSet(self->maxs, 8, 28, 30);
@@ -304,12 +324,11 @@ void SP_obj_banneronpole (edict_t *self)
 	ObjectInit(self,40,200,MAT_WOOD,SOLID_BBOX);
 }
 
-
-
 /*-----------------------------------------------
 	exploding barrel
 -----------------------------------------------*/
-void barrel_explode_think(edict_t *self)
+void
+barrel_explode_think(edict_t *self)
 {
 	vec3_t loc;
 
@@ -349,14 +368,6 @@ barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 	gi.linkentity(self);
 }
 
-
-void
-object_flame_think(edict_t *self)
-{
-	M_SetAnimGroupFrame(self, "flame");
-	self->nextthink = level.time + FRAMETIME;
-}
-
 /*
  * QUAKED light_torch_small_walltorch (-10 -10 -20) (10 10 20)
  * QUAKED light_flame_large_yellow (-10 -10 -40) (10 10 40)
@@ -368,6 +379,12 @@ object_flame_think(edict_t *self)
  * Quake I: Small yellow flame
  * Quake I: Small walltorch
  */
+void
+object_flame_think(edict_t *self)
+{
+	M_SetAnimGroupFrame(self, "flame");
+	self->nextthink = level.time + FRAMETIME;
+}
 
 void
 SP_quake_light_flame(edict_t *self)
@@ -392,7 +409,6 @@ SP_quake_light_flame(edict_t *self)
  *    1) sound torch
  *    2) sound campfire
  */
-
 void
 SP_object_flame1(edict_t *self)
 {
@@ -418,21 +434,20 @@ SP_object_flame1(edict_t *self)
 	gi.linkentity(self);
 }
 
-
-
 /*
  * QUAKED obj_barrel (1 .5 0) (-12 -12 -19) (12 12 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A barrel.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - the barrel will explode and cause radius damage
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_barrel (edict_t *self)
+ *
+ * Heretic 2: Barrel
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - the barrel will explode and cause radius damage
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_barrel(edict_t *self)
 {
-
 	self->s.modelindex = gi.modelindex("models/objects/barrel/normal/tris.fm");
 
 	VectorSet(self->mins, -12, -12, -19);
@@ -452,16 +467,29 @@ void SP_obj_barrel (edict_t *self)
 }
 
 /*
+ * QUAKED object_barrel (0.3 0.3 1.0) (-10.0 -10.0 -14.0) (10.0 10.0 14.0)
+ *
+ * Dawn of Darkness: Barrel
+ */
+void
+SP_object_barrel(edict_t *self)
+{
+	DynamicObjectSpawn(self);
+}
+
+/*
  * QUAKED obj_broom (1 .5 0) (-2 -2 -25) (2 2 25) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A broom.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_broom (edict_t *self)
+ *
+ * Heretic 2: Broom
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_broom(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/broom/tris.fm");
 
@@ -473,18 +501,19 @@ void SP_obj_broom (edict_t *self)
 	ObjectInit(self,10,40,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A highback wooden chair with a triangle at the top.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_chair1 (edict_t *self)
+ *
+ * Heretic 2: A highback wooden chair with a triangle at the top.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_chair1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/chair1/tris.fm");
 
@@ -494,18 +523,19 @@ void SP_obj_chair1 (edict_t *self)
 	ObjectInit(self,20,50,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_chair2 (1 .5 0) (-18 -29 -30) (18 29 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A thick chair with slanted sides
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_chair2 (edict_t *self)
+ *
+ * Heretic 2: A thick chair with slanted sides
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_chair2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/chair2/tris.fm");
 
@@ -517,18 +547,19 @@ void SP_obj_chair2 (edict_t *self)
 	ObjectInit(self,20,50,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_chair3 (1 .5 0) (-14 -21 -28) (14 21 28)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A big stone throne.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_chair3 (edict_t *self)
+ *
+ * Heretic 2: A big stone throne.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_chair3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/chair3/tris.fm");
 
@@ -541,8 +572,8 @@ void SP_obj_chair3 (edict_t *self)
 	ObjectInit(self,20,50,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-
-void chest1_anim (edict_t *self)
+void
+chest1_anim(edict_t *self)
 {
 	if (self->s.frame < 10)
 	{
@@ -554,7 +585,8 @@ void chest1_anim (edict_t *self)
 		self->think = NULL;
 }
 
-void chest1_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+chest1_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	gi.sound(self, CHAN_VOICE, gi.soundindex("objects/chest.wav"), 1, ATTN_NORM, 0);
 
@@ -563,15 +595,17 @@ void chest1_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_chest1 (1 .5 0) (-10 -18 -19) (10 18 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A large chest with a snake carving on top. When used it opens its lid.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_chest1 (edict_t *self)
+ *
+ * Heretic 2: A large chest with a snake carving on top. When used it opens its lid.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_chest1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chests/chest1/tris.fm");
 
@@ -585,15 +619,17 @@ void SP_obj_chest1 (edict_t *self)
 
 /*
  * QUAKED obj_chest2 (1 .5 0) (-14 -17 -9) (14 17 9) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A medium sized chest with the top open - for use in the mines
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_chest2 (edict_t *self)
+ *
+ * Heretic 2: A medium sized chest with the top open - for use in the mines
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_chest2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chests/chest2/tris.fm");
 
@@ -603,20 +639,21 @@ void SP_obj_chest2 (edict_t *self)
 	self->spawnflags &= ~OBJ_NOPUSH;
 
 	ObjectInit(self,60,150,MAT_WOOD,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_chest3 (1 .5 0) (-10 -17 -6) (10 17 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A medium sized chest with the top closed - for use in the mines
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_chest3 (edict_t *self)
+ *
+ * Heretic 2: A medium sized chest with the top closed - for use in the mines
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_chest3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chests/chest3/tris.fm");
 
@@ -626,10 +663,10 @@ void SP_obj_chest3 (edict_t *self)
 	self->spawnflags &= ~OBJ_NOPUSH;
 
 	ObjectInit(self,60,150,MAT_WOOD,SOLID_BBOX);
-
 }
 
-void cog1_anim (edict_t *self)
+void
+cog1_anim(edict_t *self)
 {
 
 	if (self->s.frame < 11)
@@ -649,7 +686,8 @@ void cog1_anim (edict_t *self)
 	}
 }
 
-void cog1_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+cog1_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	gi.sound(self, CHAN_VOICE, gi.soundindex("items/cogsturn.wav"), 1, ATTN_NORM, 0);
 
@@ -661,15 +699,17 @@ void cog1_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_cog1 (1 .5 0) (-8 -4 0) (8 4 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A cog with spokes coming out the front of it.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (cog can't be pushed)
------------------------------------
-*/
-void SP_obj_cog1 (edict_t *self)
+ *
+ * Heretic 2: A cog with spokes coming out the front of it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (cog can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_cog1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/cogs/cog1/tris.fm");
 
@@ -682,12 +722,10 @@ void SP_obj_cog1 (edict_t *self)
 	ObjectInit(self,40,20,MAT_WOOD,SOLID_BBOX);
 
 	self->use = cog1_use;
-
-
 }
 
-
-void SpawnCorpse(edict_t *self)
+void
+SpawnCorpse(edict_t *self)
 {
 	int chance;
 
@@ -745,47 +783,50 @@ void SpawnCorpse(edict_t *self)
 
 /*
  * QUAKED obj_corpse1 (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Plague elf dead.
----------- KEYS -----------------
-style - (default 0)
-   0 - both arms above head
-   1 - on side
-   2 - arm over face
-   3 - arms out to side
-   4 - skewered
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (corpse can't be pushed)
------------------------------------
-*/
-void SP_obj_corpse1(edict_t *self)
+ *
+ * Heretic 2: Plague Elf corpse
+ * ---------- KEYS -----------------
+ * style - (default 0)
+ *    0 - both arms above head
+ *    1 - on side
+ *    2 - arm over face
+ *    3 - arms out to side
+ *    4 - skewered
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (corpse can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_corpse1(edict_t *self)
 {
 	SpawnCorpse(self);
 
 	self->s.skinnum = 0;
 }
 
-
 /*
  * QUAKED obj_corpse2 (1 .5 0) (-30 -12 0) (30 12 5)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-Plague elf dead with a different skin
----------- KEYS -----------------
-style - (default 0)
-   0 - both arms above head
-   1 - on side
-   2 - arm over face
-   3 - arms out to side
-   4 - skewered
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (corpse can't be pushed)
------------------------------------
-*/
-void SP_obj_corpse2(edict_t *self)
+ *
+ * Heretic 2: Plague Elf corpse (alternate skin)
+ * ---------- KEYS -----------------
+ * style - (default 0)
+ *    0 - both arms above head
+ *    1 - on side
+ *    2 - arm over face
+ *    3 - arms out to side
+ *    4 - skewered
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (corpse can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_corpse2(edict_t *self)
 {
 	SpawnCorpse(self);
 
@@ -823,7 +864,8 @@ static const char *dying_pelf_idle_voices[PELF_NUM_IDLE_VOICES] =
 	"pelfsigh.wav",
 };
 
-void dying_elf_sounds (edict_t *self, int type)
+void
+dying_elf_sounds(edict_t *self, int type)
 {
 	char	sound_string[1024];
 
@@ -846,7 +888,8 @@ void dying_elf_sounds (edict_t *self, int type)
 	}
 }
 
-void dying_elf_idle(edict_t *self)
+void
+dying_elf_idle(edict_t *self)
 {
 	++self->s.frame;
 	if (self->s.frame > FRAME_fetal26)
@@ -862,7 +905,8 @@ void dying_elf_idle(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void dying_elf_reach_anim(edict_t *self)
+void
+dying_elf_reach_anim(edict_t *self)
 {
 	if (self->touch_debounce_time < level.time)	// First time through reach anim
 	{
@@ -890,7 +934,8 @@ void dying_elf_reach_anim(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void dying_elf_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+dying_elf_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (self->touch_debounce_time < level.time)	// First time through reach anim
 	{
@@ -907,7 +952,7 @@ void dying_elf_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t
 }
 
 void
-dying_elf_pain (edict_t *self, edict_t *other, float kick, int damage)
+dying_elf_pain(edict_t *self, edict_t *other, float kick, int damage)
 {
 	self->enemy = other;
 	dying_elf_reach_anim(self);
@@ -919,7 +964,7 @@ dying_elf_pain (edict_t *self, edict_t *other, float kick, int damage)
 }
 
 void
-dying_elf_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+dying_elf_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		chance;
 
@@ -944,26 +989,23 @@ dying_elf_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 
 /*
  * QUAKED obj_dying_elf (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Plague elf lying on the ground shaking.
----------- KEYS -----------------
-style - skin to use
-0 -
-1 -
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (corpse can't be pushed)
------------------------------------
-*/
-void SP_obj_dying_elf(edict_t *self)
+ *
+ * Heretic 2: Plague elf lying on the ground shaking.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (corpse can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_dying_elf(edict_t *self)
 {
 
 	VectorSet(self->mins,-32,-32,-2);
 	VectorSet(self->maxs,32,32,6);
 
 	self->s.modelindex = gi.modelindex("models/monsters/plaguelf/tris.fm");
-
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->movetype = MOVETYPE_STEP;
@@ -988,23 +1030,24 @@ void SP_obj_dying_elf(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-
 /*
  * QUAKED obj_sign1 (1 .5 0) (-29 -4 -16) (29 4 16)   INVULNERABLE ANIMATE EXPLODING NOPUSH
-A square sign coming out of a wall.
---------KEYS-------------------
-style -
-0 - sign with a dragon
-1 - sign with two steins
-2 - sign with a fish
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (sign1 can't be pushed)
------------------------------------
-*/
-void SP_obj_sign1 (edict_t *self)
+ *
+ * Heretic 2: A square sign coming out of a wall.
+ * --------KEYS-------------------
+ * style -
+ * 0 - sign with a dragon
+ * 1 - sign with two steins
+ * 2 - sign with a fish
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (sign1 can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_sign1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/signs/sign1/tris.fm");
 
@@ -1025,26 +1068,26 @@ void SP_obj_sign1 (edict_t *self)
 		self->s.skinnum = 0;
 
 	self->s.frame = 3;
-
 }
-
 
 /*
  * QUAKED obj_sign4 (1 .5 0) (-8 -18 -29) (8 18 29)   INVULNERABLE ANIMATE EXPLODING NOPUSH
-A square sign that is on top of a post. It is leaning badly.
-For the MINE or DESERT areas.
-style -
-0 for the Andorian skin
-1 for the Tchecktrik skin
-
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (sign4 can't be pushed)
------------------------------------
-*/
-void SP_obj_sign4 (edict_t *self)
+ *
+ * Heretic 2: A square sign that is on top of a post. It is leaning badly.
+ * For the MINE or DESERT areas.
+ * style -
+ * 0 for the Andorian skin
+ * 1 for the Tchecktrik skin
+ *
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (sign4 can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_sign4(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/signs/sign4/tris.fm");
 
@@ -1058,21 +1101,22 @@ void SP_obj_sign4 (edict_t *self)
 	else if (self->style==1)
 		self->s.skinnum = 1;
 
-
-	ObjectInit(self,40,150,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 40, 150, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
  * QUAKED obj_stalagmite1 (1 .5 0) (-32 -32 -200) (32 32 0) INVULNERABLE ANIMATE EXPLODING DARKSKIN
-A big long thick stalagmite.These point up.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-DARKSKIN - if checked it uses the dark skin
------------------------------------
-*/
-void SP_obj_stalagmite1(edict_t *self)
+ *
+ * Heretic 2: A big long thick stalagmite.These point up.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * DARKSKIN - if checked it uses the dark skin
+ * -----------------------------------
+ */
+void
+SP_obj_stalagmite1(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/stalagmite/smite1/tris.fm");
 
@@ -1083,18 +1127,18 @@ void SP_obj_stalagmite1(edict_t *self)
 		self->s.skinnum = 1;
 
 	ObjectInit(self,200,300,MAT_BROWNSTONE,SOLID_BBOX);
-
 }
-
 
 /*
  * QUAKED obj_stalagmite2 (1 .5 0) (-32 -32 -128) (32 32 0) DARKSKIN
-A big squat stalagmite.These point up.
--------  FIELDS  ------------------
-DARKSKIN - if checked it uses the dark skin
------------------------------------
-*/
-void SP_obj_stalagmite2(edict_t *self)
+ *
+ * Heretic 2: A big squat stalagmite.These point up.
+ * -------  FIELDS  ------------------
+ * DARKSKIN - if checked it uses the dark skin
+ * -----------------------------------
+ */
+void
+SP_obj_stalagmite2(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/stalagmite/smite2/tris.fm");
 
@@ -1109,12 +1153,14 @@ void SP_obj_stalagmite2(edict_t *self)
 
 /*
  * QUAKED obj_stalagmite3 (1 .5 0) (-32 -32 -200) (32 32 0)  DARKSKIN
-A long pointy stalagmite. These point up
--------  FIELDS  ------------------
-DARKSKIN - if checked it uses the dark skin
------------------------------------
+ *
+ * Heretic 2: A long pointy stalagmite. These point up
+ * -------  FIELDS  ------------------
+ * DARKSKIN - if checked it uses the dark skin
+ * -----------------------------------
 -*/
-void SP_obj_stalagmite3(edict_t *self)
+void
+SP_obj_stalagmite3(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/stalagmite/smite3/tris.fm");
 
@@ -1129,15 +1175,17 @@ void SP_obj_stalagmite3(edict_t *self)
 
 /*
  * QUAKED obj_statue_corvus (1 .5 0) (-16 -16 0) (16 16 32) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A statue of Corvus.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_statue_corvus (edict_t *self)
+ *
+ * Heretic 2: Corvus statue
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_corvus(edict_t *self)
 {
 	VectorSet(self->mins, -16, -16, 0);
 	VectorSet(self->maxs, 16, 16, 128);
@@ -1151,15 +1199,17 @@ void SP_obj_statue_corvus (edict_t *self)
 
 /*
  * QUAKED obj_statue_dolphin1 (1 .5 0) (-68 -22 -30) (68 22 30) VULNERABLE ANIMATE EXPLODING NOPUSH
-The dolphin on all fours
--------  FIELDS  ------------------
-VULNERABLE - it can be hurt - default it can't be
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_dolphin1 (edict_t *self)
+ *
+ * Heretic 2: Dolphin statue on all fours
+ * -------  FIELDS  ------------------
+ * VULNERABLE - it can be hurt - default it can't be
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_dolphin1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
 
@@ -1177,15 +1227,17 @@ void SP_obj_statue_dolphin1 (edict_t *self)
 
 /*
  * QUAKED obj_statue_dolphin2 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The dolphin on a wall. Head turned to the right
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_dolphin2 (edict_t *self)
+ *
+ * Heretic 2: Dolphin statue on wall turned right
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_dolphin2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
 
@@ -1202,15 +1254,17 @@ void SP_obj_statue_dolphin2 (edict_t *self)
 
 /*
  * QUAKED obj_statue_dolphin3 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The dolphin on a wall. Head turned to the left
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_dolphin3 (edict_t *self)
+ *
+ * Heretic 2: Dolphin statue on wall turned left
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_dolphin3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
 
@@ -1227,15 +1281,17 @@ void SP_obj_statue_dolphin3 (edict_t *self)
 
 /*
  * QUAKED obj_statue_dolphin4 (1 .5 0) (-63 -22 -37) (63 22 37) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The dolphin up on two legs
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_dolphin4 (edict_t *self)
+ *
+ * Heretic 2: Dolphin statue on two legs
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_dolphin4(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
 
@@ -1249,18 +1305,19 @@ void SP_obj_statue_dolphin4 (edict_t *self)
 	ObjectInit(self,300,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_statue_guardian (1 .5 0) (-100 -64 0) (64 64 128) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A big statue of a fish guy on his haunches holding a spear.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_guardian (edict_t *self)
+ *
+ * Heretic 2: A big statue of a fish guy on his haunches holding a spear.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_guardian(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/guardian/tris.fm");
 
@@ -1275,15 +1332,17 @@ void SP_obj_statue_guardian (edict_t *self)
 
 /*
  * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A large wooden dining table with two legs.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_table1 (edict_t *self)
+ *
+ * Heretic 2: A large wooden dining table with two legs.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_table1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/tables/table1/tris.fm");
 
@@ -1291,20 +1350,21 @@ void SP_obj_table1 (edict_t *self)
 	VectorSet(self->maxs, 28, 54, 18);
 
 	ObjectInit(self,40,100,MAT_WOOD,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_table2 (1 .5 0) (-28 -54 -17) (28 54 17) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A grey stone table.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_table2 (edict_t *self)
+ *
+ * Heretic 2: A grey stone table.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_table2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/tables/table2/tris.fm");
 
@@ -1318,15 +1378,17 @@ void SP_obj_table2 (edict_t *self)
 
 /*
  * QUAKED obj_throne (1 .5 0) (-20 -22 -44) (20 22 44) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A highbacked throne.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_throne (edict_t *self)
+ *
+ * Heretic 2: A highbacked throne.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_throne(edict_t *self)
 {
 	VectorSet(self->mins, -20, -22, -44);
 	VectorSet(self->maxs, 20,22, 44);
@@ -1338,18 +1400,19 @@ void SP_obj_throne (edict_t *self)
 	ObjectInit(self,150,200,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A kettle.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_kettle (edict_t *self)
+ *
+ * Heretic 2: Kettle
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_kettle(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/kettle/tris.fm");
 
@@ -1361,15 +1424,17 @@ void SP_obj_kettle (edict_t *self)
 
 /*
  * QUAKED obj_cauldron (1 .5 0) (-22 -22 -10) (22 22 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A metal cauldron filled with green liquid
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_cauldron (edict_t *self)
+ *
+ * Heretic 2: A metal cauldron filled with green liquid
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_cauldron(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/caldrn/tris.fm");
 
@@ -1387,18 +1452,19 @@ void SP_obj_cauldron (edict_t *self)
 	ObjectInit(self,60,100,MAT_METAL,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_firepot (1 .5 0) (-18 -18 -12) (18 18 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A grey stone firepot
--------  FIELDS  ------------------
-INVULNERABLE - always invulnerable
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't ever be moved by player)
------------------------------------
-*/
-void SP_obj_firepot (edict_t *self)
+ *
+ * Heretic 2: A grey stone firepot
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - always invulnerable
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't ever be moved by player)
+ * -----------------------------------
+ */
+void
+SP_obj_firepot(edict_t *self)
 {
 	vec3_t holdorigin;
 
@@ -1424,15 +1490,17 @@ void SP_obj_firepot (edict_t *self)
 
 /*
  * QUAKED obj_statue_duckbill1 (1 .5 0) (-67 -24 -51) (67 24 51) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The duckbilled thing - tail to the right
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_duckbill1 (edict_t *self)
+ *
+ * Heretic 2: The duckbilled thing - tail to the right
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_duckbill1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/duckbill/tris.fm");
 
@@ -1449,15 +1517,17 @@ void SP_obj_statue_duckbill1 (edict_t *self)
 
 /*
  * QUAKED obj_statue_duckbill2 (1 .5 0) (-67 -24 -50) (67 24 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The duckbilled thing - tail to the left
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_duckbill2 (edict_t *self)
+ *
+ * Heretic 2: The duckbilled thing - tail to the left
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_duckbill2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/duckbill/tris.fm");
 
@@ -1472,8 +1542,8 @@ void SP_obj_statue_duckbill2 (edict_t *self)
 	ObjectInit(self,150,100,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-
-void globebottom_turn (edict_t *self)
+void
+globebottom_turn(edict_t *self)
 {
 	float current, ideal, move;
 
@@ -1501,7 +1571,8 @@ void globebottom_turn (edict_t *self)
 	}
 }
 
-void globetop_turn (edict_t *self)
+void
+globetop_turn(edict_t *self)
 {
 	float current, ideal, move;
 
@@ -1538,7 +1609,8 @@ void globetop_turn (edict_t *self)
 	}
 }
 
-void globetop_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+globetop_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->monsterinfo.idle_time)
 		return;
@@ -1553,7 +1625,8 @@ void globetop_use (edict_t *self, edict_t *other, edict_t *activator)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void globebottom_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+globebottom_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->monsterinfo.idle_time)
 		return;
@@ -1570,15 +1643,17 @@ void globebottom_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_seasonglobe (1 .5 0) (-80 -80 0) (80 80 100) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The globe thingy
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (globe can't be moved)
------------------------------------
-*/
-void SP_obj_seasonglobe (edict_t *bottom)
+ *
+ * Heretic 2: The globe thingy
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (globe can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_seasonglobe(edict_t *bottom)
 {
 	edict_t *top;
 
@@ -1622,19 +1697,19 @@ void SP_obj_seasonglobe (edict_t *bottom)
 	top->enemy = bottom;
 }
 
-
-
 /*
  * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A beer stein.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_stein (edict_t *self)
+ *
+ * Heretic 2: A beer stein.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_stein(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/stein/tris.fm");
 
@@ -1646,15 +1721,17 @@ void SP_obj_stein (edict_t *self)
 
 /*
  * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A paper scroll
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_scroll (edict_t *self)
+ *
+ * Heretic 2: A paper scroll
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_scroll(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/scroll/tris.fm");
 
@@ -1666,15 +1743,17 @@ void SP_obj_scroll (edict_t *self)
 
 /*
  * QUAKED obj_fountain_fish (1 .5 0) (-52 -34 -48) (52 34 48) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A two headed fish fountain
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_fountain_fish (edict_t *self)
+ *
+ * Heretic 2: Two-headed fish fountain. Water FX not included
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_fountain_fish(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/fountainfish/tris.fm");
 
@@ -1689,15 +1768,17 @@ void SP_obj_fountain_fish (edict_t *self)
 
 /*
  * QUAKED obj_statue_boulderfish (1 .5 0) (-26 -16 -27) (26 16 27) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A statue of a fish. The one which raises up a boulder.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_boulderfish (edict_t *self)
+ *
+ * Heretic 2: A statue of a fish. The one which raises up a boulder.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_boulderfish(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/boulderfish/tris.fm");
 
@@ -1711,15 +1792,17 @@ void SP_obj_statue_boulderfish (edict_t *self)
 
 /*
  * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A potted plant with ferns
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_pottedplant (edict_t *self)
+ *
+ * Heretic 2: A potted plant with ferns
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_pottedplant(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/plant/tris.fm");
 
@@ -1731,15 +1814,17 @@ void SP_obj_pottedplant (edict_t *self)
 
 /*
  * QUAKED obj_plant1 (1 .5 0) (-8 -8 -24) (8 8 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A clump of tall, thin, plants
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (plant1 can't be moved)
------------------------------------
-*/
-void SP_obj_plant1 (edict_t *self)
+ *
+ * Heretic 2: A clump of tall, thin, plants
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (plant1 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_plant1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/plant1/tris.fm");
 
@@ -1752,20 +1837,21 @@ void SP_obj_plant1 (edict_t *self)
 	self->s.effects|=EF_CAMERA_NO_CLIP;
 
 	ObjectInit(self,20,50,MAT_LEAF,SOLID_NOT);
-
 }
 
 /*
  * QUAKED obj_plant2 (1 .5 0) (-20 -20 -10) (20 20 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A plant with broad leaves.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (plant2 can't be moved)
------------------------------------
-*/
-void SP_obj_plant2 (edict_t *self)
+ *
+ * Heretic 2: A plant with broad leaves.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (plant2 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_plant2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/plant2/tris.fm");
 
@@ -1778,20 +1864,21 @@ void SP_obj_plant2 (edict_t *self)
 	self->s.effects|=EF_CAMERA_NO_CLIP;
 
 	ObjectInit(self,20,50,MAT_LEAF,SOLID_NOT);
-
 }
 
 /*
  * QUAKED obj_plant3 (1 .5 0) (-8 -8 -12) (8 8 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A group of ferns
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (plant3 can't be moved)
------------------------------------
-*/
-void SP_obj_plant3 (edict_t *self)
+ *
+ * Heretic 2: A group of ferns
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (plant3 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_plant3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/plant3/tris.fm");
 
@@ -1810,20 +1897,21 @@ void SP_obj_plant3 (edict_t *self)
 	self->s.effects|=EF_CAMERA_NO_CLIP;
 
 	ObjectInit(self,20,50,MAT_LEAF,SOLID_NOT);
-
 }
 
 /*
  * QUAKED obj_treetop (1 .5 0) (-176 -176 -125) (176 176 125) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A canopy for a tree.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (treetop can't be moved)
------------------------------------
-*/
-void SP_obj_treetop (edict_t *self)
+ *
+ * Heretic 2: Tree canopy
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (treetop can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_treetop(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/treetop/tris.fm");
 
@@ -1838,15 +1926,17 @@ void SP_obj_treetop (edict_t *self)
 
 /*
  * QUAKED obj_tree (1 .5 0) (-100 -100 -120) (100 100 120) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tree for Matt's level
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (tree can't be moved)
------------------------------------
-*/
-void SP_obj_tree (edict_t *self)
+ *
+ * Heretic 2: A tree for Matt's level
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (tree can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_tree(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/tree/tris.fm");
 
@@ -1861,15 +1951,17 @@ void SP_obj_tree (edict_t *self)
 
 /*
  * QUAKED obj_tree2 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tall spikey tree for the swamps
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (tree2 can't be moved)
------------------------------------
-*/
-void SP_obj_tree2 (edict_t *self)
+ *
+ * Heretic 2: A tall spikey tree for the swamps
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (tree2 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_tree2(edict_t *self)
 {
 	edict_t *moss;
 
@@ -1881,12 +1973,11 @@ void SP_obj_tree2 (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
-
+	ObjectInit(self, 40, 50, MAT_WOOD, SOLID_BBOX);
 
 	moss = G_Spawn();
-	VectorCopy(self->s.origin,moss->s.origin);
-	VectorCopy(self->s.angles,moss->s.angles);
+	VectorCopy(self->s.origin, moss->s.origin);
+	VectorCopy(self->s.angles, moss->s.angles);
 	moss->s.modelindex = gi.modelindex("models/objects/plants/tree2/moss2/tris.fm");
 	moss->movetype = MOVETYPE_NONE;
 	moss->solid = SOLID_NOT;
@@ -1901,15 +1992,17 @@ void SP_obj_tree2 (edict_t *self)
 
 /*
  * QUAKED obj_tree3 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tall spikey tree with big roots on the bottom.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (tree3 can't be moved)
------------------------------------
-*/
-void SP_obj_tree3 (edict_t *self)
+ *
+ * Heretic 2: A tall spikey tree with big roots on the bottom.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (tree3 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_tree3(edict_t *self)
 {
 	edict_t *moss;
 
@@ -1940,15 +2033,17 @@ void SP_obj_tree3 (edict_t *self)
 
 /*
  * QUAKED obj_treetall (1 .5 0) (-46 -46 -340) (46 46 340) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A very tall tree
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (tree3 can't be moved)
------------------------------------
-*/
-void SP_obj_treetall (edict_t *self)
+ *
+ * Heretic 2: A very tall tree
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (tree3 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_treetall(edict_t *self)
 {
 	edict_t *moss;
 
@@ -1978,15 +2073,17 @@ void SP_obj_treetall (edict_t *self)
 
 /*
  * QUAKED obj_treefallen (1 .5 0) (-24 -62 -35) (24 62 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tree that is leaning as if it had over. Meant to be partially submerged in water or muck.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (treefallen can't be moved)
------------------------------------
-*/
-void SP_obj_treefallen (edict_t *self)
+ *
+ * Heretic 2: A tree that is leaning as if it had over. Meant to be partially submerged in water or muck.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (treefallen can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_treefallen(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus/tris.fm");
 
@@ -2001,18 +2098,19 @@ void SP_obj_treefallen (edict_t *self)
 	self->s.frame = 1;
 }
 
-
 /*
  * QUAKED obj_shovel (1 .5 0) (-8 -8 -20) (8 8 20)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A shovel
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_shovel (edict_t *self)
+ *
+ * Heretic 2: Shovel
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_shovel(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/shovel/tris.fm");
 
@@ -2026,15 +2124,17 @@ void SP_obj_shovel (edict_t *self)
 
 /*
  * QUAKED obj_woodpile (1 .5 0) (-12 -20 -7) (12 20 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A pile of chopped  wood.
--------  FIELDS  ------------------
-INVULNERABLE - Can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_woodpile (edict_t *self)
+ *
+ * Heretic 2: A pile of chopped  wood.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_woodpile(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/wood/tris.fm");
 
@@ -2049,15 +2149,17 @@ void SP_obj_woodpile (edict_t *self)
 
 /*
  * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A fishtrap
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_fishtrap (edict_t *self)
+ *
+ * Heretic 2: Fish trap
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_fishtrap(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/fishtrap/tris.fm");
 
@@ -2069,15 +2171,17 @@ void SP_obj_fishtrap (edict_t *self)
 
 /*
  * QUAKED obj_bench (1 .5 0) (-10 -21 -10) (10 21 10)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A stone bench to sit on
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_bench (edict_t *self)
+ *
+ * Heretic 2: A stone bench to sit on
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_bench(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/bench/tris.fm");
 
@@ -2091,15 +2195,17 @@ void SP_obj_bench (edict_t *self)
 
 /*
  * QUAKED obj_bucket (1 .5 0) (-8 -8 -9) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A bucket
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_bucket (edict_t *self)
+ *
+ * Heretic 2: Bucket
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_bucket(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/bucket/tris.fm");
 
@@ -2113,19 +2219,21 @@ void SP_obj_bucket (edict_t *self)
 
 /*
  * QUAKED obj_ropechain (1 .5 0) (-20 -20 -14) (20 20 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A pile of rope or chain
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (ropechain can't be moved)
-
-Variables:
-skinnum = 0 : rope
-          1 : chain
------------------------------------
-*/
-void SP_obj_ropechain (edict_t *self)
+ *
+ * Heretic 2: A pile of rope or chain
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (ropechain can't be moved)
+ *
+ * Variables:
+ * skinnum = 0 : rope
+ *           1 : chain
+ * -----------------------------------
+ */
+void
+SP_obj_ropechain(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/rope/tris.fm");
 
@@ -2141,18 +2249,19 @@ void SP_obj_ropechain (edict_t *self)
 		ObjectInit(self,160,100,MAT_METAL,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A wheelbarrow
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_wheelbarrow (edict_t *self)
+ *
+ * Heretic 2: Wheelbarrow
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_wheelbarrow(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/wheelbarrow/tris.fm");
 
@@ -2164,15 +2273,17 @@ void SP_obj_wheelbarrow (edict_t *self)
 
 /*
  * QUAKED obj_wheelbarrowdamaged (1 .5 0) (-38 -26 -20) (38 26 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A wheelbarrow  on it's side missing a wheel
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (wheelbarrowdamaged can't be moved)
------------------------------------
-*/
-void SP_obj_wheelbarrowdamaged (edict_t *self)
+ *
+ * Heretic 2: A wheelbarrow  on it's side missing a wheel
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (wheelbarrowdamaged can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_wheelbarrowdamaged(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/wheelbarrow/tris.fm");
 
@@ -2185,18 +2296,19 @@ void SP_obj_wheelbarrowdamaged (edict_t *self)
 	ObjectInit(self,60,100,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An urn
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_urn (edict_t *self)
+ *
+ * Heretic 2: Urn (Andorian)
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_urn(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/urn/tris.fm");
 
@@ -2206,21 +2318,21 @@ void SP_obj_urn (edict_t *self)
 	ObjectInit(self,50,100,MAT_POTTERY,SOLID_BBOX);
 }
 
-
-
 /*
  * QUAKED obj_bigcrystal (1 .5 0) (-35 -35 -50) (35 35 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A big circular crystal which rotates.
--------  KEYS  ------------------
-speed - rate of rotation
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_bigcrystal(edict_t *self)
+ *
+ * Heretic 2: A big circular crystal which rotates.
+ * -------  KEYS  ------------------
+ * speed - rate of rotation
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_bigcrystal(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/crystals/bigcrystal/tris.fm");
 
@@ -2237,18 +2349,19 @@ void SP_obj_bigcrystal(edict_t *self)
 	self->gravity = 0;
 }
 
-
 /*
  * QUAKED obj_moss1 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
-
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (moss1 can't be moved)
------------------------------------
-*/
-void SP_obj_moss1(edict_t *self)
+ *
+ * Heretic 2: Moss 1
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (moss1 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_moss1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/moss/tris.fm");
 
@@ -2263,14 +2376,17 @@ void SP_obj_moss1(edict_t *self)
 
 /*
  * QUAKED obj_moss2 (1 .5 0) (-4 -9 -40) (4 9 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (moss2 can't be moved)
------------------------------------
-*/
-void SP_obj_moss2(edict_t *self)
+ *
+ * Heretic 2: Moss 2
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (moss2 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_moss2(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
 
@@ -2285,14 +2401,17 @@ void SP_obj_moss2(edict_t *self)
 
 /*
  * QUAKED obj_moss3 (1 .5 0) (-4 -15 -40) (4 15 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (moss3 can't be moved)
------------------------------------
-*/
-void SP_obj_moss3(edict_t *self)
+ *
+ * Heretic 2: Moss 3
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (moss3 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_moss3(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
 
@@ -2307,14 +2426,17 @@ void SP_obj_moss3(edict_t *self)
 
 /*
  * QUAKED obj_moss4 (1 .5 0) (-4 -12 -40) (4 12 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (moss4 can't be moved)
------------------------------------
-*/
-void SP_obj_moss4(edict_t *self)
+ *
+ * Heretic 2: Moss 4
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (moss4 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_moss4(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
 
@@ -2329,14 +2451,17 @@ void SP_obj_moss4(edict_t *self)
 
 /*
  * QUAKED obj_moss5 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (moss5 can't be moved)
------------------------------------
-*/
-void SP_obj_moss5(edict_t *self)
+ *
+ * Heretic 2: Moss 5
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (moss5 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_moss5(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
 
@@ -2351,15 +2476,17 @@ void SP_obj_moss5(edict_t *self)
 
 /*
  * QUAKED obj_floor_candelabrum (1 .5 0) (-8 -8 -35) (8 8 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A floor candelabrum.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be destroyed
-ANIMATE - makes flickering flames appear
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_floor_candelabrum (edict_t *self)
+ *
+ * Heretic 2: Floor candelbrum. Does not emit light
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - it can't be destroyed
+ * ANIMATE - makes flickering flames appear
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_floor_candelabrum(edict_t *self)
 {
 	VectorSet(self->mins, -8, -8, -35);
 	VectorSet(self->maxs, 8, 8, 35);
@@ -2372,15 +2499,17 @@ void SP_obj_floor_candelabrum (edict_t *self)
 
 /*
  * QUAKED obj_statue_dragonhead (1 .5 0) (-76 -28 -46) (76 28 46) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A statue of a dragon head
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_dragonhead (edict_t *self)
+ *
+ * Heretic 2: Dragon head statue
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_dragonhead(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dragonhead/tris.fm");
 
@@ -2395,19 +2524,21 @@ void SP_obj_statue_dragonhead (edict_t *self)
 
 /*
  * QUAKED obj_statue_dragon (1 .5 0) (-53 -33 -72) (53 33 72)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
-A statue of a dragon
----------- KEYS -----------------
-style - (default 0)
-   0 - dragon looking left
-   1 - dragon looking right
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_statue_dragon (edict_t *self)
+ *
+ * Heretic 2: Dragon statue
+ * ---------- KEYS -----------------
+ * style - (default 0)
+ *  0 - dragon looking left
+ *  1 - dragon looking right
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_statue_dragon(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dragon/tris.fm");
 
@@ -2425,20 +2556,21 @@ void SP_obj_statue_dragon (edict_t *self)
 		self->s.frame = 1;
 	else
 		self->s.frame = 0;
-
 }
 
 /*
  * QUAKED obj_flagonpole (1 .5 0) (-8 -8 0) (8 8 60)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A flag on a pole
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (flagonpole can't be moved)
------------------------------------
-*/
-void SP_obj_flagonpole (edict_t *self)
+ *
+ * Heretic 2: Flag on pole
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (flagonpole can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_flagonpole(edict_t *self)
 {
 	VectorSet(self->mins, -8, -28, -30);
 	VectorSet(self->maxs, 8, 28, 30);
@@ -2450,7 +2582,8 @@ void SP_obj_flagonpole (edict_t *self)
 	ObjectInit(self,40,200,MAT_WOOD,SOLID_BBOX);
 }
 
-void lever1downthink(edict_t *self)
+void
+lever1downthink(edict_t *self)
 {
 	if (self->s.frame < 5)
 	{
@@ -2463,7 +2596,8 @@ void lever1downthink(edict_t *self)
 	}
 }
 
-void lever1upthink(edict_t *self)
+void
+lever1upthink(edict_t *self)
 {
 	if (self->s.frame > 0)
 	{
@@ -2476,7 +2610,8 @@ void lever1upthink(edict_t *self)
 	}
 }
 
-void lever1_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+lever1_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
@@ -2491,20 +2626,21 @@ void lever1_use (edict_t *self, edict_t *other, edict_t *activator)
 		self->nextthink = level.time + FRAMETIME;
 	}
 	G_UseTargets(self, activator);
-
 }
 
 /*
  * QUAKED obj_lever1 (1 .5 0) (-6 -14 -17) (6 14 17)  INVULNERABLE  ANIMATE   EXPLODING   NOPUSH
-A wooden floor lever that is triggerable.
--------  FIELDS  ------------------
-INVULNERABLE - always invulnerable
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_lever1 can't be moved)
------------------------------------
-*/
-void SP_obj_lever1 (edict_t *self)
+ *
+ * Heretic 2: A wooden floor lever that is triggerable.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - always invulnerable
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_lever1 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_lever1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/levers/lever1/tris.fm");
 
@@ -2519,9 +2655,8 @@ void SP_obj_lever1 (edict_t *self)
 	self->use = lever1_use;
 }
 
-
-
-void lever2downthink(edict_t *self)
+void
+lever2downthink(edict_t *self)
 {
 	if (self->s.frame < 4)
 	{
@@ -2534,7 +2669,8 @@ void lever2downthink(edict_t *self)
 	}
 }
 
-void lever2upthink(edict_t *self)
+void
+lever2upthink(edict_t *self)
 {
 	if (self->s.frame > 0)
 	{
@@ -2547,7 +2683,8 @@ void lever2upthink(edict_t *self)
 	}
 }
 
-void lever2_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+lever2_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
@@ -2565,15 +2702,17 @@ void lever2_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_lever2 (1 .5 0) (-14 -14 -9) (14 14 9)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A wooden wheel lever that is triggerable.
--------  FIELDS  ------------------
-INVULNERABLE - always invulnerable
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_lever2 can't be moved)
------------------------------------
-*/
-void SP_obj_lever2 (edict_t *self)
+ *
+ * Heretic 2: A wooden wheel lever that is triggerable.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - always invulnerable
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_lever2 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_lever2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/levers/lever2/tris.fm");
 
@@ -2588,7 +2727,8 @@ void SP_obj_lever2 (edict_t *self)
 	self->use = lever2_use;
 }
 
-void lever3downthink(edict_t *self)
+void
+lever3downthink(edict_t *self)
 {
 	if (self->s.frame < 5)
 	{
@@ -2601,7 +2741,8 @@ void lever3downthink(edict_t *self)
 	}
 }
 
-void lever3upthink(edict_t *self)
+void
+lever3upthink(edict_t *self)
 {
 	if (self->s.frame > 0)
 	{
@@ -2614,7 +2755,8 @@ void lever3upthink(edict_t *self)
 	}
 }
 
-void lever3_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+lever3_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
@@ -2632,15 +2774,17 @@ void lever3_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_lever3 (1 .5 0) (-4 -6 -16) (4 6 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A lever for the wall...and it's triggerable.
--------  FIELDS  ------------------
-INVULNERABLE - always invulnerable
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_lever3 can't be moved)
------------------------------------
-*/
-void SP_obj_lever3 (edict_t *self)
+ *
+ * Heretic 2: A lever for the wall...and it's triggerable.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - always invulnerable
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_lever3 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_lever3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/levers/lever3/tris.fm");
 
@@ -2654,41 +2798,41 @@ void SP_obj_lever3 (edict_t *self)
 
 	self->use = lever3_use;
 }
-void lever_used(edict_t *self, G_Message_t *msg)
+
+void
+lever_used(edict_t *self, G_Message_t *msg)
 {
 	self->activator = self->enemy;
-//	button_fire (self);
 }
 
-void LeverStaticsInit()
+void
+LeverStaticsInit(void)
 {
 	classStatics[CID_LEVER].msgReceivers[MSG_DEATH] = lever_used;
 }
 
-
-
-
-
-void bush_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+bush_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (self->touch_debounce_time > level.time)
 		return;
 
-	//gi.sound(self, CHAN_BODY, gi.soundindex("objects/bush.wav"), 1, ATTN_NORM, 0);
 	self->touch_debounce_time = level.time + 1;
 }
 
 /*
  * QUAKED obj_bush1 (1 .5 0) (-34 -34 -19) (34 34 19)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
-A dome shaped bush
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_bush1 can't be moved)
------------------------------------
-*/
-void SP_obj_bush1 (edict_t *self)
+ *
+ * Heretic 2: A dome shaped bush
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_bush1 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_bush1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/bush1/tris.fm");
 
@@ -2703,20 +2847,21 @@ void SP_obj_bush1 (edict_t *self)
 
 	self->touch_debounce_time = level.time;
 	self->touch = bush_touch;
-
 }
 
 /*
  * QUAKED obj_bush2 (1 .5 0) (-56 -56 -40) (56 56 40)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A larger dome shaped bush
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_bush2 can't be moved)
------------------------------------
-*/
-void SP_obj_bush2 (edict_t *self)
+ *
+ * Heretic 2: A larger dome shaped bush
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_bush2 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_bush2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/bush2/tris.fm");
 
@@ -2731,11 +2876,11 @@ void SP_obj_bush2 (edict_t *self)
 
 	self->touch_debounce_time = level.time;
 	self->touch = bush_touch;
-
 }
 
 // Cactus will hurt player
-void cactus_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+cactus_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (!other->client)
 		return;
@@ -2750,15 +2895,17 @@ void cactus_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *s
 
 /*
  * QUAKED obj_cactus (1 .5 0) (-18 -18 -44) (18 18 44)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_cactus can't be moved)
------------------------------------
-*/
-void SP_obj_cactus (edict_t *self)
+ *
+ * Heretic 2: A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_cactus can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_cactus(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus/tris.fm");
 
@@ -2775,15 +2922,17 @@ void SP_obj_cactus (edict_t *self)
 
 /*
  * QUAKED obj_cactus3 (1 .5 0) (-14 -14 -32) (14 14 32)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_cactus3 can't be moved)
------------------------------------
-*/
-void SP_obj_cactus3 (edict_t *self)
+ *
+ * Heretic 2: A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_cactus3 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_cactus3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus3/tris.fm");
 
@@ -2798,7 +2947,8 @@ void SP_obj_cactus3 (edict_t *self)
 	self->touch = cactus_touch;
 }
 
-void cactus_close(edict_t *self)
+void
+cactus_close(edict_t *self)
 {
 	if (self->s.frame > 0)
 	{
@@ -2808,7 +2958,8 @@ void cactus_close(edict_t *self)
 	self->nextthink=level.time + FRAMETIME;
 }
 
-void cactus_open(edict_t *self)
+void
+cactus_open(edict_t *self)
 {
 	self->s.frame+=4;
 	if (self->s.frame < 16)
@@ -2821,7 +2972,8 @@ void cactus_open(edict_t *self)
 	self->nextthink=level.time + FRAMETIME;
 }
 
-void cactus4_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+cactus4_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (!self->s.frame)
 	{
@@ -2838,15 +2990,17 @@ void cactus4_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_cactus4 (1 .5 0) (-11 -11 -11) (11 11 11)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A small cactus that open up or closes. Is triggerable.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_cactus4 can't be moved)
------------------------------------
-*/
-void SP_obj_cactus4 (edict_t *self)
+ *
+ * Heretic 2: A small cactus that open up or closes. Is triggerable.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_cactus4 can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_cactus4(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus4/tris.fm");
 
@@ -2864,15 +3018,17 @@ void SP_obj_cactus4 (edict_t *self)
 
 /*
  * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A tall basket with a lid on it.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_basket (edict_t *self)
+ *
+ * Heretic 2: A tall basket with a lid on it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_basket(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/basket/tris.fm");
 
@@ -2884,15 +3040,17 @@ void SP_obj_basket (edict_t *self)
 
 /*
  * QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A bowl made of clay
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_claybowl (edict_t *self)
+ *
+ * Heretic 2: Clay bowl
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_claybowl(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/claybowl/tris.fm");
 
@@ -2904,15 +3062,17 @@ void SP_obj_claybowl (edict_t *self)
 
 /*
  * QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A big honking urn made of clay
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_clayjar (edict_t *self)
+ *
+ * Heretic 2: A big honking urn made of clay
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_clayjar(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/clayjar/tris.fm");
 
@@ -2924,15 +3084,17 @@ void SP_obj_clayjar (edict_t *self)
 
 /*
  * QUAKED obj_gorgonbones (1 .5 0) (-18 -38 -9) (18 38 1)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-The bones of a dead gorgon.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_gorgonbones can't be moved)
------------------------------------
-*/
-void SP_obj_gorgonbones (edict_t *self)
+ *
+ * Heretic 2: The bones of a dead gorgon.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_gorgonbones can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_gorgonbones(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/bones/gorgon/tris.fm");
 
@@ -2946,15 +3108,17 @@ void SP_obj_gorgonbones (edict_t *self)
 
 /*
  * QUAKED obj_grass (1 .5 0) (-8 -8 -10) (8 8 10)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A clump of grass
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (obj_grass can't be moved)
------------------------------------
-*/
-void SP_obj_grass (edict_t *self)
+ *
+ * Heretic 2: Grass clump
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (obj_grass can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_grass(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/grass/tris.fm");
 
@@ -2970,15 +3134,17 @@ void SP_obj_grass (edict_t *self)
 
 /*
  * QUAKED obj_swampflat_top (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE EXPLODING NOPUSH
-A flat poly to be used on the outer edge of swamp levels. Vegetation growing up.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_swampflat_top (edict_t *self)
+ *
+ * Heretic 2: A flat poly to be used on the outer edge of swamp levels. Vegetation growing up.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_swampflat_top(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/swampflat/tris.fm");
 
@@ -2993,15 +3159,17 @@ void SP_obj_swampflat_top (edict_t *self)
 
 /*
  * QUAKED obj_swampflat_bottom (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A flat poly to be used on the outer edge of swamp levels. Vegetation hanging down.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_swampflat_bottom (edict_t *self)
+ *
+ * Heretic 2: A flat poly to be used on the outer edge of swamp levels. Vegetation growing down.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_swampflat_bottom(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/swampflat/tris.fm");
 
@@ -3013,20 +3181,21 @@ void SP_obj_swampflat_bottom (edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_treestump (1 .5 0) (-18 -18 -16) (18 18 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A short tree stump
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_treestump (edict_t *self)
+ *
+ * Heretic 2: Short tree stump
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_treestump(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/treestump/tris.fm");
 
@@ -3042,15 +3211,17 @@ void SP_obj_treestump (edict_t *self)
 
 /*
  * QUAKED obj_jawbone (1 .5 0) (-11 -11 -12) (11 11 12)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-The jaws of a fish.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_jawbone (edict_t *self)
+ *
+ * Heretic 2: Fish jawbone
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_jawbone(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/bones/jaws/tris.fm");
 
@@ -3062,20 +3233,21 @@ void SP_obj_jawbone (edict_t *self)
 	ObjectInit(self,25,125,MAT_NONE,SOLID_BBOX);
 
 	self->s.skinnum = 1;
-
 }
 
 /*
  * QUAKED obj_barrel_metal (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A metal barrel.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_barrel_metal (edict_t *self)
+ *
+ * Heretic 2: Metal barrel
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_barrel_metal(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/barrel/metal/tris.fm");
 
@@ -3087,16 +3259,40 @@ void SP_obj_barrel_metal (edict_t *self)
 }
 
 /*
+ * QUAKED obj_barrel_exploding (.5 .5 .5) (-13.0 -13.0 0.0) (13.0 13.0 36.0)
+ *
+ * Hexen 2: Barrel exploding
+ */
+void
+SP_obj_barrel_exploding(edict_t *self)
+{
+	DynamicObjectSpawn(self);
+}
+
+/*
+ * QUAKED obj_barrel_indestructible (.5 .5 .5) (-13.0 -13.0 0.0) (13.0 13.0 36.0)
+ *
+ * Hexen 2: Barrel indestructible
+ */
+void
+SP_obj_barrel_indestructible(edict_t *self)
+{
+	DynamicObjectSpawn(self);
+}
+
+/*
  * QUAKED obj_barrel_explosive (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
-A barrel that explodes and does damage.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_barrel_explosive (edict_t *self)
+ *
+ * Heretic 2: A barrel that explodes and does damage.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_barrel_explosive(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/barrel/normal/tris.fm");
 
@@ -3105,19 +3301,20 @@ void SP_obj_barrel_explosive (edict_t *self)
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 	self->s.skinnum = 1;
-
 }
 /*
  * QUAKED obj_gascan (1 .5 0) (-8 -9 -13) (8 9 13)  INVULNERABLE ANIMATE EXPLODING NOPUSH
-A metal gas can.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_gascan (edict_t *self)
+ *
+ * Heretic 2: A metal gas can.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_gascan(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/barrel/gascan/tris.fm");
 
@@ -3126,20 +3323,21 @@ void SP_obj_gascan (edict_t *self)
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 	self->s.skinnum = 1;
-
 }
 
 /*
  * QUAKED obj_pipe1 (1 .5 0) (-11 -24 -7) (11 24 7)  INVULNERABLE  ANIMATE   EXPLODING NOPUSH
-A section of pipe with 90 degree bend in it.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_pipe1 (edict_t *self)
+ *
+ * Heretic 2: A section of pipe with 90 degree bend in it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_pipe1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/pipe1/tris.fm");
 
@@ -3148,20 +3346,21 @@ void SP_obj_pipe1 (edict_t *self)
 
 	ObjectInit(self,50,125,MAT_WOOD,SOLID_BBOX);
 	self->s.skinnum = 1;
-
 }
 
 /*
  * QUAKED obj_pipe2 (1 .5 0) (-6 -25 -4) (6 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A straight section of pipe.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_pipe2 (edict_t *self)
+ *
+ * Heretic 2: A straight section of pipe.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_pipe2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/pipe2/tris.fm");
 
@@ -3170,20 +3369,21 @@ void SP_obj_pipe2 (edict_t *self)
 
 	ObjectInit(self,50,125,MAT_WOOD,SOLID_BBOX);
 	self->s.skinnum = 1;
-
 }
 
 /*
  * QUAKED obj_pipewheel (1 .5 0) (-14 -14 -12) (14 14 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A shutoff valve for pipe.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_pipewheel (edict_t *self)
+ *
+ * Heretic 2: A shutoff valve for pipe.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_pipewheel(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/pipewheel/tris.fm");
 
@@ -3194,20 +3394,21 @@ void SP_obj_pipewheel (edict_t *self)
 
 	ObjectInit(self,50,125,MAT_WOOD,SOLID_BBOX);
 	self->s.skinnum = 1;
-
 }
 
 /*
  * QUAKED obj_minecart (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A full mine cart used on the mine levels.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_minecart (edict_t *self)
+ *
+ * Heretic 2: A full mine cart used on the mine levels.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_minecart(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/carts/mine/tris.fm");
 
@@ -3216,20 +3417,21 @@ void SP_obj_minecart (edict_t *self)
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 	self->s.frame = 0;
-
 }
 
 /*
  * QUAKED obj_minecart2 (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An empty mine cart used on the mine levels.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_minecart2 (edict_t *self)
+ *
+ * Heretic 2: An empty mine cart used on the mine levels.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_minecart2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/carts/mine/tris.fm");
 
@@ -3238,21 +3440,21 @@ void SP_obj_minecart2 (edict_t *self)
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 	self->s.frame = 20;
-
 }
-
 
 /*
  * QUAKED obj_minecart3 (1 .5 0) (-18 -29 -15) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A busted mine cart used on the mine levels.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_minecart3 (edict_t *self)
+ *
+ * Heretic 2: A busted mine cart used on the mine levels.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_minecart3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/carts/mine/tris.fm");
 
@@ -3261,20 +3463,21 @@ void SP_obj_minecart3 (edict_t *self)
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
 	self->s.frame = 40;
-
 }
 
 /*
  * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A circular Andorian wall hanging.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_andwallhanging (edict_t *self)
+ *
+ * Heretic 2: Circular Andorian wall hanging
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_andwallhanging(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/andwallhang/tris.fm");
 
@@ -3286,15 +3489,17 @@ void SP_obj_andwallhanging (edict_t *self)
 
 /*
  * QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tool that is a pick.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_pick (edict_t *self)
+ *
+ * Heretic 2: A tool that is a pick.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_pick(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/tools/pick/tris.fm");
 
@@ -3306,15 +3511,17 @@ void SP_obj_pick (edict_t *self)
 
 /*
  * QUAKED obj_metalchunk1 (1 .5 0) ( -10 -26 -4) (10 26 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A chunk of twisted metal.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_metalchunk1 (edict_t *self)
+ *
+ * Heretic 2: A chunk of twisted metal.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_metalchunk1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/metalchunks/tris.fm");
 
@@ -3326,15 +3533,17 @@ void SP_obj_metalchunk1 (edict_t *self)
 
 /*
  * QUAKED obj_metalchunk2 (1 .5 0) ( -10 -26 -7) (10 26 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Another chunk of twisted metal.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_metalchunk2 (edict_t *self)
+ *
+ * Heretic 2: Another chunk of twisted metal.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_metalchunk2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/metalchunks/tris.fm");
 
@@ -3346,18 +3555,19 @@ void SP_obj_metalchunk2 (edict_t *self)
 	self->s.frame = 1;
 }
 
-
 /*
  * QUAKED obj_metalchunk3 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Another chunk of twisted metal.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_metalchunk3 (edict_t *self)
+ *
+ * Heretic 2: Another chunk of twisted metal.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_metalchunk3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/metalchunks/tris.fm");
 
@@ -3371,16 +3581,18 @@ void SP_obj_metalchunk3 (edict_t *self)
 
 /*
  * QUAKED obj_rocks1 (1 .5 0) ( -12 -13 -4) (12 13 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A bunch of rocks together
-For the MINE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_rocks1 (edict_t *self)
+ *
+ * Heretic 2: A bunch of rocks together
+ * For the MINE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_rocks1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/rocks/rock1/tris.fm");
 
@@ -3390,21 +3602,22 @@ void SP_obj_rocks1 (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_rocks2 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A big rock
-For the MINE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_rocks2 (edict_t *self)
+ *
+ * Heretic 2: Big rock
+ * For the MINE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_rocks2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/rocks/rock2/tris.fm");
 
@@ -3414,10 +3627,10 @@ void SP_obj_rocks2 (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
-void symbolthink(edict_t *self)
+void
+symbolthink(edict_t *self)
 {
 	M_droptofloor(self);
 
@@ -3431,7 +3644,8 @@ void symbolthink(edict_t *self)
 	}
 }
 
-void hivepriestesssymbol_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+hivepriestesssymbol_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	self->s.modelindex = gi.modelindex("models/items/puzzles/hiveidol/tris.fm");
 
@@ -3447,22 +3661,25 @@ void hivepriestesssymbol_use (edict_t *self, edict_t *other, edict_t *activator)
 
 	self->think = symbolthink;
 	self->nextthink = level.time + FRAMETIME;
-
 }
 
 /*
  * QUAKED obj_hivepriestessssymbol (1 .5 0) ( -4 -4 -13) (4 4 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The Hive Priestess Symbol was created originally by T'jektaluck back in 14567 AH (After Hive).  It was stolen by Matt Pinkston in 20054.  He was promptly captured and fed Zots until he died from sugar overload.
-It starts off invisible.  When used it appears.
-For the HIVE level
--------  FIELDS  ------------------
-INVULNERABLE - N/A it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_hivepriestessssymbol (edict_t *self)
+ *
+ * Heretic 2: The Hive Priestess Symbol was created originally by T'jektaluck back in 14567 AH (After Hive).
+ * It was stolen by Matt Pinkston in 20054.  He was promptly captured and fed Zots until he died from sugar
+ * overload.
+ * It starts off invisible.  When used it appears.
+ * For the HIVE level
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A it can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_hivepriestessssymbol(edict_t *self)
 {
 	self->s.modelindex = 0;
 
@@ -3472,21 +3689,22 @@ void SP_obj_hivepriestessssymbol (edict_t *self)
 
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_NOT);
-
 }
 
 /*
  * QUAKED obj_queenthrone (1 .5 0) ( -40 -56 -49) (40 56 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A throne for the queen
-For the HIVE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_queenthrone (edict_t *self)
+ *
+ * Heretic 2: Hive queen throne
+ * For the HIVE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_queenthrone(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/queen/tris.fm");
 
@@ -3497,21 +3715,22 @@ void SP_obj_queenthrone (edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_queenchair (1 .5 0) ( -30 -28 -31) (30 28 31) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A chair to go by the queen throne
-For the HIVE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_queenchair (edict_t *self)
+ *
+ * Heretic 2: A chair to go by the queen throne
+ * For the HIVE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_queenchair(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/smallchair/tris.fm");
 
@@ -3521,36 +3740,36 @@ void SP_obj_queenchair (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_shrine (1 .5 0) ( -26 -38 -38) (26 38 38) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Its a shrine
-For all levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
----------- KEYS -----------------
-style - (default 0) type of shrine
-   0 - heal
-   1 - mana
-   2 - lungs
-   3 - light
-   4 - power up
-   5 - armor
-   6 - armor gold
-   7 - random
-   8 - reflection
-   9 - staff
-  10 - ghost
-  11 - speed
------------------------------------
-
-*/
-void SP_obj_shrine (edict_t *self)
+ *
+ * Heretic 2: Shrine model. Target with a matching shrine_(style) trigger brush.
+ * For all levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * ---------- KEYS -----------------
+ * style - (default 0) type of shrine
+ *  0 - heal
+ *  1 - mana
+ *  2 - lungs
+ *  3 - light
+ *  4 - power up
+ *  5 - armor
+ *  6 - armor gold
+ *  7 - random
+ *  8 - reflection
+ *  9 - staff
+ *  10 - ghost
+ *  11 - speed
+ * -----------------------------------
+ */
+void
+SP_obj_shrine(edict_t *self)
 {
 	vec3_t	offset2;
 	vec3_t	offset;
@@ -3580,7 +3799,6 @@ void SP_obj_shrine (edict_t *self)
 	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS))
 		self->style = 7;
 
-
 	if ((self->style >= 0)  && (self->style <= 12))
 	{
 		++self->style;
@@ -3594,21 +3812,22 @@ void SP_obj_shrine (edict_t *self)
 	DirFromAngles(offset, offset2);
 	self->PersistantCFX = gi.CreatePersistantEffect(self, FX_SHRINE_BALL, CEF_BROADCAST, self->s.origin,
 														"db", offset2, (byte)(self->style-1));
-
 }
 
 /*
  * QUAKED obj_larvaegg (1 .5 0) ( -6 -14 -6) (6 14 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An egg for the larva
-For the HIVE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_larvaegg (edict_t *self)
+ *
+ * Heretic 2: An egg for the larva
+ * For the HIVE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_larvaegg(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/eggs/eggs/tris.fm");
 
@@ -3618,21 +3837,22 @@ void SP_obj_larvaegg (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GLASS,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_larvabrokenegg (1 .5 0) ( -6 -7 -5) (6 7 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A broken egg for the larva
-For the HIVE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_larvabrokenegg (edict_t *self)
+ *
+ * Heretic 2: A broken egg for the larva
+ * For the HIVE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_larvabrokenegg(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/eggs/brokenegg/tris.fm");
 
@@ -3642,23 +3862,23 @@ void SP_obj_larvabrokenegg (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GLASS,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_cocoon (1 .5 0) ( -20 -20 -36) (20 20 36) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A cocoon which hangs from the ceiling
-For the HIVE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A (always animates)
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_cocoon (edict_t *self)
+ *
+ * Heretic 2: A cocoon which hangs from the ceiling
+ * For the HIVE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A (always animates)
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_cocoon(edict_t *self)
 {
-
 	VectorSet(self->mins,   -20, -20, -36);
 	VectorSet(self->maxs,    20,  20,  36);
 
@@ -3671,16 +3891,18 @@ void SP_obj_cocoon (edict_t *self)
 
 /*
  * QUAKED obj_cocoonopen (1 .5 0) ( -20 -20 -34) (20 20 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An open cocoon which hangs from the ceiling
-For the HIVE levels
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_cocoonopen (edict_t *self)
+ *
+ * Heretic 2: An open cocoon which hangs from the ceiling
+ * For the HIVE levels
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_cocoonopen(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/eggs/cocoon/tris.fm");
 
@@ -3692,20 +3914,21 @@ void SP_obj_cocoonopen (edict_t *self)
 	self->s.frame = 20;
 
 	ObjectInit(self,75,125,MAT_INSECT,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_venusflytrap (1 .5 0) ( -20 -20 -24) (20 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The venus flytrap - a viscous beast of a plant
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_venusflytrap (edict_t *self)
+ *
+ * Heretic 2: The venus flytrap - a viscous beast of a plant
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_venusflytrap(edict_t *self)
 {
 	edict_t *leaves;
 
@@ -3730,27 +3953,32 @@ void SP_obj_venusflytrap (edict_t *self)
 	gi.linkentity(leaves);
 
 	self->target_ent = leaves;
-
-
 }
 
-void tomb_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+tomb_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	--self->s.frame;
+
 	if (self->s.frame < 0)
+	{
 		self->s.frame=1;
+	}
 }
+
 /*
  * QUAKED obj_statue_techeckriktomb (1 .5 0) ( -41 -11 -14) (41 11 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
-The statue of the techeckrik laying down.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_statue_techeckriktomb (edict_t *self)
+ *
+ * Heretic 2: The statue of the techeckrik laying down.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_techeckriktomb(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/tomb/tris.fm");
 
@@ -3767,25 +3995,29 @@ void SP_obj_statue_techeckriktomb (edict_t *self)
 	self->use = tomb_use;
 }
 
-
-void tcheckrik_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+tcheckrik_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->s.frame > 0)
+	{
 		--self->s.frame;
+	}
 }
 
 /*
  * QUAKED obj_statue_techeckrikright (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
-The statue of the techeckrik with his arms raised up to the right.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
-NOGEM - No gem in the chest  (puzzle)
------------------------------------
-*/
-void SP_obj_statue_techeckrikright (edict_t *self)
+ *
+ * Heretic 2: The statue of the techeckrik with his arms raised up to the right.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * NOGEM - No gem in the chest (puzzle)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_techeckrikright(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/tcheckrik/tris.fm");
 
@@ -3802,23 +4034,22 @@ void SP_obj_statue_techeckrikright (edict_t *self)
 		self->s.frame = 3;
 
 	self->use = tcheckrik_use;
-
 }
-
-
 
 /*
  * QUAKED obj_statue_techeckrikleft (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
-The statue of the techeckrik with his arms raised up to the left.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
-NOGEM - No gem in the chest (puzzle)
------------------------------------
-*/
-void SP_obj_statue_techeckrikleft (edict_t *self)
+ *
+ * Heretic 2: The statue of the techeckrik with his arms raised up to the left.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * NOGEM - No gem in the chest (puzzle)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_techeckrikleft(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/tcheckrik/tris.fm");
 
@@ -3836,11 +4067,10 @@ void SP_obj_statue_techeckrikleft (edict_t *self)
 		self->s.frame = 1;
 
 	self->use = tcheckrik_use;
-
 }
 
-
-void spellbook_anim (edict_t *self)
+void
+spellbook_anim(edict_t *self)
 {
 	if (self->s.frame > 0)
 	{
@@ -3854,30 +4084,31 @@ void spellbook_anim (edict_t *self)
 		gi.sound(self, CHAN_BODY, gi.soundindex("misc/spbkcls.wav"), 1, ATTN_NORM, 0);
 		self->think = NULL;
 	}
-
 }
 
-void spellbook_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+spellbook_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	spellbook_anim(self);
 
 	G_FreeEdict(self->target_ent);
 
 	gi.sound(self, CHAN_BODY, gi.soundindex("misc/spbook.wav"), 1, ATTN_NORM, 0);
-
 }
 
 /*
  * QUAKED obj_spellbook (1 .5 0) ( -14 -14 -35) (14 14 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A spell book that closes when triggered.
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_spellbook (edict_t *self)
+ *
+ * Heretic 2: Spell book that closes when triggered
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_spellbook(edict_t *self)
 {
 	edict_t *beam;
 
@@ -3909,15 +4140,17 @@ void SP_obj_spellbook (edict_t *self)
 
 /*
  * QUAKED obj_skullpole (1 .5 0) ( -10 -10 -47) (10 10 47) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A pole with skulls on it
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_skullpole (edict_t *self)
+ *
+ * Heretic 2: A pole with skulls on it
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_skullpole(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/flags/totempole/tris.fm");
 
@@ -3928,20 +4161,21 @@ void SP_obj_skullpole (edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_pot1 (1 .5 0) ( -3 -8 -8) (3 8 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A cooking pot which hangs from a wall
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_pot1 (edict_t *self)
+ *
+ * Heretic 2: A cooking pot which hangs from a wall
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_pot1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/pot/tris.fm");
 
@@ -3951,20 +4185,21 @@ void SP_obj_pot1 (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A cooking pot which lays flat on a table
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_pot2 (edict_t *self)
+ *
+ * Heretic 2: A cooking pot which lays flat on a table
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_pot2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/pot2/tris.fm");
 
@@ -3972,20 +4207,21 @@ void SP_obj_pot2 (edict_t *self)
 	VectorSet(self->maxs,    7,  7,  3);
 
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A bottle that looks like the one Jennie came out of in I Dream of Jennie
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_bottle1 (edict_t *self)
+ *
+ * Heretic 2: A bottle that looks like the one Jennie came out of in I Dream of Jennie
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_bottle1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/jars/bottle/tris.fm");
 
@@ -3993,20 +4229,21 @@ void SP_obj_bottle1 (edict_t *self)
 	VectorSet(self->maxs,    3,  3,  7);
 
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A wine jug
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can't be moved by player
------------------------------------
-*/
-void SP_obj_jug1 (edict_t *self)
+ *
+ * Heretic 2: A wine jug
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+void
+SP_obj_jug1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/jars/jug/tris.fm");
 
@@ -4014,24 +4251,24 @@ void SP_obj_jug1 (edict_t *self)
 	VectorSet(self->maxs,    6,  6,  6);
 
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
-
 }
-
 
 /*
  * QUAKED obj_torture_table (1 .5 0) ( -46 -14 -14) (46 14 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A table useful for wringing confessions from your broken and pitiful enemies.
-style - the frame of animation for model
- 0 -table is down
- 1 - table is in upright position
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't ever be moved by player)
------------------------------------
-*/
-void SP_obj_torture_table (edict_t *self)
+ *
+ * Heretic 2: A table useful for wringing confessions from your broken and pitiful enemies.
+ * style - the frame of animation for model
+ *  0 -table is down
+ *  1 - table is in upright position
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't ever be moved by player)
+ * -----------------------------------
+ */
+void
+SP_obj_torture_table(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/torture/table/tris.fm");
 
@@ -4047,21 +4284,21 @@ void SP_obj_torture_table (edict_t *self)
 		self->s.frame = 0;
 
 	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
-
 }
-
 
 /*
  * QUAKED obj_torture_wallring (1 .5 0) ( -2 -4 -6) (2 4 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A ring that hangs from a wall
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't ever be moved by player)
------------------------------------
-*/
-void SP_obj_torture_wallring (edict_t *self)
+ *
+ * Heretic 2: A ring that hangs from a wall
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't ever be moved by player)
+ * -----------------------------------
+ */
+void
+SP_obj_torture_wallring(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/torture/wallring/tris.fm");
 
@@ -4071,10 +4308,10 @@ void SP_obj_torture_wallring (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_METAL,SOLID_BBOX);
-
 }
 
-void statue_tchecktrik_bust_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+statue_tchecktrik_bust_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->s.frame)
 		self->s.frame = 0;
@@ -4084,18 +4321,20 @@ void statue_tchecktrik_bust_use (edict_t *self, edict_t *other, edict_t *activat
 
 /*
  * QUAKED obj_statue_tchecktrik_bust (1 .5 0) (-8 -12 -15) (8 12 15) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A bust of a tchecktrik.  When used a necklace appears aroundit's neck.
-style -
-0 - no necklace until used then necklace appears
-1 - necklace until used then necklace disappears
--------  FIELDS  ------------------
-INVULNERABLE - N/A  (can't be hurt)
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_statue_tchecktrik_bust (edict_t *self)
+ *
+ * Heretic 2: A bust of a tchecktrik.  When used a necklace appears around it's neck.
+ * style -
+ * 0 - no necklace until used then necklace appears
+ * 1 - necklace until used then necklace disappears
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_tchecktrik_bust(edict_t *self)
 {
 	VectorSet(self->mins, -8, -12, -15);
 	VectorSet(self->maxs, 8, 12, 15);
@@ -4112,10 +4351,10 @@ void SP_obj_statue_tchecktrik_bust (edict_t *self)
 	self->use = statue_tchecktrik_bust_use;
 
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
-void statue_sithraguard_think (edict_t *self)
+void
+statue_sithraguard_think(edict_t *self)
 {
 	if (self->s.frame < 20)
 	{
@@ -4127,7 +4366,8 @@ void statue_sithraguard_think (edict_t *self)
 		self->think = NULL;
 }
 
-void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+statue_sithraguard_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	edict_t *shield;
 
@@ -4150,16 +4390,19 @@ void statue_sithraguard_use (edict_t *self, edict_t *other, edict_t *activator)
 
 /*
  * QUAKED obj_statue_sithraguard (1 .5 0) (-22 -20 -57) (22 20 57) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A statue of a sithra guard with spear extended.  When used the guard pulls his arm back.
-style - type of statue
--------  FIELDS  ------------------
-INVULNERABLE - N/A (can't be hurt)
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_statue_sithraguard (edict_t *self)
+ *
+ * Heretic 2: A statue of a sithra guard with spear extended.
+ * When used the guard pulls his arm back.
+ * style - type of statue
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_sithraguard(edict_t *self)
 {
 	VectorSet(self->mins, -22, -20, -57);
 	VectorSet(self->maxs, 22, 20, 57);
@@ -4173,14 +4416,13 @@ void SP_obj_statue_sithraguard (edict_t *self)
 	self->use = statue_sithraguard_use;
 
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
-void ironmaiden_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 
-void ironmaiden_open (edict_t *self)
+void
+ironmaiden_open(edict_t *self)
 {
-
 	if (self->s.frame == 9)
 		gi.sound(self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
 
@@ -4198,7 +4440,8 @@ void ironmaiden_open (edict_t *self)
 	}
 }
 
-void ironmaiden_close (edict_t *self)
+void
+ironmaiden_close(edict_t *self)
 {
 	if (self->s.frame < 10)
 	{
@@ -4213,7 +4456,8 @@ void ironmaiden_close (edict_t *self)
 	}
 }
 
-void ironmaiden_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+ironmaiden_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	VectorSet(self->mins, -18, -18, -49);
 	VectorSet(self->maxs, 18, 18, 49);
@@ -4222,12 +4466,11 @@ void ironmaiden_use (edict_t *self, edict_t *other, edict_t *activator)
 
 	ironmaiden_close(self);
 	gi.sound(self, CHAN_BODY, gi.soundindex("items/ironmaiden.wav"), 1, ATTN_NORM, 0);
-
 }
 
-
 // Cactus will hurt player
-void ironmaiden_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t		source, vf;
 	trace_t			trace;
@@ -4254,15 +4497,17 @@ void ironmaiden_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_
 
 /*
  * QUAKED obj_torture_ironmaiden (1 .5 0) (-18 -18 -49) (18 18 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An iron maiden that closes when used
--------  FIELDS  ------------------
-INVULNERABLE - N/A (can't be hurt)
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_torture_ironmaiden (edict_t *self)
+ *
+ * Heretic 2: Iron maiden (closes when used)
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_torture_ironmaiden(edict_t *self)
 {
 	VectorSet(self->mins, -28, -48, -49);
 	VectorSet(self->maxs, 28, 48, 49);
@@ -4276,21 +4521,21 @@ void SP_obj_torture_ironmaiden (edict_t *self)
 	self->touch = ironmaiden_touch;
 
 	ObjectInit(self,250,200,MAT_METAL,SOLID_BBOX);
-
 }
-
 
 /*
  * QUAKED obj_torture_rack (1 .5 0) (-22 -46 -19) (22 46 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A rack
--------  FIELDS  ------------------
-INVULNERABLE - N/A (can't be hurt)
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_torture_rack (edict_t *self)
+ *
+ * Heretic 2: Torture rack
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_torture_rack(edict_t *self)
 {
 	VectorSet(self->mins, -22, -46, -19);
 	VectorSet(self->maxs, 22, 46, 19);
@@ -4300,20 +4545,21 @@ void SP_obj_torture_rack (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
-
 }
 
 /*
  * QUAKED obj_torture_bed (1 .5 0) (-21 -43 -94) (21 43 94) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A bed of spikes that falls from the ceiling.
--------  FIELDS  ------------------
-INVULNERABLE - N/A (can't be hurt)
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_torture_bed (edict_t *self)
+ *
+ * Heretic 2: A bed of spikes that falls from the ceiling.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_torture_bed(edict_t *self)
 {
 	VectorSet(self->mins, -21, -43, -94);
 	VectorSet(self->maxs, 21, 43, 94);
@@ -4323,21 +4569,21 @@ void SP_obj_torture_bed (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
-
 }
-
 
 /*
  * QUAKED obj_statue_saraphbust (1 .5 0) (-10 -20 -24) (10 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A bust of a saraph
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_statue_saraphbust (edict_t *self)
+ *
+ * Heretic 2: Seraph bust
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_saraphbust(edict_t *self)
 {
 	VectorSet(self->mins, -10, -20, -24);
 	VectorSet(self->maxs,  10, 20, 24);
@@ -4346,13 +4592,13 @@ void SP_obj_statue_saraphbust (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
-
 }
 
 #define FISHBOB_HEIGHT		.1
 #define FISHBOB_SPEED		ANGLE_10
 
-void fish_anim (edict_t *self)
+void
+fish_anim(edict_t *self)
 {
 
 	M_ChangeYaw(self);
@@ -4371,28 +4617,31 @@ void fish_anim (edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void biotank_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+biotank_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	self->target_ent->ideal_yaw = anglemod(other->s.angles[YAW] + 180);
 }
 
 /*
  * QUAKED obj_biotank (1 .5 0) (-20 -33 -52) (20 33 52) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A biotank
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
--------  KEYS  ------------------
-style - what's in the biotank
-0 - empty
-1 - ET's head
-2 - hairless Critter
-3 - three fish
-4 - wasp
-*/
-void SP_obj_biotank (edict_t *self)
+ *
+ * Heretic 2: Bio Tank
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -------  KEYS  ------------------
+ * style - what's in the biotank
+ * 0 - empty
+ * 1 - ET's head
+ * 2 - hairless Critter
+ * 3 - three fish
+ * 4 - wasp
+ */
+void
+SP_obj_biotank(edict_t *self)
 {
 	edict_t *fish,*glass;
 	vec3_t forward,right;
@@ -4422,7 +4671,6 @@ void SP_obj_biotank (edict_t *self)
 	glass->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	ObjectInit(glass,250,200,MAT_GLASS,SOLID_NOT);
-
 
 	glass = G_Spawn();
 	VectorSet(glass->mins, -1, -1, -1);
@@ -4535,18 +4783,19 @@ void SP_obj_biotank (edict_t *self)
 	self->touch = biotank_touch;
 }
 
-
 /*
  * QUAKED obj_tapper (1 .5 0) (-2 -5 -2) (2 5 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tapper for a keg
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_tapper (edict_t *self)
+ *
+ * Heretic 2: Keg tapper
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_tapper(edict_t *self)
 {
 	VectorSet(self->mins, -2, -5, -2);
 	VectorSet(self->maxs,  2, 5, 2);
@@ -4555,21 +4804,21 @@ void SP_obj_tapper (edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_NOT);
-
 }
-
 
 /*
  * QUAKED obj_wallringplaque (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An iron plaque with rings hanging from it.  Great for hanging half corpses from
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_wallringplaque (edict_t *self)
+ *
+ * Heretic 2: An iron plaque with rings hanging from it. Great for hanging half corpses from
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_wallringplaque(edict_t *self)
 {
 	VectorSet(self->mins, -3, -20, -55);
 	VectorSet(self->maxs,  3,  20,  55);
@@ -4583,18 +4832,19 @@ void SP_obj_wallringplaque (edict_t *self)
 
 /*
  * QUAKED obj_hangingdude (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A half a dude hanging from a wall ring plaque
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_hangingdude (edict_t *self)
+ *
+ * Heretic 2: A half a dude hanging from a wall ring plaque
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_hangingdude(edict_t *self)
 {
 	edict_t *ring;
-
 
 	VectorSet(self->mins, -3, -20, -55);
 	VectorSet(self->maxs,  3,  20,  55);
@@ -4607,7 +4857,6 @@ void SP_obj_hangingdude (edict_t *self)
 	BboxYawAndScale(self);
 	self->targetname = "guy1";
 	gi.linkentity(self);
-
 
 	ring = G_Spawn();
 	VectorCopy(self->s.origin,ring->s.origin);
@@ -4622,20 +4871,21 @@ void SP_obj_hangingdude (edict_t *self)
 
 	BboxYawAndScale(ring);
 	gi.linkentity(ring);
-
 }
 
 /*
  * QUAKED obj_frypan (1 .5 0) (-1 -3 -10) (1 3 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A pan which is hanging on a nail
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_frypan (edict_t *self)
+ *
+ * Heretic 2: A pan which is hanging on a nail
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_frypan(edict_t *self)
 {
 	VectorSet(self->mins, -1, -3, -10);
 	VectorSet(self->maxs,  1,  3, 10);
@@ -4648,15 +4898,17 @@ void SP_obj_frypan (edict_t *self)
 
 /*
  * QUAKED obj_eggpan (1 .5 0) (-4 -10 -1) (4 10 1) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A pan which is laying flat like it was on a stove
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_eggpan (edict_t *self)
+ *
+ * Heretic 2: A pan which is laying flat like it was on a stove
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_eggpan(edict_t *self)
 {
 	VectorSet(self->mins, -4, -10, -1);
 	VectorSet(self->maxs,  4,  10, 1);
@@ -4669,15 +4921,17 @@ void SP_obj_eggpan (edict_t *self)
 
 /*
  * QUAKED obj_nest (1 .5 0) (-25 -25 -4) (25 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A big bird nest
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_nest (edict_t *self)
+ *
+ * Heretic 2: A big bird nest
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_nest(edict_t *self)
 {
 	VectorSet(self->mins, -25, -25, -4);
 	VectorSet(self->maxs,  25,  25, 4);
@@ -4688,18 +4942,19 @@ void SP_obj_nest (edict_t *self)
 	ObjectInit(self,250,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_choppeddude (1 .5 0) (-15 -40 -8) (15 40 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A guy who's all chopped up and laying on a table
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (can't be moved)
------------------------------------
-*/
-void SP_obj_choppeddude (edict_t *self)
+ *
+ * Heretic 2: A guy who's all chopped up and laying on a table
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (can't be moved)
+ * -----------------------------------
+ */
+void
+SP_obj_choppeddude(edict_t *self)
 {
 	VectorSet(self->mins, -15, -40, -8);
 	VectorSet(self->maxs,  15,  40, 8);
@@ -4712,15 +4967,17 @@ void SP_obj_choppeddude (edict_t *self)
 
 /*
  * QUAKED obj_lab_parts_container (1 .5 0) (-8 -8 -11) (8 8 11) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A container of moving body parts
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A (thing always animates)
-EXPLODING - N/A
-NOPUSH - can't be pushed
------------------------------------
-*/
-void SP_obj_lab_parts_container (edict_t *self)
+ *
+ * Heretic 2: A container of moving body parts
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A (thing always animates)
+ * EXPLODING - N/A
+ * NOPUSH - can't be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_lab_parts_container(edict_t *self)
 {
 	VectorSet(self->mins, -8, -8, -11);
 	VectorSet(self->maxs, 8, 8, 11);
@@ -4732,15 +4989,17 @@ void SP_obj_lab_parts_container (edict_t *self)
 
 /*
  * QUAKED obj_eyeball_jar (1 .5 0) (-13 -13 -18) (13 13 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A jar full of eyeballs
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A (thing always animates)
-EXPLODING - N/A
-NOPUSH - can't be moved
------------------------------------
-*/
-void SP_obj_eyeball_jar (edict_t *self)
+ *
+ * Heretic 2: A jar full of eyeballs
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A (thing always animates)
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved
+ * -----------------------------------
+ */
+void
+SP_obj_eyeball_jar(edict_t *self)
 {
 	VectorSet(self->mins, -13, -13, -18);
 	VectorSet(self->maxs,  13,  13, 18);
@@ -4753,15 +5012,17 @@ void SP_obj_eyeball_jar (edict_t *self)
 
 /*
  * QUAKED obj_lab_tray (1 .5 0) (-8 -8 -5) (8 8 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A tray with a beating heart and some tools on it.
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A (thing always animates)
-EXPLODING - N/A
-NOPUSH - N/A  (can't be pushed)
------------------------------------
-*/
-void SP_obj_lab_tray (edict_t *self)
+ *
+ * Heretic 2: A tray with a beating heart and some tools on it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A (thing always animates)
+ * EXPLODING - N/A
+ * NOPUSH - N/A  (can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_lab_tray(edict_t *self)
 {
 	VectorSet(self->mins, -8, -8, -5);
 	VectorSet(self->maxs, 8, 8, 5);
@@ -4771,8 +5032,8 @@ void SP_obj_lab_tray (edict_t *self)
 	ObjectInit(self,40,200,MAT_FLESH,SOLID_BBOX);
 }
 
-
-void ogle_moan (edict_t *self)
+void
+ogle_moan(edict_t *self)
 {
 	gi.sound(self, CHAN_VOICE, gi.soundindex(va("monsters/ogle/oglemoan%c.wav", irand('1', '2'))), 1, ATTN_IDLE, 0);
 	self->think = ogle_moan;
@@ -4781,15 +5042,17 @@ void ogle_moan (edict_t *self)
 
 /*
  * QUAKED obj_hanging_ogle (1 .5 0) (-8 -16 -34) (8 16 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Poor little hanging ogle
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A (thing always animates)
-EXPLODING - N/A
-NOPUSH - N/A  (can't be pushed)
------------------------------------
-*/
-void SP_obj_hanging_ogle (edict_t *self)
+ *
+ * Heretic 2: Poor little hanging ogle
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A (thing always animates)
+ * EXPLODING - N/A
+ * NOPUSH - N/A  (can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_hanging_ogle(edict_t *self)
 {
 	edict_t *ring;
 	vec3_t forward;
@@ -4801,7 +5064,6 @@ void SP_obj_hanging_ogle (edict_t *self)
 
 	SpawnClientAnim(self, FX_ANIM_HANGING_OGLE, NULL);
 	ObjectInit(self,100,200,MAT_FLESH,SOLID_BBOX);
-
 
 	ring = G_Spawn();
 	VectorCopy(self->s.origin,ring->s.origin);
@@ -4826,18 +5088,19 @@ void SP_obj_hanging_ogle (edict_t *self)
 	self->nextthink = level.time + irand (3, 10);
 }
 
-
 /*
  * QUAKED obj_ring_plaque2 (1 .5 0) (-2 -24 -20) (2 24 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-More rings mounted into a wall plate
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A  (can't be pushed)
------------------------------------
-*/
-void SP_obj_ring_plaque2 (edict_t *self)
+ *
+ * Heretic 2: Rings mounted on wall plate
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A  (can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_ring_plaque2(edict_t *self)
 {
 	VectorSet(self->mins, -2, -24, -20);
 	VectorSet(self->maxs,  2, 24, 20);
@@ -4849,18 +5112,19 @@ void SP_obj_ring_plaque2 (edict_t *self)
 	ObjectInit(self,250,200,MAT_FLESH,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_statue_sariph (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
-Big statue in armor carrying an axe
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A  (can't be pushed)
------------------------------------
-*/
-void SP_obj_statue_sariph (edict_t *self)
+ *
+ * Heretic 2: Big statue in armor carrying an axe
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A  (can't be pushed)
+ * -----------------------------------
+ */
+void
+SP_obj_statue_sariph(edict_t *self)
 {
 	VectorSet(self->mins, -13, -16, -41);
 	VectorSet(self->maxs,  13, 16, 41);
@@ -4873,15 +5137,17 @@ void SP_obj_statue_sariph (edict_t *self)
 
 /*
  * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A push cart for the ogles to push around
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can be pushed
------------------------------------
-*/
-void SP_obj_pushcart (edict_t *self)
+ *
+ * Heretic 2: A push cart for the ogles to push around
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_pushcart(edict_t *self)
 {
 	VectorSet(self->mins, -14, -30, -17);
 	VectorSet(self->maxs,  14, 30, 17);
@@ -4891,19 +5157,19 @@ void SP_obj_pushcart (edict_t *self)
 	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
 }
 
-
-
 /*
  * QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-An open book
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can be pushed
------------------------------------
-*/
-void SP_obj_bookopen (edict_t *self)
+ *
+ * Heretic 2: Open Book
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_bookopen(edict_t *self)
 {
 	VectorSet(self->mins, -8, -16, -2);
 	VectorSet(self->maxs,  8, 16, 2);
@@ -4913,18 +5179,19 @@ void SP_obj_bookopen (edict_t *self)
 	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A closed book standing up
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can be pushed
------------------------------------
-*/
-void SP_obj_bookclosed (edict_t *self)
+ *
+ * Heretic 2: Closed book standing up
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_bookclosed(edict_t *self)
 {
 	VectorSet(self->mins, -8, -8, -2);
 	VectorSet(self->maxs,  8, 8, 2);
@@ -4934,18 +5201,19 @@ void SP_obj_bookclosed (edict_t *self)
 	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
 }
 
-
 /*
  * QUAKED obj_web (1 .5 0) (-2 -18 -20) (2 18 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A cobweb
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can be pushed
------------------------------------
-*/
-void SP_obj_web (edict_t *self)
+ *
+ * Heretic 2: Cobweb
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_web(edict_t *self)
 {
 	VectorSet(self->mins, -2, -18, -20);
 	VectorSet(self->maxs,  2,  18,  20);
@@ -4958,7 +5226,8 @@ void SP_obj_web (edict_t *self)
 
 #define FAST_TWITCH 16
 
-void larva_anim (edict_t *self)
+void
+larva_anim(edict_t *self)
 {
 
 	if (self->s.frame < self->count)
@@ -4977,25 +5246,28 @@ void larva_anim (edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void larva_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+larva_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (!other->client)
 		return;
 
-	T_Damage (self, other, other, vec3_origin, self->s.origin, vec3_origin, 10, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
+	T_Damage(self, other, other, vec3_origin, self->s.origin, vec3_origin, 10, 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 }
 
 /*
  * QUAKED obj_larva (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A squirming larva
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can be pushed
------------------------------------
-*/
-void SP_obj_larva (edict_t *self)
+ *
+ * Heretic 2: Squirming larva
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_larva(edict_t *self)
 {
 	VectorSet(self->mins, -8, -12, -2);
 	VectorSet(self->maxs,  8,  12,  2);
@@ -5020,21 +5292,21 @@ void SP_obj_larva (edict_t *self)
 		self->spawnflags |= FAST_TWITCH;
 
 	self->touch = larva_touch;
-
-
 }
 
 /*
  * QUAKED obj_bloodsplat (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A red blood splat
--------  FIELDS  ------------------
-INVULNERABLE - can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - can be pushed
------------------------------------
-*/
-void SP_obj_bloodsplat (edict_t *self)
+ *
+ * Heretic 2: A red blood splat
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+void
+SP_obj_bloodsplat(edict_t *self)
 {
 	VectorSet(self->mins, -8, -8, -2);
 	VectorSet(self->maxs,  8,  8,  2);
@@ -5095,7 +5367,7 @@ SP_object_big_fire(edict_t *self)
  * "sounds"
  *    0) no sound (default)
  *    1) sound campfire
-*/
+ */
 void
 SP_object_campfire(edict_t *self)
 {

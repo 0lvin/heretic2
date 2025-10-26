@@ -4807,38 +4807,48 @@ SP_misc_flare(edict_t* ent)
 void
 misc_player_mannequin_use(edict_t * self, edict_t * other, edict_t * activator)
 {
+	int firstframe, lastframe;
+	const char *animname = NULL;
+
 	self->monsterinfo.aiflags |= AI_TARGET_ANGER;
 	self->enemy = activator;
 
-#if 0
 	switch ( self->count )
 	{
 		case GESTURE_FLIP_OFF:
-			self->s.frame = FRAME_flip01;
-			self->monsterinfo.nextframe = FRAME_flip12;
+			animname = "flipoff";
+			firstframe = FRAME_flip01;
+			lastframe = FRAME_flip12;
 			break;
-
 		case GESTURE_SALUTE:
-			self->s.frame = FRAME_salute01;
-			self->monsterinfo.nextframe = FRAME_salute11;
+			animname = "salute";
+			firstframe = FRAME_salute01;
+			lastframe = FRAME_salute11;
 			break;
-
 		case GESTURE_TAUNT:
-			self->s.frame = FRAME_taunt01;
-			self->monsterinfo.nextframe = FRAME_taunt17;
+			animname = "taunt";
+			firstframe = FRAME_taunt01;
+			lastframe = FRAME_taunt17;
 			break;
-
 		case GESTURE_WAVE:
-			self->s.frame = FRAME_wave01;
-			self->monsterinfo.nextframe = FRAME_wave11;
+			animname = "wave";
+			firstframe = FRAME_wave01;
+			lastframe = FRAME_wave11;
 			break;
-
 		case GESTURE_POINT:
-			self->s.frame = FRAME_point01;
-			self->monsterinfo.nextframe = FRAME_point12;
+		default:
+			animname = "point";
+			firstframe = FRAME_point01;
+			lastframe = FRAME_point12;
 			break;
 	}
-#endif
+
+	lastframe -= firstframe;
+	M_SetAnimGroupFrameValues(self, animname, &firstframe, &lastframe);
+	lastframe += firstframe;
+
+	self->s.frame = firstframe;
+	self->monsterinfo.nextframe = lastframe;
 }
 
 void
@@ -4846,26 +4856,30 @@ misc_player_mannequin_think(edict_t * self)
 {
 	if (self->last_sound_time <= level.time)
 	{
+		int firstframe = FRAME_stand01, lastframe = FRAME_stand40;
+
+		lastframe -= firstframe;
+		M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe);
+		lastframe += firstframe;
+
 		self->s.frame++;
 
-#if 0
 		if ((self->monsterinfo.aiflags & AI_TARGET_ANGER) == 0)
 		{
-			if (self->s.frame > FRAME_stand40)
+			if (self->s.frame > lastframe)
 			{
-				self->s.frame = FRAME_stand01;
+				self->s.frame = firstframe;
 			}
 		}
 		else
 		{
 			if (self->s.frame > self->monsterinfo.nextframe)
 			{
-				self->s.frame = FRAME_stand01;
+				self->s.frame = firstframe;
 				self->monsterinfo.aiflags &= ~AI_TARGET_ANGER;
 				self->enemy = NULL;
 			}
 		}
-#endif
 
 		self->last_sound_time = level.time + FRAMETIME;
 	}
