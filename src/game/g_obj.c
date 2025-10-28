@@ -53,7 +53,6 @@ void
 DynamicObjectSpawn(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
-	self->solid = SOLID_BBOX;
 	self->takedamage = DAMAGE_YES;
 
 	self->die = destructible_die;
