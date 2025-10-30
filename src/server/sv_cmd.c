@@ -28,6 +28,24 @@
 
 #include "header/server.h"
 
+/* Bitlist
+ * API for using arrays of bits with maximum space efficiency
+*/
+typedef char bitlist_t;
+
+/* number of bits per array index */
+#define BITLIST_BPU (sizeof(int) * 8)
+
+/* calculate length of array given number of bits n */
+#define BITLIST_SIZE(n) (1 + (((n) - 1) / BITLIST_BPU))
+
+/* Set bit i to 1 or clear it to 0 */
+#define BITLIST_SET(l, i) l[(i) / BITLIST_BPU] |= 1 << ((i) % BITLIST_BPU)
+#define BITLIST_CLEAR(l, i) l[(i) / BITLIST_BPU] &= ~(1 << ((i) % BITLIST_BPU))
+
+/* test the value of bit i */
+#define BITLIST_ISSET(l, i) (l[(i) / BITLIST_BPU] & (1 << ((i) % BITLIST_BPU))) != 0
+
 /*
  * Specify a list of master servers
  */
@@ -113,7 +131,7 @@ SV_SetPlayer(void)
 		}
 
 		sv_client = &svs.clients[idnum];
-		sv_player = sv_client->edict;
+		sv_player = CL_EDICT(sv_client);
 
 		if (!sv_client->state)
 		{
@@ -135,7 +153,7 @@ SV_SetPlayer(void)
 		if (!strcmp(cl->name, s))
 		{
 			sv_client = cl;
-			sv_player = sv_client->edict;
+			sv_player = CL_EDICT(cl);
 			return true;
 		}
 	}
@@ -177,8 +195,7 @@ SV_GameMap_f(void)
 {
 	char *map, mapvalue[MAX_QPATH];
 	int i;
-	client_t *cl;
-	qboolean *savedInuse;
+	edict_t *clent;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -211,33 +228,33 @@ SV_GameMap_f(void)
 		/* save the map just exited */
 		if (sv.state == ss_game)
 		{
+			bitlist_t savedInuse[BITLIST_SIZE(MAX_CLIENTS)];
+
 			/* clear all the client inuse flags before saving so that
 			   when the level is re-entered, the clients will spawn
 			   at spawn points instead of occupying body shells */
-			savedInuse = malloc(maxclients->value * sizeof(qboolean));
+			memset(savedInuse, 0, sizeof(savedInuse));
 
-			YQ2_COM_CHECK_OOM(savedInuse, "malloc()", maxclients->value * sizeof(qboolean))
-			if (!savedInuse)
+			for (i = 0; i < maxclients->value; i++)
 			{
-				/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-				return;
-			}
+				clent = CLNUM_EDICT(i);
 
-			for (i = 0, cl = svs.clients; i < maxclients->value; i++, cl++)
-			{
-				savedInuse[i] = cl->edict->inuse;
-				cl->edict->inuse = false;
+				if (clent->inuse)
+				{
+					BITLIST_SET(savedInuse, i);
+				}
+
+				clent->inuse = false;
 			}
 
 			SV_WriteLevelFile();
 
 			/* we must restore these for clients to transfer over correctly */
-			for (i = 0, cl = svs.clients; i < maxclients->value; i++, cl++)
+			for (i = 0; i < maxclients->value; i++)
 			{
-				cl->edict->inuse = savedInuse[i];
+				CLNUM_EDICT(i)->inuse =
+					BITLIST_ISSET(savedInuse, i) ? true : false;
 			}
-
-			free(savedInuse);
 		}
 	}
 
@@ -420,7 +437,7 @@ SV_Status_f(void)
 		}
 
 		Com_Printf("%2i ", i);
-		Com_Printf("%5i ", cl->edict->client->ps.stats[STAT_FRAGS]);
+		Com_Printf("%5i ", CL_EDICT(cl)->client->ps.stats[STAT_FRAGS]);
 
 		if (cl->state == cs_connected)
 		{
