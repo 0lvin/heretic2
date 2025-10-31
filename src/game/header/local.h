@@ -2092,10 +2092,10 @@ typedef struct
 void G_InitResourceManagers();
 
 /* g_breakable.c */
-void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker,int damage);
+void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker, int damage);
 
 /* g_obj.c */
-void ObjectInit(edict_t *self,int health,int mass, int materialtype,int solid);
+void ObjectInit(edict_t *self,int health,int mass, int materialtype, solid_t solid);
 
 // p_funcs
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);

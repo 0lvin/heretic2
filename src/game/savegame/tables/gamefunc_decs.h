@@ -223,7 +223,6 @@ extern void NoAmmoWeaponChange ( edict_t * ent ) ;
 extern void Nuke_Explode ( edict_t * ent ) ;
 extern void Nuke_Quake ( edict_t * self ) ;
 extern void Nuke_Think ( edict_t * ent ) ;
-extern void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid) ;
 extern void Own_Sphere ( edict_t * self , edict_t * sphere ) ;
 extern void Prox_Explode ( edict_t * ent ) ;
 extern void Prox_Field_Touch ( edict_t * ent , edict_t * other , cplane_t * plane , csurface_t * surf ) ;

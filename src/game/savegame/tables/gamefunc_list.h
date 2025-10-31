@@ -121,7 +121,6 @@
 {"Nuke_Explode", (byte *)Nuke_Explode},
 {"Nuke_Quake", (byte *)Nuke_Quake},
 {"Nuke_Think", (byte *)Nuke_Think},
-{"ObjectInit", (byte *)ObjectInit},
 {"OnSameTeam", (byte *)OnSameTeam},
 {"Own_Sphere", (byte *)Own_Sphere},
 {"PickBallStart", (byte *)PickBallStart},

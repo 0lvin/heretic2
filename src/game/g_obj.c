@@ -99,8 +99,8 @@ void BboxYawAndScale(edict_t *self)
 	int i;
 	float scale;
 
-	VectorCopy(self->mins,holdmins);
-	VectorCopy(self->maxs,holdmaxs);
+	VectorCopy(self->mins, holdmins);
+	VectorCopy(self->maxs, holdmaxs);
 
 	AngleVectors(self->s.angles,forward, right,NULL);
 
@@ -165,8 +165,8 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 	int i;
 	float scale;
 
-	VectorCopy(self->mins,holdmins);
-	VectorCopy(self->maxs,holdmaxs);
+	VectorCopy(self->mins, holdmins);
+	VectorCopy(self->maxs, holdmaxs);
 
 	AngleVectors(self->s.angles,forward, right,NULL);
 
@@ -219,10 +219,11 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 	self->maxs[2] = self->maxs[2] * scale;
 }
 
-void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid)
+void
+ObjectInit(edict_t *self,int health,int mass, int materialtype, solid_t solid)
 {
 	self->movetype = MOVETYPE_NONE;
-	self->solid = (solid_t)solid;
+	self->solid = solid;
 	self->msgHandler = DefaultMsgHandler;
 	self->takedamage = DAMAGE_YES;
 	self->clipmask = MASK_MONSTERSOLID;
@@ -298,6 +299,7 @@ SP_obj_banner(edict_t *self)
 {
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->materialtype = MAT_CLOTH;
 
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
@@ -323,12 +325,14 @@ SP_obj_banneronpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->materialtype = MAT_WOOD;
 
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
 	self->think = object_object_think;
 	self->monsterinfo.action = "poly";
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
+	gi.linkentity(self);
 }
 
 /*-----------------------------------------------
@@ -340,7 +344,7 @@ barrel_explode_think(edict_t *self)
 	vec3_t loc;
 
 	VectorCopy(self->s.origin, loc);
-	AlertMonsters (self, self->owner, 3, false);
+	AlertMonsters(self, self->owner, 3, false);
 
 	self->fire_damage_time = level.time + 1.0;
 	self->svflags |= SVF_ONFIRE;
@@ -444,14 +448,9 @@ SP_object_flame1(edict_t *self)
 void
 SP_obj_barrel(edict_t *self)
 {
-	self->s.modelindex = gi.modelindex("models/objects/barrel/normal/tris.fm");
-
-	VectorSet(self->mins, -12, -12, -19);
-	VectorSet(self->maxs, 12, 12, 19);
-
 	self->dmg = 10;
 
-	ObjectInit(self,10,60,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 10, 60, MAT_WOOD, SOLID_BBOX);
 
 	if (self->spawnflags & OBJ_EXPLODING)
 	{
@@ -487,14 +486,8 @@ SP_object_barrel(edict_t *self)
 void
 SP_obj_broom(edict_t *self)
 {
-	self->s.modelindex = gi.modelindex("models/objects/broom/tris.fm");
-
-	VectorSet(self->mins, -2, -2, -25);
-	VectorSet(self->maxs, 2, 2, 25);
-
 	self->spawnflags |= OBJ_NOPUSH;
-
-	ObjectInit(self,10,40,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 10, 40, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -512,11 +505,7 @@ void
 SP_obj_chair1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/chair1/tris.fm");
-
-	VectorSet(self->mins, -12, -8, -26);
-	VectorSet(self->maxs, 12, 8, 26);
-
-	ObjectInit(self,20,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 20, 50, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -534,13 +523,8 @@ void
 SP_obj_chair2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/chair2/tris.fm");
-
-	VectorSet(self->mins, -18, -29, -30);
-	VectorSet(self->maxs, 18, 29, 30);
-
 	self->spawnflags |= OBJ_NOPUSH;
-
-	ObjectInit(self,20,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 20, 50, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -558,14 +542,9 @@ void
 SP_obj_chair3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/chair3/tris.fm");
-
-	VectorSet(self->mins, -14, -21, -28);
-	VectorSet(self->maxs, 14, 21, 28);
-
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,20,50,MAT_GREYSTONE,SOLID_BBOX);
+	ObjectInit(self, 20, 50, MAT_GREYSTONE, SOLID_BBOX);
 }
 
 void
@@ -605,10 +584,7 @@ SP_obj_chest1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chests/chest1/tris.fm");
 
-	VectorSet(self->mins, -10, -18, -19);
-	VectorSet(self->maxs, 10, 18, 19);
-
-	ObjectInit(self,60,150,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,60,150, MAT_WOOD, SOLID_BBOX);
 
 	self->use = chest1_use;
 }
@@ -629,12 +605,9 @@ SP_obj_chest2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chests/chest2/tris.fm");
 
-	VectorSet(self->mins, -14, -17, -9);
-	VectorSet(self->maxs, 14, 17, 9);
-
 	self->spawnflags &= ~OBJ_NOPUSH;
 
-	ObjectInit(self,60,150,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,60,150, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -653,12 +626,9 @@ SP_obj_chest3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chests/chest3/tris.fm");
 
-	VectorSet(self->mins, -10, -17, -6);
-	VectorSet(self->maxs, 10, 17, 6);
-
 	self->spawnflags &= ~OBJ_NOPUSH;
 
-	ObjectInit(self,60,150,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,60,150, MAT_WOOD, SOLID_BBOX);
 }
 
 void
@@ -666,9 +636,13 @@ cog1_anim(edict_t *self)
 {
 
 	if (self->s.frame < 11)
+	{
 		++self->s.frame;
+	}
 	else
-		self->s.frame=1;
+	{
+		self->s.frame = 1;
+	}
 
 	if (self->touch_debounce_time > level.time)	// First time through reach anim
 	{
@@ -712,10 +686,7 @@ SP_obj_cog1(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	VectorSet(self->mins, -8, -4, 0);
-	VectorSet(self->maxs, 8, 4, 20);
-
-	ObjectInit(self,40,20,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,20, MAT_WOOD, SOLID_BBOX);
 
 	self->use = cog1_use;
 }
@@ -768,9 +739,6 @@ SpawnCorpse(edict_t *self)
 	}
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
-	VectorSet(self->mins,-30,-12,-2);
-	VectorSet(self->maxs,30,12,2);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
@@ -778,7 +746,7 @@ SpawnCorpse(edict_t *self)
 }
 
 /*
- * QUAKED obj_corpse1 (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_corpse1 (1 .5 0) (-30 -12 -2) (30 12 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
  * Heretic 2: Plague Elf corpse
  * ---------- KEYS -----------------
@@ -804,7 +772,7 @@ SP_obj_corpse1(edict_t *self)
 }
 
 /*
- * QUAKED obj_corpse2 (1 .5 0) (-30 -12 0) (30 12 5)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_corpse2 (1 .5 0) (-30 -12 -2) (30 12 2)  INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
  * Heretic 2: Plague Elf corpse (alternate skin)
  * ---------- KEYS -----------------
@@ -940,7 +908,9 @@ dying_elf_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 			self->enemy = other;
 			dying_elf_reach_anim(self);
 			if (self->enemy->client || self->enemy->svflags & SVF_MONSTER)
+			{
 				dying_elf_sounds(self, DYING_ELF_TOUCH_VOICE);
+			}
 		}
 		else
 			self->touch_debounce_time = level.time + (FRAMETIME * 20);
@@ -997,10 +967,6 @@ dying_elf_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, 
 void
 SP_obj_dying_elf(edict_t *self)
 {
-
-	VectorSet(self->mins,-32,-32,-2);
-	VectorSet(self->maxs,32,32,6);
-
 	self->s.modelindex = gi.modelindex("models/monsters/plaguelf/tris.fm");
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -1047,12 +1013,9 @@ SP_obj_sign1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/signs/sign1/tris.fm");
 
-	VectorSet(self->mins, -29, -4,-16);
-	VectorSet(self->maxs, 29,  4, 16);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self,40,150,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,150, MAT_WOOD, SOLID_BBOX);
 
 	if (self->style==0)
 		self->s.skinnum = 0;
@@ -1087,9 +1050,6 @@ SP_obj_sign4(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/signs/sign4/tris.fm");
 
-	VectorSet(self->mins, -8, -18, -29);
-	VectorSet(self->maxs,  8,  18,  29);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	if (self->style==0)
@@ -1116,9 +1076,6 @@ SP_obj_stalagmite1(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/stalagmite/smite1/tris.fm");
 
-	VectorSet(self->mins,-32,-32,-200);
-	VectorSet(self->maxs,32,32,0);
-
 	if (self->spawnflags & 8)
 		self->s.skinnum = 1;
 
@@ -1138,9 +1095,6 @@ SP_obj_stalagmite2(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/stalagmite/smite2/tris.fm");
 
-	VectorSet(self->mins,-32,-32,-128);
-	VectorSet(self->maxs,32,32,0);
-
 	if (self->spawnflags & 1)
 		self->s.skinnum = 1;
 
@@ -1159,9 +1113,6 @@ void
 SP_obj_stalagmite3(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/stalagmite/smite3/tris.fm");
-
-	VectorSet(self->mins,-16,-16,-200);
-	VectorSet(self->maxs,16,16,0);
 
 	if (self->spawnflags & 1)
 		self->s.skinnum = 1;
@@ -1183,9 +1134,6 @@ SP_obj_stalagmite3(edict_t *self)
 void
 SP_obj_statue_corvus(edict_t *self)
 {
-	VectorSet(self->mins, -16, -16, 0);
-	VectorSet(self->maxs, 16, 16, 128);
-
 	self->s.modelindex = gi.modelindex("models/objects/statue/corvus/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
@@ -1208,9 +1156,6 @@ void
 SP_obj_statue_dolphin1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
-
-	VectorSet(self->mins, -68, -22, -30);
-	VectorSet(self->maxs, 68, 22, 30);
 
 	self->spawnflags |= OBJ_NOPUSH;
 	if (self->spawnflags & OBJ_INVULNERABLE)
@@ -1237,9 +1182,6 @@ SP_obj_statue_dolphin2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
 
-	VectorSet(self->mins, -17, -20, -70);
-	VectorSet(self->maxs, 17, 20, 70);
-
 	self->s.frame = 1;
 
 	self->spawnflags |= OBJ_NOPUSH;
@@ -1263,9 +1205,6 @@ void
 SP_obj_statue_dolphin3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
-
-	VectorSet(self->mins, -17, -20, -70);
-	VectorSet(self->maxs, 17, 20, 70);
 
 	self->s.frame = 3;
 
@@ -1291,8 +1230,6 @@ SP_obj_statue_dolphin4(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dolphin/tris.fm");
 
-	VectorSet(self->mins, -63, -22, -37);
-	VectorSet(self->maxs, 63, 22, 37);
 	self->s.frame = 2;
 
 	self->spawnflags |= OBJ_NOPUSH;
@@ -1317,9 +1254,6 @@ SP_obj_statue_guardian(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/guardian/tris.fm");
 
-	VectorSet(self->mins, -100, -64, 0);
-	VectorSet(self->maxs, 64, 64, 128);
-
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
@@ -1342,10 +1276,7 @@ SP_obj_table1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/tables/table1/tris.fm");
 
-	VectorSet(self->mins, -28, -54, -18);
-	VectorSet(self->maxs, 28, 54, 18);
-
-	ObjectInit(self,40,100,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,100, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -1363,9 +1294,6 @@ void
 SP_obj_table2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/tables/table2/tris.fm");
-
-	VectorSet(self->mins, -28, -54, -17);
-	VectorSet(self->maxs, 28, 54, 17);
 
 	self->spawnflags |= OBJ_NOPUSH;
 
@@ -1386,14 +1314,11 @@ SP_obj_table2(edict_t *self)
 void
 SP_obj_throne(edict_t *self)
 {
-	VectorSet(self->mins, -20, -22, -44);
-	VectorSet(self->maxs, 20,22, 44);
-
 	self->s.modelindex = gi.modelindex("models/objects/chairs/throne/tris.fm");
 
 	self->spawnflags |= OBJ_NOPUSH;
 
-	ObjectInit(self,150,200,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,150,200, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -1411,9 +1336,6 @@ void
 SP_obj_kettle(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/kettle/tris.fm");
-
-	VectorSet(self->mins, -8, -8, 0);
-	VectorSet(self->maxs, 8, 8, 10);
 
 	ObjectInit(self,40,100,MAT_METAL,SOLID_BBOX);
 }
@@ -1433,9 +1355,6 @@ void
 SP_obj_cauldron(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/caldrn/tris.fm");
-
-	VectorSet(self->mins, -22, -22, -10);
-	VectorSet(self->maxs, 22, 22, 10);
 
 	if (self->spawnflags & OBJ_ANIMATE)	// Animate it
 	{
@@ -1468,9 +1387,6 @@ SP_obj_firepot(edict_t *self)
 	self->s.sound = gi.soundindex("ambient/fireplace.wav");
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 
-	VectorSet(self->mins, -18, -18, -12);
-	VectorSet(self->maxs, 18, 18, 12);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Cant' be moved
 
@@ -1500,9 +1416,6 @@ SP_obj_statue_duckbill1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/duckbill/tris.fm");
 
-	VectorSet(self->mins, -67, -24, -51);
-	VectorSet(self->maxs, 67, 24, 51);
-
 	self->s.frame = 0;
 
 	self->spawnflags |= OBJ_NOPUSH;
@@ -1527,15 +1440,12 @@ SP_obj_statue_duckbill2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/duckbill/tris.fm");
 
-	VectorSet(self->mins, -67, -24, -50);
-	VectorSet(self->maxs, 67, 24, 50);
-
 	self->s.frame = 1;
 
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 
-	ObjectInit(self,150,100,MAT_GREYSTONE,SOLID_BBOX);
+	ObjectInit(self, 150, 100, MAT_GREYSTONE, SOLID_BBOX);
 }
 
 void
@@ -1656,11 +1566,8 @@ SP_obj_seasonglobe(edict_t *bottom)
 	bottom->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	bottom->movetype = MOVETYPE_NONE;
 	bottom->solid = SOLID_BBOX;
-	VectorSet(bottom->mins, -80, -80, 0);
-	VectorSet(bottom->maxs, 80, 80, 320);
 	bottom->s.modelindex = gi.modelindex("models/objects/globe/globebottom/tris.fm");
 	bottom->s.frame = 1;
-	VectorSet(bottom->rrs.scale, 1.75, 1.75, 1.75);
 	BboxYawAndScale(bottom);
 	bottom->targetname = "globebottom";
 	bottom->use = globebottom_use;
@@ -1708,10 +1615,6 @@ void
 SP_obj_stein(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/stein/tris.fm");
-
-	VectorSet(self->mins, -2, -2, -3);
-	VectorSet(self->maxs, 2, 2, 3);
-
 	ObjectInit(self,15,10,MAT_METAL,SOLID_BBOX);
 }
 
@@ -1730,11 +1633,7 @@ void
 SP_obj_scroll(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/scroll/tris.fm");
-
-	VectorSet(self->mins, -2, -18, -3);
-	VectorSet(self->maxs, 2, 18, 3);
-
-	ObjectInit(self,10,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,10,50, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -1752,14 +1651,9 @@ void
 SP_obj_fountain_fish(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/fountainfish/tris.fm");
-
-	VectorSet(self->mins, -52, -34, -48);
-	VectorSet(self->maxs, 52, 34, 48);
-
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,50, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -1777,12 +1671,7 @@ void
 SP_obj_statue_boulderfish(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/boulderfish/tris.fm");
-
-	VectorSet(self->mins, -26, -16, -27);
-	VectorSet(self->maxs, 26, 16, 27);
-
 	self->spawnflags |= OBJ_NOPUSH;
-
 	ObjectInit(self,200,150,MAT_GREYSTONE,SOLID_BBOX);
 }
 
@@ -1801,10 +1690,6 @@ void
 SP_obj_pottedplant(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/plant/tris.fm");
-
-	VectorSet(self->mins, -20, -20, -30);
-	VectorSet(self->maxs, 20, 20, 30);
-
 	ObjectInit(self,20,50,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -1823,15 +1708,8 @@ void
 SP_obj_plant1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/plant1/tris.fm");
-
-	// The bbox in QUAKED comment is bigger than code bbox to show designers how big model is
-	VectorSet(self->mins, -8, -8, -24);
-	VectorSet(self->maxs, 8, 8, 24);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	self->s.effects|=EF_CAMERA_NO_CLIP;
-
+	self->s.effects |= EF_CAMERA_NO_CLIP;
 	ObjectInit(self,20,50,MAT_LEAF,SOLID_NOT);
 }
 
@@ -1850,15 +1728,8 @@ void
 SP_obj_plant2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/plant2/tris.fm");
-
-	// The bbox in QUAKED comment is bigger than code bbox to show designers how big model is
-	VectorSet(self->mins, -20, -20, -10);
-	VectorSet(self->maxs, 20, 20, 20);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	self->s.effects|=EF_CAMERA_NO_CLIP;
-
+	self->s.effects |= EF_CAMERA_NO_CLIP;
 	ObjectInit(self,20,50,MAT_LEAF,SOLID_NOT);
 }
 
@@ -1878,9 +1749,6 @@ SP_obj_plant3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/plant3/tris.fm");
 
-	VectorSet(self->mins, -8, -8, -12);
-	VectorSet(self->maxs, 8, 8, 12);
-
 	if (self->style==0)
 		self->s.skinnum = 0;
 	else if (self->style==1)
@@ -1890,7 +1758,7 @@ SP_obj_plant3(edict_t *self)
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	self->s.effects|=EF_CAMERA_NO_CLIP;
+	self->s.effects |= EF_CAMERA_NO_CLIP;
 
 	ObjectInit(self,20,50,MAT_LEAF,SOLID_NOT);
 }
@@ -1910,9 +1778,6 @@ void
 SP_obj_treetop(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/treetop/tris.fm");
-
-	VectorSet(self->mins, -176, -176, -125);
-	VectorSet(self->maxs,  176,  176,  125);
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
@@ -1935,14 +1800,9 @@ void
 SP_obj_tree(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/tree/tris.fm");
-
-	VectorSet(self->mins, -100, -100, -120);
-	VectorSet(self->maxs, 100, 100, 120);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,50, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -1962,10 +1822,6 @@ SP_obj_tree2(edict_t *self)
 	edict_t *moss;
 
 	self->s.modelindex = gi.modelindex("models/objects/plants/tree2/trunk2/tris.fm");
-
-	VectorSet(self->mins, -50, -50, -286);
-	VectorSet(self->maxs, 50, 50, 286);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
@@ -2004,13 +1860,10 @@ SP_obj_tree3(edict_t *self)
 
 	self->s.modelindex = gi.modelindex("models/objects/plants/tree3/trunk3/tris.fm");
 
-	VectorSet(self->mins, -50, -50, -286);
-	VectorSet(self->maxs, 50, 50, 286);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,50, MAT_WOOD, SOLID_BBOX);
 
 	moss = G_Spawn();
 	VectorCopy(self->s.origin,moss->s.origin);
@@ -2045,13 +1898,10 @@ SP_obj_treetall(edict_t *self)
 
 	self->s.modelindex = gi.modelindex("models/objects/plants/talltree/trunk1/tris.fm");
 
-	VectorSet(self->mins, -46, -46, -340);
-	VectorSet(self->maxs, 46, 46, 340);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,50, MAT_WOOD, SOLID_BBOX);
 
 	moss = G_Spawn();
 	VectorCopy(self->s.origin,moss->s.origin);
@@ -2083,13 +1933,10 @@ SP_obj_treefallen(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus/tris.fm");
 
-	VectorSet(self->mins, -24, -62, -35);
-	VectorSet(self->maxs, 24, 62, 35);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self,40,50,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,40,50, MAT_WOOD, SOLID_BBOX);
 
 	self->s.frame = 1;
 }
@@ -2110,12 +1957,9 @@ SP_obj_shovel(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/shovel/tris.fm");
 
-	VectorSet(self->mins, -8, -8, -20);
-	VectorSet(self->maxs, 8, 8, 20);
-
 	self->spawnflags |= OBJ_NOPUSH;
 
-	ObjectInit(self,20,40,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,20,40, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2136,11 +1980,7 @@ SP_obj_woodpile(edict_t *self)
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't move
 
-	VectorSet(self->mins, -12, -20, -7);
-	VectorSet(self->maxs, 12, 20, 7);
-	VectorSet(self->rrs.scale, 2, 2, 2);
-
-	ObjectInit(self,100,150,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,100,150, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2158,11 +1998,7 @@ void
 SP_obj_fishtrap(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/fishtrap/tris.fm");
-
-	VectorSet(self->mins, -14, -28, -13);
-	VectorSet(self->maxs, 14, 28, 13);
-
-	ObjectInit(self,30,100,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,30,100, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2180,13 +2016,8 @@ void
 SP_obj_bench(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/bench/tris.fm");
-
-	VectorSet(self->mins, -10, -22, -10);
-	VectorSet(self->maxs, 10, 22, 10);
-
 	self->spawnflags |= OBJ_NOPUSH;
-
-	ObjectInit(self,3,4,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,3,4, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2204,13 +2035,8 @@ void
 SP_obj_bucket(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/bucket/tris.fm");
-
-	VectorSet(self->mins, -8, -8, -9);
-	VectorSet(self->maxs, 8, 8, 10);
-
 	self->spawnflags |= OBJ_NOPUSH;
-
-	ObjectInit(self,3,4,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,3,4, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2232,17 +2058,17 @@ void
 SP_obj_ropechain(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/rope/tris.fm");
-
-	VectorSet(self->mins, -20, -20, -14);
-	VectorSet(self->maxs, 20, 20, 14);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	if (self->s.skinnum == 0)
-		ObjectInit(self,80,100,MAT_WOOD,SOLID_BBOX);
+	{
+		ObjectInit(self, 80, 100, MAT_WOOD, SOLID_BBOX);
+	}
 	else
-		ObjectInit(self,160,100,MAT_METAL,SOLID_BBOX);
+	{
+		ObjectInit(self, 160, 100, MAT_METAL, SOLID_BBOX);
+	}
 }
 
 /*
@@ -2260,11 +2086,7 @@ void
 SP_obj_wheelbarrow(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/wheelbarrow/tris.fm");
-
-	VectorSet(self->mins, -37, -20, -21);
-	VectorSet(self->maxs, 37, 20, 21);
-
-	ObjectInit(self,60,100,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 60, 100, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2282,14 +2104,9 @@ void
 SP_obj_wheelbarrowdamaged(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/wheelbarrow/tris.fm");
-
-	VectorSet(self->mins, -38, -26, -20);
-	VectorSet(self->maxs,  38,  26,  20);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->s.frame = 1;
-
-	ObjectInit(self,60,100,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,60,100, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -2307,10 +2124,6 @@ void
 SP_obj_urn(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/urn/tris.fm");
-
-	VectorSet(self->mins, -8, -8, -27);
-	VectorSet(self->maxs, 8, 8, 30);
-
 	ObjectInit(self,50,100,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -2331,16 +2144,10 @@ void
 SP_obj_bigcrystal(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/crystals/bigcrystal/tris.fm");
-
-	VectorSet(self->mins,-35,-35,-50);
-	VectorSet(self->maxs,35,35,50);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	ObjectInit(self,350,200,MAT_GREYSTONE,SOLID_BBOX);
-
 	self->avelocity[1] = self->speed;
-
 	self->movetype = MOVETYPE_FLY;
 	self->gravity = 0;
 }
@@ -2360,11 +2167,7 @@ void
 SP_obj_moss1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/moss/tris.fm");
-
-	VectorSet(self->mins, -1, -10, -40);
-	VectorSet(self->maxs, 1, 10, 40);
 	self->s.skinnum = 0;
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->s.renderfx |= RF_TRANSLUCENT;
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
@@ -2385,11 +2188,7 @@ void
 SP_obj_moss2(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
-
-	VectorSet(self->mins,-1,-9,-40);
-	VectorSet(self->maxs,1,9,40);
 	self->s.skinnum = 1;
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->s.renderfx |= RF_TRANSLUCENT;
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
@@ -2410,9 +2209,6 @@ void
 SP_obj_moss3(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
-
-	VectorSet(self->mins,-1,-15,-40);
-	VectorSet(self->maxs,1,15,40);
 	self->s.skinnum = 2;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->s.renderfx |= RF_TRANSLUCENT;
@@ -2435,12 +2231,8 @@ void
 SP_obj_moss4(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
-
-	VectorSet(self->mins,-1,-12,-40);
-	VectorSet(self->maxs,1,12,40);
 	self->s.skinnum = 3;
 	self->s.renderfx |= RF_TRANSLUCENT;
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
@@ -2460,12 +2252,8 @@ void
 SP_obj_moss5(edict_t *self)
 {
 	self->s.modelindex=gi.modelindex("models/objects/moss/tris.fm");
-
-	VectorSet(self->mins,-1,-10,-40);
-	VectorSet(self->maxs,1,10,40);
 	self->s.skinnum = 4;
 	self->s.renderfx |= RF_TRANSLUCENT;
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ObjectInit(self,10,10,MAT_LEAF,SOLID_NOT);
 }
@@ -2484,11 +2272,7 @@ SP_obj_moss5(edict_t *self)
 void
 SP_obj_floor_candelabrum(edict_t *self)
 {
-	VectorSet(self->mins, -8, -8, -35);
-	VectorSet(self->maxs, 8, 8, 35);
-
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
 	SpawnClientAnim(self, FX_ANIM_CANDELABRUM, NULL);
 	ObjectInit(self,40,60,MAT_METAL,SOLID_BBOX);
 }
@@ -2508,13 +2292,8 @@ void
 SP_obj_statue_dragonhead(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dragonhead/tris.fm");
-
-	VectorSet(self->mins, -76, -28, -46);
-	VectorSet(self->maxs, 76, 28, 46);
-
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
 	ObjectInit(self,200,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
@@ -2537,10 +2316,6 @@ void
 SP_obj_statue_dragon(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/dragon/tris.fm");
-
-	VectorSet(self->mins, -53, -33, -72);
-	VectorSet(self->maxs, 53, 33, 72);
-
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
@@ -2570,6 +2345,7 @@ SP_obj_flagonpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->materialtype = MAT_WOOD;
 
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
@@ -2640,15 +2416,9 @@ void
 SP_obj_lever1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/levers/lever1/tris.fm");
-
-	VectorSet(self->mins, -6, -14, -17);
-	VectorSet(self->maxs, 6, 14, 17);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self,150,125,MAT_WOOD,SOLID_BBOX);
-
+	ObjectInit(self,150,125, MAT_WOOD, SOLID_BBOX);
 	self->use = lever1_use;
 }
 
@@ -2712,15 +2482,9 @@ void
 SP_obj_lever2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/levers/lever2/tris.fm");
-
-	VectorSet(self->mins, -14, -14, -9);
-	VectorSet(self->maxs, 14, 14, 9);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self,150,125,MAT_WOOD,SOLID_BBOX);
-
+	ObjectInit(self,150,125, MAT_WOOD, SOLID_BBOX);
 	self->use = lever2_use;
 }
 
@@ -2784,15 +2548,9 @@ void
 SP_obj_lever3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/levers/lever3/tris.fm");
-
-	VectorSet(self->mins, -6, -4, -16);
-	VectorSet(self->maxs, 6, 4, 16);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self,150,125,MAT_WOOD,SOLID_BBOX);
-
+	ObjectInit(self,150,125, MAT_WOOD, SOLID_BBOX);
 	self->use = lever3_use;
 }
 
@@ -2832,16 +2590,9 @@ void
 SP_obj_bush1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/bush1/tris.fm");
-
-	// The bounding box in the QUAKED comment is bigger to show the designers the true size of the objects
-	VectorSet(self->mins, -16, -16, -19);
-	VectorSet(self->maxs, 16, 16, 19);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
 	ObjectInit(self,25,25,MAT_WOOD,SOLID_NOT);
-
 	self->touch_debounce_time = level.time;
 	self->touch = bush_touch;
 }
@@ -2861,16 +2612,9 @@ void
 SP_obj_bush2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/bush2/tris.fm");
-
-	// The bounding box in the QUAKED comment is bigger to show the designers the true size of the objects
-	VectorSet(self->mins, -16, -16, -40);
-	VectorSet(self->maxs, 16, 16, 40);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,25,50,MAT_WOOD,SOLID_BBOX);
-
+	ObjectInit(self,25,50, MAT_WOOD, SOLID_BBOX);
 	self->touch_debounce_time = level.time;
 	self->touch = bush_touch;
 }
@@ -2905,14 +2649,8 @@ void
 SP_obj_cactus(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus/tris.fm");
-
-	VectorSet(self->mins, -18, -18, -44);
-	VectorSet(self->maxs, 18, 18, 44);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	ObjectInit(self,50,125,MAT_NONE,SOLID_BBOX);
-
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
 }
@@ -2932,14 +2670,8 @@ void
 SP_obj_cactus3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus3/tris.fm");
-
-	VectorSet(self->mins, -14, -14, -32);
-	VectorSet(self->maxs, 14, 14, 32);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	ObjectInit(self,50,125,MAT_NONE,SOLID_BBOX);
-
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
 }
@@ -3000,15 +2732,9 @@ void
 SP_obj_cactus4(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/cactus4/tris.fm");
-
-	VectorSet(self->mins, -11, -11, -11);
-	VectorSet(self->maxs, 11, 11, 11);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	ObjectInit(self,75,125,MAT_NONE,SOLID_BBOX);
 	self->use = cactus4_use;
-
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
 }
@@ -3028,11 +2754,7 @@ void
 SP_obj_basket(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/basket/tris.fm");
-
-	VectorSet(self->mins, -13, -13, -21);
-	VectorSet(self->maxs, 13, 13, 21);
-
-	ObjectInit(self,50,70,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,50,70, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -3050,10 +2772,6 @@ void
 SP_obj_claybowl(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/claybowl/tris.fm");
-
-	VectorSet(self->mins, -6, -6, -2);
-	VectorSet(self->maxs, 6, 6, 2);
-
 	ObjectInit(self,5,5,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -3072,11 +2790,7 @@ void
 SP_obj_clayjar(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/clayjar/tris.fm");
-
-	VectorSet(self->mins, -15, -15, -24);
-	VectorSet(self->maxs, 15, 15, 24);
-
-	ObjectInit(self,25,125,MAT_POTTERY,SOLID_BBOX);
+	ObjectInit(self, 25, 125, MAT_POTTERY,SOLID_BBOX);
 }
 
 /*
@@ -3094,12 +2808,7 @@ void
 SP_obj_gorgonbones(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/bones/gorgon/tris.fm");
-
-	VectorSet(self->mins, -18, -38, -9);
-	VectorSet(self->maxs,  18,  38, 1);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	ObjectInit(self,50,125,MAT_NONE,SOLID_BBOX);
 }
 
@@ -3118,15 +2827,9 @@ void
 SP_obj_grass(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/grass/tris.fm");
-
-	VectorSet(self->mins,  -8, -8, -10);
-	VectorSet(self->maxs,  8,  8, 10);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self,50,125,MAT_WOOD,SOLID_NOT);
-
-	self->s.effects|=EF_CAMERA_NO_CLIP;
+	ObjectInit(self, 50, 125, MAT_WOOD, SOLID_NOT);
+	self->s.effects |= EF_CAMERA_NO_CLIP;
 }
 
 /*
@@ -3144,14 +2847,9 @@ void
 SP_obj_swampflat_top(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/swampflat/tris.fm");
-
-	VectorSet(self->mins,  0, -100, -48);
-	VectorSet(self->maxs,   2, 100,  48);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -3169,15 +2867,10 @@ void
 SP_obj_swampflat_bottom(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/swampflat/tris.fm");
-
-	VectorSet(self->mins,  0, -100, -48);
-	VectorSet(self->maxs,   2, 100,  48);
-
 	self->s.skinnum = 1;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -3195,15 +2888,10 @@ void
 SP_obj_treestump(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/plants/treestump/tris.fm");
-
-	VectorSet(self->mins,  -18, -18, -16);
-	VectorSet(self->maxs,   18,  18,  16);
-
 	self->s.skinnum = 1;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -3221,14 +2909,8 @@ void
 SP_obj_jawbone(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/bones/jaws/tris.fm");
-
-	VectorSet(self->mins,  -11, -11, -12);
-	VectorSet(self->maxs,   11,  11,  12);
-
-	self->s.effects|=EF_CAMERA_NO_CLIP;
-
-	ObjectInit(self,25,125,MAT_NONE,SOLID_BBOX);
-
+	self->s.effects |= EF_CAMERA_NO_CLIP;
+	ObjectInit(self, 25, 125, MAT_NONE, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 
@@ -3247,11 +2929,7 @@ void
 SP_obj_barrel_metal(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/barrel/metal/tris.fm");
-
-	VectorSet(self->mins,  -11, -12, -18);
-	VectorSet(self->maxs,   11,  12,  18);
-
-	ObjectInit(self,75,125,MAT_METAL,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_METAL, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 
@@ -3292,11 +2970,7 @@ void
 SP_obj_barrel_explosive(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/barrel/normal/tris.fm");
-
-	VectorSet(self->mins,  -11, -12, -18);
-	VectorSet(self->maxs,   11,  12,  18);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 /*
@@ -3314,11 +2988,7 @@ void
 SP_obj_gascan(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/barrel/gascan/tris.fm");
-
-	VectorSet(self->mins,  -8, -9, -13);
-	VectorSet(self->maxs,   8,  9,  13);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 
@@ -3337,11 +3007,7 @@ void
 SP_obj_pipe1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/pipe1/tris.fm");
-
-	VectorSet(self->mins,  -11, -24, -7);
-	VectorSet(self->maxs,   11,  24,  7);
-
-	ObjectInit(self,50,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 50, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 
@@ -3360,11 +3026,7 @@ void
 SP_obj_pipe2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/pipe2/tris.fm");
-
-	VectorSet(self->mins,  -6, -25, -4);
-	VectorSet(self->maxs,   6,  25,  4);
-
-	ObjectInit(self,50,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 50, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 
@@ -3383,13 +3045,8 @@ void
 SP_obj_pipewheel(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/pipewheel/tris.fm");
-
-	VectorSet(self->mins,  -14, -14, -12);
-	VectorSet(self->maxs,   14,  14,  12);
-
 	self->spawnflags |= OBJ_NOPUSH;
-
-	ObjectInit(self,50,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 50, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.skinnum = 1;
 }
 
@@ -3408,11 +3065,7 @@ void
 SP_obj_minecart(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/carts/mine/tris.fm");
-
-	VectorSet(self->mins,  -18, -29, -20);
-	VectorSet(self->maxs,   18,  29,  20);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.frame = 0;
 }
 
@@ -3431,11 +3084,7 @@ void
 SP_obj_minecart2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/carts/mine/tris.fm");
-
-	VectorSet(self->mins,  -18, -29, -20);
-	VectorSet(self->maxs,   18,  29,  20);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.frame = 20;
 }
 
@@ -3454,11 +3103,7 @@ void
 SP_obj_minecart3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/carts/mine/tris.fm");
-
-	VectorSet(self->mins,  -18, -29, -15);
-	VectorSet(self->maxs,   18,  29,  20);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.frame = 40;
 }
 
@@ -3477,11 +3122,7 @@ void
 SP_obj_andwallhanging(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/andwallhang/tris.fm");
-
-	VectorSet(self->mins,   0, -19, -24);
-	VectorSet(self->maxs,   4,  19,  24);
-
-	ObjectInit(self,75,100,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,75,100, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -3499,11 +3140,7 @@ void
 SP_obj_pick(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/tools/pick/tris.fm");
-
-	VectorSet(self->mins,   -12, -13, -2);
-	VectorSet(self->maxs,    12,  13,  2);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -3521,11 +3158,7 @@ void
 SP_obj_metalchunk1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/metalchunks/tris.fm");
-
-	VectorSet(self->mins,   -10, -26, -4);
-	VectorSet(self->maxs,   10,   26,  4);
-
-	ObjectInit(self,75,125,MAT_METAL,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_METAL, SOLID_BBOX);
 }
 
 /*
@@ -3543,12 +3176,7 @@ void
 SP_obj_metalchunk2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/metalchunks/tris.fm");
-
-	VectorSet(self->mins,   -10, -26, -7);
-	VectorSet(self->maxs,   10,   26,  7);
-
-	ObjectInit(self,75,125,MAT_METAL,SOLID_BBOX);
-
+	ObjectInit(self, 75, 125, MAT_METAL, SOLID_BBOX);
 	self->s.frame = 1;
 }
 
@@ -3567,12 +3195,7 @@ void
 SP_obj_metalchunk3(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pipes/metalchunks/tris.fm");
-
-	VectorSet(self->mins,   -9, -30, -4);
-	VectorSet(self->maxs,    9,   30, 4);
-
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
-
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 	self->s.frame = 2;
 }
 
@@ -3592,12 +3215,7 @@ void
 SP_obj_rocks1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/rocks/rock1/tris.fm");
-
-	VectorSet(self->mins,   -12, -13, -4);
-	VectorSet(self->maxs,    12,  13,  4);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
 }
 
@@ -3617,12 +3235,7 @@ void
 SP_obj_rocks2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/rocks/rock2/tris.fm");
-
-	VectorSet(self->mins,   -34, -40, -19);
-	VectorSet(self->maxs,    34,  40,  19);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
 }
 
@@ -3679,9 +3292,6 @@ void
 SP_obj_hivepriestessssymbol(edict_t *self)
 {
 	self->s.modelindex = 0;
-
-	VectorSet(self->mins,   -4, -4, -13);
-	VectorSet(self->maxs,    4,  4,  13);
 	self->use = hivepriestesssymbol_use;
 
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
@@ -3704,10 +3314,6 @@ void
 SP_obj_queenthrone(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/queen/tris.fm");
-
-	VectorSet(self->mins,   -40, -56, -49);
-	VectorSet(self->maxs,    40,  56,  49);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
@@ -3730,10 +3336,6 @@ void
 SP_obj_queenchair(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/chairs/smallchair/tris.fm");
-
-	VectorSet(self->mins,   -30, -28, -31);
-	VectorSet(self->maxs,    30,  28,  31);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GREYSTONE,SOLID_BBOX);
@@ -3784,10 +3386,6 @@ SP_obj_shrine(edict_t *self)
 	}
 
 	self->s.modelindex = gi.modelindex("models/objects/shrine/tris.fm");
-
-	VectorSet(self->mins,   -26, -38, -38);
-	VectorSet(self->maxs,    26,  38,  38);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -3827,10 +3425,6 @@ void
 SP_obj_larvaegg(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/eggs/eggs/tris.fm");
-
-	VectorSet(self->mins,   -6, -14, -6);
-	VectorSet(self->maxs,    6,  14,  6);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GLASS,SOLID_BBOX);
@@ -3852,10 +3446,6 @@ void
 SP_obj_larvabrokenegg(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/eggs/brokenegg/tris.fm");
-
-	VectorSet(self->mins,   -6, -7, -5);
-	VectorSet(self->maxs,    6,  7,  5);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_GLASS,SOLID_BBOX);
@@ -3876,9 +3466,6 @@ SP_obj_larvabrokenegg(edict_t *self)
 void
 SP_obj_cocoon(edict_t *self)
 {
-	VectorSet(self->mins,   -20, -20, -36);
-	VectorSet(self->maxs,    20,  20,  36);
-
 	// Always animate and can't be pushed
 	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
 	SpawnClientAnim(self, FX_ANIM_COCOON, NULL);
@@ -3902,14 +3489,8 @@ void
 SP_obj_cocoonopen(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/eggs/cocoon/tris.fm");
-
-	VectorSet(self->mins,   -20, -20, -34);
-	VectorSet(self->maxs,    20,  20,  34);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
 	self->s.frame = 20;
-
 	ObjectInit(self,75,125,MAT_INSECT,SOLID_BBOX);
 }
 
@@ -3930,10 +3511,6 @@ SP_obj_venusflytrap(edict_t *self)
 	edict_t *leaves;
 
 	self->s.modelindex = gi.modelindex("models/objects/plants/venus/tris.fm");
-
-	VectorSet(self->mins,   -20, -20, -24);
-	VectorSet(self->maxs,    20,  20,  24);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_LEAF,SOLID_BBOX);
@@ -3978,10 +3555,6 @@ void
 SP_obj_statue_techeckriktomb(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/tomb/tris.fm");
-
-	VectorSet(self->mins,   -41, -11, -14);
-	VectorSet(self->maxs,    41,  11,  14);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4017,10 +3590,6 @@ void
 SP_obj_statue_techeckrikright(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/tcheckrik/tris.fm");
-
-	VectorSet(self->mins,   -26, -40, -50);
-	VectorSet(self->maxs,    26,  40,  50);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4049,10 +3618,6 @@ void
 SP_obj_statue_techeckrikleft(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/statue/tcheckrik/tris.fm");
-
-	VectorSet(self->mins,   -26, -40, -50);
-	VectorSet(self->maxs,    26,  40,  50);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4110,10 +3675,6 @@ SP_obj_spellbook(edict_t *self)
 	edict_t *beam;
 
 	self->s.modelindex = gi.modelindex("models/objects/spellbook/book/tris.fm");
-
-	VectorSet(self->mins,   -14, -14, -35);
-	VectorSet(self->maxs,    14,  14,  40);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4150,13 +3711,8 @@ void
 SP_obj_skullpole(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/flags/totempole/tris.fm");
-
-	VectorSet(self->mins,   -10, -10, -47);
-	VectorSet(self->maxs,    10,  10,  47);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -4175,10 +3731,6 @@ void
 SP_obj_pot1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/pot/tris.fm");
-
-	VectorSet(self->mins,   -3, -8, -8);
-	VectorSet(self->maxs,    3,  8,  8);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
@@ -4199,10 +3751,6 @@ void
 SP_obj_pot2(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/pots/pot2/tris.fm");
-
-	VectorSet(self->mins,   -7, -7, -3);
-	VectorSet(self->maxs,    7,  7,  3);
-
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -4221,10 +3769,6 @@ void
 SP_obj_bottle1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/jars/bottle/tris.fm");
-
-	VectorSet(self->mins,   -3, -3, -7);
-	VectorSet(self->maxs,    3,  3,  7);
-
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -4243,10 +3787,6 @@ void
 SP_obj_jug1(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/jars/jug/tris.fm");
-
-	VectorSet(self->mins,   -6, -6, -6);
-	VectorSet(self->maxs,    6,  6,  6);
-
 	ObjectInit(self,75,125,MAT_POTTERY,SOLID_BBOX);
 }
 
@@ -4268,10 +3808,6 @@ void
 SP_obj_torture_table(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/torture/table/tris.fm");
-
-	VectorSet(self->mins,   -46, -14, -14);
-	VectorSet(self->maxs,    46,  14,  14);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
@@ -4280,7 +3816,7 @@ SP_obj_torture_table(edict_t *self)
 	else
 		self->s.frame = 0;
 
-	ObjectInit(self,75,125,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -4298,13 +3834,8 @@ void
 SP_obj_torture_wallring(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/objects/torture/wallring/tris.fm");
-
-	VectorSet(self->mins,   -2, -4, -6);
-	VectorSet(self->maxs,    2,  4,  6);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self,75,125,MAT_METAL,SOLID_BBOX);
+	ObjectInit(self, 75, 125, MAT_METAL, SOLID_BBOX);
 }
 
 void
@@ -4333,9 +3864,6 @@ statue_tchecktrik_bust_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_statue_tchecktrik_bust(edict_t *self)
 {
-	VectorSet(self->mins, -8, -12, -15);
-	VectorSet(self->maxs, 8, 12, 15);
-
 	self->s.modelindex = gi.modelindex("models/items/puzzles/tchecktrikbust/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
@@ -4401,9 +3929,6 @@ statue_sithraguard_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_statue_sithraguard(edict_t *self)
 {
-	VectorSet(self->mins, -22, -20, -57);
-	VectorSet(self->maxs, 22, 20, 57);
-
 	self->s.modelindex = gi.modelindex("models/objects/statue/sithraguard/tris.fm");
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -4506,9 +4031,6 @@ ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 void
 SP_obj_torture_ironmaiden(edict_t *self)
 {
-	VectorSet(self->mins, -28, -48, -49);
-	VectorSet(self->maxs, 28, 48, 49);
-
 	self->s.modelindex = gi.modelindex("models/objects/torture/ironmaiden/tris.fm");
 	self->spawnflags |= OBJ_INVULNERABLE;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -4534,14 +4056,11 @@ SP_obj_torture_ironmaiden(edict_t *self)
 void
 SP_obj_torture_rack(edict_t *self)
 {
-	VectorSet(self->mins, -22, -46, -19);
-	VectorSet(self->maxs, 22, 46, 19);
-
 	self->s.modelindex = gi.modelindex("models/objects/torture/rack/tris.fm");
 	self->spawnflags |= OBJ_INVULNERABLE;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,250,200, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -4558,14 +4077,11 @@ SP_obj_torture_rack(edict_t *self)
 void
 SP_obj_torture_bed(edict_t *self)
 {
-	VectorSet(self->mins, -21, -43, -94);
-	VectorSet(self->maxs, 21, 43, 94);
-
 	self->s.modelindex = gi.modelindex("models/objects/torture/bed/tris.fm");
 	self->spawnflags |= OBJ_INVULNERABLE;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,250,200, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -4582,9 +4098,6 @@ SP_obj_torture_bed(edict_t *self)
 void
 SP_obj_statue_saraphbust(edict_t *self)
 {
-	VectorSet(self->mins, -10, -20, -24);
-	VectorSet(self->maxs,  10, 20, 24);
-
 	self->s.modelindex = gi.modelindex("models/objects/statue/saraphbust/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4642,9 +4155,6 @@ SP_obj_biotank(edict_t *self)
 {
 	edict_t *fish,*glass;
 	vec3_t forward,right;
-
-	VectorSet(self->mins, -21, -34, -52);
-	VectorSet(self->maxs,  21, 34, 52);
 
 	self->s.modelindex = gi.modelindex("models/objects/labs/biotank/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
@@ -4794,9 +4304,6 @@ SP_obj_biotank(edict_t *self)
 void
 SP_obj_tapper(edict_t *self)
 {
-	VectorSet(self->mins, -2, -5, -2);
-	VectorSet(self->maxs,  2, 5, 2);
-
 	self->s.modelindex = gi.modelindex("models/objects/tapper/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4817,9 +4324,6 @@ SP_obj_tapper(edict_t *self)
 void
 SP_obj_wallringplaque(edict_t *self)
 {
-	VectorSet(self->mins, -3, -20, -55);
-	VectorSet(self->maxs,  3,  20,  55);
-
 	self->s.modelindex = gi.modelindex("models/objects/torture/plaque/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
@@ -4842,9 +4346,6 @@ void
 SP_obj_hangingdude(edict_t *self)
 {
 	edict_t *ring;
-
-	VectorSet(self->mins, -3, -20, -55);
-	VectorSet(self->maxs,  3,  20,  55);
 
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
@@ -4884,9 +4385,6 @@ SP_obj_hangingdude(edict_t *self)
 void
 SP_obj_frypan(edict_t *self)
 {
-	VectorSet(self->mins, -1, -3, -10);
-	VectorSet(self->maxs,  1,  3, 10);
-
 	self->s.modelindex = gi.modelindex("models/objects/pots/frypan/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4907,9 +4405,6 @@ SP_obj_frypan(edict_t *self)
 void
 SP_obj_eggpan(edict_t *self)
 {
-	VectorSet(self->mins, -4, -10, -1);
-	VectorSet(self->maxs,  4,  10, 1);
-
 	self->s.modelindex = gi.modelindex("models/objects/pots/eggpan/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4930,9 +4425,6 @@ SP_obj_eggpan(edict_t *self)
 void
 SP_obj_nest(edict_t *self)
 {
-	VectorSet(self->mins, -25, -25, -4);
-	VectorSet(self->maxs,  25,  25, 4);
-
 	self->s.modelindex = gi.modelindex("models/objects/nest/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4953,9 +4445,6 @@ SP_obj_nest(edict_t *self)
 void
 SP_obj_choppeddude(edict_t *self)
 {
-	VectorSet(self->mins, -15, -40, -8);
-	VectorSet(self->maxs,  15,  40, 8);
-
 	self->s.modelindex = gi.modelindex("models/objects/torture/guy2/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -4976,9 +4465,6 @@ SP_obj_choppeddude(edict_t *self)
 void
 SP_obj_lab_parts_container(edict_t *self)
 {
-	VectorSet(self->mins, -8, -8, -11);
-	VectorSet(self->maxs, 8, 8, 11);
-
 	self->spawnflags |= OBJ_ANIMATE;
 	SpawnClientAnim(self, FX_ANIM_LABPARTSCONTAINER, NULL);
 	ObjectInit(self,40,200,MAT_GLASS,SOLID_BBOX);
@@ -4998,9 +4484,6 @@ SP_obj_lab_parts_container(edict_t *self)
 void
 SP_obj_eyeball_jar(edict_t *self)
 {
-	VectorSet(self->mins, -13, -13, -18);
-	VectorSet(self->maxs,  13,  13, 18);
-
 	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
 
 	SpawnClientAnim(self, FX_ANIM_EYEBALLJAR, NULL);
@@ -5021,9 +4504,6 @@ SP_obj_eyeball_jar(edict_t *self)
 void
 SP_obj_lab_tray(edict_t *self)
 {
-	VectorSet(self->mins, -8, -8, -5);
-	VectorSet(self->maxs, 8, 8, 5);
-
 	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
 	SpawnClientAnim(self, FX_ANIM_LABTRAY, NULL);
 	ObjectInit(self,40,200,MAT_FLESH,SOLID_BBOX);
@@ -5053,9 +4533,6 @@ SP_obj_hanging_ogle(edict_t *self)
 {
 	edict_t *ring;
 	vec3_t forward;
-
-	VectorSet(self->mins, -8, -16, -34);
-	VectorSet(self->maxs,  8, 16, 34);
 
 	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
 
@@ -5099,9 +4576,6 @@ SP_obj_hanging_ogle(edict_t *self)
 void
 SP_obj_ring_plaque2(edict_t *self)
 {
-	VectorSet(self->mins, -2, -24, -20);
-	VectorSet(self->maxs,  2, 24, 20);
-
 	self->s.modelindex = gi.modelindex("models/objects/torture/plaque2/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
@@ -5123,9 +4597,6 @@ SP_obj_ring_plaque2(edict_t *self)
 void
 SP_obj_statue_sariph(edict_t *self)
 {
-	VectorSet(self->mins, -13, -16, -41);
-	VectorSet(self->maxs,  13, 16, 41);
-
 	self->s.modelindex = gi.modelindex("models/objects/statue/sariph/tris.fm");
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
@@ -5146,12 +4617,9 @@ SP_obj_statue_sariph(edict_t *self)
 void
 SP_obj_pushcart(edict_t *self)
 {
-	VectorSet(self->mins, -14, -30, -17);
-	VectorSet(self->maxs,  14, 30, 17);
-
 	self->s.modelindex = gi.modelindex("models/objects/carts/pushcart/tris.fm");
 
-	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,250,200, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -5168,12 +4636,9 @@ SP_obj_pushcart(edict_t *self)
 void
 SP_obj_bookopen(edict_t *self)
 {
-	VectorSet(self->mins, -8, -16, -2);
-	VectorSet(self->maxs,  8, 16, 2);
-
 	self->s.modelindex = gi.modelindex("models/objects/books/bookopen/tris.fm");
 
-	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,250,200, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -5190,12 +4655,9 @@ SP_obj_bookopen(edict_t *self)
 void
 SP_obj_bookclosed(edict_t *self)
 {
-	VectorSet(self->mins, -8, -8, -2);
-	VectorSet(self->maxs,  8, 8, 2);
-
 	self->s.modelindex = gi.modelindex("models/objects/books/bookclosed/tris.fm");
 
-	ObjectInit(self,250,200,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self,250,200, MAT_WOOD, SOLID_BBOX);
 }
 
 /*
@@ -5212,9 +4674,6 @@ SP_obj_bookclosed(edict_t *self)
 void
 SP_obj_web(edict_t *self)
 {
-	VectorSet(self->mins, -2, -18, -20);
-	VectorSet(self->maxs,  2,  18,  20);
-
 	self->s.modelindex = gi.modelindex("models/objects/web/web/tris.fm");
 	self->s.renderfx |= RF_TRANSLUCENT;
 
@@ -5266,9 +4725,6 @@ larva_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 void
 SP_obj_larva(edict_t *self)
 {
-	VectorSet(self->mins, -8, -12, -2);
-	VectorSet(self->maxs,  8,  12,  2);
-
 	self->s.modelindex = gi.modelindex("models/objects/eggs/larva/tris.fm");
 
 	ObjectInit(self,2,100,MAT_INSECT,SOLID_BBOX);
@@ -5305,12 +4761,8 @@ SP_obj_larva(edict_t *self)
 void
 SP_obj_bloodsplat(edict_t *self)
 {
-	VectorSet(self->mins, -8, -8, -2);
-	VectorSet(self->maxs,  8,  8,  2);
-
 	self->s.modelindex = gi.modelindex("sprites/fx/bsplat.sp2");
 	self->flags |= RF_FIXED | RF_ALPHA_TEXTURE;
-
 	ObjectInit(self,2,100,MAT_FLESH,SOLID_NOT);
 }
 

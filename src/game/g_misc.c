@@ -4490,11 +4490,11 @@ SpawnClientAnim(edict_t *self, byte type, char *sound)
 			self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 		}
 	}
+
 	scale = (byte)(AVG_VEC3T(self->rrs.scale) * 50);
 	assert((scale > 0) && (scale < 255));
 	skin = (byte)self->s.skinnum;
 
-//	self->svflags |= SVF_ALWAYS_SEND;
 	self->PersistantCFX = gi.CreatePersistantEffect(self,
 							FX_ANIMATE,
 							CEF_BROADCAST,
