@@ -31,13 +31,10 @@ typedef struct FXAnimModel
 
 FXAnimModel_t FXAnimModel[NUM_FX_ANIM]=
 {
-	{"models/objects/banner/wall/tris.fm",		NULL, 220.0,		1.0,	15,		1},	// FX_ANIM_BANNER
 	{"models/objects/lights/candelabrum/tris.fm",NULL, 100.0,		1.0,	7,		1},	// FX_ANIM_CANDELABRUM
 	{"models/objects/chandelier/chan2/tris.fm",	NULL, 100.0,		1.0,	7,		7},	// FX_ANIM_CHANDELIER2
 	{NULL,									NULL, 100.0,		0.5,	1,		0},	// FX_ANIM_FLAME - NEVER USED
 	{NULL,									NULL, 100.0,		0.5,	1,		0}, 	// FX_ANIM_FIRE - NEVER USED
-	{"models/objects/banner/onpole/tris.fm",		NULL, 100.0,		1.0,	21,		0},	// FX_ANIM_BANNERONPOLE
-	{"models/objects/flags/onpole/tris.fm",		NULL, 100.0,		1.0,	80,		0},	// FX_ANIM_FLAGONPOLE
 	{"models/objects/eggs/cocoon/tris.fm",		NULL, 100.0,		1.0,	20,		0},	// FX_ANIM_COCOON
 	{"models/objects/labs/container1/tris.fm",	NULL, 100.0,		1.0,	30,		0},	// FX_ANIM_LABPARTSCONTAINER
 	{"models/objects/labs/tray/tris.fm",			NULL, 100.0,		1.0,	15,		0},	// FX_ANIM_LABTRAY
