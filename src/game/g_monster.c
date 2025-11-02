@@ -1054,7 +1054,7 @@ M_FixStuckMonster(edict_t *self)
 }
 
 void
-M_SetAnimGroupFrame(edict_t *self, const char *name)
+M_SetAnimGroupFrame(edict_t *self, const char *name, qboolean fixpos)
 {
 	int i, ofs_frames = 0, num_frames = 1;
 
@@ -1068,9 +1068,13 @@ M_SetAnimGroupFrame(edict_t *self, const char *name)
 	i++;
 
 	self->s.frame = ofs_frames + i % num_frames;
-	gi.GetModelFrameInfo(self->s.modelindex, self->s.frame,
-		self->mins, self->maxs);
-	M_FixStuckMonster(self);
+
+	if (fixpos)
+	{
+		gi.GetModelFrameInfo(self->s.modelindex, self->s.frame,
+			self->mins, self->maxs);
+		M_FixStuckMonster(self);
+	}
 }
 
 /* ------------------------------------------------------------------------------

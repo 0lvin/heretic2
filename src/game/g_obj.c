@@ -272,6 +272,13 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid)
 //
 //============================================================================
 
+void
+object_object_think(edict_t *self)
+{
+	M_SetAnimGroupFrame(self, self->monsterinfo.action, false);
+	self->nextthink = level.time + FRAMETIME;
+}
+
 /*
  * QUAKED obj_banner (1 .5 0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -289,14 +296,15 @@ void ObjectInit(edict_t *self,int health,int mass, int materialtype, int solid)
 void
 SP_obj_banner(edict_t *self)
 {
-	VectorSet(self->mins, -8, -44, -296);
-	VectorSet(self->maxs, 8, 44, 0);
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	SpawnClientAnim(self, FX_ANIM_BANNER, "ambient/bannerflap.wav");
-	ObjectInit(self,40,200,MAT_CLOTH,SOLID_BBOX);
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "banner";
+	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
+	gi.linkentity(self);
 }
 
 /*
@@ -313,14 +321,14 @@ SP_obj_banner(edict_t *self)
 void
 SP_obj_banneronpole(edict_t *self)
 {
-	VectorSet(self->mins, -8, -28, -30);
-	VectorSet(self->maxs, 8, 28, 30);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	SpawnClientAnim(self, FX_ANIM_BANNERONPOLE, "ambient/bannerflap.wav");
-	ObjectInit(self,40,200,MAT_WOOD,SOLID_BBOX);
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
+	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
 }
 
 /*-----------------------------------------------
@@ -379,23 +387,12 @@ barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
  * Quake I: Small walltorch
  */
 void
-object_flame_think(edict_t *self)
-{
-	M_SetAnimGroupFrame(self, "flame");
-	self->nextthink = level.time + FRAMETIME;
-}
-
-void
 SP_quake_light_flame(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
-	self->solid = SOLID_NOT;
-	self->think = object_flame_think;
 	self->nextthink = level.time + FRAMETIME;
-
-	self->s.frame = 0;
-	self->s.sound = 0;
-
+	self->think = object_object_think;
+	self->monsterinfo.action = "flame";
 	gi.linkentity(self);
 }
 
@@ -412,9 +409,9 @@ void
 SP_object_flame1(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
-	self->solid = SOLID_NOT;
-	self->think = object_flame_think;
 	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "flame";
 
 	self->s.frame = 0;
 
@@ -2571,14 +2568,15 @@ SP_obj_statue_dragon(edict_t *self)
 void
 SP_obj_flagonpole(edict_t *self)
 {
-	VectorSet(self->mins, -8, -28, -30);
-	VectorSet(self->maxs, 8, 28, 30);
-
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	SpawnClientAnim(self, FX_ANIM_FLAGONPOLE, "ambient/bannerflap.wav");
-	ObjectInit(self,40,200,MAT_WOOD,SOLID_BBOX);
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "flagg";
+	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
+	gi.linkentity(self);
 }
 
 void
@@ -5327,7 +5325,7 @@ SP_obj_bloodsplat(edict_t *self)
 void
 object_big_fire_think(edict_t *self)
 {
-	M_SetAnimGroupFrame(self, "bigfire");
+	M_SetAnimGroupFrame(self, "bigfire", false);
 	self->nextthink = level.time + FRAMETIME;
 
 	/* add particles */
