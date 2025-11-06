@@ -341,6 +341,7 @@
 {"defender_pain", (byte *)defender_pain},
 {"defender_shoot", (byte *)defender_shoot},
 {"defender_think", (byte *)defender_think},
+{"destructible_die", (byte *)destructible_die},
 {"door_blocked", (byte *)door_blocked},
 {"door_go_down", (byte *)door_go_down},
 {"door_go_up", (byte *)door_go_up},
