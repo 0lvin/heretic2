@@ -232,9 +232,9 @@ env_fire_think(edict_t *self)
 }
 
 /*
- * QUAKED light_chandelier1 (1 .5 0) (-36 -36 -43) (34 34 43)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+ * QUAKED light_chandelier1 (0.0 1.0 0.0) (-36.0 -36.0 -43.0) (36.0 36.0 43.0) INVULNERABLE ANIMATE EXPLODING STARTOFF
  *
- * A big gold chandelier for the great hall
+ * Heretic 2: Chandelier (dirty gold) A tarnished gold chandelier hung from chains.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
  * ANIMATE - N/A
@@ -245,14 +245,24 @@ env_fire_think(edict_t *self)
 void
 SP_light_chandelier1(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
+
 	LightInit(self);
 	TorchInit(self);
 }
 
 /*
- * QUAKED light_chandelier2 (1 .5 0) (-18 -18 -40) (18 18 40)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
+ * QUAKED light_chandelier2 (0.0 1.0 0.0) (-38.0 -38.0 -40.0) (18.0 18.0 40.0) INVULNERABLE ANIMATE EXPLODING  STARTOFF
  *
- * A very heavy chandelier that doesn't have a skin yet.
+ * Heretic 2: Chandelier (dirty metal) A tarnished metal chandelier hung from chains.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
  * ANIMATE - The flame flickers
@@ -263,16 +273,24 @@ SP_light_chandelier1(edict_t *self)
 void
 SP_light_chandelier2(edict_t *self)
 {
-	SpawnClientAnim(self, FX_ANIM_CHANDELIER2, NULL);
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
 
 	LightInit(self);
 	TorchInit(self);
 }
 
 /*
- * QUAKED light_chandelier3 (1 .5 0) (-34 -34 -80) (34 34 0)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+ * QUAKED light_chandelier3 (0.0 1.0 0.0) (-34.0 -34.0 -80.0) (34.0 34.0 0.0) INVULNERABLE ANIMATE EXPLODING STARTOFF
  *
- * A  thin gold chandelier
+ * Heretic 2: Chandelier (gold & large) A golden chandelier.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
  * ANIMATE - N/A
@@ -283,6 +301,16 @@ SP_light_chandelier2(edict_t *self)
 void
 SP_light_chandelier3(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
+
 	LightInit(self);
 	TorchInit(self);
 }
