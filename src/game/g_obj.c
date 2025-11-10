@@ -4348,9 +4348,16 @@ SP_obj_lab_tray(edict_t *self)
 void
 ogle_moan(edict_t *self)
 {
-	gi.sound(self, CHAN_VOICE, gi.soundindex(va("monsters/ogle/oglemoan%c.wav", irand('1', '2'))), 1, ATTN_IDLE, 0);
-	self->think = ogle_moan;
-	self->nextthink = level.time + irand (3, 10);
+	M_SetAnimGroupFrame(self, self->monsterinfo.action, false);
+
+	if ((int)(level.time * 10) % irand(30, 100) == 0)
+	{
+		gi.sound(self, CHAN_VOICE,
+			gi.soundindex(va("monsters/ogle/oglemoan%c.wav", irand('1', '2'))),
+			1, ATTN_IDLE, 0);
+	}
+
+	self->nextthink = level.time + FRAMETIME;
 }
 
 /*
@@ -4370,10 +4377,11 @@ SP_obj_hanging_ogle(edict_t *self)
 	edict_t *ring;
 	vec3_t forward;
 
-	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
+	self->movetype = MOVETYPE_NONE;
+	self->monsterinfo.action = "poly";
 
-	SpawnClientAnim(self, FX_ANIM_HANGING_OGLE, NULL);
-	ObjectInit(self,100,200,MAT_FLESH,SOLID_BBOX);
+	self->spawnflags |= OBJ_NOPUSH;
+	ObjectInit(self, 100, 200, MAT_FLESH, SOLID_BBOX);
 
 	ring = G_Spawn();
 	VectorCopy(self->s.origin,ring->s.origin);
@@ -4395,7 +4403,7 @@ SP_obj_hanging_ogle(edict_t *self)
 	self->target_ent = ring;
 
 	self->think = ogle_moan;
-	self->nextthink = level.time + irand (3, 10);
+	self->nextthink = level.time + irand(3, 10);
 }
 
 /*

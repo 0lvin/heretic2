@@ -8,11 +8,6 @@
 #include "header/local.h"
 #include "common/h2rand.h"
 
-#define OBJ_INVULNERABLE	1
-#define OBJ_ANIMATE			2
-#define OBJ_EXPLODING		4
-#define OBJ_NOPUSH			8
-
 void BboxYawAndScale(edict_t *self);
 
 void waterdrip_go(edict_t *self)
