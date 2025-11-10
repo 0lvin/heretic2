@@ -38,12 +38,13 @@ void TorchUse (edict_t *self, edict_t *other, edict_t *activator);
 void TorchStart (edict_t *self);
 void SpawnClientAnim(edict_t *self, byte type, char *sound);
 
-void LightStaticsInit()
+void
+LightStaticsInit()
 {
-
 }
 
-void LightInit(edict_t *self)
+void
+LightInit(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
@@ -56,7 +57,8 @@ void LightInit(edict_t *self)
 	gi.linkentity(self);
 }
 
-void TorchInit (edict_t *self)
+void
+TorchInit(edict_t *self)
 {
 	// no targeted lights in deathmatch, because they cause global messages
 	if (self->targetname && deathmatch->value)
@@ -74,13 +76,18 @@ void TorchInit (edict_t *self)
 	}
 }
 
-void fire_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+fire_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	if (!other->client)
+	{
 		return;
+	}
 
 	if (self->touch_debounce_time > level.time)
+	{
 		return;
+	}
 
 	self->touch_debounce_time = level.time + 1;
 
@@ -91,8 +98,8 @@ void fire_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 #define OBJ_NOPUSH			8
 
 // This creates an entity that will burn the player if he's standing in the fire.
-
-void create_fire_touch (edict_t *owner,vec3_t origin)
+void
+create_fire_touch(edict_t *owner, vec3_t origin)
 {
 	edict_t *flame;
 
@@ -113,12 +120,13 @@ void create_fire_touch (edict_t *owner,vec3_t origin)
 	flame->movetype = MOVETYPE_NONE;
 	flame->touch = fire_touch;
 
-	ObjectInit(flame,2,2,MAT_NONE,SOLID_TRIGGER);
+	ObjectInit(flame, 2, 2, MAT_NONE,SOLID_TRIGGER);
 
 	owner->enemy = flame;
 }
 
-void SpawnFlame(edict_t *self,vec3_t origin)
+void
+SpawnFlame(edict_t *self, vec3_t origin)
 {
 	byte scale;
 
@@ -145,7 +153,8 @@ void SpawnFlame(edict_t *self,vec3_t origin)
 #define FIRE_OFF 8
 #define FIRE_MOVEABLE 16
 
-void fire_use (edict_t *self, edict_t *other, edict_t *activator)
+void
+fire_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	byte scale;
 	if (self->spawnflags & FIRE_OFF)
@@ -196,7 +205,8 @@ void fire_use (edict_t *self, edict_t *other, edict_t *activator)
 }
 
 
-void firemove_think(edict_t *self)
+void
+firemove_think(edict_t *self)
 {
 	byte scale;
 
@@ -253,9 +263,6 @@ SP_light_chandelier1(edict_t *self)
 void
 SP_light_chandelier2(edict_t *self)
 {
-	VectorSet(self->mins, -18, -18, -40);
-	VectorSet(self->maxs, 18, 18, 40);
-
 	SpawnClientAnim(self, FX_ANIM_CHANDELIER2, NULL);
 
 	LightInit(self);
@@ -320,7 +327,8 @@ SP_env_fire(edict_t *self)
 		self->use = fire_use;
 		controller = G_Find(NULL, FOFS(target), self->targetname);
 		if (controller)
-		{//set it up to throw firey chunks
+		{
+			// set it up to throw firey chunks
 			if (controller->materialtype == MAT_WOOD)
 			{
 				controller->svflags |= SVF_ONFIRE;
@@ -342,7 +350,6 @@ SP_env_fire(edict_t *self)
 		self->model = 0;
 		self->solid = SOLID_NOT;
 		self->clipmask = MASK_MONSTERSOLID;
-
 	}
 	else
 	{
@@ -354,7 +361,9 @@ SP_env_fire(edict_t *self)
 	gi.linkentity(self);
 
 	if (self->spawnflags & FIRE_OFF)
+	{
 		return;
+	}
 
 	if (AVG_VEC3T(self->rrs.scale) < 1)
 	{
@@ -415,7 +424,7 @@ TorchUse(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 void
-TorchStart (edict_t *self)
+TorchStart(edict_t *self)
 {
 	if (self->spawnflags & LIGHT_STARTOFF)
 	{
@@ -462,7 +471,6 @@ SP_light_walltorch(edict_t *self)
 	}
 
 	TorchInit(self);
-
 }
 
 /*
@@ -475,7 +483,8 @@ EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 -----------------------------------
 */
-void SP_light_floortorch (edict_t *self)
+void
+SP_light_floortorch(edict_t *self)
 {
 	vec3_t holdorigin;
 
@@ -516,7 +525,6 @@ SP_light_flame(edict_t *self)
 	VectorSet(self->maxs, 16, 16, 0);
 
 	self->nextthink = level.time + 2;
-	// self->think = flamethink;
 
 	LightInit(self);
 
@@ -534,11 +542,12 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_torch1 (edict_t *self)
+void
+SP_light_torch1(edict_t *self)
 {
 	vec3_t origin, vf;
 
-	self->s.modelindex=gi.modelindex("models/objects/lights/sinkcity/light-3/tris.fm");
+	self->s.modelindex = gi.modelindex("models/objects/lights/sinkcity/light-3/tris.fm");
 
 	VectorSet(self->mins, -4, -6, -5);
 	VectorSet(self->maxs, 6, 6, 20);
@@ -573,7 +582,8 @@ style
 - 1 green light
 
 */
-void SP_light_gem2 (edict_t *self)
+void
+SP_light_gem2(edict_t *self)
 {
 	vec3_t origin;
 
@@ -606,7 +616,8 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_lantern1 (edict_t *self)
+void
+SP_light_lantern1(edict_t *self)
 {
 	vec3_t origin;
 
@@ -637,7 +648,8 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_lantern2 (edict_t *self)
+void
+SP_light_lantern2(edict_t *self)
 {
 	vec3_t origin;
 
@@ -668,7 +680,8 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_lantern3 (edict_t *self)
+void
+SP_light_lantern3(edict_t *self)
 {
 	vec3_t origin;
 
@@ -699,7 +712,8 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_lantern4 (edict_t *self)
+void
+SP_light_lantern4(edict_t *self)
 {
 	vec3_t origin;
 
@@ -729,7 +743,8 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_lantern5 (edict_t *self)
+void
+SP_light_lantern5(edict_t *self)
 {
 	vec3_t origin;
 
@@ -760,7 +775,8 @@ STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
 */
-void SP_light_buglight (edict_t *self)
+void
+SP_light_buglight(edict_t *self)
 {
 	vec3_t origin;
 
@@ -780,22 +796,19 @@ void SP_light_buglight (edict_t *self)
 	TorchInit(self);
 }
 
-
 /*
  * QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) INVULNERABLE ANIMATE  EXPLODING
-Places two suns in the world and attaches a lens flare to them.
-One sun is blue, the other is yellow
-*/
-void SP_env_sun1 (edict_t *self)
+ *
+ * Places two suns in the world and attaches a lens flare to them.
+ * One sun is blue, the other is yellow
+ */
+void
+SP_env_sun1(edict_t *self)
 {
 	vec3_t origin;
 
 	self->solid = SOLID_NOT;
 	self->movetype = MOVETYPE_NONE;
-
-//	VectorSet(origin, 200, -100, 4000);
-
-//	gi.CreatePersistantEffect(NULL, FX_LENSFLARE, CEF_FLAG7, origin, "bbbbf", -1, (byte) 64, (byte) 64, (byte) 146, 0.75);
 
 	VectorSet(origin, 200, -100, 4000);
 	gi.CreatePersistantEffect(NULL, FX_LENSFLARE, CEF_FLAG7 | CEF_FLAG6, origin, "bbbf",  (byte) 128, (byte) 108, (byte) 64, 0.75);

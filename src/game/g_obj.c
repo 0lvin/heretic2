@@ -34,7 +34,7 @@
 #include "header/g_playstats.h"
 #include "monster/stats/stats.h"
 
-void SpawnFlame(edict_t *self,vec3_t origin);
+void SpawnFlame(edict_t *self, vec3_t origin);
 void SpawnClientAnim(edict_t *self, byte type, char *sound);
 
 void
