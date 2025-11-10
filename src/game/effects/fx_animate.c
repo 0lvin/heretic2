@@ -31,11 +31,6 @@ typedef struct FXAnimModel
 
 FXAnimModel_t FXAnimModel[NUM_FX_ANIM]=
 {
-	{"models/objects/lights/candelabrum/tris.fm",NULL, 100.0,		1.0,	7,		1},	// FX_ANIM_CANDELABRUM
-	{"models/objects/eggs/cocoon/tris.fm",		NULL, 100.0,		1.0,	20,		0},	// FX_ANIM_COCOON
-	{"models/objects/labs/container1/tris.fm",	NULL, 100.0,		1.0,	30,		0},	// FX_ANIM_LABPARTSCONTAINER
-	{"models/objects/labs/tray/tris.fm",			NULL, 100.0,		1.0,	15,		0},	// FX_ANIM_LABTRAY
-	{"models/objects/labs/container2/tris.fm",	NULL, 100.0,		1.0,	80,		0},	// FX_ANIM_EYEBALLJAR
 	{"models/objects/torture/ogle/tris.fm",		NULL, 100.0,		1.0,	100,	0},	// FX_ANIM_HANGING_OGLE
 };
 
@@ -99,17 +94,9 @@ void FXAnimate(centity_t *owner, int type, int flags, vec3_t origin)
 	if (anim & 0x80)
 	{
 		// Animate (special animate for cocoon)
-		if (atype == FX_ANIM_COCOON)
-		{
-			self->Update = FXAnimateRandomGo;
-		}
-		else
-		{
-			self->Update = FXAnimateGo;
-		}
-
-		self->nextThinkTime=fxi.cl->time + irand(40, 1600);	// So they don't all start on frame 0 at the same time
-
+		self->Update = FXAnimateGo;
+		// So they don't all start on frame 0 at the same time
+		self->nextThinkTime = fxi.cl->time + irand(40, 1600);
 	}
 	else
 	{

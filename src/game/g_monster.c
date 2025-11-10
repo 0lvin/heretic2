@@ -820,9 +820,10 @@ M_droptofloor(edict_t *ent)
 		return;
 	}
 
-	if (Vec3IsZero(ent->mins)&&Vec3IsZero(ent->maxs))
+	if (Vec3IsZero(ent->mins) && Vec3IsZero(ent->maxs))
 	{
-		gi.dprintf("ERROR : %s at %s called drop to floor before having size set\n", ent->classname, vtos(ent->s.origin));
+		gi.dprintf("ERROR : %s at %s called drop to floor before having size set\n",
+			ent->classname, vtos(ent->s.origin));
 		if (ent->think == M_droptofloor)
 			ent->think = NULL;//don't try again
 		return;
@@ -836,7 +837,7 @@ M_droptofloor(edict_t *ent)
 
 	trace = gi.trace(ent->s.origin, ent->mins, ent->maxs, end, ent, MASK_MONSTERSOLID);
 
-	if (trace.allsolid||trace.startsolid)
+	if (trace.allsolid || trace.startsolid)
 	{
 		gi.dprintf("ERROR : Object (%s) at %s started in solid\n", ent->classname, vtos(ent->s.origin));
 		if (ent->think == M_droptofloor)

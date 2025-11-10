@@ -281,9 +281,9 @@ object_object_think(edict_t *self)
 }
 
 /*
- * QUAKED obj_banner (1 .5 0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_banner (0.3 0.3 1.0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: A really big banner.
+ * Heretic 2: Banner
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A (it can't ever be hurt)
  * ANIMATE - makes it flutter in the breeze, just like a...banner
@@ -2154,7 +2154,7 @@ SP_obj_moss5(edict_t *self)
 }
 
 /*
- * QUAKED obj_floor_candelabrum (1 .5 0) (-8 -8 -35) (8 8 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_floor_candelabrum (0.3 0.3 1.0) (-8.0 -8.0 -35.0) (8.0 8.0 35.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
  * Heretic 2: Floor candelbrum. Does not emit light
  * -------  FIELDS  ------------------
@@ -2167,9 +2167,13 @@ SP_obj_moss5(edict_t *self)
 void
 SP_obj_floor_candelabrum(edict_t *self)
 {
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	SpawnClientAnim(self, FX_ANIM_CANDELABRUM, NULL);
-	ObjectInit(self,40,60,MAT_METAL,SOLID_BBOX);
+	self->materialtype = MAT_METAL;
+	gi.linkentity(self);
 }
 
 /*
@@ -2186,8 +2190,7 @@ SP_obj_floor_candelabrum(edict_t *self)
 void
 SP_obj_statue_dragonhead(edict_t *self)
 {
-	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->spawnflags |= OBJ_NOPUSH | OBJ_INVULNERABLE; // can't be destroyed
 	ObjectInit(self,200,200,MAT_GREYSTONE,SOLID_BBOX);
 }
 
@@ -3318,10 +3321,13 @@ SP_obj_larvabrokenegg(edict_t *self)
 void
 SP_obj_cocoon(edict_t *self)
 {
-	// Always animate and can't be pushed
-	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
-	SpawnClientAnim(self, FX_ANIM_COCOON, NULL);
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
 
+	// Always animate and can't be pushed
+	self->spawnflags |= OBJ_NOPUSH;
 	ObjectInit(self,75,125,MAT_INSECT,SOLID_BBOX);
 }
 
@@ -4272,9 +4278,9 @@ SP_obj_choppeddude(edict_t *self)
 }
 
 /*
- * QUAKED obj_lab_parts_container (1 .5 0) (-8 -8 -11) (8 8 11) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: A container of moving body parts
+ * Heretic 2: Body parts container
  * -------  FIELDS  ------------------
  * INVULNERABLE - can't be hurt
  * ANIMATE - N/A (thing always animates)
@@ -4285,15 +4291,18 @@ SP_obj_choppeddude(edict_t *self)
 void
 SP_obj_lab_parts_container(edict_t *self)
 {
-	self->spawnflags |= OBJ_ANIMATE;
-	SpawnClientAnim(self, FX_ANIM_LABPARTSCONTAINER, NULL);
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
+
 	ObjectInit(self,40,200,MAT_GLASS,SOLID_BBOX);
 }
 
 /*
- * QUAKED obj_eyeball_jar (1 .5 0) (-13 -13 -18) (13 13 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_eyeball_jar (0.3 0.3 1.0) (-13.0 -13.0 -18.0) (13.0 13.0 18.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: A jar full of eyeballs
+ * Heretic 2: Jar of joy
  * -------  FIELDS  ------------------
  * INVULNERABLE - can't be hurt
  * ANIMATE - N/A (thing always animates)
@@ -4304,16 +4313,19 @@ SP_obj_lab_parts_container(edict_t *self)
 void
 SP_obj_eyeball_jar(edict_t *self)
 {
-	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
 
-	SpawnClientAnim(self, FX_ANIM_EYEBALLJAR, NULL);
+	self->spawnflags |= OBJ_NOPUSH;
 	ObjectInit(self,50,200,MAT_GLASS,SOLID_BBOX);
 }
 
 /*
- * QUAKED obj_lab_tray (1 .5 0) (-8 -8 -5) (8 8 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_lab_tray (0.3 0.3 1.0) (-8.0 -8.0 -5.0) (8.0 8.0 5.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: A tray with a beating heart and some tools on it.
+ * Heretic 2: Tray with heart and tools
  * -------  FIELDS  ------------------
  * INVULNERABLE - can't be hurt
  * ANIMATE - N/A (thing always animates)
@@ -4324,8 +4336,12 @@ SP_obj_eyeball_jar(edict_t *self)
 void
 SP_obj_lab_tray(edict_t *self)
 {
-	self->spawnflags |= OBJ_NOPUSH | OBJ_ANIMATE;
-	SpawnClientAnim(self, FX_ANIM_LABTRAY, NULL);
+	self->movetype = MOVETYPE_NONE;
+	self->nextthink = level.time + FRAMETIME;
+	self->think = object_object_think;
+	self->monsterinfo.action = "poly";
+
+	self->spawnflags |= OBJ_NOPUSH;
 	ObjectInit(self,40,200,MAT_FLESH,SOLID_BBOX);
 }
 
@@ -4338,9 +4354,9 @@ ogle_moan(edict_t *self)
 }
 
 /*
- * QUAKED obj_hanging_ogle (1 .5 0) (-8 -16 -34) (8 16 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_hanging_ogle (0.3 0.3 1.0) (-8.0 -16.0 -34.0) (8.0 16.0 34.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: Poor little hanging ogle
+ * Heretic 2: Hanging Ogle
  * -------  FIELDS  ------------------
  * INVULNERABLE - can't be hurt
  * ANIMATE - N/A (thing always animates)
