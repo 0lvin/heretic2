@@ -35,7 +35,6 @@
 #include "monster/stats/stats.h"
 
 void SpawnFlame(edict_t *self, vec3_t origin);
-void SpawnClientAnim(edict_t *self, byte type, char *sound);
 
 void
 destructible_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
@@ -1339,7 +1338,7 @@ SP_obj_firepot(edict_t *self)
 	{
 		VectorCopy(self->s.origin,holdorigin);
 		holdorigin[2] += 30;
-		SpawnFlame(self,holdorigin);
+		SpawnFlame(self, holdorigin);
 	}
 }
 

@@ -75,7 +75,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXDebris,							PreCacheDebris,			"bbdb"		},
 	{ FXFleshDebris,					PreCacheDebris,			"bdb"		},
 	{ FXShadow,							PrecacheShadow,			"f"			},
-	{ FXAnimate,						PreCacheFXAnimate,		"bbbv"		},
 	{ FXFountain,						NULL,					"vsb"		},
 	{ FXWaterfallBase,					NULL,					"bbb"		},
 	{ FXDripper,						PreCacheDripper,		"bb"		},

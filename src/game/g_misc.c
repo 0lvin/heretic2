@@ -4473,39 +4473,6 @@ SP_misc_remote_camera(edict_t *self)
 	gi.linkentity(self);
 }
 
-// Spawns a client model animation
-// spawnflags & 2 is a designer flag whether to animate or not
-// If the model is supposed to animate, the hi bit of the type is set
-// If the model is static, then the default frame stored on the client is used
-// Valid scale ranges from 1/50th to 5
-void
-SpawnClientAnim(edict_t *self, byte type, char *sound)
-{
-	int		scale, skin;
-
-	if (self->spawnflags & 2)	// Animate it
-	{
-		type |= 0x80;
-		if (sound)
-		{
-			self->s.sound = gi.soundindex(sound);
-			self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
-		}
-	}
-
-	scale = (byte)(AVG_VEC3T(self->rrs.scale) * 50);
-	assert((scale > 0) && (scale < 255));
-	skin = (byte)self->s.skinnum;
-
-	self->PersistantCFX = gi.CreatePersistantEffect(self,
-							FX_ANIMATE,
-							CEF_BROADCAST,
-							self->s.origin,
-							"bbbv", type, scale, skin, self->s.angles);
-
-	self->s.effects |= EF_ALWAYS_ADD_EFFECTS;
-}
-
 //A check to see if ent should reflect
 qboolean
 EntReflecting(edict_t *ent, qboolean checkmonster, qboolean checkplayer)
