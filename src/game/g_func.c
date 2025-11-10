@@ -4008,7 +4008,8 @@ SP_func_train(edict_t *self)
 	}
 	else
 	{
-		gi.dprintf("func_train without a target at %s\n", vtos(self->absmin));
+		gi.dprintf("%s without a target at %s\n", self->classname,
+			vtos(self->absmin));
 	}
 }
 
@@ -4183,8 +4184,8 @@ SP_func_timer(edict_t *self)
 	if (self->random >= self->wait)
 	{
 		self->random = self->wait - FRAMETIME;
-		gi.dprintf("func_timer at %s has random >= wait\n",
-				vtos(self->s.origin));
+		gi.dprintf("%s at %s has random >= wait\n",
+				self->classname, vtos(self->s.origin));
 	}
 
 	if (self->spawnflags & 1)

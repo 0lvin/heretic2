@@ -222,7 +222,67 @@ env_fire_think(edict_t *self)
 }
 
 /*
+ * QUAKED light_chandelier1 (1 .5 0) (-36 -36 -43) (34 34 43)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+ *
+ * A big gold chandelier for the great hall
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * STARTOFF - Light will start off if targeted (default is on)
+ * -----------------------------------
+ */
+void
+SP_light_chandelier1(edict_t *self)
+{
+	LightInit(self);
+	TorchInit(self);
+}
+
+/*
+ * QUAKED light_chandelier2 (1 .5 0) (-18 -18 -40) (18 18 40)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
+ *
+ * A very heavy chandelier that doesn't have a skin yet.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE - The flame flickers
+ * EXPLODING - N/A
+ * STARTOFF - Light will start off if targeted (default is on)
+ * -----------------------------------
+ */
+void
+SP_light_chandelier2(edict_t *self)
+{
+	VectorSet(self->mins, -18, -18, -40);
+	VectorSet(self->maxs, 18, 18, 40);
+
+	SpawnClientAnim(self, FX_ANIM_CHANDELIER2, NULL);
+
+	LightInit(self);
+	TorchInit(self);
+}
+
+/*
+ * QUAKED light_chandelier3 (1 .5 0) (-34 -34 -80) (34 34 0)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+ *
+ * A  thin gold chandelier
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * STARTOFF - Light will start off if targeted (default is on)
+ * -----------------------------------
+ */
+void
+SP_light_chandelier3(edict_t *self)
+{
+	LightInit(self);
+	TorchInit(self);
+}
+
+/*
  * QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0)  INVULNERABLE ANIMATE EXPLODING  FIRE_OFF MOVEABLE LIGHT_ON
+ *
  * Heretic 2: Flame effect. Does not emit light.
  * A fire about the size of a campfire. Triggerable.
  *
@@ -531,71 +591,6 @@ void SP_light_gem2 (edict_t *self)
 
 	if (!(self->spawnflags & LIGHT_NOHALO))
 		self->PersistantCFX = gi.CreatePersistantEffect(NULL, FX_HALO, CEF_FLAG6|CEF_FLAG8, origin, "");
-
-	TorchInit(self);
-}
-
-/*
- * QUAKED light_chandelier1 (1 .5 0) (-36 -36 -43) (34 34 43)  INVULNERABLE ANIMATE EXPLODING STARTOFF
-A big gold chandelier for the great hall
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
-STARTOFF - Light will start off if targeted (default is on)
------------------------------------
-*/
-void SP_light_chandelier1 (edict_t *self)
-{
-	self->s.modelindex = gi.modelindex("models/objects/chandelier/chan1/tris.fm");
-
-	VectorSet(self->mins, -36, -36,-43);
-	VectorSet(self->maxs, 36, 36, 43);
-
-	LightInit(self);
-	TorchInit(self);
-}
-
-
-/*
- * QUAKED light_chandelier2 (1 .5 0) (-18 -18 -40) (18 18 40)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
-A very heavy chandelier that doesn't have a skin yet.
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE - The flame flickers
-EXPLODING - N/A
-STARTOFF - Light will start off if targeted (default is on)
------------------------------------
-*/
-void SP_light_chandelier2 (edict_t *self)
-{
-	VectorSet(self->mins, -18, -18, -40);
-	VectorSet(self->maxs, 18, 18, 40);
-
-	SpawnClientAnim(self, FX_ANIM_CHANDELIER2, NULL);
-
-	LightInit(self);
-	TorchInit(self);
-}
-
-/*
- * QUAKED light_chandelier3 (1 .5 0) (-34 -34 -80) (34 34 0)  INVULNERABLE ANIMATE EXPLODING STARTOFF
-A  thin gold chandelier
--------  FIELDS  ------------------
-INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
-STARTOFF - Light will start off if targeted (default is on)
------------------------------------
-*/
-void SP_light_chandelier3 (edict_t *self)
-{
-	self->s.modelindex = gi.modelindex("models/objects/chandelier/chan3/tris.fm");
-
-	VectorSet(self->mins, -34, -34,-80);
-	VectorSet(self->maxs, 34, 34, 0);
-
-	LightInit(self);
 
 	TorchInit(self);
 }

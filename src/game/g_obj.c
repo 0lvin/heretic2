@@ -996,15 +996,10 @@ SP_obj_sign1(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	ObjectInit(self,40,150, MAT_WOOD, SOLID_BBOX);
-
-	if (self->style==0)
-		self->s.skinnum = 0;
-	else if (self->style==1)
-		self->s.skinnum = 1;
-	else if (self->style==2)
-		self->s.skinnum = 2;
-	else
-		self->s.skinnum = 0;
+	if (self->style >= 0 && self->style <= 2)
+	{
+		self->s.skinnum = self->style;
+	}
 
 	self->s.frame = 3;
 }
