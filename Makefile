@@ -1364,7 +1364,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/motion.o \
 	src/game/effects/particle.o \
 	src/game/effects/player_effects.o \
-	src/game/effects/test_effect.o \
 	src/game/effects/utilities.o
 
 # ----------

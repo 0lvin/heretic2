@@ -19,7 +19,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	// ***NOTE*** We currently have 113 client effects, and we don't want to exceed 32768!  Ha!
 
 	{ RemoveEffects,					NULL,					"s"			},
-	{ FXflametest,						NULL,					NULL		},
 	{ GenericExplosion1,				NULL,					NULL		},
 	{ GenericExplosion2,				NULL,					NULL		},
 	{ WaterSplash,						PreCacheWaterSplash,	"b"			},
@@ -142,7 +141,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXRandWaterBubble,				NULL,					NULL		},
 	{ FXMagicPortal,					PreCachePortal,			"vbb"		},
 	{ FXTBEffects,						PreCacheTB,				"bv"		},	// FX_TB_EFFECTS - 124
-	{ FXTestBBox,						NULL,					"fff"		},
 	{ FXBodyPart,						NULL,					"ssbbb"		},	// FX_THROWWEAPON - uses body part, which just detects type for certain things - 126!!!
 	{ FXSsithraArrow,					PrecacheSsithraArrow,	"bv"		},
 	{ FXPESpell,						PrecachePESpell,		"bv"		},

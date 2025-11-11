@@ -3824,9 +3824,6 @@ WeaponThink_SwordStaffEx(edict_t *caster, int locid)
 	startpos[2] += caster->viewheight;
 	endpos[2] += caster->viewheight;
 
-	// For showing where the sword attacks are.
-	// gi.CreateEffect(NULL, FX_TEST_BBOX, 0, endpos, "fff", maxs[0], mins[2], maxs[2]);
-
 	VectorCopy(endpos, caster->client->laststaffpos);
 	caster->client->laststaffuse = level.time;
 
