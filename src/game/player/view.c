@@ -1043,7 +1043,7 @@ newanim:
 	}
 
 	lastframe -= firstframe;
-	M_SetAnimGroupFrameValues(ent, animname, &firstframe, &lastframe);
+	M_SetAnimGroupFrameValues(ent, animname, &firstframe, &lastframe, false);
 	lastframe += firstframe;
 
 	ent->s.frame = firstframe;

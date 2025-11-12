@@ -4813,7 +4813,7 @@ misc_player_mannequin_use(edict_t * self, edict_t * other, edict_t * activator)
 	}
 
 	lastframe -= firstframe;
-	M_SetAnimGroupFrameValues(self, animname, &firstframe, &lastframe);
+	M_SetAnimGroupFrameValues(self, animname, &firstframe, &lastframe, false);
 	lastframe += firstframe;
 
 	self->s.frame = firstframe;
@@ -4828,7 +4828,7 @@ misc_player_mannequin_think(edict_t * self)
 		int firstframe = FRAME_stand01, lastframe = FRAME_stand40;
 
 		lastframe -= firstframe;
-		M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe);
+		M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe, false);
 		lastframe += firstframe;
 
 		self->s.frame++;
