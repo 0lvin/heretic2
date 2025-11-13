@@ -61,11 +61,5 @@ The bee
 */
 void SP_monster_bee(edict_t *self)
 {
-
-	self->s.modelindex = gi.modelindex("models/monsters/bee/tris.fm");
-
-	VectorSet(self->mins, -2, -2, -25);
-	VectorSet(self->maxs, 2, 2, 25);
-
-	ObjectInit(self,40,40,MAT_WOOD,SOLID_BBOX);
+	ObjectInit(self, 40, 40, MAT_WOOD);
 }

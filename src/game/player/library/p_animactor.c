@@ -25,7 +25,8 @@
 // ----------------
 // ************************************************************************************************
 
-static void CalcJointAngles(playerinfo_t *playerinfo)
+static void
+CalcJointAngles(playerinfo_t *playerinfo)
 {
 	vec3_t			targetvector;
 
@@ -34,8 +35,7 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 	// If the player is standing still, the torso will shift to face where the view is going.
 	// If there is a target to look at, the torso will shift to face the target instead.
 	// If the player is moving, only the head will shift, unless there is a target, in which case it will face it.
-
-	playerinfo->headjointonly=false;
+	playerinfo->headjointonly = false;
 
 	VectorClear(playerinfo->targetjointangles);
 
@@ -48,7 +48,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			// ...and we're swimming...
 
 			// PITCH.
-
 			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->ps.viewangles[PITCH]-playerinfo->self->s.angles[PITCH])*ANGLE_TO_RAD;
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
@@ -65,7 +64,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			{
 				// ...and we're below the surface, so just allow the head to PITCH. Of course,
 				// we need invert the angle too.
-
 				playerinfo->headjointonly=true;
 
 				playerinfo->targetjointangles[PITCH]=-playerinfo->targetjointangles[PITCH];
@@ -77,7 +75,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			// to PITCH and YAW.
 
 			// PITCH.
-
 			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->ps.viewangles[PITCH]-playerinfo->self->s.angles[PITCH])*ANGLE_TO_RAD;
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
@@ -88,7 +85,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			playerinfo->targetjointangles[PITCH]/=3.0;
 
 			// YAW.
-
 			playerinfo->targetjointangles[YAW]=((playerinfo->self->client->ps.viewangles[YAW]-playerinfo->self->s.angles[YAW])*ANGLE_TO_RAD);
 
 			if (playerinfo->targetjointangles[YAW]<-ANGLE_180)
@@ -105,7 +101,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			playerinfo->headjointonly=true;
 
 			// PITCH.
-
 			playerinfo->targetjointangles[PITCH]=-(playerinfo->self->client->ps.viewangles[PITCH]-playerinfo->self->s.angles[PITCH])*ANGLE_TO_RAD;
 
 			if (playerinfo->targetjointangles[PITCH]>ANGLE_90)
@@ -116,7 +111,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			playerinfo->targetjointangles[PITCH]/=3.0;
 
 			// YAW.
-
 			playerinfo->targetjointangles[YAW]=0;
 		}
 	}
@@ -133,7 +127,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			VectoAngles(targetvector, playerinfo->targetjointangles);
 
 			// PITCH.
-
 			playerinfo->targetjointangles[PITCH] -= playerinfo->self->s.angles[PITCH];
 			playerinfo->targetjointangles[PITCH] *= ANGLE_TO_RAD;
 			playerinfo->targetjointangles[PITCH] = NormalizeAngle(playerinfo->targetjointangles[PITCH]);
@@ -146,7 +139,6 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 			playerinfo->targetjointangles[PITCH] /= 3.0;
 
 			// YAW.
-
 			playerinfo->targetjointangles[YAW] -= playerinfo->self->s.angles[YAW];
 			playerinfo->targetjointangles[YAW] *= ANGLE_TO_RAD;
 			playerinfo->targetjointangles[YAW] = NormalizeAngle(playerinfo->targetjointangles[YAW]);
@@ -161,7 +153,8 @@ static void CalcJointAngles(playerinfo_t *playerinfo)
 	}
 }
 
-void TurnOffPlayerEffects(edict_t *self)
+void
+TurnOffPlayerEffects(edict_t *self)
 {
 	playerinfo_t *playerinfo;
 	gclient_t *client;
@@ -219,7 +212,6 @@ void TurnOffPlayerEffects(edict_t *self)
 		default:
 
 			// Nothing to remove.
-
 			break;
 	}
 
@@ -338,13 +330,11 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 						case ASEQ_POLEVAULT1_R:
 
 						// Check for an autovault.
-
 						if (playerinfo->upperidle)
 						{
 							if (playerinfo->seqcmd[ACMDL_BACK])
 							{
 								// Otherwise do a backflip.
-
 								playerinfo->upvel += 225;
 								PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
@@ -375,11 +365,9 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		else if (playerinfo->flags & PLAYER_FLAG_COLLISION)
 		{
 			// See if the player is in a jump.
-
 			switch (playerinfo->lowerseq)
 			{
 				//
-
 				case ASEQ_POLEVAULT2:
 				case ASEQ_POLEVAULT1_W:
 				case ASEQ_POLEVAULT1_R:
@@ -391,7 +379,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				case ASEQ_FORWARD_FLIP_R:
 
 				// Check for an autovault.
-
 				if ( (playerinfo->waterlevel < 2) && (playerinfo->upperidle) )
 				{
 					if (PlayerActionCheckVault(playerinfo, 0))
@@ -401,7 +388,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 					else if (playerinfo->seqcmd[ACMDL_BACK])
 					{
 						// Otherwise do a backflip.
-
 						playerinfo->upvel += 225;
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
@@ -417,7 +403,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				break;
 
 				//
-
 				case ASEQ_RUNF_GO:
 				case ASEQ_RUNF:
 				case ASEQ_WALKF_GO:
@@ -429,30 +414,16 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				case ASEQ_SSWIM_FAST:
 
 				// Check for an autovault.
-
 				if (playerinfo->waterlevel < 2 && playerinfo->upperidle)
 				{
 					if (PlayerActionCheckVault(playerinfo, 0))
 					{
 						;	// If successful, do nothing else.
 					}
-	/*				else if (PlayerSeqData2[playerinfo->lowerseq].collideseq != ASEQ_NONE)
-					{
-						// Check to see what to play on a collision.
-
-						PlayerAnimSetLowerSeq(playerinfo, PlayerSeqData2[playerinfo->lowerseq].collideseq);
-					}
-	*/
 				}
 				break;
 
 				default:
-
-				// Check to see what to play on a collision.
-
-				//if (PlayerSeqData2[playerinfo->lowerseq].collideseq != ASEQ_NONE)
-				//	PlayerAnimSetLowerSeq(playerinfo, PlayerSeqData2[playerinfo->lowerseq].collideseq);
-
 				break;
 			}
 		}
@@ -485,7 +456,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	// *************************
 	// ** Lower frame handler **
 	// *************************
-
 	move = playerinfo->lowermove;
 	assert(move);
 
@@ -545,7 +515,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	if (PlayerSeqData2[playerinfo->lowerseq].nosplit)
 	{
 		// Straighten out joints, i.e. no torso aiming.
-
 		pi.ResetJointAngles(playerinfo->self);
 
 		playerinfo->swapFrame = playerinfo->frame;
@@ -573,12 +542,10 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				move->endfunc (playerinfo);
 
 				// Regrab move, endfunc is very likely to change it.
-
 				move = playerinfo->uppermove;
 				assert(move);
 
 				// Check for death.
-
 				if (playerinfo->deadflag==DEAD_DEAD)
 					return;
 			}
@@ -622,7 +589,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				playerinfo->upperframeptr->thinkfunc (playerinfo);
 
 			// Check if the lower frame is idle, if so, force ours.
-
 			if ((playerinfo->loweridle)&&(!(PlayerSeqData[playerinfo->upperseq].playerflags&PLAYER_FLAG_LEAVELOWER)))
 			{
 				playerinfo->frame = playerinfo->swapFrame;
@@ -631,7 +597,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			if ((PlayerSeqData2[playerinfo->upperseq].nosplit)&&(!(playerinfo->self->flags&FL_CHICKEN)))
 			{
 				// Straighten out joints, i.e. no torso aiming.
-
 				pi.ResetJointAngles(playerinfo->self);
 
 				return;
@@ -649,7 +614,6 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		if (PlayerSeqData2[playerinfo->lowerseq].nosplit)
 		{
 			// No torso aiming.
-
 			return;
 		}
 	}
@@ -658,11 +622,9 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	if (!(playerinfo->self->flags&FL_CHICKEN))
 	{
 		// Calculate joint angle values.
-
 		CalcJointAngles(playerinfo);
 
 		// Now set joints in motion.
-
 		pi.SetJointAngles(playerinfo->self);
 	}
 }
@@ -677,7 +639,6 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	if (!playerinfo->groundentity)
 	{
 		// If we were falling, and we're now underwater, we should STOP FALLING, capiche?
-
 		VectorCopy(playerinfo->self->s.origin, endpos);
 		endpos[2] += playerinfo->self->mins[2];
 
@@ -690,7 +651,6 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		else if ((playerinfo->waterlevel==3)&&(playerinfo->flags&PLAYER_FLAG_FALLING))
 		{
 			// We were falling, and we're now underwater so we should STOP FALLING. Capiche?
-
 			PlayerIntLand(playerinfo,delta);
 		}
 
@@ -702,7 +662,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		PlayerIntLand(playerinfo,delta);
 	}
 
-	delta=delta*delta*0.0001;//it's now positive no matter what
+	delta = delta * delta * 0.0001;//it's now positive no matter what
 
 	// Never take falling damage if completely underwater.
 
@@ -734,19 +694,16 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	if (delta > 30.0)
 	{
 		// Apply damage to player entity if we are running server (game) side.
-
 		pi.G_PlayerFallingDamage(playerinfo,delta);
 	}
 	else
 	{
 		// Unimplemented.
-
 		pi.G_CreateEffect(playerinfo->self,
 								   FX_FALLSHORT,
 								   CEF_OWNERS_ORIGIN,
 								   playerinfo->self->s.origin,
 								   "");
-
 		return;
 	}
 }

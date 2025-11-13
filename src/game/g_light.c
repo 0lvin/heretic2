@@ -119,7 +119,8 @@ create_fire_touch(edict_t *owner, vec3_t origin)
 	flame->movetype = MOVETYPE_NONE;
 	flame->touch = fire_touch;
 
-	ObjectInit(flame, 2, 2, MAT_NONE,SOLID_TRIGGER);
+	flame->solid = SOLID_TRIGGER;
+	ObjectInit(flame, 2, 2, MAT_NONE);
 
 	owner->enemy = flame;
 }

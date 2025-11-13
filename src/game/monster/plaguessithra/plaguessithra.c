@@ -3215,11 +3215,6 @@ void SP_obj_corpse_ssithra(edict_t *self)
 {
 	self->s.origin[2] += 26.0;
 
-	VectorSet(self->mins,-30,-12,-2);
-	VectorSet(self->maxs,30,12,2);
-
-	self->s.modelindex = gi.modelindex("models/monsters/ssithra/tris.fm");
-
 	self->s.frame = FRAME_death_a12;	//Ths is the reason the function can't be put in g_obj.c
 
 	// Setting the skinnum correctly
@@ -3231,5 +3226,5 @@ void SP_obj_corpse_ssithra(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
-	ObjectInit(self,120,80,MAT_FLESH,SOLID_BBOX);
+	ObjectInit(self, 120, 80, MAT_FLESH);
 }

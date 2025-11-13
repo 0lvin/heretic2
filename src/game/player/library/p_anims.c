@@ -39,7 +39,8 @@ void PlayerAnimSetUpperSeq(playerinfo_t *playerinfo, int seq)
 		playerinfo->upperidle = true;
 }
 
-void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
+void
+PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 {
 	paceldata_t *seqdata;
 
@@ -48,7 +49,6 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	if (playerinfo->lowerseq != seq)
 	{
 		// We don't set all the data up right because it's up to AnimUpdateFrame to do this.
-
 		playerinfo->lowerseq = seq;
 		playerinfo->lowerframe = -1;
 		playerinfo->loweridle = false;
@@ -64,7 +64,6 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	playerinfo->lowermove_index=seq;
 
 	// The lower two bytes of the player flags are stomped by the sequences' flags.
-
 	if (playerinfo->self->flags & FL_CHICKEN)
 	{
 		seqdata = &PlayerChickenData[seq];
@@ -78,21 +77,18 @@ void PlayerAnimSetLowerSeq(playerinfo_t *playerinfo, int seq)
 	playerinfo->flags = seqdata->playerflags | (playerinfo->flags & PLAYER_FLAG_PERSMASK);
 
 	// Set / reset flag that says I am flying..
-
 	if (seqdata->fly)
 		playerinfo->self->flags |= FL_FLY;
 	else
 		playerinfo->self->flags &= ~FL_FLY;
 
 	// Set / reset flag that says I am standing still.
-
 	if (playerinfo->flags & PLAYER_FLAG_STAND)
 		playerinfo->pm_flags |= PMF_STANDSTILL;
 	else
 		playerinfo->pm_flags &= ~PMF_STANDSTILL;
 
 	// Set / reset flag that says I am movelocked.
-
 	if (seqdata->lockmove)
 		playerinfo->pm_flags |= PMF_LOCKMOVE;
 	else
@@ -122,7 +118,6 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 	playerinfo->self->client->newweapon = NULL;
 
 	// Straighten out joints, i.e. reset torso twisting.
-
 	if (!(playerinfo->self->flags&FL_CHICKEN))
 		pi.ResetJointAngles(playerinfo->self);
 
@@ -157,7 +152,6 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 	playerinfo->effects &= ~(EF_DISABLE_EXTRA_FX | EF_ON_FIRE | EF_TRAILS_ENABLED);
 
 	// Straighten out joints, i.e. no torso aiming.
-
 	if (!(playerinfo->self->flags & FL_CHICKEN))
 		pi.ResetJointAngles(playerinfo->self);
 
@@ -174,7 +168,6 @@ int PlayerAnimWeaponSwitch(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	// See if we have the arm to do that magic.
-
 	if (playerinfo->switchtoweapon != client->pers.weaponready)
 	{
 		if (!BranchCheckDismemberAction(playerinfo, playerinfo->switchtoweapon))
@@ -254,7 +247,6 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			if (playerinfo->lowerseq >= ASEQ_IDLE_READY_GO && playerinfo->lowerseq <= ASEQ_IDLE_LOOKR && playerinfo->lowerseq != ASEQ_IDLE_READY_END)
 			{
 				// Only certain idle should be called out of here.
-
 				switch(ClientServerRand(playerinfo, 0, 3))
 				{
 					case 0:
@@ -278,7 +270,6 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			else if ((client->pers.weaponready == WEAPON_READY_BOW))
 			{
 				// Because the bow doesn't look right in some idles.
-
 				switch(ClientServerRand(playerinfo, 0, 2))
 				{
 					case 0:
@@ -295,7 +286,6 @@ void PlayerAnimLowerIdle(playerinfo_t *playerinfo)
 			else if ((client->pers.weaponready == WEAPON_READY_SWORDSTAFF))
 			{
 				// Because the staff doesn't look right in some idles.
-
 				switch(ClientServerRand(playerinfo, 0, 3))
 				{
 					case 0:
@@ -344,7 +334,7 @@ void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 {
 	seqctrl_t *seqctrl;
 
-	int newseq=ASEQ_NONE;
+	int newseq = ASEQ_NONE;
 
 	/*
 	// first check if the lower anim forces the lower anim to lock in sync with it.
@@ -358,16 +348,13 @@ void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 	*/
 
 	// Init some values.
-
 	playerinfo->upperidle = false;
 
 	// Grab the sequence ctrl struct.
-
 	seqctrl = &SeqCtrl[playerinfo->upperseq];
 
 	// First check the branch function. This evaluates "extra" command flags for a potential
 	// modification of the "simple" procedure.
-
 	if (seqctrl->branchfunc)
 	{
 		newseq = seqctrl->branchfunc(playerinfo);
@@ -393,7 +380,6 @@ void PlayerAnimUpperUpdate(playerinfo_t *playerinfo)
 	}
 
 	// Now check for idles.  If the upper half has an idle, then the upper half is copied.
-
 	if (newseq == ASEQ_NONE)
 	{
 		if (playerinfo->lowerseq == ASEQ_NONE)
@@ -434,7 +420,6 @@ void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 	{
 		// First check the branch function. This evaluates "extra" command flags for a potential
 		// modification of the "simple" procedure.
-
 		if (seqctrl->branchfunc)
 		{
 			newseq = seqctrl->branchfunc(playerinfo);
@@ -442,7 +427,6 @@ void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 	}
 
 	// If even after the special-case BranchFunc didn't indicate a new sequence...
-
 	if (!newseq)
 	{
 		// The seqctrl indicates the control flag that this sequence is dependent on.
@@ -469,7 +453,8 @@ void PlayerAnimLowerUpdate(playerinfo_t *playerinfo)
 	PlayerAnimSetLowerSeq(playerinfo, newseq);
 }
 
-void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
+void
+PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 {
 	assert(playerinfo);
 
@@ -486,7 +471,8 @@ void PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 		playerinfo->waterlevel = 1;
 }
 
-void PlayerPlayPain(playerinfo_t *playerinfo, int type)
+void
+PlayerPlayPain(playerinfo_t *playerinfo, int type)
 {
 	int chance = irand(0,100);
 
@@ -496,7 +482,6 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 		switch (type)
 		{
 			// Normal.
-
 			case 0:
 				if (chance < 50)
 					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
@@ -506,7 +491,6 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 				break;
 
 			// Gas.
-
 			case 1:
 				if (chance < 33)
 					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
@@ -518,7 +502,6 @@ void PlayerPlayPain(playerinfo_t *playerinfo, int type)
 				break;
 
 			// Small.
-
 			case 2:
 				pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*ow.wav"), 1.0, ATTN_NORM, 0);
 				break;

@@ -179,7 +179,8 @@ void SP_env_waterfall_base(edict_t *self)
 NODRIP - won't drip
 -----------------------------------
 */
-void SP_obj_fishhead1 (edict_t *self)
+void
+SP_obj_fishhead1(edict_t *self)
 {
 	vec3_t		offset;
 
@@ -201,11 +202,7 @@ void SP_obj_fishhead1 (edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
 
-	VectorSet(self->mins, 0, -76, -86);
-	VectorSet(self->maxs, 136, 76, 86);
-	self->s.modelindex = gi.modelindex("models/objects/fishheads/fishhead1/tris.fm");
-
-	ObjectInit(self,100,500,MAT_GREYSTONE,SOLID_BBOX);
+	ObjectInit(self, 100, 500, MAT_GREYSTONE);
 }
 
 /*

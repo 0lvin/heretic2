@@ -143,11 +143,6 @@ void SP_obj_corpse_ogle(edict_t *self)
 {
 	self->s.origin[2] += 22.0;
 
-	VectorSet(self->mins,-30,-30,-2);
-	VectorSet(self->maxs,30,30,8);
-
-	self->s.modelindex = gi.modelindex("models/monsters/ogle/tris.fm");
-
 	self->s.frame = FRAME_deatha14;	//Ths is the reason the function can't be put in g_obj.c
 
 	// Setting the skinnum correctly
@@ -195,7 +190,7 @@ void SP_obj_corpse_ogle(edict_t *self)
 	}
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
-	ObjectInit(self,40,80,MAT_FLESH,SOLID_BBOX);
+	ObjectInit(self, 40, 80, MAT_FLESH);
 }
 
 /*-------------------------------------------------------------------------
