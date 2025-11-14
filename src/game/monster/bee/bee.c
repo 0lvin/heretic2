@@ -36,14 +36,6 @@ static int sounds[NUM_SOUNDS];
 
 void BeeStaticsInit()
 {
-//	classStatics[CID_BEE].msgReceivers[MSG_STAND]		= bee_stand1;
-/*	classStatics[CID_BEE].msgReceivers[MSG_RUN]		= ogle_run1;
-	classStatics[CID_BEE].msgReceivers[MSG_MELEE]		= ogle_melee;
-	classStatics[CID_BEE].msgReceivers[MSG_DISMEMBER]  = ogle_dismember;
-	classStatics[CID_BEE].msgReceivers[MSG_DEATH]		= ogle_death;
-
-	resInfo.numAnims = NUM_ANIMS;
-	resInfo.animations = animations; */
 	resInfo.modelIndex = gi.modelindex("models/monsters/bee/tris.fm");
 
 	sounds[SND_BUZZ1] = gi.soundindex("monsters/bee/buzz1.wav");

@@ -539,19 +539,6 @@ void rat_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 			//Squish the rat a bit
 			T_Damage (ent, other, other, dir, pos2, vec3_origin, flrand(4,6), 0, DAMAGE_AVOID_ARMOR,MOD_DIED);
 		}
-	/*	else	//Kick um
-		{
-			//Squish the rat a bit
-			T_Damage (ent, other, other, dir, pos2, vec3_origin, flrand(0,1), 0, DAMAGE_AVOID_ARMOR);
-
-			VectorSubtract(ent->s.origin, ent->enemy->s.origin, dir);
-			dir[2] = 0;
-			VectorNormalize(dir);
-			VectorScale(dir, 64, dir);
-
-			dir[2] = 150;
-			VectorCopy(dir, ent->velocity);
-		}*/
 	}
 }
 

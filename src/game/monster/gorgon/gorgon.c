@@ -1238,12 +1238,6 @@ qboolean gorgon_check_jump (edict_t *self)
 		}
 	}
 
-/*	if (trace.startsolid || trace.allsolid)
-	{
-		if (trace.ent != self->enemy)
-			return;
-	}*/
-
 	self->jump_time = level.time + 0.5;
 
 	// calculate arc spot (the top of his jump arc) which will land monster at landing spot
@@ -1340,12 +1334,6 @@ void gorgon_jump (edict_t *self)
 			return;
 		}
 	}
-
-/*	if (trace.startsolid || trace.allsolid)
-	{
-		if (trace.ent != self->enemy)
-			return;
-	}*/
 
 	self->jump_time = level.time + 0.5;
 
@@ -1593,11 +1581,6 @@ void gorgon_throw_toy(edict_t *self)
 
 	//FIXME: What if I miss?  Set the monster's touch to
 	//	something that restores it's angles and normal thinking (AI_FLEE)
-/*	if (!Q_stricmp(self->enemy->classname,"player"))
-	{
-		PlayerAnimSetUpperSeq(self->enemy, 92);
-		PlayerAnimSetLowerSeq(&self->enemy->client->playerinfo, 92);
-	}*/
 }
 
 void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)

@@ -25,27 +25,6 @@ flag_think (edict_t *self)
 	if (self->s.frame > 10)
 		self->s.frame = 0;
 
-/*	self->s.fmnodeinfo[1].skin++;
-	if (self->s.fmnodeinfo[1].skin > 5)
-		self->s.fmnodeinfo[1].skin = 0;
-
-
-	self->s.fmnodeinfo[0].flags &= ~FMNI_NO_DRAW;
-	if (random() > 0.5)
-		self->s.fmnodeinfo[0].flags |= FMNI_NO_DRAW;
-
-	self->s.fmnodeinfo[1].flags &= ~FMNI_NO_DRAW;
-	if (random() > 0.5)
-		self->s.fmnodeinfo[1].flags |= FMNI_NO_DRAW;
-
-	self->s.fmnodeinfo[2].flags &= ~FMNI_NO_DRAW;
-	if (random() > 0.5)
-		self->s.fmnodeinfo[2].flags |= FMNI_NO_DRAW;
-
-	self->s.fmnodeinfo[3].flags &= ~FMNI_NO_DRAW;
-	if (random() > 0.5)
-		self->s.fmnodeinfo[3].flags |= FMNI_NO_DRAW;*/
-
 	self->nextthink = level.time + FRAMETIME;
 }
 
@@ -57,23 +36,4 @@ void SP_misc_flag (edict_t *ent)
 
 	ent->think = flag_think;
 	ent->nextthink = level.time + flrand(0.0F, 1.0F);
-
-/*	ent->s.fmnodeinfo[1].skin = 2;
-
-	ent->s.fmnodeinfo[0].color.r = 255;
-	ent->s.fmnodeinfo[0].color.a = 120;
-	ent->s.fmnodeinfo[0].flags |= FMNI_USE_COLOR;
-
-	ent->s.fmnodeinfo[1].color.g = 255;
-	ent->s.fmnodeinfo[1].color.a = 255;
-	ent->s.fmnodeinfo[1].flags |= FMNI_USE_COLOR;
-
-	ent->s.fmnodeinfo[2].color.b = 255;
-	ent->s.fmnodeinfo[2].color.a = 200;
-	ent->s.fmnodeinfo[2].flags |= FMNI_USE_COLOR;
-
-	ent->s.fmnodeinfo[3].color.r = 255;
-	ent->s.fmnodeinfo[3].color.g = 255;
-	ent->s.fmnodeinfo[3].color.a = 80;
-	ent->s.fmnodeinfo[3].flags |= FMNI_USE_COLOR;*/
 }

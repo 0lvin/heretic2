@@ -362,11 +362,6 @@ void seraph_guard_strike( edict_t *self, float damage, float var2, float var3 )
 		else
 		{
 			// Get a proper angle for this attack from the absolute vector provided.
-/*			AngleVectors(self->s.angles, fwd, right, up);
-			VectorScale(fwd, hitDir[0], dir);
-			VectorMA(dir, -hitDir[1], right, dir);
-			VectorMA(dir, hitDir[2], up, dir);*/
-
 			if (self->curAnimID == SERAPH_GUARD_ANIM_MELEE3)
 			{
 				gi.CreateEffect(NULL,

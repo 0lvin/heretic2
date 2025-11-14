@@ -247,7 +247,6 @@ void insectCut (edict_t *self, float attacktype)
 		VectoAngles(trace.plane.normal, hitangles);
 		gi.CreateEffect(NULL, FX_SPARKS, 0, trace.endpos, "d", hitangles);
 		gi.sound(self, CHAN_AUTO, Sounds[SND_SWIPEHITW], 1, ATTN_NORM, 0);
-//		gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhitwall.wav"), 1, ATTN_NORM, 0);
 		return;
 	}
 
@@ -255,17 +254,8 @@ void insectCut (edict_t *self, float attacktype)
 
 	VectorSubtract(pos2, pos1, dir);
 	gi.sound(self, CHAN_AUTO, Sounds[SND_SWIPEHITF], 1, ATTN_NORM, 0);
-//	gi.sound(self, CHAN_WEAPON, gi.soundindex("weapons/staffhit.wav"), 1, ATTN_NORM, 0);
 
 	T_Damage (trace.ent, self, self, dir, trace.endpos, vec3_origin, damage, damage*2, DAMAGE_DISMEMBER,MOD_DIED);
-
-/*	gi.CreateEffect(self,
-		FX_I_EFFECTS,
-		0,
-		vec3_origin,
-		"bv",
-		FX_I_SWORD,
-		vec3_origin);*/
 }
 
 
@@ -840,30 +830,7 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 
 	if (HitLocation>hl_Max)
 		return;
-//	gi.dprintf("HL: %d",HitLocation);
 
-/*	if (self->curAnimID ==ANIM_MELEE1||self->curAnimID ==ANIM_MELEE1)
-	{//Hit chest during melee, may have hit arms
-		if (HitLocation == hl_TorsoFront&&irand(0,10)<4)
-		{
-			if (irand(0,10)<7)
-				HitLocation = hl_ArmLowerRight;
-			else
-				HitLocation = hl_ArmLowerLeft;
-		}
-	}
-
-	if (
-		(HitLocation == hl_ArmUpperLeft&& self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW) ||
-		(HitLocation == hl_ArmUpperRight&& self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW)||
-		(
-			(HitLocation == hl_TorsoFront|| HitLocation == hl_TorsoBack) &&
-			self->s.fmnodeinfo[MESH__R_ARM].flags & FMNI_NO_DRAW &&
-			self->s.fmnodeinfo[MESH__L_ARM].flags & FMNI_NO_DRAW &&
-			irand(0,10)<4)
-		)
-		HitLocation = hl_Head;//Decap
-*/
 	self->monsterinfo.aiflags &= ~AI_OVERRIDE_GUIDE;
 	VectorClear(gore_spot);
 	switch(HitLocation)
@@ -1112,15 +1079,8 @@ void insect_dismember(edict_t *self, int damage, int HitLocation)
 	if (throw_nodes)
 		self->pain_debounce_time = 0;
 
-	/*if (self->mass == MASS_TC_FEMALE)
-	{
-		if (self->s.fmnodeinfo[MESH__STAFF].flags & FMNI_NO_DRAW)
-			self->monsterinfo.aiflags |= AI_NO_MISSILE;
-	}
-	else*/
 	if (self->mass == MASS_TC_MALE)
 	{
-//		if (self->s.fmnodeinfo[MESH__SWORD].flags & FMNI_NO_DRAW)
 		if (self->s.fmnodeinfo[MESH__MALEHAND].flags & FMNI_NO_DRAW)
 			self->monsterinfo.aiflags |= AI_NO_MELEE;
 
@@ -1365,17 +1325,6 @@ void insect_runorder(edict_t *self)
 
 
 /*-------------------------------------------------------------------------
-	insectsqueal
--------------------------------------------------------------------------*/
-void insectsqueal (edict_t *self)
-{
-/*	if (irand(0, 1))
-		gi.sound(self, CHAN_WEAPON, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
-	else
-		gi.sound(self, CHAN_WEAPON, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);*/
-}
-
-/*-------------------------------------------------------------------------
 	insect_stand
 -------------------------------------------------------------------------*/
 void insect_stand(edict_t *self, G_Message_t *msg)
@@ -1398,44 +1347,6 @@ void insect_walk(edict_t *self, G_Message_t *msg)
 	else
 		SetAnim(self, ANIM_WALK);
 }
-
-
-/*void Monster_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
-{
-	vec3_t	pos1, pos2;
-	float	zdiff;
-
-	if ((other->svflags & SVF_MONSTER) || (!Q_stricmp(other->classname, "player")))
-	{
-		VectorCopy(other->s.origin, pos1);
-		pos1[2] += other->mins[2];
-
-		VectorCopy(self->s.origin, pos2);
-		pos2[2] += self->maxs[2];
-
-		zdiff = pos1[2] - pos2[2];
-
-		if (zdiff >= 0 ) // On top
-		{
-			other->velocity[0] = flrand(75.0, 100.0);
-			other->velocity[1] = flrand(75.0, 100.0);
-			other->velocity[2] += 101;
-
-			if (irand(0,1))
-				other->velocity[0] *= -1;
-
-			if (irand(0,1))
-				other->velocity[1] *= -1;
-
-			self->velocity[0] = -(other->velocity[0]);
-			self->velocity[1] = -(other->velocity[1]);
-			self->velocity[2] += 100;
-
-			other->groundentity = NULL;
-			self->groundentity = NULL;
-		}
-	}
-}*/
 
 void insect_go_inair(edict_t *self)
 {

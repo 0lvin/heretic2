@@ -2163,15 +2163,6 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 					 "bv",
 					 FX_MSSITHRA_EXPLODE,
 					 self->movedir);
-		/*
-		gi.CreateEffect(arrow,
-			FX_SSITHRA_ARROW,
-			CEF_OWNERS_ORIGIN,
-			NULL,
-			"bv",
-			FX_SS_MAKE_ARROW,
-			arrow->velocity);
-		*/
 
 		G_SetToFree(self);
 
@@ -2201,16 +2192,6 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 				 "bv",
 				 FX_MSSITHRA_EXPLODE,
 				 self->movedir);
-
-	/*
-	gi.CreateEffect(NULL,
-		FX_SSITHRA_ARROW,
-		0,
-		self->s.origin,
-		"bv",
-		FX_SS_EXPLODE_ARROW,
-		self->velocity);
-	*/
 
 	VectorClear(self->velocity);
 

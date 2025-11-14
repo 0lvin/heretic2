@@ -210,68 +210,6 @@ edict_t *AssassinArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 	return (arrow);
 }
 
-
-// The blocked function isn't currently used.
-/*
-void assassinDaggerBlocked (edict_t *self, trace_t *trace)
-{
-	float damage;
-	vec3_t	hitangles;
-	edict_t *Other;
-	Other = trace->ent;
-
-	if (Other==self->owner||Other->owner == self->owner)
-	{
-		return;
-	}
-
-	// are we reflecting ?
-	if (EntReflecting(trace->ent, true, true))
-	{
-		Create_rand_relect_vect(self->velocity, self->velocity);
-		Vec3ScaleAssign(ASSASSIN_DAGGER_SPEED / 2, self->velocity);
-		AssassinArrowReflect(self, Other, self->velocity);
-
-		return;
-	}
-
-	if (trace->surface&&(trace->surface->flags&SURF_SKY))
-	{
-		SkyFly(self);
-		return;
-	}
-
-//take into account if angle is within 45 of 0?
-	if (Other->takedamage)
-	{
-		if (Other->materialtype == MAT_FLESH||Other->client)
-			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITF],1,ATTN_NORM,0);
-		else
-			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITW],1,ATTN_NORM,0);
-		if (skill->value < 2)
-			damage = flrand(ASSASSIN_MIN_DAMAGE * 0.5, ASSASSIN_MAX_DAMAGE * 0.5);
-		else
-		{
-			damage = flrand(ASSASSIN_MIN_DAMAGE,ASSASSIN_MAX_DAMAGE);
-			if (Q_fabs(self->s.angles[PITCH])<45)//up to extra 10 pts damage if pointed correctly
-				damage += 45/(45 - Q_fabs(self->s.angles[PITCH])) * 10;
-		}
-		T_Damage(Other,self,self->owner,self->movedir,self->s.origin,trace->plane.normal, damage, 0, 0,MOD_DIED);
-	}
-	else//spark
-	{
-		if (Vec3NotZero(trace->plane.normal))
-			VectoAngles(trace->plane.normal, hitangles);
-		else
-			VectorSet(hitangles, 0, 0, 90);
-		gi.CreateEffect(NULL, FX_SPARKS, 0, self->s.origin, "d", hitangles);
-		gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITW],1,ATTN_NORM,0);
-	}
-
-	G_FreeEdict(self);
-}
-*/
-
 void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
 {
 	float damage;
@@ -406,20 +344,8 @@ void assassinThrowDagger(edict_t *self, float right_ofs)
 
 	eta = enemy_dist / ASSASSIN_DAGGER_SPEED;//eta
 
-//	gi.dprintf("ETA: %f\n", eta);
 	//ideally, spin @1110 degrees in 1 sec
 	arrow->avelocity[PITCH] = -1/eta * (360*3 +30 + crandk() * 10.0);
-//	gi.dprintf("avel: %f\n", arrow->avelocity[PITCH]);
-//	gi.dprintf("final rotation: %f\n", arrow->avelocity[PITCH]*eta);
-//	gi.dprintf("final angle: %f\n", anglemod(arrow->s.angles[PITCH]+arrow->avelocity[PITCH]*eta));
-
-/*
-//doesn't make desired effect
-	if (right_ofs>0)
-		arrow->s.angles[ROLL] = flrand(0, 35);
-	else if (right_ofs<0)
-		arrow->s.angles[ROLL] = flrand(-35, 0);
-*/
 
 	gi.CreateEffect(arrow,
 				FX_M_EFFECTS,
@@ -483,15 +409,6 @@ void assassindagger (edict_t *self, float right_ofs)
 						damage = ASSASSIN_MAX_DAMAGE;
 				}
 			}
-
-			/*			if (self->s.fmnodeinfo[MESH__HANDLE].flags & FMNI_NO_DRAW)
-				damage-=5;
-			else if (self->s.fmnodeinfo[MESH__HOE].flags & FMNI_NO_DRAW)
-				damage+=5;
-			else if (self->s.fmnodeinfo[MESH__GAFF].flags & FMNI_NO_DRAW)
-				damage+=7;
-			else if (self->s.fmnodeinfo[MESH__HAMMER].flags & FMNI_NO_DRAW)
-				damage+=10;*/
 
 			T_Damage (self->enemy, self, self, dir, org, vec3_origin, damage, 0, 0,MOD_DIED);
 		}
@@ -564,12 +481,6 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 						playerExport->KnockDownPlayer(&other->client->playerinfo);
 
 					gi.sound(self, CHAN_BODY, Sounds[SND_LANDF], 1, ATTN_NORM, 0);
-	/*
-					VectorMA(other->velocity, strength, dir, other->velocity);
-					other->groundentity = NULL;
-					other->velocity[2] = 101;
-	*/
-
 					if (other->takedamage)
 					{
 						if (strength>5)
@@ -581,24 +492,6 @@ void assassin_Touch(edict_t *self, trace_t *trace)
 				}
 			}
 		}
-		/*
-		//backflip off walls!  Too late to implement
-		else if (trace->plane)
-		{
-			if (Vec3NotZero(trace->plane.normal))
-			{
-				if (trace->plane.normal[2] < 0.75)
-				{
-					VectorCopy(self->velocity, dir);
-					VectorNormalize(dir);
-					if (DotProduct(dir, trace->plane.normal) < -0.3)
-					{
-						SetAnim(self, ASSASSIN_ANIM_EVBACKFLIP);
-					}
-				}
-			}
-		}
-		*/
 	}
 }
 
@@ -758,21 +651,8 @@ void assassin_melee(edict_t *self, G_Message_t *msg)
 	{
 		if (!irand(0,7))
 		{
-			/*if (self->s.renderfx & RF_ALPHA_TEXTURE)
-			{
-				if (self->pre_think != assassinDeCloak)
-				{
-					gi.sound(self,CHAN_AUTO,Sounds[SND_DECLOAK],1,ATTN_NORM,0);
-					self->pre_think = assassinDeCloak;
-					self->next_pre_think = level.time + FRAMETIME;
-					assassin_pause(self);
-					return;
-				}
-			}*/
-
 			if (assassinCheckTeleport(self, ASS_TP_OFF))
 			{
-//				gi.dprintf("melee->teleport\n");
 				return;//try to get away
 			}
 		}
@@ -816,25 +696,10 @@ void assassin_missile(edict_t *self, G_Message_t *msg)
 -------------------------------------------------------------------------*/
 void assassin_post_pain (edict_t *self)
 {
-	/*if (self->s.renderfx & RF_ALPHA_TEXTURE)
-	{
-		if (!irand(0,4))
-		{
-			if (self->pre_think != assassinDeCloak)
-			{
-				gi.sound(self,CHAN_AUTO,Sounds[SND_DECLOAK],1,ATTN_NORM,0);
-				self->pre_think = assassinDeCloak;
-				self->next_pre_think = level.time + FRAMETIME;
-				assassin_pause(self);
-				return;
-			}
-		}
-	}*/
 	if (self->fire_damage_time < level.time)//don't teleport if burning
 	{
 		if (assassinCheckTeleport(self, ASS_TP_ANY))
 		{
-//			gi.dprintf("pain->teleport\n");
 			return;
 		}
 	}
@@ -1639,12 +1504,6 @@ void assassin_runorder(edict_t *self)
 -------------------------------------------------------------------------*/
 void assassinsqueal (edict_t *self)
 {
-/*
-	if (irand(0, 1))
-		gi.sound(self, CHAN_WEAPON, Sounds[SND_PAIN1], 1, ATTN_NORM, 0);
-	else
-		gi.sound(self, CHAN_WEAPON, Sounds[SND_PAIN2], 1, ATTN_NORM, 0);
-*/
 }
 
 /*-------------------------------------------------------------------------
@@ -2371,12 +2230,6 @@ qboolean assassinCheckTeleport (edict_t *self, int type)
 
 	if (!M_ValidTarget(self, self->enemy))
 		return false;
-
-/*	if (!infront(self->enemy, self))
-		return false;
-
-	if (!visible(self->enemy, self))
-		return false;*/
 
 	return assassinChooseTeleportDestination(self, type, false, false);
 }

@@ -944,40 +944,6 @@ void morcalavin_proj1_think( edict_t *self )
 
 void beam_blocked( edict_t *self, trace_t *trace )
 {
-//	edict_t	*proj;
-
-	/*
-	if (EntReflecting(trace->ent, true, true) && self->reflect_debounce_time)
-	{
-		proj = G_Spawn();
-
-		create_morcalavin_proj(self,proj);
-		proj->isBlocked = beam_blocked;
-		proj->classname = "M_ref_HMissile";
-		proj->owner = self->owner;
-		proj->ideal_yaw = self->ideal_yaw;
-		proj->classID = self->classID;
-
-		Create_rand_relect_vect(self->velocity, proj->velocity);
-		Vec3ScaleAssign(proj->ideal_yaw,proj->velocity);
-		VectoAngles(proj->velocity, proj->s.angles);
-
-		gi.CreateEffect(proj,
-					FX_M_EFFECTS,
-					CEF_OWNERS_ORIGIN,
-					NULL,
-					"bv",
-					proj->classID,
-					proj->velocity);
-
-		proj->reflect_debounce_time = self->reflect_debounce_time -1;
-		gi.linkentity(proj);
-
-		G_SetToFree(self);
-
-		return;
-	}*/
-
 	if (trace->ent->takedamage )
 	{
 		vec3_t	hitDir;
@@ -1372,16 +1338,6 @@ void mork_ai_run (edict_t *self, float dist)
 	}
 	else
 	{
-		/*
-		gi.CreateEffect(self,
-					FX_M_EFFECTS,
-					0,
-					vec3_origin,
-					"bv",
-					FX_M_MOBLUR,
-					self->s.angles);
-		*/
-
 		ai_charge(self, dist);
 	}
 }
@@ -1797,26 +1753,6 @@ void morcalavin_postthink(edict_t *self)
 			break;
 
 		case 8:
-			/*
-			chance = irand(0,2);
-			switch (chance)
-			{
-			case 0:
-				gi.sound(self, CHAN_AUTO, sounds[TAUNT_LAUGH2], 1, ATTN_NONE, 0);
-				break;
-
-			case 1:
-				gi.sound(self, CHAN_AUTO, sounds[TAUNT_LAUGH3], 1, ATTN_NONE, 0);
-				break;
-
-			case 2:
-				gi.sound(self, CHAN_AUTO, sounds[TAUNT_LAUGH4], 1, ATTN_NONE, 0);
-				break;
-
-			default:
-				break;
-			}*/
-
 			self->monsterinfo.sound_start = -1;
 			self->monsterinfo.jump_time = level.time + 1.0;
 			break;
@@ -1866,16 +1802,6 @@ morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacker, i
 	//TODO: Create an effect around him
 	VectorClear(temp);
 	temp[0] = self->delay;
-
-	/*
-	gi.CreateEffect( &self->s,
-					 FX_M_EFFECTS,
-					 CEF_OWNERS_ORIGIN,
-					 self->s.origin,
-					 "bv",
-					 FX_MORK_RECHARGE,
-					 temp);
-	*/
 
 	//TODO: Create a barrier around him so the player cannot get close to him
 }

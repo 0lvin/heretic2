@@ -619,15 +619,6 @@ void move_harpy_tumble(edict_t *self)
 	VectorSet(self->mins, -16, -16, 0);
 	VectorSet(self->maxs, 16, 16, 12);
 
-	/*
-	if (!self->avelocity[PITCH] && !self->avelocity[YAW] && !self->avelocity[ROLL])
-	{
-		self->avelocity[PITCH] = flrand(128.0F, 256.0F);
-		self->avelocity[YAW] = flrand(64.0F, 512.0F);
-		self->avelocity[ROLL] = flrand(64.0F, 512.0F);
-	}
-	*/
-
 	VectorCopy(self->s.origin, endpos);
 	endpos[2] -= 32;
 

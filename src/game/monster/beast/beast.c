@@ -404,20 +404,6 @@ void tbeast_walk(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-/*	if (clear_visible(self, self->enemy) && ahead(self, self->enemy))
-	{
-		VectorSubtract (self->s.origin, targ_org, v);
-		len = VectorLength (v);
-		// targ_org is within range and far enough above or below to warrant a jump
-		if ((len > 40) && (len < 600) && ((self->s.origin[2] < targ_org[2] - 18) ||
-			(self->s.origin[2] > targ_org[2] + 18)))
-		{
-			gi.dprintf("Jump from walk at enemy\n");
-			SetAnim(self, BEAST_ANIM_JUMP);
-			return;
-		}
-	}*/
-
 	delta = anglemod(self->s.angles[YAW] - self->ideal_yaw);
 	if (delta > 25 && delta <= 180)
 	{
@@ -549,23 +535,6 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 	}
 
 	enemy_vis = clear_visible(self, self->enemy);
-/*	if (enemy_vis && ahead(self, self->enemy))
-	{
-		// Enemy is within range and far enough above or below to warrant a jump
-		if ((len > 40) && (len < 600) && ((self->s.origin[2] < self->enemy->s.origin[2] - 40) ||
-			(self->s.origin[2] > self->enemy->s.origin[2] + 40)))
-		{
-			if (abs(self->s.origin[2] - self->enemy->s.origin[2] - 40) < 200) // Can't jump more than 200 high
-			{
-				if (!irand(0, 2))
-				{
-					gi.dprintf("Jump from run at enemy\n");
-					SetAnim(self, BEAST_ANIM_JUMP);
-					return;
-				}
-			}
-		}
-	}*/
 
 	if (self->enemy->classID != CID_TCHECKRIK && enemy_vis && ((irand(0, 1) && infront(self, self->enemy)) || ahead(self, self->enemy)) && shoulder_room_ahead(self))
 	{
@@ -1067,11 +1036,6 @@ void tbeast_roar_knockdown(edict_t *self)
 
 void tbeast_roar(edict_t *self)
 {
-/*	vec3_t forward, endpos;
-
-	AngleVectors(self->s.angles, forward, NULL, NULL);
-	VectorMA(self->s.origin, 128, forward, endpos);
-	gi.CreateEffect( NULL, FX_FLAMETHROWER, 0, endpos, "df", forward, 200);*/
 	gi.sound(self, CHAN_VOICE, sounds[SND_ROAR2], 1, ATTN_NONE, 0);
 }
 
@@ -1167,16 +1131,6 @@ qboolean TB_CheckBottom (edict_t *self)
 
 	if (trace.fraction < 1.0 || trace.startsolid || trace.allsolid)
 	{
-		/*if (&trace.plane)
-		{
-			if (!Vec3IsZero(trace.plane.normal))
-			{
-				if (trace.plane.normal[2]>=0.5&&trace.plane.normal[2]<=1)//not a slope can go up
-				{//raise him up if on flat ground, lower is on slope - to keep feet on ground;
-					self->mins[2] = (1 - trace.plane.normal[2]) * 72 - 8 + TB_UP_OFFSET;
-				}
-			}
-		}*/
 		self->groundentity = trace.ent;
 		return true;
 	}
@@ -1291,11 +1245,6 @@ void tbeast_run_think (edict_t *self, float dist)
 {
 	vec3_t	angles, forward, start, end, mins;
 	trace_t	trace;
-/*
-	matrix3_t	RotationMatrix;
-	vec3_t		lfootoffset, rfootoffset, newlfootpos, newrfootpos;
-	vec3_t		save_lf_org, save_rf_org, save_my_org;
-	float		save_yaw;*/
 
 	if (!M_ValidTarget(self, self->enemy))
 	{
@@ -1334,6 +1283,7 @@ void tbeast_run_think (edict_t *self, float dist)
 		}
 	}
 }
+
 /*
 ========================================
 TBEAST PICK UP AND GORE SOMETHING
@@ -1462,20 +1412,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 		if (!found)
 		{
-//			gi.dprintf("Snatch missed by %4.2f!\n", enemy_dist - ok_dist);
 			self->msgHandler = DefaultMsgHandler;
-			/*
-			if (!Q_stricmp(self->enemy->classname,"player"))
-			{
-				if (self->oldenemy)
-				{
-					if (self->oldenemy->health>0)
-					{
-						self->oldenemy = NULL;
-						self->enemy = self->oldenemy;
-					}
-				}
-			}*/
 			return;
 		}
 	}
@@ -1894,20 +1831,10 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 			VectorCopy(rightpos, backpos);
 		}
 	}
-	else return;
-	/*{
-		VectorCopy(self->s.origin, backpos);
-		backpos[2] += self->mins[2] + 10;
-
-		VectorMA(backpos, self->maxs[0] * fscale, forward, frontpos);
-		VectorMA(backpos, self->mins[0] * fscale, forward, backpos);
-
-		VectorCopy(self->s.origin, leftpos);
-		leftpos[2] += self->mins[2] + 10;
-
-		VectorMA(leftpos, self->maxs[0] * rscale, right, rightpos);
-		VectorMA(leftpos, self->mins[0] * rscale, right, leftpos);
-	}*/
+	else
+	{
+		return;
+	}
 
 	VectorCopy(frontpos, bottom1);
 	bottom1[2] -= self->size[2] * 2;
@@ -1966,44 +1893,6 @@ void LevelToGround (edict_t *self, float fscale, float rscale, qboolean z_adjust
 			self->s.angles[ROLL] = LerpAngleChange (self->s.angles[ROLL], angles[PITCH], 8);
 		}
 	}
-
-	/*
-	if (z_adjust)
-	{
-		if ((gi.pointcontents(rightpos) & MASK_SOLID) ||	(gi.pointcontents(leftpos) & MASK_SOLID))
-		{
-			gi.dprintf("Beast feet in ground, raising up\n");
-			while (((gi.pointcontents(rightpos) & MASK_SOLID) ||
-				(gi.pointcontents(leftpos) & MASK_SOLID)) && count < 10)
-			{
-				self->mins[2]++;
-				self->s.origin[2]++;
-				rightpos[2]++;
-				leftpos[2]++;
-				count++;
-			}
-			gi.linkentity(self);
-		}
-		else
-		{
-			leftpos[2] -= 4;
-			rightpos[2] -= 4;
-			if (!(gi.pointcontents(rightpos) & MASK_SOLID) && !(gi.pointcontents(leftpos) & MASK_SOLID))
-			{
-				gi.dprintf("Beast feet not on ground, lowering\n");
-				while (!(gi.pointcontents(rightpos) & MASK_SOLID) &&
-					!(gi.pointcontents(leftpos) & MASK_SOLID) && count < 10)
-				{
-					self->mins[2]--;
-					self->s.origin[2]--;
-					rightpos[2]--;
-					leftpos[2]--;
-					count++;
-				}
-				gi.linkentity(self);
-			}
-		}
-	}*/
 }
 
 void DoImpactDamage(edict_t *self, trace_t *trace);

@@ -290,17 +290,6 @@ void imp_ai_pirch(edict_t *self)
 		return;
 	}
 
-/*
-	if (irand(0,100) < 10 && self->monsterinfo.attack_finished < level.time)
-	{
-		self->monsterinfo.attack_finished = level.time + 5;
-
-		if (irand(0,1))
-			gi.sound(self, CHAN_VOICE, sounds[SND_IDLE1], 1, ATTN_NORM, 0);
-		else
-			gi.sound(self, CHAN_VOICE, sounds[SND_IDLE2], 1, ATTN_NORM, 0);
-	}
-*/
 	AngleVectors(self->s.angles, vf, vr, NULL);
 
 	dot = DotProduct(vec, vf);
@@ -447,11 +436,6 @@ void imp_pain(edict_t *self, G_Message_t *msg)
 	}
 	if (force_pain||((irand(0,10) < 2) && (self->pain_debounce_time < level.time)))
 	{
-/*		if (irand(0,1))
-			imp_pain1_noise(self);
-		else
-			imp_pain2_noise(self);*/
-
 		self->pain_debounce_time = level.time + 2;
 		if (self->curAnimID == ANIM_DIVE_GO || self->curAnimID == ANIM_DIVE_LOOP)
 			SetAnim(self, ANIM_DIVE_END);
@@ -702,18 +686,10 @@ void move_imp_dive(edict_t *self)
 	else if (forward < 0)
 		forward = 0;
 
-//	if (dist > IMP_MIN_SWOOP_DIST)
-//	{
-		VectorMA(vf, forward, vf, self->velocity);
-		self->velocity[2] = -dist*2.25;
-		if (self->velocity[2] < -300)
-			self->velocity[2] = -300;
-//	}
-/*	else
-	{
-		SetAnim(self, ANIM_DIVE_TRANS);
-		return;
-	}*/
+	VectorMA(vf, forward, vf, self->velocity);
+	self->velocity[2] = -dist*2.25;
+	if (self->velocity[2] < -300)
+		self->velocity[2] = -300;
 
 	imp_ai_glide(self, 0, 0, 0);
 }
@@ -766,16 +742,6 @@ void move_imp_dive_end(edict_t *self)
 	}
 
 	VectorMA(self->velocity, fd, vf, self->velocity);
-
-	//Are we about to hit the target?
-/*	VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
-	dist = VectorLength(vec);
-
-	if (dist < IMP_COLLISION_DIST)
-	{
-		SetAnim(self, ANIM_DIVE_END);
-		return;
-	}	*/
 
 	imp_ai_glide(self, 0, 0, 0);
 }

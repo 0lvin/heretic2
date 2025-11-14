@@ -150,7 +150,6 @@ void insect_pain(edict_t *self, G_Message_t *msg);
 
 void insect_dead(edict_t *self);
 void insectdeathsqueal(edict_t *self);
-void insectsqueal(edict_t *self);
 void insectgrowl(edict_t *self);
 void insectbite(edict_t *self);
 void insect_think_pain(edict_t *self);

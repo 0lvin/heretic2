@@ -949,29 +949,16 @@ void ogle_pain (edict_t *self, G_Message_t *msg)
 
 	G_ParseMsgParms(msg, "eeiii", &targ, &attacker, &force_pain, &damage, &temp);
 
-//	if (attacker->client)
-//	{
-		self->mood_think = ogle_mood_think;
+	self->mood_think = ogle_mood_think;
 
-		/*
-		if (chance < 95)
-		{
-			self->monsterinfo.aiflags |= AI_COWARD;
-			self->ai_mood = AI_MOOD_FLEE;
-
-			G_QPostMessage(self, MSG_RUN, PRI_DIRECTIVE, NULL);
-			return;
-		}
-		*/
-		if (attacker && !infront(self, attacker))
-			SetAnim(self, ANIM_PAIN3);
-		else if (chance < 33)
-			SetAnim(self, ANIM_PAIN1);
-		else if (chance < 66)
-			SetAnim(self, ANIM_PAIN2);
-		else
-			SetAnim(self, ANIM_PAIN3);
-//	}
+	if (attacker && !infront(self, attacker))
+		SetAnim(self, ANIM_PAIN3);
+	else if (chance < 33)
+		SetAnim(self, ANIM_PAIN1);
+	else if (chance < 66)
+		SetAnim(self, ANIM_PAIN2);
+	else
+		SetAnim(self, ANIM_PAIN3);
 
 	gi.sound(self, CHAN_VOICE, sounds[irand(SND_PAIN1, SND_PAIN2)], 1, ATTN_NORM, 0);
 }
@@ -1257,45 +1244,6 @@ qboolean ogle_findtarget (edict_t *self)
 			return true;
 		}
 	}
-
-	/*//Used to go after other stuff and break it...
-	found = NULL;
-	//ok, search for utensils of their oppression
-	while (found = newfindradius(found, self->s.origin, 512))
-	{
-		if (found->classID == CID_OBJECT)
-		{
-			if (found->takedamage && found->health > 0)
-			{
-				if (!strcmp(found->classname, "obj_minecart1")||
-					!strcmp(found->classname, "obj_minecart2")||
-					!strcmp(found->classname, "obj_minecart3")||
-					!strcmp(found->classname, "obj_pick")||
-					!strcmp(found->classname, "obj_gascan")||
-					!strcmp(found->classname, "obj_barrel_metal")||
-					!strcmp(found->classname, "obj_metalchunk1")||
-					!strcmp(found->classname, "obj_metalchunk2")||
-					!strcmp(found->classname, "obj_metalchunk3")||
-					!strcmp(found->classname, "obj_pipe1")||
-					!strcmp(found->classname, "obj_pipe2")||
-					!strcmp(found->classname, "obj_pushcart")||
-					!strcmp(found->classname, "obj_shovel")||
-					!strcmp(found->classname, "obj_wheelbarrow")||
-					!strcmp(found->classname, "obj_wheelbarrowdamaged"))
-				{
-					if (irand(0, 1))
-					{
-						if (visible(self, found))
-						{
-							self->enemy = found;
-							FoundTarget(self, false);
-							return true;
-						}
-					}
-				}
-			}
-		}
-	}*/
 
 	found = NULL;
 	//help out other ogles

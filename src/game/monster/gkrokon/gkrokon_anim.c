@@ -348,15 +348,7 @@ mmove_t GkrokonMovePain1={8,GkrokonFramesPain1, GkrokonPause};//GkrokonOrderRun}
 // Death1 -
 // ****************************************************************************
 
-/*
-static mframe_t GkrokonFramesDeath_hold[]=
-{
-	{FRAME_deathb19,	NULL, 0, 0, 0, NULL,	0,	NULL},
-};
-mmove_t GkrokonMoveDeath_hold={1,GkrokonFramesDeath_hold,NULL};
-
-*/
-  mframe_t GkrokonFramesDeath1[]=
+mframe_t GkrokonFramesDeath1[]=
 {
 	{FRAME_death1,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_death2,	NULL, 0, 0, 0, NULL,	0,	NULL},

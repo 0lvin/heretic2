@@ -603,11 +603,6 @@ mmove_t tbeast_move_bitelow_sfin = {6, tbeast_frames_bitelow_sfin, tbeast_go_sna
 -----------------------------------------------------------------------*/
 static mframe_t tbeast_frames_snatch [] =
 {
-/*	{FRAME_eatinga1, tbeast_toy_ofs, 112, 32, -8,  NULL, 0,  NULL},
-	{FRAME_eatinga2, tbeast_toy_ofs, 112, 18, 8,  NULL, 0,  NULL},
-	{FRAME_eatinga3, tbeast_toy_ofs, 98, 0, 32,  NULL, 0,  tbeast_anger_sound},
-	{FRAME_eatinga4, tbeast_toy_ofs, 128, 2, 36,  NULL, 0,  NULL},
-	{FRAME_eatinga5, tbeast_toy_ofs, 152, 12, 64,  NULL, 0,  tbeast_anger_sound},*/
 	{FRAME_eatinga6, tbeast_toy_ofs, 164, -16, 94,  NULL, 0,  NULL},
 	{FRAME_eatinga7, tbeast_toy_ofs, 152, -68, 60,  NULL, 0,  NULL},
 	{FRAME_eatinga8, tbeast_toy_ofs, 112, -88, 56,  NULL, 0,  tbeast_anger_sound},

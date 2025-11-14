@@ -844,7 +844,7 @@ void priestess_fire3( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 void priestess_fire4( edict_t *self, float pitch_ofs, float yaw_ofs, float roll_ofs )
 {
 	trace_t trace;
-	vec3_t	vf, vr, /*ang,*/ startPos, endPos;
+	vec3_t	vf, vr, startPos, endPos;
 	vec3_t  mins = { -1, -1, -1 };
 	vec3_t  maxs = {  1,  1,  1 };
 	float	len;

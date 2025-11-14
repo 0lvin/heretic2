@@ -267,23 +267,6 @@ static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *pla
 	vel[1] += crandk() * 100;
 	vel[2] = flrand(10, 100);
 
-	// create the volume effect for the damage
-/*	gas = RadiusDamageEnt(self,//position
-					self->owner,//damage credit
-					5,//damage
-					0,//d_damage
-					60,//radius
-					1.0,//d_radius
-					DAMAGE_NO_BLOOD|DAMAGE_NO_KNOCKBACK|DAMAGE_ALIVE_ONLY|DAMAGE_AVOID_ARMOR,//dflags
-					self->delay,//lifetime
-					0.2,//thinktime
-					self->s.origin,//startpoint
-					vel,//velocity
-					false);//attach to owner until gone
-
-	gas->svflags |= SVF_ALWAYS_SEND;
-	gas->s.effects = EF_MARCUS_FLAG1;
-*/
 	gi.CreateEffect(self, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, self->s.origin, "vb", vel, 50);
 
 	spreader_grenade_explode (self);
