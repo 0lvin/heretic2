@@ -676,18 +676,8 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	if (playerinfo->seqcmd[ACMDL_CROUCH])
 		delta*=0.75;//rolling absorbs some
 
-	if (delta<1.0)
-		return;
-
-	if (delta<15.0)
+	if (delta < 1.0)
 	{
-		// Unimplemented.
-		pi.G_CreateEffect(playerinfo->self,
-								   FX_FOOTSTEP,
-								   CEF_OWNERS_ORIGIN,
-								   playerinfo->self->s.origin,
-								   "");
-
 		return;
 	}
 
@@ -695,15 +685,5 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	{
 		// Apply damage to player entity if we are running server (game) side.
 		pi.G_PlayerFallingDamage(playerinfo,delta);
-	}
-	else
-	{
-		// Unimplemented.
-		pi.G_CreateEffect(playerinfo->self,
-								   FX_FALLSHORT,
-								   CEF_OWNERS_ORIGIN,
-								   playerinfo->self->s.origin,
-								   "");
-		return;
 	}
 }

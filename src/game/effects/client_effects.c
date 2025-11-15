@@ -9,11 +9,6 @@
 
 // NB. The assassin tport go is not precached
 
-static void
-NullEffect(centity_t *owner, int type, int flags, vec3_t origin)
-{
-}
-
 ClientEffect_t clientEffectSpawners[NUM_FX] =
 {
 	// ***NOTE*** We currently have 113 client effects, and we don't want to exceed 32768!  Ha!
@@ -145,8 +140,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXSsithraArrow,					PrecacheSsithraArrow,	"bv"		}, // FX_SSITHRA_ARROW
 	{ FXPESpell,						PrecachePESpell,		"bv"		}, // FX_PE_SPELL
 	{ FXLightningHit,					PreCacheHitPuff,		"t"			}, // FX_LIGHTNING_HIT
-	{ NullEffect,						NULL,					NULL		}, // FX_FOOTSTEP, Unimplemented fx
-	{ NullEffect,						NULL,					NULL		}, // FX_FALLSHORT, Unimplemented fx
 	{ FXStaffStrike,					PreCacheStaffHit,		"db"		}, // FX_WEAPON_STAFF_STRIKE
 	{ FXCreateArmorHit,					PreCacheArmorHit,		"d"			}, // FX_ARMOR_HIT
 	{ FXBarrelExplode,					PreCacheObjects,		NULL		}, // FX_BARREL_EXPLODE
