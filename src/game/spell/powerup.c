@@ -36,9 +36,6 @@ SpellCastPowerup(edict_t *caster, vec3_t StartPos, vec3_t AimAngles, vec3_t AimD
 		gi.CreateEffect(caster, FX_TOME_OF_POWER, CEF_OWNERS_ORIGIN, NULL, "");
 	}
 
-	// start up the shrine powerup effect
-//	gi.CreateEffect(caster, FX_SHRINE_POWERUP, CEF_OWNERS_ORIGIN, NULL, "");
-
 	// do the SHRINE sound
 	gi.sound(caster, CHAN_ITEM, gi.soundindex("items/shrine5.wav"), 1, ATTN_NORM, 0);
 }

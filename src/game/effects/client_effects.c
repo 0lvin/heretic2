@@ -62,7 +62,7 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXFireBurst,						NULL,					"ss"		}, // FX_WEAPON_FIREBURST
 	{ FXRipperExplode,					NULL,					"vbssssssss"}, // FX_WEAPON_RIPPEREXPLODE
 	{ FXWaterEntrySplash,				NULL,					"bd"		}, // FX_WATER_ENTRYSPLASH
-	{ FXWaterRipples,					PreCacheRipples,		NULL		}, // FX_WATER_RIPPLES
+	{ FXWaterRipples,					PreCacheRipples,		NULL		}, // FX_WATER_RIPPLES, called from effects itself only
 	{ FXWaterWake,						PreCacheWake,			"sbv"		}, // FX_WATER_WAKE
 	{ FXBubbler,						PreCacheBubbler,		"b"			}, // FX_BUBBLER
 	{ FXScorchmark,						PreCacheScorch,			"d"			}, // FX_SCORCHMARK
@@ -103,10 +103,9 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXTomeOfPower,					NULL,					NULL		}, // FX_TOME_OF_POWER
 	{ FXFireOnEntity,					NULL,					"bbb"		}, // FX_FIRE_ON_ENTITY
 	{ FXFlareup,						PreCacheFlareup,		NULL		}, // FX_FLAREUP
-	{ FXShrinePlayerEffect,				PreCacheShrine,			"b"			}, // FX_SHRINE_PLAYER
 	{ FXShrineManaEffect,				NULL,					NULL		}, // FX_SHRINE_MANA
 	{ FXShrineLungsEffect,				NULL,					NULL		}, // FX_SHRINE_LUNGS
-	{ FXShrineLightEffect,				NULL,					NULL		}, // FX_SHRINE_LIGHT
+	{ FXShrineLightEffect,				PreCacheShrine,			NULL		}, // FX_SHRINE_LIGHT
 	{ FXShrineReflectEffect,			NULL,					NULL		}, // FX_SHRINE_REFLECT
 	{ FXShrineArmorEffect,				NULL,					NULL		}, // FX_SHRINE_ARMOR
 	{ FXShrineHealthEffect,				NULL,					NULL		}, // FX_SHRINE_HEALTH
@@ -117,7 +116,7 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXRope,							PreCacheRope,			"ssbvvv"	}, // FX_ROPE
 	{ FXFireHands,						NULL,					"b"			}, // FX_FIREHANDS
 	{ FXShrineBall,						NULL,					"db"		}, // FX_SHRINE_BALL
-	{ FXShrineBallExplode,				NULL,					"db"		}, // FX_SHRINE_BALL_EXPLODE
+	{ FXShrineBallExplode,				PreCacheShrine,			"db"		}, // FX_SHRINE_BALL_EXPLODE
 	{ FXOgleHitPuff,					PrecacheOgleHitPuff,	"v"			}, // FX_OGLE_HITPUFF
 	{ FXHPMissile,						PreCacheHPMissile,		"vb"		}, // FX_HP_MISSILE
 	{ FXIEffects,						PreCacheIEffects,		"bv"		}, // FX_I_EFFECTS

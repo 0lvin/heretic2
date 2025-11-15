@@ -225,7 +225,8 @@ void FXSound(centity_t *owner,int type,int flags,vec3_t origin)
 
 	self->extra=fxi.TagMalloc(sizeof(soundthinkinfo_t),TAG_LEVEL);
 
-	FXGetEffect(owner, flags, clientEffectSpawners[FX_SOUND].formatString, &style,&attenuation,&volume,&wait);
+	FXGetEffect(owner, flags, clientEffectSpawners[FX_SOUND].formatString,
+		&style, &attenuation, &volume, &wait);
 
 	soundinfo = (soundthinkinfo_t *) self->extra;
 	soundinfo->style = style;

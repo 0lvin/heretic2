@@ -149,7 +149,6 @@ void FXplayertorch(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXTomeOfPower(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXFireOnEntity(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXFlareup(centity_t *Owner,int Type,int Flags,vec3_t Origin);
-void FXShrinePlayerEffect(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXShrineManaEffect(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXShrineLungsEffect(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXShrineLightEffect(centity_t *Owner,int Type,int Flags,vec3_t Origin);

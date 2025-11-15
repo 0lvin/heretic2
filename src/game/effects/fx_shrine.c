@@ -72,7 +72,7 @@ typedef struct
 	int	blue;
 } tint_tab_t;
 
-tint_tab_t tint_tab[9] =
+static tint_tab_t tint_tab[9] =
 {
 	{ 96, 255, 96 },
 	{ 96, 255, 255 },
@@ -89,7 +89,8 @@ tint_tab_t tint_tab[9] =
 Main Routines
 */
 
-void PreCacheShrine()
+void
+PreCacheShrine()
 {
 	shrine_models[0] = fxi.RegisterModel("sprites/lens/halo1.sp2");
 	shrine_models[1] = fxi.RegisterModel("sprites/fx/halo.sp2");
@@ -103,10 +104,6 @@ Main Player routine  - make large player, and fade it into us
 ----------------------------------------
 */
 
-// Create a model of the player, and have it expand and fade, with a tint
-void FXShrinePlayerEffect(centity_t *owner, int type, int flags, vec3_t origin)
-{
-}
 
 /*
 ----------------------------------------
@@ -161,7 +158,8 @@ FXShrineManaThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // make the mana effect go off
-void FXShrineManaEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineManaEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -226,7 +224,8 @@ FXShrineArmorThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXShrineArmorEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineArmorEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -288,7 +287,8 @@ FXShrineLungsThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXShrineLungsEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineLungsEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -312,7 +312,8 @@ Light effect routines
 */
 
 // create the light effect - a big old halo that fades away
-void FXShrineLightEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineLightEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -420,7 +421,8 @@ FXShrineStaffThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // start up the staff power up effect
-void FXShrineStaffEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineStaffEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 	int					line_count, particle_life;
@@ -463,7 +465,8 @@ Health Lightning routines
 */
 
 // recursively called to create the lightning effect
-void FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int rand_chance, float stop_height)
+void
+FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int rand_chance, float stop_height)
 {
 	client_particle_t		*ce;
 	vec3_t					dir2;
@@ -559,7 +562,8 @@ void FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int 
 }
 
 // create the lightning lines
-void FXCreateLightning(struct client_entity_s *self, centity_t *owner)
+void
+FXCreateLightning(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t					org;
 	vec3_t					dir;
@@ -618,7 +622,8 @@ FXShrineHealthThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // create initial lightning line
-void FXShrineHealthEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineHealthEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 	// create the entity that the particles are attached to
@@ -717,7 +722,8 @@ FXShrineReflectThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // create the entity the flight loops are on
-void FXShrineReflectEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineReflectEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -791,7 +797,8 @@ FXShrineGhostThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // create the inital ghost controlling entity
-void FXShrineGhostEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineGhostEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 	glow = ClientEntity_new(type, flags|CEF_NO_DRAW, origin, 0, 70);
@@ -868,7 +875,8 @@ FXShrineSpeedThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineSpeedEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -954,7 +962,8 @@ FXShrinePowerupThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXShrinePowerUpEffect(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrinePowerUpEffect(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -1059,7 +1068,8 @@ FXShrineBallThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // create the floating ball in the middle of the shrine
-void FXShrineBall(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineBall(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 	vec3_t				offset;
@@ -1095,7 +1105,8 @@ Exploding shrine ball effect
 */
 
 // explode the ball in the middle of the shrine
-void FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShrineBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_particle_t	*ce;
 	client_entity_t		*burst;
