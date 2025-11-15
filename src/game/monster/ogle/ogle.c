@@ -190,7 +190,7 @@ void SP_obj_corpse_ogle(edict_t *self)
 	}
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
-	ObjectInit(self, 40, 80, MAT_FLESH);
+	ObjectInit(self, MAT_FLESH);
 }
 
 /*-------------------------------------------------------------------------

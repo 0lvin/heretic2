@@ -2099,7 +2099,7 @@ void G_InitResourceManagers();
 void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker, int damage);
 
 /* g_obj.c */
-void ObjectInit(edict_t *self,int health,int mass, int materialtype);
+void ObjectInit(edict_t *self, int materialtype);
 
 // p_funcs
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);

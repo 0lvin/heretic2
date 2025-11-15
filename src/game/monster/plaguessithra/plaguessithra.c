@@ -3207,5 +3207,5 @@ void SP_obj_corpse_ssithra(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
-	ObjectInit(self, 120, 80, MAT_FLESH);
+	ObjectInit(self, MAT_FLESH);
 }

@@ -53,5 +53,5 @@ The bee
 */
 void SP_monster_bee(edict_t *self)
 {
-	ObjectInit(self, 40, 40, MAT_WOOD);
+	ObjectInit(self, MAT_WOOD);
 }
