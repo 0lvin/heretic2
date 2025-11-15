@@ -130,7 +130,6 @@
 {"misc_eastertank", SP_misc_eastertank},
 {"misc_explobox", SP_misc_explobox},
 {"misc_fire_sparker", SP_misc_fire_sparker},
-{"misc_flag", SP_misc_flag},
 {"misc_flare", SP_misc_flare},
 {"misc_gib_arm", SP_misc_gib_arm},
 {"misc_gib_head", SP_misc_gib_head},

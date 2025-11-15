@@ -697,7 +697,6 @@ light_lantern5|models/objects/lights/lantern-4/tris.fm|1.0|1.0|1.0|general|-7.0|
 light_torch1|models/objects/lights/sinkcity/light-3/tris.fm|1.0|1.0|1.0|general|-4.0|-6.0|-5.0|6.0|6.0|20.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Wall torch with blue gem|0.0|1.0|0.0|0|0
 light_walltorch|models/objects/lights/walltorch/tris.fm|1.0|1.0|1.0|general|-16.0|-10.0|-12.0|10.0|10.0|12.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Wall Torch|0.0|1.0|0.0|0|0
 misc_fire_sparker||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Spark generator (triggered)|0|0|0|0|0
-misc_flag|models/rj5/tris.fm|1.0|1.0|1.0|general|-10|-10|0|10|10|80|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||1|.5|0|0|0
 misc_magic_portal||1.0|1.0|1.0|general|-32.0|-32.0|-24.0|32.0|32.0|-16.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Magic Portal|1.0|0.0|0.0|0|0
 misc_remote_camera||1.0|1.0|1.0|general|-32.0|-32.0|-24.0|32.0|32.0|-16.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Remote Camera|1.0|0.0|0.0|0|0
 misc_update_spawner||1.0|1.0|1.0|general|0.0|0.0|0.0|0.0|0.0|0.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Updates level spawn point to trigger's position. Relevant for teleport spell.|.5|.5|.5|0|0

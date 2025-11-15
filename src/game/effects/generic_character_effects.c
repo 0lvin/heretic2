@@ -73,8 +73,6 @@ qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner)
 
 void GenericGibTrail(centity_t *owner, int type, int flags, vec3_t origin)
 {
-	qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner);
-
 	client_entity_t *effect;
 
 	effect = ClientEntity_new(type, flags, origin, NULL, PARTICLE_TRAIL_THINK_TIME);

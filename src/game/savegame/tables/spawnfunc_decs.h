@@ -136,7 +136,6 @@ extern void SP_misc_easterchick2 ( edict_t * ent ) ;
 extern void SP_misc_eastertank ( edict_t * ent ) ;
 extern void SP_misc_explobox( edict_t * self ) ;
 extern void SP_misc_fire_sparker( edict_t * self ) ;
-extern void SP_misc_flag( edict_t * self ) ;
 extern void SP_misc_flare ( edict_t * ent ) ;
 extern void SP_misc_gib_arm ( edict_t * ent ) ;
 extern void SP_misc_gib_head ( edict_t * ent ) ;
