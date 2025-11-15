@@ -123,7 +123,6 @@ void FXLensFlare(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXSpoo(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin);
-void FXRemoteCamera(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXHellbolt(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXHellboltExplode(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXHellstaffPower(centity_t *Owner,int Type,int Flags,vec3_t Origin);

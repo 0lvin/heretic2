@@ -80,7 +80,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXStaff,							PreCacheStaff,			"bb"		}, // FX_STAFF
 	{ FXSpoo,							PreCacheSpoo,			NULL		}, // FX_SPOO
 	{ FXHalo,							PreCacheHalos,			NULL		}, // FX_HALO
-	{ FXRemoteCamera,					NULL,					"s"			}, // FX_REMOTE_CAMERA
 	{ FXHellbolt,						PreCacheHellstaff,		"t"			}, // FX_WEAPON_HELLBOLT
 	{ FXHellboltExplode,				NULL,					"d"			}, // FX_WEAPON_HELLBOLTEXPLODE
 	{ FXHellstaffPower,					PreCacheHellstaff,		"tb"		}, // FX_WEAPON_HELLSTAFF_POWER

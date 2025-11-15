@@ -1331,7 +1331,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/fx_quake.o \
 	src/game/effects/fx_redrainglow.o \
 	src/game/effects/fx_redrain.o \
-	src/game/effects/fx_remotecamera.o \
 	src/game/effects/fx_ripples.o \
 	src/game/effects/fx_rope.o \
 	src/game/effects/fx_scorchmark.o \
