@@ -1022,60 +1022,6 @@ SP_obj_sign4(edict_t *self)
 }
 
 /*
- * QUAKED obj_stalagmite1 (1 .5 0) (-32 -32 -200) (32 32 0) INVULNERABLE ANIMATE EXPLODING DARKSKIN
- *
- * Heretic 2: A big long thick stalagmite.These point up.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * DARKSKIN - if checked it uses the dark skin
- * -----------------------------------
- */
-void
-SP_obj_stalagmite1(edict_t *self)
-{
-	if (self->spawnflags & 8)
-		self->s.skinnum = 1;
-
-	ObjectInit(self, MAT_BROWNSTONE);
-}
-
-/*
- * QUAKED obj_stalagmite2 (1 .5 0) (-32 -32 -128) (32 32 0) DARKSKIN
- *
- * Heretic 2: A big squat stalagmite.These point up.
- * -------  FIELDS  ------------------
- * DARKSKIN - if checked it uses the dark skin
- * -----------------------------------
- */
-void
-SP_obj_stalagmite2(edict_t *self)
-{
-	if (self->spawnflags & 1)
-		self->s.skinnum = 1;
-
-	ObjectInit(self, MAT_BROWNSTONE);
-}
-
-/*
- * QUAKED obj_stalagmite3 (1 .5 0) (-32 -32 -200) (32 32 0)  DARKSKIN
- *
- * Heretic 2: A long pointy stalagmite. These point up
- * -------  FIELDS  ------------------
- * DARKSKIN - if checked it uses the dark skin
- * -----------------------------------
--*/
-void
-SP_obj_stalagmite3(edict_t *self)
-{
-	if (self->spawnflags & 1)
-		self->s.skinnum = 1;
-
-	ObjectInit(self, MAT_BROWNSTONE);
-}
-
-/*
  * QUAKED obj_statue_corvus (1 .5 0) (-16 -16 0) (16 16 32) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
  * Heretic 2: Corvus statue

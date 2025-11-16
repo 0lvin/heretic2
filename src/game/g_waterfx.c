@@ -231,10 +231,6 @@ void SP_obj_fishhead2 (edict_t *self)
 		SpawnDripper(self, offset);
 	}
 
-	VectorSet(self->mins, 0, -110, -118);
-	VectorSet(self->maxs, 136, 110, 118);
-	self->s.modelindex = gi.modelindex("models/objects/fishheads/fishhead2/tris.fm");
-
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
 	self->takedamage = DAMAGE_NO;
@@ -275,10 +271,6 @@ void SP_obj_stalactite1(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 
-	VectorSet(self->mins, -24, -24, -99);
-	VectorSet(self->maxs, 24, 24, 99);
-
-	self->s.modelindex = gi.modelindex("models/objects/stalactite/stalact1/tris.fm");
 	if (self->spawnflags & 2)
 		self->s.skinnum = 1;
 
@@ -312,10 +304,6 @@ void SP_obj_stalactite2(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 
-	VectorSet(self->mins,-60,-60,-64);
-	VectorSet(self->maxs,60,60,64);
-
-	self->s.modelindex = gi.modelindex("models/objects/stalactite/stalact2/tris.fm");
 	if (self->spawnflags & 2)
 		self->s.skinnum = 1;
 
@@ -348,10 +336,6 @@ void SP_obj_stalactite3(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 
-	VectorSet(self->mins, -23, -23, -98);
-	VectorSet(self->maxs, 23, 23, 98);
-
-	self->s.modelindex = gi.modelindex("models/objects/stalactite/stalact3/tris.fm");
 	if (self->spawnflags & 2)
 		self->s.skinnum = 1;
 

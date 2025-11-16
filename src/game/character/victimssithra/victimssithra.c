@@ -99,7 +99,7 @@ void victimSsithraStaticsInit()
 	resInfo.numAnims = NUM_ANIMS;
 	resInfo.animations = animations;
 
-	resInfo.modelIndex = gi.modelindex("models/monsters/Ssithra/cinematics/tris.fm");
+	resInfo.modelIndex = gi.modelindex("models/monsters/ssithra/cinematics/tris.fm");
 
 	classStatics[CID_SSITHRA_VICTIM].resInfo = &resInfo;
 
