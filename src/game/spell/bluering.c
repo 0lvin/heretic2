@@ -23,7 +23,6 @@ extern edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel);
 extern edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel);
 extern edict_t *AssassinArrowReflect(edict_t *self, edict_t *other, vec3_t vel);
 extern edict_t *GkrokonSpooReflect(edict_t *self, edict_t *other, vec3_t vel);
-extern edict_t *ImpFireballReflect(edict_t *self, edict_t *other, vec3_t vel);
 extern edict_t *MssithraAlphaArrowReflect(edict_t *self, edict_t *other, vec3_t vel);
 extern edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel);
 
@@ -178,10 +177,6 @@ void RingThink(edict_t *self)
 		else if (strcmp(ent->classname, "Gkrokon_Spoo") == 0)
 		{
 			reflect = GkrokonSpooReflect;
-		}
-		else if (strcmp(ent->classname, "imp fireball") == 0)
-		{
-			reflect = ImpFireballReflect;
 		}
 		else if (strcmp(ent->classname, "mssithra_Arrow") == 0)
 		{

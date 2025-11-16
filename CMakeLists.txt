@@ -479,8 +479,6 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/gorgon/gorgon.c
 	${GAME_SRC_DIR}/monster/harpy/harpy_anim.c
 	${GAME_SRC_DIR}/monster/harpy/harpy.c
-	${GAME_SRC_DIR}/monster/imp/imp_anim.c
-	${GAME_SRC_DIR}/monster/imp/imp.c
 	${GAME_SRC_DIR}/monster/infantry/infantry.c
 	${GAME_SRC_DIR}/monster/misc/move.c
 	${GAME_SRC_DIR}/monster/morcalavin/morcalavin_anim.c

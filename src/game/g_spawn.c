@@ -440,7 +440,6 @@ static names2cid_t names2cid[] = {
 	{"monster_bee", CID_BEE},
 	{"monster_morcalavin", CID_MORK},
 	{"monster_trial_beast", CID_TBEAST},
-	{"monster_imp", CID_IMP},
 	{"character_corvus1", CID_CORVUS},
 	{"character_corvus2", CID_CORVUS2},
 	{"character_corvus3", CID_CORVUS3},

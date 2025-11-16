@@ -160,7 +160,6 @@
 {"monster_gorgon_leader", SP_monster_gorgon_leader},
 {"monster_harpy", SP_monster_harpy},
 {"monster_high_priestess", SP_monster_high_priestess},
-{"monster_imp", SP_monster_imp},
 {"monster_morcalavin", SP_monster_morcalavin},
 {"monster_mssithra", SP_monster_mssithra},
 {"monster_ogle", SP_monster_ogle},

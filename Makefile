@@ -1098,8 +1098,6 @@ GAME_OBJS_ = \
 	src/game/monster/gorgon/gorgon.o \
 	src/game/monster/harpy/harpy_anim.o \
 	src/game/monster/harpy/harpy.o \
-	src/game/monster/imp/imp_anim.o \
-	src/game/monster/imp/imp.o \
 	src/game/monster/infantry/infantry.o \
 	src/game/monster/misc/move.o \
 	src/game/monster/morcalavin/morcalavin_anim.o \

@@ -621,7 +621,6 @@ void insectStaff(edict_t *self)
 	}
 }
 
-void imp_fireball (edict_t *self);
 void insectSpell(edict_t *self, float whichspell)
 {
 	vec3_t	org, forward, right;

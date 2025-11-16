@@ -40,7 +40,6 @@ void FlameThrowerStaticsInit();
 void CorvusStaticsInit();
 void morcalavinStaticsInit();
 void TBeastStaticsInit();
-void ImpStaticsInit();
 void MotherStaticsInit();
 void victimSsithraStaticsInit();
 void SsithrascoutStaticsInit();
@@ -96,7 +95,6 @@ void (*classStaticsInits[NUM_CLASSIDS])() =
 	CorvusStaticsInit,
 	morcalavinStaticsInit,
 	TBeastStaticsInit,
-	ImpStaticsInit,
 	LeverStaticsInit,
 	FlameThrowerStaticsInit,
 

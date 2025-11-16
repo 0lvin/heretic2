@@ -192,7 +192,6 @@ extern void SP_monster_harpy (edict_t *self);
 extern void SP_monster_high_priestess (edict_t *self);
 extern void SP_monster_hknight( edict_t * self ) ;
 extern void SP_monster_hover( edict_t * self ) ;
-extern void SP_monster_imp (edict_t *self);
 extern void SP_monster_infantry( edict_t * self ) ;
 extern void SP_monster_jorg( edict_t * self ) ;
 extern void SP_monster_kamikaze( edict_t * self ) ;

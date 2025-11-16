@@ -55,7 +55,6 @@ typedef enum ClassID_e
 	CID_CORVUS,			//28
 	CID_MORK,			//29
 	CID_TBEAST,			//30
-	CID_IMP,			//31
 	CID_LEVER,			//32
 	CID_FLAMETHROWER,	//33
 //Monsters ^
