@@ -2850,13 +2850,6 @@ SP_obj_pipewheel(edict_t *self)
  * NOPUSH - can't be moved by player
  * -----------------------------------
  */
-void
-SP_obj_minecart(edict_t *self)
-{
-	ObjectInit(self, MAT_WOOD);
-	self->s.frame = 0;
-}
-
 /*
  * QUAKED obj_minecart2 (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2868,13 +2861,6 @@ SP_obj_minecart(edict_t *self)
  * NOPUSH - can't be moved by player
  * -----------------------------------
  */
-void
-SP_obj_minecart2(edict_t *self)
-{
-	ObjectInit(self, MAT_WOOD);
-	self->s.frame = 20;
-}
-
 /*
  * QUAKED obj_minecart3 (1 .5 0) (-18 -29 -15) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2887,10 +2873,25 @@ SP_obj_minecart2(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_minecart3(edict_t *self)
+SP_obj_minecart(edict_t *self)
 {
+	if (!strcmp(self->classname, "obj_minecart2"))
+	{
+		/* end of "polympty" */;
+		self->s.frame = 20;
+	}
+	else if (!strcmp(self->classname, "obj_minecart3"))
+	{
+		/* end of "wrecked" */;
+		self->s.frame = 40;
+	}
+	else
+	{
+		/* end of "polyfull" */;
+		self->s.frame = 0;
+	}
+
 	ObjectInit(self, MAT_WOOD);
-	self->s.frame = 40;
 }
 
 /*
