@@ -2795,13 +2795,6 @@ SP_obj_gascan(edict_t *self)
  * NOPUSH - can't be moved by player
  * -----------------------------------
  */
-void
-SP_obj_pipe1(edict_t *self)
-{
-	ObjectInit(self, MAT_WOOD);
-	self->s.skinnum = 1;
-}
-
 /*
  * QUAKED obj_pipe2 (1 .5 0) (-6 -25 -4) (6 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2814,10 +2807,11 @@ SP_obj_pipe1(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_pipe2(edict_t *self)
+SP_obj_pipe(edict_t *self)
 {
-	ObjectInit(self, MAT_WOOD);
 	self->s.skinnum = 1;
+
+	ObjectInit(self, MAT_WOOD);
 }
 
 /*
