@@ -1571,13 +1571,6 @@ SP_obj_pottedplant(edict_t *self)
  * NOPUSH - N/A (plant1 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_plant1(edict_t *self)
-{
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, MAT_LEAF);
-}
-
 /*
  * QUAKED obj_plant2 (1 .5 0) (-20 -20 -10) (20 20 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -1589,13 +1582,6 @@ SP_obj_plant1(edict_t *self)
  * NOPUSH - N/A (plant2 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_plant2(edict_t *self)
-{
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, MAT_LEAF);
-}
-
 /*
  * QUAKED obj_plant3 (1 .5 0) (-8 -8 -12) (8 8 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -1608,13 +1594,14 @@ SP_obj_plant2(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_plant3(edict_t *self)
+SP_obj_plant(edict_t *self)
 {
-	self->s.skinnum = self->style;
+	if (!strcmp(self->classname, "obj_plant3"))
+	{
+		self->s.skinnum = self->style;
+	}
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-
 	ObjectInit(self, MAT_LEAF);
 }
 
@@ -1634,7 +1621,6 @@ SP_obj_treetop(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
 	ObjectInit(self, MAT_WOOD);
 }
 
@@ -3006,13 +2992,6 @@ SP_obj_metalchunk3(edict_t *self)
  * NOPUSH - N/A (can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_rocks1(edict_t *self)
-{
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, MAT_GREYSTONE);
-}
-
 /*
  * QUAKED obj_rocks2 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -3026,7 +3005,7 @@ SP_obj_rocks1(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_rocks2(edict_t *self)
+SP_obj_rocks(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ObjectInit(self, MAT_GREYSTONE);
