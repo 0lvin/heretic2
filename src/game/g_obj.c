@@ -2938,12 +2938,6 @@ SP_obj_pick(edict_t *self)
  * NOPUSH - can't be moved by player
  * -----------------------------------
  */
-void
-SP_obj_metalchunk1(edict_t *self)
-{
-	ObjectInit(self, MAT_METAL);
-}
-
 /*
  * QUAKED obj_metalchunk2 (1 .5 0) ( -10 -26 -7) (10 26 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2955,13 +2949,6 @@ SP_obj_metalchunk1(edict_t *self)
  * NOPUSH - can't be moved by player
  * -----------------------------------
  */
-void
-SP_obj_metalchunk2(edict_t *self)
-{
-	ObjectInit(self, MAT_METAL);
-	self->s.frame = 1;
-}
-
 /*
  * QUAKED obj_metalchunk3 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2974,10 +2961,22 @@ SP_obj_metalchunk2(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_metalchunk3(edict_t *self)
+SP_obj_metalchunk(edict_t *self)
 {
-	ObjectInit(self, MAT_WOOD);
-	self->s.frame = 2;
+	if (!strcmp(self->classname, "obj_metalchunk2"))
+	{
+		self->s.frame = 1;
+	}
+	else if (!strcmp(self->classname, "obj_metalchunk3"))
+	{
+		self->s.frame = 2;
+	}
+	else
+	{
+		self->s.frame = 0;
+	}
+
+	ObjectInit(self, MAT_METAL);
 }
 
 /*
