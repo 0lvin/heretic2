@@ -2397,16 +2397,6 @@ bush_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
  * NOPUSH - N/A (obj_bush1 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_bush1(edict_t *self)
-{
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, MAT_WOOD);
-	self->touch_debounce_time = level.time;
-	self->touch = bush_touch;
-}
-
 /*
  * QUAKED obj_bush2 (1 .5 0) (-56 -56 -40) (56 56 40)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
  *
@@ -2419,7 +2409,7 @@ SP_obj_bush1(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_bush2(edict_t *self)
+SP_obj_bush(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
