@@ -453,6 +453,5 @@ void spreader_toss_grenade(edict_t *self) //self is the tosser
 	grenade->dmg_radius = SPREADER_GRENADE_RADIUS;
 	grenade->classname = "spreader_grenade";
 
-	grenade->s.effects |= EF_CAMERA_NO_CLIP;
 	gi.linkentity(grenade);
 }

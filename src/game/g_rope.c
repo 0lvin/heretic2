@@ -776,7 +776,6 @@ void spawn_hanging_chicken(edict_t *self)
 	chicken->takedamage = DAMAGE_YES;
 	chicken->clipmask = MASK_MONSTERSOLID;
 	chicken->svflags = SVF_DO_NO_IMPACT_DMG | SVF_ALLOW_AUTO_TARGET;
-	chicken->s.effects = EF_CAMERA_NO_CLIP;
 
 	VectorCopy(self->target_ent->s.origin, chicken->s.origin);
 

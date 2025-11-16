@@ -80,7 +80,7 @@ void create_guard_proj(edict_t *self,edict_t *proj)
 
 	proj->isBlocked = proj->isBlocking = proj->bounced = guard_beam_blocked;
 
-	proj->s.effects = EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
+	proj->s.effects = EF_MARCUS_FLAG1;
 	proj->enemy = self->enemy;
 
 	VectorSet(proj->mins, -4.0, -4.0, -4.0);

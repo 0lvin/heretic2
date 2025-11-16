@@ -158,7 +158,7 @@ void reset_morph_to_elf(edict_t *ent)
 
 	// turn our skeleton back on
 	ent->s.skeletalType = SKEL_CORVUS;
-	ent->client->playerinfo.effects |= (EF_SWAPFRAME | EF_JOINTED | EF_CAMERA_NO_CLIP);
+	ent->client->playerinfo.effects |= (EF_SWAPFRAME | EF_JOINTED);
 	ent->client->playerinfo.effects&=~EF_CHICKEN;
 	ent->flags &= ~FL_CHICKEN;
 	ent->client->playerinfo.renderfx &= ~RF_IGNORE_REFS;

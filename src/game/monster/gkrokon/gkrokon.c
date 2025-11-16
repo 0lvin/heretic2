@@ -70,7 +70,6 @@ void create_gkrokon_spoo(edict_t *Spoo)
 	Spoo->nextthink = level.time + FRAMETIME;
 	VectorSet(Spoo->mins,-1.0,-1.0,-1.0);
 	VectorSet(Spoo->maxs,1.0,1.0,1.0);
-	Spoo->s.effects = EF_CAMERA_NO_CLIP;
 }
 
 /*-----------------------------------------------

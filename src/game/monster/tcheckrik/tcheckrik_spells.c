@@ -159,7 +159,7 @@ static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurfa
 // create the guts of the insect staff bolt
 void create_insect_staff_bolt(edict_t *InsectStaff)
 {
-	InsectStaff->s.effects = EF_NODRAW_ALWAYS_SEND|EF_CAMERA_NO_CLIP;
+	InsectStaff->s.effects = EF_NODRAW_ALWAYS_SEND;
 	InsectStaff->movetype = MOVETYPE_FLYMISSILE;
 	InsectStaff->solid = SOLID_BBOX;
 	InsectStaff->classname = "Spell_InsectStaff";
@@ -321,7 +321,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 	// is unlikely to happen, sooooo...
 
 	Globe->svflags |= SVF_ALWAYS_SEND;
-	Globe->s.effects |= EF_ALWAYS_ADD_EFFECTS|EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
+	Globe->s.effects |= EF_ALWAYS_ADD_EFFECTS|EF_MARCUS_FLAG1;
 	Globe->owner=Caster;
 	Globe->classname="Spell_GlobeOfOuchiness";
 	Globe->dmg = 0;
@@ -369,7 +369,7 @@ static void SpearProjTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface
 void create_spearproj(edict_t *spearproj)
 {
 
-	spearproj->s.effects |= EF_ALWAYS_ADD_EFFECTS|EF_CAMERA_NO_CLIP;
+	spearproj->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	spearproj->svflags |= SVF_ALWAYS_SEND;
 	spearproj->movetype = MOVETYPE_FLYMISSILE;
 

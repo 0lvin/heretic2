@@ -529,7 +529,7 @@ void create_pe_spell(edict_t *Spell)
 	Spell->enemy=NULL;
 	Spell->clipmask=MASK_MONSTERSOLID|MASK_PLAYERSOLID|MASK_SHOT;
 	VectorSet(Spell->rrs.scale, 0.5, 0.5, 0.5);
-	Spell->s.effects |= EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
+	Spell->s.effects |= EF_MARCUS_FLAG1;
 	Spell->svflags |= SVF_ALWAYS_SEND;
 }
 

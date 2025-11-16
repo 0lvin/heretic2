@@ -3595,7 +3595,7 @@ PutClientInServer(edict_t *ent)
 		/* could't spawn in? */
 	}
 
-	ent->s.effects = (EF_CAMERA_NO_CLIP | EF_SWAPFRAME | EF_JOINTED);
+	ent->s.effects = (EF_SWAPFRAME | EF_JOINTED);
 
 	// Set up skeletal info. Note, skeleton has been created already.
 

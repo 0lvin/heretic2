@@ -759,8 +759,6 @@ typedef struct
 												// frames to
 												// send to the client.
 #define EF_MARCUS_FLAG1				0x00000080	// Used for toggling various client effects.
-#define EF_CAMERA_NO_CLIP			0x00000100	// Client-side camera's LOS won't clip against any
-												// entities that have this flag set.
 #define EF_ALTCLIENTFX				0x00000400	// A message flag to send to the client effects, for
 												// user's purpose.
 #define EF_ALWAYS_ADD_EFFECTS		0x00000800	// Any effects attached to the entity will always be

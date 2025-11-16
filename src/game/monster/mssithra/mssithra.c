@@ -392,7 +392,7 @@ void create_ssithra_arrow(edict_t *Arrow)
 
 	Arrow->clipmask = MASK_SHOT;
 
-	Arrow->s.effects |= EF_ALWAYS_ADD_EFFECTS | EF_CAMERA_NO_CLIP;
+	Arrow->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 	Arrow->svflags |= SVF_ALWAYS_SEND;
 
 	VectorSet(Arrow->mins,-1.0,-1.0,-1.0);

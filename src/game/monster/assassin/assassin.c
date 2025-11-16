@@ -280,7 +280,6 @@ void create_assassin_dagger(edict_t *arrow)
 	arrow->touch=assassinDaggerTouch;
 	arrow->gravity = 0.0f;
 	arrow->clipmask=MASK_SHOT;
-	arrow->s.effects |= EF_CAMERA_NO_CLIP;
 	arrow->svflags |= SVF_ALWAYS_SEND;
 	VectorSet(arrow->rrs.scale, 0.5, 0.5, 0.5);
 	arrow->think = G_FreeEdict;//ssithraArrowThink;

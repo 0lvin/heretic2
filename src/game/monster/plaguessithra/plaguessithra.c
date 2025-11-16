@@ -1211,7 +1211,6 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	tophalf->takedamage = DAMAGE_AIM;
 	tophalf->max_health = tophalf->health = 25;
 	tophalf->clipmask = MASK_MONSTERSOLID;
-	tophalf->s.effects |= EF_CAMERA_NO_CLIP;
 
 	tophalf->s.skinnum = self->s.skinnum;
 	tophalf->deadflag = DEAD_DEAD;
@@ -2259,7 +2258,6 @@ void create_ssith_arrow(edict_t *arrow)
 	arrow->enemy = NULL;
 	arrow->clipmask = MASK_SHOT;
 	VectorSet(arrow->rrs.scale, 0.75, 0.75, 0.75);
-	arrow->s.effects |= EF_CAMERA_NO_CLIP;
 	arrow->svflags |= SVF_ALWAYS_SEND;
 	arrow->s.modelindex = gi.modelindex("models/objects/exarrow/tris.fm");
 }

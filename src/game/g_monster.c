@@ -1933,13 +1933,6 @@ monster_start(edict_t *self)
 	if (!self->materialtype)
 		self->materialtype = MAT_FLESH;
 
-	// Stop the camera clipping with monsters, except the trial beast.
-
-	if (self->classID != CID_TBEAST)
-	{
-		self->s.effects|=EF_CAMERA_NO_CLIP;
-	}
-
 	self->s.skinnum = 0;
 	self->deadflag = DEAD_NO;
 	self->svflags &= ~SVF_DEADMONSTER;

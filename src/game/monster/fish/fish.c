@@ -1097,8 +1097,6 @@ void SP_monster_fish (edict_t *self)
 	self->materialtype = MAT_FLESH;
 	self->flags |= FL_SWIM|FL_NO_KNOCKBACK;
 
-	self->s.effects|=EF_CAMERA_NO_CLIP;
-
 	// random skin of three
 	if (irand(0, 1))
 		self->s.skinnum = FISH_SKIN1;

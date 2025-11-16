@@ -185,7 +185,6 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 
 	head = G_Spawn();
 
-	head->s.effects |= EF_CAMERA_NO_CLIP;
 	head->svflags |= SVF_ALWAYS_SEND;
 	head->solid = SOLID_NOT;
 	head->movetype = MOVETYPE_NOCLIP;
