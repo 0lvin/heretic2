@@ -1981,15 +1981,6 @@ SP_obj_bigcrystal(edict_t *self)
  * NOPUSH - N/A (moss1 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_moss1(edict_t *self)
-{
-	self->s.skinnum = 0;
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->s.renderfx |= RF_TRANSLUCENT;
-	ObjectInit(self, MAT_LEAF);
-}
-
 /*
  * QUAKED obj_moss2 (1 .5 0) (-4 -9 -40) (4 9 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2001,15 +1992,6 @@ SP_obj_moss1(edict_t *self)
  * NOPUSH - N/A (moss2 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_moss2(edict_t *self)
-{
-	self->s.skinnum = 1;
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->s.renderfx |= RF_TRANSLUCENT;
-	ObjectInit(self, MAT_LEAF);
-}
-
 /*
  * QUAKED obj_moss3 (1 .5 0) (-4 -15 -40) (4 15 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2021,16 +2003,6 @@ SP_obj_moss2(edict_t *self)
  * NOPUSH - N/A (moss3 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_moss3(edict_t *self)
-{
-	self->s.skinnum = 2;
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->s.renderfx |= RF_TRANSLUCENT;
-
-	ObjectInit(self, MAT_LEAF);
-}
-
 /*
  * QUAKED obj_moss4 (1 .5 0) (-4 -12 -40) (4 12 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2042,15 +2014,6 @@ SP_obj_moss3(edict_t *self)
  * NOPUSH - N/A (moss4 can't be moved)
  * -----------------------------------
  */
-void
-SP_obj_moss4(edict_t *self)
-{
-	self->s.skinnum = 3;
-	self->s.renderfx |= RF_TRANSLUCENT;
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, MAT_LEAF);
-}
-
 /*
  * QUAKED obj_moss5 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -2063,9 +2026,29 @@ SP_obj_moss4(edict_t *self)
  * -----------------------------------
  */
 void
-SP_obj_moss5(edict_t *self)
+SP_obj_moss(edict_t *self)
 {
-	self->s.skinnum = 4;
+	if (!strcmp(self->classname, "obj_moss2"))
+	{
+		self->s.skinnum = 1;
+	}
+	if (!strcmp(self->classname, "obj_moss3"))
+	{
+		self->s.skinnum = 2;
+	}
+	else if (!strcmp(self->classname, "obj_moss4"))
+	{
+		self->s.skinnum = 3;
+	}
+	else if (!strcmp(self->classname, "obj_moss5"))
+	{
+		self->s.skinnum = 4;
+	}
+	else
+	{
+		self->s.skinnum = 0;
+	}
+
 	self->s.renderfx |= RF_TRANSLUCENT;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ObjectInit(self, MAT_LEAF);
