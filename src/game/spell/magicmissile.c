@@ -154,7 +154,7 @@ static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurf
 // create guts of magice missile
 void create_magic(edict_t *MagicMissile)
 {
-	MagicMissile->s.effects=EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
+	MagicMissile->s.effects = EF_NODRAW_ALWAYS_SEND|EF_ALWAYS_ADD_EFFECTS;
 	MagicMissile->movetype=MOVETYPE_FLYMISSILE;
 	MagicMissile->solid=SOLID_BBOX;
 	MagicMissile->classname="Spell_MagicMissile";

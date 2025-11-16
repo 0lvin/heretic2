@@ -625,7 +625,7 @@ void create_priestess_proj(edict_t *self,edict_t *proj)
 	proj->isBlocked = priestess_proj1_blocked;
 	//proj->touch = priestess_proj1_touch;
 
-	proj->s.effects=EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
+	proj->s.effects = EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	proj->enemy = self->enemy;
 
 	VectorSet(proj->mins, -2.0, -2.0, -2.0);

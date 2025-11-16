@@ -261,7 +261,7 @@ void morcalavin_tracking_projectile ( edict_t *self, float pitch, float yaw, flo
 	proj->isBlocking = morcalavin_proj1_blocked;
 	proj->isBlocked = morcalavin_proj1_blocked;
 
-	proj->s.effects=EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
+	proj->s.effects = EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	proj->enemy = self->enemy;
 
 	VectorSet(proj->mins, -2.0, -2.0, -2.0);
@@ -709,7 +709,7 @@ void create_morcalavin_proj(edict_t *self,edict_t *proj)
 
 	proj->isBlocked = proj->isBlocking = proj->bounced = morcalavin_proj1_blocked;
 
-	proj->s.effects=EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
+	proj->s.effects = EF_MARCUS_FLAG1|EF_CAMERA_NO_CLIP;
 	proj->enemy = self->enemy;
 
 	VectorSet(proj->mins, -2.0, -2.0, -2.0);

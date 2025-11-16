@@ -1116,7 +1116,7 @@ void create_imp_proj(edict_t *self,edict_t *proj)
 	proj->classname = "imp fireball";
 	VectorSet(proj->rrs.scale, 1.0, 1.0, 1.0);
 	proj->clipmask = (MASK_SHOT|CONTENTS_WATER);
-	proj->s.effects=EF_MARCUS_FLAG1;
+	proj->s.effects = EF_MARCUS_FLAG1;
 	proj->enemy = self->enemy;
 	proj->reflect_debounce_time = MAX_REFLECT;
 

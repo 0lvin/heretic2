@@ -748,14 +748,12 @@ typedef struct
 #define EF_TAGTRAIL 0x20000000
 #define EF_HALF_DAMAGE 0x40000000
 #define EF_TRACKERTRAIL 0x80000000
-#define EF_CL_PHYS_ALWAYS_BOUNCE	0x00000002
+
+/* Heretic 2 effects */
 #define EF_JOINTED					0x00000004
 #define EF_SWAPFRAME				0x00000008
 #define EF_DISABLE_ALL_CFX			0x00000010	// All effects linked to this entity will longer be
 												// rendered, but will continue to think.
-
-#define EF_PLAYER					0x00000020	// Safe flag, never changes.  Is a player/client.
-
 #define	EF_NODRAW_ALWAYS_SEND		0x00000040	// Prevents invisible (i.e. modelindex=0) entities
 												// from being culled by the server when it builds
 												// frames to
@@ -763,8 +761,6 @@ typedef struct
 #define EF_MARCUS_FLAG1				0x00000080	// Used for toggling various client effects.
 #define EF_CAMERA_NO_CLIP			0x00000100	// Client-side camera's LOS won't clip against any
 												// entities that have this flag set.
-#define EF_CAMERA_ONLY				0x00000200	// Client-side camera LOS traces will clip against any
-												// entities that have this flag set, but other traces won't.
 #define EF_ALTCLIENTFX				0x00000400	// A message flag to send to the client effects, for
 												// user's purpose.
 #define EF_ALWAYS_ADD_EFFECTS		0x00000800	// Any effects attached to the entity will always be

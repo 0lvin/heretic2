@@ -228,7 +228,7 @@ void spreader_dead(edict_t *self)
 						true);//offset from owner?
 
 		gas->svflags |= SVF_ALWAYS_SEND;
-		gas->s.effects=EF_MARCUS_FLAG1;
+		gas->s.effects = EF_MARCUS_FLAG1;
 
 		gi.CreateEffect(gas, FX_PLAGUEMIST, CEF_OWNERS_ORIGIN, offset, "vb", spraydir, 100);//sprayorg, not offset?
 	}
@@ -1012,7 +1012,7 @@ void spreaderTakeOff (edict_t *self)
 					true);//offset from owner?
 
 	gas->svflags |= SVF_ALWAYS_SEND;
-	gas->s.effects=EF_MARCUS_FLAG1;
+	gas->s.effects = EF_MARCUS_FLAG1;
 
 	gi.CreateEffect(gas, FX_PLAGUEMISTEXPLODE, CEF_OWNERS_ORIGIN, self->pos1, "b", 70);
 

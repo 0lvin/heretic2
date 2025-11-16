@@ -1629,7 +1629,6 @@ void
 SP_obj_plant1(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->s.effects |= EF_CAMERA_NO_CLIP;
 	ObjectInit(self, MAT_LEAF);
 }
 
@@ -1648,7 +1647,6 @@ void
 SP_obj_plant2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->s.effects |= EF_CAMERA_NO_CLIP;
 	ObjectInit(self, MAT_LEAF);
 }
 
@@ -1670,7 +1668,6 @@ SP_obj_plant3(edict_t *self)
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	self->s.effects |= EF_CAMERA_NO_CLIP;
 
 	ObjectInit(self, MAT_LEAF);
 }
@@ -2701,7 +2698,6 @@ SP_obj_grass(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	ObjectInit(self, MAT_WOOD);
-	self->s.effects |= EF_CAMERA_NO_CLIP;
 }
 
 /*
@@ -2777,7 +2773,6 @@ SP_obj_treestump(edict_t *self)
 void
 SP_obj_jawbone(edict_t *self)
 {
-	self->s.effects |= EF_CAMERA_NO_CLIP;
 	ObjectInit(self, MAT_NONE);
 	self->s.skinnum = 1;
 }

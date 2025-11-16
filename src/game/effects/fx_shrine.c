@@ -65,26 +65,6 @@
 #define NUM_SHRINE_MODELS 2
 static struct model_s *shrine_models[NUM_SHRINE_MODELS];
 
-typedef struct
-{
-	int	red;
-	int	green;
-	int	blue;
-} tint_tab_t;
-
-static tint_tab_t tint_tab[9] =
-{
-	{ 96, 255, 96 },
-	{ 96, 255, 255 },
-	{ 128, 128, 255 },
-	{ 96, 255, 255 },
-	{ 255, 255, 96 },
-	{ 255, 255, 255 },
-	{ 255, 96, 96 },
-	{ 255, 96, 96 },
-	{ 255, 96, 96 },
-};
-
 /*
 Main Routines
 */
@@ -171,7 +151,6 @@ FXShrineManaEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->AddToView = LinkedEntityUpdatePlacement;
 
 	AddEffect(owner, glow);
-
 }
 
 /*
@@ -237,7 +216,6 @@ FXShrineArmorEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->AddToView = LinkedEntityUpdatePlacement;
 
 	AddEffect(owner, glow);
-
 }
 
 /*
@@ -300,7 +278,6 @@ FXShrineLungsEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->AddToView = LinkedEntityUpdatePlacement;
 
 	AddEffect(owner, glow);
-
 }
 
 /*
@@ -636,7 +613,6 @@ FXShrineHealthEffect(centity_t *owner, int type, int flags, vec3_t origin)
 
 	// start off the lightning effect
 	FXCreateLightning(glow, owner);
-
 }
 
 /*
@@ -737,7 +713,6 @@ FXShrineReflectEffect(centity_t *owner, int type, int flags, vec3_t origin)
 	glow->Scale = 0;
 
 	AddEffect(owner, glow);
-
 }
 
 /*
