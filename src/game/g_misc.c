@@ -5027,13 +5027,6 @@ touch_npc_timeminder(edict_t *self, edict_t *other, cplane_t *plane /* unused */
 }
 
 void
-npc_timeminder_think(edict_t *self)
-{
-	M_SetAnimGroupFrame(self, "amb_b", true);
-	self->nextthink = level.time + FRAMETIME;
-}
-
-void
 SP_npc_timeminder(edict_t *self)
 {
 	if (!self)
@@ -5050,7 +5043,8 @@ SP_npc_timeminder(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 	self->touch = touch_npc_timeminder;
-	self->think = npc_timeminder_think;
+	self->monsterinfo.action = "idle";
+	self->think = object_think;
 
 	self->nextthink = level.time + FRAMETIME;
 

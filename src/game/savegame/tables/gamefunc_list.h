@@ -543,7 +543,6 @@
 {"monsterspawner_go", (byte *)monsterspawner_go},
 {"monsterspawner_use", (byte *)monsterspawner_use},
 {"multi_wait", (byte *)multi_wait},
-{"npc_timeminder_think", (byte *)npc_timeminder_think},
 {"nuke_bounce", (byte *)nuke_bounce},
 {"nuke_die", (byte *)nuke_die},
 {"object_big_fire_think", (byte *)object_big_fire_think},

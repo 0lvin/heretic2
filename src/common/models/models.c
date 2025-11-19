@@ -167,9 +167,17 @@ Load the Anachronox md2 format frame
 */
 static void
 Mod_LoadFrames_MD2A(dmdx_t *pheader, byte *src, size_t inframesize,
-	vec3_t translate, int resolution)
+	vec3_t translate, int resolution, vec3_t scale)
 {
 	int i;
+
+	for (i = 0; i < 3; i++)
+	{
+		if (!scale[i])
+		{
+			scale[i] = 1.0;
+		}
+	}
 
 	for (i = 0; i < pheader->num_frames; i++)
 	{
@@ -185,8 +193,8 @@ Mod_LoadFrames_MD2A(dmdx_t *pheader, byte *src, size_t inframesize,
 		memcpy(poutframe->name, pinframe->name, sizeof(poutframe->name));
 		for (j = 0; j < 3; j++)
 		{
-			poutframe->scale[j] = LittleFloat(pinframe->scale[j]);
-			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
+			poutframe->scale[j] = LittleFloat(pinframe->scale[j]) / scale[j];
+			poutframe->translate[j] = LittleFloat(pinframe->translate[j]) / scale[j];
 			poutframe->translate[j] += translate[j];
 		}
 
@@ -924,7 +932,7 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen)
 	}
 	free(vertx);
 
-	Mod_LoadAnimGroupList(pheader);
+	Mod_LoadAnimGroupList(pheader, true);
 	Mod_LoadCmdGenerate(pheader);
 
 	Mod_LoadFixImages(mod_name, pheader, false);
@@ -1068,8 +1076,10 @@ Mod_LoadModel_MD2A(const char *mod_name, const void *buffer, int modfilelen)
 	// load the frames
 	//
 	Mod_LoadFrames_MD2A(pheader, (byte *)buffer + pinmodel.ofs_frames,
-		pinmodel.framesize, translate, pinmodel.resolution);
-	Mod_LoadAnimGroupList(pheader);
+		pinmodel.framesize, translate, pinmodel.resolution, pinmodel.lod_scale);
+	/* Anachronox has gaps in frame sequence numbers, skip check and expect
+	 * prefix before number as separate group */
+	Mod_LoadAnimGroupList(pheader, false);
 	Mod_LoadModel_AnimGroupNamesFix(pheader, anox_names);
 	Mod_LoadFixNormals(pheader);
 
@@ -1227,7 +1237,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen)
 	//
 	// Update animation groups by frames
 	//
-	Mod_LoadAnimGroupList(pheader);
+	Mod_LoadAnimGroupList(pheader, true);
 
 	//
 	// load the glcmds
@@ -1439,7 +1449,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 				}
 
 				Mod_LoadFrames_MD2(pheader, (byte *)src, inframesize, translate);
-				Mod_LoadAnimGroupList(pheader);
+				Mod_LoadAnimGroupList(pheader, true);
 				Mod_LoadModel_AnimGroupNamesFix(pheader, flex_names);
 			}
 			else if (Q_strncasecmp(blockname, "glcmds", sizeof(blockname)) == 0)
@@ -1742,7 +1752,7 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen)
 		header.num_glcmds);
 	Mod_LoadFrames_MD2(pheader, (byte *)buffer + header.ofs_frames,
 		header.framesize, translate);
-	Mod_LoadAnimGroupList(pheader);
+	Mod_LoadAnimGroupList(pheader, true);
 	Mod_LoadModel_AnimGroupNamesFix(pheader, kingpin_names);
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixImages(mod_name, pheader, false);
