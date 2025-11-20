@@ -254,7 +254,7 @@ SP_light_chandelier1(edict_t *self)
 
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
+	self->think = object_think;
 	self->monsterinfo.action = "poly";
 
 	LightInit(self);
@@ -282,7 +282,7 @@ SP_light_chandelier2(edict_t *self)
 
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
+	self->think = object_think;
 	self->monsterinfo.action = "poly";
 
 	LightInit(self);
@@ -310,7 +310,7 @@ SP_light_chandelier3(edict_t *self)
 
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
+	self->think = object_think;
 	self->monsterinfo.action = "poly";
 
 	LightInit(self);

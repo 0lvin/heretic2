@@ -261,13 +261,6 @@ ObjectInit(edict_t *self, int materialtype)
 //
 //============================================================================
 
-void
-object_object_think(edict_t *self)
-{
-	M_SetAnimGroupFrame(self, self->monsterinfo.action, false);
-	self->nextthink = level.time + FRAMETIME;
-}
-
 /*
  * QUAKED obj_banner (0.3 0.3 1.0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -289,12 +282,8 @@ SP_obj_banner(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->materialtype = MAT_CLOTH;
 
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "banner";
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
-	gi.linkentity(self);
+	object_spawn(self);
 }
 
 /*
@@ -315,12 +304,8 @@ SP_obj_banneronpole(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	self->materialtype = MAT_WOOD;
 
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "poly";
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
-	gi.linkentity(self);
+	object_spawn(self);
 }
 
 /*-----------------------------------------------
@@ -381,11 +366,7 @@ barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec
 void
 SP_quake_light_flame(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "flame";
-	gi.linkentity(self);
+	object_spawn(self);
 }
 
 /*
@@ -400,13 +381,6 @@ SP_quake_light_flame(edict_t *self)
 void
 SP_object_flame1(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "flame";
-
-	self->s.frame = 0;
-
 	switch (self->sounds) {
 		case 1:
 			self->s.sound = gi.soundindex("objects/fire/torchburn.wav");
@@ -419,7 +393,7 @@ SP_object_flame1(edict_t *self)
 			break;
 	}
 
-	gi.linkentity(self);
+	object_spawn(self);
 }
 
 /*
@@ -2068,13 +2042,10 @@ SP_obj_moss(edict_t *self)
 void
 SP_obj_floor_candelabrum(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "poly";
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	self->materialtype = MAT_METAL;
-	gi.linkentity(self);
+
+	object_spawn(self);
 }
 
 /*
@@ -2144,12 +2115,8 @@ SP_obj_flagonpole(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	self->materialtype = MAT_WOOD;
 
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "flagg";
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
-	gi.linkentity(self);
+	object_spawn(self);
 }
 
 void
@@ -2739,6 +2706,7 @@ SP_obj_barrel_explosive(edict_t *self)
 	ObjectInit(self, MAT_WOOD);
 	self->s.skinnum = 1;
 }
+
 /*
  * QUAKED obj_gascan (1 .5 0) (-8 -9 -13) (8 9 13)  INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -3199,11 +3167,6 @@ SP_obj_larvabrokenegg(edict_t *self)
 void
 SP_obj_cocoon(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
-	self->monsterinfo.action = "poly";
-
 	// Always animate and can't be pushed
 	self->spawnflags |= OBJ_NOPUSH;
 	ObjectInit(self, MAT_INSECT);
@@ -4183,7 +4146,7 @@ SP_obj_lab_parts_container(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
+	self->think = object_think;
 	self->monsterinfo.action = "poly";
 
 	ObjectInit(self, MAT_GLASS);
@@ -4205,7 +4168,7 @@ SP_obj_eyeball_jar(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
+	self->think = object_think;
 	self->monsterinfo.action = "poly";
 
 	self->spawnflags |= OBJ_NOPUSH;
@@ -4228,7 +4191,7 @@ SP_obj_lab_tray(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->nextthink = level.time + FRAMETIME;
-	self->think = object_object_think;
+	self->think = object_think;
 	self->monsterinfo.action = "poly";
 
 	self->spawnflags |= OBJ_NOPUSH;
