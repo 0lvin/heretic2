@@ -955,15 +955,14 @@ SP_obj_dying_elf(edict_t *self)
 void
 SP_obj_sign1(edict_t *self)
 {
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self, MAT_WOOD);
 	if (self->style >= 0 && self->style <= 2)
 	{
 		self->s.skinnum = self->style;
 	}
 
 	self->s.frame = 3;
+	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	ObjectInit(self, MAT_WOOD);
 }
 
 /*
@@ -4144,11 +4143,6 @@ SP_obj_choppeddude(edict_t *self)
 void
 SP_obj_lab_parts_container(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_think;
-	self->monsterinfo.action = "poly";
-
 	ObjectInit(self, MAT_GLASS);
 }
 
@@ -4166,11 +4160,6 @@ SP_obj_lab_parts_container(edict_t *self)
 void
 SP_obj_eyeball_jar(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_think;
-	self->monsterinfo.action = "poly";
-
 	self->spawnflags |= OBJ_NOPUSH;
 	ObjectInit(self, MAT_GLASS);
 }
@@ -4189,11 +4178,6 @@ SP_obj_eyeball_jar(edict_t *self)
 void
 SP_obj_lab_tray(edict_t *self)
 {
-	self->movetype = MOVETYPE_NONE;
-	self->nextthink = level.time + FRAMETIME;
-	self->think = object_think;
-	self->monsterinfo.action = "poly";
-
 	self->spawnflags |= OBJ_NOPUSH;
 	ObjectInit(self, MAT_FLESH);
 }
