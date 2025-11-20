@@ -244,18 +244,6 @@ env_fire_think(edict_t *self)
  * STARTOFF - Light will start off if targeted (default is on)
  * -----------------------------------
  */
-void
-SP_light_chandelier1(edict_t *self)
-{
-	if (!self)
-	{
-		return;
-	}
-
-	LightInit(self);
-	TorchInit(self);
-}
-
 /*
  * QUAKED light_chandelier2 (0.0 1.0 0.0) (-38.0 -38.0 -40.0) (18.0 18.0 40.0) INVULNERABLE ANIMATE EXPLODING  STARTOFF
  *
@@ -267,18 +255,6 @@ SP_light_chandelier1(edict_t *self)
  * STARTOFF - Light will start off if targeted (default is on)
  * -----------------------------------
  */
-void
-SP_light_chandelier2(edict_t *self)
-{
-	if (!self)
-	{
-		return;
-	}
-
-	LightInit(self);
-	TorchInit(self);
-}
-
 /*
  * QUAKED light_chandelier3 (0.0 1.0 0.0) (-34.0 -34.0 -80.0) (34.0 34.0 0.0) INVULNERABLE ANIMATE EXPLODING STARTOFF
  *
@@ -291,7 +267,7 @@ SP_light_chandelier2(edict_t *self)
  * -----------------------------------
  */
 void
-SP_light_chandelier3(edict_t *self)
+SP_light_chandelier(edict_t *self)
 {
 	if (!self)
 	{
