@@ -3846,9 +3846,198 @@ flame_think(edict_t *self)
 	self->nextthink = level.time + 200;
 }
 
+
+/* Server-side thinker for non-looping ambient sounds.
+   Ports the logic from client-side fx_sound.c so the server directly
+   plays random ambient sound samples on a periodic basis. */
+void
+soundambient_server_think(edict_t *self)
+{
+	int chance;
+	char *soundname = NULL;
+	int style = Q_ftol(self->style);
+	int att = Q_ftol(self->attenuation);
+	float vol = self->volume;
+
+	/* Choose a sound based on style (matches client fx_sound.c) */
+	switch(style)
+	{
+	case AS_SEAGULLS:
+		chance = irand(0,2);
+		if (chance < 1)
+			soundname = "ambient/gull1.wav";
+		else if (chance < 2 )
+			soundname = "ambient/gull2.wav";
+		else
+			soundname = "ambient/gull3.wav";
+		break;
+	case AS_BIRDS:
+		chance = irand(0,10);
+		if (chance < 1)
+			soundname = "ambient/bird1.wav";
+		else if (chance < 2)
+			soundname = "ambient/bird2.wav";
+		else if (chance < 3)
+			soundname = "ambient/bird3.wav";
+		else if (chance < 4)
+			soundname = "ambient/bird4.wav";
+		else if (chance < 5)
+			soundname = "ambient/bird5.wav";
+		else if (chance < 6)
+			soundname = "ambient/bird6.wav";
+		else if (chance < 7)
+			soundname = "ambient/bird7.wav";
+		else if (chance < 8)
+			soundname = "ambient/bird8.wav";
+		else if (chance < 9)
+			soundname = "ambient/bird9.wav";
+		else
+			soundname = "ambient/bird10.wav";
+		break;
+	case AS_CRICKETS:
+		chance = irand(0,2);
+		if (chance < 1)
+			soundname = "ambient/cricket1.wav";
+		else if (chance < 2)
+			soundname = "ambient/cricket2.wav";
+		else
+			soundname = "ambient/cricket3.wav";
+		break;
+	case AS_FROGS:
+		chance = irand(0,1);
+		if (chance < 1)
+			soundname = "ambient/frog.wav";
+		else
+			soundname = "ambient/frog2.wav";
+		break;
+	case AS_CRYING:
+		chance = irand(0,3);
+		if (chance < 1)
+			soundname = "ambient/femcry1.wav";
+		else if (chance < 2)
+			soundname = "ambient/femcry2.wav";
+		else if (chance < 3)
+			soundname = "ambient/kidcry1.wav";
+		else
+			soundname = "ambient/kidcry2.wav";
+		break;
+	case AS_MOSQUITOES:
+		chance = irand(0,1);
+		if (chance < 1)
+			soundname = "ambient/insects1.wav";
+		else
+			soundname = "ambient/insects2.wav";
+		break;
+	case AS_BUBBLES:
+		soundname = "ambient/bubbles.wav";
+		break;
+	case AS_BELL:
+		soundname = "ambient/bell.wav";
+		break;
+	case AS_FOOTSTEPS:
+		chance = irand(0,3);
+		if (chance < 1)
+			soundname = "ambient/runaway1.wav";
+		else if (chance < 2)
+			soundname = "ambient/runaway2.wav";
+		else
+			soundname = "ambient/sewerrun.wav";
+		break;
+	case AS_MOANS:
+		chance = irand(0,5);
+		if (chance < 1)
+			soundname = "ambient/moan1.wav";
+		else if (chance < 2)
+			soundname = "ambient/moan2.wav";
+		else if (chance < 3)
+			soundname = "ambient/scream1.wav";
+		else if (chance < 4)
+			soundname = "ambient/scream2.wav";
+		else
+			soundname = "ambient/coughing.wav";
+		break;
+	case AS_SEWERDRIPS:
+		chance = irand(0,3);
+		if (chance <1)
+			soundname = "ambient/sewerdrop1.wav";
+		else if (chance <2)
+			soundname = "ambient/sewerdrop2.wav";
+		else
+			soundname = "ambient/sewerdrop3.wav";
+		break;
+	case AS_WATERDRIPS:
+		chance = irand(0,3);
+		if (chance <1)
+			soundname = "ambient/waterdrop1.wav";
+		else if (chance <2)
+			soundname = "ambient/waterdrop2.wav";
+		else
+			soundname = "ambient/waterdrop3.wav";
+		break;
+	case AS_HEAVYDRIPS:
+		chance = irand(0,3);
+		if (chance <1)
+			soundname = "ambient/soliddrop1.wav";
+		else if (chance <2)
+			soundname = "ambient/soliddrop2.wav";
+		else
+			soundname = "ambient/soliddrop3.wav";
+		break;
+	case AS_WINDCHIME:
+		soundname = "ambient/windchimes.wav";
+		break;
+	case AS_BIRD1:
+		soundname = "ambient/bird5.wav";
+		break;
+	case AS_BIRD2:
+		soundname = "ambient/bird8.wav";
+		break;
+	case AS_GONG:
+		soundname = "ambient/gong.wav";
+		break;
+	case AS_ROCKS:
+		chance = irand(0,3);
+		if (chance <1)
+			soundname = "ambient/rocks1.wav";
+		else if (chance <2)
+			soundname = "ambient/rocks4.wav";
+		else
+			soundname = "ambient/rocks5.wav";
+		break;
+	case AS_CAVECREAK:
+		chance = irand(0,3);
+		if (chance < 1)
+		{
+			soundname = "ambient/cavecreak1.wav";
+		}
+		else if (chance < 2)
+		{
+			soundname = "ambient/cavecreak1.wav";
+		}
+		else
+		{
+			soundname = "ambient/cavecreak1.wav";
+		}
+		break;
+	default:
+		gi.dprintf("ERROR:  invalid ambient sound type :%d at x:%f  y:%f  z:%f\n", style,
+			self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+		break;
+	}
+
+	if (soundname)
+	{
+		/* play the sound from this entity on the server so clients hear it */
+		gi.sound(self, CHAN_AUTO, gi.soundindex(soundname), vol, att, 0);
+		/* schedule next play */
+		self->nextthink = level.time + (Q_ftol(self->wait) * flrand(.5, 1.5));
+	}
+}
+
+
 void soundambient_think(edict_t *self)
 {
-	byte	style,wait,attenuation,volume;
+	byte attenuation, volume;
 
 	attenuation = Q_ftol(self->attenuation);
 	volume = Q_ftol(self->volume * 255);
@@ -3919,19 +4108,23 @@ void soundambient_think(edict_t *self)
 		self->s.sound = gi.soundindex("objects/spit.wav");
 		break;
 	default:
-		style = Q_ftol(self->style);
-		wait = Q_ftol(self->wait);
-		gi.CreatePersistantEffect(self,
-					FX_SOUND,
-					CEF_BROADCAST | CEF_OWNERS_ORIGIN,
-					self->s.origin,
-					"bbbb",
-					style,attenuation,volume,wait);
+		/* Server-side ambient sound: schedule a think function that will
+		   pick and play periodic one-shot ambient sounds on the server
+		   instead of creating a client-side persistent FX_SOUND effect. */
+		/* set up server-side periodic sound thinker and schedule first play */
+		self->think = soundambient_server_think;
+		/* schedule first play after roughly wait +/-50% */
+		self->nextthink = level.time + (Q_ftol(self->wait) * flrand(.5, 1.5));
 		break;
 	}
 	self->count = 1;	// This is just a flag to show it's on
 
-	self->think = NULL;
+	/* If this entity is using a looping s.sound, we don't need a thinker; clear it.
+	   Otherwise leave the previously assigned thinker (server-shot ambient). */
+	if (self->s.sound)
+	{
+		self->think = NULL;
+	}
 }
 
 void
