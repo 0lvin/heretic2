@@ -153,7 +153,6 @@
 {"SetRespawn", (byte *)SetRespawn},
 {"SetTriggeredSpawn", (byte *)SetTriggeredSpawn},
 {"SkyFlyCheck", (byte *)SkyFlyCheck},
-{"SpawnCorpse", (byte *)SpawnCorpse},
 {"SpawnFlame", (byte *)SpawnFlame},
 {"SpawnItem", (byte *)SpawnItem},
 {"Tag_ChangeDamage", (byte *)Tag_ChangeDamage},

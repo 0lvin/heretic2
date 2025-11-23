@@ -639,30 +639,81 @@ SP_obj_cog1(edict_t *self)
 	self->use = cog1_use;
 }
 
+/*
+ * QUAKED obj_corpse1 (1 .5 0) (-30 -12 -2) (30 12 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Plague Elf corpse
+ * ---------- KEYS -----------------
+ * style - (default 0)
+ *    0 - both arms above head
+ *    1 - on side
+ *    2 - arm over face
+ *    3 - arms out to side
+ *    4 - skewered
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (corpse can't be pushed)
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_corpse2 (1 .5 0) (-30 -12 -2) (30 12 2)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Plague Elf corpse (alternate skin)
+ * ---------- KEYS -----------------
+ * style - (default 0)
+ *    0 - both arms above head
+ *    1 - on side
+ *    2 - arm over face
+ *    3 - arms out to side
+ *    4 - skewered
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - N/A (corpse can't be pushed)
+ * -----------------------------------
+ */
 void
-SpawnCorpse(edict_t *self)
+SP_obj_corpse(edict_t *self)
 {
-	int chance;
+	int frame = 0, count = 0, chance;
 
-	if ((self->style > 4) || (self->style < 0))
-		self->style = 0;
-
-	if (self->style == 0)
-		self->s.frame = FRAME_death13end;
-	else if (self->style == 1)
-		self->s.frame = FRAME_deathb13end;
-	else if (self->style == 2)
-		self->s.frame = FRAME_deathc13end;
-	else if (self->style == 3)
-		self->s.frame = FRAME_deathd13end;
-	else if (self->style == 4)
+	if (!strcmp(self->classname, "obj_corpse2"))
 	{
-		self->s.frame = FRAME_skewered;
+		self->s.skinnum = 1;
+	}
+	else
+	{
+		self->s.skinnum = 0;
+	}
+
+	if (self->style < 0 || self->style > 4)
+	{
+		self->style = 0;
+	}
+
+	if (self->style >= 0 && self->style <= 3)
+	{
+		M_SetAnimGroupFrameValues(self, "death", &frame, &count, self->style);
+	}
+	else
+	{
+		M_SetAnimGroupFrameValues(self, "skewered", &frame, &count, self->style);
+
 		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__GAFF].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HANDLE].flags |= FMNI_NO_DRAW;
 	}
+
+	if (count)
+	{
+		frame += count - 1;
+	}
+
+	self->s.frame = frame;
 
 	chance = irand(0, 3);
 	if (chance < 1)
@@ -683,64 +734,13 @@ SpawnCorpse(edict_t *self)
 		self->s.fmnodeinfo[MESH__HAMMER].flags |= FMNI_NO_DRAW;
 		self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
 	}
+
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
 	ObjectInit(self, MAT_FLESH);
-}
-
-/*
- * QUAKED obj_corpse1 (1 .5 0) (-30 -12 -2) (30 12 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Plague Elf corpse
- * ---------- KEYS -----------------
- * style - (default 0)
- *    0 - both arms above head
- *    1 - on side
- *    2 - arm over face
- *    3 - arms out to side
- *    4 - skewered
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (corpse can't be pushed)
- * -----------------------------------
- */
-void
-SP_obj_corpse1(edict_t *self)
-{
-	SpawnCorpse(self);
-
-	self->s.skinnum = 0;
-}
-
-/*
- * QUAKED obj_corpse2 (1 .5 0) (-30 -12 -2) (30 12 2)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Plague Elf corpse (alternate skin)
- * ---------- KEYS -----------------
- * style - (default 0)
- *    0 - both arms above head
- *    1 - on side
- *    2 - arm over face
- *    3 - arms out to side
- *    4 - skewered
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (corpse can't be pushed)
- * -----------------------------------
- */
-void
-SP_obj_corpse2(edict_t *self)
-{
-	SpawnCorpse(self);
-
-	self->s.skinnum = 1;
 }
 
 #define PELF_NUM_PAIN_VOICES	4

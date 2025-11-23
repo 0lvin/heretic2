@@ -280,7 +280,7 @@ int SilverSpringSoundID[AS_MAX] =
 };
 
 void
-ThrowGib(edict_t *self, const char *gibname, int damage, int type)
+ThrowGib(edict_t *self, const char *gibname, int damage, gibtype_t type)
 {
 	edict_t *gib;
 	vec3_t vd;
@@ -348,7 +348,7 @@ ThrowGib(edict_t *self, const char *gibname, int damage, int type)
 }
 
 void
-ThrowHead(edict_t *self, const char *gibname, int damage, int type)
+ThrowHead(edict_t *self, const char *gibname, int damage, gibtype_t type)
 {
 	vec3_t vd;
 	float vscale;
@@ -405,7 +405,7 @@ ThrowHead(edict_t *self, const char *gibname, int damage, int type)
 }
 
 void
-ThrowGibACID(edict_t *self, const char *gibname, int damage, int type)
+ThrowGibACID(edict_t *self, const char *gibname, int damage, gibtype_t type)
 {
 	edict_t *gib;
 	vec3_t vd;
@@ -473,7 +473,7 @@ ThrowGibACID(edict_t *self, const char *gibname, int damage, int type)
 }
 
 void
-ThrowHeadACID(edict_t *self, const char *gibname, int damage, int type)
+ThrowHeadACID(edict_t *self, const char *gibname, int damage, gibtype_t type)
 {
 	vec3_t vd;
 	float vscale;
@@ -4813,7 +4813,7 @@ misc_player_mannequin_use(edict_t * self, edict_t * other, edict_t * activator)
 	}
 
 	lastframe -= firstframe;
-	M_SetAnimGroupFrameValues(self, animname, &firstframe, &lastframe, false);
+	M_SetAnimGroupFrameValues(self, animname, &firstframe, &lastframe, 0);
 	lastframe += firstframe;
 
 	self->s.frame = firstframe;
@@ -4828,7 +4828,7 @@ misc_player_mannequin_think(edict_t * self)
 		int firstframe = FRAME_stand01, lastframe = FRAME_stand40;
 
 		lastframe -= firstframe;
-		M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe, false);
+		M_SetAnimGroupFrameValues(self, "stand", &firstframe, &lastframe, 0);
 		lastframe += firstframe;
 
 		self->s.frame++;

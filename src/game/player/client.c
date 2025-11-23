@@ -1711,7 +1711,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 		if (!self->deadflag)
 		{
-			self->client->respawn_time=level.time+1.0;
+			self->client->respawn_time=level.time + 1.0;
 			self->client->ps.pmove.pm_type=PM_DEAD;
 
 			// If player died in a deathmatch or coop, show scores.
