@@ -1224,11 +1224,12 @@ void plagueElf_dismember(edict_t *self, int	damage,	int HitLocation)
 
 void plagueElf_pain(edict_t *self, G_Message_t *msg)
 {
+	edict_t	*targ, *attacker;
 	size_t			temp; // jmarshall: 64bit
 	int				damage;
 	qboolean		force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	pelf_init_phase_in(self);
 

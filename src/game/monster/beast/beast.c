@@ -565,13 +565,13 @@ void tbeast_run(edict_t *self, G_Message_t *msg)
 
 int tbeast_foot_damaged(edict_t *self, edict_t *attacker, float knockback, int take)
 {
-	G_QPostMessage(self->owner, MSG_PAIN, PRI_DIRECTIVE, "eeiii", self->owner, attacker, knockback, take, 0);
+	G_QPostMessage(self->owner, MSG_PAIN, PRI_DIRECTIVE, MSG_PAIN_FORMAT, self->owner, attacker, knockback, take, 0);
 	return false;
 }
 
 void tbeast_pain(edict_t *self, G_Message_t *msg)
 {
-	edict_t		*tempent;
+	edict_t	*targ, *attacker;
 	int			temp, damage;
 	qboolean	force_pain;
 
@@ -584,7 +584,7 @@ void tbeast_pain(edict_t *self, G_Message_t *msg)
 	if (self->pain_debounce_time > level.time)
 		return;
 
-	G_ParseMsgParms(msg, "eeiii", &tempent, &tempent, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (damage < irand(100, 200))
 		return;
@@ -1549,7 +1549,7 @@ void tbeast_anger_sound (edict_t *self)
 		if (!self->teamchain->client)
 		{
 			G_QPostMessage(self->teamchain, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", self->teamchain->health*0.5, irand(1,13));//do I need last three if not sending them?
-			G_QPostMessage(self->teamchain, MSG_PAIN, PRI_DIRECTIVE, "eeiii", self, self, true, 200, 0);
+			G_QPostMessage(self->teamchain, MSG_PAIN, PRI_DIRECTIVE, MSG_PAIN_FORMAT, self, self, true, 200, 0);
 		}
 	}
 }

@@ -77,14 +77,16 @@ void mssithra_decide_stand(edict_t *self)
 }
 
 void mssithra_pain(edict_t *self, G_Message_t *msg)
-{//fixme - make part fly dir the vector from hit loc to sever loc
+{
+	//fixme - make part fly dir the vector from hit loc to sever loc
+	edict_t	*targ, *attacker;
 	int				temp, damage;
 	qboolean		force_pain;
 
 	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (!force_pain)
 	{

@@ -651,10 +651,11 @@ void fish_death(edict_t *self, G_Message_t *msg)
 //----------------------------------------------------------------------
 void fish_pain(edict_t *self, G_Message_t *msg)
 {
+	edict_t	*targ, *attacker;
 	int				temp, damage;
 	qboolean		force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (!force_pain)
 		if (!flrand(0,3))

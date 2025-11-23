@@ -1676,6 +1676,11 @@ void FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 {
 	client_entity_t	*dagger;
 
+	if (!owner)
+	{
+		return;
+	}
+
 	dagger = ClientEntity_new(FX_M_EFFECTS, CEF_DONT_LINK, owner->current.origin, NULL, 20);
 
 	VectorScale(owner->current.angles, ANGLE_TO_RAD, dagger->r.angles);

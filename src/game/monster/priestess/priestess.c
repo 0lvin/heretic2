@@ -1487,10 +1487,11 @@ void priestess_run(edict_t *self, G_Message_t *msg)
 
 void priestess_pain(edict_t *self, G_Message_t *msg)
 {
+	edict_t	*targ, *attacker;
 	int	temp, damage;
 	int	force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (self->curAnimID == PRIESTESS_ANIM_ATTACK3_GO || self->curAnimID == PRIESTESS_ANIM_ATTACK3_LOOP ||
 		self->curAnimID == PRIESTESS_ANIM_SHIELD_GO)

@@ -893,10 +893,11 @@ void harpy_dismember(edict_t *self, int damage, int HitLocation)
 //receiver for MSG_PAIN
 void harpy_pain(edict_t *self, G_Message_t *msg)
 {
+	edict_t	*targ, *attacker;
 	int				temp, damage;
 	qboolean		force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (self->curAnimID >= ANIM_PIRCH1 && self->curAnimID <= ANIM_PIRCH9)
 	{

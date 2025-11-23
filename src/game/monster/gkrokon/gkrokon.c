@@ -594,10 +594,11 @@ void beetle_melee(edict_t *self,G_Message_t *Msg)
 
 void beetle_pain(edict_t *self,G_Message_t *Msg)
 {
+	edict_t	*targ, *attacker;
 	int	temp, damage;
 	int	force_damage;
 
-	G_ParseMsgParms(Msg, "eeiii", &temp, &temp, &force_damage, &damage, &temp);
+	G_ParseMsgParms(Msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_damage, &damage, &temp);
 
 	//Weighted random based on health compared to the maximum it was at
 	if (force_damage||((flrand(0, self->max_health+50) > self->health) && irand(0,2)))

@@ -947,7 +947,7 @@ void ogle_pain (edict_t *self, G_Message_t *msg)
 
 	chance = irand(0,100);
 
-	G_ParseMsgParms(msg, "eeiii", &targ, &attacker, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	self->mood_think = ogle_mood_think;
 

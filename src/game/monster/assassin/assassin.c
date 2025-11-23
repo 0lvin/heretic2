@@ -1222,7 +1222,7 @@ void assassin_pain(edict_t *self, G_Message_t *msg)
 	if (self->curAnimID == ASSASSIN_ANIM_TELEPORT)
 		return;
 
-	G_ParseMsgParms(msg, "eeiii", &inflictor, &attacker, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &inflictor, &attacker, &force_pain, &damage, &temp);
 
 	if (inflictor == attacker || !Q_stricmp(inflictor->classname, "Spell_RedRain")||!Q_stricmp(inflictor->classname, "Spell_Hellbolt"))
 	{//melee hit or contant effect, don't stick around!

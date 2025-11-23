@@ -643,11 +643,11 @@ void seraph_melee(edict_t *self, G_Message_t *msg)
 //Take pain
 void seraph_pain(edict_t *self, G_Message_t *msg)
 {
-	edict_t	*attacker;
+	edict_t	*targ, *attacker;
 	int	temp, damage, soundID;
 	int	force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &attacker, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (self->monsterinfo.awake)
 		self->ai_mood_flags &= ~AI_MOOD_FLAG_IGNORE;

@@ -1098,10 +1098,11 @@ void insect_random_pain_sound (edict_t *self)
 
 void insect_pain(edict_t *self, G_Message_t *msg)
 {
+	edict_t	*targ, *attacker;
 	int				temp, damage;
 	int				force_damage;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_damage, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_damage, &damage, &temp);
 
 	if (!force_damage&&(frandk() * self->health)>damage)
 		return;

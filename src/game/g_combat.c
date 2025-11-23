@@ -1224,9 +1224,9 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			(targ->pain_debounce_time  < level.time))
 		{
 			if (targ->classID == CID_ASSASSIN)
-				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", inflictor, attacker, force_pain, take, hl);
+				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE, MSG_PAIN_FORMAT, inflictor, attacker, force_pain, take, hl);
 			else
-				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", targ, attacker, force_pain, take, hl);
+				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE, MSG_PAIN_FORMAT, targ, attacker, force_pain, take, hl);
 
 			/* nightmare mode monsters don't go into pain frames often */
 			if (skill->value == SKILL_HARDPLUS)
@@ -1238,7 +1238,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	else if (client)
 	{
 		if (!(targ->flags & FL_GODMODE) && (take))
-			G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", targ, attacker, knockback, take, hl);
+			G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE, MSG_PAIN_FORMAT, targ, attacker, knockback, take, hl);
 	}
 	else if (take)
 	{
@@ -1251,7 +1251,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				targ->pain(targ, attacker, knockback, take);//pass spot too
 			}
 			else
-				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE,"eeiii", targ, attacker, knockback, take, hl);
+				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE, MSG_PAIN_FORMAT, targ, attacker, knockback, take, hl);
 		}
 	}
 

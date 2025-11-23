@@ -719,11 +719,11 @@ void gorgon_run(edict_t *self, G_Message_t *msg)
 qboolean gorgonCheckSlipGo (edict_t *self, qboolean frompain);
 void gorgon_pain(edict_t *self, G_Message_t *msg)
 {
-	edict_t		*tempent;
+	edict_t	*targ, *attacker;
 	int			chance, temp, damage;
 	qboolean	force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &tempent, &tempent, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (!force_pain)
 	{

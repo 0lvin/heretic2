@@ -153,6 +153,8 @@ typedef enum G_MsgID_e
 	NUM_MESSAGES
 } G_MsgID_t;
 
+#define MSG_PAIN_FORMAT "eeiii"
+
 typedef enum G_MsgPriority_e
 {
 	PRI_SUGGESTION,	// message from high level ai that dosn't need to be accepted unless convienent

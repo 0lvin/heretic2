@@ -1682,7 +1682,9 @@ void ssithra_dead_pain (edict_t *self, G_Message_t *msg)
 }
 
 void ssithra_pain(edict_t *self, G_Message_t *msg)
-{//fixme - make part fly dir the vector from hit loc to sever loc
+{
+	//fixme - make part fly dir the vector from hit loc to sever loc
+	edict_t	*targ, *attacker;
 	int inwater;
 	int				temp, damage;
 	qboolean		force_pain;
@@ -1691,7 +1693,7 @@ void ssithra_pain(edict_t *self, G_Message_t *msg)
 	if (self->deadflag == DEAD_DEAD) //Dead but still being hit
 		return;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	if (!force_pain)
 	{

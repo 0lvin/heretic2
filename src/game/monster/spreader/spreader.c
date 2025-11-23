@@ -377,10 +377,11 @@ void spreader_check_mood (edict_t *self, G_Message_t *msg)
 
 void spreader_pain(edict_t *self, G_Message_t *msg)
 {
+	edict_t	*targ, *attacker;
 	int				temp, damage;
 	qboolean		force_pain;
 
-	G_ParseMsgParms(msg, "eeiii", &temp, &temp, &force_pain, &damage, &temp);
+	G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &attacker, &force_pain, &damage, &temp);
 
 	//Weighted random based on health compared to the maximum it was at
 	if (force_pain||((flrand(0, self->max_health+50) > self->health) && irand(0,2)))
