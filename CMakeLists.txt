@@ -91,6 +91,8 @@ set(SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/src)
 set(BACKENDS_SRC_DIR ${SOURCE_DIR}/backends)
 set(COMMON_SRC_DIR ${SOURCE_DIR}/common)
 set(GAME_SRC_DIR ${SOURCE_DIR}/game)
+set(PLAYER_SRC_DIR ${SOURCE_DIR}/game/player/library)
+set(EFFECTS_SRC_DIR ${SOURCE_DIR}/game/effects)
 set(SERVER_SRC_DIR ${SOURCE_DIR}/server)
 set(CLIENT_SRC_DIR ${SOURCE_DIR}/client)
 set(REF_SRC_DIR ${SOURCE_DIR}/client/refresh)
@@ -570,6 +572,142 @@ set(Game-Header
 	${GAME_SRC_DIR}/savegame/tables/gamemmove_decs.h
 	${GAME_SRC_DIR}/savegame/tables/gamemmove_list.h
 	${GAME_SRC_DIR}/savegame/tables/levelfields.h
+	)
+
+set(Player-Source
+	${GAME_SRC_DIR}/common/h2matrix.c
+	${GAME_SRC_DIR}/common/h2vector.c
+	${GAME_SRC_DIR}/common/h2rand.c
+	${COMMON_SRC_DIR}/shared/shared.c
+	${PLAYER_SRC_DIR}/p_actions.c
+	${PLAYER_SRC_DIR}/p_animactor.c
+	${PLAYER_SRC_DIR}/p_anim_branch.c
+	${PLAYER_SRC_DIR}/p_anim_data.c
+	${PLAYER_SRC_DIR}/p_anims.c
+	${PLAYER_SRC_DIR}/p_chicken_anim.c
+	${PLAYER_SRC_DIR}/p_chicken.c
+	${PLAYER_SRC_DIR}/p_ctrl.c
+	${PLAYER_SRC_DIR}/player_main.c
+	${PLAYER_SRC_DIR}/p_main.c
+	)
+
+set(Player-Header
+	${PLAYER_SRC_DIR}/p_actions.h
+	${PLAYER_SRC_DIR}/p_animactor.h
+	${PLAYER_SRC_DIR}/p_anim_branch.h
+	${PLAYER_SRC_DIR}/p_anim_data.h
+	${PLAYER_SRC_DIR}/p_anims.h
+	${PLAYER_SRC_DIR}/p_chicken.h
+	${PLAYER_SRC_DIR}/p_ctrl.h
+	${PLAYER_SRC_DIR}/p_items.h
+	${PLAYER_SRC_DIR}/p_main.h
+	)
+
+set(Effects-Source
+	${COMMON_SRC_DIR}/shared/rand.c
+	${COMMON_SRC_DIR}/shared/shared.c
+	${GAME_SRC_DIR}/common/h2matrix.c
+	${GAME_SRC_DIR}/common/h2physics.c
+	${GAME_SRC_DIR}/common/h2rand.c
+	${GAME_SRC_DIR}/common/h2singlylinkedlist.c
+	${GAME_SRC_DIR}/common/h2vector.c
+	${GAME_SRC_DIR}/common/message.c
+	${GAME_SRC_DIR}/common/resource_manager.c
+	${EFFECTS_SRC_DIR}/ambient_effects.c
+	${EFFECTS_SRC_DIR}/ce_default_message_handler.c
+	${EFFECTS_SRC_DIR}/ce_dlight.c
+	${EFFECTS_SRC_DIR}/ce_message.c
+	${EFFECTS_SRC_DIR}/client_effects.c
+	${EFFECTS_SRC_DIR}/client_entities.c
+	${EFFECTS_SRC_DIR}/fx_ammo_pickup.c
+	${EFFECTS_SRC_DIR}/fx_assassin.c
+	${EFFECTS_SRC_DIR}/fx_blood.c
+	${EFFECTS_SRC_DIR}/fx_blue_ring.c
+	${EFFECTS_SRC_DIR}/fx_bubbler.c
+	${EFFECTS_SRC_DIR}/fx_crosshair.c
+	${EFFECTS_SRC_DIR}/fx_cwatcher.c
+	${EFFECTS_SRC_DIR}/fx_debris.c
+	${EFFECTS_SRC_DIR}/fx_defense_pickup.c
+	${EFFECTS_SRC_DIR}/fx_dripper.c
+	${EFFECTS_SRC_DIR}/fx_dust.c
+	${EFFECTS_SRC_DIR}/fx_dustpuff.c
+	${EFFECTS_SRC_DIR}/fx_firehands.c
+	${EFFECTS_SRC_DIR}/fx_fire.c
+	${EFFECTS_SRC_DIR}/fx_flamethrow.c
+	${EFFECTS_SRC_DIR}/fx_flyingfist.c
+	${EFFECTS_SRC_DIR}/fx_fountain.c
+	${EFFECTS_SRC_DIR}/fx_halo.c
+	${EFFECTS_SRC_DIR}/fx_health_pickup.c
+	${EFFECTS_SRC_DIR}/fx_hell_staff.c
+	${EFFECTS_SRC_DIR}/fx_hitpuff.c
+	${EFFECTS_SRC_DIR}/fx_hpproj.c
+	${EFFECTS_SRC_DIR}/fx_insectstaff.c
+	${EFFECTS_SRC_DIR}/fx_lensflare.c
+	${EFFECTS_SRC_DIR}/fx_lightning.c
+	${EFFECTS_SRC_DIR}/fx_maceball.c
+	${EFFECTS_SRC_DIR}/fx_magicmissile.c
+	${EFFECTS_SRC_DIR}/fx_meteorbarrier.c
+	${EFFECTS_SRC_DIR}/fx_mist.c
+	${EFFECTS_SRC_DIR}/fx_mork.c
+	${EFFECTS_SRC_DIR}/fx_morph.c
+	${EFFECTS_SRC_DIR}/fx_objects.c
+	${EFFECTS_SRC_DIR}/fx_pespell.c
+	${EFFECTS_SRC_DIR}/fx_phoenix.c
+	${EFFECTS_SRC_DIR}/fx_pickup.c
+	${EFFECTS_SRC_DIR}/fx_pickuppuzzle.c
+	${EFFECTS_SRC_DIR}/fx_plaguemistexplode.c
+	${EFFECTS_SRC_DIR}/fx_plaguemist.c
+	${EFFECTS_SRC_DIR}/fx_portal.c
+	${EFFECTS_SRC_DIR}/fx_quake.c
+	${EFFECTS_SRC_DIR}/fx_redrainglow.c
+	${EFFECTS_SRC_DIR}/fx_redrain.c
+	${EFFECTS_SRC_DIR}/fx_ripples.c
+	${EFFECTS_SRC_DIR}/fx_rope.c
+	${EFFECTS_SRC_DIR}/fx_scorchmark.c
+	${EFFECTS_SRC_DIR}/fx_shadow.c
+	${EFFECTS_SRC_DIR}/fx_shield.c
+	${EFFECTS_SRC_DIR}/fx_shrine.c
+	${EFFECTS_SRC_DIR}/fx_smoke.c
+	${EFFECTS_SRC_DIR}/fx_sound.c
+	${EFFECTS_SRC_DIR}/fx_sparks.c
+	${EFFECTS_SRC_DIR}/fx_spellchange.c
+	${EFFECTS_SRC_DIR}/fx_spellhands.c
+	${EFFECTS_SRC_DIR}/fx_sphereofannihlation.c
+	${EFFECTS_SRC_DIR}/fx_spoo.c
+	${EFFECTS_SRC_DIR}/fx_ssarrow.c
+	${EFFECTS_SRC_DIR}/fx_ssithra.c
+	${EFFECTS_SRC_DIR}/fx_staff.c
+	${EFFECTS_SRC_DIR}/fx_tbeast.c
+	${EFFECTS_SRC_DIR}/fx_teleport.c
+	${EFFECTS_SRC_DIR}/fx_tome.c
+	${EFFECTS_SRC_DIR}/fx_tornado.c
+	${EFFECTS_SRC_DIR}/fx_wall.c
+	${EFFECTS_SRC_DIR}/fx_waterentrysplash.c
+	${EFFECTS_SRC_DIR}/fx_waterwake.c
+	${EFFECTS_SRC_DIR}/fx_weaponpickup.c
+	${EFFECTS_SRC_DIR}/generic_character_effects.c
+	${EFFECTS_SRC_DIR}/generic_weapon_effects.c
+	${EFFECTS_SRC_DIR}/item_effects.c
+	${EFFECTS_SRC_DIR}/main.c
+	${EFFECTS_SRC_DIR}/motion.c
+	${EFFECTS_SRC_DIR}/particle.c
+	${EFFECTS_SRC_DIR}/player_effects.c
+	${EFFECTS_SRC_DIR}/utilities.c
+	)
+
+set(Effects-Header
+	${EFFECTS_SRC_DIR}/ambientsound.h
+	${EFFECTS_SRC_DIR}/ce_defaultmessagehandler.h
+	${EFFECTS_SRC_DIR}/ce_dlight.h
+	${EFFECTS_SRC_DIR}/ce_message.h
+	${EFFECTS_SRC_DIR}/client_effects.h
+	${EFFECTS_SRC_DIR}/client_entities.h
+	${EFFECTS_SRC_DIR}/fx_debris.h
+	${EFFECTS_SRC_DIR}/fx_dustpuff.h
+	${EFFECTS_SRC_DIR}/motion.h
+	${EFFECTS_SRC_DIR}/particle.h
+	${EFFECTS_SRC_DIR}/q_sprite.h
+	${EFFECTS_SRC_DIR}/utilities.h
 	)
 
 set(Client-Source
@@ -1091,6 +1229,30 @@ else() # single-config, like normal Makefiles
 		)
 endif()
 target_link_libraries(game ${yquake2LinkerFlags})
+
+# Build the player dynamic library
+add_library(player MODULE ${Player-Source} ${Player-Header})
+set_target_properties(player PROPERTIES
+		PREFIX ""
+		SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX}
+		)
+set_target_properties(player PROPERTIES
+	LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/baseq2
+	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/baseq2
+	)
+target_link_libraries(player ${yquake2LinkerFlags})
+
+# Build the effects dynamic library
+add_library(effects MODULE ${Effects-Source} ${Effects-Header})
+set_target_properties(effects PROPERTIES
+		PREFIX ""
+		SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX}
+		)
+set_target_properties(effects PROPERTIES
+	LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/baseq2
+	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/baseq2
+	)
+target_link_libraries(effects ${yquake2LinkerFlags})
 
 if(${GL1_RENDERER})
 
