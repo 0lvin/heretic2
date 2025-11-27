@@ -632,6 +632,14 @@ static const namesconvert_t flex_names[] = {
 	{"walk", "walk"},
 	/* replace frame group started with run* to run */
 	{"run", "run"},
+	/* replace frame group started with breath to idle */
+	{"breath", "idle"},
+	/* replace frame group started with shoot to attack */
+	{"shoot", "attack"},
+	/* replace frame group started with rolla to crwalk */
+	{"rolla", "crwalk"},
+	/* replace frame group started with 4swim to swim */
+	{"4swim", "swim"},
 	{NULL, NULL}
 };
 
@@ -644,6 +652,9 @@ static const namesconvert_t dkm_names[] = {
 	{"stand", "stand"},
 	{"swim", "swim"},
 	{"walk", "walk"},
+	{"amba", "idle"},
+	/* hack for protopod, looks as can't move, and should be attack */
+	{"hatcha", "run"},
 	{NULL, NULL}
 };
 
