@@ -13,14 +13,17 @@
 
 static ResourceManager_t globalResourceManager;
 
-void SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
+void
+SLList_DefaultCon(SinglyLinkedList_t *this_ptr)
 {
 	this_ptr->rearSentinel = (SinglyLinkedListNode_t *)ResMngr_AllocateResource(
 		&globalResourceManager, sizeof(GenericUnion4_t));
 	this_ptr->current = this_ptr->rearSentinel;
 	this_ptr->front = this_ptr->rearSentinel;
 }
-void SLList_Des(SinglyLinkedList_t* this_ptr)
+
+void
+SLList_Des(SinglyLinkedList_t* this_ptr)
 {
 	SinglyLinkedListNode_t* node;
 
@@ -35,22 +38,26 @@ void SLList_Des(SinglyLinkedList_t* this_ptr)
 	ResMngr_AllocateResource(&globalResourceManager, sizeof(GenericUnion4_t));
 }
 
-qboolean SLList_AtEnd(SinglyLinkedList_t *this_ptr)
+qboolean
+SLList_AtEnd(SinglyLinkedList_t *this_ptr)
 {
 	return this_ptr->current == this_ptr->rearSentinel;
 }
 
-qboolean SLList_AtLast(SinglyLinkedList_t *this_ptr)
+qboolean
+SLList_AtLast(SinglyLinkedList_t *this_ptr)
 {
 	return this_ptr->current->next == this_ptr->rearSentinel;
 }
 
-qboolean SLList_IsEmpty(SinglyLinkedList_t *this_ptr)
+qboolean
+SLList_IsEmpty(SinglyLinkedList_t *this_ptr)
 {
 	return this_ptr->front == this_ptr->rearSentinel;
 }
 
-const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr)
+const GenericUnion4_t
+SLList_Increment(SinglyLinkedList_t *this_ptr)
 {
 	struct SinglyLinkedListNode_s* nextNode;
 	nextNode = this_ptr->current->next;
@@ -58,7 +65,8 @@ const GenericUnion4_t SLList_Increment(SinglyLinkedList_t *this_ptr)
 	return nextNode->value;
 }
 
-const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr)
+const GenericUnion4_t
+SLList_PostIncrement(SinglyLinkedList_t *this_ptr)
 {
 	GenericUnion4_t value;
 	SinglyLinkedListNode_t* currentNode;
@@ -69,7 +77,8 @@ const GenericUnion4_t SLList_PostIncrement(SinglyLinkedList_t *this_ptr)
 	return value;
 }
 
-GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr)
+GenericUnion4_t
+SLList_Front(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedListNode_t* frontNode;
 
@@ -78,7 +87,8 @@ GenericUnion4_t SLList_Front(SinglyLinkedList_t *this_ptr)
 	return frontNode->value;
 }
 
-GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toReplace)
+GenericUnion4_t
+SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toReplace)
 {
 	GenericUnion4_t oldValue;
 	SinglyLinkedListNode_t* node;
@@ -89,7 +99,8 @@ GenericUnion4_t SLList_ReplaceCurrent(SinglyLinkedList_t *this_ptr, const Generi
 	return oldValue;
 }
 
-void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
+void
+SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedListNode_t* emptyNode;
 
@@ -99,7 +110,8 @@ void SLList_PushEmpty(SinglyLinkedList_t *this_ptr)
 	this_ptr->front = emptyNode;
 }
 
-void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
+void
+SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
 	SinglyLinkedListNode_t* newNode;
 
@@ -110,12 +122,21 @@ void SLList_Push(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 	this_ptr->front = newNode;
 }
 
-GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
+GenericUnion4_t
+SLList_Pop(SinglyLinkedList_t *this_ptr)
 {
 	GenericUnion4_t value;
 	SinglyLinkedListNode_t* nextNode;
 	SinglyLinkedListNode_t* currentNode;
 	SinglyLinkedListNode_t* frontNode;
+
+	// defensive: empty-list check
+	if (SLList_IsEmpty(this_ptr)) {
+		// behavior depends on API — assert or return zeroed GenericUnion4_t
+		assert(!"SLList_Pop on empty list");
+		GenericUnion4_t zero = {0};
+		return zero;
+	}
 
 	frontNode = this_ptr->front;
 	currentNode = this_ptr->current;
@@ -124,11 +145,14 @@ GenericUnion4_t SLList_Pop(SinglyLinkedList_t *this_ptr)
 	if (currentNode == frontNode)
 		this_ptr->current = nextNode;
 	value = frontNode->value;
-	ResMngr_DeallocateResource(&globalResourceManager, currentNode, sizeof(GenericUnion4_t));
+
+	// FIX: deallocate the node we removed (frontNode), not currentNode
+	ResMngr_DeallocateResource(&globalResourceManager, frontNode, sizeof(GenericUnion4_t));
 	return value;
 }
 
-void SLList_Chop(SinglyLinkedList_t *this_ptr)
+void
+SLList_Chop(SinglyLinkedList_t *this_ptr)
 {
 	SinglyLinkedList_t* currentNode;
 	SinglyLinkedList_t* nextNode;
@@ -150,7 +174,8 @@ void SLList_Chop(SinglyLinkedList_t *this_ptr)
 	}
 }
 
-void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
+void
+SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toInsert)
 {
 	SinglyLinkedListNode_t* newNode;
 
@@ -166,7 +191,8 @@ void SLList_InsertAfter(SinglyLinkedList_t *this_ptr, const GenericUnion4_t toIn
 InitResourceManager
 ===============
 */
-void InitResourceManager()
+void
+InitResourceManager(void)
 {
 	// jmarshall:
 	// Based on decompiled output, Raven had globalResourceManager allocated to use 256 8 * sizeof(resourceNode) byte blocks,
@@ -181,8 +207,8 @@ void InitResourceManager()
 ShutdownResourceManager
 ===============
 */
-
-void ShutdownResourceManager()
+void
+ShutdownResourceManager(void)
 {
 	ResMngr_Des(&globalResourceManager);
 }

@@ -18,22 +18,24 @@
 #define	MAX_PARTS_PER_CE	2048
 
 ResourceManager_t ParticleMngr;
+int ParticleUpdateTime = 0;
 
-int ParticleUpdateTime=0;
-
-void InitParticleMngrMngr()
+void
+InitParticleMngrMngr()
 {
 #define PARTICLE_BLOCK_SIZE 256
 
 	ResMngr_Con(&ParticleMngr, sizeof(client_particle_t), PARTICLE_BLOCK_SIZE);
 }
 
-void ReleaseParticleMngrMngr()
+void
+ReleaseParticleMngrMngr()
 {
 	ResMngr_Des(&ParticleMngr);
 }
 
-void AddParticleToList(client_entity_t *ce, client_particle_t *fx)
+void
+AddParticleToList(client_entity_t *ce, client_particle_t *fx)
 {
 	assert(ce);
 	assert(fx);
@@ -42,7 +44,8 @@ void AddParticleToList(client_entity_t *ce, client_particle_t *fx)
 	ce->p_root = fx;
 }
 
-void RemoveParticleList(client_particle_t **root)
+void
+RemoveParticleList(client_particle_t **root)
 {
 	client_particle_t *next;
 	client_particle_t *toFree;
@@ -74,7 +77,8 @@ VectorSeparationSquared(vec3_t va, vec3_t vb)
 	return(result);
 }
 
-int AddParticlesToView(client_entity_t *ce)
+int
+AddParticlesToView(client_entity_t *ce)
 {
 	client_particle_t	*current;
 	client_particle_t	**prev;
@@ -219,7 +223,8 @@ int AddParticlesToView(client_entity_t *ce)
 	return(numparticles);
 }
 
-int UpdateParticles(client_entity_t *ce)
+int
+UpdateParticles(client_entity_t *ce)
 {
 	client_particle_t	*current;
 	client_particle_t	**prev;
@@ -272,7 +277,8 @@ int UpdateParticles(client_entity_t *ce)
 }
 
 // This frees all particles attached to the client entity
-void FreeParticles(client_entity_t *ce)
+void
+FreeParticles(client_entity_t *ce)
 {
 	client_particle_t	*current;
 	client_particle_t	**prev;
@@ -284,7 +290,8 @@ void FreeParticles(client_entity_t *ce)
 	}
 }
 
-client_particle_t *ClientParticle_new(int type, paletteRGBA_t color, int duration)
+client_particle_t *
+ClientParticle_new(ParticleTypes_t type, paletteRGBA_t color, int duration)
 {
 	client_particle_t	*p;
 
@@ -303,5 +310,3 @@ client_particle_t *ClientParticle_new(int type, paletteRGBA_t color, int duratio
 	p->d_alpha = -255.0 / (flrand(0.8F, 1.0F) * duration * (1.0F / 1000.0F));
 	return(p);
 }
-
-// end

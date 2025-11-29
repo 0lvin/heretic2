@@ -119,7 +119,7 @@ typedef struct client_particle_s
 	float	scale;
 	float	d_scale;
 
-	int		type;
+	ParticleTypes_t	type;
 
 	int		startTime;	// miliseconds
 	int		duration;	// miliseconds
@@ -165,7 +165,7 @@ void RemoveParticleList(client_particle_t **root);
 int AddParticlesToView(struct client_entity_s *ce);
 int UpdateParticles(struct client_entity_s *ce);
 void FreeParticles(struct client_entity_s *ce);
-client_particle_t *ClientParticle_new(int type, paletteRGBA_t color, int duration);
+client_particle_t *ClientParticle_new(ParticleTypes_t type, paletteRGBA_t color, int duration);
 
 // Particle Creation Functions
 void CreateParticles(struct client_entity_s *_this, int numParticles, int originRand,

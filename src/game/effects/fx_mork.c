@@ -45,7 +45,8 @@ static struct model_s *mssithra_models[6];
 void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
 void FXDarkSmoke(vec3_t origin, float scale, float range);
 
-void PreCacheMEffects()
+void
+PreCacheMEffects()
 {
 	Morkproj_models[0] = fxi.RegisterModel("sprites/fx/hpproj1_1.sp2");
 	Morkproj_models[1] = fxi.RegisterModel("sprites/fx/hpproj1_2.sp2");
@@ -135,7 +136,8 @@ FXMorkTrailThink_old(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, vec3_t dir)
+void
+FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -273,7 +275,8 @@ FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
 	return true;
 }
 
-qboolean FXMPPExplosionCoreUpdate (client_entity_t *self, centity_t *owner)
+qboolean
+FXMPPExplosionCoreUpdate(client_entity_t *self, centity_t *owner)
 {
 	paletteRGBA_t color;
 
@@ -341,7 +344,8 @@ FXMPPExplosionCoreThink(client_entity_t *core, centity_t *owner)
 	return (true);
 }
 
-void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
+void
+FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
 {
 	client_entity_t		*subexplosion;
 	paletteRGBA_t		color;
@@ -454,7 +458,8 @@ void FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int fl
 
 //==================================================
 
-void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
+void
+FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -503,7 +508,9 @@ void FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t
 #define M_LIGHTNING_RADIUS	40.0F
 #define M_LIGHTNING_WIDTH	6.0
 #define M_LIGHTNING_WIDTH2	8.0
-client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, int lifetime, qboolean plasma)
+
+client_entity_t *
+MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, int lifetime, qboolean plasma)
 {
 	client_entity_t *lightning;
 	vec3_t	vec;
@@ -557,7 +564,8 @@ client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, 
 }
 
 // Occasional lightning bolt strikes inside
-void MorkDoLightning(vec3_t groundpos, vec3_t airpos, qboolean random, qboolean plasma)
+void
+MorkDoLightning(vec3_t groundpos, vec3_t airpos, qboolean random, qboolean plasma)
 {
 	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
 	float scale;
@@ -595,7 +603,8 @@ void MorkDoLightning(vec3_t groundpos, vec3_t airpos, qboolean random, qboolean 
 	}
 }
 
-void MorkDoEyesLightning(centity_t *owner, vec3_t groundpos)
+void
+MorkDoEyesLightning(centity_t *owner, vec3_t groundpos)
 {
 	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
 	float scale;
@@ -650,7 +659,8 @@ void MorkDoEyesLightning(centity_t *owner, vec3_t groundpos)
 #define SMOKEEYES_SCALE		0.25
 #define SMOKEEYES_ALPHA		0.5
 
-qboolean MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
+qboolean
+MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
 {
 	int	fade_down = 0, darken = 0;
 	float	dec_rate = 5;
@@ -807,7 +817,8 @@ FXMorkEyes(struct client_entity_s *self, centity_t *owner)
   FX_M_BEAM
 
   ===============================*/
-qboolean ParticleFadeToBlue(client_particle_t *self, qboolean ignore)
+qboolean
+ParticleFadeToBlue(client_particle_t *self, qboolean ignore)
 {
 	float	dec_rate = 5;
 
@@ -824,7 +835,7 @@ qboolean ParticleFadeToBlue(client_particle_t *self, qboolean ignore)
 }
 
 static qboolean
-FXMorkBeamCircle (struct client_entity_s *self, centity_t *owner)
+FXMorkBeamCircle(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t	angles, up;
 
@@ -973,7 +984,8 @@ FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 
   ===============================*/
 
-qboolean MorkFirstSeenInit(struct client_entity_s *self, centity_t *owner)
+qboolean
+MorkFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*fx;
 	paletteRGBA_t color;
@@ -1012,7 +1024,8 @@ qboolean MorkFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXMorkReadyRefs (centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXMorkReadyRefs(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t		*self;
 
@@ -1058,7 +1071,7 @@ DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_SpawnerUpdate (struct 
 		VectorSet(star->velocity,
 			irand(1, 12),//number of planets
 			irand(1, 100),//color offset of planets
-			((long)(&owner)));//owning fx entity
+			0);
 		VectorCopy(o_pos, star->acceleration);//used for homing
 		star->scale = flrand(0.3, 0.75);
 		star->d_scale = 0.3;
@@ -1072,7 +1085,8 @@ DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_SpawnerUpdate (struct 
 	return (true);
 }
 
-void DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad (centity_t *owner,int type,int flags, vec3_t org)
+void
+DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad(centity_t *owner,int type,int flags, vec3_t org)
 {
 	client_entity_t	*fx;
 	paletteRGBA_t color;
@@ -1103,7 +1117,8 @@ void DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad (centity_t *owner
 	AddEffect(owner, fx);
 }
 
-void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
+void
+ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -1143,7 +1158,8 @@ void ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t d
 	}
 }
 
-qboolean ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean
+ImpFireBallUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	client_entity_t	*TrailEnt;
@@ -1222,14 +1238,15 @@ qboolean ImpFireBallUpdate (struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-int star_particle [3] =
+static int star_particle [3] =
 {
 	PART_16x16_STAR,
 	PART_16x16_SPARK_C,
 	PART_16x16_SPARK_B,
 };
 
-qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean
+FXCWUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	client_entity_t	*TrailEnt;
@@ -1358,7 +1375,8 @@ qboolean FXCWUpdate (struct client_entity_s *self, centity_t *owner)
 	return (true);
 }
 
-void FXCWStars (centity_t *owner,int type,int flags, vec3_t vel)
+void
+FXCWStars(centity_t *owner,int type,int flags, vec3_t vel)
 {
 	client_entity_t	*fx;
 	paletteRGBA_t color;
@@ -1392,7 +1410,8 @@ void FXCWStars (centity_t *owner,int type,int flags, vec3_t vel)
 #define BUOY_FX_ACTIVATE	PART_4x4_MAGENTA
 #define BUOY_FX_ONEWAY		PART_4x4_WHITE
 
-qboolean FXBuoyUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean
+FXBuoyUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	int					num_parts, i;
@@ -1508,7 +1527,8 @@ qboolean FXBuoyUpdate (struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXBuoy (centity_t *owner, int flags, vec3_t org, float white)
+void
+FXBuoy(centity_t *owner, int flags, vec3_t org, float white)
 {
 	client_entity_t	*fx;
 
@@ -1545,18 +1565,21 @@ void FXBuoy (centity_t *owner, int flags, vec3_t org, float white)
 	}
 }
 
-qboolean FXPermanentUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean
+FXPermanentUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	self->updateTime = 16384;
 	return true;
 }
 
-qboolean FXRemoveUpdate(struct client_entity_s *self, centity_t *owner)
+qboolean
+FXRemoveUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	return false;
 }
 
-qboolean FXBuoyPathDelayedStart (struct client_entity_s *self, centity_t *owner)
+qboolean
+FXBuoyPathDelayedStart(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t	v;
@@ -1595,7 +1618,8 @@ qboolean FXBuoyPathDelayedStart (struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXBuoyPath (vec3_t org, vec3_t vel)
+void
+FXBuoyPath(vec3_t org, vec3_t vel)
 {
 	client_entity_t	*fx;
 	vec3_t			origin;
@@ -1615,7 +1639,8 @@ void FXBuoyPath (vec3_t org, vec3_t vel)
 	AddEffect(NULL,fx);
 }
 
-qboolean FXMMoBlurUpdate(struct client_entity_s *self, centity_t *owner)
+qboolean
+FXMMoBlurUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->alpha <= 0.05f)
 		return false;
@@ -1623,7 +1648,8 @@ qboolean FXMMoBlurUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXMMoBlur(centity_t *owner, vec3_t org, vec3_t angles, qboolean dagger)
+void
+FXMMoBlur(centity_t *owner, vec3_t org, vec3_t angles, qboolean dagger)
 {//r_detail 2 only?
 	client_entity_t	*blur;
 
@@ -1659,7 +1685,8 @@ void FXMMoBlur(centity_t *owner, vec3_t org, vec3_t angles, qboolean dagger)
 	AddEffect(NULL,blur);
 }
 
-qboolean FXAssDaggerUpdate (struct client_entity_s *self, centity_t *owner)
+qboolean
+FXAssDaggerUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	if (++self->LifeTime == 4)
 	{
@@ -1672,7 +1699,8 @@ qboolean FXAssDaggerUpdate (struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXAssDagger(centity_t *owner, vec3_t vel, float avel)
+void
+FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 {
 	client_entity_t	*dagger;
 
@@ -1693,7 +1721,7 @@ void FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 	AddEffect(owner, dagger);
 }
 
-int water_particle [6] =
+static int water_particle [6] =
 {
 	PART_4x4_WHITE,
 	PART_8x8_BUBBLE,
@@ -1786,7 +1814,8 @@ FXUnderWaterWake(centity_t *owner)
 #define MACEBALL_SPARK_VEL	128.0
 #define NUM_RINGS			3
 
-void FXQuakeRing ( vec3_t origin )
+void
+FXQuakeRing(vec3_t origin)
 {
 	client_entity_t		*ring;
 	int					i, j;
@@ -1861,7 +1890,8 @@ void FXQuakeRing ( vec3_t origin )
 
 extern qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner);
 
-void FXGroundAttack( vec3_t origin )
+void
+FXGroundAttack(vec3_t origin)
 {
 	client_entity_t	*glow;
 	vec3_t			dir = {0,0,1};
@@ -1898,7 +1928,8 @@ beam_add_to_view(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXMorkBeam2 ( centity_t *owner, vec3_t	startpos )
+void
+FXMorkBeam2(centity_t *owner, vec3_t startpos)
 {
 	client_entity_t	*fx;
 
@@ -2001,7 +2032,8 @@ MorkMissileThink3(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXMorkMissile ( centity_t *owner, vec3_t startpos )
+void
+FXMorkMissile(centity_t *owner, vec3_t startpos)
 {
 	client_entity_t	*fx;
 	paletteRGBA_t	LightColor = {{{128, 128, 255, 255}}};
@@ -2071,7 +2103,8 @@ extern client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, 
 #define LIGHTNING_TYPE_BLUE		0
 #define LIGHTNING_WIDTH			1.0
 
-void MorkLightning(vec3_t groundpos, vec3_t airpos)
+void
+MorkLightning(vec3_t groundpos, vec3_t airpos)
 {
 	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
 	float scale;
@@ -2098,7 +2131,8 @@ void MorkLightning(vec3_t groundpos, vec3_t airpos)
 	}
 }
 
-void FXMorkMissileHit ( vec3_t origin, vec3_t dir )
+void
+FXMorkMissileHit(vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*fx;
 
@@ -2182,7 +2216,8 @@ FXMMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
 
 extern void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 
-void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
+void
+FXMorkTrackingMissile(centity_t *owner, vec3_t origin, vec3_t velocity)
 {
 	client_entity_t	*Trail;
 	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
@@ -2207,7 +2242,8 @@ void FXMorkTrackingMissile ( centity_t *owner, vec3_t origin, vec3_t velocity )
 	FXMMissileTrailThink(Trail,owner);
 }
 
-qboolean rubble_spin (client_entity_t *self, centity_t *owner)
+qboolean
+rubble_spin(client_entity_t *self, centity_t *owner)
 {
 	if (self->LifeTime < fxi.cl->time)
 		return false;
@@ -2219,7 +2255,8 @@ qboolean rubble_spin (client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-qboolean mssithra_explosion_think (client_entity_t *self, centity_t *owner)
+qboolean
+mssithra_explosion_think(client_entity_t *self, centity_t *owner)
 {
 	client_entity_t	*explosion, *TrailEnt;
 	vec3_t			dir;
@@ -2350,7 +2387,8 @@ qboolean mssithra_explosion_think (client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-void FXMSsithraExplode( vec3_t origin, vec3_t dir )
+void
+FXMSsithraExplode(vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*spawner;
 
@@ -2367,14 +2405,16 @@ void FXMSsithraExplode( vec3_t origin, vec3_t dir )
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("monsters/mssithra/hit.wav"), 0.5, ATTN_NORM, 0);
 }
 
-void FXMSsithraExplodeSmall( vec3_t origin, vec3_t dir )
+void
+FXMSsithraExplodeSmall(vec3_t origin, vec3_t dir)
 {
 	//Play correct sound here
 	FireSparks(NULL, FX_SPARKS, 0, origin, vec3_up);
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("monsters/mssithra/hit.wav"), 0.5, ATTN_NORM, 0);
 }
 
-qboolean ArrowCheckFuse (client_entity_t *self, centity_t *owner)
+qboolean
+ArrowCheckFuse(client_entity_t *self, centity_t *owner)
 {
 	if ( (owner->current.effects & EF_ALTCLIENTFX) || (owner->current.effects & EF_MARCUS_FLAG1) )
 	{//We've stopped moving and have imbedded ourself in a wall
@@ -2391,7 +2431,8 @@ qboolean ArrowCheckFuse (client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-qboolean ArrowDrawTrail (client_entity_t *self, centity_t *owner)
+qboolean
+ArrowDrawTrail(client_entity_t *self, centity_t *owner)
 {
 	LinkedEntityUpdatePlacement(self, owner);
 
@@ -2442,7 +2483,8 @@ qboolean ArrowDrawTrail (client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-void FXMSsithraArrow( centity_t *owner, vec3_t velocity, qboolean super )
+void
+FXMSsithraArrow(centity_t *owner, vec3_t velocity, qboolean super)
 {
 	client_entity_t	*spawner;
 
@@ -2477,7 +2519,8 @@ void FXMSsithraArrow( centity_t *owner, vec3_t velocity, qboolean super )
 	AddEffect(owner, spawner);
 }
 
-void FXMSsithraArrowCharge( vec3_t startpos )
+void
+FXMSsithraArrowCharge(vec3_t startpos)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			dir;
@@ -2550,7 +2593,8 @@ void FXMSsithraArrowCharge( vec3_t startpos )
 
   ===============================*/
 
-void FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
+void
+FXMEffects(centity_t *owner,int type,int flags, vec3_t org)
 {
 	client_entity_t	*fx;
 	paletteRGBA_t	LightColor = {{{0,0,255,255}}};

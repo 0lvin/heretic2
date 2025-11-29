@@ -227,9 +227,13 @@ static qboolean
 FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
 {
 	float			lerp, oldtime, newtime;
-	//float			c_segs;
-	vec3_t			diffpos;//, c_vec;
+	vec3_t			diffpos;
 	centity_t		*end, *grab;
+
+	if (!owner || !self)
+	{
+		return true;
+	}
 
 	end  = (centity_t *)self->extra;
 	grab = *fxi.cl_entities + self->LifeTime;
@@ -277,7 +281,7 @@ FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
 	//Store for lerping
 	self->lastThinkTime = fxi.cl->time;
 
-  return true;
+	return true;
 }
 
 /*
@@ -290,7 +294,8 @@ FXRopeTopDraw(struct client_entity_s *self, centity_t *owner)
 	FXRope
 -----------------------------------------------*/
 
-void FXRope(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXRope(centity_t *owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t	*rope, *ropeb, *ropem;
 	qboolean		attached;

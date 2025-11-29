@@ -16,7 +16,8 @@ typedef struct ResMngr_Block_s
 	struct ResMngr_Block_s *next;
 } ResMngr_Block_t;
 
-static void ResMngr_CreateBlock(ResourceManager_t *resource)
+static void
+ResMngr_CreateBlock(ResourceManager_t *resource)
 {
 	unsigned int _blockSize;
 	char *block;
@@ -54,7 +55,8 @@ static void ResMngr_CreateBlock(ResourceManager_t *resource)
 	*current = NULL;
 }
 
-void ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, unsigned int init_resPerBlock)
+void
+ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, unsigned int init_resPerBlock)
 {
 	resource->resSize = init_resSize;
 
@@ -67,7 +69,8 @@ void ResMngr_Con(ResourceManager_t *resource, size_t init_resSize, unsigned int 
 	ResMngr_CreateBlock(resource);
 }
 
-void ResMngr_Des(ResourceManager_t *resource)
+void
+ResMngr_Des(ResourceManager_t *resource)
 {
 	ResMngr_Block_t *toDelete;
 
@@ -81,7 +84,8 @@ void ResMngr_Des(ResourceManager_t *resource)
 	memset(resource, 0, sizeof(ResourceManager_t));
 }
 
-void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
+void *
+ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
 {
 	char **toPop;
 
@@ -106,9 +110,15 @@ void *ResMngr_AllocateResource(ResourceManager_t *resource, size_t size)
 	return (void *)(toPop + 1);
 }
 
-void ResMngr_DeallocateResource(ResourceManager_t *resource, void *toDeallocate, size_t size)
+void
+ResMngr_DeallocateResource(ResourceManager_t *resource, void *toDeallocate, size_t size)
 {
 	char **toPush;
+
+	if (!resource || !toDeallocate)
+	{
+		return;
+	}
 
 	//	assert(size == resource->resSize);
 
@@ -123,4 +133,3 @@ void ResMngr_DeallocateResource(ResourceManager_t *resource, void *toDeallocate,
 	resource->free = toPush;
 }
 
-// end
