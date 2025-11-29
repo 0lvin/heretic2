@@ -40,32 +40,6 @@ void AddParticleToList(client_entity_t *ce, client_particle_t *fx)
 
 	fx->next = ce->p_root;
 	ce->p_root = fx;
-
-#if	_DEBUG
-	// Check to see that a ce isn`t spawning particles
-	// while not in the view. This is a HUGE memory leak
-	// which is most likely responsible for the chug.
-
-	// INSTRUCTIONS TO FIX
-	// Find the client effect that called _this spawn function (one level up in call stack)
-	// Either (a) tell the person who wrote the bugged code in the first place to correct it
-	// or (b) emulate the ViewStatusChanged functionality of the fire or the fountain (_this is a
-	// 5 minute fix at most)
-	{
-		int					i = 0;
-		client_particle_t	*p = ce->p_root;
-
-		while (p)
-		{
-			i++;
-			p = p->next;
-		}
-		if (i > MAX_PARTS_PER_CE)
-		{
-			Com_DPrintf("Memory leak due to lack of CEF_VIEWSTATUSCHANGED\n");
-		}
-	}
-#endif
 }
 
 void RemoveParticleList(client_particle_t **root)

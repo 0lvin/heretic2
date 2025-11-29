@@ -2009,56 +2009,49 @@ void CScript::Free(bool DoData)
 		Data = NULL;
 	}
 
-	for (vit iv = LocalVariables.begin(); iv != LocalVariables.end(); ++iv)
+	for (vit iv = LocalVariables.begin(); iv != LocalVariables.end(); /* no increment here */)
 	{
-		delete (*iv);
-
-		iv = LocalVariables.erase(iv);
+		delete *iv;
+		iv = LocalVariables.erase(iv); /* erase returns next; handle end() safely */
 	}
 
-	for (vit iv = ParameterVariables.begin(); iv != ParameterVariables.end(); ++iv)
+	for (vit iv = ParameterVariables.begin(); iv != ParameterVariables.end(); /* no increment here */)
 	{
-		delete (*iv);
-
-		iv = ParameterVariables.erase(iv);
+		delete *iv;
+		iv = ParameterVariables.erase(iv); /* erase returns next; handle end() safely */
 	}
 
-	for (vit iv = Stack.begin(); iv != Stack.end(); ++iv)
+	for (vit iv = Stack.begin(); iv != Stack.end(); /* no increment here */)
 	{
-		delete (*iv);
-
-		iv = Stack.erase(iv);
+		delete *iv;
+		iv = Stack.erase(iv); /* erase returns next; handle end() safely */
 	}
 
-	for (vit iv = Waiting.begin(); iv != Waiting.end(); ++iv)
+	for (vit iv = Waiting.begin(); iv != Waiting.end(); /* no increment here */)
 	{
-		delete (*iv);
-
-		iv = Waiting.erase(iv);
+		delete *iv;
+		iv = Waiting.erase(iv); /* erase returns next; handle end() safely */
 	}
 
-	for (vis is = Signalers.begin(); is != Signalers.end(); ++is)
+	for (vis is = Signalers.begin(); is != Signalers.end(); /* no increment here */)
 	{
-		delete (*is);
-
-		is = Signalers.erase(is);
+		delete *is;
+		is = Signalers.erase(is); /* erase returns next; handle end() safely */
 	}
 
-	for (viv isv = ParameterValues.begin(); isv != ParameterValues.end(); ++isv)
+	for (viv isv = ParameterValues.begin(); isv != ParameterValues.end(); /* no increment here */)
 	{
-		delete (*isv);
-
-		isv = ParameterValues.erase(isv);
+		delete *isv;
+		isv = ParameterValues.erase(isv); /* erase returns next; handle end() safely */
 	}
 
-	for (vie iev = Events.begin(); iev != Events.end(); ++iev)
+	for (vie iev = Events.begin(); iev != Events.end(); /* no increment here */)
 	{
-		delete (*iev);
-
-		iev = Events.erase(iev);
+		delete *iev;
+		iev = Events.erase(iev); /* erase returns next; handle end() safely */
 	}
 
-	for(i=0;i<MAX_INDEX;i++)
+	for(i = 0; i < MAX_INDEX; i++)
 	{
 		if (Fields[i])
 		{
@@ -3756,7 +3749,7 @@ void CScript::AddEvent(Event *Which)
 
 void CScript::ProcessEvents(void)
 {
-	for (vie ie = Events.begin(); ie != Events.end(); ++ie)
+	for (vie ie = Events.begin(); ie != Events.end(); /* incremented inside */)
 	{
 		if ((*ie)->Process(this))
 		{
@@ -4102,7 +4095,7 @@ Variable *CScript::FindLocal(const char *Name)
 {
 	if (!LocalVariables.empty())
 	{
-		for (vit iv=LocalVariables.begin();iv != LocalVariables.end();iv++)
+		for (vit iv=LocalVariables.begin();iv != LocalVariables.end(); iv++)
 		{
 			if (strcmp(Name, (*iv)->GetName()) == 0)
 			{
@@ -4202,5 +4195,3 @@ bool CScript::NewParameter(Variable *Which)
 
 	return true;
 }
-
-//==========================================================================
