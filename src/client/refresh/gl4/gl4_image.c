@@ -208,8 +208,14 @@ GL4_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 		}
 	}
 
+	/* optimize 8bit images only when we forced such logic */
+	if (r_scale8bittextures->value)
+	{
+		SmoothColorImage(data, width * height, width);
+	}
+
 	glTexImage2D(GL_TEXTURE_2D, 0, comp, width, height,
-	             0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 	res = (samples == gl4_alpha_format);
 
@@ -670,7 +676,7 @@ GL4_FindImage(const char *originname, imagetype_t type)
 	// load the pic from disk
 	//
 	image = (gl4image_t *)R_LoadImage(name, namewe, ext, type,
-		r_retexturing->value, (loadimage_t)GL4_LoadPic);
+		(loadimage_t)GL4_LoadPic);
 
 	if (!image && r_validation->value)
 	{
