@@ -110,9 +110,6 @@ CL_ReadPos(sizebuf_t *sb, vec3_t pos)
 	MSG_ReadPos(sb, pos, cls.serverProtocol);
 }
 
-extern int r_numentities;
-extern entity_t r_entities[MAX_ENTITIES];
-
 extern lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
 
 extern int r_numparticles;
@@ -261,10 +258,8 @@ E_Load(void)
 	cl_game_import.cl = &cl;
 	cl_game_import.cls = &cls;
 
-	cl_game_import.r_numentities = &r_numentities;
-	cl_game_import.r_entities = r_entities;
-
 	cl_game_import.V_AddLight = V_AddLight;
+	cl_game_import.V_AddEntity = V_AddEntity;
 
 	cl_game_import.r_numparticles = &r_numparticles;
 	cl_game_import.r_particles = r_particles;

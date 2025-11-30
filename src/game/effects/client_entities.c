@@ -610,14 +610,7 @@ AddEntityToView(entity_t *ent)
 		ent->flags |= RF_TRANSLUCENT;
 	}
 
-	if ((*fxi.r_numentities) < MAX_ENTITIES)
-	{
-		fxi.r_entities[(*fxi.r_numentities)++] = *ent;
-	}
-	else
-	{
-		return false;
-	}
+	fxi.V_AddEntity(ent);
 
 	return true;
 }

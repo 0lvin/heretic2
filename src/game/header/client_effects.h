@@ -41,9 +41,6 @@ typedef struct
 	client_state_t	*cl;
 	client_static_t *cls;
 
-	int *r_numentities;
-	entity_t *r_entities;
-
 	int *r_numparticles;
 	particle_t *r_particles;
 
@@ -69,7 +66,7 @@ typedef struct
 	void	(*Con_Printf) (int print_level, const char *str, ...);
 	void	(*Com_Printf) (const char *msg, ...);
 	void	(*V_AddLight) (vec3_t org, float intensity, float r, float g, float b);
-
+	void	(*V_AddEntity) (entity_t *ent);
 	//
 
 	cvar_t *(*Cvar_Get) (const char *name, const char *value, int flags);

@@ -50,8 +50,8 @@ cvar_t *cl_stats;
 static int r_numdlights;
 static dlight_t r_dlights[MAX_DLIGHTS];
 
-int r_numentities;
-entity_t r_entities[MAX_ENTITIES];
+static int r_numentities;
+static entity_t r_entities[MAX_ENTITIES];
 
 int r_numparticles;
 particle_t r_particles[MAX_PARTICLES];
