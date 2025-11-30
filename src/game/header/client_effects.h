@@ -44,9 +44,6 @@ typedef struct
 	int *r_numentities;
 	entity_t *r_entities;
 
-	int *r_numdlights;
-	dlight_t *r_dlights;
-
 	int *r_numparticles;
 	particle_t *r_particles;
 
@@ -71,6 +68,7 @@ typedef struct
 	void	(*Com_Error) (int code, const char *fmt, ...);
 	void	(*Con_Printf) (int print_level, const char *str, ...);
 	void	(*Com_Printf) (const char *msg, ...);
+	void	(*V_AddLight) (vec3_t org, float intensity, float r, float g, float b);
 
 	//
 

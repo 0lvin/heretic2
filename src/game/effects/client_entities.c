@@ -295,24 +295,14 @@ AddEffectsToView(client_entity_t **root, centity_t *owner)
 		{
 			CE_DLight_t *ce_dlight = current->dlight;
 
-			if ((*fxi.r_numdlights) < MAX_DLIGHTS)
+			if (ce_dlight->intensity > 0.0)
 			{
-				if (ce_dlight->intensity > 0.0)
+				if ((dot + (ce_dlight->intensity * ce_dlight->intensity) / (dist*300.0f)) > viewFOV) // 300.0 was determined by trial and error with intensities of 200 and 400
 				{
-					if ((dot + (ce_dlight->intensity*ce_dlight->intensity)/(dist*300.0f)) > viewFOV) // 300.0 was determined by trial and error with intensities of 200 and 400
-					{
-						dlight_t *dl;
-
-						dl = &fxi.r_dlights[(*fxi.r_numdlights)++];
-
-						VectorCopy(current->r.origin, dl->origin);
-
-						dl->intensity = ce_dlight->intensity;
-
-						dl->color[0] = ce_dlight->color.r;
-						dl->color[1] = ce_dlight->color.g;
-						dl->color[2] = ce_dlight->color.b;
-					}
+					fxi.V_AddLight(current->r.origin, ce_dlight->intensity,
+						ce_dlight->color.r,
+						ce_dlight->color.g,
+						ce_dlight->color.b);
 				}
 			}
 		}

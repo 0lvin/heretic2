@@ -47,8 +47,8 @@ cvar_t *crosshair_3d_glow_b;
 
 cvar_t *cl_stats;
 
-int r_numdlights;
-dlight_t r_dlights[MAX_DLIGHTS];
+static int r_numdlights;
+static dlight_t r_dlights[MAX_DLIGHTS];
 
 int r_numentities;
 entity_t r_entities[MAX_ENTITIES];

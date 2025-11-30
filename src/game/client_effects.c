@@ -113,9 +113,6 @@ CL_ReadPos(sizebuf_t *sb, vec3_t pos)
 extern int r_numentities;
 extern entity_t r_entities[MAX_ENTITIES];
 
-extern int r_numdlights;
-extern dlight_t r_dlights[MAX_DLIGHTS];
-
 extern lightstyle_t r_lightstyles[MAX_LIGHTSTYLES];
 
 extern int r_numparticles;
@@ -267,8 +264,7 @@ E_Load(void)
 	cl_game_import.r_numentities = &r_numentities;
 	cl_game_import.r_entities = r_entities;
 
-	cl_game_import.r_numdlights = &r_numdlights;
-	cl_game_import.r_dlights = r_dlights;
+	cl_game_import.V_AddLight = V_AddLight;
 
 	cl_game_import.r_numparticles = &r_numparticles;
 	cl_game_import.r_particles = r_particles;
