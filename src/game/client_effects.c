@@ -260,9 +260,7 @@ E_Load(void)
 
 	cl_game_import.V_AddLight = V_AddLight;
 	cl_game_import.V_AddEntity = V_AddEntity;
-
-	cl_game_import.r_numparticles = &r_numparticles;
-	cl_game_import.r_particles = r_particles;
+	cl_game_import.V_AddParticle = V_AddParticle;
 
 	cl_game_import.cl_entities = &cl_entities;
 	cl_game_import.cl_numentities = &cl_numentities;

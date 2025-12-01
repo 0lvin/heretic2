@@ -41,22 +41,16 @@ typedef struct
 	client_state_t	*cl;
 	client_static_t *cls;
 
-	int *r_numparticles;
-	particle_t *r_particles;
-
 	// Client versions of the game entities.
-
 	centity_t		**cl_entities;
 	int 		*cl_numentities;
 
 	// Buffer into which net stuff is parsed.
-
 	entity_xstate_t	*parse_entities;
 
 	sizebuf_t		*net_message;
 
 	// Client prediction stuff.
-
 	cvar_t			*cl_predict;
 	float			*leveltime;
 	//
@@ -67,6 +61,7 @@ typedef struct
 	void	(*Com_Printf) (const char *msg, ...);
 	void	(*V_AddLight) (vec3_t org, float intensity, float r, float g, float b);
 	void	(*V_AddEntity) (entity_t *ent);
+	void	(*V_AddParticle) (vec3_t org, unsigned int color, float alpha);
 	//
 
 	cvar_t *(*Cvar_Get) (const char *name, const char *value, int flags);

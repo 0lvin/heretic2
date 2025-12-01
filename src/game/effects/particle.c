@@ -20,6 +20,13 @@
 ResourceManager_t ParticleMngr;
 int ParticleUpdateTime = 0;
 
+typedef struct {
+	vec3_t	origin;
+	unsigned	color;
+	float	alpha;
+	float	scale;
+} h2particle_t;
+
 void
 InitParticleMngrMngr()
 {
@@ -85,7 +92,6 @@ AddParticlesToView(client_entity_t *ce)
 	float				d_time, d_time2;
 	int					d_msec;
 	int					alpha, ptype;
-	particle_t			*r;
 	qboolean			cull_parts;
 	int					part_info;
 	float				maxdepth2, mindepth2, depth;
@@ -101,6 +107,8 @@ AddParticlesToView(client_entity_t *ce)
 
 	for(prev = &ce->p_root, current = ce->p_root; current; current = current->next)
 	{
+		h2particle_t r;
+
 		ptype = current->type & PFL_FLAG_MASK;
 
 		d_msec = ParticleUpdateTime - current->startTime;
@@ -112,13 +120,6 @@ AddParticlesToView(client_entity_t *ce)
 			alpha = 255 - (alpha - 255);	// A weird thing to do, but necessary because the alpha is
 											// based off a dtime from the CREATION of the particle
 		}
-
-		if ((*fxi.r_numparticles) >= MAX_PARTICLES)
-		{
-			return(numparticles);
-		}
-
-		r = &fxi.r_particles[*fxi.r_numparticles];
 
 		//add to additive particle list
 		if ((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE))
@@ -132,26 +133,26 @@ AddParticlesToView(client_entity_t *ce)
 
 		assert(ptype < NUM_PARTICLE_TYPES);
 
-		r->color = current->color.c;
+		r.color = current->color.c;
 
 		if (alpha > 255 || !((ce->flags & CEF_ADDITIVE_PARTS) || (current->type & PFL_ADDITIVE)))
 		{
-			r->alpha = 255;
+			r.alpha = 255;
 		}
 		else
 		{
-			r->alpha = alpha;
+			r.alpha = alpha;
 		}
 
-		r->scale = current->scale + (d_time * current->d_scale);
+		r.scale = current->scale + (d_time * current->d_scale);
 
 		d_time2 = d_time * d_time * 0.5;
 
 		if (ce->flags & CEF_ABSOLUTE_PARTS)
 		{
-			r->origin[0] = current->origin[0] + (current->velocity[0] * d_time) + (current->acceleration[0] * d_time2);
-			r->origin[1] = current->origin[1] + (current->velocity[1] * d_time) + (current->acceleration[1] * d_time2);
-			r->origin[2] = current->origin[2] + (current->velocity[2] * d_time) + (current->acceleration[2] * d_time2);
+			r.origin[0] = current->origin[0] + (current->velocity[0] * d_time) + (current->acceleration[0] * d_time2);
+			r.origin[1] = current->origin[1] + (current->velocity[1] * d_time) + (current->acceleration[1] * d_time2);
+			r.origin[2] = current->origin[2] + (current->velocity[2] * d_time) + (current->acceleration[2] * d_time2);
 		}
 		else
 		{
@@ -161,43 +162,43 @@ AddParticlesToView(client_entity_t *ce)
 				yaw = current->origin[SPH_YAW] + (current->velocity[SPH_YAW] * d_time) + (current->acceleration[SPH_YAW] * d_time2);
 				pitch = current->origin[SPH_PITCH] + (current->velocity[SPH_PITCH] * d_time) + (current->acceleration[SPH_YAW] * d_time2);
 				radius = current->origin[SPH_RADIUS] + (current->velocity[SPH_RADIUS] * d_time) + (current->acceleration[SPH_RADIUS] * d_time2);
-				r->origin[0] = ce->r.origin[0] + cos(yaw) * cos(pitch) * radius;
-				r->origin[1] = ce->r.origin[1] + sin(yaw) * cos(pitch) * radius;
-				r->origin[2] = ce->r.origin[2] + sin(pitch) * radius;
+				r.origin[0] = ce->r.origin[0] + cos(yaw) * cos(pitch) * radius;
+				r.origin[1] = ce->r.origin[1] + sin(yaw) * cos(pitch) * radius;
+				r.origin[2] = ce->r.origin[2] + sin(pitch) * radius;
 				break;
 			case PFL_MOVE_CYL_X:
 				yaw = current->origin[CYL_YAW] + (current->velocity[CYL_YAW] * d_time) + (current->acceleration[CYL_YAW] * d_time2);
 				radius = current->origin[CYL_RADIUS] + (current->velocity[CYL_RADIUS] * d_time) + (current->acceleration[CYL_RADIUS] * d_time2);
-				r->origin[0] = ce->r.origin[0] + current->origin[CYL_Z] + (current->velocity[CYL_Z] * d_time) + (current->acceleration[CYL_Z] * d_time2);
-				r->origin[1] = ce->r.origin[1] + cos(yaw) * radius;
-				r->origin[2] = ce->r.origin[2] + sin(yaw) * radius;
+				r.origin[0] = ce->r.origin[0] + current->origin[CYL_Z] + (current->velocity[CYL_Z] * d_time) + (current->acceleration[CYL_Z] * d_time2);
+				r.origin[1] = ce->r.origin[1] + cos(yaw) * radius;
+				r.origin[2] = ce->r.origin[2] + sin(yaw) * radius;
 				break;
 			case PFL_MOVE_CYL_Y:
 				yaw = current->origin[CYL_YAW] + (current->velocity[CYL_YAW] * d_time) + (current->acceleration[CYL_YAW] * d_time2);
 				radius = current->origin[CYL_RADIUS] + (current->velocity[CYL_RADIUS] * d_time) + (current->acceleration[CYL_RADIUS] * d_time2);
-				r->origin[0] = ce->r.origin[0] + cos(yaw) * radius;
-				r->origin[1] = ce->r.origin[1] + current->origin[CYL_Z] + (current->velocity[CYL_Z] * d_time) + (current->acceleration[CYL_Z] * d_time2);
-				r->origin[2] = ce->r.origin[2] + sin(yaw) * radius;
+				r.origin[0] = ce->r.origin[0] + cos(yaw) * radius;
+				r.origin[1] = ce->r.origin[1] + current->origin[CYL_Z] + (current->velocity[CYL_Z] * d_time) + (current->acceleration[CYL_Z] * d_time2);
+				r.origin[2] = ce->r.origin[2] + sin(yaw) * radius;
 				break;
 			case PFL_MOVE_CYL_Z:
 				yaw = current->origin[CYL_YAW] + (current->velocity[CYL_YAW] * d_time) + (current->acceleration[CYL_YAW] * d_time2);
 				radius = current->origin[CYL_RADIUS] + (current->velocity[CYL_RADIUS] * d_time) + (current->acceleration[CYL_RADIUS] * d_time2);
-				r->origin[0] = ce->r.origin[0] + cos(yaw) * radius;
-				r->origin[1] = ce->r.origin[1] + sin(yaw) * radius;
-				r->origin[2] = ce->r.origin[2] + current->origin[CYL_Z] + (current->velocity[CYL_Z] * d_time) + (current->acceleration[CYL_Z] * d_time2);
+				r.origin[0] = ce->r.origin[0] + cos(yaw) * radius;
+				r.origin[1] = ce->r.origin[1] + sin(yaw) * radius;
+				r.origin[2] = ce->r.origin[2] + current->origin[CYL_Z] + (current->velocity[CYL_Z] * d_time) + (current->acceleration[CYL_Z] * d_time2);
 				break;
 			case PFL_MOVE_NORM:
 			default:
-				r->origin[0] = ce->r.origin[0] + current->origin[0] + (current->velocity[0] * d_time) + (current->acceleration[0] * d_time2);
-				r->origin[1] = ce->r.origin[1] + current->origin[1] + (current->velocity[1] * d_time) + (current->acceleration[1] * d_time2);
-				r->origin[2] = ce->r.origin[2] + current->origin[2] + (current->velocity[2] * d_time) + (current->acceleration[2] * d_time2);
+				r.origin[0] = ce->r.origin[0] + current->origin[0] + (current->velocity[0] * d_time) + (current->acceleration[0] * d_time2);
+				r.origin[1] = ce->r.origin[1] + current->origin[1] + (current->velocity[1] * d_time) + (current->acceleration[1] * d_time2);
+				r.origin[2] = ce->r.origin[2] + current->origin[2] + (current->velocity[2] * d_time) + (current->acceleration[2] * d_time2);
 				break;
 			}
 		}
 
 		if (cull_parts || (current->type & PFL_NEARCULL))
 		{
-			depth = VectorSeparationSquared(r->origin, fxi.cl->refdef.vieworg);
+			depth = VectorSeparationSquared(r.origin, fxi.cl->refdef.vieworg);
 
 			if ((depth > maxdepth2) || (depth < mindepth2))
 			{
@@ -211,7 +212,7 @@ AddParticlesToView(client_entity_t *ce)
 			break;
 		case 1:
 		case 2:
-			(*fxi.r_numparticles)++;
+			fxi.V_AddParticle(r.origin, r.color, r.alpha);
 			break;
 		default:
 			assert(0);

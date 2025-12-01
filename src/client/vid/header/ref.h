@@ -112,7 +112,6 @@ typedef struct {
 	vec3_t	origin;
 	unsigned	color;
 	float	alpha;
-	float	scale;
 } particle_t;
 
 typedef struct {
