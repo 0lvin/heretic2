@@ -1108,6 +1108,7 @@ extern void rotating_use ( edict_t * self , edict_t * other , edict_t * activato
 extern void script_use (edict_t *ent, edict_t *other, edict_t *activator);
 extern void secret_blocked ( edict_t * self , edict_t * other ) ;
 extern void secret_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
+extern void SetRespawn ( edict_t * ent , float delay ) ;
 extern void SetTriggeredSpawn ( edict_t * ent ) ;
 extern void shalrath_attack ( edict_t * self ) ;
 extern void shalrath_dead ( edict_t * self ) ;
