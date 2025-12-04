@@ -3943,14 +3943,16 @@ soundambient_server_think(edict_t *self)
 			case 2: strcpy(soundname, "ambient/kidcry1.wav"); break;
 			default: strcpy(soundname, "ambient/kidcry2.wav"); break;
 		}
+		break;
 	case AS_MOSQUITOES:
 		chance = randk() % 2;
 		snprintf(soundname, sizeof(soundname), "ambient/insects%d.wav", chance + 1);
 		break;
 	case AS_BUBBLES:
-		strcpy(soundname, "ambient/bubbles.wav"); break;
+		strcpy(soundname, "ambient/bubbles.wav");
+		break;
 	case AS_BELL:
-		strcpy(soundname, "ambient/bell.wav"); break;
+		strcpy(soundname, "ambient/bell.wav");
 		break;
 	case AS_FOOTSTEPS:
 		chance = randk() % 3;
@@ -3960,6 +3962,7 @@ soundambient_server_think(edict_t *self)
 			case 1: strcpy(soundname, "ambient/runaway2.wav"); break;
 			default: strcpy(soundname, "ambient/sewerrun.wav"); break;
 		};
+		break;
 	case AS_MOANS:
 		chance = randk() % 5;
 		switch(chance)
@@ -3970,6 +3973,7 @@ soundambient_server_think(edict_t *self)
 			case 3: strcpy(soundname, "ambient/scream2.wav"); break;
 			default: strcpy(soundname, "ambient/coughing.wav"); break;
 		};
+		break;
 	case AS_SEWERDRIPS:
 		chance = randk() % 3;
 		snprintf(soundname, sizeof(soundname), "ambient/sewerdrop%d.wav", chance + 1);
@@ -3983,13 +3987,16 @@ soundambient_server_think(edict_t *self)
 		snprintf(soundname, sizeof(soundname), "ambient/soliddrop%d.wav", chance + 1);
 		break;
 	case AS_WINDCHIME:
-		strcpy(soundname, "ambient/windchimes.wav"); break;
+		strcpy(soundname, "ambient/windchimes.wav");
+		break;
 	case AS_BIRD1:
-		strcpy(soundname, "ambient/bird5.wav"); break;
+		strcpy(soundname, "ambient/bird5.wav");
+		break;
 	case AS_BIRD2:
-		strcpy(soundname, "ambient/bird8.wav"); break;
+		strcpy(soundname, "ambient/bird8.wav");
+		break;
 	case AS_GONG:
-		strcpy(soundname, "ambient/gong.wav"); break;
+		strcpy(soundname, "ambient/gong.wav");
 		break;
 	case AS_ROCKS:
 		chance = randk() % 3;
@@ -3999,8 +4006,10 @@ soundambient_server_think(edict_t *self)
 			case 1: strcpy(soundname, "ambient/rocks4.wav"); break;
 			default: strcpy(soundname, "ambient/rocks5.wav"); break;
 		};
+		break;
 	case AS_CAVECREAK:
-		strcpy(soundname, "ambient/cavecreak1.wav"); break;
+		strcpy(soundname, "ambient/cavecreak1.wav");
+		break;
 	default:
 		gi.dprintf("ERROR:  invalid ambient sound type :%d at x:%f  y:%f  z:%f\n", style,
 			self->s.origin[0], self->s.origin[1], self->s.origin[2]);
