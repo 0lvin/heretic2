@@ -2108,10 +2108,7 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	VectorSet(normal, 0, 0, 1);
 	if (plane)
 	{
-		if (plane->normal)
-		{
-			VectorCopy(plane->normal, normal);
-		}
+		VectorCopy(plane->normal, normal);
 	}
 
 	if (other->takedamage)
@@ -2176,10 +2173,7 @@ void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t 
 		VectorSet(normal, 0, 0, 1);
 		if (Plane)
 		{
-			if (Plane->normal)
-			{
-				VectorCopy(Plane->normal, normal);
-			}
+			VectorCopy(Plane->normal, normal);
 		}
 		damage = flrand(SSITHRA_DMG_MIN,SSITHRA_DMG_MAX);
 		T_Damage(Other,self,self->owner,self->movedir,self->s.origin,normal,damage,0,0,MOD_DIED);
@@ -2230,23 +2224,16 @@ void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurfac
 
 	if (other->takedamage)
 	{
-		if (plane->normal)
-			VectorCopy(plane->normal, self->movedir);
-
+		VectorCopy(plane->normal, self->movedir);
 		self->dmg = irand(SSITHRA_DMG_MIN*2, SSITHRA_DMG_MAX*2);
 		ssithraArrowExplode(self);
 	}
 	else
 	{
 		VectorClear(self->velocity);
-
 		self->s.effects |= EF_MARCUS_FLAG1;
-
-		if (plane->normal)
-			VectorCopy(plane->normal, self->movedir);
-
+		VectorCopy(plane->normal, self->movedir);
 		self->dmg = irand(SSITHRA_DMG_MIN, SSITHRA_DMG_MAX);
-
 		self->think = ssithraArrowExplode;
 		self->nextthink = level.time + flrand(0.5, 1.5);
 	}

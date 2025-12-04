@@ -245,7 +245,8 @@ static void spreader_grenade_bounce ( edict_t *self, trace_t *trace )
 /*-------------------------------------------------------------------------
 	spreader_grenade_touch
 -------------------------------------------------------------------------*/
-static void spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *plane,
+static void
+spreader_grenade_touch (edict_t *self, edict_t *other, cplane_t *plane,
 							csurface_t *surf)
 {
 	vec3_t	vel;

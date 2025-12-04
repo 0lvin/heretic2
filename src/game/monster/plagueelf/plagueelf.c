@@ -628,11 +628,9 @@ void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurfa
 		VectorSet(normal, 0, 0, 1);
 		if (Plane)
 		{
-			if (Plane->normal)
-			{
-				VectorCopy(Plane->normal, normal);
-			}
+			VectorCopy(Plane->normal, normal);
 		}
+
 		T_Damage(Other,self,self->owner,self->movedir,self->s.origin,normal,self->dmg,0,DAMAGE_SPELL,MOD_DIED);
 	}
 
@@ -1360,6 +1358,10 @@ void plagueElf_pause (edict_t *self)
 			SetAnim(self, PLAGUEELF_ANIM_DELAY);
 		else
 			SetAnim(self, PLAGUEELF_ANIM_FJUMP);
+		break;
+
+	case AI_MOOD_NORMAL:
+		/* ignore for now */
 		break;
 
 	default :

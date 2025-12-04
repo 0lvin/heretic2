@@ -359,23 +359,16 @@ void mssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csu
 
 	if (other->takedamage)
 	{
-		if (plane->normal)
-			VectorCopy(plane->normal, self->movedir);
-
+		VectorCopy(plane->normal, self->movedir);
 		self->dmg = irand(MSSITHRA_DMG_MIN*2, MSSITHRA_DMG_MAX*2);
 		mssithra_missile_explode(self);
 	}
 	else
 	{
 		gi.sound(self, CHAN_WEAPON, Sounds[SND_INWALL], 0.5, ATTN_NORM, 0);
-
 		self->s.effects |= EF_ALTCLIENTFX;
-
 		VectorClear(self->velocity);
-
-		if (plane->normal)
-			VectorCopy(plane->normal, self->movedir);
-
+		VectorCopy(plane->normal, self->movedir);
 		self->dmg = irand(MSSITHRA_DMG_MIN, MSSITHRA_DMG_MAX);
 		self->think = mssithra_missile_explode;
 		self->nextthink = level.time + flrand(0.5, 1.5);

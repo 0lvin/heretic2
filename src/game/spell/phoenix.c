@@ -71,7 +71,7 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		if (EntReflecting(other, true, true))
 		{
 			Create_rand_relect_vect(self->velocity, self->velocity);
-			Vec3ScaleAssign(PHOENIX_ARROW_SPEED/2,self->velocity);
+			Vec3ScaleAssign(PHOENIX_ARROW_SPEED / 2, self->velocity);
 			PhoenixMissileReflect(self, other, self->velocity);
 			return;
 		}
@@ -111,12 +111,11 @@ void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurfac
 		makeScorch = CEF_FLAG8;
 	}
 
-	VectorNormalize2(self->velocity,self->movedir);
+	VectorNormalize2(self->velocity, self->movedir);
 	// Start the explosion
-	if (plane->normal)
-		gi.CreateEffect(self, FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST |(self->health << 5)| makeScorch, self->s.origin, "td", plane->normal, self->movedir);
-	else
-		gi.CreateEffect(self, FX_WEAPON_PHOENIXEXPLODE, CEF_BROADCAST |(self->health << 5)| makeScorch, self->s.origin, "td", self->movedir, self->movedir);
+	gi.CreateEffect(self, FX_WEAPON_PHOENIXEXPLODE,
+		CEF_BROADCAST | (self->health << 5) | makeScorch, self->s.origin, "td",
+		plane->normal, self->movedir);
 
 	VectorClear(self->velocity);
    // Turn off the client effect
