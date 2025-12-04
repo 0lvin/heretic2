@@ -82,6 +82,15 @@ b92d295e769b2c5a94ee2dbf1bbe12e4 baseq2/video/intro.mpg
 9c201601fdd82754068d02a5474a4e60 baseq2/video/outro.mpg
 ```
 
+Maps checked:
+
+| Name                     | map         | Video                                                                                                                |
+| ------------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| Silverspring Docks       | ssdocks     | [![ssdocks](https://img.youtube.com/vi/HKvQvU5iQ9s/hqdefault.jpg)](https://www.youtube.com/watch?v=HKvQvU5iQ9sA)     |
+| Silverspring Warehouses  | sswarehouse | [![sswarehouse](https://img.youtube.com/vi/xZdPHOV7swg/hqdefault.jpg)](https://www.youtube.com/watch?v=xZdPHOV7swgA) |
+| The Town of Silverspring | sstown      | [![sstown](https://img.youtube.com/vi/C40PO0utzfQ/hqdefault.jpg)](https://www.youtube.com/watch?v=C40PO0utzfQA)      |
+| Silverspring Palace      | sspalace    | [![ssdocks](https://img.youtube.com/vi/fdA2Iya16ks/hqdefault.jpg)](https://www.youtube.com/watch?v=fdA2Iya16ksA)     |
+
 Code checked with:
 ```
 map ssdocks
