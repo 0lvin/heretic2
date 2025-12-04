@@ -1216,6 +1216,7 @@ extern void soldier_stop_charge ( edict_t * self ) ;
 extern void soldier_walk1_random ( edict_t * self ) ;
 extern void soldier_walk ( edict_t * self ) ;
 extern void soundambient_think(edict_t *self);
+extern void soundambient_server_think(edict_t *self);
 extern void sound_ambient_use(edict_t *self, edict_t *other, edict_t *activator);
 extern void SpawnFlame(edict_t *self,vec3_t origin);
 extern void spawngrow_think ( edict_t * self ) ;

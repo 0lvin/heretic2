@@ -90,7 +90,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXStaffRemove,					NULL,					NULL		}, // FX_STAFF_REMOVE
 	{ FXDustPuffOnGround,				NULL,					NULL		}, // FX_DUST_PUFF
 	{ FXFire,							NULL,					"b"			}, // FX_FIRE
-	{ FXSound,							NULL,					"bbbb"		}, // FX_SOUND
 	{ FXPickup,							PreCachePickup,			NULL		}, // FX_PICKUP
 	{ FXGenericHitPuff,					NULL,					"db"		}, // FX_HITPUFF
 	{ FXDust,							PreCacheRockchunks,		"bdb"		}, // FX_DUST

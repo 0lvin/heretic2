@@ -502,6 +502,7 @@
 {"SkyFlyCheck", (byte *)SkyFlyCheck},
 {"smart_water_go_up", (byte *)smart_water_go_up},
 {"soundambient_think", (byte *)soundambient_think},
+{"soundambient_server_think", (byte *)soundambient_server_think},
 {"sound_ambient_use", (byte *)sound_ambient_use},
 {"SpawnFlame", (byte *)SpawnFlame},
 {"spawngrow_think", (byte *)spawngrow_think},

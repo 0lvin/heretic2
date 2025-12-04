@@ -27,7 +27,6 @@
 
 #include "header/local.h"
 #include "monster/misc/player.h"
-#include "effects/ambientsound.h"
 
 int debristhisframe;
 int gibsthisframe;
@@ -207,6 +206,57 @@ void ED_CallSpawn(edict_t *ent);
 extern	vec3_t	mins;
 
 #define CAMERA_SCRIPTED 2
+
+/* For ambient sounds. */
+typedef enum AmbientSoundID_e
+{
+	AS_NOTHING = 0,
+	AS_FIRE,
+	AS_WATERLAPPING,
+	AS_SEAGULLS,
+	AS_OCEAN,
+	AS_BIRDS,
+	AS_CRICKETS,
+	AS_FROGS,
+	AS_CRYING,
+	AS_MOSQUITOES,
+	AS_BUBBLES,    // 10
+
+	AS_BELL,
+	AS_FOOTSTEPS,
+	AS_MOANS,
+	AS_SEWERDRIPS,
+	AS_WATERDRIPS,
+	AS_HEAVYDRIPS,
+	AS_SMALLFOUNTAIN,
+	AS_LARGEFOUNTAIN,
+	AS_SEWERWATER,
+	AS_OUTSIDEWATERWAY,	// 20
+
+	AS_WINDCHIME,
+	AS_BIRD1,
+	AS_BIRD2,
+	AS_CAULDRONBUBBLE,
+	AS_HUGEWATERFALL,
+	AS_GONG,
+	AS_MUDPOOL,
+	AS_ROCKS,
+	AS_WINDEERIE,
+	AS_WINDNOISY,		// 30
+
+	AS_WINDSOFTHI,
+	AS_WINDSOFTLO,
+	AS_WINDSTRONG1,
+	AS_WINDSTRONG2,
+	AS_WINDWHISTLE,
+	AS_CONVEYOR,
+	AS_BUCKETCONVEYOR,
+
+	AS_CAVECREAK,
+	AS_SPIT,		// 39
+
+	AS_MAX
+} AmbientSoundID_t;
 
 int AndoriaSoundID[AS_MAX] =
 {
@@ -3846,9 +3896,131 @@ flame_think(edict_t *self)
 	self->nextthink = level.time + 200;
 }
 
-void soundambient_think(edict_t *self)
+/* Server-side thinker for non-looping ambient sounds.
+   Ports the logic from client-side fx_sound.c so the server directly
+   plays random ambient sound samples on a periodic basis. */
+void
+soundambient_server_think(edict_t *self)
 {
-	byte	style,wait,attenuation,volume;
+	int chance;
+	char soundname[MAX_QPATH] = {0};
+	int style = Q_ftol(self->style);
+	int att = Q_ftol(self->attenuation);
+	float vol = self->volume;
+
+	/* Choose a sound based on style (matches client fx_sound.c) */
+	switch(style)
+	{
+	case AS_SEAGULLS:
+		chance = randk() % 3;
+		snprintf(soundname, sizeof(soundname), "ambient/gull%d.wav", chance + 1);
+		break;
+	case AS_BIRDS:
+		chance = randk() % 10;
+		snprintf(soundname, sizeof(soundname), "ambient/bird%d.wav", chance + 1);
+		break;
+	case AS_CRICKETS:
+		chance = randk() % 3;
+		snprintf(soundname, sizeof(soundname), "ambient/cricket%d.wav", chance + 1);
+		break;
+	case AS_FROGS:
+		chance = randk() % 2;
+		if (chance)
+		{
+			strcpy(soundname, "ambient/frog.wav");
+		}
+		else
+		{
+			strcpy(soundname, "ambient/frog2.wav");
+		}
+		break;
+	case AS_CRYING:
+		chance = randk() % 4;
+		switch(chance)
+		{
+			case 0: strcpy(soundname, "ambient/femcry1.wav"); break;
+			case 1: strcpy(soundname, "ambient/femcry2.wav"); break;
+			case 2: strcpy(soundname, "ambient/kidcry1.wav"); break;
+			default: strcpy(soundname, "ambient/kidcry2.wav"); break;
+		}
+	case AS_MOSQUITOES:
+		chance = randk() % 2;
+		snprintf(soundname, sizeof(soundname), "ambient/insects%d.wav", chance + 1);
+		break;
+	case AS_BUBBLES:
+		strcpy(soundname, "ambient/bubbles.wav"); break;
+	case AS_BELL:
+		strcpy(soundname, "ambient/bell.wav"); break;
+		break;
+	case AS_FOOTSTEPS:
+		chance = randk() % 3;
+		switch(chance)
+		{
+			case 0: strcpy(soundname, "ambient/runaway1.wav"); break;
+			case 1: strcpy(soundname, "ambient/runaway2.wav"); break;
+			default: strcpy(soundname, "ambient/sewerrun.wav"); break;
+		};
+	case AS_MOANS:
+		chance = randk() % 5;
+		switch(chance)
+		{
+			case 0: strcpy(soundname, "ambient/moan1.wav"); break;
+			case 1: strcpy(soundname, "ambient/moan2.wav"); break;
+			case 2: strcpy(soundname, "ambient/scream1.wav"); break;
+			case 3: strcpy(soundname, "ambient/scream2.wav"); break;
+			default: strcpy(soundname, "ambient/coughing.wav"); break;
+		};
+	case AS_SEWERDRIPS:
+		chance = randk() % 3;
+		snprintf(soundname, sizeof(soundname), "ambient/sewerdrop%d.wav", chance + 1);
+		break;
+	case AS_WATERDRIPS:
+		chance = randk() % 3;
+		snprintf(soundname, sizeof(soundname), "ambient/waterdrop%d.wav", chance + 1);
+		break;
+	case AS_HEAVYDRIPS:
+		chance = randk() % 3;
+		snprintf(soundname, sizeof(soundname), "ambient/soliddrop%d.wav", chance + 1);
+		break;
+	case AS_WINDCHIME:
+		strcpy(soundname, "ambient/windchimes.wav"); break;
+	case AS_BIRD1:
+		strcpy(soundname, "ambient/bird5.wav"); break;
+	case AS_BIRD2:
+		strcpy(soundname, "ambient/bird8.wav"); break;
+	case AS_GONG:
+		strcpy(soundname, "ambient/gong.wav"); break;
+		break;
+	case AS_ROCKS:
+		chance = randk() % 3;
+		switch(chance)
+		{
+			case 0: strcpy(soundname, "ambient/rocks1.wav"); break;
+			case 1: strcpy(soundname, "ambient/rocks4.wav"); break;
+			default: strcpy(soundname, "ambient/rocks5.wav"); break;
+		};
+	case AS_CAVECREAK:
+		strcpy(soundname, "ambient/cavecreak1.wav"); break;
+	default:
+		gi.dprintf("ERROR:  invalid ambient sound type :%d at x:%f  y:%f  z:%f\n", style,
+			self->s.origin[0], self->s.origin[1], self->s.origin[2]);
+		break;
+	}
+
+	if (soundname[0])
+	{
+		/* play the sound from this entity on the server so clients hear it */
+		gi.sound(self, CHAN_AUTO, gi.soundindex(soundname), vol, att, 0);
+		/* schedule next play */
+		self->nextthink = level.time + (Q_ftol(self->wait) * flrand(.5, 1.5));
+	}
+}
+
+
+void
+soundambient_think(edict_t *self)
+{
+	byte attenuation, volume;
 
 	attenuation = Q_ftol(self->attenuation);
 	volume = Q_ftol(self->volume * 255);
@@ -3919,19 +4091,24 @@ void soundambient_think(edict_t *self)
 		self->s.sound = gi.soundindex("objects/spit.wav");
 		break;
 	default:
-		style = Q_ftol(self->style);
-		wait = Q_ftol(self->wait);
-		gi.CreatePersistantEffect(self,
-					FX_SOUND,
-					CEF_BROADCAST | CEF_OWNERS_ORIGIN,
-					self->s.origin,
-					"bbbb",
-					style,attenuation,volume,wait);
+		/* Server-side ambient sound: schedule a think function that will
+		   pick and play periodic one-shot ambient sounds on the server
+		   instead of creating a client-side persistent FX_SOUND effect. */
+		/* set up server-side periodic sound thinker and schedule first play */
+		self->think = soundambient_server_think;
+		/* schedule first play after roughly wait +/-50% */
+		self->nextthink = level.time + (Q_ftol(self->wait) * flrand(.5, 1.5));
 		break;
 	}
+
 	self->count = 1;	// This is just a flag to show it's on
 
-	self->think = NULL;
+	/* If this entity is using a looping s.sound, we don't need a thinker; clear it.
+	   Otherwise leave the previously assigned thinker (server-shot ambient). */
+	if (self->s.sound)
+	{
+		self->think = NULL;
+	}
 }
 
 void
@@ -3939,14 +4116,17 @@ sound_ambient_use(edict_t *self, edict_t *other, edict_t *activator)
 {
 	if (self->count)	// This is just a flag to show it's on
 	{
+		self->nextthink = 0;
 		self->count = 0;
-		G_RemoveEffects(self, FX_REMOVE_EFFECTS);
 	}
 	else
+	{
 		soundambient_think(self);
+	}
 }
 
-void sound_ambient_init(edict_t *self)
+static void
+sound_ambient_init(edict_t *self)
 {
 	VectorSet(self->mins,-4,-4,-4);
 	VectorSet(self->maxs,4,4,4);
@@ -3954,13 +4134,19 @@ void sound_ambient_init(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 
 	if (self->attenuation <= 0.01)
+	{
 		self->attenuation = 1;
+	}
 
 	if (self->volume <= 0.01)
+	{
 		self->volume = .5;
+	}
 
-	if (self->wait<1)
+	if (self->wait < 1)
+	{
 		self->wait = 10;
+	}
 
 	self->s.effects |= EF_NODRAW_ALWAYS_SEND;
 
@@ -3984,43 +4170,48 @@ void sound_ambient_init(edict_t *self)
 		VectorClear(self->s.origin);
 	}
 	else
+	{
 		// if we are here, then this ambient sound should have an origin
 		assert(Vec3NotZero(self->s.origin));
+	}
 
 	self->use = sound_ambient_use;
 
 	gi.linkentity(self);
 }
 
-/*QUAKED sound_ambient_cloudfortress (1 0 0) (-4 -4 0) (4 4 4) NON_LOCAL START_OFF
-Generates an ambient sound for cloud fortress levels
--------  FLAGS  ------------------
-NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative with this type of sound
-wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
-START_OFF - starts off, can be triggered on
--------  KEYS  ------------------
-style
-1 - Cauldron bubbling (looping sound)
-2 - wind, low, eerie (looping)
-3 - wind, low, noisy (looping)
-4 - wind, high, soft (looping)
-5 - wind, low, soft (looping)
-6 - wind, low, strong (looping)
-7 - wind, high, strong (looping)
-8 - wind, whistling, strong (looping)
-
-attenuation  (how quickly sound drops off from origin)
-   0 - heard over entire level (default)
-   1 -
-   2 -
-   3 - diminish very rapidly with distance
-
-volume   range of .1 to 1   (default .5)
-  0 - silent
-  1 - full volume
------------------------------------
-*/
-void SP_sound_ambient_cloudfortress (edict_t *self)
+/*
+ * QUAKED sound_ambient_cloudfortress (1 0 0) (-4 -4 0) (4 4 4) NON_LOCAL START_OFF
+ *
+ * Generates an ambient sound for cloud fortress levels
+ * -------  FLAGS  ------------------
+ * NON_LOCAL - sound occurs everywhere in the level - attenuation is not operative with this type of sound
+ * wait    amount of seconds to wait + or - 50% before spawning sound again (default is 10 seconds)
+ * START_OFF - starts off, can be triggered on
+ * -------  KEYS  ------------------
+ * style:
+ *   1 - Cauldron bubbling (looping sound)
+ *   2 - wind, low, eerie (looping)
+ *   3 - wind, low, noisy (looping)
+ *   4 - wind, high, soft (looping)
+ *   5 - wind, low, soft (looping)
+ *   6 - wind, low, strong (looping)
+ *   7 - wind, high, strong (looping)
+ *   8 - wind, whistling, strong (looping)
+ *
+ * attenuation (how quickly sound drops off from origin)
+ *   0 - heard over entire level (default)
+ *   1 -
+ *   2 -
+ *   3 - diminish very rapidly with distance
+ *
+ * volume   range of .1 to 1   (default .5)
+ *   0 - silent
+ *   1 - full volume
+ * -----------------------------------
+ */
+void
+SP_sound_ambient_cloudfortress(edict_t *self)
 {
 	sound_ambient_init(self);
 

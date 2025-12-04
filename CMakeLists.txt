@@ -668,7 +668,6 @@ set(Effects-Source
 	${EFFECTS_SRC_DIR}/fx_shield.c
 	${EFFECTS_SRC_DIR}/fx_shrine.c
 	${EFFECTS_SRC_DIR}/fx_smoke.c
-	${EFFECTS_SRC_DIR}/fx_sound.c
 	${EFFECTS_SRC_DIR}/fx_sparks.c
 	${EFFECTS_SRC_DIR}/fx_spellchange.c
 	${EFFECTS_SRC_DIR}/fx_spellhands.c
@@ -696,7 +695,6 @@ set(Effects-Source
 	)
 
 set(Effects-Header
-	${EFFECTS_SRC_DIR}/ambientsound.h
 	${EFFECTS_SRC_DIR}/ce_defaultmessagehandler.h
 	${EFFECTS_SRC_DIR}/ce_dlight.h
 	${EFFECTS_SRC_DIR}/ce_message.h

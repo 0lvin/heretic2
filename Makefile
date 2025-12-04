@@ -1431,7 +1431,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/fx_shield.o \
 	src/game/effects/fx_shrine.o \
 	src/game/effects/fx_smoke.o \
-	src/game/effects/fx_sound.o \
 	src/game/effects/fx_sparks.o \
 	src/game/effects/fx_spellchange.o \
 	src/game/effects/fx_spellhands.o \

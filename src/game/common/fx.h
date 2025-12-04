@@ -92,7 +92,6 @@ typedef enum FX_Type_e
 	FX_STAFF_REMOVE,
 	FX_DUST_PUFF,
 	FX_FIRE,
-	FX_SOUND,
 	FX_PICKUP,
 	FX_HITPUFF,
 	FX_DUST,
