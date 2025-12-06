@@ -2485,7 +2485,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	}
 
 	/* RREXTEND: Reset dynamic model assign */
-	ent->s.modelindex = 0;
+	// ent->s.modelindex = 0;
 
 	PrecacheItem(item);
 
