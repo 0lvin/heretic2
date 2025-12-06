@@ -38,6 +38,10 @@
 #   i686-w64-mingw32   -> indicates i386
 # QUIET
 #   If defined, "===> CC ..." lines are silenced.
+# SOURCE_DATE_EPOCH
+#   For reproduceable builds, look here for details:
+#   https://reproducible-builds.org/specs/source-date-epoch/
+#   If set, adds a BUILD_DATE define to CFLAGS.
 # UBSAN
 #   Builds with undefined behavior sanitizer.includes DEBUG.
 # VERBOSE
@@ -111,16 +115,16 @@ PKG_CONFIG ?= pkgconf
 
 # ----------
 
+# In case of a configuration file being present, we'll just use it
+ifeq ($(wildcard $(CONFIG_FILE)), $(CONFIG_FILE))
+include $(CONFIG_FILE)
+endif
+
 # Normalize QUIET value to either "x" or ""
 ifdef QUIET
 	override QUIET := "x"
 else
 	override QUIET := ""
-endif
-
-# In case a of a configuration file being present, we'll just use it
-ifeq ($(wildcard $(CONFIG_FILE)), $(CONFIG_FILE))
-include $(CONFIG_FILE)
 endif
 
 # Detect the OS
@@ -281,8 +285,6 @@ override CFLAGS += -DYQ2OSTYPE=\"$(YQ2_OSTYPE)\" -DYQ2ARCH=\"$(YQ2_ARCH)\"
 
 # ----------
 
-# For reproduceable builds, look here for details:
-# https://reproducible-builds.org/specs/source-date-epoch/
 ifdef SOURCE_DATE_EPOCH
 override CFLAGS += -DBUILD_DATE=\"$(shell date --utc --date="@${SOURCE_DATE_EPOCH}" +"%b %_d %Y" | sed -e 's/ /\\ /g')\"
 endif
@@ -682,6 +684,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_gl1:
 	@echo "===> Building ref_gl1.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl1.dll
 
 $(BINDIR)/ref_gl1.dll : LDFLAGS += -shared
@@ -691,6 +694,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_gl1:
 	@echo "===> Building ref_gl1.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl1.dylib
 
 
@@ -700,6 +704,7 @@ else # not Windows or Darwin
 
 ref_gl1:
 	@echo "===> Building ref_gl1.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl1.so
 
 
@@ -724,6 +729,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_gles1:
 	@echo "===> Building ref_gles1.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gles1.dll
 
 $(BINDIR)/ref_gles1.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl1/glad-gles1/include
@@ -734,6 +740,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_gles1:
 	@echo "===> Building ref_gles1.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gles1.dylib
 
 $(BINDIR)/ref_gles1.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl1/glad-gles1/include
@@ -744,6 +751,7 @@ else # not Windows or Darwin
 
 ref_gles1:
 	@echo "===> Building ref_gles1.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gles1.so
 
 $(BINDIR)/ref_gles1.so : GLAD_INCLUDE = -Isrc/client/refresh/gl1/glad-gles1/include
@@ -767,6 +775,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_gl3:
 	@echo "===> Building ref_gl3.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl3.dll
 
 $(BINDIR)/ref_gl3.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
@@ -776,6 +785,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_gl3:
 	@echo "===> Building ref_gl3.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl3.dylib
 
 $(BINDIR)/ref_gl3.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
@@ -785,6 +795,7 @@ else # not Windows or Darwin
 
 ref_gl3:
 	@echo "===> Building ref_gl3.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl3.so
 
 $(BINDIR)/ref_gl3.so : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad/include
@@ -808,6 +819,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_gles3:
 	@echo "===> Building ref_gles3.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gles3.dll
 
 $(BINDIR)/ref_gles3.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
@@ -822,6 +834,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_gles3:
 	@echo "===> Building ref_gles3.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gles3.dylib
 
 $(BINDIR)/ref_gles3.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
@@ -836,6 +849,7 @@ else # not Windows or Darwin
 
 ref_gles3:
 	@echo "===> Building ref_gles3.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gles3.so
 
 $(BINDIR)/ref_gles3.so : GLAD_INCLUDE = -Isrc/client/refresh/gl3/glad-gles3/include
@@ -865,6 +879,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_gl4:
 	@echo "===> Building ref_gl4.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl4.dll
 
 $(BINDIR)/ref_gl4.dll : GLAD_INCLUDE = -Isrc/client/refresh/gl4/glad/include
@@ -874,6 +889,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_gl4:
 	@echo "===> Building ref_gl4.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl4.dylib
 
 $(BINDIR)/ref_gl4.dylib : GLAD_INCLUDE = -Isrc/client/refresh/gl4/glad/include
@@ -883,6 +899,7 @@ else # not Windows or Darwin - macOS doesn't support OpenGL 4.6
 
 ref_gl4:
 	@echo "===> Building ref_gl4.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_gl4.so
 
 $(BINDIR)/ref_gl4.so : GLAD_INCLUDE = -Isrc/client/refresh/gl4/glad/include
@@ -906,6 +923,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_soft:
 	@echo "===> Building ref_soft.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_soft.dll
 
 $(BINDIR)/ref_soft.dll : LDFLAGS += -shared
@@ -914,6 +932,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_soft:
 	@echo "===> Building ref_soft.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_soft.dylib
 
 $(BINDIR)/ref_soft.dylib : LDFLAGS += -shared
@@ -922,6 +941,7 @@ else # not Windows or Darwin
 
 ref_soft:
 	@echo "===> Building ref_soft.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_soft.so
 
 $(BINDIR)/ref_soft.so : CFLAGS += -fPIC
@@ -944,6 +964,7 @@ ifeq ($(YQ2_OSTYPE), Windows)
 
 ref_vk:
 	@echo "===> Building ref_vk.dll"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_vk.dll
 
 $(BINDIR)/ref_vk.dll : LDFLAGS += -shared
@@ -952,6 +973,7 @@ else ifeq ($(YQ2_OSTYPE), Darwin)
 
 ref_vk:
 	@echo "===> Building ref_vk.dylib"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_vk.dylib
 
 $(BINDIR)/ref_vk.dylib : LDFLAGS += -shared
@@ -960,6 +982,7 @@ else # not Windows or Darwin
 
 ref_vk:
 	@echo "===> Building ref_vk.so"
+	${Q}mkdir -p $(BINDIR)
 	$(MAKE) $(BINDIR)/ref_vk.so
 
 $(BINDIR)/ref_vk.so : CFLAGS += -fPIC
