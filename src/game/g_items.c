@@ -2479,6 +2479,132 @@ SpawnItem(edict_t *ent, gitem_t *item)
 		return;
 	}
 
+	if (g_itemsbobeffect->value && (item->world_model_flags & EF_ROTATE))
+	{
+		item->world_model_flags |= EF_BOB;
+	}
+
+	if (!g_disruptor->value)
+	{
+		if ((!strcmp(ent->classname, "ammo_disruptor")) ||
+				(!strcmp(ent->classname, "weapon_disintegrator")))
+		{
+			G_FreeEdict(ent);
+			return;
+		}
+	}
+
+	if (ent->spawnflags > 1)
+	{
+		if (strcmp(ent->classname, "key_power_cube") != 0)
+		{
+			ent->spawnflags = 0;
+			gi.dprintf("%s at %s has invalid spawnflags set\n",
+					ent->classname, vtos(ent->s.origin));
+		}
+	}
+
+	/* some items will be prevented in deathmatch */
+	if (deathmatch->value)
+	{
+		if ((int)dmflags->value & DF_NO_ARMOR)
+		{
+			if ((item->pickup == Pickup_Armor) ||
+				(item->pickup == Pickup_PowerArmor))
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		if ((int)dmflags->value & DF_NO_ITEMS)
+		{
+			if (item->pickup == Pickup_Powerup)
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+
+			if (item->pickup == Pickup_Sphere)
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+
+			if (item->pickup == Pickup_Doppleganger)
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		if ((int)dmflags->value & DF_NO_HEALTH)
+		{
+			if ((item->pickup == Pickup_Health) ||
+				(item->pickup == Pickup_Adrenaline) ||
+				(item->pickup == Pickup_AncientHead))
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		if ((int)dmflags->value & DF_INFINITE_AMMO)
+		{
+			if ((item->flags == IT_AMMO) ||
+				(strcmp(ent->classname, "weapon_bfg") == 0))
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		if ((int)dmflags->value & DF_NO_MINES)
+		{
+			if (!strcmp(ent->classname, "ammo_prox") ||
+				!strcmp(ent->classname, "ammo_tesla"))
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		if ((int)dmflags->value & DF_NO_NUKES)
+		{
+			if (!strcmp(ent->classname, "ammo_nuke"))
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+
+		if ((int)dmflags->value & DF_NO_SPHERES)
+		{
+			if (item->pickup == Pickup_Sphere)
+			{
+				G_FreeEdict(ent);
+				return;
+			}
+		}
+	}
+
+	/* DM only items */
+	if (!deathmatch->value)
+	{
+		if ((item->pickup == Pickup_Doppleganger) ||
+			(item->pickup == Pickup_Nuke))
+		{
+			G_FreeEdict(ent);
+			return;
+		}
+
+		if ((item->use == Use_Vengeance) || (item->use == Use_Hunter))
+		{
+			G_FreeEdict(ent);
+			return;
+		}
+	}
+
 	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
 	{
 		return;
@@ -2488,6 +2614,26 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	ent->s.modelindex = 0;
 
 	PrecacheItem(item);
+
+	if (coop->value && !(ent->spawnflags & ITEM_NO_TOUCH) && (strcmp(ent->classname, "key_power_cube") == 0))
+	{
+		ent->spawnflags |= (1 << (8 + level.power_cubes));
+		level.power_cubes++;
+	}
+
+	/* don't let them drop items that stay in a coop game */
+	if ((coop->value) && (item->flags & IT_STAY_COOP))
+	{
+		item->drop = NULL;
+	}
+
+	/* Don't spawn the flags unless enabled */
+	if (!ctf->value && ((strcmp(ent->classname, "item_flag_team1") == 0) ||
+				(strcmp(ent->classname, "item_flag_team2") == 0)))
+	{
+		G_FreeEdict(ent);
+		return;
+	}
 
 	if (!ValidItem(item))
 	{
@@ -2499,7 +2645,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	ent->nextthink = level.time + 2 * FRAMETIME; /* items start after other solids */
 	ent->think = droptofloor;
 	ent->s.effects = item->world_model_flags;
-	ent->s.renderfx = RF_GLOW;
+	ent->s.renderfx = RF_GLOW; // RREXTEND: | RF_TRANSLUCENT;
 	ent->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 
 	if (item->flags & IT_WEAPON)

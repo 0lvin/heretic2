@@ -2270,7 +2270,9 @@ void SP_monster_palace_plague_guard_invisible (edict_t *self)
 	self->s.color[2] = 255;
 	self->s.color[3] = 255;
 
-	if (!(self->spawnflags&MSF_EXTRA4))//these guys start visible
+	if (!(self->spawnflags & MSF_EXTRA4))
+	{
+		/* these guys start visible */
 		pelf_init_phase_out(self);
-
+	}
 }
