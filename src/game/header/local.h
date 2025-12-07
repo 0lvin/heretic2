@@ -163,6 +163,7 @@ typedef enum
 /* gib types */
 typedef enum
 {
+	GIB_NONE,
 	GIB_ORGANIC,
 	GIB_METALLIC
 } gibtype_t;
@@ -1513,6 +1514,7 @@ void monster_dynamic_stand(edict_t *self);
 void monster_dynamic_search(edict_t *self);
 void monster_dynamic_setinfo(edict_t *self);
 void monster_dynamic_melee(edict_t *self);
+void monster_dynamic_damage(edict_t *self);
 void monster_dynamic_dodge(edict_t *self, edict_t *attacker, float eta,
 	trace_t *tr /* unused */);
 void monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
@@ -2542,7 +2544,10 @@ struct edict_s
 
 	int viewheight;             /* height above origin where eyesight is determined */
 	int takedamage;
-	int dmg;
+	int dmg;                    /* base damage */
+	int dmg_range;              /* additional damage range */
+	vec3_t damage_aim;          /* aim for dynamic animation damage */
+	gibtype_t gib;              /* default gib type */
 	int radius_dmg;
 	float dmg_radius;
 	int sounds;                 /* now also used for player death sound aggregation */

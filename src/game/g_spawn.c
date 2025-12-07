@@ -70,6 +70,11 @@ typedef struct
 	vec3_t color;
 	int health;
 	int mass;
+	int damage;
+	int damage_range;
+	vec3_t damage_aim;
+	gibtype_t gib;
+	int gib_health;
 } dynamicentity_t;
 
 static dynamicentity_t *dynamicentities;
@@ -167,6 +172,8 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 
 	VectorCopy(data->mins, self->mins);
 	VectorCopy(data->maxs, self->maxs);
+	VectorCopy(data->damage_aim, self->damage_aim);
+	self->gib = data->gib;
 
 	/* has updated scale */
 	if (st.scale[0] || st.scale[1] || st.scale[2])
@@ -196,6 +203,16 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 	if (data->mass && !self->mass)
 	{
 		self->mass = data->mass;
+	}
+
+	if (data->damage && !self->dmg)
+	{
+		self->dmg = data->damage;
+	}
+
+	if (data->damage_range && !self->dmg_range)
+	{
+		self->dmg_range = data->damage_range;
 	}
 
 	/* set default solid flag */
@@ -2836,11 +2853,13 @@ DynamicSpawnInit(void)
 				 * Ignored fields:
 					* attack speed
 					* fov
-					* X weapon1Offset
-					* Y weapon1Offset
-					* Z weapon1Offset
-					* base damage
-					* random damage
+				 */
+				line = DynamicSkipParse(line, 2, ',');
+				line = DynamicFloatParse(line, dynamicentities[curr_pos].damage_aim, 3, ',');
+				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage, ',');
+				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage_range, ',');
+				/*
+				 * Ignored fields:
 					* spread x
 					* spread z
 					* speed
@@ -2914,6 +2933,7 @@ DynamicSpawnInit(void)
 				*curr != '\n' && *curr != '\r' && *curr != ';')
 			{
 				char *line;
+				char gib_type[MAX_QPATH] = {0};
 
 				line = curr;
 				line = DynamicStringParse(line, dynamicentities[curr_pos].classname, MAX_QPATH, '|');
@@ -2939,6 +2959,22 @@ DynamicSpawnInit(void)
 				line = DynamicFloatParse(line, dynamicentities[curr_pos].color, 3, '|');
 				line = DynamicIntParse(line, &dynamicentities[curr_pos].health, '|');
 				line = DynamicIntParse(line, &dynamicentities[curr_pos].mass, '|');
+				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage, '|');
+				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage_range, '|');
+				line = DynamicFloatParse(line, dynamicentities[curr_pos].damage_aim, 3, '|');
+				line = DynamicStringParse(line, gib_type, MAX_QPATH, '|');
+				line = DynamicIntParse(line, &dynamicentities[curr_pos].gib_health, '|');
+
+				if (!strcmp(gib_type, "metal") ||
+					!strcmp(gib_type, "metallic"))
+				{
+					dynamicentities[curr_pos].gib = GIB_METALLIC;
+				}
+				else if (!strcmp(gib_type, "flesh") ||
+					!strcmp(gib_type, "organic"))
+				{
+					dynamicentities[curr_pos].gib = GIB_ORGANIC;
+				}
 
 				/* Fix path */
 				Q_replacebackslash(dynamicentities[curr_pos].model_path);

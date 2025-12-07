@@ -533,6 +533,7 @@
 {"swimmonster_start", (byte *)swimmonster_start},
 {"swimmonster_start_go", (byte *)swimmonster_start_go},
 {"symbolthink", (byte *)symbolthink},
+{"monster_dynamic_damage", (byte *)monster_dynamic_damage},
 {"Tag_ChangeDamage", (byte *)Tag_ChangeDamage},
 {"Tag_DogTag", (byte *)Tag_DogTag},
 {"Tag_DropToken", (byte *)Tag_DropToken},

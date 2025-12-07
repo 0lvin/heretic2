@@ -1416,12 +1416,52 @@ M_MoveFrame(edict_t *self)
 		}
 	}
 
-	if (move && move->frame[index].thinkfunc)
+	if (move)
 	{
-		move->frame[index].thinkfunc(self);
+		if (move->frame[index].thinkfunc)
+		{
+			move->frame[index].thinkfunc(self);
+		}
+	}
+	else
+	{
+		int middle;
+
+		middle = (lastframe - firstframe) / 2;
+
+		if ((middle == index) && (
+			!strcmp(self->monsterinfo.action, "attack") ||
+			!strcmp(self->monsterinfo.action, "melee")
+		))
+		{
+			monster_dynamic_damage(self);
+		}
+	}
+#endif
+}
+
+void
+monster_dynamic_damage(edict_t *self)
+{
+	vec3_t dir;
+	int damage;
+
+
+	if (!self->enemy || ((self->dmg <= 0) && (self->dmg_range <= 0)))
+	{
+		return;
 	}
 
-#endif
+	VectorSubtract(self->s.origin, self->enemy->s.origin, dir);
+
+	if (VectorLength(dir) > 100.0)
+	{
+		return;
+	}
+
+	damage = self->dmg + random() * self->dmg_range;
+
+	fire_hit(self, self->damage_aim, damage, damage);
 }
 
 static void
@@ -1547,8 +1587,8 @@ monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	if (self->health <= self->gib_health)
 	{
 		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
-		ThrowHead(self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
+		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2", damage, self->gib);
+		ThrowHead(self, "models/objects/gibs/head2/tris.md2", damage, self->gib);
 		self->deadflag = DEAD_DEAD;
 		return;
 	}

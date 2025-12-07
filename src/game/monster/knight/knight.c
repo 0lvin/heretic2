@@ -70,30 +70,6 @@ knight_attack_swing(edict_t *self)
 	}
 }
 
-void
-swing_sword_step(edict_t *self)
-{
-	vec3_t dir;
-	static vec3_t aim = {100, 0, -24};
-	int damage;
-
-	if (!self->enemy)
-	{
-		return;
-	}
-
-	VectorSubtract(self->s.origin, self->enemy->s.origin, dir);
-
-	if (VectorLength(dir) > 100.0)
-	{
-		return;
-	}
-
-	damage = (random() + random() + random()) * 3;
-
-	fire_hit(self, aim, damage, damage);
-}
-
 // Attack
 static mframe_t knight_frames_attack [] =
 {
@@ -102,12 +78,12 @@ static mframe_t knight_frames_attack [] =
 	{ai_charge, 13, NULL},
 	{ai_charge, 7, NULL},
 
-	{ai_charge, 16, swing_sword_step},
-	{ai_charge, 20, swing_sword_step},
-	{ai_charge, 14, swing_sword_step},
-	{ai_charge, 6, swing_sword_step},
+	{ai_charge, 16, monster_dynamic_damage},
+	{ai_charge, 20, monster_dynamic_damage},
+	{ai_charge, 14, monster_dynamic_damage},
+	{ai_charge, 6, monster_dynamic_damage},
 
-	{ai_charge, 14, swing_sword_step},
+	{ai_charge, 14, monster_dynamic_damage},
 	{ai_charge, 10, NULL},
 	{ai_charge, 7, NULL}
 };
@@ -147,9 +123,9 @@ static mframe_t knight_frames_melee [] =
 	{ai_charge, 0, NULL},
 	{ai_charge, 0, NULL},
 
-	{ai_charge, 4, swing_sword_step},
-	{ai_charge, 4, swing_sword_step},
-	{ai_charge, 1, swing_sword_step},
+	{ai_charge, 4, monster_dynamic_damage},
+	{ai_charge, 4, monster_dynamic_damage},
+	{ai_charge, 1, monster_dynamic_damage},
 	{ai_charge, 3, NULL},
 
 	{ai_charge, 1, NULL},
@@ -346,7 +322,7 @@ SP_monster_knight(edict_t *self)
 	self->s.modelindex = gi.modelindex("models/monsters/knight/tris.md2");
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, 40);
-	self->health = 75 * st.health_multiplier;
+	self->health *= st.health_multiplier;
 
 	sound_melee1 = gi.soundindex("knight/sword1.wav");
 	sound_melee2 = gi.soundindex("knight/sword2.wav");
@@ -357,9 +333,6 @@ SP_monster_knight(edict_t *self)
 
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
-
-	self->gib_health = -40;
-	self->mass = 75;
 
 	monster_dynamic_setinfo(self);
 
