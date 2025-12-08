@@ -161,7 +161,7 @@ void SP_monster_tcheckrik_mothers (edict_t *self)
 			self->monsterinfo.scale);
 	}
 
-	self->materialtype = MAT_INSECT;
+	self->gib = GIB_INSECT;
 
 	self->svflags |= SVF_WAIT_NOTSOLID;
 

@@ -208,7 +208,7 @@ void c_corvus_init(edict_t *self,int classId)
 			self->monsterinfo.scale);
 	}
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->clipmask = MASK_MONSTERSOLID;
 	self->count = self->s.modelindex;
 	self->takedamage = DAMAGE_NO;
@@ -267,7 +267,7 @@ void c_character_init(edict_t *self,int classId)
 
 	self->count = self->s.modelindex;
 	self->clipmask = MASK_MONSTERSOLID;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->takedamage = DAMAGE_NO;
 
 	if (self->spawnflags & ENT_INVISIBLE)

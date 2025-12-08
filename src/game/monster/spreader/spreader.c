@@ -1319,7 +1319,7 @@ void SP_monster_spreader (edict_t *self)
 	self->max_health = self->health = MonsterHealth(self->health);
 
 	self->mass = SPREADER_MASS;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->yaw_speed = 20;
 
 	self->s.origin[2] += 40;

@@ -2076,8 +2076,8 @@ monster_start(edict_t *self)
 	}
 
 	self->clipmask = MASK_MONSTERSOLID;
-	if (!self->materialtype)
-		self->materialtype = MAT_FLESH;
+	if (!self->gib)
+		self->gib = GIB_ORGANIC;
 
 	// Stop the camera clipping with monsters, except the trial beast.
 

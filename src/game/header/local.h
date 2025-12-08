@@ -166,8 +166,8 @@ typedef enum
 	GIB_STONE,			// 0
 	GIB_GREYSTONE,		// 1
 	GIB_CLOTH,			// 2
-	GIB_METAL,			// 3
-	GIB_FLESH,			// 4
+	GIB_METALLIC,		// 3
+	GIB_ORGANIC,		// 4
 	GIB_POTTERY,		// 5
 	GIB_GLASS,			// 6
 	GIB_LEAF,			// 7
@@ -175,8 +175,6 @@ typedef enum
 	GIB_BROWNSTONE,		// 9
 	GIB_NONE,			// 10
 	GIB_INSECT,			// 11
-	GIB_ORGANIC,
-	GIB_METALLIC
 } gibtype_t;
 
 /* monster ai flags */
@@ -2697,7 +2695,6 @@ struct edict_s
 
 	// What it's made of, i.e. MAT_XXX. Used to determine gibs to throw. Curently used only by the
 	// barrel, but applicable to anything generically gibbable.
-	gibtype_t			materialtype;
 	int					PersistantCFX;	// index to client effect linked to edict
 	int					Leader_PersistantCFX;	// non of this should really go in here.. really it should be in the client, but its 2 in the morning, so fuck it
 	vec3_t				knockbackvel;

@@ -1073,7 +1073,7 @@ void SP_monster_seraph_overlord(edict_t *self)
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
 	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	self->s.modelindex = classStatics[CID_SERAPH_OVERLORD].resInfo->modelIndex;
 	self->s.skinnum=0;

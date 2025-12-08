@@ -1845,7 +1845,7 @@ void SP_monster_morcalavin (edict_t *self)
 
 	self->viewheight = 36;
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	self->s.modelindex = classStatics[CID_MORK].resInfo->modelIndex;
 	self->s.skinnum=0;

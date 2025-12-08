@@ -3181,18 +3181,18 @@ typedef struct DebrisSound
 
 static DebrisSound_t DebrisSound [NUM_MAT]=
 {
-	{"misc/breakstone.wav"},	// MAT_STONE
-	{"misc/breakstone.wav"},	// MAT_GREYSTONE
-	{"misc/tearcloth.wav"},	// MAT_CLOTH
-	{"misc/metalbreak.wav"},	// MAT_METAL
-	{"misc/fleshbreak.wav"},	// MAT_FLESH
-	{"misc/potbreak.wav"},	// MAT_POTTERY
-	{"misc/glassbreak2.wav"},	// MAT_GLASS
-	{"misc/breakstone.wav"},	// MAT_LEAF	FIXME
-	{"misc/breakwood.wav"},	// MAT_WOOD
-	{"misc/breakstone.wav"},	// MAT_BROWNSTONE
-	{"misc/bushbreak.wav"},	// MAT_NONE
-	{NULL},					// MAT_INSECT
+	{"misc/breakstone.wav"},	// GIB_STONE
+	{"misc/breakstone.wav"},	// GIB_GREYSTONE
+	{"misc/tearcloth.wav"},	// GIB_CLOTH
+	{"misc/metalbreak.wav"},	// GIB_METALLIC
+	{"misc/fleshbreak.wav"},	// GIB_ORGANIC
+	{"misc/potbreak.wav"},	// GIB_POTTERY
+	{"misc/glassbreak2.wav"},	// GIB_GLASS
+	{"misc/breakstone.wav"},	// GIB_LEAF	FIXME
+	{"misc/breakwood.wav"},	// GIB_WOOD
+	{"misc/breakstone.wav"},	// GIB_BROWNSTONE
+	{"misc/bushbreak.wav"},	// GIB_NONE
+	{NULL},					// GIB_INSECT
 };
 
 void
@@ -3213,7 +3213,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 	if (self->fire_damage_time > level.time || self->svflags&SVF_ONFIRE)
 		flags |= CEF_FLAG6;
 
-	if (self->materialtype == MAT_FLESH || self->materialtype == MAT_INSECT)
+	if (self->gib == GIB_ORGANIC || self->gib == GIB_INSECT)
 	{
 		if (blood_level)
 			violence = blood_level->value;
@@ -3227,7 +3227,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 							flags, origin,
 							"bbdb",
 							sizeb,
-							MAT_STONE,
+							GIB_STONE,
 							halfsize, magb);
 		}
 		else
@@ -3239,7 +3239,7 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 					sizeb = 255;
 			}
 
-			if (self->materialtype == MAT_INSECT)
+			if (self->gib == GIB_INSECT)
 				flags |= CEF_FLAG8;
 
 			if (!Q_stricmp(self->classname, "monster_tcheckrik_male"))
@@ -3263,18 +3263,18 @@ SpawnDebris(edict_t *self, float size, vec3_t origin)
 						flags, origin,
 						"bbdb",
 						sizeb,
-						(byte)self->materialtype,
+						(byte)self->gib,
 						halfsize, magb);
 	}
 
 	if (self->classID == CID_OBJECT)
 		if (!strcmp(self->classname, "obj_larvabrokenegg") || !strcmp(self->classname, "obj_larvaegg"))
-			self->materialtype = MAT_POTTERY;
+			self->gib = GIB_POTTERY;
 
-	if (DebrisSound[self->materialtype].Name)
+	if (DebrisSound[self->gib].Name)
 	{
 		gi.sound(self, CHAN_VOICE,
-			gi.soundindex(DebrisSound[self->materialtype].Name), 1, ATTN_NORM, 0);
+			gi.soundindex(DebrisSound[self->gib].Name), 1, ATTN_NORM, 0);
 	}
 }
 
@@ -3393,17 +3393,17 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 
 	mag = VectorLength(self->mins);
 
-	mat = (byte)(self->materialtype);
+	mat = (byte)(self->gib);
 	magb = Clamp(mag, 1.0, 255.0);
 
-	if (mat == MAT_FLESH || mat == MAT_INSECT)
+	if (mat == GIB_ORGANIC || mat == GIB_INSECT)
 	{
 		if (blood_level)
 			violence = blood_level->value;
 
 		if (violence < VIOLENCE_NORMAL)
 		{
-			mat = MAT_STONE;
+			mat = GIB_STONE;
 		}
 		else if (violence > VIOLENCE_NORMAL)
 		{
@@ -3413,9 +3413,9 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 		}
 	}
 
-	if (mat == MAT_FLESH || mat == MAT_INSECT)
+	if (mat == GIB_ORGANIC || mat == GIB_INSECT)
 	{
-		if (self->materialtype == MAT_INSECT)
+		if (self->gib == GIB_INSECT)
 		{
 			flags |= CEF_FLAG8;
 			if (!Q_stricmp(self->classname, "monster_tcheckrik_male"))
@@ -3442,7 +3442,7 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 						flags, spot,
 						"bbdb",
 						NoOfChunks,
-						MAT_STONE,
+						GIB_STONE,
 						self->mins, magb);
 	}
 }
@@ -3485,7 +3485,7 @@ void ThrowBodyPart(edict_t *self, vec3_t spot, int BodyPart, float damage, int f
 	else
 		flags = 0;
 
-	if (self->materialtype == MAT_INSECT)
+	if (self->gib == GIB_INSECT)
 		flags |= CEF_FLAG8;
 
 	if (give_head_to_harpy && take_head_from == self)

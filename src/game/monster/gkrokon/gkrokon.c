@@ -1082,7 +1082,7 @@ SP_Monster_Gkrokon(edict_t *self)
 
 	self->max_health = self->health = MonsterHealth(self->health);
 
-	self->materialtype = MAT_INSECT;
+	self->gib = GIB_INSECT;
 	self->mass=GKROKON_MASS;
 	self->yaw_speed=20;
 	self->movetype=MOVETYPE_STEP;

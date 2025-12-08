@@ -1595,7 +1595,7 @@ void SP_monster_tcheckrik_male (edict_t *self)
 			self->monsterinfo.scale);
 	}
 
-	self->materialtype = MAT_INSECT;
+	self->gib = GIB_INSECT;
 
 	//turn on/off the weapons that aren't used
 	self->s.fmnodeinfo[MESH__CROWN].flags |= FMNI_NO_DRAW;
@@ -1760,7 +1760,7 @@ void SP_monster_tcheckrik_female (edict_t *self)
 			self->monsterinfo.scale);
 	}
 
-	self->materialtype = MAT_INSECT;
+	self->gib = GIB_INSECT;
 
 	//turn on/off the weapons that aren't used
 	self->s.fmnodeinfo[MESH__LMANDIBLE].flags |= FMNI_NO_DRAW;

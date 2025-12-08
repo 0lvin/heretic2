@@ -4050,7 +4050,7 @@ WeaponThink_SwordStaffEx(edict_t *caster, int locid)
 				// If we hit a monster, stick a trail of blood on the staff...
 				if (trace.ent->svflags & SVF_MONSTER)
 				{
-					if (trace.ent->materialtype == MAT_INSECT)//yellow blood
+					if (trace.ent->gib == GIB_INSECT)//yellow blood
 						gi.CreateEffect(caster, FX_LINKEDBLOOD, CEF_FLAG8|CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);
 					else
 						gi.CreateEffect(caster, FX_LINKEDBLOOD, CEF_OWNERS_ORIGIN, NULL, "bb", 30, CORVUS_BLADE);

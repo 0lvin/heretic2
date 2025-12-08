@@ -1630,7 +1630,7 @@ void gorgon_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	if (flrand(0,1)<0.5)
 	{
-		if (self->enemy->materialtype == MAT_INSECT)
+		if (self->enemy->gib == GIB_INSECT)
 			gi.CreateEffect(self->enemy, FX_BLOOD, CEF_FLAG8, self->enemy->s.origin, "ub", blooddir, 200);
 		else
 			gi.CreateEffect(self->enemy, FX_BLOOD, 0, self->enemy->s.origin, "ub", blooddir, 200);
@@ -1736,8 +1736,8 @@ void gorgon_gore_toy(edict_t *self, float jumpht)
 			self->count = 1;
 		VectorCopy(self->velocity,dir);
 		VectorNormalize(dir);
-		if (self->enemy->materialtype != MAT_FLESH)//foo
-			self->enemy->materialtype = MAT_FLESH;
+		if (self->enemy->gib != GIB_ORGANIC)//foo
+			self->enemy->gib = GIB_ORGANIC;
 		num_chunks = (byte)(self->enemy->health/4);
 		if (num_chunks>15)
 			num_chunks = 15;
@@ -2210,7 +2210,7 @@ void SP_monster_gorgon_leader (edict_t *self)
 	VectorClear(self->knockbackvel);
 
 	self->solid=SOLID_BBOX;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	VectorSet(self->mins,-42,-42,0);//-48,-48,0
 	VectorSet(self->maxs,42,42,56);//48,48,64
@@ -2313,7 +2313,7 @@ void SP_monster_gorgon (edict_t *self)
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_GORGON;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->touch = M_Touch;
 
 	self->mass = GORGON_MASS;

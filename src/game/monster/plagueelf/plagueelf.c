@@ -2029,7 +2029,7 @@ void SP_monster_plagueElf (edict_t *self)
 			self->monsterinfo.scale);
 	}
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 
 	//FIXME (somewhere: otherenemy should be more than just *one* kind

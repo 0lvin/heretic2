@@ -727,7 +727,7 @@ void SP_monster_mssithra (edict_t *self)
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_MSSITHRA;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->flags |= FL_IMMUNE_SLIME;
 	if (self->flags&FL_INWATER||
 		gi.pointcontents(self->s.origin)&CONTENTS_WATER||

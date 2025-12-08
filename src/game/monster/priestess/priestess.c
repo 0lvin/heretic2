@@ -1613,7 +1613,7 @@ void SP_monster_high_priestess (edict_t *self)
 	VectorSet(self->mins, -24, -24, -36);
 	VectorSet(self->maxs, 24, 24, 36);
 
-	self->materialtype = MAT_INSECT;
+	self->gib = GIB_INSECT;
 
 	self->s.modelindex = classStatics[CID_HIGHPRIESTESS].resInfo->modelIndex;
 	self->s.skinnum = 0;

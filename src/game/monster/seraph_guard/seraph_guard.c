@@ -1230,7 +1230,7 @@ void SP_monster_seraph_guard(edict_t *self)
 		VectorCopy(STDMinsForClass[self->classID], self->mins);
 		VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
-		self->materialtype = MAT_STONE;
+		self->gib = GIB_STONE;
 
 		self->s.modelindex = classStatics[CID_SERAPH_GUARD].resInfo->modelIndex;
 		self->s.skinnum = 0;
@@ -1289,7 +1289,7 @@ void SP_monster_seraph_guard(edict_t *self)
 		VectorCopy(STDMinsForClass[self->classID], self->mins);
 		VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
-		self->materialtype = MAT_FLESH;
+		self->gib = GIB_ORGANIC;
 
 		self->s.modelindex = classStatics[CID_SERAPH_GUARD].resInfo->modelIndex;
 		self->s.skinnum = 0;

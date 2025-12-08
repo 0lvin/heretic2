@@ -761,7 +761,7 @@ void spawn_hanging_chicken(edict_t *self)
 	chicken->classname = "NATE";
 	chicken->think = hanging_chicken_think;
 	chicken->nextthink = level.time + 0.1;
-	chicken->materialtype = MAT_FLESH;
+	chicken->gib = GIB_ORGANIC;
 
 	self->teamchain = chicken;
 

@@ -605,12 +605,12 @@ qboolean CheckTeamDamage (edict_t *targ, edict_t *attacker)
 
 qboolean flammable (edict_t *targ)
 {
-	if (targ->materialtype == MAT_CLOTH||
-		targ->materialtype == MAT_FLESH||
-		targ->materialtype == MAT_POTTERY||
-		targ->materialtype == MAT_LEAF||
-		targ->materialtype == MAT_WOOD||
-		targ->materialtype == MAT_INSECT)
+	if (targ->gib == GIB_CLOTH||
+		targ->gib == GIB_ORGANIC||
+		targ->gib == GIB_POTTERY||
+		targ->gib == GIB_LEAF||
+		targ->gib == GIB_WOOD||
+		targ->gib == GIB_INSECT)
 		return (true);
 
 	return (false);
@@ -719,7 +719,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	}
 
 	if (dflags & DAMAGE_ALIVE_ONLY)
-		if (targ->materialtype != MAT_FLESH||targ->health<=0)
+		if (targ->gib != GIB_ORGANIC||targ->health<=0)
 			return;
 
 	if (targ->svflags&SVF_NO_PLAYER_DAMAGE)
@@ -1088,16 +1088,16 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 				if (violence == VIOLENCE_NONE)
 					gi.CreateEffect(NULL, FX_HITPUFF, CEF_FLAG6, point, "db", dir, 5);
-				else if (targ->materialtype == MAT_INSECT)
+				else if (targ->gib == GIB_INSECT)
 					gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, loc, "ub", vel, bloodamt);
 				else
 					gi.CreateEffect(NULL, FX_BLOOD, 0, loc, "ub", vel, bloodamt);
 			}
 			else
 			{
-				if ((targ->svflags & SVF_DEADMONSTER ||targ->materialtype == MAT_INSECT||targ->materialtype == MAT_FLESH) && violence > VIOLENCE_NONE)
+				if ((targ->svflags & SVF_DEADMONSTER ||targ->gib == GIB_INSECT||targ->gib == GIB_ORGANIC) && violence > VIOLENCE_NONE)
 				{
-					if (targ->materialtype == MAT_INSECT)
+					if (targ->gib == GIB_INSECT)
 						gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, point, "ub", dir, 8);
 					else
 						gi.CreateEffect(NULL, FX_BLOOD, 0, point, "ub", dir, 8);
@@ -1313,7 +1313,7 @@ T_DamageRadius(edict_t *inflictor, edict_t *attacker, edict_t *ignore, float rad
 
 		if (ent == attacker && dflags & DAMAGE_ATTACKER_IMMUNE)
 			continue;
-		if ((dflags & DAMAGE_ALIVE_ONLY) && (ent->materialtype != MAT_FLESH||ent->health<=0))
+		if ((dflags & DAMAGE_ALIVE_ONLY) && (ent->gib != GIB_ORGANIC||ent->health<=0))
 			continue;
 		if (ent==damageenemy)	// We already dealt with the damageenemy above...
 			continue;
@@ -1380,7 +1380,7 @@ T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edic
 
 		if (ent == attacker && dflags & DAMAGE_ATTACKER_IMMUNE)
 			continue;
-		if ((dflags & DAMAGE_ALIVE_ONLY) && (ent->materialtype != MAT_FLESH||ent->health<=0))
+		if ((dflags & DAMAGE_ALIVE_ONLY) && (ent->gib != GIB_ORGANIC||ent->health<=0))
 			continue;
 
 		// if we are reflecting, stop us from taking damage

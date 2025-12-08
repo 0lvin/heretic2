@@ -919,7 +919,7 @@ void lightning_use (edict_t *self, edict_t *other)
 			if (strcmp(target->classname, "info_notnull") == 0)
 			{
 				// Found another with this target.
-				if (self->materialtype)	// Red lightning
+				if (self->gib)	// Red lightning
 					gi.CreateEffect(NULL, FX_LIGHTNING, CEF_FLAG6, self->s.origin, "vbb", target->s.origin, width, duration);
 				else
 					gi.CreateEffect(NULL, FX_LIGHTNING, 0, self->s.origin, "vbb", target->s.origin, width, duration);

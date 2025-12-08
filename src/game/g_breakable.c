@@ -220,8 +220,8 @@ void SP_breakable_brush (edict_t *ent)
 
 	BBrushInit(ent);
 
-	if (!ent->materialtype)
-		ent->materialtype = MAT_GREYSTONE;
+	if (!ent->gib)
+		ent->gib = GIB_GREYSTONE;
 
 	if (!ent->health)
 		ent->health = 1;

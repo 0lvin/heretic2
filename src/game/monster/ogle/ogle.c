@@ -190,7 +190,7 @@ void SP_obj_corpse_ogle(edict_t *self)
 	}
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
-	ObjectInit(self, MAT_FLESH);
+	ObjectInit(self, GIB_ORGANIC);
 }
 
 /*-------------------------------------------------------------------------
@@ -1670,7 +1670,7 @@ void SP_monster_ogle(edict_t *self)
 	VectorCopy(STDMinsForClass[self->classID], self->mins);
 	VectorCopy(STDMaxsForClass[self->classID], self->maxs);
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	self->s.modelindex = classStatics[CID_OGLE].resInfo->modelIndex;
 	self->s.skinnum=0;

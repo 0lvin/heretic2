@@ -1095,7 +1095,7 @@ void SP_monster_fish (edict_t *self)
 	self->takedamage = DAMAGE_AIM;
 	self->max_health = self->health;
 	self->clipmask = MASK_MONSTERSOLID;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->flags |= FL_SWIM|FL_NO_KNOCKBACK;
 
 	self->s.effects|=EF_CAMERA_NO_CLIP;

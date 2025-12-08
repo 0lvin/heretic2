@@ -1229,7 +1229,7 @@ void ssithraSplit (edict_t *self, int BodyPart)
 	else
 		tophalf->s.frame = self->s.frame;
 
-	tophalf->materialtype = MAT_FLESH;
+	tophalf->gib = GIB_ORGANIC;
 	tophalf->mass = self->mass = 300;
 
 	tophalf->movetype = MOVETYPE_STEP;
@@ -3033,7 +3033,7 @@ void SP_monster_ssithra (edict_t *self)
 	self->think = walkmonster_start_go;
 	self->monsterinfo.dismember = ssithra_dismember;
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 //	self->monsterinfo.aiflags |= AI_SWIM_OK;
 	self->flags |= FL_IMMUNE_SLIME;
 
@@ -3196,5 +3196,5 @@ void SP_obj_corpse_ssithra(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
-	ObjectInit(self, MAT_FLESH);
+	ObjectInit(self, GIB_ORGANIC);
 }

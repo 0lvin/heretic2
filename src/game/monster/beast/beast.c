@@ -1370,7 +1370,7 @@ void tbeast_toy_ofs(edict_t *self, float ofsf, float ofsr, float ofsu)
 
 	if (flrand(0,1)<0.5)
 	{
-		if (self->teamchain->materialtype == MAT_INSECT)
+		if (self->teamchain->gib == GIB_INSECT)
 			gi.CreateEffect(self->teamchain, FX_BLOOD, CEF_FLAG8, self->teamchain->s.origin, "ub", blooddir, 200);
 		else
 			gi.CreateEffect(self->teamchain, FX_BLOOD, 0, self->teamchain->s.origin, "ub", blooddir, 200);
@@ -1490,7 +1490,7 @@ void tbeast_gore_toy(edict_t *self, float jumpht)
 	enemy_zdist = self->teamchain->s.origin[2] - self->s.origin[2];
 	if (enemy_zdist <= self->maxs[2] + ok_zdist || jumpht == -1)
 	{//FIXME: waits grabs it too low, waits too long
-		self->wait = self->teamchain->materialtype;
+		self->wait = self->teamchain->gib;
 
 		gi.sound(self, CHAN_WEAPON, sounds[SND_SNATCH], 1, ATTN_NORM, 0);
 		if (jumpht!=-1)
@@ -1567,7 +1567,7 @@ void tbeast_gibs(edict_t *self)
 	VectorMA(self->s.origin, 56, forward, spot);
 	spot[2] -= 8;
 
-	if (self->wait == MAT_INSECT)
+	if (self->wait == GIB_INSECT)
 	{
 		flags |= CEF_FLAG8;
 		flags |= CEF_FLAG7;//use male insect skin on chunks
@@ -2619,7 +2619,7 @@ void SP_monster_trial_beast (edict_t *self)
 
 	//problem- staff won't work on him!
 	self->solid=SOLID_TRIGGER;//BBOX;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 //	VectorSet(self->mins, -116, -116, -4);
 //	VectorSet(self->maxs, 116, 116, 182);

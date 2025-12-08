@@ -698,7 +698,7 @@ void SP_monster_rat (edict_t *self)
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_RAT;
 	self->think = walkmonster_start_go;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	if (!self->health)
 		self->health = RAT_HEALTH;
@@ -776,7 +776,7 @@ void SP_monster_rat_giant (edict_t *self)
 
 	self->msgHandler = DefaultMsgHandler;
 	self->classID = CID_RAT;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	if (!self->health)
 		self->health = RAT_HEALTH * 4;

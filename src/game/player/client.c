@@ -673,7 +673,7 @@ BleederThink(edict_t *self)
 	VectorMA(bleed_dir, self->movedir[2], up, bleed_dir);
 	VectorScale(bleed_dir, damage*3, bleed_dir);
 
-	if (self->owner->materialtype == MAT_INSECT)
+	if (self->owner->gib == GIB_INSECT)
 		gi.CreateEffect(NULL, FX_BLOOD, CEF_FLAG8, bleed_spot, "ub", bleed_dir, damage);
 	else
 		gi.CreateEffect(NULL, FX_BLOOD, 0, bleed_spot, "ub", bleed_dir, damage);
@@ -2664,7 +2664,7 @@ player_body_die(edict_t *self,edict_t *inflictor,edict_t *attacker,int damage, v
 	self->solid=SOLID_NOT;
 	self->clipmask=0;
 	self->takedamage=DAMAGE_NO;
-	self->materialtype=MAT_NONE;
+	self->gib=GIB_NONE;
 	self->health=0;
 	self->die=NULL;
 	self->deadflag=DEAD_DEAD;
@@ -3426,7 +3426,7 @@ PutClientInServer(edict_t *ent)
 	ent->client = &game.clients[index];
 	ent->s.clientnum = index;
 	ent->takedamage = DAMAGE_AIM;
-	ent->materialtype = MAT_FLESH;
+	ent->gib = GIB_ORGANIC;
 	ent->movetype = MOVETYPE_STEP;
 	ent->viewheight = 0;
 	ent->inuse = true;

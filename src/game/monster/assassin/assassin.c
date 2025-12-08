@@ -240,15 +240,12 @@ void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurfa
 	VectorSet(normal, 0, 0, 1);
 	if (plane)
 	{
-		if (plane->normal)
-		{
-			VectorCopy(plane->normal, normal);
-		}
+		VectorCopy(plane->normal, normal);
 	}
 
 	if (other->takedamage)
 	{
-		if (other->materialtype == MAT_FLESH||other->client)
+		if (other->gib == GIB_ORGANIC||other->client)
 			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITF],1,ATTN_NORM,0);
 		else
 			gi.sound(self,CHAN_AUTO,Sounds[SND_DAGHITW],1,ATTN_NORM,0);
@@ -2768,7 +2765,7 @@ void SP_monster_assassin (edict_t *self)
 
 	self->s.modelindex = classStatics[CID_ASSASSIN].resInfo->modelIndex;
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	//FIXME (somewhere: otherenemy should be more than just *one* kind
 	self->monsterinfo.otherenemyname = "monster_rat";

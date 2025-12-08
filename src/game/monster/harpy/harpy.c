@@ -191,7 +191,7 @@ void harpy_take_head(edict_t *self, edict_t *victim, int BodyPart, int frame, in
 	head->movetype = MOVETYPE_NOCLIP;
 	head->gravity = 0;
 	head->clipmask = 0;
-	head->materialtype = victim->materialtype;
+	head->gib = victim->gib;
 
 	head->owner = self;
 	head->activator = victim;
@@ -1655,7 +1655,7 @@ SP_monster_harpy(edict_t *self)
 	self->svflags |= SVF_TAKE_NO_IMPACT_DMG;
 	self->svflags |= SVF_DO_NO_IMPACT_DMG;
 
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 
 	self->s.modelindex = classStatics[CID_HARPY].resInfo->modelIndex;
 	self->s.skinnum = 0;

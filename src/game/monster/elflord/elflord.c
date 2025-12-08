@@ -813,7 +813,7 @@ void SP_monster_elflord (edict_t *self)
 	self->gravity = 0.0;
 	self->clipmask= MASK_MONSTERSOLID;
 	self->svflags |= SVF_ALWAYS_SEND|SVF_BOSS|SVF_TAKE_NO_IMPACT_DMG;
-	self->materialtype = MAT_FLESH;
+	self->gib = GIB_ORGANIC;
 	self->solid=SOLID_BBOX;
 
 	VectorSet(self->mins, -24, -24, -64);

@@ -202,7 +202,7 @@ SP_obj_fishhead1(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
 
-	ObjectInit(self, MAT_GREYSTONE);
+	ObjectInit(self, GIB_GREYSTONE);
 }
 
 /*

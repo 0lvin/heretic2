@@ -122,7 +122,7 @@ create_fire_touch(edict_t *owner, vec3_t origin)
 	flame->solid = SOLID_TRIGGER;
 	flame->health = 2;
 	flame->mass = 2;
-	ObjectInit(flame, MAT_NONE);
+	ObjectInit(flame, GIB_NONE);
 
 	owner->enemy = flame;
 }
@@ -320,7 +320,7 @@ SP_env_fire(edict_t *self)
 		if (controller)
 		{
 			// set it up to throw firey chunks
-			if (controller->materialtype == MAT_WOOD)
+			if (controller->gib == GIB_WOOD)
 			{
 				controller->svflags |= SVF_ONFIRE;
 			}

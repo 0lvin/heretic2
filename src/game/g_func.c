@@ -3581,13 +3581,13 @@ file - specifies the train is a model.  This is the exact directory of the model
 count - number of frames in animation (only if a model)
 example   models/objects/broom/tris.fm
 materialtype -
-	0 = MAT_WOOD
-	1 = MAT_GREYSTONE (default)
-	2 = MAT_CLOTH
-	3 = MAT_METAL
+	0 = GIB_WOOD
+	1 = GIB_GREYSTONE (default)
+	2 = GIB_CLOTH
+	3 = GIB_METALLIC
 
-	9 = MAT_BROWNSTONE
-	10 = MAT_NONE - just makes smoke
+	9 = GIB_BROWNSTONE
+	10 = GIB_NONE - just makes smoke
 
 */
 void
@@ -3974,8 +3974,8 @@ SP_func_train(edict_t *self)
 		self->speed = 100;
 	}
 
-	if (!self->materialtype)
-		self->materialtype = MAT_GREYSTONE;
+	if (!self->gib)
+		self->gib = GIB_GREYSTONE;
 
 	self->moveinfo.speed = self->speed;
 	self->moveinfo.accel = self->moveinfo.decel = self->moveinfo.speed;
