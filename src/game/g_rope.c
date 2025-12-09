@@ -15,11 +15,6 @@
 #include "monster/chicken/chicken_anim.h"
 #include "common/cl_strings.h"
 
-#define CHICKEN_KNOCKBACK	1
-
-#define ROPE_SEGMENT_LENGTH 16
-#define ROPE_MAX_SEGMENTS	256
-
 #define ROPEFLAG_VINE				1
 #define ROPEFLAG_CHAIN				2
 #define ROPEFLAG_TENDRIL			4
@@ -268,7 +263,6 @@ void rope_think(edict_t *self)
 void rope_end_think2( edict_t *self )
 {
 	edict_t	*grab = self->target_ent;
-	trace_t	trace;
 	vec3_t	rope_end, rope_top, end_rest, end_vel, end_vec, end_dest;
 	float	grab_len,  mag, end_len;
 
@@ -277,23 +271,6 @@ void rope_end_think2( edict_t *self )
 	VectorCopy(grab->velocity, end_pos);
 	mag = VectorNormalize(end_pos);
 	VectorMA(grab->s.origin, (mag*FRAMETIME), end_pos, end_pos);
-
-	if (!CHICKEN_KNOCKBACK)
-	{//otherwise, done in hanging_chicken_think
-		trace = gi.trace(grab->s.origin, self->teamchain->mins, self->teamchain->maxs, end_pos, self->teamchain, MASK_MONSTERSOLID);
-
-		if ((trace.fraction < 1 || trace.startsolid || trace.allsolid) && trace.ent != self)
-		{
-			if ( (trace.ent) && (Q_stricmp(trace.ent->classname, "worldspawn")) )
-			{
-				VectorScale(grab->velocity, -0.5, grab->velocity);
-			}
-			else
-			{
-				VectorScale(grab->velocity, -0.5, grab->velocity);
-			}
-		}
-	}
 
 	//Setup the top of the rope entity (the rope's attach point)
 	VectorCopy(self->s.origin, rope_top);
@@ -570,84 +547,82 @@ void hanging_chicken_think(edict_t *self)
 	}
 
 	//knockback
-	if (CHICKEN_KNOCKBACK)
+	trace = gi.trace(self->s.origin, self->mins, self->maxs, self->teamchain->s.origin, self, self->clipmask);
+	if (trace.ent)
 	{
-		trace = gi.trace(self->s.origin, self->mins, self->maxs, self->teamchain->s.origin, self, self->clipmask);
-		if (trace.ent)
+		if (movable(trace.ent))
 		{
-			if (movable(trace.ent))
-			{
-				vec3_t	kvel;
-				float	mass, force, upvel;
+			vec3_t	kvel;
+			float	mass, force, upvel;
 
-				VectorSubtract(self->teamchain->s.origin, self->s.origin, vec);
+			VectorSubtract(self->teamchain->s.origin, self->s.origin, vec);
 
-				force = VectorNormalize(vec);
-				mass = VectorLength(trace.ent->size) * 3;
+			force = VectorNormalize(vec);
+			mass = VectorLength(trace.ent->size) * 3;
 
-				force = 600.0 * force / mass;
+			force = 600.0 * force / mass;
 
-				// Players are not as affected by velocities when they are on the ground, so increase what players experience.
-				if (trace.ent->client && trace.ent->groundentity)
-					force *= 4.0;
-				else if (trace.ent->client)	// && !(targ->groundentity)
-					force *= 0.25;	// Too much knockback
+			// Players are not as affected by velocities when they are on the ground, so increase what players experience.
+			if (trace.ent->client && trace.ent->groundentity)
+				force *= 4.0;
+			else if (trace.ent->client)	// && !(targ->groundentity)
+				force *= 0.25;	// Too much knockback
 
-				if (force > 512)	// Cap this speed so it doesn't get insane
-					force=512;
-				VectorScale (vec, force, kvel);
+			if (force > 512)	// Cap this speed so it doesn't get insane
+				force=512;
+			VectorScale (vec, force, kvel);
 
-				if (trace.ent->client)	// Don't force players up quite so much as monsters.
-					upvel=30;
+			if (trace.ent->client)	// Don't force players up quite so much as monsters.
+				upvel=30;
+			else
+				upvel=120;
+			// Now if the player isn't being forced DOWN very far, let's force them UP a bit.
+			if ((vec[2] > -0.5 || trace.ent->groundentity) && kvel[2] < upvel && force > 30)
+			{	// Don't knock UP the player more than we do across...
+				if (force < upvel)
+					kvel[2] = force;
 				else
-					upvel=120;
-				// Now if the player isn't being forced DOWN very far, let's force them UP a bit.
-				if ((vec[2] > -0.5 || trace.ent->groundentity) && kvel[2] < upvel && force > 30)
-				{	// Don't knock UP the player more than we do across...
-					if (force < upvel)
-						kvel[2] = force;
-					else
-						kvel[2] = upvel;
-				}
-
-				VectorAdd (trace.ent->velocity, kvel, trace.ent->velocity);
-
-				if (trace.ent->client)	// If player, then set the player flag that will affect this.
-				{
-					trace.ent->client->playerinfo.flags |= PLAYER_FLAG_USE_ENT_POS;
-					// The knockbacktime indicates how long this knockback affects the player.
-					if (force>200 && trace.ent->health>0 && trace.ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN && infront(trace.ent, self))
-					{
-						if (self->evade_debounce_time<level.time)
-						{
-							gi.sound(self, CHAN_BODY, gi.soundindex("monsters/pssithra/land.wav") ,1, ATTN_NORM , 0);
-							self->evade_debounce_time = level.time + 3.0;
-						}
-						playerExport->PlayerAnimSetLowerSeq(&trace.ent->client->playerinfo,ASEQ_KNOCKDOWN);
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo,ASEQ_NONE);
-						playerExport->TurnOffPlayerEffects(trace.ent);
-						VectorMA (trace.ent->velocity, 3, kvel, trace.ent->velocity);
-						knockbacktime = level.time + 3.0;
-					}
-					else if (force > 500)
-						knockbacktime = level.time + 1.25;
-					else
-						knockbacktime = level.time + (force/400.0);
-
-					if (knockbacktime > trace.ent->client->playerinfo.knockbacktime)
-						trace.ent->client->playerinfo.knockbacktime = knockbacktime;
-				}
-
-				if (force>100)
-				{
-					VectorMA(trace.endpos, -force/5, vec, self->teamchain->s.origin);
-					VectorScale(self->enemy->target_ent->velocity, -0.5 * force/400 , self->enemy->target_ent->velocity);
-				}
-				else
-					VectorScale(self->enemy->target_ent->velocity, -0.5, self->enemy->target_ent->velocity);
+					kvel[2] = upvel;
 			}
+
+			VectorAdd (trace.ent->velocity, kvel, trace.ent->velocity);
+
+			if (trace.ent->client)	// If player, then set the player flag that will affect this.
+			{
+				trace.ent->client->playerinfo.flags |= PLAYER_FLAG_USE_ENT_POS;
+				// The knockbacktime indicates how long this knockback affects the player.
+				if (force>200 && trace.ent->health>0 && trace.ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN && infront(trace.ent, self))
+				{
+					if (self->evade_debounce_time<level.time)
+					{
+						gi.sound(self, CHAN_BODY, gi.soundindex("monsters/pssithra/land.wav") ,1, ATTN_NORM , 0);
+						self->evade_debounce_time = level.time + 3.0;
+					}
+					playerExport->PlayerAnimSetLowerSeq(&trace.ent->client->playerinfo,ASEQ_KNOCKDOWN);
+					playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo,ASEQ_NONE);
+					playerExport->TurnOffPlayerEffects(trace.ent);
+					VectorMA (trace.ent->velocity, 3, kvel, trace.ent->velocity);
+					knockbacktime = level.time + 3.0;
+				}
+				else if (force > 500)
+					knockbacktime = level.time + 1.25;
+				else
+					knockbacktime = level.time + (force/400.0);
+
+				if (knockbacktime > trace.ent->client->playerinfo.knockbacktime)
+					trace.ent->client->playerinfo.knockbacktime = knockbacktime;
+			}
+
+			if (force>100)
+			{
+				VectorMA(trace.endpos, -force/5, vec, self->teamchain->s.origin);
+				VectorScale(self->enemy->target_ent->velocity, -0.5 * force/400 , self->enemy->target_ent->velocity);
+			}
+			else
+				VectorScale(self->enemy->target_ent->velocity, -0.5, self->enemy->target_ent->velocity);
 		}
 	}
+
 	VectorCopy(self->teamchain->s.origin, self->s.origin);
 	VectorSubtract(self->teamchain->owner->s.origin, self->s.origin, vec);
 	VectorNormalize(vec);

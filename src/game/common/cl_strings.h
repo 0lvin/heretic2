@@ -5,9 +5,6 @@
 #ifndef QCOMMON_CL_STRINGS_H
 #define QCOMMON_CL_STRINGS_H
 
-// Top 2 bits are used for level of message
-#define MESSAGE_MASK	0x1fff
-
 typedef enum
 {
 	GM_CS_HEALTH		= 3,
@@ -117,34 +114,11 @@ typedef enum
 	GM_NOMANA			,
 	GM_NOAMMO			,
 	GM_SEQCOMPLETE		,
-	GM_TOGO_1			,
-	GM_TOGO_2			,
-	GM_TOGO_3			,
-	GM_TOGO_4			,
-	GM_TOGO_5			,
-	GM_TOGO_6			,
-	GM_TOGO_7			,
-	GM_TOGO_8			,
-	GM_TOGO_9			,
-	GM_TOGO_10			,
-	GM_NEWOBJ			,
 
 	GM_KILLED_SELF		= 129,
 	GM_DIED				,
 	GM_WASKILLED		,
 	GM_ENTERED			,
-	GM_TIMELIMIT		,
-	GM_FRAGLIMIT		,
-	GM_EXIT				,
-	GM_DISCON			,
-	GM_WASKICKED		,
-	GM_WASBANNED		,
-	GM_KICKED			,
-	GM_BANNED			,
-	GM_TIMEDOUT			,
-	GM_OVERFLOW 		,
-	GM_COOPTIMEOUT		,
-	GM_COOPWAITCIN		,
 
 	GM_OBIT_STAFF			= 148,
 	GM_OBIT_STAFF1			,
@@ -177,8 +151,6 @@ typedef enum
 	GM_OBIT_PHOENIX_SPL1	,
 	GM_OBIT_PHOENIX_SPL2	,
 	GM_OBIT_HELLSTAFF		,
-	GM_OBIT_HELLSTAFF1		,
-	GM_OBIT_HELLSTAFF2		,
 
 	GM_OBIT_P_STAFF			= 184,
 	GM_OBIT_P_STAFF1		,
@@ -211,8 +183,6 @@ typedef enum
 	GM_OBIT_P_PHOENIX_SPL1	,
 	GM_OBIT_P_PHOENIX_SPL2	,
 	GM_OBIT_P_HELLSTAFF		,
-	GM_OBIT_P_HELLSTAFF1 	,
-	GM_OBIT_P_HELLSTAFF2 	,
 
 	GM_OBIT_UNKNOWN			= 220,
 	GM_OBIT_UNKNOWN1		,
@@ -275,8 +245,6 @@ typedef enum
 	GM_OBIT_BURNT1			,
 	GM_OBIT_BURNT2			,
 	GM_OBIT_EXPL			,
-	GM_OBIT_EXPL1			,
-	GM_OBIT_EXPL2			,
 
 	GM_SIR_NATE_HIT_AGAIN0		= 286,
 	GM_SIR_NATE_HIT_AGAIN1,
@@ -302,9 +270,6 @@ typedef enum
 	GM_SHUTUP					= 307,
 	GM_NONAMECHANGE				,
 	GM_NOKILL					,
-	GM_CH_SERVERS				,
-	GM_CH_SAVECFG				,
-	GM_CH_SOUND					,
 
 	GM_M_KELLCAVES				= 314,
 	GM_M_DARKMIRE				,
@@ -318,14 +283,8 @@ typedef enum
 	GM_OBIT_TORN1				,
 	GM_OBIT_TORN2				,
 	GM_OBIT_TORN_SELF			,
-	GM_OBIT_TORN_SELF1			,
-	GM_OBIT_TORN_SELF2 			,
 
 	GM_COOP_RESTARTING			= 329,
-
-	// Always keep these last to test alignment
-	GM_HELP1					= 331,
-	GM_HELP2
 } GameMsg_t;
 
 #endif
