@@ -1193,7 +1193,6 @@ GAME_OBJS_ = \
 	src/game/monster/assassin/assassin.o \
 	src/game/monster/beast/beast_anim.o \
 	src/game/monster/beast/beast.o \
-	src/game/monster/bee/bee.o \
 	src/game/monster/chicken/chicken_anim.o \
 	src/game/monster/chicken/chicken.o \
 	src/game/monster/elflord/elflord_anims.o \

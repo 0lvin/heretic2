@@ -34,7 +34,6 @@ void TeleporterStaticsInit();
 void HighPriestessStaticsInit();
 void TcheckrikStaticsInit();
 void ButtonStaticsInit();
-void BeeStaticsInit();
 void LeverStaticsInit();
 void FlameThrowerStaticsInit();
 void CorvusStaticsInit();
@@ -91,7 +90,7 @@ void (*classStaticsInits[NUM_CLASSIDS])() =
 	HighPriestessStaticsInit,
 	TcheckrikStaticsInit,
 	ButtonStaticsInit,
-	BeeStaticsInit,
+	NULL,
 	CorvusStaticsInit,
 	morcalavinStaticsInit,
 	TBeastStaticsInit,

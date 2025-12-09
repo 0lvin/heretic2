@@ -468,7 +468,6 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/assassin/assassin.c
 	${GAME_SRC_DIR}/monster/beast/beast_anim.c
 	${GAME_SRC_DIR}/monster/beast/beast.c
-	${GAME_SRC_DIR}/monster/bee/bee.c
 	${GAME_SRC_DIR}/monster/chicken/chicken_anim.c
 	${GAME_SRC_DIR}/monster/chicken/chicken.c
 	${GAME_SRC_DIR}/monster/elflord/elflord_anims.c

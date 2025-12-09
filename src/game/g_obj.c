@@ -4435,6 +4435,16 @@ SP_obj_bloodsplat(edict_t *self)
 }
 
 /*
+ * QUAKED monster_bee (1 .5 0) (-16 -16 -24) (16 16 16)
+ *
+ * The bee
+ */
+void SP_monster_bee(edict_t *self)
+{
+	ObjectInit(self, GIB_WOOD); // fixed, could be removed
+}
+
+/*
  * QUAKED object_big_fire (1 .5 .5) (-3 -3 -6) (3 3 11)
  *
  * Dawn of Darkness:
