@@ -122,7 +122,8 @@ create_fire_touch(edict_t *owner, vec3_t origin)
 	flame->solid = SOLID_TRIGGER;
 	flame->health = 2;
 	flame->mass = 2;
-	ObjectInit(flame, GIB_NONE);
+	flame->gib = GIB_NONE;
+	SP_obj_material(flame);
 
 	owner->enemy = flame;
 }

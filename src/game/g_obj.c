@@ -218,16 +218,249 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 	self->maxs[2] = self->maxs[2] * scale;
 }
 
+/*
+ * QUAKED monster_bee (1 .5 0) (-16 -16 -24) (16 16 16)
+ *
+ * The bee
+ */
+/*
+ * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A highback wooden chair with a triangle at the top.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A push cart for the ogles to push around
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Open Book
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Closed book standing up
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A large wooden dining table with two legs.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Kettle
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A beer stein.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A paper scroll
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A potted plant with ferns
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Fish trap
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Wheelbarrow
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Urn (Andorian)
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ *
+ * Heretic 2: A tall basket with a lid on it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ *
+ * Heretic 2: Clay bowl
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ *
+ * Heretic 2: A big honking urn made of clay
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Circular Andorian wall hanging
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A tool that is a pick.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A cooking pot which lays flat on a table
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A bottle that looks like the one Jennie came out of in I Dream of Jennie
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A wine jug
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Body parts container
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A (thing always animates)
+ * EXPLODING - N/A
+ * NOPUSH - can't be pushed
+ * -----------------------------------
+ */
 void
-ObjectInit(edict_t *self, gibtype_t materialtype)
+SP_obj_material(edict_t *self)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->msgHandler = DefaultMsgHandler;
 	self->takedamage = DAMAGE_YES;
 	self->clipmask = MASK_MONSTERSOLID;
-
-	if (!self->gib)
-		self->gib = materialtype;
 
 	if (self->spawnflags & OBJ_INVULNERABLE)	// Invulnerable
 	{
@@ -305,7 +538,7 @@ SP_obj_banneronpole(edict_t *self)
 	self->gib = GIB_WOOD;
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
-	object_spawn(self);
+	DynamicObjectSpawn(self);
 }
 
 /*-----------------------------------------------
@@ -410,12 +643,12 @@ SP_object_flame1(edict_t *self)
 void
 SP_obj_barrel(edict_t *self)
 {
-	self->dmg = 10;
-
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 
 	if (self->spawnflags & OBJ_EXPLODING)
 	{
+		self->dmg = 10;
+
 		// Set this up so we go through die rather than the message.
 		self->classID = CID_NONE;
 		self->die = barrel_die;
@@ -449,24 +682,7 @@ void
 SP_obj_broom(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A highback wooden chair with a triangle at the top.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_chair1(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -484,7 +700,7 @@ void
 SP_obj_chair2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -503,7 +719,7 @@ SP_obj_chair3(edict_t *self)
 {
 	// can't be destroyed
 	self->spawnflags |= OBJ_NOPUSH | OBJ_INVULNERABLE;
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 void
@@ -541,7 +757,7 @@ chest1_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_chest1(edict_t *self)
 {
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->use = chest1_use;
 }
 
@@ -560,7 +776,7 @@ void
 SP_obj_chest2(edict_t *self)
 {
 	self->spawnflags &= ~OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -578,7 +794,7 @@ void
 SP_obj_chest3(edict_t *self)
 {
 	self->spawnflags &= ~OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 void
@@ -634,7 +850,7 @@ SP_obj_cog1(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 
 	self->use = cog1_use;
 }
@@ -740,7 +956,7 @@ SP_obj_corpse(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
-	ObjectInit(self, GIB_ORGANIC);
+	SP_obj_material(self);
 }
 
 #define PELF_NUM_PAIN_VOICES	4
@@ -921,7 +1137,7 @@ SP_obj_dying_elf(edict_t *self)
 	self->pain = dying_elf_pain;
 	self->die = dying_elf_die;
 
-	ObjectInit(self, GIB_ORGANIC);
+	SP_obj_material(self);
 
 	// No weapons
 	self->s.fmnodeinfo[MESH__HOE].flags |= FMNI_NO_DRAW;
@@ -962,7 +1178,7 @@ SP_obj_sign1(edict_t *self)
 
 	self->s.frame = 3;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -991,7 +1207,7 @@ SP_obj_sign4(edict_t *self)
 	else if (self->style==1)
 		self->s.skinnum = 1;
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1011,7 +1227,7 @@ SP_obj_statue_corvus(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1034,7 +1250,7 @@ SP_obj_statue_dolphin1(edict_t *self)
 	else
 		self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1056,7 +1272,7 @@ SP_obj_statue_dolphin2(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1078,7 +1294,7 @@ SP_obj_statue_dolphin3(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1100,7 +1316,7 @@ SP_obj_statue_dolphin4(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1120,24 +1336,7 @@ SP_obj_statue_guardian(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_METALLIC);
-}
-
-/*
- * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A large wooden dining table with two legs.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_table1(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1155,7 +1354,7 @@ void
 SP_obj_table2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1173,24 +1372,7 @@ void
 SP_obj_throne(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Kettle
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_kettle(edict_t *self)
-{
-	ObjectInit(self, GIB_METALLIC);
+	SP_obj_material(self);
 }
 
 /*
@@ -1215,7 +1397,7 @@ SP_obj_cauldron(edict_t *self)
 
 	self->spawnflags |= OBJ_NOPUSH;
 
-	ObjectInit(self, GIB_METALLIC);
+	SP_obj_material(self);
 }
 
 /*
@@ -1240,7 +1422,7 @@ SP_obj_firepot(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Cant' be moved
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	if (self->spawnflags & OBJ_ANIMATE)	// Animate it
 	{
@@ -1269,7 +1451,7 @@ SP_obj_statue_duckbill1(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -1291,7 +1473,7 @@ SP_obj_statue_duckbill2(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 void
@@ -1446,40 +1628,6 @@ SP_obj_seasonglobe(edict_t *bottom)
 }
 
 /*
- * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A beer stein.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_stein(edict_t *self)
-{
-	ObjectInit(self, GIB_METALLIC);
-}
-
-/*
- * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A paper scroll
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_scroll(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
  * QUAKED obj_fountain_fish (1 .5 0) (-52 -34 -48) (52 34 48) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
  * Heretic 2: Two-headed fish fountain. Water FX not included
@@ -1495,7 +1643,7 @@ SP_obj_fountain_fish(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1513,24 +1661,7 @@ void
 SP_obj_statue_boulderfish(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_GREYSTONE);
-}
-
-/*
- * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A potted plant with ferns
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_pottedplant(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
+	SP_obj_material(self);
 }
 
 /*
@@ -1575,7 +1706,7 @@ SP_obj_plant(edict_t *self)
 	}
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_LEAF);
+	SP_obj_material(self);
 }
 
 /*
@@ -1594,7 +1725,7 @@ SP_obj_treetop(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1613,7 +1744,7 @@ SP_obj_tree(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1635,7 +1766,7 @@ SP_obj_tree2(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 
 	moss = G_Spawn();
 	VectorCopy(self->s.origin, moss->s.origin);
@@ -1671,7 +1802,7 @@ SP_obj_tree3(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 
 	moss = G_Spawn();
 	VectorCopy(self->s.origin,moss->s.origin);
@@ -1707,7 +1838,7 @@ SP_obj_treetall(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 
 	moss = G_Spawn();
 	VectorCopy(self->s.origin,moss->s.origin);
@@ -1740,7 +1871,7 @@ SP_obj_treefallen(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 
 	self->s.frame = 1;
 }
@@ -1760,7 +1891,7 @@ void
 SP_obj_shovel(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1778,24 +1909,7 @@ void
 SP_obj_woodpile(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't move
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Fish trap
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_fishtrap(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1813,7 +1927,7 @@ void
 SP_obj_bench(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1831,7 +1945,7 @@ void
 SP_obj_bucket(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -1857,30 +1971,16 @@ SP_obj_ropechain(edict_t *self)
 
 	if (self->s.skinnum == 0)
 	{
-		ObjectInit(self, GIB_WOOD);
+		self->gib = GIB_WOOD;
 	}
 	else
 	{
+		self->gib = GIB_METALLIC;
 		self->health *= 2;
-		ObjectInit(self, GIB_METALLIC);
 	}
-}
 
-/*
- * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Wheelbarrow
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_wheelbarrow(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
+
 }
 
 /*
@@ -1899,24 +1999,7 @@ SP_obj_wheelbarrowdamaged(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->s.frame = 1;
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Urn (Andorian)
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_urn(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
+	SP_obj_material(self);
 }
 
 /*
@@ -1937,7 +2020,7 @@ SP_obj_bigcrystal(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 	self->avelocity[1] = self->speed;
 	self->movetype = MOVETYPE_FLY;
 	self->gravity = 0;
@@ -2024,7 +2107,7 @@ SP_obj_moss(edict_t *self)
 
 	self->s.renderfx |= RF_TRANSLUCENT;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_LEAF);
+	SP_obj_material(self);
 }
 
 /*
@@ -2062,7 +2145,7 @@ void
 SP_obj_statue_dragonhead(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH | OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -2086,7 +2169,7 @@ SP_obj_statue_dragon(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	if (self->style == 0)
 		self->s.frame = 0;
@@ -2112,10 +2195,9 @@ SP_obj_flagonpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	self->gib = GIB_WOOD;
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
-	object_spawn(self);
+	SP_obj_material(self);
 }
 
 void
@@ -2180,7 +2262,7 @@ SP_obj_lever1(edict_t *self)
 {
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->use = lever1_use;
 }
 
@@ -2245,7 +2327,7 @@ SP_obj_lever2(edict_t *self)
 {
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->use = lever2_use;
 }
 
@@ -2310,7 +2392,7 @@ SP_obj_lever3(edict_t *self)
 {
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->use = lever3_use;
 }
 
@@ -2362,7 +2444,7 @@ SP_obj_bush(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = bush_touch;
 }
@@ -2397,7 +2479,7 @@ void
 SP_obj_cactus(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_NONE);
+	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
 }
@@ -2417,7 +2499,7 @@ void
 SP_obj_cactus3(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_NONE);
+	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
 }
@@ -2478,61 +2560,10 @@ void
 SP_obj_cactus4(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_NONE);
+	SP_obj_material(self);
 	self->use = cactus4_use;
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
-}
-
-/*
- * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
- *
- * Heretic 2: A tall basket with a lid on it.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_basket(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
- *
- * Heretic 2: Clay bowl
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_claybowl(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
-}
-
-/*
- * QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
- *
- * Heretic 2: A big honking urn made of clay
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_clayjar(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
 }
 
 /*
@@ -2550,7 +2581,7 @@ void
 SP_obj_gorgonbones(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_NONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -2568,7 +2599,7 @@ void
 SP_obj_grass(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -2587,7 +2618,7 @@ SP_obj_swampflat_top(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -2607,7 +2638,7 @@ SP_obj_swampflat_bottom(edict_t *self)
 	self->s.skinnum = 1;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -2627,7 +2658,7 @@ SP_obj_treestump(edict_t *self)
 	self->s.skinnum = 1;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -2644,7 +2675,7 @@ SP_obj_treestump(edict_t *self)
 void
 SP_obj_jawbone(edict_t *self)
 {
-	ObjectInit(self, GIB_NONE);
+	SP_obj_material(self);
 	self->s.skinnum = 1;
 }
 
@@ -2662,7 +2693,7 @@ SP_obj_jawbone(edict_t *self)
 void
 SP_obj_barrel_metal(edict_t *self)
 {
-	ObjectInit(self, GIB_METALLIC);
+	SP_obj_material(self);
 	self->s.skinnum = 1;
 }
 
@@ -2702,7 +2733,7 @@ SP_obj_barrel_indestructible(edict_t *self)
 void
 SP_obj_barrel_explosive(edict_t *self)
 {
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->s.skinnum = 1;
 }
 
@@ -2720,7 +2751,7 @@ SP_obj_barrel_explosive(edict_t *self)
 void
 SP_obj_gascan(edict_t *self)
 {
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->s.skinnum = 1;
 }
 
@@ -2751,7 +2782,7 @@ SP_obj_pipe(edict_t *self)
 {
 	self->s.skinnum = 1;
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -2769,7 +2800,7 @@ void
 SP_obj_pipewheel(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 	self->s.skinnum = 1;
 }
 
@@ -2825,41 +2856,7 @@ SP_obj_minecart(edict_t *self)
 		self->s.frame = 0;
 	}
 
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Circular Andorian wall hanging
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_andwallhanging(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A tool that is a pick.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_pick(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -2911,7 +2908,7 @@ SP_obj_metalchunk(edict_t *self)
 		self->s.frame = 0;
 	}
 
-	ObjectInit(self, GIB_METALLIC);
+	SP_obj_material(self);
 }
 
 /*
@@ -2942,7 +2939,7 @@ void
 SP_obj_rocks(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 void
@@ -2971,7 +2968,9 @@ hivepriestesssymbol_use(edict_t *self, edict_t *other, edict_t *activator)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 	self->health = 75;
 	self->mass = 125;
-	ObjectInit(self, GIB_GREYSTONE);
+	self->gib = GIB_GREYSTONE;
+
+	SP_obj_material(self);
 
 	self->velocity[2] = -1;
 
@@ -3003,7 +3002,7 @@ SP_obj_hivepriestessssymbol(edict_t *self)
 	self->use = hivepriestesssymbol_use;
 
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -3024,7 +3023,7 @@ SP_obj_queenthrone(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -3043,7 +3042,7 @@ void
 SP_obj_queenchair(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -3093,7 +3092,7 @@ SP_obj_shrine(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS))
 		self->style = 7;
@@ -3129,7 +3128,7 @@ void
 SP_obj_larvaegg(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GLASS);
+	SP_obj_material(self);
 }
 
 /*
@@ -3148,7 +3147,7 @@ void
 SP_obj_larvabrokenegg(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GLASS);
+	SP_obj_material(self);
 }
 
 /*
@@ -3168,7 +3167,7 @@ SP_obj_cocoon(edict_t *self)
 {
 	// Always animate and can't be pushed
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_INSECT);
+	SP_obj_material(self);
 }
 
 /*
@@ -3188,7 +3187,7 @@ SP_obj_cocoonopen(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->s.frame = 20;
-	ObjectInit(self, GIB_INSECT);
+	SP_obj_material(self);
 }
 
 /*
@@ -3209,7 +3208,7 @@ SP_obj_venusflytrap(edict_t *self)
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_LEAF);
+	SP_obj_material(self);
 
 	leaves = G_Spawn();
 
@@ -3253,7 +3252,7 @@ SP_obj_statue_techeckriktomb(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	self->s.frame = 1;
 
@@ -3287,7 +3286,7 @@ SP_obj_statue_techeckrikright(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	self->s.frame = 2;
 	if (self->spawnflags & 16)	// NOGEM
@@ -3314,7 +3313,7 @@ SP_obj_statue_techeckrikleft(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	self->s.frame = 0;
 
@@ -3371,7 +3370,7 @@ SP_obj_spellbook(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->use = spellbook_use;
-	ObjectInit(self, GIB_NONE);
+	SP_obj_material(self);
 	self->s.frame = 20;
 
 	beam = G_Spawn();
@@ -3404,7 +3403,7 @@ SP_obj_skullpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_POTTERY);
+	SP_obj_material(self);
 }
 
 /*
@@ -3422,59 +3421,7 @@ void
 SP_obj_pot1(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
-	ObjectInit(self, GIB_POTTERY);
-}
-
-/*
- * QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A cooking pot which lays flat on a table
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_pot2(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
-}
-
-/*
- * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A bottle that looks like the one Jennie came out of in I Dream of Jennie
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_bottle1(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
-}
-
-/*
- * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A wine jug
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_jug1(edict_t *self)
-{
-	ObjectInit(self, GIB_POTTERY);
+	SP_obj_material(self);
 }
 
 /*
@@ -3502,7 +3449,7 @@ SP_obj_torture_table(edict_t *self)
 	else
 		self->s.frame = 0;
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -3520,7 +3467,7 @@ void
 SP_obj_torture_wallring(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_METALLIC);
+	SP_obj_material(self);
 }
 
 void
@@ -3559,7 +3506,7 @@ SP_obj_statue_tchecktrik_bust(edict_t *self)
 
 	self->use = statue_tchecktrik_bust_use;
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 void
@@ -3620,7 +3567,7 @@ SP_obj_statue_sithraguard(edict_t *self)
 
 	self->use = statue_sithraguard_use;
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 void ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
@@ -3721,7 +3668,7 @@ SP_obj_torture_ironmaiden(edict_t *self)
 	self->use = ironmaiden_use;
 	self->touch = ironmaiden_touch;
 
-	ObjectInit(self, GIB_METALLIC);
+	SP_obj_material(self);
 }
 
 /*
@@ -3741,7 +3688,7 @@ SP_obj_torture_rack(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -3761,7 +3708,7 @@ SP_obj_torture_bed(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -3780,7 +3727,7 @@ SP_obj_statue_saraphbust(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 #define FISHBOB_HEIGHT		.1
@@ -3838,7 +3785,7 @@ SP_obj_biotank(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 
 	glass = G_Spawn();
 	VectorSet(glass->mins, -1, -1, -1);
@@ -3858,7 +3805,8 @@ SP_obj_biotank(edict_t *self)
 	glass->health = 250;
 	glass->mass = 200;
 
-	ObjectInit(glass, GIB_GLASS);
+	glass->gib = GIB_GLASS;
+	SP_obj_material(glass);
 
 	glass = G_Spawn();
 	VectorSet(glass->mins, -1, -1, -1);
@@ -3877,8 +3825,9 @@ SP_obj_biotank(edict_t *self)
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
+	glass->gib = GIB_GLASS;
 
-	ObjectInit(glass, GIB_GLASS);
+	SP_obj_material(glass);
 
 	glass = G_Spawn();
 	VectorSet(glass->mins, -1, -1, -1);
@@ -3897,8 +3846,9 @@ SP_obj_biotank(edict_t *self)
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
+	glass->gib = GIB_GLASS;
 
-	ObjectInit(glass, GIB_GLASS);
+	SP_obj_material(glass);
 
 	glass = G_Spawn();
 	VectorSet(glass->mins, -1, -1, -1);
@@ -3918,8 +3868,9 @@ SP_obj_biotank(edict_t *self)
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
+	glass->gib = GIB_GLASS;
 
-	ObjectInit(glass, GIB_GLASS);
+	SP_obj_material(glass);
 
 	if (!self->style)
 		return;
@@ -3995,7 +3946,7 @@ void
 SP_obj_tapper(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -4014,8 +3965,7 @@ SP_obj_wallringplaque(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -4072,7 +4022,7 @@ void
 SP_obj_frypan(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -4090,7 +4040,7 @@ void
 SP_obj_eggpan(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -4108,7 +4058,7 @@ void
 SP_obj_nest(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_GREYSTONE);
+	SP_obj_material(self);
 }
 
 /*
@@ -4126,24 +4076,7 @@ void
 SP_obj_choppeddude(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_ORGANIC);
-}
-
-/*
- * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Body parts container
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A (thing always animates)
- * EXPLODING - N/A
- * NOPUSH - can't be pushed
- * -----------------------------------
- */
-void
-SP_obj_lab_parts_container(edict_t *self)
-{
-	ObjectInit(self, GIB_GLASS);
+	SP_obj_material(self);
 }
 
 /*
@@ -4161,7 +4094,7 @@ void
 SP_obj_eyeball_jar(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_GLASS);
+	SP_obj_material(self);
 }
 
 /*
@@ -4179,7 +4112,7 @@ void
 SP_obj_lab_tray(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_ORGANIC);
+	SP_obj_material(self);
 }
 
 void
@@ -4218,7 +4151,7 @@ SP_obj_hanging_ogle(edict_t *self)
 	self->monsterinfo.action = "poly";
 
 	self->spawnflags |= OBJ_NOPUSH;
-	ObjectInit(self, GIB_ORGANIC);
+	SP_obj_material(self);
 
 	ring = G_Spawn();
 	VectorCopy(self->s.origin,ring->s.origin);
@@ -4259,7 +4192,7 @@ SP_obj_ring_plaque2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	ObjectInit(self, GIB_ORGANIC);
+	SP_obj_material(self);
 }
 
 /*
@@ -4277,58 +4210,7 @@ void
 SP_obj_statue_sariph(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	ObjectInit(self, GIB_STONE);
-}
-
-/*
- * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A push cart for the ogles to push around
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
- */
-void
-SP_obj_pushcart(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Open Book
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
- */
-void
-SP_obj_bookopen(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
-}
-
-/*
- * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Closed book standing up
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
- */
-void
-SP_obj_bookclosed(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 /*
@@ -4346,8 +4228,7 @@ void
 SP_obj_web(edict_t *self)
 {
 	self->s.renderfx |= RF_TRANSLUCENT;
-
-	ObjectInit(self, GIB_WOOD);
+	SP_obj_material(self);
 }
 
 #define FAST_TWITCH 16
@@ -4396,7 +4277,7 @@ larva_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 void
 SP_obj_larva(edict_t *self)
 {
-	ObjectInit(self, GIB_INSECT);
+	SP_obj_material(self);
 
 	self->movetype = MOVETYPE_STEP;
 	self->count = 19;
@@ -4431,17 +4312,7 @@ void
 SP_obj_bloodsplat(edict_t *self)
 {
 	self->flags |= RF_FIXED | RF_ALPHA_TEXTURE;
-	ObjectInit(self, GIB_ORGANIC);
-}
-
-/*
- * QUAKED monster_bee (1 .5 0) (-16 -16 -24) (16 16 16)
- *
- * The bee
- */
-void SP_monster_bee(edict_t *self)
-{
-	ObjectInit(self, GIB_WOOD); // fixed, could be removed
+	SP_obj_material(self);
 }
 
 /*
