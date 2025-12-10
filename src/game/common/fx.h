@@ -166,22 +166,20 @@ typedef enum FX_Type_e
 // different debris chunks when an FX_DEBRI is created).
 // ************************************************************************************************
 
-typedef enum MaterialID_e
-{
-	MAT_STONE,			// 0
-	MAT_GREYSTONE,		// 1
-	MAT_CLOTH,			// 2
-	MAT_METAL,			// 3
-	MAT_FLESH,			// 4
-	MAT_POTTERY,		// 5
-	MAT_GLASS,			// 6
-	MAT_LEAF,			// 7
-	MAT_WOOD,			// 8
-	MAT_BROWNSTONE,		// 9
-	MAT_NONE,			// 10
-	MAT_INSECT,			// 11
-	NUM_MAT
-} MaterialID_t;
+/* keep it same as gibtype_t */
+#define MAT_STONE      0
+#define MAT_GREYSTONE  1
+#define MAT_CLOTH      2
+#define MAT_METAL      3
+#define MAT_FLESH      4
+#define MAT_POTTERY    5
+#define MAT_GLASS      6
+#define MAT_LEAF       7
+#define MAT_WOOD       8
+#define MAT_BROWNSTONE 9
+#define MAT_NONE       10
+#define MAT_INSECT     11
+#define NUM_MAT        12
 
 //These are used in the same field as MAT_ for client effects,
 //if MAT_ goes up to 16 or higher, change these!

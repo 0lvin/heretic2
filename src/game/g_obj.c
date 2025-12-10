@@ -219,7 +219,7 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 }
 
 void
-ObjectInit(edict_t *self, int materialtype)
+ObjectInit(edict_t *self, gibtype_t materialtype)
 {
 	self->movetype = MOVETYPE_NONE;
 	self->msgHandler = DefaultMsgHandler;

@@ -163,18 +163,20 @@ typedef enum
 /* gib types */
 typedef enum
 {
-	GIB_NONE,
+	GIB_STONE,			// 0
+	GIB_GREYSTONE,		// 1
+	GIB_CLOTH,			// 2
+	GIB_METAL,			// 3
+	GIB_FLESH,			// 4
+	GIB_POTTERY,		// 5
+	GIB_GLASS,			// 6
+	GIB_LEAF,			// 7
+	GIB_WOOD,			// 8
+	GIB_BROWNSTONE,		// 9
+	GIB_NONE,			// 10
+	GIB_INSECT,			// 11
 	GIB_ORGANIC,
-	GIB_METALLIC,
-	GIB_STONE,
-	GIB_GREYSTONE,
-	GIB_CLOTH,
-	GIB_POTTERY,
-	GIB_GLASS,
-	GIB_LEAF,
-	GIB_WOOD,
-	GIB_BROWNSTONE,
-	GIB_INSECT,
+	GIB_METALLIC
 } gibtype_t;
 
 /* monster ai flags */
@@ -2116,7 +2118,7 @@ void G_InitResourceManagers();
 void KillBrush(edict_t *targ,edict_t *inflictor,edict_t *attacker, int damage);
 
 /* g_obj.c */
-void ObjectInit(edict_t *self, int materialtype);
+void ObjectInit(edict_t *self, gibtype_t materialtype);
 
 // p_funcs
 extern void G_PlayerActionShrineEffect(playerinfo_t *playerinfo);
@@ -2695,7 +2697,7 @@ struct edict_s
 
 	// What it's made of, i.e. MAT_XXX. Used to determine gibs to throw. Curently used only by the
 	// barrel, but applicable to anything generically gibbable.
-	int					materialtype;
+	gibtype_t			materialtype;
 	int					PersistantCFX;	// index to client effect linked to edict
 	int					Leader_PersistantCFX;	// non of this should really go in here.. really it should be in the client, but its 2 in the morning, so fuck it
 	vec3_t				knockbackvel;
