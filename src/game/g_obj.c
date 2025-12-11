@@ -219,14 +219,9 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 }
 
 /*
- * QUAKED monster_bee (1 .5 0) (-16 -16 -24) (16 16 16)
+ * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * The bee
- */
-/*
- * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A highback wooden chair with a triangle at the top.
+ * Heretic 2: Circular Andorian wall hanging
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A (can't be hurt)
  * ANIMATE - N/A
@@ -235,9 +230,25 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * -----------------------------------
  */
 /*
- * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED monster_bee (1 .5 0) (-2.0 -2.0 -25.0) (2.0 2.0 25.0)
  *
- * Heretic 2: A push cart for the ogles to push around
+ * The bee
+ */
+/*
+ * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ *
+ * Heretic 2: A tall basket with a lid on it.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Closed book standing up
  * -------  FIELDS  ------------------
  * INVULNERABLE - can't be hurt
  * ANIMATE - N/A
@@ -257,20 +268,9 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * -----------------------------------
  */
 /*
- * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: Closed book standing up
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
- */
-/*
- * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A large wooden dining table with two legs.
+ * Heretic 2: A bottle that looks like the one Jennie came out of in I Dream of Jennie
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A (can't be hurt)
  * ANIMATE - N/A
@@ -279,86 +279,9 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * -----------------------------------
  */
 /*
- * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: Kettle
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A beer stein.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A paper scroll
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A potted plant with ferns
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Fish trap
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Wheelbarrow
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Urn (Andorian)
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
- *
- * Heretic 2: A tall basket with a lid on it.
+ * Heretic 2: A highback wooden chair with a triangle at the top.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A (can't be hurt)
  * ANIMATE - N/A
@@ -389,14 +312,47 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * -----------------------------------
  */
 /*
- * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: Circular Andorian wall hanging
+ * Heretic 2: Fish trap
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A (can't be hurt)
  * ANIMATE - N/A
  * EXPLODING - N/A
  * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A wine jug
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Kettle
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Body parts container
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - can't be hurt
+ * ANIMATE - N/A (thing always animates)
+ * EXPLODING - N/A
+ * NOPUSH - can't be pushed
  * -----------------------------------
  */
 /*
@@ -422,9 +378,9 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * -----------------------------------
  */
 /*
- * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: A bottle that looks like the one Jennie came out of in I Dream of Jennie
+ * Heretic 2: A potted plant with ferns
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A (can't be hurt)
  * ANIMATE - N/A
@@ -433,25 +389,69 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * -----------------------------------
  */
 /*
- * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
- * Heretic 2: A wine jug
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-/*
- * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Body parts container
+ * Heretic 2: A push cart for the ogles to push around
  * -------  FIELDS  ------------------
  * INVULNERABLE - can't be hurt
- * ANIMATE - N/A (thing always animates)
+ * ANIMATE - N/A
  * EXPLODING - N/A
- * NOPUSH - can't be pushed
+ * NOPUSH - can be pushed
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A paper scroll
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A beer stein.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: A large wooden dining table with two legs.
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Urn (Andorian)
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
+ * -----------------------------------
+ */
+/*
+ * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ *
+ * Heretic 2: Wheelbarrow
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - N/A (can't be hurt)
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * NOPUSH - can't be moved by player
  * -----------------------------------
  */
 void
@@ -488,12 +488,6 @@ SP_obj_material(edict_t *self)
 	}
 }
 
-//============================================================================
-//
-//  OBJECTS
-//
-//============================================================================
-
 /*
  * QUAKED obj_banner (0.3 0.3 1.0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
  *
@@ -513,7 +507,6 @@ SP_obj_banner(edict_t *self)
 {
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->gib = GIB_CLOTH;
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
 	object_spawn(self);
@@ -535,7 +528,6 @@ SP_obj_banneronpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	self->gib = GIB_WOOD;
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
 	DynamicObjectSpawn(self);
@@ -1202,10 +1194,14 @@ SP_obj_sign4(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	if (self->style==0)
+	if (!self->style)
+	{
 		self->s.skinnum = 0;
-	else if (self->style==1)
+	}
+	else
+	{
 		self->s.skinnum = 1;
+	}
 
 	SP_obj_material(self);
 }
@@ -1868,12 +1864,12 @@ SP_obj_treetall(edict_t *self)
 void
 SP_obj_treefallen(edict_t *self)
 {
+	self->s.frame = 1;
+
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	SP_obj_material(self);
-
-	self->s.frame = 1;
 }
 
 /*
@@ -1980,7 +1976,6 @@ SP_obj_ropechain(edict_t *self)
 	}
 
 	SP_obj_material(self);
-
 }
 
 /*
@@ -2125,7 +2120,6 @@ void
 SP_obj_floor_candelabrum(edict_t *self)
 {
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-	self->gib = GIB_METALLIC;
 
 	object_spawn(self);
 }
@@ -2169,14 +2163,16 @@ SP_obj_statue_dragon(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
-	SP_obj_material(self);
-
-	if (self->style == 0)
+	if (!self->style)
+	{
 		self->s.frame = 0;
-	else if (self->style == 1)
-		self->s.frame = 1;
+	}
 	else
-		self->s.frame = 0;
+	{
+		self->s.frame = 1;
+	}
+
+	SP_obj_material(self);
 }
 
 /*
@@ -2197,7 +2193,7 @@ SP_obj_flagonpole(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
-	SP_obj_material(self);
+	object_spawn(self);
 }
 
 void
@@ -2675,8 +2671,8 @@ SP_obj_treestump(edict_t *self)
 void
 SP_obj_jawbone(edict_t *self)
 {
-	SP_obj_material(self);
 	self->s.skinnum = 1;
+	SP_obj_material(self);
 }
 
 /*
@@ -2693,8 +2689,8 @@ SP_obj_jawbone(edict_t *self)
 void
 SP_obj_barrel_metal(edict_t *self)
 {
-	SP_obj_material(self);
 	self->s.skinnum = 1;
+	SP_obj_material(self);
 }
 
 /*
@@ -2733,8 +2729,8 @@ SP_obj_barrel_indestructible(edict_t *self)
 void
 SP_obj_barrel_explosive(edict_t *self)
 {
-	SP_obj_material(self);
 	self->s.skinnum = 1;
+	SP_obj_material(self);
 }
 
 /*
@@ -2751,8 +2747,8 @@ SP_obj_barrel_explosive(edict_t *self)
 void
 SP_obj_gascan(edict_t *self)
 {
-	SP_obj_material(self);
 	self->s.skinnum = 1;
+	SP_obj_material(self);
 }
 
 /*
@@ -2781,7 +2777,6 @@ void
 SP_obj_pipe(edict_t *self)
 {
 	self->s.skinnum = 1;
-
 	SP_obj_material(self);
 }
 
@@ -2800,8 +2795,8 @@ void
 SP_obj_pipewheel(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	SP_obj_material(self);
 	self->s.skinnum = 1;
+	SP_obj_material(self);
 }
 
 /*
@@ -3286,11 +3281,14 @@ SP_obj_statue_techeckrikright(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	SP_obj_material(self);
-
 	self->s.frame = 2;
-	if (self->spawnflags & 16)	// NOGEM
+
+	if (self->spawnflags & 16)
+	{
 		self->s.frame = 3;
+	}
+
+	SP_obj_material(self);
 
 	self->use = tcheckrik_use;
 }
@@ -3313,12 +3311,14 @@ SP_obj_statue_techeckrikleft(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
-	SP_obj_material(self);
-
 	self->s.frame = 0;
 
-	if (self->spawnflags & 16)	// NOGEM
+	if (self->spawnflags & 16)
+	{
 		self->s.frame = 1;
+	}
+
+	SP_obj_material(self);
 
 	self->use = tcheckrik_use;
 }
@@ -3370,8 +3370,8 @@ SP_obj_spellbook(edict_t *self)
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->use = spellbook_use;
-	SP_obj_material(self);
 	self->s.frame = 20;
+	SP_obj_material(self);
 
 	beam = G_Spawn();
 
@@ -3445,9 +3445,13 @@ SP_obj_torture_table(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	if (self->style < 2)
+	{
 		self->s.frame = self->style;
+	}
 	else
+	{
 		self->s.frame = 0;
+	}
 
 	SP_obj_material(self);
 }
@@ -3500,9 +3504,13 @@ SP_obj_statue_tchecktrik_bust(edict_t *self)
 	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
 
 	if (!self->style)
+	{
 		self->s.frame = 1;
+	}
 	else
+	{
 		self->s.frame = 0;
+	}
 
 	self->use = statue_tchecktrik_bust_use;
 
