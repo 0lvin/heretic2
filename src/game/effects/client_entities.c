@@ -345,6 +345,11 @@ AddEffectsToView(client_entity_t **root, centity_t *owner)
 
 			if (color.a && (AVG_VEC3T(current->r.scale) > 0.0))
 			{
+				if (!current->r.model)
+				{
+					continue;
+				}
+
 				if (!AddEntityToView(&current->r))
 				{
 					current->flags |= CEF_DROPPED;
@@ -375,9 +380,6 @@ AddEffect(centity_t* owner, client_entity_t* fx)
 	{
 		AddEffectToList(&clientEnts, fx);
 	}
-
-	// copy up the scale on a model so it can be culled properly
-	VectorCopy(fx->r.scale, fx->r.scale);
 }
 
 #define NUM_TRACES 100		// I really, really hope we don't ever see more than _this

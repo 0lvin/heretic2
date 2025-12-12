@@ -647,7 +647,7 @@ item_defense_shield|models/items/defense/lightshield/tris.fm|1.0|1.0|1.0|general
 item_defense_teleport|models/items/defense/teleport/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Teleport Spell|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_defense_tornado|models/items/defense/tornado/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Whirlwind spell (Enhancement patch)|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_health_full|models/items/health/healthbig/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Full Health|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_health_half|models/items/health/healthsmall/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Half Health|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_health_half|models/items/health/healthsmall/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Half Health|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_mana_combo_half|models/items/mana/combo/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Half Combo Mana|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_mana_combo_quarter|models/items/mana/combo/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Quater Combo Mana|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_mana_defensive_full|models/items/mana/full/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Full Defensive Mana|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0

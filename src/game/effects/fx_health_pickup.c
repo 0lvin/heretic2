@@ -24,16 +24,14 @@
 #define HEALTH_SMALL 0
 #define HEALTH_BIG   1
 
-static struct model_s *health_models[NUM_HEALTH_MODELS];
 void PreCacheHealth()
 {
-	health_models[0] = fxi.RegisterModel("models/items/health/healthsmall/tris.fm");
-	health_models[1] = fxi.RegisterModel("models/items/health/healthbig/tris.fm");
 }
 
 // --------------------------------------------------------------
 
-static qboolean FXHealthPickupThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXHealthPickupThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	paletteRGBA_t		color;
@@ -77,7 +75,7 @@ void FXHealthPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED, origin, NULL, 50);
 
 	VectorCopy(ce->r.origin, ce->origin);
-	ce->r.model = health_models[(flags & CEF_FLAG6) >> 5];
+	ce->r.model = NULL;
 	ce->r.flags = RF_GLOW | RF_TRANSLUCENT | RF_TRANS_ADD;
 
 	if ((flags & CEF_FLAG6) >> 5)	// Full health

@@ -200,8 +200,8 @@ void AddEffects(void)
 
 	if (fx_numinview->value)
 	{
-		fxi.Com_Printf("Active CE : free %d, owned %d. Particles : processed %d, rendered %d\n",
-					num_free_inview, num_owned_inview, numprocessedparticles, numrenderedparticles);
+		fxi.Com_Printf("%s: free %d, owned %d. Particles : processed %d, rendered %d\n",
+					__func__, num_free_inview, num_owned_inview, numprocessedparticles, numrenderedparticles);
 	}
 }
 
@@ -429,7 +429,7 @@ static void
 AddServerEntities(frame_t *frame)
 {
 	entity_t			*ent;
-	float				autorotate, macerotate;
+	float				autorotate, macerotate, autobob;
 	int					i;
 	int					pnum;
 	centity_t			*cent;
@@ -449,9 +449,9 @@ AddServerEntities(frame_t *frame)
 	autorotate = anglemod(fxi.cl->time / 10.0);
 	macerotate = anglemod(fxi.cl->time / 700.0);
 
-	// Brush models can auto animate their frames.
-
-	autoanim = 2 * fxi.cl->time/1000;
+	/* Brush models can auto animate their frames. */
+	autoanim = 2 * fxi.cl->time / 1000;
+	autobob = 5 * sinf(fxi.cl->time / 400.0f);
 
 	memset (sv_ents, 0, sizeof(sv_ents));
 
@@ -548,6 +548,12 @@ AddServerEntities(frame_t *frame)
 		VectorCopy(ent->origin, ent->oldorigin);
 		VectorCopy(cent->origin, cent->lerp_origin);
 
+		if (effects & EF_BOB)
+		{
+			ent->origin[2] += autobob;
+			ent->oldorigin[2] += autobob;
+		}
+
 		// Set model.
 
 		if (s1->modelindex == CUSTOM_PLAYER_MODEL)
@@ -597,25 +603,36 @@ AddServerEntities(frame_t *frame)
 			ent->color = 0xFFFFFFFF;
 		}
 
-		// Set render effects (fullbright, translucent, etc).
-		ent->flags = renderfx;
+		/* only used for black hole model right now */
+		if (renderfx & RF_TRANSLUCENT && !(renderfx & RF_BEAM))
+		{
+			ent->alpha = 0.70f;
+		}
 
-		// Calculate angles.
+		/* render effects (fullbright, translucent, etc) */
+		if ((effects & EF_COLOR_SHELL))
+		{
+			ent->flags = 0; /* renderfx go on color shell entity */
+		}
+		else
+		{
+			ent->flags = renderfx;
+		}
 
-		if (effects & EF_MACE_ROTATE)
+		/* calculate angles */
+		if (effects & EF_ROTATE)
+		{
+			/* some bonus items auto-rotate */
+			ent->angles[0] = 0;
+			ent->angles[1] = autorotate;
+			ent->angles[2] = 0;
+		}
+		else if (effects & EF_MACE_ROTATE)
 		{
 			// Some bonus items auto-rotate.
 
 			ent->angles[0] = macerotate * 2;
 			ent->angles[1] = macerotate;
-			ent->angles[2] = 0;
-		}
-		else if (effects & EF_ROTATE)
-		{
-			// Some bonus items auto-rotate.
-
-			ent->angles[0] = 0;
-			ent->angles[1] = autorotate;
 			ent->angles[2] = 0;
 		}
 		else

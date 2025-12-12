@@ -2610,8 +2610,10 @@ SpawnItem(edict_t *ent, gitem_t *item)
 		return;
 	}
 
-	/* RREXTEND: Reset dynamic model assign */
-	ent->s.modelindex = 0;
+	if (!(item->world_model_flags & EF_BOB))
+	{
+		ent->s.modelindex = 0;
+	}
 
 	PrecacheItem(item);
 
@@ -2645,7 +2647,7 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	ent->nextthink = level.time + 2 * FRAMETIME; /* items start after other solids */
 	ent->think = droptofloor;
 	ent->s.effects = item->world_model_flags;
-	ent->s.renderfx = RF_GLOW; // RREXTEND: | RF_TRANSLUCENT;
+	ent->s.renderfx = RF_GLOW | RF_TRANSLUCENT;
 	ent->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 
 	if (item->flags & IT_WEAPON)
@@ -3518,22 +3520,22 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Think (f)
 		"*gethealth.wav",							// Pickup sound (char *)
 		"models/items/health/healthsmall/tris.fm",	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		NULL,										// Icon name (char *)
 		"Minor health",								// Pickup name (char *)
 		0,											// Number of digits to display
 		10,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_HEALTH | EF_ALWAYS_ADD_EFFECTS,			// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_HEALTH1,								// tag ?
-		NULL,									// precaches
-		GM_HEALTHVIAL,										// pickup message
+		NULL,										// precaches
+		GM_HEALTHVIAL,								// pickup message
 		0,
-		PICKUP_MIN,							// Bounding box mins
-		PICKUP_MAX,							// Bounding box maxs
+		PICKUP_MIN,									// Bounding box mins
+		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3550,12 +3552,12 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Think (f)
 		"*gethealth.wav",							// Pickup sound (char *)
 		"models/items/health/healthbig/tris.fm",	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
-		NULL,								// Icon name (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
+		NULL,										// Icon name (char *)
 		"Major health",								// Pickup name (char *)
 		0,											// Number of digits to display
-		30,										// Ammo/ammo use per shot
+		30,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_HEALTH | EF_ALWAYS_ADD_EFFECTS,			// flags
 		0,									// weapon model index
