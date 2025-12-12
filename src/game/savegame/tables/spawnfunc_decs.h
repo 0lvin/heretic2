@@ -181,7 +181,6 @@ extern void SP_monster_gekk( edict_t * self ) ;
 extern void SP_monster_gladb( edict_t * self ) ;
 extern void SP_monster_gladiator( edict_t * self ) ;
 extern void SP_monster_gorgon (edict_t *self);
-extern void SP_monster_gorgon_leader (edict_t *self);
 extern void SP_monster_guardian( edict_t * self ) ;
 extern void SP_monster_guncmdr( edict_t * self ) ;
 extern void SP_monster_gunner( edict_t * self ) ;

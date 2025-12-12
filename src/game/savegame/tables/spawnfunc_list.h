@@ -157,7 +157,6 @@
 {"monster_fish", SP_monster_fish},
 {"monster_gkrokon", SP_Monster_Gkrokon},
 {"monster_gorgon", SP_monster_gorgon},
-{"monster_gorgon_leader", SP_monster_gorgon_leader},
 {"monster_harpy", SP_monster_harpy},
 {"monster_high_priestess", SP_monster_high_priestess},
 {"monster_morcalavin", SP_monster_morcalavin},

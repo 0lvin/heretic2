@@ -708,7 +708,6 @@ monster_elflord|models/monsters/elflord/tris.fm|1.0|1.0|1.0|char|-24.0|-24.0|-64
 monster_fish|models/monsters/fish/tris.fm|1.0|1.0|1.0|char|-25.0|-25.0|-14.0|25.0|25.0|14.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|Fish|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
 monster_gkrokon|models/monsters/gkrokon/tris.fm|1.0|1.0|1.0|char|-20.0|-20.0|-0.0|20.0|20.0|32.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|Gkrokon|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
 monster_gorgon|models/monsters/gorgon/tris.fm|1.0|1.0|1.0|char|-16.0|-16.0|0.0|16.0|16.0|32.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|Gorgon|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
-monster_gorgon_leader|models/monsters/gorgon/tris.fm|1.0|1.0|1.0|char|-16|-16|-0|16|16|32|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none||1|.5|0|0|0|0|0|0|0|0|none|0
 monster_harpy|models/monsters/harpy/tris.fm|1.0|1.0|1.0|char|-16.0|-16.0|-12.0|16.0|16.0|12.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|Harpy|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
 monster_high_priestess|models/monsters/highpriestess/tris.fm|1.0|1.0|1.0|char|-24.0|-24.0|0.0|24.0|24.0|72.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|High Priestess|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
 monster_morcalavin|models/monsters/morcalavin/tris.fm|1.0|1.0|1.0|char|-24.0|-24.0|-50.0|24.0|24.0|40.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|Morcalavin|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0

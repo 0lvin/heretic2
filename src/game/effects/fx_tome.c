@@ -110,23 +110,6 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 		}
 	}
 
-// Brian P wanted _this removed. I thought it was cool though. Jake
-	return true;
-	for(i = 0; i < 4; i++)
-	{
-		spark = ClientParticle_new(PART_16x16_STAR, tome->color, 2000);
-
-		VectorSet(spark->origin, flrand(-TOME_RADIUS, TOME_RADIUS), flrand(-TOME_RADIUS, TOME_RADIUS), flrand(-TOME_RADIUS, TOME_RADIUS));
-		VectorAdd(tome->origin, spark->origin, spark->origin);
-		spark->scale = TOME_SCALE;
-		VectorSet(spark->velocity, crandk() * 20.0, crandk() * 20.0, crandk() * 10.0);
-		spark->acceleration[2] = TOME_ACCEL;
-		spark->d_scale = flrand(-20.0, -15.0);
-		spark->d_alpha = flrand(-500.0, -400.0);
-		spark->duration = 1000;
-
-		AddParticleToList(tome, spark);
-	}
 	return true;
 }
 

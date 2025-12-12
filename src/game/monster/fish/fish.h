@@ -56,7 +56,6 @@ void fish_pain(edict_t *self, G_Message_t *msg);
 void fish_death(edict_t *self, G_Message_t *msg);
 
 void fish_dead(edict_t *self);
-void fish_growl (edict_t *self);
 void fishbite (edict_t *self);
 void fish_idle(edict_t *self);
 void finished_swim(edict_t *self);

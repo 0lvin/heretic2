@@ -187,24 +187,6 @@ void mssithraKillSelf (edict_t *self)
 }
 
 //===========================================
-//SOUNDS
-//===========================================
-
-void mssithraSound(edict_t *self, float soundnum, float channel, float attenuation)
-{
-	return;
-	if (!channel)
-		channel = CHAN_AUTO;
-
-	if (!attenuation)
-		attenuation = ATTN_NORM;
-	else if (attenuation == -1)
-		attenuation = ATTN_NONE;
-
-	gi.sound(self, (int)channel, Sounds[(int)(soundnum)], 1, (int)attenuation, 0);
-}
-
-//===========================================
 //ATTACKS
 //===========================================
 
