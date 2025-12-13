@@ -10,7 +10,8 @@
 #include "client_entities.h"
 #include "../common/fx.h"
 
-void FXQuake(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXQuake(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte count,time,dir;
 

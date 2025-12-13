@@ -16,7 +16,8 @@
 
 #define NUM_MIST_PARTS	7
 
-static qboolean FXPlagueMistParticleSpawner(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXPlagueMistParticleSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*p;
 	paletteRGBA_t		color;
@@ -74,7 +75,8 @@ static qboolean FXPlagueMistParticleSpawner(client_entity_t *spawner, centity_t 
 	return true;
 }
 
-void FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXPlagueMist(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*pm;
 	byte				lifetime;

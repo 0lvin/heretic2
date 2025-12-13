@@ -20,7 +20,8 @@
 #define CLOUD_GEN_RAD	30.0
 
 // -------------------------------------------------------
-static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXRedRainGlowThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*spark;
 	vec3_t				vel, orgleft, orgright, atkvector;
@@ -122,7 +123,8 @@ static qboolean FXRedRainGlowThink(struct client_entity_s *self, centity_t *owne
 	return true;
 }
 
-void FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXRedRainGlow(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 	vec3_t				org;

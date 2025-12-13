@@ -17,7 +17,8 @@
 #include "../common/matrix.h"
 #include "../header/g_playstats.h"
 
-void CreateFountainSplash(client_entity_t *owner, vec3_t origin, float xspread, float yspread, float angle)
+static void
+CreateFountainSplash(client_entity_t *owner, vec3_t origin, float xspread, float yspread, float angle)
 {
 	client_particle_t	*mist;
 	vec3_t				work, off;
@@ -52,7 +53,8 @@ void CreateFountainSplash(client_entity_t *owner, vec3_t origin, float xspread, 
 
 #define NUM_SPLASHES	0.005
 
-static qboolean FXWaterfallBaseSpawner(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXWaterfallBaseSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	int		i, count;
 
@@ -65,7 +67,8 @@ static qboolean FXWaterfallBaseSpawner(client_entity_t *spawner, centity_t *owne
 	return true;
 }
 
-void FXWaterfallBase(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXWaterfallBase(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte			xs, ys, yaw;
 	client_entity_t	*wfb;
@@ -86,7 +89,8 @@ void FXWaterfallBase(centity_t *owner, int type, int flags, vec3_t origin)
 
 // -----------------------------------------------------------------------------------------
 
-qboolean FXWaterDropEnd(client_entity_t *waterdrop, centity_t *owner)
+static qboolean
+FXWaterDropEnd(client_entity_t *waterdrop, centity_t *owner)
 {
 	CreateFountainSplash(waterdrop, waterdrop->r.origin, 10.0, 10.0, 0);
 	waterdrop->Update = RemoveSelfAI;
@@ -97,7 +101,8 @@ qboolean FXWaterDropEnd(client_entity_t *waterdrop, centity_t *owner)
 #define	FOUNTAIN_SCALE	80.0F
 #define NUM_FOUNT_PARTS	20
 
-static qboolean FXFountainParticleSpawner(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXFountainParticleSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*drop = NULL;
 	client_entity_t		*splash;
@@ -142,7 +147,8 @@ static qboolean FXFountainParticleSpawner(client_entity_t *spawner, centity_t *o
 // Could send the 'v' as a 'ds' but we would lose some accuracy. As it
 // is a persistant effect, it doesn`t matter too much
 
-void FXFountain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXFountain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*fountain;
 	byte				frame;

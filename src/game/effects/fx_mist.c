@@ -20,7 +20,9 @@
 
 #define	NUM_MIST_MODELS	1
 static struct model_s *mist_models[NUM_MIST_MODELS];
-void PreCacheMist()
+
+void
+PreCacheMist()
 {
 	mist_models[0] = fxi.RegisterModel("sprites/fx/mist.sp2");
 }
@@ -69,7 +71,8 @@ FXMistThink(client_entity_t *mist, centity_t *owner)
 	return true;
 }
 
-void FXMist(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMist(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*mist;
 	byte				scale;

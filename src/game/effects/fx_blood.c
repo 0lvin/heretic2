@@ -23,7 +23,9 @@
 
 #define	NUM_BLOOD_MODELS	2
 static struct model_s *splat_models[NUM_BLOOD_MODELS];
-void PreCacheSplat()
+
+void
+PreCacheSplat()
 {
 	splat_models[0] = fxi.RegisterModel("sprites/fx/bsplat.sp2");
 	splat_models[1] = fxi.RegisterModel("sprites/fx/ysplat.sp2");
@@ -45,7 +47,8 @@ int InsectBloodParticle [NUM_INSECT_BLOOD_PARTICLES] =
 	PART_4x4_GREENBLOOD2
 };
 
-client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
+client_entity_t *
+DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 {
 	client_entity_t		*splash;
 	client_particle_t	*drop;
@@ -158,7 +161,8 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 	return splash;
 }
 
-void DoBloodTrail(client_entity_t *spawner, int amount)
+void
+DoBloodTrail(client_entity_t *spawner, int amount)
 {
 	client_particle_t	*drop;
 	int					i, j;
@@ -235,7 +239,8 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 // --------------------------------------------------------------
 // Find exact plane to decal the bloodmark to
 
-static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
+static qboolean
+GetTruePlane(vec3_t origin, vec3_t direction)
 {
 	trace_t		trace;
 	vec3_t		end;
@@ -259,8 +264,9 @@ static qboolean GetTruePlane(vec3_t origin, vec3_t direction)
 	return false;
 }
 
-qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner);
-qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
+static qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner);
+static qboolean
+BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*p = NULL;
 	paletteRGBA_t		color = {{{180, 140, 110, 160}}};
@@ -315,7 +321,8 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 	return (true);
 }
 
-qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
+static qboolean
+BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*p;
 	paletteRGBA_t		color = {{{150, 140, 110, 160}}};
@@ -385,7 +392,8 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 	return (true);
 }
 
-void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, qboolean trueplane)
+void
+ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, qboolean trueplane)
 {
 	client_entity_t		*bloodmark;
 	vec3_t				normal;
@@ -464,7 +472,8 @@ void ThrowBlood(vec3_t origin, vec3_t tnormal, qboolean dark, qboolean yellow, q
 	}
 }
 
-void FXBloodTrail(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXBloodTrail(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			normal;
 
@@ -475,7 +484,8 @@ void FXBloodTrail(centity_t *owner, int type, int flags, vec3_t origin)
 }
 
 // ClientEffect FX_BLOOD
-void FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*spawner;
 	byte				amount;
@@ -514,7 +524,8 @@ void FXBlood(centity_t *owner, int type, int flags, vec3_t origin)
 
 #define	NUM_BLOOD_PARTS		3
 
-static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
+static qboolean
+LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*p;
 	client_entity_t		*ce;
@@ -567,7 +578,8 @@ static qboolean LinkedBloodThink(client_entity_t *spawner, centity_t *owner)
 	return true;
 }
 
-void FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXLinkedBlood(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*spawner;
 	byte				refpointidx;

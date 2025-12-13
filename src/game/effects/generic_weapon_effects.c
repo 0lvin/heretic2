@@ -10,7 +10,6 @@
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "q_sprite.h"
 
 #define NUM_EXPLODE_PARTS	256
 #define EXP_RANGE			16.0
@@ -18,14 +17,16 @@
 
 static struct model_s *armorhit_models[1];
 
-void PreCacheArmorHit(void)
+void
+PreCacheArmorHit(void)
 {
 	armorhit_models[0] = fxi.RegisterModel("sprites/fx/firestreak.sp2");
 }
 
 // we hit someone with armor - do a pretty effect
 // ripped off unashamedly from Josh's extremely cool streak effect. One of the coolest effects I've seen in a long time Josh. Good work Dude.
-void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			dir;
@@ -72,7 +73,8 @@ void FXCreateArmorHit(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	}
 }
 
-void CreateExplosionParticles(client_entity_t *_this)
+static void
+CreateExplosionParticles(client_entity_t *_this)
 {
 	int					i, count;
 	client_particle_t	*p;
@@ -95,7 +97,8 @@ void CreateExplosionParticles(client_entity_t *_this)
 	}
 }
 
-void GenericExplosion1(centity_t *owner, int type, int flags, vec3_t origin)
+void
+GenericExplosion1(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t *effect;
 
@@ -109,7 +112,8 @@ void GenericExplosion1(centity_t *owner, int type, int flags, vec3_t origin)
 	CreateExplosionParticles(effect);
 }
 
-void GenericExplosion2(centity_t *owner, int type, int flags, vec3_t origin)
+void
+GenericExplosion2(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t *effect;
 

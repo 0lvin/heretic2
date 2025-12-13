@@ -20,7 +20,9 @@
 
 #define	NUM_DRIP_MODELS	3
 static struct model_s *drip_models[NUM_DRIP_MODELS];
-void PreCacheDripper()
+
+void
+PreCacheDripper()
 {
 	drip_models[0] = fxi.RegisterModel("sprites/fx/steamhalf.sp2");
 	drip_models[1] = fxi.RegisterModel("sprites/fx/steam.sp2");
@@ -29,7 +31,8 @@ void PreCacheDripper()
 
 // -----------------------------------------------------------------------------------------
 
-qboolean FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
+static qboolean
+FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
 {
 	client_entity_t		*mist;
 	vec3_t				origin;
@@ -60,7 +63,8 @@ qboolean FXDripThinkSolid(client_entity_t *drip, centity_t *owner)
 	return true;
 }
 
-qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
+static qboolean
+FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 {
 	client_entity_t		*mist;
 	paletteRGBA_t		color;
@@ -92,7 +96,8 @@ qboolean FXDripThinkWater(client_entity_t *drip, centity_t *owner)
 	return true;
 }
 
-qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
+static qboolean
+FXDripThinkLava(client_entity_t *drip, centity_t *owner)
 {
 	client_entity_t		*mist;
 	vec3_t				origin;
@@ -121,7 +126,8 @@ qboolean FXDripThinkLava(client_entity_t *drip, centity_t *owner)
 	return true;
 }
 
-static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXDripperParticleSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	client_entity_t		*drip;
 
@@ -159,7 +165,8 @@ static qboolean FXDripperParticleSpawner(client_entity_t *spawner, centity_t *ow
 
 // Spawn a water drop spawner
 
-void FXDripper(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXDripper(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*dripper;
 	byte				dripspermin, frame;

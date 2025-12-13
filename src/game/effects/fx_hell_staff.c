@@ -14,12 +14,12 @@
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define	NUM_HELL_MODELS	2
 static struct model_s *hell_models[NUM_HELL_MODELS];
-void PreCacheHellstaff()
+void
+PreCacheHellstaff()
 {
 	hell_models[0] = fxi.RegisterModel("sprites/spells/hellstafproj.sp2");
 	hell_models[1] = fxi.RegisterModel("sprites/fx/helllaser.sp2");
@@ -33,7 +33,8 @@ void PreCacheHellstaff()
 // FXHellbolt
 // ************************************************************************************************
 
-void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			vel;
 	client_entity_t	*hellbolt;
@@ -69,7 +70,9 @@ void FXHellbolt(centity_t *owner, int type, int flags, vec3_t origin)
 // ************************************************************************************************
 
 #define HELLBOLT_SPARK_VEL	64
-void HellboltExplode(vec3_t loc, vec3_t vel)
+
+void
+HellboltExplode(vec3_t loc, vec3_t vel)
 {
 	client_entity_t		*blast;
 	client_particle_t	*spark;
@@ -96,7 +99,8 @@ void HellboltExplode(vec3_t loc, vec3_t vel)
 	}
 }
 
-void FXHellboltExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXHellboltExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			Dir;
 
@@ -114,7 +118,9 @@ void FXHellboltExplode(centity_t *owner, int type, int flags, vec3_t origin)
 
 #define HELLLASER_PARTS		9
 #define HELLLASER_SPEED		32.0
-void HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
+
+static void
+HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
 {
 	client_entity_t		*blast;
 	client_particle_t	*spark;
@@ -151,7 +157,8 @@ void HellLaserBurn(vec3_t loc, vec3_t fwd, vec3_t right, vec3_t up)
 }
 
 // Create Effect FX_WEAPON_HELLSTAFF_POWER_BURN
-void FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXHellstaffPowerBurn(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t angles, fwd, right, up, dir;
 

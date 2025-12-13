@@ -18,14 +18,16 @@
 #define	NUM_PICKUP_MODELS	1
 static struct model_s *pickup_models[NUM_PICKUP_MODELS];
 
-void PreCachePickup()
+void
+PreCachePickup()
 {
 	pickup_models[0] = fxi.RegisterModel("sprites/fx/halo.sp2");
 }
 
 // --------------------------------------------------------------
 
-void FXPickup(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXPickup(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*ce;
 

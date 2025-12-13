@@ -14,7 +14,6 @@
 #include "utilities.h"
 #include "motion.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define EXPLODE_SPEED		160.0
@@ -37,13 +36,14 @@
 #define SMOKETRAIL_SCALE	0.25
 #define SMOKETRAIL_ALPHA	0.5
 
-static qboolean
-FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner);
-void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
+static qboolean FXPhoenixMissilePowerThink(client_entity_t *missile, centity_t *owner);
+static void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
 
 #define	NUM_PHOEN_MODELS	6
 static struct model_s *phoen_models[NUM_PHOEN_MODELS];
-void PreCachePhoenix()
+
+void
+PreCachePhoenix()
 {
 	phoen_models[0] = fxi.RegisterModel("sprites/fx/steam_add.sp2");
 	phoen_models[1] = fxi.RegisterModel("models/spells/phoenixarrow/tris.fm");
@@ -185,7 +185,8 @@ FXPhoenixMissileThink(client_entity_t *missile, centity_t *owner)
 ///////////////////////////
 // From CreateEffect FX_WEAPON_PHOENIXMISSILE
 ///////////////////////////
-void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*missile;
 	vec3_t				temp;
@@ -228,7 +229,8 @@ void FXPhoenixMissile(centity_t *owner, int type, int flags, vec3_t origin)
 
 // -----------------------------------------------------------------------------------------
 // This is also exported for use in FXBarrelExplode/
-qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owner)
+qboolean
+FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owner)
 {
 	float velfactor;
 
@@ -251,7 +253,8 @@ qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owne
 }
 
 // This is also exported for use in FXBarrelExplode/
-qboolean FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
+static qboolean
+FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
 {
 	float velfactor;
 
@@ -310,7 +313,8 @@ FXPhoenixExplosionBirdThink(client_entity_t *bird, centity_t *owner)
 }
 
 // This is also exported for use in FXBarrelExplode
-client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin)
+client_entity_t *
+CreatePhoenixSmallExplosion(vec3_t ballorigin)
 {
 	client_entity_t *subexplosion;
 
@@ -332,7 +336,8 @@ client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin)
 //////////////////////////
 // From CreateEffect FX_WEAPON_PHOENIXEXPLODE
 //////////////////////////
-void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*explosion, *subexplosion;
 	paletteRGBA_t		color;
@@ -471,7 +476,8 @@ FXPhoenixExplosionBirdThinkPower(client_entity_t *bird, centity_t *owner)
 	return (true);
 }
 
-void FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
+static void
+FXPhoenixExplodePower(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
 {
 	client_entity_t		*explosion, *subexplosion;
 	paletteRGBA_t		color;

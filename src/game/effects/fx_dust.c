@@ -10,7 +10,6 @@
 #include "ce_defaultmessagehandler.h"
 #include "../common/effectflags.h"
 #include "../header/g_physics.h"
-#include "fx_debris.h"
 #include "../common/h2rand.h"
 #include "particle.h"
 #include "utilities.h"
@@ -36,7 +35,8 @@ RockChunk_t RockChunks[]=
 	{"models/debris/stone/schunk4/tris.fm", 0, 3.0},
 };
 
-void PreCacheRockchunks()
+void
+PreCacheRockchunks()
 {
 	int		i;
 
@@ -50,13 +50,15 @@ void PreCacheRockchunks()
 //	FX Dust spawn functions
 //------------------------------------------------------------------
 
-static qboolean FXDustLandThink(client_entity_t *dust, centity_t *owner)
+static qboolean
+FXDustLandThink(client_entity_t *dust, centity_t *owner)
 {
 	FXSmoke(dust->r.origin, 1.0, 40.0);
 	return false;
 }
 
-static qboolean FXDustThink(client_entity_t *dust, centity_t *owner)
+static qboolean
+FXDustThink(client_entity_t *dust, centity_t *owner)
 {
 	vec3_t			holdorigin, dir;
 	trace_t			trace;
@@ -90,7 +92,8 @@ static qboolean FXDustThink(client_entity_t *dust, centity_t *owner)
 	return true;
 }
 
-void FXDust(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXDust(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte  				num, mag;
 	vec3_t 				size;

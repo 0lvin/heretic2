@@ -67,7 +67,8 @@ qboolean AttemptRemoveSelf(client_entity_t *self, centity_t *owner)
 // AddToView funcs
 //------------------------------------------------------------------
 
-qboolean LinkedEntityUpdatePlacement(client_entity_t *current, centity_t *owner)
+qboolean
+LinkedEntityUpdatePlacement(client_entity_t *current, centity_t *owner)
 {
 	matrix3_t rotation;
 	vec3_t up, direction;

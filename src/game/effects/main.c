@@ -23,17 +23,11 @@ cvar_t	*cl_camera_under_surface;
 cvar_t	*r_farclipdist;
 cvar_t	*r_nearclipdist;
 cvar_t	*r_detail;
-cvar_t	*fx_numinview;
-cvar_t	*fx_numactive;
+static cvar_t	*fx_numinview;
+static cvar_t	*fx_numactive;
 cvar_t	*clfx_gravity;
-cvar_t	*fxTest1;
-cvar_t	*fxTest2;
-cvar_t	*fxTest3;
-cvar_t	*fxTest4;
-cvar_t	*cl_lerpdist2;
-cvar_t	*cl_timedemo;
+static cvar_t	*cl_lerpdist2;
 cvar_t	*crosshair;
-cvar_t	*compass;
 
 int	numprocessedparticles;
 int	numrenderedparticles;
@@ -48,9 +42,9 @@ int	numrenderedparticles;
 
 typedef struct
 {
-	int				prevFrame,currFrame,
-					prevSwapFrame,currSwapFrame;
-	vec3_t			prevAngles,currAngles;
+	int				prevFrame, currFrame,
+					prevSwapFrame, currSwapFrame;
+	vec3_t			prevAngles, currAngles;
 	float			playerLerp;
 	int				effects,
 					renderfx,
@@ -137,13 +131,6 @@ Init(void)
 	fx_numinview = fxi.Cvar_Get("fx_numinview", "0", 0);
 	fx_numactive = fxi.Cvar_Get("fx_numactive", "0", 0);
 	clfx_gravity = fxi.Cvar_Get("clfx_gravity", "675.0", 0);
-	cl_timedemo = fxi.Cvar_Get("timedemo","0",0);
-	compass = fxi.Cvar_Get("compass", "0", CVAR_ARCHIVE);
-
-	fxTest1 = fxi.Cvar_Get("fxTest1", "0", 0);
-	fxTest2 = fxi.Cvar_Get("fxTest2", "0", 0);
-	fxTest3 = fxi.Cvar_Get("fxTest3", "0", 0);
-	fxTest4 = fxi.Cvar_Get("fxTest4", "0", 0);
 
 	cl_lerpdist2 = fxi.Cvar_Get("cl_lerpdist2", "10000", 0);
 	crosshair = fxi.Cvar_Get("crosshair", "0", CVAR_ARCHIVE);
@@ -347,11 +334,12 @@ ParseEffects(sizebuf_t *msg_read, int num)
 		}
 
 		// Start the client-effect.
-
 		clientEffectSpawners[effect].SpawnCFX(tempOwner, effect, flags, position);
 
-		if ((EffectIsFromServer)&&(EffectEventIdTimeArray[eventId]<=*fxi.leveltime))
-			EffectEventIdTimeArray[eventId]=0.0;
+		if ((EffectIsFromServer) && (EffectEventIdTimeArray[eventId] <= *fxi.leveltime))
+		{
+			EffectEventIdTimeArray[eventId] = 0.0;
+		}
 
 		if (flags & (CEF_BROADCAST|CEF_MULTICAST))
 		{

@@ -33,14 +33,16 @@
 
 #define NUM_TORCH_MODELS	2
 static struct model_s *torch_models[NUM_TORCH_MODELS];
-void PreCacheTorch()
+void
+PreCacheTorch()
 {
 	torch_models[0] = fxi.RegisterModel("sprites/lens/halo1.sp2");
 	torch_models[1] = fxi.RegisterModel("models/Spells/book/tris.fm");
 }
 
 // update the position of the Tome of power relative to its owner
-qboolean FXROTTomeAddToView(client_entity_t *tome, centity_t *owner)
+static qboolean
+FXROTTomeAddToView(client_entity_t *tome, centity_t *owner)
 {
 	float difftime;
 
@@ -62,7 +64,8 @@ qboolean FXROTTomeAddToView(client_entity_t *tome, centity_t *owner)
 }
 
 // update the position of the Tome of power relative to its owner
-qboolean FXHomeTomeAddToView(client_entity_t *tome, centity_t *owner)
+static qboolean
+FXHomeTomeAddToView(client_entity_t *tome, centity_t *owner)
 {
 	float	tome_orbit;
 	float difftime;
@@ -87,7 +90,8 @@ qboolean FXHomeTomeAddToView(client_entity_t *tome, centity_t *owner)
 }
 
 // update that Tome of power, so that more sparkles zip out of it, and the light casts pulses
-qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
+static qboolean
+FXTomeThink(client_entity_t *tome, centity_t *owner)
 {
 	// are we waiting for the shrine light to vanish ?
 	if (tome->SpawnInfo)
@@ -111,7 +115,8 @@ qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 }
 
 // original version of the tome of power. Casts a blue light etc
-void FXTomeOfPower(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXTomeOfPower(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*tome;
 
@@ -136,7 +141,8 @@ void FXTomeOfPower(centity_t *owner, int type, int flags, vec3_t origin)
 /////////// TORCH STUFF
 
 // update the position of the Tome of power relative to its owner
-qboolean FXROTTorchAddToView(client_entity_t *tome, centity_t *owner)
+static qboolean
+FXROTTorchAddToView(client_entity_t *tome, centity_t *owner)
 {
 	float difftime;
 
@@ -158,7 +164,8 @@ qboolean FXROTTorchAddToView(client_entity_t *tome, centity_t *owner)
 }
 
 // update the position of the Tome of power relative to its owner
-qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
+static qboolean
+FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
 {
 	float	tome_orbit;
 	float difftime;
@@ -183,7 +190,8 @@ qboolean FXHomeTorchAddToView(client_entity_t *tome, centity_t *owner)
 }
 
 // make the light follow us
-static qboolean FXplayertorch_think(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXplayertorch_think(struct client_entity_s *self, centity_t *owner)
 {
 	// kill us if we are done
 	if (owner->current.effects & EF_LIGHT_ENABLED)
@@ -208,7 +216,8 @@ static qboolean FXplayertorch_think(struct client_entity_s *self, centity_t *own
 }
 
 // light that the player gives off when he has _this powerup
-void FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*effect;
 

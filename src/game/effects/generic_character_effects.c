@@ -32,19 +32,17 @@ void PrecacheOgleHitPuff()
 
 #define NUM_WATERPART_MODELS 1
 static struct model_s *WaterParticle_models[NUM_WATERPART_MODELS];
-#define NUM_COMPASS_MODELS 1
-static struct model_s *compass_models[NUM_COMPASS_MODELS];
 void PreCacheWaterParticles()
 {
 	WaterParticle_models[0] = fxi.RegisterModel("sprites/lens/flare3.sp2");
-	compass_models[0] = fxi.RegisterModel("sprites/fx/compass.sp2");
 }
 
 // -----------------------------------------------------------------------------------------
 
 #define PARTICLE_TRAIL_PUFF_TIME 1000 // puff's last for 1 sec
 
-qboolean ParticleTrailAI(client_entity_t *_this, centity_t *owner)
+static qboolean
+ParticleTrailAI(client_entity_t *_this, centity_t *owner)
 {
 	client_entity_t		*effect;
 	client_particle_t	*p;
@@ -90,7 +88,8 @@ void GenericGibTrail(centity_t *owner, int type, int flags, vec3_t origin)
 	ParticleTrailAI(effect, owner); // think once right away, to spawn the first puff
 }
 
-qboolean PebbleUpdate(struct client_entity_s *self, centity_t *owner)
+static qboolean
+PebbleUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;
@@ -298,7 +297,8 @@ void FXGenericHitPuff(centity_t *owner, int type, int flags, vec3_t origin)
 
 static qboolean water_particles_spawned;
 
-void SetupWaterParticle(client_particle_t *p, qboolean recycle)
+static void
+SetupWaterParticle(client_particle_t *p, qboolean recycle)
 {
 	int		ishade;
 	float	shade;
@@ -332,7 +332,8 @@ void SetupWaterParticle(client_particle_t *p, qboolean recycle)
 	VectorAdd(fxi.cl->refdef.vieworg, dist, p->origin);
 }
 
-void CreateWaterParticles(client_entity_t *self)
+static void
+CreateWaterParticles(client_entity_t *self)
 {
 	int					i;
 	client_particle_t	*p;
@@ -384,7 +385,8 @@ static const float cl_turbsin[] =
 	-1.56072, -1.3677, -1.17384, -0.979285, -0.784137, -0.588517, -0.392541, -0.19633,
 };
 
-void UpdateWaterParticles(client_entity_t *self)
+static void
+UpdateWaterParticles(client_entity_t *self)
 {
 	client_particle_t	*p;
 	vec3_t				part_dist;
@@ -408,7 +410,8 @@ void UpdateWaterParticles(client_entity_t *self)
 	}
 }
 
-qboolean WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
+static qboolean
+WaterParticleGeneratorUpdate(client_entity_t *self, centity_t *owner)
 {
 	// Free up particles when we are not under water
 	if (!cl_camera_under_surface->value)
@@ -441,7 +444,8 @@ int wake_particle [6] =
 	PART_32x32_BUBBLE
 };
 
-void DoWake(client_entity_t *self, centity_t *owner, int refpt)
+static void
+DoWake(client_entity_t *self, centity_t *owner, int refpt)
 {
 	vec3_t				org, handpt, right, diff, diff2;
 	client_particle_t	*p;
@@ -491,7 +495,8 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 	}
 }
 
-qboolean BubbleSpawner(client_entity_t *self, centity_t *owner)
+static qboolean
+BubbleSpawner(client_entity_t *self, centity_t *owner)
 {
 	vec3_t	org;
 
@@ -545,118 +550,14 @@ void FXWaterParticles(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, effect);
 }
 
-qboolean DirectionalUpdate (client_entity_t *self, centity_t *owner)
-{
-	float				addVal;
-	paletteRGBA_t		color = {{{255, 128, 128, 128}}};
-	client_particle_t	*part;
-
-	if (!compass->value)
-	{
-		self->updateTime = 2000;
-		self->flags |= CEF_NO_DRAW;
-		RemoveParticleList(&self->p_root);
-		return (true);
-	}
-
-	self->flags &= ~CEF_NO_DRAW;
-
-	VectorAdd(owner->lerp_origin, self->startpos, self->r.origin);
-
-	addVal =  SINEAMT/2.0 * cl_turbsin[(int)((fxi.cl->time*0.001 + (self->r.origin[0] * 2.3 + self->startpos[1])*.0015)*SINESCALE) & 255];
-	addVal += SINEAMT/4.0 * cl_turbsin[(int)((fxi.cl->time*0.002 + (self->r.origin[1] * 2.3 + self->startpos[0])*.0015)*SINESCALE) & 255];
-
-	self->r.origin[2] += addVal;
-
-	part = ClientParticle_new(self->classID, color, 100);
-
-	VectorSet(part->origin, crandk() * 12, crandk() * 12, crandk() * 8.0);
-	VectorAdd(self->r.origin, part->origin, part->origin);
-
-	part->scale = flrand(1, 2);
-	VectorSet(part->velocity, crandk() * 5.0, crandk() * 5.0, flrand(15.0, 22.0));
-	part->acceleration[2] = 2;
-	part->d_scale = flrand(-1.5, -2.0);
-	part->d_alpha = flrand(-100.0, -50.0);
-	part->duration = (color.a * 100.0) / -part->d_alpha;		// time taken to reach zero alpha
-
-	AddParticleToList(self, part);
-
-	self->updateTime = 20;
-
-	return (true);
-}
-
-void FXCompass(centity_t *owner, int type, int flags, vec3_t origin)
-{
-	client_entity_t *effect;
-	int				rflags;
-
-	assert(owner);
-
-	flags |= CEF_ABSOLUTE_PARTS | CEF_DONT_LINK | CEF_ADDITIVE_PARTS | CEF_NO_DRAW;
-	rflags = RF_GLOW | RF_TRANSLUCENT | RF_TRANS_ADD;
-	// Spawn each directional
-	//NORTH
-	effect = ClientEntity_new(type, flags, origin, NULL, 25);
-
-	effect->r.model = *compass_models;
-	effect->r.frame = 0;
-	effect->classID = PART_16x16_SPARK_C;
-	effect->r.flags = rflags;
-	effect->radius = 100.0;
-	VectorSet(effect->startpos, 0, 36, 0);
-	effect->Update = DirectionalUpdate;
-
-	AddEffect(owner, effect);
-
-	//EAST
-	effect = ClientEntity_new(type, flags, origin, NULL, 50);
-
-	effect->r.model = *compass_models;
-	effect->r.frame = 1;
-	effect->classID = PART_16x16_SPARK_Y;
-	effect->r.flags = rflags;
-	effect->radius = 100.0;
-	VectorSet(effect->startpos, 36, 0, 0);
-	effect->Update = DirectionalUpdate;
-
-	AddEffect(owner, effect);
-
-	//SOUTH
-	effect = ClientEntity_new(type, flags, origin, NULL, 75);
-
-	effect->r.model = *compass_models;
-	effect->r.frame = 2;
-	effect->classID = PART_16x16_SPARK_G;
-	effect->r.flags = rflags;
-	effect->radius = 100.0;
-	VectorSet(effect->startpos, 0, -36, 0);
-	effect->Update = DirectionalUpdate;
-
-	AddEffect(owner, effect);
-
-	//WEST
-	effect = ClientEntity_new(type, flags, origin, NULL, 100);
-
-	effect->r.model = *compass_models;
-	effect->r.frame = 3;
-	effect->classID = PART_16x16_SPARK_R;
-	effect->r.flags = rflags;
-	effect->radius = 100.0;
-	VectorSet(effect->startpos, -36, 0, 0);
-	effect->Update = DirectionalUpdate;
-
-	AddEffect(owner, effect);
-}
-
 // -----------------------------------------
 
 #define	NUM_FLAME_ITEMS		20
 #define NUM_FLAME_PARTS		40
 #define FLAME_ABSVEL		120
 
-void FXCorpseRemove(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXCorpseRemove(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*flameitem;
 	float				curAng, vel, vel1;
@@ -734,7 +635,8 @@ Leader effect routines
 #define LEADER_EFFECTS_HEIGHT 30
 
 // create the two circles that ring the player
-static qboolean FXLeaderThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXLeaderThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t			color;
@@ -793,7 +695,8 @@ void FXLeader(centity_t *owner, int type, int flags, vec3_t origin)
 #define FOOTTRAIL_SCALE	8.0
 #define FOOTTRAIL_ACCEL	20.0
 
-static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	client_particle_t	*flame;
@@ -875,7 +778,8 @@ static qboolean FXFeetTrailThink(struct client_entity_s *self, centity_t *owner)
 // ------------
 // ************************************************************************************************
 
-void FXFeetTrail(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXFeetTrail(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	short			refpoints;
 	client_entity_t	*trail;

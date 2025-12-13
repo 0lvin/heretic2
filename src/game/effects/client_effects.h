@@ -24,12 +24,6 @@ extern cvar_t	*r_farclipdist;
 extern cvar_t	*r_nearclipdist;
 extern cvar_t	*r_detail;
 extern cvar_t	*clfx_gravity;
-extern cvar_t	*fxTest1;
-extern cvar_t	*fxTest2;
-extern cvar_t	*fxTest3;
-extern cvar_t	*fxTest4;
-extern cvar_t	*cl_timedemo;
-extern cvar_t	*compass;
 extern cvar_t	*cl_camera_under_surface;
 
 typedef struct ClientEffect_s
@@ -144,7 +138,6 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin);
 void FXPlayerPersistant(centity_t *owner, int type, int flags, vec3_t origin);
 void FXSsithraArrowGlow(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXSsithraArrowMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin);
-void FXSsithraArrowExplode(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXplayertorch(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXTomeOfPower(centity_t *Owner,int Type,int Flags,vec3_t Origin);
 void FXFireOnEntity(centity_t *Owner,int Type,int Flags,vec3_t Origin);
@@ -194,6 +187,12 @@ void FXTornado(centity_t *Owner, int Type, int Flags, vec3_t Origin);
 void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin);
 void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin);
 void FXFeetTrail(centity_t *owner, int type, int flags, vec3_t origin);
+client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, int lifetime, qboolean plasma);
+void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin);
+qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner);
+void CreateSinglePuff(vec3_t origin, float scale);
+void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int material,
+	vec3_t dir, float ke,vec3_t mins,float scale, qboolean altskin);
 
 // client effect used by another client effect - needs its own wrapper
 void FXClientScorchmark(vec3_t origin, vec3_t dir);

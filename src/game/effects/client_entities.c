@@ -18,7 +18,6 @@
 #include "ce_message.h"
 #include "utilities.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 #include "../common/skeletons.h"
 
@@ -384,7 +383,8 @@ AddEffect(centity_t* owner, client_entity_t* fx)
 
 #define NUM_TRACES 100		// I really, really hope we don't ever see more than _this
 
-int UpdateEffects(client_entity_t **root, centity_t *owner)
+int
+UpdateEffects(client_entity_t **root, centity_t *owner)
 {
 	extern	int ParticleUpdateTime;
 

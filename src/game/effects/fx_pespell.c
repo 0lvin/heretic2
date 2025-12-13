@@ -14,7 +14,6 @@
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "fx_debris.h"
 #include "../header/g_playstats.h"
 
 #define SPELL_DELTA_FORWARD	8.0
@@ -26,7 +25,8 @@
 
 static struct model_s *spell_models[NUM_SPELL_MODELS];
 
-void PrecachePESpell()
+void
+PrecachePESpell()
 {
 	spell_models[0] = fxi.RegisterModel("Sprites/Spells/flyingfist.sp2");
 	spell_models[1] = fxi.RegisterModel("Sprites/Spells/spellhands_red.sp2");
@@ -103,7 +103,8 @@ FXPESpellTrailThink(struct client_entity_s *self, centity_t *owner)
 ////////////////////////////////////
 // From CreateEffect FX_WEAPON_PESPELL
 ////////////////////////////////////
-void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
+static void
+FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
 	client_entity_t	*missile;
@@ -140,7 +141,8 @@ void FXPESpellGo(centity_t *owner, int type, int flags, vec3_t origin, vec3_t ve
 ///////////////////////////////////////
 // From CreateEffect FX_WEAPON_PESPELLEXPLODE
 ///////////////////////////////////////
-void FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
+static void
+FXPESpellExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -258,7 +260,8 @@ FXPESpell2TrailThink(struct client_entity_s *self, centity_t *owner)
 ////////////////////////////////////
 // From CreateEffect FX_WEAPON_PESPELL
 ////////////////////////////////////
-void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
+static void
+FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
 	client_entity_t	*missile;
@@ -295,7 +298,8 @@ void FXPESpell2Go(centity_t *owner, int type, int flags, vec3_t origin, vec3_t v
 ///////////////////////////////////////
 // From CreateEffect FX_WEAPON_PESPELLEXPLODE
 ///////////////////////////////////////
-void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
+static void
+FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -361,7 +365,8 @@ void FXPESpell2Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t
 ///////////////////////////////////////
 // From CreateEffect FX_WEAPON_PESPELLEXPLODE
 ///////////////////////////////////////
-void FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
+static void
+FXPESpell3Explode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;

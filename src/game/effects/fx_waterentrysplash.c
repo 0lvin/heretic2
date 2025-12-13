@@ -16,7 +16,9 @@
 
 #define	NUM_SPLASH_MODELS	2
 static struct model_s *water_models[NUM_SPLASH_MODELS];
-void PreCacheWaterSplash()
+
+void
+PreCacheWaterSplash()
 {
 	water_models[0] = fxi.RegisterModel("sprites/fx/waterentryripple.sp2");
 	water_models[1] = fxi.RegisterModel("sprites/fx/wfall.sp2");
@@ -26,9 +28,6 @@ void PreCacheWaterSplash()
 
 #define	SCALE 0.3
 #define SPLASH_RADIUS 20
-
-static qboolean
-FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner);
 
 // ************************************************************************************************
 // FXWaterEntryRippleThinkerThink
@@ -85,7 +84,8 @@ FXWaterEntrySplashThinkerThink(struct client_entity_s *Self, centity_t *Owner)
 // ------------------
 // ************************************************************************************************
 
-void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byte SplashSize, vec3_t Dir)
+void
+FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byte SplashSize, vec3_t Dir)
 {
 	byte			NoOfRipples;
 	client_entity_t	*EntrySplashThinker,
@@ -240,7 +240,8 @@ void FXDoWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin, byt
 	}
 }
 
-void FXWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXWaterEntrySplash(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	byte			SplashSize;
 	vec3_t			Dir;

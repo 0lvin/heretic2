@@ -14,12 +14,13 @@
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define	NUM_HIT_MODELS	3
 static struct model_s *hit_models[NUM_HIT_MODELS];
-void PreCacheHitPuff()
+
+void
+PreCacheHitPuff()
 {
 	hit_models[0] = fxi.RegisterModel("sprites/fx/halo.sp2");
 	hit_models[1] = fxi.RegisterModel("sprites/fx/bluestreak.sp2");
@@ -29,9 +30,10 @@ void PreCacheHitPuff()
 // --------------------------------------------------------------
 
 #define LIGHTNING_VEL	256.0
-
 #define NUM_LIGHTNING_BITS	25
-void FXLightningHit(centity_t *owner, int type, int flags, vec3_t origin)
+
+void
+FXLightningHit(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			dir;
 	paletteRGBA_t	color;

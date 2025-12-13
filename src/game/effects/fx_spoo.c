@@ -17,7 +17,8 @@
 
 #define	NUM_SPOO_MODELS	2
 static struct model_s *spoo_models[NUM_SPOO_MODELS];
-void PreCacheSpoo()
+void
+PreCacheSpoo()
 {
 	spoo_models[0] = fxi.RegisterModel("sprites/fx/spoo.sp2");
 	spoo_models[1] = fxi.RegisterModel("sprites/fx/spoo2.sp2");
@@ -29,7 +30,8 @@ void PreCacheSpoo()
 // FXSpooTrailThink
 // ************************************************************************************************
 
-static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
 	//vec3_t			org, dir;
@@ -72,7 +74,8 @@ static qboolean FXSpooTrailThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXSpoo(centity_t *owner,int type,int Flags,vec3_t origin)
+void
+FXSpoo(centity_t *owner,int type,int Flags,vec3_t origin)
 {
 	client_entity_t	*Trail;
 
@@ -87,7 +90,8 @@ void FXSpoo(centity_t *owner,int type,int Flags,vec3_t origin)
 	FXSpooTrailThink(Trail,owner);
 }
 
-void FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
+void
+FXSpooSplat(centity_t *owner,int type,int Flags,vec3_t origin)
 {
 	client_entity_t	*TrailEnt;
 	vec3_t			dir;

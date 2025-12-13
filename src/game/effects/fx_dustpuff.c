@@ -14,7 +14,8 @@
 #include "../common/h2rand.h"
 #include "utilities.h"
 
-void FXDustPuff(client_entity_t *owner, float scale)
+static void
+FXDustPuff(client_entity_t *owner, float scale)
 {
 	client_particle_t	*puff;
 	paletteRGBA_t		color;
@@ -31,7 +32,8 @@ void FXDustPuff(client_entity_t *owner, float scale)
 	AddParticleToList(owner, puff);
 }
 
-void CreateSinglePuff(vec3_t origin, float scale)
+void
+CreateSinglePuff(vec3_t origin, float scale)
 {
 	client_entity_t	*ce;
 
@@ -39,7 +41,9 @@ void CreateSinglePuff(vec3_t origin, float scale)
 	FXDustPuff(ce, scale);
 	AddEffect(NULL, ce);
 }
-void FXDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
+
+void
+FXDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	int				numPuffs, i;
 	vec3_t			endpos;

@@ -117,26 +117,12 @@ void FXSsithraArrowMissile(centity_t *owner, int type, int flags, vec3_t origin)
 
 // -----------------------------------------------------------------------------------------
 
-static qboolean FXSsithraArrowDLightThink(client_entity_t *dlight, centity_t *owner)
+static qboolean
+FXSsithraArrowDLightThink(client_entity_t *dlight, centity_t *owner)
 {
 	dlight->dlight->intensity -= 10.0F;
 	if (dlight->dlight->intensity < 0.0F)
 		return false;
 
 	return true;
-}
-
-void FXSsithraArrowExplode(centity_t *owner, int type, int flags, vec3_t origin)
-{
-	client_entity_t		*dlight;
-	paletteRGBA_t		color;
-
-	dlight = ClientEntity_new(-1, CEF_NO_DRAW | CEF_NOMOVE, origin, NULL, 100);
-	color.c = 0xff00ffff;
-	dlight->dlight = CE_DLight_new(color, 150.0F, 0.0F);
-	dlight->Update = FXSsithraArrowDLightThink;
-	AddEffect(NULL, dlight);
-
-//NOTE: depends on impacted surface & material and if exploding arrow
-	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/ramphit1.wav"), 1, ATTN_NORM, 0);
 }

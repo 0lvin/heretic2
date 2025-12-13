@@ -31,12 +31,15 @@
 #define	NUM_FLAREUP_MODELS	1
 
 static struct model_s *flareup_models[NUM_FLAREUP_MODELS];
-void PreCacheFlareup()
+
+void
+PreCacheFlareup()
 {
 	flareup_models[0] = fxi.RegisterModel("sprites/fx/halo.sp2");
 }
 
-void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*spawner;
 	client_particle_t	*flame;
@@ -80,7 +83,8 @@ void FXFlareup(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXFireThink(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*flame;
 	paletteRGBA_t		color;
@@ -138,7 +142,8 @@ qboolean FXFireThink(client_entity_t *spawner, centity_t *owner)
 	return true;
 }
 
-void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t *spawner;
 	byte scale;
@@ -163,7 +168,7 @@ void FXFire(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, spawner);
 }
 
-qboolean
+static qboolean
 FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*flame;
@@ -262,7 +267,7 @@ FXFireOnEntityThink(client_entity_t *spawner, centity_t *owner)
 	}
 }
 
-qboolean
+static qboolean
 FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 {
 	client_particle_t	*flame;
@@ -324,7 +329,8 @@ FXFireOnEntity2Think(client_entity_t *spawner, centity_t *owner)
 }
 
 //FIXME: have it constantly check a flag so it can go out if under water!
-void FXFireOnEntity(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFireOnEntity(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t *spawner;
 	byte scale;

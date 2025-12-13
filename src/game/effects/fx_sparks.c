@@ -10,7 +10,6 @@
 #include "../common/resourcemanager.h"
 #include "../common/h2rand.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "utilities.h"
 #include "../common/matrix.h"
 #include "../header/g_playstats.h"
@@ -24,7 +23,8 @@ enum {
 
 static struct model_s *spark_models[NUM_MODELS];
 
-void PreCacheSparks()
+void
+PreCacheSparks()
 {
 	spark_models[0] = fxi.RegisterModel("sprites/fx/bluestreak.sp2");
 	spark_models[1] = fxi.RegisterModel("sprites/fx/fire.sp2");
@@ -35,7 +35,8 @@ void PreCacheSparks()
 
 void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir);
 
-void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
+void
+GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
 {
 	client_entity_t		*effect;
 	vec3_t				work;
@@ -116,7 +117,8 @@ void GenericSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t 
 	AddEffect(NULL, effect);
 }
 
-void FXGenericSparks(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXGenericSparks(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t				dir;
 
@@ -124,7 +126,8 @@ void FXGenericSparks(centity_t *owner, int type, int flags, vec3_t origin)
 	GenericSparks(owner, type, flags, origin, dir);
 }
 
-qboolean FireSparkSpawnerUpdate(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FireSparkSpawnerUpdate(client_entity_t *spawner, centity_t *owner)
 {//fixme- wigs out on hivetrialpit when the sparkers hit ground and seperate?
 	vec3_t	diffvec, pos;
 
@@ -146,7 +149,8 @@ qboolean FireSparkSpawnerUpdate(client_entity_t *spawner, centity_t *owner)
 	return (true);
 }
 
-void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
+void
+FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
 {
 	client_entity_t		*effect;
 	client_particle_t	*flame;

@@ -34,13 +34,15 @@ typedef enum
 #define BOB_HEIGHT		6.0
 #define HEALTH_RADIUS	6.0
 
-void PreCacheItemAmmo()
+void
+PreCacheItemAmmo()
 {
 }
 
 // --------------------------------------------------------------
 
-static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	client_particle_t	*p;
@@ -102,7 +104,8 @@ static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner
 	return true;
 }
 
-void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*ce;
 	byte				tag;

@@ -20,7 +20,8 @@
 
 static struct model_s *flare_models[NUM_LENS_MODELS];
 
-void PreCacheFlare()
+void
+PreCacheFlare()
 {
 	int		i;
 	char	model[128];
@@ -39,7 +40,8 @@ void PreCacheFlare()
 // FXFlareThink
 // ************************************************************************************************
 
-static qboolean FXFlareThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXFlareThink(struct client_entity_s *self, centity_t *owner)
 {
 	float			dot, near_clip, dist;
 
@@ -156,7 +158,8 @@ static qboolean FXFlareThink(struct client_entity_s *self, centity_t *owner)
 // FXFlareThinkAttached
 // ************************************************************************************************
 
-static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXFlareThinkAttached(struct client_entity_s *self, centity_t *owner)
 {
 	float			dot, near_clip, dist;
 	float			lerp, oldtime, newtime;
@@ -295,12 +298,13 @@ static qboolean FXFlareThinkAttached(struct client_entity_s *self, centity_t *ow
 // FXLensFlare
 // ************************************************************************************************
 
-float flare_loc[] = { 1.0, 0.7, 0.3, 0.1, 0.0, -0.2,
+static float flare_loc[] = { 1.0, 0.7, 0.3, 0.1, 0.0, -0.2,
 					  1.0, 0.8, 0.6, 0.2, 0.0, -0.4 };
 
-float flare_scale[] = {2, 1.75, 1.5, 1.25, 1.5, 1.75, 2, 2 };
+static float flare_scale[] = {2, 1.75, 1.5, 1.25, 1.5, 1.75, 2, 2 };
 
-void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	int					Count, I;
 	client_entity_t		*Explosion;
@@ -400,119 +404,6 @@ void FXLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin)
 		if (owner)
 		{
 			AddEffect(owner, Explosion);
-
-			Explosion->extra = (centity_t *) owner;
-			Explosion->Update=FXFlareThinkAttached;
-			Explosion->updateTime = 17;
-			FXFlareThinkAttached(Explosion,owner);
-
-			VectorCopy(Explosion->direction, Explosion->startpos2);
-			VectorCopy(Explosion->direction, Explosion->endpos2);
-			Explosion->lastThinkTime = fxi.cl->time;
-		}
-		else
-		{
-			AddEffect(NULL,Explosion);
-			FXFlareThink(Explosion,NULL);
-		}
-	}
-}
-
-void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int lifeTime, paletteRGBA_t *tint)
-{
-	int					Count,I;
-	client_entity_t		*Explosion;
-	int					useOther;
-
-	Count = 7;
-
-	// no lens flares in low detail
-	if (r_detail->value <= DETAIL_NORMAL)
-		return;
-
-	if (Flags & CEF_FLAG6)
-		useOther = 6;
-	else
-		useOther = 0;
-
-	for(I=0;I<Count;I++)
-	{
-		paletteRGBA_t color;
-
-		Explosion=ClientEntity_new(FX_LENSFLARE,
-								   0,
-								   Origin,
-								   NULL,
-								   20);
-
-		VectorSet(Explosion->up, 0.0f, 0.0f, 0.0f);
-
-		color.c = Explosion->r.color;
-		color.r = tint->r;
-		color.g = tint->g;
-		color.b = tint->b;
-		Explosion->r.color = color.c;
-		Explosion->alpha = (float)(tint->a)/255.0;
-
-		switch (I)
-		{
-			case 0:
-				Explosion->r.model = flare_models[1];
-			break;
-			case 1:
-				Explosion->r.model = flare_models[2];
-			break;
-			case 2:
-				Explosion->r.model = flare_models[4];
-			break;
-			case 3:
-				Explosion->r.model = flare_models[3];
-			break;
-			case 4:
-				Explosion->r.model = flare_models[6];
-			break;
-			case 5:
-				Explosion->r.model = flare_models[3];
-			break;
-			case 6:
-				Explosion->r.model = flare_models[0];
-				Explosion->up[1] = 1;
-				Explosion->up[2] = Explosion->alpha;
-				if (Flags & CEF_FLAG8)
-				{
-					color.r = 255;
-					color.g = 255;
-					color.b = 255;
-					Explosion->r.color = color.c;
-				}
-			break;
-		}
-
-		if (lifeTime > 0)
-			Explosion->LifeTime = (lifeTime*1000)+fxi.cl->time;
-
-		Explosion->r.flags|=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD|RF_TRANS_ADD_ALPHA|RF_NODEPTHTEST;
-		Explosion->Scale=flare_scale[I];
-		Explosion->r.frame=0;
-		Explosion->d_scale=0.0;
-		Explosion->d_alpha=0.0;
-		Explosion->NoOfAnimFrames=1;
-		Explosion->Update=FXFlareThink;
-		VectorCopy(Origin, Explosion->direction);
-
-		if (Flags & CEF_FLAG7)
-		{
-			Explosion->direction[0] *= 4;
-			Explosion->direction[1] *= 4;
-			Explosion->direction[2] *= 4;
-		}
-
-		VectorCopy(Origin, Explosion->origin);
-		Explosion->up[0] = flare_loc[I + useOther];
-
-		if (owner)
-		{
-			AddEffect(owner,Explosion);
 
 			Explosion->extra = (centity_t *) owner;
 			Explosion->Update=FXFlareThinkAttached;

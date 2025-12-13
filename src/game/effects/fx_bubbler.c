@@ -24,14 +24,16 @@
 
 static struct model_s *bubbler_models[NUM_BUBBLE_MODELS];
 
-void PreCacheBubbler()
+void
+PreCacheBubbler()
 {
 	bubbler_models[0] = fxi.RegisterModel("sprites/fx/bubble.sp2");
 }
 
 // -----------------------------------------------------------------------------------------
 
-qboolean FXBubbleThink(client_entity_t *bubble, centity_t *owner)
+static qboolean
+FXBubbleThink(client_entity_t *bubble, centity_t *owner)
 {
 	paletteRGBA_t		color;
 
@@ -55,7 +57,8 @@ qboolean FXBubbleThink(client_entity_t *bubble, centity_t *owner)
 	return true;
 }
 
-static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *owner)
 {
 	client_entity_t *bubble;
 	vec3_t origin;
@@ -85,7 +88,8 @@ static qboolean FXBubblerParticleSpawner(client_entity_t *spawner, centity_t *ow
 	return true;
 }
 
-void FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*self;
 	char				bubblespermin;
@@ -119,7 +123,8 @@ void FXBubbler(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	AddEffect(Owner, self);
 }
 
-void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	int					time;
 	client_entity_t		*bubble;
@@ -149,7 +154,8 @@ void FXBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	AddEffect(NULL, bubble);
 }
 
-void MakeBubble(vec3_t loc, client_entity_t *spawner)
+void
+MakeBubble(vec3_t loc, client_entity_t *spawner)
 {
 	client_particle_t	*bubble;
 	paletteRGBA_t	color;
@@ -168,7 +174,8 @@ void MakeBubble(vec3_t loc, client_entity_t *spawner)
 	AddParticleToList(spawner, bubble);
 }
 
-qboolean Create_Bubble(client_entity_t *self, centity_t *owner)
+static qboolean
+Create_Bubble(client_entity_t *self, centity_t *owner)
 {
 	vec3_t	loc;
 
@@ -184,7 +191,8 @@ qboolean Create_Bubble(client_entity_t *self, centity_t *owner)
 }
 
 // create a constant client effect attached to something in water that releases bubbles
-void FXRandWaterBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXRandWaterBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*self;
 

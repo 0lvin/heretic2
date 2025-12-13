@@ -14,7 +14,6 @@
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "fx_debris.h"
 
 #define ARROW_DELTA_FORWARD	8.0
 #define ARROW_DELTA_THETA	0.12
@@ -25,7 +24,8 @@
 
 static struct model_s *arrow_models[NUM_ARROW_MODELS];
 
-void PrecacheSsithraArrow()
+void
+PrecacheSsithraArrow()
 {
 	arrow_models[0] = fxi.RegisterModel("sprites/fx/steam.sp2");//unpowered trail
 	arrow_models[1] = fxi.RegisterModel("sprites/fx/fire.sp2");//powered trail
@@ -113,7 +113,8 @@ FXSsithraArrowTrailThink(struct client_entity_s *self, centity_t *owner)
 ////////////////////////////////////
 // From CreateEffect FX_WEAPON_SSITHRAARROW
 ////////////////////////////////////
-void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
+static void
+FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
 	client_entity_t	*missile;
@@ -142,7 +143,8 @@ void FXDoSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin, vec3
 	AddEffect(owner, missile);
 }
 
-void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
+static void
+FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	vec3_t			dir;
 	client_entity_t	*missile;
@@ -172,14 +174,11 @@ void FXDoSsithraArrow2(centity_t *owner, int type, int flags, vec3_t origin, vec
 	AddEffect(owner, missile);
 }
 
-// ************************************************************************************************
-// FXSsithraArrowExplode
-// ************************************************************************************************
-
 ///////////////////////////////////////
 // From CreateEffect FX_WEAPON_SSITHRAARROWEXPLODE
 ///////////////////////////////////////
-void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
+static void
+FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
 	int				i;
@@ -238,7 +237,8 @@ void FXSsithraArrowBoom(centity_t *owner,int type,int flags,vec3_t origin, vec3_
 	}
 }
 
-void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
+static void
+FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3_t dir)
 {
 	vec3_t			mins;
 	client_entity_t	*SmokePuff;
@@ -294,7 +294,8 @@ void FXSsithraArrow2Boom(centity_t *owner,int type,int flags,vec3_t origin, vec3
 	FXDebris_SpawnChunks(type, flags & ~(CEF_FLAG6|CEF_FLAG7|CEF_FLAG8), origin, 5, MAT_GREYSTONE, dir, 80000.0f, mins, 1.0, false);
 }
 
-void FXSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXSsithraArrow(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte			whicheffect = 0;
 	vec3_t			vel;

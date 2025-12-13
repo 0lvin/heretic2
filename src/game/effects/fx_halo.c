@@ -19,7 +19,8 @@
 #define NUM_HALO_MODELS		3
 static struct model_s *halo_models[NUM_HALO_MODELS];
 
-void PreCacheHalos()
+void
+PreCacheHalos()
 {
 	halo_models[0] = fxi.RegisterModel("sprites/lens/halo1.sp2");
 	halo_models[1] = fxi.RegisterModel("sprites/lens/halo2.sp2");
@@ -30,7 +31,8 @@ void PreCacheHalos()
 // FXHaloThink
 // ************************************************************************************************
 
-static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
+static qboolean
+FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 {
 	float			dot, dist, camdist;
 
@@ -143,7 +145,8 @@ static qboolean FXHaloThink(struct client_entity_s *self, centity_t *Owner)
 // FXHalo
 // ************************************************************************************************
 
-void FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXHalo(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*halo;
 	paletteRGBA_t color;

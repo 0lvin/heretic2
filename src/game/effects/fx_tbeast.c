@@ -22,12 +22,14 @@ enum
 
 #define	NUM_BEAST_MODELS	1
 static struct model_s *tb_dustpuff_models[NUM_BEAST_MODELS];
-void PreCacheTB(void)
+void
+PreCacheTB(void)
 {
 	tb_dustpuff_models[0] = fxi.RegisterModel("sprites/fx/steam_add.sp2");
 }
 
-static qboolean FXTBDustPuffThink(client_entity_t *DustPuff, centity_t *owner)
+static qboolean
+FXTBDustPuffThink(client_entity_t *DustPuff, centity_t *owner)
 {
 	DustPuff->flags &= ~CEF_DISAPPEARED;
 
@@ -37,7 +39,8 @@ static qboolean FXTBDustPuffThink(client_entity_t *DustPuff, centity_t *owner)
 	return true;
 }
 
-void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
+static void
+FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 {
 	client_entity_t *DustPuff;
 	vec3_t angles, forward;
@@ -63,7 +66,8 @@ void FXTBDustPuff(int type, int flags, vec3_t origin,float inangle)
 	AddEffect(NULL, DustPuff);
 }
 
-void FXTBDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
+static void
+FXTBDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	int			i;
 
@@ -73,17 +77,14 @@ void FXTBDustPuffOnGround(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-void FXTBSnort(centity_t *owner, int type, int flags, vec3_t origin)
-{
-}
-
 /*===============================
 
  Trial Beast's FX handler
 
   ===============================*/
 
-void FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
+void
+FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
 {
 	vec3_t			vel;
 	byte			fx_index;
@@ -97,7 +98,6 @@ void FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
 			break;
 
 		case FX_TB_SNORT:
-			FXTBSnort(owner, type, flags, org);
 			break;
 
 		default:

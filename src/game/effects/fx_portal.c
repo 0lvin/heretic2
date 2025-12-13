@@ -12,7 +12,6 @@
 #include "../common/h2rand.h"
 #include "string.h"
 #include "utilities.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define SINESCALE (256.0 / (2 * M_PI))
@@ -28,7 +27,8 @@
 
 static struct model_s *portal_models[NUM_PORTAL_MODELS];
 
-void PreCachePortal()
+void
+PreCachePortal()
 {
 	portal_models[0] = fxi.RegisterModel("sprites/fx/ripple_add.sp2");
 	portal_models[1] = fxi.RegisterModel("sprites/fx/portal1.sp2");
@@ -48,7 +48,8 @@ int RandomSparkTypes [9] =
 	PART_16x16_SPARK_B,
 };
 
-qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
+static qboolean
+FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -235,7 +236,8 @@ qboolean FXMagicPortalThink(client_entity_t *self, centity_t *owner)
 }
 
 // This is the persistant effect for the teleport pad
-void FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMagicPortal(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*portal;
 	vec3_t				dir, forward;

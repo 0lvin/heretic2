@@ -24,12 +24,15 @@
 
 #define	NUM_SHIELD_MODELS	1
 static struct model_s *shield_models[NUM_SHIELD_MODELS];
-void PreCacheShield()
+
+void
+PreCacheShield()
 {
 	shield_models[0] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");
 }
 
-static qboolean FXShieldSparkThink(struct client_entity_s *shield, centity_t *owner)
+static qboolean
+FXShieldSparkThink(struct client_entity_s *shield, centity_t *owner)
 {
 	vec3_t angvect;
 	client_particle_t *spark;
@@ -74,7 +77,8 @@ static qboolean FXShieldSparkThink(struct client_entity_s *shield, centity_t *ow
 	return true;
 }
 
-static qboolean FXShieldTerminate(struct client_entity_s *shield, centity_t *owner)
+static qboolean
+FXShieldTerminate(struct client_entity_s *shield, centity_t *owner)
 {
 	// Don't instantly delete yourself.  Don't accept any more updates and die out within a second.
 	shield->d_alpha = -1.2;						// Fade out.
@@ -91,7 +95,8 @@ static qboolean FXShieldTerminate(struct client_entity_s *shield, centity_t *own
 // ************************************************************************************************
 
 // CreateEffect FX_SPELL_LIGHTNINGSHIELD
-void FXLightningShield(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXLightningShield(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t	*shield;
 	int				i;

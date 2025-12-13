@@ -684,7 +684,6 @@ set(Effects-Source
 	${EFFECTS_SRC_DIR}/fx_weaponpickup.c
 	${EFFECTS_SRC_DIR}/generic_character_effects.c
 	${EFFECTS_SRC_DIR}/generic_weapon_effects.c
-	${EFFECTS_SRC_DIR}/item_effects.c
 	${EFFECTS_SRC_DIR}/main.c
 	${EFFECTS_SRC_DIR}/motion.c
 	${EFFECTS_SRC_DIR}/particle.c
@@ -698,11 +697,8 @@ set(Effects-Header
 	${EFFECTS_SRC_DIR}/ce_message.h
 	${EFFECTS_SRC_DIR}/client_effects.h
 	${EFFECTS_SRC_DIR}/client_entities.h
-	${EFFECTS_SRC_DIR}/fx_debris.h
-	${EFFECTS_SRC_DIR}/fx_dustpuff.h
 	${EFFECTS_SRC_DIR}/motion.h
 	${EFFECTS_SRC_DIR}/particle.h
-	${EFFECTS_SRC_DIR}/q_sprite.h
 	${EFFECTS_SRC_DIR}/utilities.h
 	)
 

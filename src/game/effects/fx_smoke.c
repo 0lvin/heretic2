@@ -18,14 +18,16 @@
 #define	NUM_SMOKE_MODELS	1
 static struct model_s *smoke_models[NUM_SMOKE_MODELS];
 
-void PreCacheSmoke()
+void
+PreCacheSmoke()
 {
 	smoke_models[0] = fxi.RegisterModel("sprites/fx/steam.sp2");
 }
 
 // --------------------------------------------------------------
 
-void FXDarkSmoke(vec3_t origin, float scale, float range)
+void
+FXDarkSmoke(vec3_t origin, float scale, float range)
 {
 	client_entity_t		*effect;
 	int					duration;
@@ -48,7 +50,8 @@ void FXDarkSmoke(vec3_t origin, float scale, float range)
 	AddEffect(NULL, effect);	// add the effect as independent world effect
 }
 
-void FXSmoke(vec3_t origin, float scale, float range)
+void
+FXSmoke(vec3_t origin, float scale, float range)
 {
 	client_entity_t		*effect;
 	int					duration;
@@ -95,7 +98,8 @@ FXSmokeSpawner2(struct client_entity_s *self, centity_t *owner)
 //	FX Smoke spawn function
 //------------------------------------------------------------------
 
-void FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXEnvSmoke(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t	*self;
 	vec3_t	dir;

@@ -32,7 +32,8 @@ static struct model_s *ins_models[NUM_FF_MODELS];
 static struct model_s *sword_models[NUM_SW_MODELS];
 static struct model_s *spear_models[NUM_SP_MODELS];
 
-void PreCacheIEffects()
+void
+PreCacheIEffects()
 {
 	ins_models[0] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");//sprites/spells/bluball.sp2");
 
@@ -156,7 +157,8 @@ FXInsectStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 // FXInsectStaff
 // ************************************************************************************************
 
-void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
+static void
+FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t	*Trail;
 	paletteRGBA_t	LightColor = {{{255, 64, 32, 255}}};
@@ -185,7 +187,8 @@ void FXInsectStaff(centity_t *owner,int type,int flags,vec3_t origin)
 // FXInsectStaffExplode
 // ************************************************************************************************
 
-void FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t Dir)
+static void
+FXInsectStaffExplode(centity_t *owner,int type,int flags,vec3_t origin, vec3_t Dir)
 {
 	client_entity_t	*SmokePuff;
 	int				I;
@@ -321,7 +324,8 @@ FXGlobeOfOuchinessAuraThink(struct client_entity_s *self, centity_t *owner)
 // FXGlobeOfOuchiness -
 // ****************************************************************************
 
-void FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short CasterEntnum)
+static void
+FXInsectGlobe(centity_t *owner,int type,int flags,vec3_t origin, short CasterEntnum)
 {
 	client_entity_t *GlobeThinker, *AuraThinker;
 	paletteRGBA_t LightColor = {{{0, 0, 255, 255}}};
@@ -534,7 +538,8 @@ FXGlobeOfOuchinessGlowballSpawnerThink(struct client_entity_s *self, centity_t *
 // FXGlobeOfOuchinessGlowballs -
 // ****************************************************************************
 
-void FXInsectGlow(centity_t *owner,int type,int flags,vec3_t origin, short CasterEntnum)
+static void
+FXInsectGlow(centity_t *owner,int type,int flags,vec3_t origin, short CasterEntnum)
 {
 	client_entity_t	*GlowballSpawner;
 	int				caster_update;
@@ -556,7 +561,8 @@ void FXInsectGlow(centity_t *owner,int type,int flags,vec3_t origin, short Caste
 	AddEffect(owner,GlowballSpawner);
 }
 
-qboolean InsectFirstSeenInit(struct client_entity_s *self, centity_t *owner)
+static qboolean
+InsectFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 {
 	self->refMask |= INSECT_MASK;
 
@@ -567,7 +573,8 @@ qboolean InsectFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXInsectReadyRefs (centity_t *owner,int type,int flags,vec3_t origin)
+static void
+FXInsectReadyRefs(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t		*self;
 
@@ -586,7 +593,8 @@ void FXInsectReadyRefs (centity_t *owner,int type,int flags,vec3_t origin)
 // FXHellbolt
 // ************************************************************************************************
 
-void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
+static void
+FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 {
 	client_entity_t	*hellbolt;
 	paletteRGBA_t	LightColor = {{{255, 128, 64, 255}}};
@@ -609,7 +617,8 @@ void FXISpear(centity_t *owner, int type, int flags, vec3_t origin, vec3_t vel)
 	AddEffect(owner, hellbolt);
 }
 
-qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*spark;
 	int					i;
@@ -660,7 +669,8 @@ qboolean FXISpear2Update(struct client_entity_s *self, centity_t *owner)
 	return (true);
 }
 
-void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
+static void
+FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*hellbolt;
 	paletteRGBA_t	LightColor = {{{255, 128, 255, 255}}};
@@ -705,7 +715,8 @@ void FXISpear2(centity_t *owner, int type, int flags, vec3_t origin)
 // ---------------------
 // ************************************************************************************************
 
-void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Dir)
+static void
+FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Dir)
 {
 	client_entity_t	*smokepuff;
 	int				i;
@@ -746,7 +757,8 @@ void FXISpMslHit(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Di
 	}
 }
 
-void FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Dir)
+static void
+FXISpMslHit2(centity_t *owner, int type, int flags, vec3_t origin, vec3_t Dir)
 {
 	client_entity_t *smokepuff;
 	float scale;
@@ -923,7 +935,8 @@ FXISwordTrailThink(struct client_entity_s *self, centity_t *owner)
 
 // This effect spawns 70+ client fx which will cause problems
 
-void FXISwordTrail(centity_t *owner,int type,int flags,vec3_t origin)
+static void
+FXISwordTrail(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	short			Refpoints;
 	client_entity_t	*trail;
@@ -965,7 +978,8 @@ void FXISwordTrail(centity_t *owner,int type,int flags,vec3_t origin)
 
   ==============================*/
 
-void FXIEffects(centity_t *owner,int type,int flags, vec3_t origin)
+void
+FXIEffects(centity_t *owner,int type,int flags, vec3_t origin)
 {
 	vec3_t			vel;
 	byte			fx_index;

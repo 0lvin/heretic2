@@ -25,7 +25,9 @@
 #define	NUM_ITEMDEFENSE			6
 
 static struct model_s *defense_models[NUM_ITEMDEFENSE];
-void PreCacheItemDefense()
+
+void
+PreCacheItemDefense()
 {
 	defense_models[0] = fxi.RegisterModel("sprites/spells/spark_cyan.sp2");		// ITEM_DEFENSE_REPULSION + cyan spark
 	defense_models[1] = fxi.RegisterModel("sprites/spells/meteorbarrier.sp2");	// ITEM_DEFENSE_METEORBARRIER + Meteor cloud
@@ -35,7 +37,8 @@ void PreCacheItemDefense()
 	defense_models[5] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");	// ITEM_DEFENSE_TORNADO + blue spark
 }
 
-static qboolean FXEggSparkThink(struct client_entity_s *shield, centity_t *owner)
+static qboolean
+FXEggSparkThink(struct client_entity_s *shield, centity_t *owner)
 {
 	vec3_t angvect;
 	vec3_t	origin = {0,0,0};
@@ -57,7 +60,8 @@ static qboolean FXEggSparkThink(struct client_entity_s *shield, centity_t *owner
 }
 
 // Create effect FX_PICKUP_DEFENSE
-void FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXDefensePickup(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte tag;
 	int i;

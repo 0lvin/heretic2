@@ -15,7 +15,6 @@
 #include "utilities.h"
 #include "../common/reference.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "particle.h"
 #include "../header/g_playstats.h"
 
@@ -32,7 +31,8 @@ enum
 static struct model_s *staff_models[NUM_MODELS];
 static struct model_s *staffhit_models[4];
 
-void PreCacheStaffHit()
+void
+PreCacheStaffHit()
 {
 	staffhit_models[0] = fxi.RegisterModel("sprites/spells/patball.sp2");
 	staffhit_models[1] = fxi.RegisterModel("sprites/fx/halo.sp2");
@@ -40,7 +40,8 @@ void PreCacheStaffHit()
 	staffhit_models[3] = fxi.RegisterModel("sprites/fx/steam.sp2");
 }
 
-void PreCacheStaff()
+void
+PreCacheStaff()
 {
 	staff_models[0] = fxi.RegisterModel("sprites/spells/patball.sp2");
 	staff_models[1] = fxi.RegisterModel("sprites/fx/halo.sp2");
@@ -60,7 +61,8 @@ void PreCacheStaff()
 // Just wanted to put a note in here to Josh. This is one of the coolest effects I've seen in a game in a long
 // time. You should be extremely proud of _this. I for one am very impressed. Jake.
 
-void FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXStaffStrike(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*TrailEnt;
 	paletteRGBA_t ent_color;
@@ -678,7 +680,8 @@ FXStaffThink(struct client_entity_s *Self, centity_t *owner)
 
 // This effect spawns 70+ client fx which will cause problems
 
-void FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void 
+FXStaff(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	short			Refpoints;
 	client_entity_t	*trail;
@@ -888,7 +891,8 @@ FXStaffCreateThink(struct client_entity_s *Self, centity_t *owner)
 
 // This effect spawns 80+ client fx which will cause problems
 
-void FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t *stafffx;
 	byte			fxtype;
@@ -919,14 +923,13 @@ void FXStaffCreate(centity_t *owner,int Type,int Flags,vec3_t Origin)
 	AddEffect(owner, stafffx);
 }
 
-qboolean FXSpellChangePuffThink(struct client_entity_s *Self, centity_t *owner);
-
 // ************************************************************************************************
 // FXStaffCreatePoof
 // ------------
 // ************************************************************************************************
 
-void FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXStaffCreatePoof(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t *stafffx;
 	vec3_t spawnpt;
@@ -1135,7 +1138,8 @@ FXStaffRemoveThink(struct client_entity_s *Self, centity_t *owner)
 
 // This effect spawns 150+ client fx which will cause problems
 
-void FXStaffRemove(centity_t *owner,int Type,int Flags,vec3_t Origin)
+void
+FXStaffRemove(centity_t *owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t *stafffx;
 	byte			fxtype;

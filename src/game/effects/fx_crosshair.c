@@ -19,12 +19,14 @@
 
 static struct model_s *crosshair_models[NUM_MODELS];
 
-void PreCacheCrosshair()
+void
+PreCacheCrosshair()
 {
 	crosshair_models[0] = fxi.RegisterModel("sprites/fx/crosshair.sp2");
 }
 
-static qboolean FXDrawCrosshair(struct client_entity_s *cross_hair, centity_t *owner)
+static qboolean
+FXDrawCrosshair(struct client_entity_s *cross_hair, centity_t *owner)
 {
 	float			alpha;
 	byte			type;
@@ -70,7 +72,8 @@ UpdateCrosshair
 
 ==============
 */
-void FXCrosshair(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXCrosshair(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*xh;
 

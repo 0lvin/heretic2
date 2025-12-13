@@ -14,7 +14,6 @@
 #include "utilities.h"
 #include "../common/matrix.h"
 #include "../common/reference.h"
-#include "q_sprite.h"
 #include "../common/q_surface.h"
 #include "../header/g_playstats.h"
 
@@ -30,7 +29,8 @@
 
 static struct model_s *shadow_models[NUM_SHADOW_MODELS];
 
-void PrecacheShadow()
+void
+PrecacheShadow()
 {
 	shadow_models[0] = fxi.RegisterModel("models/fx/shadow/tris.fm");
 }
@@ -147,7 +147,8 @@ FXShadowReferenceUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*self;
 	float				scale;
@@ -172,7 +173,8 @@ void FXShadow(centity_t *owner, int type, int flags, vec3_t origin)
 }
 
 // Cast a shadow down from each foot and the player, too
-void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*self;
 

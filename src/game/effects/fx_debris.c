@@ -11,12 +11,10 @@
 #include "particle.h"
 #include "../common/resourcemanager.h"
 #include "../common/fx.h"
-#include "fx_dustpuff.h"
 #include "utilities.h"
 #include "../common/angles.h"
 #include "../common/h2rand.h"
 #include "../header/g_physics.h"
-#include "fx_debris.h"
 #include "ce_dlight.h"
 #include "../header/g_playstats.h"
 
@@ -31,7 +29,9 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg);
 static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy);
 
 qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner);
-qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner);
+static qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner);
+static qboolean FXDebris_Update(struct client_entity_s *self, centity_t *owner);
+static qboolean FXBodyPart_Update(struct client_entity_s *self,centity_t *owner);
 
 //------------------------------------------------------------------
 //	FX Debris base info
@@ -161,12 +161,14 @@ float debrisElasticity[NUM_MAT] =
 	1.3,		// Insect chunks
 };
 
-void InitDebrisStatics()
+void
+InitDebrisStatics()
 {
 	ce_classStatics[CID_DEBRIS].msgReceivers[MSG_COLLISION] = FXDebris_Collision;
 }
 
-void PreCacheDebris()
+void
+PreCacheDebris()
 {
 	int i, j, offset;
 
@@ -180,29 +182,8 @@ void PreCacheDebris()
 	}
 }
 
-qboolean flame_out (struct client_particle_s *self, int crap)
-{
-	if ((fxi.cl->time - self->startTime) < (self->duration/2))
-	{
-		if (!irand(0, 9))
-		{
-			self->type = irand(PART_16x16_FIRE1, PART_16x16_FIRE3);
-			self->type |= PFL_ADDITIVE;//whoo-hoo!  Additive particle!
-		}
-		return true;
-	}
-
-	self->scale += flrand(0.6, 0.8);
-	self->type = PART_16x16_MIST;//automatically removes additive drawing
-	self->color.r = 10;
-	self->color.g = 10;
-	self->color.b = 10;
-	self->color.a = 255;
-//	self->extraUpdate = NULL;
-	return true;
-}
-
-void DoFireTrail (client_entity_t *spawner)
+static void
+DoFireTrail(client_entity_t *spawner)
 {
 	client_particle_t	*flame;
 	int					i, material, count;
@@ -266,8 +247,10 @@ void DoFireTrail (client_entity_t *spawner)
 //------------------------------------------------------------------
 //	FX Body Part spawn functions
 //------------------------------------------------------------------
+static void FXBodyPart_Spawn(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy);
 
-void FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
+void
+FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
 {
 	short			frame;
 	short			BodyPart;
@@ -290,7 +273,8 @@ void FXBodyPart(centity_t *owner,int type, int flags, vec3_t origin)
 	FXBodyPart_Spawn(realowner, BodyPart, origin, ke, frame, type, modelindex, flags, owner);
 }
 
-void FXBodyPart_Spawn(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy)
+static void
+FXBodyPart_Spawn(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy)
 {
 	FXBodyPart_Throw(owner, BodyPart, origin, ke, frame, type, modelindex, flags, harpy);
 
@@ -300,7 +284,8 @@ void FXBodyPart_Spawn(centity_t *owner, int BodyPart, vec3_t origin, float ke, i
 	}
 }
 
-static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy)
+static void
+FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, float ke, int frame, int type, byte modelindex, int flags, centity_t *harpy)
 {//FIXME: make sure parts have correct skins, even node 0!
 	int				index, whichnode, material, node_num;
 	client_entity_t	*debris;
@@ -436,7 +421,8 @@ static void FXBodyPart_Throw(centity_t *owner, int BodyPart, vec3_t origin, floa
 	AddEffect(NULL,debris);
 }
 
-qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	VectorCopy(owner->lerp_origin, self->r.origin);
 	VectorSet(self->r.angles,
@@ -453,7 +439,8 @@ qboolean FXBodyPartAttachedUpdate(struct client_entity_s *self, centity_t *owner
 	return true;
 }
 
-qboolean FXBodyPart_Update(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXBodyPart_Update(struct client_entity_s *self, centity_t *owner)
 {
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;
@@ -486,7 +473,10 @@ qboolean FXBodyPart_Update(struct client_entity_s *self, centity_t *owner)
 //  CEF_FLAG8 = use reflection skin
 //------------------------------------------------------------------
 
-client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float ke, float scale, int flags, qboolean altskin)
+static qboolean FXFleshDebris_Update(struct client_entity_s *self, centity_t *owner);
+
+client_entity_t *
+FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float ke, float scale, int flags, qboolean altskin)
 {
 	int				index;
 	client_entity_t	*debris;
@@ -566,7 +556,8 @@ client_entity_t *FXDebris_Throw(vec3_t origin, int material, vec3_t dir, float k
 // Flesh debris throws should be a separate effect
 // This would save quite a bit of code
 
-void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int material, vec3_t dir, float ke, vec3_t mins, float scale, qboolean altskin)
+void
+FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int material, vec3_t dir, float ke, vec3_t mins, float scale, qboolean altskin)
 {
 	int					i;
 	vec3_t				holdorigin, start;
@@ -621,7 +612,8 @@ void FXDebris_SpawnChunks(int type, int flags, vec3_t origin, int num, int mater
 	}
 }
 
-void FXDebris_SpawnFleshChunks(int type, int flags, vec3_t origin, int num, int material, vec3_t dir, float ke, vec3_t mins, float scale, qboolean altskin)
+static void
+FXDebris_SpawnFleshChunks(int type, int flags, vec3_t origin, int num, int material, vec3_t dir, float ke, vec3_t mins, float scale, qboolean altskin)
 {
 	int					i;
 	vec3_t				holdorigin, start;
@@ -674,7 +666,8 @@ ClampI(int src, int min, int max)
 // ke = kinetic energy (dependent of damage and number of chunks)
 // mins = mins field of edict (so debris is spawned at base)
 // scale = size of the spawned chunks (dependent on size)
-void FXDebris(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXDebris(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte			num, material, size, mag;
 	vec3_t			dir, mins;
@@ -700,7 +693,8 @@ void FXDebris(centity_t *owner, int type, int flags, vec3_t origin)
 	FXDebris_SpawnChunks(type, flags, origin, num, material, dir, ke, mins, scale, false);
 }
 
-void FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	byte			num, material, size, mag;
 	vec3_t			dir, mins;
@@ -743,7 +737,8 @@ void FXFleshDebris(centity_t *owner, int type, int flags, vec3_t origin)
 //	FX Debris message receivers
 //------------------------------------------------------------------
 
-static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
+static void
+FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 {
 	trace_t		*trace;
 	float		d_time;
@@ -880,12 +875,15 @@ static void FXDebris_Collision(client_entity_t *self, CE_Message_t *msg)
 //------------------------------------------------------------------
 
 void FXDarkSmoke(vec3_t origin, float scale, float range);
-qboolean FXDebris_Remove(struct client_entity_s *self, centity_t *owner)
+
+qboolean
+FXDebris_Remove(struct client_entity_s *self, centity_t *owner)
 {
 	return false;
 }
 
-qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
+qboolean
+FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->SpawnInfo&SIF_INLAVA)
 		FXDarkSmoke(self->r.origin, flrand(0.2, 0.5), flrand(30, 50));
@@ -925,7 +923,8 @@ qboolean FXDebris_Vanish(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-qboolean FXDebris_Update(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXDebris_Update(struct client_entity_s *self, centity_t *owner)
 {
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;
@@ -948,7 +947,8 @@ qboolean FXDebris_Update(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-qboolean FXFleshDebris_Update(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXFleshDebris_Update(struct client_entity_s *self, centity_t *owner)
 {
 	int curTime = fxi.cl->time;
 	float d_time = (curTime - self->lastThinkTime) / 1000.0f;

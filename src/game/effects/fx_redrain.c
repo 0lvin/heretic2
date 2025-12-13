@@ -14,7 +14,6 @@
 #include "utilities.h"
 #include "motion.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define MAX_REDRAINHEIGHT	200.0F
@@ -40,7 +39,8 @@
 #define MSSITHRA_FX_ARROW_SPEED			750.0
 
 static struct model_s *rain_models[NUM_REDRAIN_MODELS];
-void PreCacheRedrain()
+void
+PreCacheRedrain()
 {
 	rain_models[0] = fxi.RegisterModel("sprites/spells/spark_red.sp2");
 	rain_models[1] = fxi.RegisterModel("models/spells/redrainarrow/tris.fm");
@@ -49,8 +49,8 @@ void PreCacheRedrain()
 	rain_models[4] = fxi.RegisterModel("sprites/spells/spark_green.sp2");
 }
 
-void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner);
-void DoLightning(vec3_t groundpos, vec3_t airpos);
+static void
+RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner);
 
 // Things dropped by the red rain.
 
@@ -178,7 +178,8 @@ FXRedRainThink(client_entity_t *rain, centity_t *owner)
 }
 
 // This is from creating the effect FX_RED_RAIN.
-void FXRedRain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXRedRain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*spawner;
 	vec_t				ceiling;
@@ -266,7 +267,8 @@ FXRedRainMissileThink(client_entity_t *missile, centity_t *owner)
 }
 
 // From creation of the effect FX_RED_RAIN_MISSILE
-void FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXRedRainMissile(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*missile;
 	vec3_t				temp;
@@ -385,7 +387,8 @@ RedRainExplosionThink(client_entity_t *explosion, centity_t *owner)
 }
 
 // This is similar to the FXRedRainMissileExplode, except that the explosion needs knowledge of the rainfall height.
-void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner)
+static void
+RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean powerup, centity_t *owner)
 {
 	client_entity_t		*explo;
 	client_entity_t		*dlight;

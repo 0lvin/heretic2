@@ -13,15 +13,13 @@
 #include "utilities.h"
 #include "../header/g_playstats.h"
 
-void FXCompass(centity_t *owner, int type, int flags, vec3_t origin);
-
-qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
+static qboolean
+PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 {
 	void FXPlayerShadow(centity_t *owner, int type, int flags, vec3_t origin);
 
 	// Is the modelindex valid? E.g. when a player is dead, his modelindex is 0, hence his
 	// referenceInfo will be invailid.
-
 	if (owner->current.modelindex != CUSTOM_PLAYER_MODEL)
 	{
 		return false;
@@ -50,7 +48,8 @@ qboolean PlayerFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXPlayerPersistant(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXPlayerPersistant(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*self;
 	vec_t				gravity;

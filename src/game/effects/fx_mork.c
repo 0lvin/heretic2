@@ -14,13 +14,10 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "q_sprite.h"
 #include "utilities.h"
 #include "../common/reference.h"
 #include "../common/matrix.h"
 #include "../header/g_playstats.h"
-
-client_entity_t *MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, int lifetime, qboolean plasma);
 
 #define	NUM_M_MISSILE_MODELS	4
 #define NUM_M_SHIELD_MODELS 3
@@ -136,47 +133,6 @@ FXMorkTrailThink_old(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void
-FXMorkMissileExplode_old(struct client_entity_s *self, centity_t *owner, vec3_t dir)
-{
-	client_entity_t	*SmokePuff;
-	int				i;
-
-	Vec3ScaleAssign(32.0, dir);
-
-	i = GetScaledCount(irand(12,16), 0.8);
-
-	while (i--)
-	{
-		float scale;
-
-		if (!i)
-			SmokePuff=ClientEntity_new(FX_M_EFFECTS,0,owner->origin,NULL,500);
-		else
-			SmokePuff=ClientEntity_new(FX_M_EFFECTS,0,owner->origin,NULL,1500);
-
-		SmokePuff->r.model = Morkproj_models[1];
-		scale = flrand(0.5,1.0);
-		VectorSet(SmokePuff->r.scale, scale, scale, scale);
-		SmokePuff->d_scale = -4.0;
-
-		SmokePuff->r.flags |=RF_FULLBRIGHT|RF_TRANSLUCENT|RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-		SmokePuff->r.frame=0;
-
-		VectorRandomCopy(dir, SmokePuff->velocity, flrand(16.0, 128.0));
-
-		SmokePuff->acceleration[0] = flrand(-400, 400);
-		SmokePuff->acceleration[1] = flrand(-400, 400);
-		SmokePuff->acceleration[2] = flrand(-40, -60);
-
-		SmokePuff->d_alpha= -0.4;
-
-		SmokePuff->radius=20.0;
-
-		AddEffect(NULL,SmokePuff);
-	}
-}
-
 static qboolean
 FXCWTrailThink(struct client_entity_s *self, centity_t *owner)
 {
@@ -219,246 +175,9 @@ FXMorkTrailThink2(struct client_entity_s *self, centity_t *owner)
 
   ==================*/
 
-#define EXPLODE_SPEED		160.0
-#define EXPLODE_GRAVITY		(-320.0)
-#define EXPLODE_SCALE		14.0
-#define EXPLODE_NUM_BITS	32
-#define EXPLODE_BALL_RANGE	20.0
-#define EXPLODE_BALL_DELAY	5
-#define EXPLODE_NUM_SMALLBALLS	3
-#define PP_EXPLODE_LIFETIME	50
-
-#define	NUM_Morkpp_models	6
-
-static qboolean
-FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
-{
-	client_entity_t *flash;
-
-	explosion->LifeTime--;
-	if (explosion->LifeTime>PP_EXPLODE_LIFETIME)
-	{
-		return true;
-	}
-	else if (explosion->LifeTime==PP_EXPLODE_LIFETIME)
-	{	// The explosion ball becomes visible and flashes
-		fxi.Activate_Screen_Flash(0xff0077ff);
-		explosion->alpha = 1.0;
-		VectorSet(explosion->r.scale, 0.1, 0.1, 0.1);
-		explosion->d_alpha=-5.0;
-		explosion->d_scale=8.0;
-
-		flash = ClientEntity_new(-1, explosion->r.flags, explosion->origin, NULL, 250);
-		flash->r.model = Morkpp_models[2];
-		flash->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
-		flash->r.frame = 1;
-		flash->radius = 128;
-		VectorSet(flash->r.scale, 1.0, 1.0, 1.0);
-		flash->d_alpha = -4.0;
-		flash->d_scale = -4.0;
-		AddEffect(NULL, flash);
-
-		return (true);
-	}
-	else if (explosion->LifeTime<=0)
-	{
-		return false;
-	}
-
-	// Spin the ball of fire while it expands and fades.
-	if ((explosion->r.angles[0]-=(M_PI/64.0))>(M_PI*2.0))
-		explosion->r.angles[0] = 0.0;
-
-	if ((explosion->r.angles[1]+=(M_PI/64.0))>(M_PI*2.0))
-		explosion->r.angles[1] = 0.0;
-
-	return true;
-}
-
-qboolean
-FXMPPExplosionCoreUpdate(client_entity_t *self, centity_t *owner)
-{
-	paletteRGBA_t color;
-
-	color.c = self->r.color;
-
-	if (color.r <= 50)
-		return false;
-
-	if (self->r.frame < 11)
-		self->r.frame++;
-	else if (self->r.frame == 11)
-	{
-		self->alpha = 0.0;
-		self->d_alpha = 0.0;
-		self->d_scale = -1;
-		self->dlight->d_intensity = -30;
-	}
-
-	if (color.r > 50)
-		color.r -= 1;
-
-	if (color.g>10)
-		color.g -= 10;
-
-	self->r.color = color.c;
-
-	self->dlight->color.c = self->r.color;
-	return true;
-}
-
-static qboolean
-FXMPPExplosionCoreThink(client_entity_t *core, centity_t *owner)
-{
-	client_entity_t *newcore;
-	vec3_t	pos;
-	paletteRGBA_t color;
-
-	core->LifeTime--;
-	if (core->LifeTime <= 0)
-	{
-		return false;
-	}
-
-	color.c = core->r.color;
-	if (color.g > 10)
-		color.g -= 10;
-	core->r.color = color.c;
-
-	// Spawn another trail core
-	VectorSet(pos, crandk() * 8.0, crandk() * 8.0, crandk() * 8.0);
-	VectorAdd(pos, core->r.origin, pos);
-	newcore = ClientEntity_new(-1, core->r.flags, pos, NULL, 250);
-	newcore->r.model = Morkpp_models[3];
-	newcore->r.color = 0xFF0077ff;
-	newcore->r.frame = 0;//1
-	newcore->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
-	newcore->radius	= 128;
-	VectorCopy(core->r.scale, newcore->r.scale);
-	newcore->alpha	= core->alpha;
-	newcore->d_alpha= -(newcore->alpha*4.0);
-	newcore->d_scale= 2.0;
-	VectorCopy(core->velocity, newcore->velocity);
-	AddEffect(NULL, newcore);
-
-	return (true);
-}
-
-void
-FXMPPExplode(client_entity_t *explosion, centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir)
-{
-	client_entity_t		*subexplosion;
-	paletteRGBA_t		color;
-	vec3_t				ballorigin;
-	client_particle_t	*spark;
-	int					i;
-
-	flags |= CEF_OWNERS_ORIGIN;
-
-	// Create three smaller explosion spheres.
-	for (i=0; i < EXPLODE_NUM_SMALLBALLS; i++)
-	{
-		paletteRGBA_t color;
-
-		ballorigin[0] = origin[0] + crandk() * EXPLODE_BALL_RANGE + (dir[0]*EXPLODE_BALL_RANGE);
-		ballorigin[1] = origin[1] + crandk() * EXPLODE_BALL_RANGE + (dir[1]*EXPLODE_BALL_RANGE);
-		ballorigin[2] = origin[2] + crandk() * EXPLODE_BALL_RANGE + (dir[2]*EXPLODE_BALL_RANGE);
-		subexplosion = ClientEntity_new(type, flags, ballorigin, NULL, 17);
-		subexplosion->r.model = Morkpp_models[4];
-		subexplosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
-		subexplosion->alpha = 0.1;
-		VectorSet(subexplosion->r.scale, 0.01, 0.01, 0.01);
-		subexplosion->radius=128;
-
-		color.c = subexplosion->r.color;
-		color.r = irand(150, 250);
-		color.g = irand(100, 200);
-		color.b = irand(50, 100);
-		subexplosion->r.color = color.c;
-
-		subexplosion->r.angles[PITCH] = crandk() * 180;
-		subexplosion->r.angles[YAW] = crandk() * 180;
-		subexplosion->r.angles[ROLL] = crandk() * 180;
-
-		subexplosion->LifeTime=PP_EXPLODE_LIFETIME + 1 + (EXPLODE_BALL_DELAY*i);		// Each successive ball has an additional delay.
-		subexplosion->Update = FXMPPExplosionSmallBallThink;
-
-		AddEffect(NULL, subexplosion);
-	}
-
-	// Create the main big explosion sphere.
-	explosion->r.model = Morkpp_models[1];
-	explosion->r.frame = 0;
-
-	//	explosion->r.model = Morkpp_models[5];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
-	explosion->flags |= CEF_ADDITIVE_PARTS;
-	explosion->alpha = 1.0;
-	VectorSet(explosion->r.scale, 2, 2, 2);
-	explosion->d_alpha=-0.3;
-	explosion->d_scale= 0.0;
-	explosion->radius=128;
-	explosion->LifeTime=PP_EXPLODE_LIFETIME;
-
-	explosion->r.color = 0xff00ffff;
-	color.c = 0xff0000ff;
-
-	explosion->dlight = CE_DLight_new(color, 150.0F, -0.3F);
-	explosion->Update = FXMPPExplosionCoreUpdate;
-	AddEffect(NULL, explosion);
-
-	// Add some glowing blast particles.
-	VectorScale(dir,EXPLODE_SPEED,dir);
-	for(i = 0; i < EXPLODE_NUM_BITS; i++)
-	{
-		spark = ClientParticle_new(irand(PART_32x32_FIRE0, PART_32x32_FIRE2), color, 2000);
-		VectorSet(spark->velocity,	crandk() * EXPLODE_SPEED,
-									crandk() * EXPLODE_SPEED,
-									crandk() * EXPLODE_SPEED);
-		VectorAdd(spark->velocity, dir, spark->velocity);
-		spark->acceleration[2] = EXPLODE_GRAVITY;
-		spark->scale = EXPLODE_SCALE;
-		spark->d_scale = flrand(-20.0, -10.0);
-		spark->d_alpha = flrand(-400.0, -320.0);
-		spark->duration = (255.0 * 2000.0) / -spark->d_alpha;		// time taken to reach zero alpha
-
-		AddParticleToList(explosion, spark);
-	}
-
-	// ...and a big-ass flash
-	explosion = ClientEntity_new(-1, flags, origin, NULL, 250);
-	explosion->r.model = Morkpp_models[2];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
-	explosion->r.frame = 1;
-	explosion->radius = 128;
-	VectorSet(explosion->r.scale, 1.5, 1.5, 1.5);
-	explosion->d_alpha = -4.0;
-	explosion->d_scale = -4.0;
-	AddEffect(NULL, explosion);
-
-	// ...and draw the MPP rising from the explosion
-	explosion = ClientEntity_new(type, flags, origin, NULL, 100);
-	explosion->r.model = Morkpp_models[3];
-	explosion->r.flags |= RF_TRANS_ADD | RF_TRANS_ADD_ALPHA | RF_TRANSLUCENT;
-	explosion->r.color = 0xFF00aaFF;
-	explosion->r.frame = 0;
-	explosion->radius=128;
-	VectorSet(explosion->r.scale, 1.0, 1.0, 1.0);
-	VectorScale(dir, 0.25, explosion->velocity);
-	explosion->acceleration[2] = 64;
-	explosion->alpha = 1.0;
-	explosion->d_alpha=-1.5;
-	explosion->d_scale=2.0;
-	explosion->LifeTime = 6;
-	explosion->Update = FXMPPExplosionCoreThink;
-	AddEffect(NULL, explosion);
-
-	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/ramphit1.wav"), 1, ATTN_NORM, 0);
-}
-
 //==================================================
 
-void
+static void
 FXMorkMissileExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
@@ -563,277 +282,11 @@ MorkMakeLightningPiece(vec3_t start, vec3_t end, float radius, int lifetime, qbo
 	return(lightning);
 }
 
-// Occasional lightning bolt strikes inside
-void
-MorkDoLightning(vec3_t groundpos, vec3_t airpos, qboolean random, qboolean plasma)
-{
-	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
-	float scale;
-	int i;
-
-	if (!random)
-	{
-		VectorCopy(groundpos, bottom);
-		VectorCopy(airpos, top);
-	}
-	else
-	{
-		VectorSet(top, flrand(-M_LIGHTNING_RADIUS, M_LIGHTNING_RADIUS), flrand(-M_LIGHTNING_RADIUS, M_LIGHTNING_RADIUS), 0);
-		VectorAdd(airpos, top, top);
-		VectorSet(bottom, flrand(-M_LIGHTNING_RADIUS, M_LIGHTNING_RADIUS), flrand(-M_LIGHTNING_RADIUS, M_LIGHTNING_RADIUS), 0);
-		VectorAdd(groundpos, bottom, bottom);
-	}
-
-	VectorSubtract(top, bottom, diffpos);
-	VectorScale(diffpos, 0.2, diffpos);
-	scale = (airpos[2] - groundpos[2]) / 10.0;
-
-	VectorCopy(bottom, lastpos);
-	VectorCopy(bottom, refpoint);
-	for (i=0; i<5; i++)
-	{
-		VectorAdd(refpoint, diffpos, refpoint);
-		VectorSet(rand, flrand(-scale, scale), flrand(-scale, scale), flrand(-scale, scale));
-		VectorAdd(refpoint, rand, curpos);
-		if (!random)
-			MorkMakeLightningPiece(airpos, lastpos, scale, 250, false);
-		else
-			MorkMakeLightningPiece(curpos, lastpos, scale, 250, false);
-		VectorCopy(curpos, lastpos);
-	}
-}
-
-void
-MorkDoEyesLightning(centity_t *owner, vec3_t groundpos)
-{
-	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
-	float scale;
-	int i, e;
-	matrix3_t		RotationMatrix;
-
-	// This tells if we are wasting our time, because the reference points are culled.
-	if (!RefPointsValid(owner))
-		return;
-
-	VectorCopy(groundpos, bottom);
-
-	for(e = 0; e<2; e++)
-	{
-		Matrix3FromAngles(owner->lerp_angles,RotationMatrix);
-
-		Matrix3MultByVec3(RotationMatrix,
-			owner->referenceInfo->references[MORK_LEYEREF + e].placement.origin,
-				  top);
-
-		VectorAdd(owner->current.origin, top, top);
-
-		VectorSubtract(bottom, top, diffpos);
-		VectorScale(diffpos, 0.2, diffpos);
-		scale = (top[2] - groundpos[2]) / 10.0;
-
-		VectorCopy(top, lastpos);
-		VectorCopy(top, refpoint);
-		for (i=0; i<5; i++)
-		{
-			VectorAdd(refpoint, diffpos, refpoint);
-			VectorSet(rand, flrand(-scale, scale), flrand(-scale, scale), flrand(-scale, scale));
-			VectorAdd(refpoint, rand, curpos);
-			MorkMakeLightningPiece(curpos, lastpos, scale, 250, false);
-			VectorCopy(curpos, lastpos);
-		}
-	}
-}
-
-/*===============================
-
-  FX_M_EYES
-
-  ===============================*/
-#define FIREEYES_PARTS		4
-#define FIREEYES_RADIUS		6.0
-#define FIREEYES_SPEED		16.0
-#define FIREEYES_SCALE		12.0
-#define FIREEYES_ACCEL		32.0
-
-#define SMOKEEYES_RADIUS	2.0
-#define SMOKEEYES_SCALE		0.25
-#define SMOKEEYES_ALPHA		0.5
-
-qboolean
-MorkEyesParticleUpdate(client_particle_t *self, qboolean ignore)
-{
-	int	fade_down = 0, darken = 0;
-	float	dec_rate = 5;
-
-	if (self->color.g>=10)
-		self->color.g-=dec_rate;
-	else
-	{
-		fade_down++;
-		if (self->color.g)
-			self->color.g--;
-		else
-			darken++;
-	}
-
-	if (self->color.b>=5)
-		self->color.b-=dec_rate;
-	else
-	{
-		fade_down++;
-		if (self->color.b)
-			self->color.b--;
-		else
-			darken++;
-	}
-
-	if (fade_down)
-	{
-		if (self->color.r>=15)
-		{
-			self->color.r-=dec_rate;
-		}
-		else if (self->color.r)
-			self->color.r--;
-		else
-			darken++;
-
-		if (self->color.r>150 && self->color.r<156)
-		{
-			float				d_time, d_time2;
-			int					d_msec;
-
-			d_msec = (fxi.cl->time - self->startTime);
-			d_time = d_msec * 0.001f;
-			d_time2 = d_time * d_time * 0.5;
-			self->origin[0] = self->origin[0] + (self->velocity[0] * d_time) + (self->acceleration[0] * d_time2);
-			self->origin[1] = self->origin[1] + (self->velocity[1] * d_time) + (self->acceleration[1] * d_time2);
-			self->origin[2] = self->origin[2] + (self->velocity[2] * d_time) + (self->acceleration[2] * d_time2);
-
-			self->velocity[0] = flrand(-0.2, 0.2);
-			self->velocity[1] = flrand(-0.2, 0.2);
-			self->acceleration[0] = self->acceleration[1] = 0;
-			self->startTime = fxi.cl->time;
-			self->d_alpha = -0.01;
-			self->d_scale = 0.01;
-		}
-		else if (self->color.r<30 && self->d_alpha != -0.1)
-		{
-			self->d_alpha = -0.1;
-			self->d_scale = 0.1;
-		}
-	}
-	return true;
-}
-
-static qboolean
-FXMorkEyes(struct client_entity_s *self, centity_t *owner)
-{
-	vec3_t	angles, forward, right, pos, pos2, side;
-	int		num_parts, e, n;
-	client_particle_t	*flame;
-	matrix3_t		RotationMatrix;
-	client_entity_t	*fx;
-	float scale;
-
-	// This tells if we are wasting our time, because the reference points are culled.
-	if (!RefPointsValid(owner))
-		return true;
-
-	VectorScale(owner->lerp_angles, 180.0/M_PI, angles);
-	AngleVectors(angles, forward, right, NULL);
-
-	//left or right eye
-	e = self->LifeTime;
-
-	Matrix3FromAngles(((centity_t *)(self->extra))->lerp_angles,RotationMatrix);
-
-	Matrix3MultByVec3(RotationMatrix,
-		((centity_t *)(self->extra))->referenceInfo->references[MORK_LEYEREF + e].placement.origin,
-			  pos);
-
-	if (e)
-	{
-		VectorCopy(right, side);
-		VectorMA(pos, 2, right, pos);
-	}
-	else
-	{
-		VectorScale(right, -1, side);
-		VectorMA(pos, -2, right, pos);
-	}
-
-	VectorMA(pos, 8, forward, pos);
-
-	VectorAdd(((centity_t *)(self->extra))->current.origin, pos, pos);
-
-	num_parts = irand(3, 7);
-
-	//update the controlling Effect
-	VectorCopy(pos, self->origin);
-
-	for(n = 0; n<num_parts; n++)
-	{//number of particles
-		paletteRGBA_t color;
-		color.c = self->r.color;
-
-		if (e)
-			VectorMA(pos, flrand(0,1), right, pos2);
-		else
-			VectorMA(pos, flrand(-1,0), right, pos2);
-
-		flame = ClientParticle_new(PART_4x4_WHITE, color, 50);//
-
-		VectorCopy(pos, flame->origin);//pos2
-		flame->scale = 0.75;
-
-		// Make the fire shoot out the front and to the side
-		VectorScale(side, 3, flame->velocity);
-		VectorScale(side, -1, flame->acceleration);
-		flame->acceleration[2] = 7;
-
-		flame->d_scale = flrand(-0.1, -0.15);
-		flame->d_alpha = flrand(-200.0, -160.0);
-		flame->duration = ((255.0 * 1000.0) / -flame->d_alpha)*2;		// time taken to reach zero alpha
-
-		AddParticleToList(self, flame);
-	}
-
-	fx=ClientEntity_new(FX_M_EFFECTS, 0, pos, NULL, 20);
-	fx->r.color = 0xe5007fff;
-	fx->r.model = Morkproj_models[3];
-	fx->r.flags |= RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
-	scale = flrand(0.15, 0.25);
-	VectorSet(fx->r.scale, scale, scale, scale);
-	fx->alpha = flrand(0.85, 0.95);
-	fx->radius = 100.0f;
-	AddEffect(NULL,fx);
-
-	return (true);
-}
-
 /*===============================
 
   FX_M_BEAM
 
   ===============================*/
-qboolean
-ParticleFadeToBlue(client_particle_t *self, qboolean ignore)
-{
-	float	dec_rate = 5;
-
-	if (self->color.g>=10)
-		self->color.g-=dec_rate;
-
-	if (self->color.b>=50)
-		self->color.b-=dec_rate;
-
-	if (self->color.r>=15)
-		self->color.r-=dec_rate;
-
-	return true;
-}
-
 static qboolean
 FXMorkBeamCircle(struct client_entity_s *self, centity_t *owner)
 {
@@ -984,60 +437,6 @@ FXMorkBeam (struct client_entity_s *self, centity_t *owner)
 
   ===============================*/
 
-qboolean
-MorkFirstSeenInit(struct client_entity_s *self, centity_t *owner)
-{
-	client_entity_t	*fx;
-	paletteRGBA_t color;
-
-	self->refMask |= MORK_MASK;
-
-	EnableRefPoints(owner->referenceInfo, self->refMask);
-
-	self->AddToView = NULL;
-	self->Update = KeepSelfAI;
-
-	//Make the eyes
-	fx=ClientEntity_new(FX_M_EFFECTS, CEF_NO_DRAW|CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, owner->current.origin, NULL, 20);
-	fx->flags |= CEF_NO_DRAW | CEF_ABSOLUTE_PARTS;
-	fx->Update = FXMorkEyes;
-	fx->LifeTime = 0;
-	color.c = 0xe5007fff;
-	fx->r.color = color.c;
-	fx->dlight = CE_DLight_new(color, 60.0f, 0.0f);
-	fx->AddToView = LinkedEntityUpdatePlacement;
-	fx->extra = (void *)owner;
-
-	AddEffect(owner,fx);
-	//--------------------------------------
-	fx=ClientEntity_new(FX_M_EFFECTS, CEF_NO_DRAW|CEF_OWNERS_ORIGIN | CEF_ABSOLUTE_PARTS, owner->current.origin, NULL, 20);
-	fx->flags |= CEF_NO_DRAW|CEF_ABSOLUTE_PARTS;
-	fx->Update = FXMorkEyes;
-	fx->LifeTime = 1;
-	color.c = 0xe5007fff;
-	fx->r.color = color.c;
-	fx->dlight = CE_DLight_new(color, 60.0f, 0.0f);
-	fx->AddToView = LinkedEntityUpdatePlacement;
-	fx->extra = (void *)owner;
-
-	AddEffect(owner,fx);
-	return true;
-}
-
-void
-FXMorkReadyRefs(centity_t *owner,int type,int flags,vec3_t origin)
-{
-	client_entity_t		*self;
-
-	flags |= CEF_NO_DRAW;
-	self = ClientEntity_new(type, flags, origin, NULL, 17);
-
-	self->Update = NULL;
-	self->AddToView = MorkFirstSeenInit;
-
-	AddEffect(owner, self);
-}
-
 static qboolean
 DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad_SpawnerUpdate (struct client_entity_s *self, centity_t *owner)
 {
@@ -1117,7 +516,7 @@ DreamyHyperMechaAtomicGalaxyPhaseIIPlusEXAlphaSolidProRad(centity_t *owner,int t
 	AddEffect(owner, fx);
 }
 
-void
+static void
 ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 {
 	client_entity_t	*SmokePuff;
@@ -1158,7 +557,7 @@ ImpFireBallExplode(struct client_entity_s *self, centity_t *owner, vec3_t dir)
 	}
 }
 
-qboolean
+static qboolean
 ImpFireBallUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
@@ -1245,7 +644,7 @@ static int star_particle [3] =
 	PART_16x16_SPARK_B,
 };
 
-qboolean
+static qboolean
 FXCWUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
@@ -1410,7 +809,7 @@ FXCWStars(centity_t *owner,int type,int flags, vec3_t vel)
 #define BUOY_FX_ACTIVATE	PART_4x4_MAGENTA
 #define BUOY_FX_ONEWAY		PART_4x4_WHITE
 
-qboolean
+static qboolean
 FXBuoyUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
@@ -1527,7 +926,7 @@ FXBuoyUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void
+static void
 FXBuoy(centity_t *owner, int flags, vec3_t org, float white)
 {
 	client_entity_t	*fx;
@@ -1565,20 +964,20 @@ FXBuoy(centity_t *owner, int flags, vec3_t org, float white)
 	}
 }
 
-qboolean
+static qboolean
 FXPermanentUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	self->updateTime = 16384;
 	return true;
 }
 
-qboolean
+static qboolean
 FXRemoveUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	return false;
 }
 
-qboolean
+static qboolean
 FXBuoyPathDelayedStart(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*TrailEnt;
@@ -1618,7 +1017,7 @@ FXBuoyPathDelayedStart(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void
+static void
 FXBuoyPath(vec3_t org, vec3_t vel)
 {
 	client_entity_t	*fx;
@@ -1639,7 +1038,7 @@ FXBuoyPath(vec3_t org, vec3_t vel)
 	AddEffect(NULL,fx);
 }
 
-qboolean
+static qboolean
 FXMMoBlurUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	if (self->alpha <= 0.05f)
@@ -1648,7 +1047,7 @@ FXMMoBlurUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void
+static void
 FXMMoBlur(centity_t *owner, vec3_t org, vec3_t angles, qboolean dagger)
 {//r_detail 2 only?
 	client_entity_t	*blur;
@@ -1685,7 +1084,7 @@ FXMMoBlur(centity_t *owner, vec3_t org, vec3_t angles, qboolean dagger)
 	AddEffect(NULL,blur);
 }
 
-qboolean
+static qboolean
 FXAssDaggerUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	if (++self->LifeTime == 4)
@@ -1699,7 +1098,7 @@ FXAssDaggerUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void
+static void
 FXAssDagger(centity_t *owner, vec3_t vel, float avel)
 {
 	client_entity_t	*dagger;
@@ -1731,7 +1130,7 @@ static int water_particle [6] =
 	PART_32x32_BUBBLE
 };
 
-qboolean
+static qboolean
 FXUnderWaterWakeUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*p;
@@ -1774,7 +1173,7 @@ FXUnderWaterWakeUpdate(struct client_entity_s *self, centity_t *owner)
 	return (true);
 }
 
-void
+static void
 FXUnderWaterWake(centity_t *owner)
 {
 	client_entity_t	*fx;
@@ -1811,7 +1210,7 @@ FXUnderWaterWake(centity_t *owner)
 #define MACEBALL_SPARK_VEL	128.0
 #define NUM_RINGS			3
 
-void
+static void
 FXQuakeRing(vec3_t origin)
 {
 	client_entity_t		*ring;
@@ -1884,10 +1283,7 @@ FXQuakeRing(vec3_t origin)
 /*-----------------------------------------------
 	FXGroundAttack
 -----------------------------------------------*/
-
-extern qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner);
-
-void
+static void
 FXGroundAttack(vec3_t origin)
 {
 	client_entity_t	*glow;
@@ -2101,34 +1497,6 @@ extern client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, 
 #define LIGHTNING_WIDTH			1.0
 
 void
-MorkLightning(vec3_t groundpos, vec3_t airpos)
-{
-	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
-	float scale;
-	int i;
-
-	VectorSet(top, flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), 0);
-	VectorAdd(airpos, top, top);
-	VectorSet(bottom, flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), 0);
-	VectorAdd(groundpos, bottom, bottom);
-
-	VectorSubtract(top, bottom, diffpos);
-	VectorScale(diffpos, 0.2, diffpos);
-	scale = (airpos[2] - groundpos[2]) / 10.0;
-
-	VectorCopy(bottom, lastpos);
-	VectorCopy(bottom, refpoint);
-	for (i=0; i<5; i++)
-	{
-		VectorAdd(refpoint, diffpos, refpoint);
-		VectorSet(rand, flrand(-scale, scale), flrand(-scale, scale), flrand(-scale, scale));
-		VectorAdd(refpoint, rand, curpos);
-		MakeLightningPiece(LIGHTNING_TYPE_BLUE, LIGHTNING_WIDTH, curpos, lastpos, scale);
-		VectorCopy(curpos, lastpos);
-	}
-}
-
-void
 FXMorkMissileHit(vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*fx;
@@ -2211,8 +1579,6 @@ FXMMissileTrailThink(struct client_entity_s *self, centity_t *Owner)
 	return true;
 }
 
-extern void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin);
-
 void
 FXMorkTrackingMissile(centity_t *owner, vec3_t origin, vec3_t velocity)
 {
@@ -2239,7 +1605,7 @@ FXMorkTrackingMissile(centity_t *owner, vec3_t origin, vec3_t velocity)
 	FXMMissileTrailThink(Trail,owner);
 }
 
-qboolean
+static qboolean
 rubble_spin(client_entity_t *self, centity_t *owner)
 {
 	if (self->LifeTime < fxi.cl->time)
@@ -2252,7 +1618,7 @@ rubble_spin(client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-qboolean
+static qboolean
 mssithra_explosion_think(client_entity_t *self, centity_t *owner)
 {
 	client_entity_t	*explosion, *TrailEnt;
@@ -2384,7 +1750,7 @@ mssithra_explosion_think(client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-void
+static void
 FXMSsithraExplode(vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*spawner;
@@ -2402,7 +1768,7 @@ FXMSsithraExplode(vec3_t origin, vec3_t dir)
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("monsters/mssithra/hit.wav"), 0.5, ATTN_NORM, 0);
 }
 
-void
+static void
 FXMSsithraExplodeSmall(vec3_t origin, vec3_t dir)
 {
 	//Play correct sound here
@@ -2410,7 +1776,7 @@ FXMSsithraExplodeSmall(vec3_t origin, vec3_t dir)
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("monsters/mssithra/hit.wav"), 0.5, ATTN_NORM, 0);
 }
 
-qboolean
+static qboolean
 ArrowCheckFuse(client_entity_t *self, centity_t *owner)
 {
 	if ( (owner->current.effects & EF_ALTCLIENTFX) || (owner->current.effects & EF_MARCUS_FLAG1) )
@@ -2428,7 +1794,7 @@ ArrowCheckFuse(client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-qboolean
+static qboolean
 ArrowDrawTrail(client_entity_t *self, centity_t *owner)
 {
 	LinkedEntityUpdatePlacement(self, owner);
@@ -2480,7 +1846,7 @@ ArrowDrawTrail(client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-void
+static void
 FXMSsithraArrow(centity_t *owner, vec3_t velocity, qboolean super)
 {
 	client_entity_t	*spawner;
@@ -2516,7 +1882,7 @@ FXMSsithraArrow(centity_t *owner, vec3_t velocity, qboolean super)
 	AddEffect(owner, spawner);
 }
 
-void
+static void
 FXMSsithraArrowCharge(vec3_t startpos)
 {
 	client_entity_t	*TrailEnt;

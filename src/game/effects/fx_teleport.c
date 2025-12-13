@@ -28,7 +28,8 @@
 
 #define	NUM_TELEPORT_MODELS	2
 static struct model_s *tele_models[NUM_TELEPORT_MODELS];
-void PreCacheTeleport()
+void
+PreCacheTeleport()
 {
 	tele_models[0] = fxi.RegisterModel("sprites/spells/teleport_1.sp2");
 	tele_models[1] = fxi.RegisterModel("sprites/spells/teleport_2.sp2");
@@ -36,7 +37,8 @@ void PreCacheTeleport()
 
 // -----------------------------------------------------------------
 
-void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
+void
+PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t  	*teleport_fx;
 	int 					i, temp_col;
@@ -100,7 +102,8 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
+void
+PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t  	*teleport_fx;
 	int 					i, temp_col;
@@ -166,7 +169,8 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 }
 
-static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXteleportPadThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -234,7 +238,8 @@ static qboolean FXteleportPadThink(struct client_entity_s *self, centity_t *owne
 }
 
 // This is the persistant effect for the teleport pad
-void FXTeleportPad(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXTeleportPad(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 

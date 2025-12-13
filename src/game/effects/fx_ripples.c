@@ -18,7 +18,9 @@
 
 #define	NUM_RIPPLE_MODELS	1
 static struct model_s *ripple_models[NUM_RIPPLE_MODELS];
-void PreCacheRipples()
+
+void
+PreCacheRipples()
 {
 	ripple_models[0] = fxi.RegisterModel("sprites/fx/waterentryripple.sp2");
 }
@@ -52,7 +54,8 @@ FXRippleSpawner(client_entity_t *spawner, centity_t *owner)
 	return true;
 }
 
-void FXWaterRipples(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXWaterRipples(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*spawner;
 	vec3_t				dir;

@@ -14,7 +14,6 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "q_sprite.h"
 #include "utilities.h"
 #include "../common/reference.h"
 #include "../common/matrix.h"
@@ -52,13 +51,15 @@ enum {
 
 */
 
-void PreCacheHPStaff()
+void
+PreCacheHPStaff()
 {
 	//Staff Trail
 	hpstaff_models[0] = fxi.RegisterModel("sprites/fx/hpproj1_2.sp2");
 }
 
-void PreCacheHPMissile()
+void
+PreCacheHPMissile()
 {
 	//Projectile head sprites
 	hpproj_models[0] = fxi.RegisterModel("sprites/fx/hpproj1_1.sp2");
@@ -563,7 +564,8 @@ FXHPMissileTrailThink3(struct client_entity_s *self, centity_t *Owner)
 	FXHPMissileExplode
 -----------------------------------------------*/
 
-void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
+static void
+FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 {
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
@@ -608,7 +610,8 @@ void FXHPMissileExplode(struct client_entity_s *self, centity_t *Owner)
 	FXHPBugExplode
 -----------------------------------------------*/
 
-void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
+static void
+FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 {
 	vec3_t			dir;
 	client_entity_t	*SmokePuff;
@@ -653,7 +656,8 @@ void FXHPBugExplode(struct client_entity_s *self, centity_t *Owner)
 	FXHPMissileCreateWarp
 -----------------------------------------------*/
 
-void FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXHPMissileCreateWarp(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*Trail;
 
@@ -683,7 +687,8 @@ PriestessLinkedEntityUpdatePlacement(struct client_entity_s *self, centity_t *ow
 	FXHPMissile
 -----------------------------------------------*/
 
-void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*Trail;
 	paletteRGBA_t	LightColor = {{{0, 0, 255, 255}}};
@@ -1110,7 +1115,8 @@ void FXHPMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 	FXHPStaff
 -----------------------------------------------*/
 
-qboolean HPStaffTrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+HPStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t	*Trail;
 	matrix3_t		RotationMatrix;
@@ -1148,7 +1154,8 @@ qboolean HPStaffTrailThink(struct client_entity_s *self, centity_t *owner)
 	PriestessEffectStayAlive
 -----------------------------------------------*/
 
-qboolean PriestessEffectStayAlive(struct client_entity_s *self, centity_t *owner)
+static qboolean
+PriestessEffectStayAlive(struct client_entity_s *self, centity_t *owner)
 {
 	return true;
 }
@@ -1157,7 +1164,8 @@ qboolean PriestessEffectStayAlive(struct client_entity_s *self, centity_t *owner
 	PriestessFirstSeenInit
 -----------------------------------------------*/
 
-qboolean PriestessFirstSeenInit(struct client_entity_s *self, centity_t *owner)
+static qboolean
+PriestessFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 {
 	self->refMask |= PRIESTESS_MASK;
 
@@ -1175,7 +1183,8 @@ qboolean PriestessFirstSeenInit(struct client_entity_s *self, centity_t *owner)
 	FXHPStaff
 -----------------------------------------------*/
 
-void FXHPStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXHPStaff(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t		*self;
 	short				entID;

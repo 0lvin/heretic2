@@ -20,11 +20,11 @@
 #define LIGHT_LIFETIME	1000
 
 // ************************************************************************************************
-// FXSpellChangePuffThink
+// FXSpellChangeLightThink
 // ----------------------------
 // ************************************************************************************************
-
-qboolean FXSpellChangeLightThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXSpellChangeLightThink(struct client_entity_s *self, centity_t *owner)
 {
 	if (fxi.cl->time - self->startTime > LIGHT_LIFETIME)
 	{
@@ -41,7 +41,8 @@ qboolean FXSpellChangeLightThink(struct client_entity_s *self, centity_t *owner)
 // ---------------------
 // ************************************************************************************************
 
-void FXSpellChange(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXSpellChange(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	vec3_t			dir;
 	client_entity_t	*spellpuff;

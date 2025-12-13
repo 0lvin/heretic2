@@ -16,14 +16,14 @@
 #include "../common/h2rand.h"
 #include "utilities.h"
 #include "../common/reference.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define	NUM_SPHERE_MODELS	8
 
 static struct model_s *sphere_models[NUM_SPHERE_MODELS];
 
-void PreCacheSphere()
+void
+PreCacheSphere()
 {
 	sphere_models[0] = fxi.RegisterModel("sprites/spells/shboom.sp2");
 	sphere_models[1] = fxi.RegisterModel("sprites/spells/bluball.sp2");
@@ -41,12 +41,6 @@ void PreCacheSphere()
 #define	FX_SOFT_SPHERE_AURA_SCALE			0.9
 #define	FX_SPHERE_AURA_SCALE			1.2
 #define FX_SPHERE_EXPLOSION_BASE_RADIUS	89.0
-
-static qboolean FXSphereOfAnnihilationSphereThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXSphereOfAnnihilationAuraThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXSphereOfAnnihilationGlowballThink(struct client_entity_s *Self, centity_t *Owner);
-static qboolean FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity_t *Owner);
-extern void FXClientLensFlare(centity_t *owner,int Type,int Flags,vec3_t Origin, int lifeTime, paletteRGBA_t *tint);
 
 // ****************************************************************************
 // FXSphereOfAnnihilationSphereThink -
@@ -412,7 +406,8 @@ FXSphereOfAnnihilationGlowballSpawnerThink(struct client_entity_s *Self, centity
 // FXSphereOfAnnihilationGlowballs -
 // ****************************************************************************
 
-void FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXSphereOfAnnihilationGlowballs(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	client_entity_t	*GlowballSpawner;
 	short			CasterEntnum;
@@ -499,7 +494,8 @@ FXSphereOfAnnihilationSphereExplodeThink(struct client_entity_s *Self, centity_t
 // ****************************************************************************
 // FXSphereOfAnnihilationExplode -
 // ****************************************************************************
-void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	vec3_t				Dir;
 	byte				Size;
@@ -552,7 +548,8 @@ void FXSphereOfAnnihilationExplode(centity_t *Owner, int Type, int Flags, vec3_t
 	}
 }
 
-void FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXSphereOfAnnihilationPower(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	vec3_t				dir;
 	byte					size;
@@ -733,7 +730,8 @@ FXSpherePlayerExplodeGlowballTerminate(client_entity_t *glowball, centity_t *own
 // ****************************************************************************
 // FXSphereOfAnnihilationExplode -
 // ****************************************************************************
-void FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXSpherePlayerExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	vec3_t				Dir;
 	byte				Size;

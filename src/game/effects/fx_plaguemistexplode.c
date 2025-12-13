@@ -16,7 +16,8 @@
 
 #define NUM_MIST_EXPLODE_PARTS	7
 
-static qboolean FXPlagueMistExplodeSpawn(client_entity_t *spawner, centity_t *owner)
+static qboolean
+FXPlagueMistExplodeSpawn(client_entity_t *spawner, centity_t *owner)
 {
 	int					i, count;
 	client_particle_t	*p;
@@ -75,7 +76,8 @@ static qboolean FXPlagueMistExplodeSpawn(client_entity_t *spawner, centity_t *ow
 	return true;
 }
 
-void FXPlagueMistExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXPlagueMistExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*spawner;
 	byte				lifetime;

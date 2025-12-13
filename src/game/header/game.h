@@ -123,7 +123,7 @@ struct edict_s
 /* =============================================================== */
 
 #define ENTITY_FX_BUF_SIZE 192
-#define MAX_PERSISTANT_EFFECTS		512
+#define MAX_PERSISTANT_EFFECTS 1024
 
 typedef struct PerEffectsBuffer_s
 {

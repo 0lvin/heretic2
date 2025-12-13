@@ -1470,7 +1470,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/fx_weaponpickup.o \
 	src/game/effects/generic_character_effects.o \
 	src/game/effects/generic_weapon_effects.o \
-	src/game/effects/item_effects.o \
 	src/game/effects/main.o \
 	src/game/effects/motion.o \
 	src/game/effects/particle.o \

@@ -15,14 +15,14 @@
 #include "utilities.h"
 #include "motion.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define	NUM_WALL_MODELS	3
 
 static struct model_s *wall_models[NUM_WALL_MODELS];
 
-void PreCacheWall()
+void
+PreCacheWall()
 {
 	wall_models[0] = fxi.RegisterModel("sprites/spells/wflame.sp2");
 	wall_models[1] = fxi.RegisterModel("sprites/spells/wflame2.sp2");
@@ -180,7 +180,8 @@ FXFireWormThink(client_entity_t *worm, centity_t *owner)
 #define FIREWAVE_BLAST_NUM		4
 #define FIREWAVE_IMPACT_NUM		2
 
-static void FXFireWaveImpact(client_entity_t *wall)
+static void
+FXFireWaveImpact(client_entity_t *wall)
 {
 	client_entity_t *blast;
 	vec3_t			blastpt, spawnvel;
@@ -427,7 +428,8 @@ FXFireWaveThink(client_entity_t *wall, centity_t *owner)
 }
 
 // Create Effect FX_WEAPON_FIREWAVE
-void FXFireWave(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFireWave(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*wall;
 	short				shortyaw,shortpitch;
@@ -538,7 +540,8 @@ void FXFireWaveWorm(centity_t *owner, int type, int flags, vec3_t origin)
 // Unpowered
 // *****************************************************************
 
-static void FXFireBurstImpact(client_entity_t *wall)
+static void
+FXFireBurstImpact(client_entity_t *wall)
 {
 	client_entity_t *blast;
 	vec3_t			blastpt, spawnvel, blastvel;
@@ -706,7 +709,8 @@ FXFireBurstThink(client_entity_t *wall, centity_t *owner)
 }
 
 // Create effect FX_WEAPON_FIREBURST
-void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*wall;
 	client_particle_t	*spark;

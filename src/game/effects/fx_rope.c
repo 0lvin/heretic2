@@ -14,7 +14,6 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "q_sprite.h"
 
 #define	NUM_ROPE_MODELS			4
 #define ROPE_SEGMENT_LENGTH	    64
@@ -28,7 +27,8 @@ static struct model_s *rope_models[NUM_ROPE_MODELS];
 
 */
 
-void PreCacheRope()
+void
+PreCacheRope()
 {
 	rope_models[0] = fxi.RegisterModel("sprites/fx/segment_rope.sp2");
 	rope_models[1] = fxi.RegisterModel("sprites/fx/segment_chain.sp2");
@@ -46,7 +46,8 @@ void PreCacheRope()
 	RopeCheckToHide
 -----------------------------------------------*/
 
-qboolean RopeCheckToHide(struct client_entity_s *self, centity_t *owner)
+static qboolean
+RopeCheckToHide(struct client_entity_s *self, centity_t *owner)
 {
 	centity_t	*grab;
 

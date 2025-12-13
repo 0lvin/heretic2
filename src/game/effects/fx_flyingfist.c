@@ -14,7 +14,6 @@
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "fx_debris.h"
 #include "../header/g_playstats.h"
 
 #define FIST_DELTA_FORWARD	8.0
@@ -29,7 +28,8 @@
 
 static struct model_s *fist_models[NUM_FIST_MODELS];
 
-void PreCacheFist()
+void
+PreCacheFist()
 {
 	fist_models[0] = fxi.RegisterModel("Sprites/Spells/flyingfist.sp2");
 	fist_models[1] = fxi.RegisterModel("Sprites/Spells/spellhands_red.sp2");
@@ -114,7 +114,8 @@ FXFlyingFistTrailThink(struct client_entity_s *self, centity_t *owner)
 ////////////////////////////////////
 // From CreateEffect FX_WEAPON_FLYINGFIST
 ////////////////////////////////////
-void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			vel, dir;
 	client_entity_t	*missile;
@@ -168,7 +169,8 @@ void FXFlyingFist(centity_t *owner, int type, int flags, vec3_t origin)
 ///////////////////////////////////////
 // From CreateEffect FX_WEAPON_FLYINGFISTEXPLODE
 ///////////////////////////////////////
-void FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXFlyingFistExplode(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	vec3_t			dir, mins;
 	client_entity_t	*SmokePuff;

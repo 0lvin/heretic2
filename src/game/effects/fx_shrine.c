@@ -442,7 +442,7 @@ Health Lightning routines
 */
 
 // recursively called to create the lightning effect
-void
+static void
 FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int rand_chance, float stop_height)
 {
 	client_particle_t		*ce;
@@ -539,7 +539,7 @@ FXLightningSplit(struct client_entity_s *self, vec3_t org, vec3_t dir, int rand_
 }
 
 // create the lightning lines
-void
+static void
 FXCreateLightning(struct client_entity_s *self, centity_t *owner)
 {
 	vec3_t					org;

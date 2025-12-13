@@ -21,12 +21,14 @@
 
 static struct model_s *blue_model;
 
-void PreCacheBluering()
+void
+PreCacheBluering()
 {
 	blue_model = fxi.RegisterModel("sprites/spells/bluering.sp2");
 }
 
-void FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	client_entity_t		*flameitem;
 	float				curAng;

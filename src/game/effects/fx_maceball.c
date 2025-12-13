@@ -15,9 +15,7 @@
 #include "utilities.h"
 #include "motion.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
-#include "fx_debris.h"
 
 #define BALL_RADIUS		0.15
 #define NUM_RIPPER_PUFFS	12
@@ -28,7 +26,8 @@
 
 #define	NUM_MACE_MODELS		7
 static struct model_s *mace_models[NUM_MACE_MODELS];
-void PreCacheMaceball()
+void
+PreCacheMaceball()
 {
 	mace_models[0] = fxi.RegisterModel("sprites/spells/maceball.sp2");
 	mace_models[1] = fxi.RegisterModel("sprites/fx/halo.sp2");
@@ -56,7 +55,8 @@ FXMaceballThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -78,7 +78,8 @@ void FXMaceball(centity_t *owner, int type, int flags, vec3_t origin)
 #define BOUNCE_LIFETIME		500
 #define BOUNCE_PART_SPEED	40.0
 
-void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*ring, *hitfx;
 	client_particle_t	*spark;
@@ -180,7 +181,8 @@ void FXMaceballBounce(centity_t *owner, int type, int flags, vec3_t origin)
 // ****************************************************************************
 
 #define MACEBALL_EXP_VEL	128.0
-void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	vec3_t			dir;
 	client_entity_t	*explosion;
@@ -259,7 +261,8 @@ FXRipperExplodeBallThink(struct client_entity_s *self, centity_t *owner)
 }
 
 // Create Effect FX_WEAPON_RIPPEREXPLODE
-void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*ripper;
 	paletteRGBA_t	color = {{{255, 255, 255, 255}}};

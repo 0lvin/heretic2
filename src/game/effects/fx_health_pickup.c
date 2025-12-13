@@ -19,7 +19,8 @@
 #define BOB_HEIGHT		6.0
 #define HEALTH_RADIUS	6.0
 
-void PreCacheHealth()
+void
+PreCacheHealth()
 {
 }
 
@@ -62,7 +63,8 @@ FXHealthPickupThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXHealthPickup(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXHealthPickup(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*ce;
 

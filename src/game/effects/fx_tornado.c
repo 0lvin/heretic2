@@ -17,7 +17,6 @@
 #include "utilities.h"
 #include "ce_dlight.h"
 #include "../header/g_playstats.h"
-#include "q_sprite.h"
 
 #define TORN_RADIUS			80
 #define ACCEL_SCALE			3.1
@@ -27,7 +26,8 @@
 
 static struct model_s *torn_models[NUM_TORN_MODELS];
 
-void PreCacheTorn()
+void
+PreCacheTorn()
 {
 	torn_models[0] = fxi.RegisterModel("Sprites/fx/haloblue.sp2");
 	torn_models[1] = fxi.RegisterModel("Sprites/Spells/flyingfist.sp2");
@@ -41,7 +41,8 @@ void PreCacheTorn()
 #define BALL_EX_PART_NUM	20
 
 // make the tornade ball spark
-static qboolean FXTornadoBallThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXTornadoBallThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t		*ce;
 	paletteRGBA_t			color;
@@ -86,7 +87,8 @@ static qboolean FXTornadoBallThink(struct client_entity_s *self, centity_t *owne
 }
 
 // create the ball that gets tossed out of Crovus when he casts the tornado spell
-void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*glow;
 
@@ -103,7 +105,8 @@ void FXTornadoBall(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, glow);
 }
 
-static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 {
 	client_particle_t	*ce;
 	paletteRGBA_t		color;
@@ -169,7 +172,8 @@ static qboolean FXTornadoThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	client_entity_t		*glow;
 	paletteRGBA_t		color;
@@ -199,7 +203,8 @@ void FXTornado(centity_t *owner,int type,int flags,vec3_t origin)
 }
 
 // explode the ball in the middle of the shrine
-void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_particle_t	*ce;
 	client_entity_t		*burst;

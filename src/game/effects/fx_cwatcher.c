@@ -14,7 +14,6 @@
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "q_sprite.h"
 #include "ce_dlight.h"
 #include "../header/g_playstats.h"
 
@@ -41,7 +40,8 @@ enum cwatcher_effect_id_s
 
 static struct model_s *cwmodels[NUM_CW_MODELS];
 
-void PreCacheCWModels()
+void
+PreCacheCWModels()
 {
 	cwmodels[CWM_BEAM] = fxi.RegisterModel("sprites/fx/segment_trail_wt.sp2");
 	cwmodels[CWM_BEAM_HALO]  = fxi.RegisterModel("sprites/fx/halo.sp2");
@@ -52,7 +52,8 @@ void PreCacheCWModels()
 	cwmodels[CWM_STAR_SPARK] = fxi.RegisterModel("Sprites/spells/spark_ind.sp2");
 }
 
-static qboolean FXCWBeamUpdate(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXCWBeamUpdate(struct client_entity_s *self, centity_t *owner)
 {
 	client_entity_t		*spawner;
 	vec3_t				vel = {0, 0, 1};
@@ -106,7 +107,8 @@ static qboolean FXCWBeamUpdate(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-static qboolean FXCWBeamThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXCWBeamThink(struct client_entity_s *self, centity_t *owner)
 {
 	float scale;
 
@@ -121,7 +123,8 @@ static qboolean FXCWBeamThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-static qboolean FXCWBeamThink2(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXCWBeamThink2(struct client_entity_s *self, centity_t *owner)
 {
 	float scale;
 
@@ -136,7 +139,8 @@ static qboolean FXCWBeamThink2(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-static qboolean FXCWStarThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXCWStarThink(struct client_entity_s *self, centity_t *owner)
 {
 	float scale;
 
@@ -146,7 +150,8 @@ static qboolean FXCWStarThink(struct client_entity_s *self, centity_t *owner)
 	return true;
 }
 
-void FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXCWatcherEffects(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*spawner;
 	paletteRGBA_t		light = {{{ 160, 70, 240, 255 }}},

@@ -14,7 +14,6 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "fx_debris.h"
 #include "utilities.h"
 #include "../header/g_playstats.h"
 
@@ -22,7 +21,8 @@
 
 static struct model_s *meteor_models[NUM_METEOR_MODELS];
 
-void PreCacheMeteor()
+void
+PreCacheMeteor()
 {
 	meteor_models[0] = fxi.RegisterModel("models/spells/meteorbarrier/tris.fm");
 }
@@ -35,7 +35,8 @@ void PreCacheMeteor()
 #define METEOR_ROLL_SPEED		13.0
 #define METEOR_YAW_SPEED		10.0
 
-static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXMeteorBarriertrailThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	vec3_t			org, delta;
@@ -94,7 +95,8 @@ static qboolean FXMeteorBarriertrailThink(struct client_entity_s *self, centity_
 // Putting the angular velocity in here saves 3 bytes of net traffic
 // per meteor per server frame
 
-qboolean MeteorAddToView(client_entity_t *current, centity_t *owner)
+static qboolean
+MeteorAddToView(client_entity_t *current, centity_t *owner)
 {
 	float	roll, yaw;
 	int		d_time;
@@ -115,7 +117,8 @@ qboolean MeteorAddToView(client_entity_t *current, centity_t *owner)
 	return true;
 }
 
-void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*trail;
 	paletteRGBA_t	lightcolor = {{{63, 255, 77, 255}}};
@@ -135,7 +138,8 @@ void FXMeteorBarrier(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, trail);
 }
 
-void FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t	*trail;
 	paletteRGBA_t	lightcolor = {{{63, 255, 77, 255}}};
@@ -156,7 +160,8 @@ void FXMeteorBarrierTravel(centity_t *owner, int type, int flags, vec3_t origin)
 
 // -------------------------------------------------------
 
-void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			dir, mins;
 	int				i;

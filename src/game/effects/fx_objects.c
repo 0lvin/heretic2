@@ -13,7 +13,6 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "fx_debris.h"
 
 #define BARREL_EXPLODE_SPEED	80.0
 #define BARREL_EXPLODE_BALLS	3
@@ -26,21 +25,22 @@
 
 static struct model_s *obj_models[NUM_OBJECT_MODELS];
 
-void PreCacheObjects()
+void
+PreCacheObjects()
 {
 	obj_models[0] = fxi.RegisterModel("models/fx/explosion/outer/tris.fm");
 	obj_models[1] = fxi.RegisterModel("sprites/fx/halo.sp2");
 }
 
 extern qboolean FXPhoenixExplosionBallThink(client_entity_t *explosion, centity_t *owner);
-extern qboolean FXPhoenixExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner);
 extern client_entity_t *CreatePhoenixSmallExplosion(vec3_t ballorigin);
 
 // ************************************************************************************************
 // FXBarrelExplode
 // ************************************************************************************************
 // Create Effect FX_BARREL_EXPLODE
-void FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXBarrelExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*explosion, *subexplosion;
 	paletteRGBA_t		color;

@@ -7,12 +7,13 @@
 #include "ce_defaultmessagehandler.h"
 #include "client_entities.h"
 
-CE_MsgReceiver_t CE_DefaultMessageReceivers[NUM_MESSAGES] =
+static CE_MsgReceiver_t CE_DefaultMessageReceivers[NUM_MESSAGES] =
 {
 	NULL,
 };
 
-void CE_DefaultMsgHandler(client_entity_t *self, CE_Message_t *msg)
+void
+CE_DefaultMsgHandler(client_entity_t *self, CE_Message_t *msg)
 {
 	CE_MsgReceiver_t receiver;
 

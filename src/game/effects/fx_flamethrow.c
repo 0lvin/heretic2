@@ -22,7 +22,8 @@
 #define FIRE_SCALE 			14.0
 #define FIRE_ACCEL			32.0
 
-qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
+qboolean
+FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*flame;
 	client_entity_t		*light;
@@ -81,7 +82,8 @@ qboolean FXFlamethrower_trail(client_entity_t *self, centity_t *owner)
 	return true;
 }
 
-static qboolean FXFlamethrower_steam_trail(client_entity_t *self, centity_t *owner)
+static qboolean
+FXFlamethrower_steam_trail(client_entity_t *self, centity_t *owner)
 {
 	client_particle_t	*flame;
 	paletteRGBA_t		color;
@@ -135,7 +137,8 @@ static qboolean FXFlamethrower_steam_trail(client_entity_t *self, centity_t *own
 }
 
 // create the initial fire entity that we can attach all the particles to
-void FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXFlamethrower(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	float			distance;
 	vec3_t			dir;

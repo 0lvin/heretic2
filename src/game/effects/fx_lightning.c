@@ -15,7 +15,6 @@
 #include "utilities.h"
 #include "motion.h"
 #include "ce_dlight.h"
-#include "q_sprite.h"
 #include "../header/g_playstats.h"
 
 #define LIGHTNING_WIDTH		6.0
@@ -39,7 +38,8 @@
 #define	NUM_LIGHTNING_MODELS	7
 static struct model_s *lightning_models[NUM_LIGHTNING_MODELS];
 
-void PreCacheLightning()
+void
+PreCacheLightning()
 {
 	lightning_models[LIGHTNING_TYPE_BLUE] = fxi.RegisterModel("sprites/fx/lightning.sp2");
 	lightning_models[LIGHTNING_TYPE_RED] = fxi.RegisterModel("sprites/fx/rlightning.sp2");
@@ -52,7 +52,8 @@ void PreCacheLightning()
 
 // --------------------------------------------------------------
 
-client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t end, float radius)
+client_entity_t *
+MakeLightningPiece(int type, float width, vec3_t start, vec3_t end, float radius)
 {
 	client_entity_t *lightning;
 	float scale;
@@ -101,36 +102,9 @@ client_entity_t *MakeLightningPiece(int type, float width, vec3_t start, vec3_t 
 	return(lightning);
 }
 
-// Occasional lightning bolt strikes inside
-void DoLightning(vec3_t groundpos, vec3_t airpos)
-{
-	vec3_t curpos, lastpos, top, bottom, refpoint, diffpos, rand;
-	float scale;
-	int i;
-
-	VectorSet(top, flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), 0);
-	VectorAdd(airpos, top, top);
-	VectorSet(bottom, flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), flrand(-RED_RAIN_RADIUS, RED_RAIN_RADIUS), 0);
-	VectorAdd(groundpos, bottom, bottom);
-
-	VectorSubtract(top, bottom, diffpos);
-	VectorScale(diffpos, 0.2, diffpos);
-	scale = (airpos[2] - groundpos[2]) / 10.0;
-
-	VectorCopy(bottom, lastpos);
-	VectorCopy(bottom, refpoint);
-	for (i=0; i<5; i++)
-	{
-		VectorAdd(refpoint, diffpos, refpoint);
-		VectorSet(rand, flrand(-scale, scale), flrand(-scale, scale), flrand(-scale, scale));
-		VectorAdd(refpoint, rand, curpos);
-		MakeLightningPiece(LIGHTNING_TYPE_RED, LIGHTNING_WIDTH, curpos, lastpos, scale);
-		VectorCopy(curpos, lastpos);
-	}
-}
-
 // Directed lightning bolt
-void LightningBolt(int model, float width, vec3_t startpos, vec3_t endpos)
+static void
+LightningBolt(int model, float width, vec3_t startpos, vec3_t endpos)
 {
 	vec3_t curpos, lastpos, refpoint, diffpos, rand;
 	vec3_t fwd, right, up;
@@ -187,7 +161,8 @@ FXLightningThink(client_entity_t *thinker, centity_t *owner)
 }
 
 // This is from creating the effect FX_LIGHTNING
-void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	vec3_t				target, diffpos;
 	byte				width, duration;
@@ -224,7 +199,8 @@ void FXLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 }
 
 // This is from creating the effect FX_POWER_LIGHTNING
-void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
+void
+FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 {
 	vec3_t				target, diffpos;
 	byte				width;

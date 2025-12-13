@@ -23,7 +23,8 @@
 #define HANDFIRE_SCALE	8.0
 #define HANDFIRE_ACCEL	32.0
 
-static qboolean FXFireHandsThink(struct client_entity_s *self, centity_t *owner)
+static qboolean
+FXFireHandsThink(struct client_entity_s *self, centity_t *owner)
 {
 
 	client_particle_t	*flame;
@@ -96,7 +97,8 @@ static qboolean FXFireHandsThink(struct client_entity_s *self, centity_t *owner)
 // ------------
 // ************************************************************************************************
 
-void FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
+void
+FXFireHands(centity_t *owner,int type,int flags,vec3_t origin)
 {
 	short			refpoints;
 	client_entity_t	*trail;

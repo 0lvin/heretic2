@@ -30,5 +30,6 @@ void QPostMessage(struct client_entity_s *to, CE_MsgID_t ID, char *format, ...);
 int ParseMsgParms(CE_Message_t *_this, char *format, ...);
 void ProcessMessages(struct client_entity_s *_this);
 void ClearMessageQueue(struct client_entity_s *_this);
+void CE_DefaultMsgHandler(struct client_entity_s *self, CE_Message_t *msg);
 
 #endif

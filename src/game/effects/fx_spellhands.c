@@ -33,13 +33,15 @@ typedef struct
 
 struct model_s *hands_models[NUM_HAND_MODELS];
 
-void PreCacheHands()
+void
+PreCacheHands()
 {
 }
 
 // --------------------------------------------------------------
 
-static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner)
+static qboolean
+FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner)
 {
 	int				part_type;
 	vec3_t			Trailend,Trailstart;
@@ -138,7 +140,8 @@ static qboolean FXSpellHandsThink(struct client_entity_s *Self, centity_t *Owner
 // ------------
 // ************************************************************************************************
 
-void FXSpellHands(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXSpellHands(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	short			Refpoints;
 	client_entity_t	*Trail;

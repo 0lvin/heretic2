@@ -28,7 +28,9 @@
 
 #define	NUM_MORPH_MODELS	4
 static struct model_s *morph_models[NUM_MORPH_MODELS];
-void PreCacheMorph()
+
+void
+PreCacheMorph()
 {
 	morph_models[0] = fxi.RegisterModel("sprites/lens/halo1.sp2");
 	morph_models[1] = fxi.RegisterModel("models/objects/eggs/chickenegg/tris.fm");
@@ -108,7 +110,8 @@ FXMorphMissileThink(client_entity_t *missile, centity_t *owner)
 #define ARROW_SPEED			400.0F
 
 // we reflected, create a new missile
-void FXMorphMissile(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMorphMissile(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*missile;
 	byte				blah,pitch;
@@ -141,7 +144,8 @@ void FXMorphMissile(centity_t *owner, int type, int flags, vec3_t origin)
 }
 
 // initial entry from server - create first object - _this has the light on it - but no trail yet
-void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*missile;
 	client_entity_t		*glow;
@@ -207,7 +211,8 @@ void FXMorphMissile_initial(centity_t *owner, int type, int flags, vec3_t origin
 
 // we hit a wall or an object
 #define SMOKE_SPEED 160
-void FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMorphExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*dlight;
 	paletteRGBA_t		color;
@@ -341,7 +346,8 @@ FXFeatherThink(client_entity_t *self, centity_t *owner)
 }
 
 // make the feathers zip out of the carcess and float down
-void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	client_entity_t		*feather;
 	int i;

@@ -13,7 +13,6 @@
 #include "../common/fx.h"
 #include "ce_dlight.h"
 #include "../common/h2rand.h"
-#include "q_sprite.h"
 #include "utilities.h"
 #include "../header/g_playstats.h"
 
@@ -25,7 +24,8 @@ static qboolean FXMagicMissileModelThink2(struct client_entity_s *Self, centity_
 
 static struct model_s *array_models[NUM_MISSILE_MODELS];
 
-void PreCacheArray()
+void
+PreCacheArray()
 {
 	array_models[0] = fxi.RegisterModel("sprites/spells/halo_ind.sp2");
 	array_models[1] = fxi.RegisterModel("Sprites/spells/spark_ind.sp2");
@@ -143,7 +143,8 @@ FXMagicMissileModelThink2(struct client_entity_s *Self, centity_t *Owner)
 // --------------
 // ************************************************************************************************
 
-void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
+void
+FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 {
 	vec3_t			ang;
 	client_entity_t	*Missile;
@@ -192,7 +193,8 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 #define NUM_ARRAY_EXPLODE_PARTS		12
 #define ARRAY_SCALE					1.0
 #define ARRAY_EXPLODE_SPEED			200
-void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			dir;
 	client_entity_t	*smokepuff;
@@ -253,7 +255,8 @@ void FXMagicMissileExplode(centity_t *owner, int type, int flags, vec3_t origin)
 #define BLAST_GRAVITY -32.0
 
 // Create Effect FX_WEAPON_BLAST
-void FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXBlast(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t endpos, curpos;
 	vec3_t unit, back;

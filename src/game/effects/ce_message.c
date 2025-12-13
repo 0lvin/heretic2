@@ -16,7 +16,8 @@
 
 static ResourceManager_t MsgMngr;
 
-void InitMsgMngr()
+void
+InitMsgMngr()
 {
 	const int MESSAGE_BLOCK_SIZE = 256;
 
@@ -28,7 +29,8 @@ void ReleaseMsgMngr()
 	ResMngr_Des(&MsgMngr);
 }
 
-void QPostMessage(client_entity_t *to, CE_MsgID_t ID, char *format, ...)
+void
+QPostMessage(client_entity_t *to, CE_MsgID_t ID, char *format, ...)
 {
 	CE_Message_t *newMsg;
 	SinglyLinkedList_t *parms;
@@ -63,7 +65,8 @@ void QPostMessage(client_entity_t *to, CE_MsgID_t ID, char *format, ...)
 	QueueMessage(&to->msgQ, newMsg);
 }
 
-int ParseMsgParms(CE_Message_t *_this, char *format, ...)
+int
+ParseMsgParms(CE_Message_t *_this, char *format, ...)
 {
 	SinglyLinkedList_t *parms;
 	va_list marker;
@@ -84,7 +87,8 @@ int ParseMsgParms(CE_Message_t *_this, char *format, ...)
 	return args_filled;
 }
 
-void ProcessMessages(client_entity_t *_this)
+void
+ProcessMessages(client_entity_t *_this)
 {
 	SinglyLinkedList_t *msgs;
 	SinglyLinkedList_t *parms;
@@ -114,7 +118,8 @@ void ProcessMessages(client_entity_t *_this)
 	}
 }
 
-void ClearMessageQueue(client_entity_t *_this)
+void
+ClearMessageQueue(client_entity_t *_this)
 {
 	SinglyLinkedList_t *msgs;
 	SinglyLinkedList_t *parms;

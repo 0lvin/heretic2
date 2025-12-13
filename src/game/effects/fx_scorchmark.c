@@ -18,7 +18,8 @@
 
 static struct model_s *scorch_models[NUM_SCORCH_MODELS];
 
-void PreCacheScorch()
+void
+PreCacheScorch()
 {
 	scorch_models[0] = fxi.RegisterModel("sprites/fx/scorchmark.sp2");
 }
@@ -60,7 +61,8 @@ GetTruePlane(vec3_t origin, vec3_t direction)
 	return false;
 }
 
-void FXClientScorchmark(vec3_t origin, vec3_t dir)
+void
+FXClientScorchmark(vec3_t origin, vec3_t dir)
 {
 	client_entity_t	*scorchmark;
 
@@ -85,7 +87,8 @@ void FXClientScorchmark(vec3_t origin, vec3_t dir)
 	}
 }
 
-void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
+void
+FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 {
 	vec3_t			dir;
 	client_entity_t	*scorchmark;

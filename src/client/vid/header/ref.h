@@ -54,6 +54,12 @@
 
 #define ENTITY_FLAGS	68
 
+typedef enum spritetype_s
+{
+	SPRITE_DYNAMIC,		// sprite with 4 variable verts (x,y scale and s,t); texture must be square
+	SPRITE_LINE,		// Long linear semi-oriented sprite with two verts (xyz start and end) and a width
+} spritetype_t;
+
 typedef struct entity_s {
 	struct model_s		*model; /* opaque type outside refresh */
 	float				angles[3];
@@ -82,19 +88,18 @@ typedef struct entity_s {
 	/* Heretic 2 */
 	float				depth;					// distance to the camera origin, gets set every
 												// frame by AddEffectsToView
-
-	int					spriteType;
+	spritetype_t		spriteType;
 
 	// info for fmodels and bmodels
-	int					swapFrame;			// frame to swap clustered verts in for
-	int					oldSwapFrame;			// previous frame to swap clustered verts in for
+	int		swapFrame;			// frame to swap clustered verts in for
+	int		oldSwapFrame;			// previous frame to swap clustered verts in for
 
 	// info for dynamic sprites
-	float				verts[4][4];			// verts for dynamic sprites
-												// 0 x
-												// 1 y
-												// 2 s
-												// 3 t
+	float	verts[4][4];			// verts for dynamic sprites
+									// 0 x
+									// 1 y
+									// 2 s
+									// 3 t
 	// info for line sprites
 	float				startpos[3];
 	float				endpos[3];
