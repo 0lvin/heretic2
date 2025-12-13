@@ -13,7 +13,6 @@
 #include "../common/angles.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "motion.h"
 #include "../common/reference.h"
 #include "ce_dlight.h"
 

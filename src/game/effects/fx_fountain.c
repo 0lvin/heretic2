@@ -12,7 +12,6 @@
 #include "../common/angles.h"
 #include "../common/fx.h"
 #include "../common/h2rand.h"
-#include "motion.h"
 #include "utilities.h"
 #include "../common/matrix.h"
 #include "../header/g_playstats.h"

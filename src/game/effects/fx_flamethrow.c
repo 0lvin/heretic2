@@ -13,7 +13,6 @@
 #include "../common/fx.h"
 #include "utilities.h"
 #include "../common/h2rand.h"
-#include "motion.h"
 #include "../header/g_playstats.h"
 #include "ce_dlight.h"
 

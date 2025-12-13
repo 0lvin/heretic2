@@ -13,7 +13,6 @@
 #include "../common/fx.h"
 #include "../common/h2rand.h"
 #include "utilities.h"
-#include "motion.h"
 
 #define	BUBBLE_MAX_DURATION	2.0F
 #define BUBBLE_RADIUS			2.0F

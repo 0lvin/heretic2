@@ -11,7 +11,6 @@
 #include "../common/effectflags.h"
 #include "particle.h"
 #include "../common/h2rand.h"
-#include "motion.h"
 #include "utilities.h"
 #include "../common/fx.h"
 

@@ -685,7 +685,6 @@ set(Effects-Source
 	${EFFECTS_SRC_DIR}/generic_character_effects.c
 	${EFFECTS_SRC_DIR}/generic_weapon_effects.c
 	${EFFECTS_SRC_DIR}/main.c
-	${EFFECTS_SRC_DIR}/motion.c
 	${EFFECTS_SRC_DIR}/particle.c
 	${EFFECTS_SRC_DIR}/player_effects.c
 	${EFFECTS_SRC_DIR}/utilities.c
@@ -697,7 +696,6 @@ set(Effects-Header
 	${EFFECTS_SRC_DIR}/ce_message.h
 	${EFFECTS_SRC_DIR}/client_effects.h
 	${EFFECTS_SRC_DIR}/client_entities.h
-	${EFFECTS_SRC_DIR}/motion.h
 	${EFFECTS_SRC_DIR}/particle.h
 	${EFFECTS_SRC_DIR}/utilities.h
 	)

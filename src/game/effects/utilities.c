@@ -10,7 +10,6 @@
 #include "../common/h2rand.h"
 #include "../common/matrix.h"
 #include "../common/reference.h"
-#include "motion.h"
 #include "particle.h"
 #include "ce_dlight.h"
 #include "../header/g_playstats.h"
@@ -668,4 +667,27 @@ qboolean Vec3IsZeroEpsilon(vec3_t in)
 	return in[0] < 0.00050000002 && in[0] > -0.00050000002
 		&& in[1] < 0.00050000002 && in[1] > -0.00050000002
 		&& in[2] < 0.00050000002 && in[2] > 0.00050000002;
+}
+
+float
+GetDistanceOverTime(float a1, float a2, float a3)
+{
+	return a2 * a3 * a3 * 0.5 + a1 * a3;
+}
+
+void
+GetPositionOverTime(vec3_t a1, vec3_t a2, vec3_t a3, float a4, vec3_t a5)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		a5[i] = GetDistanceOverTime(a2[i], a3[i], a4) + a1[i];
+	}
+}
+
+void
+GetVelocityOverTime(vec3_t velocity, vec3_t accel, float time, vec3_t output)
+{
+	output[0] = time * accel[0] + velocity[0];
+	output[1] = time * accel[1] + velocity[1];
+	output[2] = time * accel[2] + velocity[2];
 }
