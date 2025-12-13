@@ -653,7 +653,6 @@ set(Effects-Source
 	${EFFECTS_SRC_DIR}/fx_pespell.c
 	${EFFECTS_SRC_DIR}/fx_phoenix.c
 	${EFFECTS_SRC_DIR}/fx_pickup.c
-	${EFFECTS_SRC_DIR}/fx_pickuppuzzle.c
 	${EFFECTS_SRC_DIR}/fx_plaguemistexplode.c
 	${EFFECTS_SRC_DIR}/fx_plaguemist.c
 	${EFFECTS_SRC_DIR}/fx_portal.c

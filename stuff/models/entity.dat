@@ -655,25 +655,25 @@ item_mana_defensive_half|models/items/mana/half/tris.fm|1.0|1.0|1.0|general|-10.
 item_mana_offensive_full|models/items/mana/full/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Full Offensive Mana|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_mana_offensive_half|models/items/mana/half/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Half Offensive Mana|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_canyonkey|models/items/puzzles/hivekey/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Canyon key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_cloudkey|models/items/puzzles/cloudkey/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Cloud Fortress key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_cloudkey|models/items/puzzles/cloudkey/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Cloud Fortress key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_cog|models/items/puzzles/cog/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Cog|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_crystal|models/items/puzzles/crystalshard/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Andoria crystal|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_dungeonkey|models/items/puzzles/dungeonkey/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Dungeon key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_crystal|models/items/puzzles/crystalshard/tris.fm|1.75|1.75|1.75|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Andoria crystal|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_dungeonkey|models/items/puzzles/dungeonkey/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Dungeon key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_highpriestesskey|models/items/puzzles/hivekey/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|High Priestess key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_highpriestesssymbol|models/items/puzzles/hiveidol/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|High Priestess symbol|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_hive2amulet|models/items/puzzles/amulet/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hive amulet|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_hive2gem|models/items/puzzles/tcheckrikgem/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hive gem|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_hive2amulet|models/items/puzzles/amulet/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hive amulet|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_hive2gem|models/items/puzzles/tcheckrikgem/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hive gem|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_hive2spear|models/items/puzzles/spear/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hive spear|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_minecartwheel|models/items/puzzles/wheel/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Minecart wheel|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_ore|models/items/puzzles/oreunrefined/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Unrefined ore|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_minecartwheel|models/items/puzzles/wheel/tris.fm|1.75|1.75|1.75|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Minecart wheel|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_ore|models/items/puzzles/oreunrefined/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Unrefined ore|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_plazacontainer|models/items/puzzles/plazajug/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Andoria container|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_potion|models/items/puzzles/potion/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Healer potion|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_refinedore|models/items/puzzles/orerefined/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Refined ore|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_shield|models/items/puzzles/shield/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Ssithra shield|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_potion|models/items/puzzles/potion/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Healer potion|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_refinedore|models/items/puzzles/orerefined/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Refined ore|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_shield|models/items/puzzles/shield/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Ssithra shield|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_slumcontainer|models/items/puzzles/jugfull/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Andoria container|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_tavernkey|models/items/puzzles/townkey/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Tavern key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_tavernkey|models/items/puzzles/townkey/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Tavern key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_puzzle_tome|models/items/puzzles/book/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Tome|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_puzzle_townkey|models/items/puzzles/townkey/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Town key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_puzzle_townkey|models/items/puzzles/townkey/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Town key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_spitter||1.0|1.0|1.0|general|-4.0|-4.0|-4.0|4.0|4.0|4.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Triggered item spawner|0|0.5|0.8|0|0|0|0|0|0|0|none|0
 item_weapon_firewall|models/items/weapons/firewall/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Firewall|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_weapon_hellstaff|models/items/weapons/hellstaff/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hell Staff|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0

@@ -26,7 +26,6 @@ ClientEffect_t clientEffectSpawners[NUM_FX] =
 	{ FXHealthPickup,					PreCacheHealth,			NULL		}, // FX_PICKUP_HEALTH
 	{ FXWeaponPickup,					PreCacheItemWeapons,	"b"			}, // FX_PICKUP_WEAPON
 	{ FXDefensePickup,					PreCacheItemDefense,	"b"			}, // FX_PICKUP_DEFENSE
-	{ FXPuzzlePickup,					PreCachePuzzleItems,	"bv"		}, // FX_PICKUP_PUZZLE
 	{ FXAmmoPickup,						PreCacheItemAmmo,		"b"			}, // FX_PICKUP_AMMO
 	{ FXFlyingFist,						PreCacheFist,			"t"			}, // FX_WEAPON_FLYINGFIST
 	{ FXFlyingFistExplode,				NULL,					"d"			}, // FX_WEAPON_FLYINGFISTEXPLODE

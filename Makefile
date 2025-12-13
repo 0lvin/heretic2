@@ -1439,7 +1439,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/fx_pespell.o \
 	src/game/effects/fx_phoenix.o \
 	src/game/effects/fx_pickup.o \
-	src/game/effects/fx_pickuppuzzle.o \
 	src/game/effects/fx_plaguemistexplode.o \
 	src/game/effects/fx_plaguemist.o \
 	src/game/effects/fx_portal.o \

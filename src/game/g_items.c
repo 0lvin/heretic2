@@ -2292,11 +2292,7 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
 	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
 		return;
 
-	if (ent->item->flags & IT_PUZZLE)
-	{
-		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_PUZZLE, CEF_BROADCAST, ent->s.origin, "bv", ent->item->tag,ent->s.angles);
-	}
-	else if (ent->item->flags & IT_WEAPON)
+	if (ent->item->flags & IT_WEAPON)
 	{
 		ent->PersistantCFX = gi.CreatePersistantEffect(ent, FX_PICKUP_WEAPON, CEF_BROADCAST, ent->s.origin, "b", ent->item->tag);
 	}
@@ -2649,6 +2645,15 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	ent->s.effects = item->world_model_flags;
 	ent->s.renderfx = RF_GLOW | RF_TRANSLUCENT;
 	ent->s.effects |= EF_ALWAYS_ADD_EFFECTS;
+
+	if (item->tag == ITEM_TAVERNKEY)
+	{
+		ent->s.skinnum = 1;
+	}
+	else if (item->tag == ITEM_CANKEY)
+	{
+		ent->s.skinnum = 1;
+	}
 
 	if (item->flags & IT_WEAPON)
 	{
@@ -3590,7 +3595,7 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
 		NULL,		// world model (char *)
-		0,											// world model flags
+		EF_BOB,											// world model flags
 		NULL,									// view model
 		"icons/p_townkey.m8",						// Icon name (char *)
 		"Town Key",									// Pickup name (char *)
@@ -3623,22 +3628,22 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,			// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_cog.m8",							// Icon name (char *)
 		"Cog",										// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_COG,									// tag ?
-		NULL,									// precaches
+		NULL,										// precaches
 		GM_F_COG,									// pickup message
 		GM_NEED_COG,								// can`t use message
-		{-10, -10, -24},								// Bounding box mins
+		{-10, -10, -24},							// Bounding box mins
 		{10,  10,  20},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
@@ -3658,18 +3663,18 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
 		NULL,										// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_shield.m8",						// Icon name (char *)
 		"Defensive Shield",							// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_SHIELD,											// tag ?
-		NULL,									// precaches
+		ITEM_SHIELD,								// tag ?
+		NULL,										// precaches
 		GM_F_SHIELD,								// pickup message
 		GM_NEED_SHIELD,								// can`t use message
 		{-2, -6, -12},								// Bounding box mins
@@ -3691,23 +3696,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,		// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_potion.m8",						// Icon name (char *)
 		"Potion",									// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_POTION,											// tag ?
-		NULL,									// precaches
+		ITEM_POTION,								// tag ?
+		NULL,										// precaches
 		GM_F_POTION,								// pickup message
 		GM_NEED_POTION,								// can`t use message
-		{-3, -3, -10},									// Bounding box mins
-		{3,  3,  10},									// Bounding box maxs
+		{-3, -3, -10},								// Bounding box mins
+		{3,  3,  10},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3725,23 +3730,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_plazajug.m8",						// Icon name (char *)
 		"Container",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_CONT,											// tag ?
-		NULL,									// precaches
-		GM_F_CONT,										// pickup message
-		GM_NEED_CONT,										// can`t use message
-		{-6, -6, -8},									// Bounding box mins
-		{6,  6,  6},									// Bounding box maxs
+		ITEM_CONT,									// tag ?
+		NULL,										// precaches
+		GM_F_CONT,									// pickup message
+		GM_NEED_CONT,								// can`t use message
+		{-6, -6, -8},								// Bounding box mins
+		{6,  6,  6},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3760,18 +3765,18 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
 		NULL,										// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_jugfill.m8",						// Icon name (char *)
 		"Full Container",							// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_SLUMCONT,								// tag ?
-		NULL,									// precaches
+		NULL,										// precaches
 		GM_F_CONTFULL,								// pickup message
 		GM_NEED_CONTFULL,							// can`t use message
 		{-6, -6, -8},								// Bounding box mins
@@ -3793,23 +3798,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_crystal.m8",						// Icon name (char *)
 		"Crystal",									// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_CRYSTAL,											// tag ?
-		NULL,									// precaches
-		GM_F_CRYSTAL,										// pickup message
-		GM_NEED_CRYSTAL,										// can`t use message
-		PICKUP_MIN,							// Bounding box mins
-		PICKUP_MAX,							// Bounding box maxs
+		ITEM_CRYSTAL,								// tag ?
+		NULL,										// precaches
+		GM_F_CRYSTAL,								// pickup message
+		GM_NEED_CRYSTAL,							// can`t use message
+		PICKUP_MIN,									// Bounding box mins
+		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3827,23 +3832,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_canyonkey.m8",						// Icon name (char *)
 		"Canyon Key",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_CANKEY,											// tag ?
-		NULL,									// precaches
-		GM_F_CANYONKEY,										// pickup message
-		GM_NEED_CANYONKEY,										// can`t use message
-		PICKUP_MIN,							// Bounding box mins
-		PICKUP_MAX,							// Bounding box maxs
+		ITEM_CANKEY,								// tag ?
+		NULL,										// precaches
+		GM_F_CANYONKEY,								// pickup message
+		GM_NEED_CANYONKEY,							// can`t use message
+		PICKUP_MIN,									// Bounding box mins
+		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3861,23 +3866,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_tcheckrikbust.m8",					// Icon name (char *)
 		"Hive 2 Amulet",							// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_AMULET,											// tag ?
-		NULL,									// precaches
-		GM_F_AMULET,										// pickup message
-		GM_NEED_AMULET,										// can`t use message
-		PICKUP_MIN,							// Bounding box mins
-		PICKUP_MAX,							// Bounding box maxs
+		ITEM_AMULET,								// tag ?
+		NULL,										// precaches
+		GM_F_AMULET,								// pickup message
+		GM_NEED_AMULET,								// can`t use message
+		PICKUP_MIN,									// Bounding box mins
+		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3895,23 +3900,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
-		"icons/p_spear.m8",						// Icon name (char *)
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
+		"icons/p_spear.m8",							// Icon name (char *)
 		"Hive 2 Spear",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_SPEAR,											// tag ?
-		NULL,									// precaches
-		GM_F_SPEAR,										// pickup message
-		GM_NEED_SPEAR,										// can`t use message
-		PICKUP_MIN,							// Bounding box mins
-		PICKUP_MAX,							// Bounding box maxs
+		ITEM_SPEAR,									// tag ?
+		NULL,										// precaches
+		GM_F_SPEAR,									// pickup message
+		GM_NEED_SPEAR,								// can`t use message
+		PICKUP_MIN,									// Bounding box mins
+		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3930,20 +3935,20 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
 		NULL,										// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_tcheckrikgem.m8",					// Icon name (char *)
 		"Hive 2 Gem",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_GEM,											// tag ?
-		NULL,									// precaches
-		GM_F_GEM,										// pickup message
-		GM_NEED_GEM,										// can`t use message
+		ITEM_GEM,									// tag ?
+		NULL,										// precaches
+		GM_F_GEM,									// pickup message
+		GM_NEED_GEM,								// can`t use message
 		PICKUP_MIN,									// Bounding box mins
 		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
@@ -3963,21 +3968,21 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,		// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_wheel.m8",							// Icon name (char *)
 		"Minecart Wheel",							// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_WHEEL,									// tag ?
-		NULL,									// precaches
-		GM_F_CARTWHEEL,										// pickup message
-		GM_NEED_CARTWHEEL,										// can`t use message
+		NULL,										// precaches
+		GM_F_CARTWHEEL,								// pickup message
+		GM_NEED_CARTWHEEL,							// can`t use message
 		{-1,-6,-6},									// Bounding box mins
 		{1, 6, 6},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
@@ -3997,23 +4002,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
-		"icons/p_oreunrefined.m8",						// Icon name (char *)
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
+		"icons/p_oreunrefined.m8",					// Icon name (char *)
 		"Ore",										// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_ORE	,											// tag ?
-		NULL,									// precaches
-		GM_F_UNREFORE,										// pickup message
-		GM_NEED_UNREFORE,										// can`t use message
-		{-10,-10,-8},							// Bounding box mins
-		{10, 10, 8},							// Bounding box maxs
+		ITEM_ORE,									// tag ?
+		NULL,										// precaches
+		GM_F_UNREFORE,								// pickup message
+		GM_NEED_UNREFORE,							// can`t use message
+		{-10,-10,-8},								// Bounding box mins
+		{10, 10, 8},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -4031,19 +4036,19 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_orerefined.m8",					// Icon name (char *)
 		"Refined Ore",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_REF_ORE,								// tag ?
-		NULL,									// precaches
+		NULL,										// precaches
 		GM_F_REFORE,								// pickup message
 		GM_NEED_REFORE,								// can`t use message
 		{-3,-12,-2},								// Bounding box mins
@@ -4065,21 +4070,21 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_dungeonkey.m8",					// Icon name (char *)
 		"Dungeon Key",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_DUNKEY,								// tag ?
-		NULL,									// precaches
-		GM_F_DUNGEONKEY,										// pickup message
-		GM_NEED_DUNGEONKEY,										// can`t use message
+		NULL,										// precaches
+		GM_F_DUNGEONKEY,							// pickup message
+		GM_NEED_DUNGEONKEY,							// can`t use message
 		{-1,-18,-9},								// Bounding box mins
 		{1, 18, 9},									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
@@ -4099,21 +4104,21 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_cloudkey.m8",						// Icon name (char *)
 		"Cloud Key",								// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_CLOUDKEY,											// tag ?
-		NULL,									// precaches
-		GM_F_CLOUDKEY,										// pickup message
-		GM_NEED_CLOUDKEY,										// can`t use message
+		ITEM_CLOUDKEY,								// tag ?
+		NULL,										// precaches
+		GM_F_CLOUDKEY,								// pickup message
+		GM_NEED_CLOUDKEY,							// can`t use message
 		{-8, -8, -3},								// Bounding box mins
 		{8,  8,  3},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
@@ -4133,21 +4138,21 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_hivekey.m8",						// Icon name (char *)
 		"Key",										// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_HIVEKEY,											// tag ?
-		NULL,									// precaches
-		GM_F_HIGHKEY,										// pickup message
-		GM_NEED_HIGHKEY,										// can`t use message
+		ITEM_HIVEKEY,								// tag ?
+		NULL,										// precaches
+		GM_F_HIGHKEY,								// pickup message
+		GM_NEED_HIGHKEY,							// can`t use message
 		{-12,-12, -6},								// Bounding box mins
 		{12, 12,  6},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
@@ -4167,19 +4172,19 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_queenkey.m8",						// Icon name (char *)
 		"Symbol",									// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
-		ITEM_HPSYM,											// tag ?
-		NULL,									// precaches
+		ITEM_HPSYM,									// tag ?
+		NULL,										// precaches
 		GM_F_SYMBOL,								// pickup message
 		GM_NEED_SYMBOL,								// can`t use message
 		{-12,-12,-4},								// Bounding box mins
@@ -4201,23 +4206,23 @@ static const gitem_t gameitemlist[] = {
 		NULL,										// Drop	(f)
 		NULL,										// Think (f)
 		"player/picup.wav",							// Pickup sound (char *)
-		NULL,	// world model (char *)
-		0,											// world model flags
-		NULL,									// view model
+		NULL,										// world model (char *)
+		EF_BOB,										// world model flags
+		NULL,										// view model
 		"icons/p_tomepower.m8",						// Icon name (char *)
 		"Tome",										// Pickup name (char *)
 		0,											// Number of digits to display
 		0,											// Ammo/ammo use per shot
 		NULL,										// Ammo (char *)
 		IT_PUZZLE,									// flags
-		0,									// weapon model index
+		0,											// weapon model index
 		NULL,										// void * ?
 		ITEM_TOME,									// tag ?
-		NULL,									// precaches
+		NULL,										// precaches
 		GM_F_TOME,									// pickup message
 		GM_NEED_TOME,								// can`t use message
-		{-12,-12,-4},									// Bounding box mins
-		{12, 12, 4},									// Bounding box maxs
+		{-12,-12,-4},								// Bounding box mins
+		{12, 12, 4},								// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -4236,7 +4241,7 @@ static const gitem_t gameitemlist[] = {
 		NULL,									// Think (f)
 		"player/picup.wav",						// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,									// world model flags
 		NULL,									// view model
 		"icons/p_tavernkey.m8",					// Icon name (char *)
 		"Tavern Key",							// Pickup name (char *)
