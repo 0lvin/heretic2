@@ -200,4 +200,3 @@ void FXMeteorBarrierExplode(centity_t *owner, int type, int flags, vec3_t origin
 		AddParticleToList(smokepuff, ce);
 	}
 }
-// end

@@ -45,5 +45,3 @@ void FXPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(NULL, ce);
 }
-
-// end

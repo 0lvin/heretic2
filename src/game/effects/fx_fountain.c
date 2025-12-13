@@ -165,5 +165,3 @@ void FXFountain(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 
 	AddEffect(Owner, fountain);
 }
-
-// end

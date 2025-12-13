@@ -269,5 +269,3 @@ void E_Freelib(void);
 void RegisterModels(void); // jmarshall: function prototype misamtch
 
 #endif
-
-// end

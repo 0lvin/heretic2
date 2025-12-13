@@ -232,4 +232,3 @@ void FireSparks(centity_t *owner, int type, int flags, vec3_t origin, vec3_t dir
 	}
 	AddEffect(NULL, effect);
 }
-// end

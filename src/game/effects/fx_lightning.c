@@ -411,4 +411,3 @@ void FXPowerLightning(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	if (Flags & CEF_FLAG8)	// Play sound flag
 		fxi.S_StartSound(target, -1, CHAN_WEAPON, fxi.S_RegisterSound("weapons/LightningPower.wav"), 1, ATTN_NORM, 0);
 }
-// end

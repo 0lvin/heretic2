@@ -112,5 +112,3 @@ void FXScorchmark(centity_t *owner, int type, int flags, vec3_t origin)
 		InsertInCircularList(scorchmark);
 	}
 }
-
-// end

@@ -105,5 +105,3 @@ void FXDust(centity_t *owner, int type, int flags, vec3_t origin)
 	ce->Update = FXDustThink;
 	AddEffect(NULL, ce);
 }
-
-// end

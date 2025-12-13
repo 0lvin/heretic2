@@ -397,4 +397,3 @@ void FXChickenExplode(centity_t *owner, int type, int flags, vec3_t origin)
 		}
 	}
 }
-// end

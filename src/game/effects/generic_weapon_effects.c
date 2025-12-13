@@ -121,5 +121,3 @@ void GenericExplosion2(centity_t *owner, int type, int flags, vec3_t origin)
 
 	CreateExplosionParticles(effect);
 }
-
-// end

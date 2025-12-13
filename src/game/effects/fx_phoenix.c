@@ -456,8 +456,6 @@ void FXPhoenixExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/PhoenixHit.wav"), 1, ATTN_NORM, 0);
 }
 
-// end
-
 #define PHOENIXPOWER_NUMTRAILS 11
 #define PHOENIXPOWER_PARTS_PER_TRAIL 8
 #define PHOENIXPOWER_RADIUS 72.0

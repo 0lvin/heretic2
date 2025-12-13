@@ -224,7 +224,4 @@ void FXplayertorch(centity_t *owner, int type, int flags, vec3_t origin)
 	effect->alpha = 0.7;
 	AddEffect(owner, effect);
 	effect->d_alpha = 0;
-
 }
-
-// end

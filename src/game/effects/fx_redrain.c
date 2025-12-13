@@ -463,5 +463,3 @@ void RedRainExplosion(vec3_t impactpos, vec3_t rainpos, int duration, qboolean p
 	else
 		fxi.S_StartSound(impactpos, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/RedRainHit.wav"), 1, ATTN_NORM, 0);
 }
-
-// end

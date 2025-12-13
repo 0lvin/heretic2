@@ -104,5 +104,3 @@ void FXTBEffects(centity_t *owner,int type,int flags, vec3_t org)
 			break;
 	}
 }
-
-// end

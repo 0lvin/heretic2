@@ -112,4 +112,3 @@ void FXPlagueMistExplode(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	else
 		AddEffect(NULL, spawner);
 }
-// end

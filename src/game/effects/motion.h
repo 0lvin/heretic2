@@ -13,4 +13,3 @@ void GetPositionOverTime(vec3_t, vec3_t, vec3_t, float, vec3_t);
 void GetVelocityOverTime(vec3_t velocity, vec3_t accel, float time, vec3_t output);
 
 #endif
-// end

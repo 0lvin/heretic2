@@ -220,7 +220,6 @@ void FXMaceballExplode(centity_t *owner,int type,int flags,vec3_t origin)
 	// Spawn some chunks too
 	FXDebris_SpawnChunks(type, flags & ~(CEF_FLAG6|CEF_FLAG7|CEF_FLAG8), origin, 5, MAT_METAL, dir, 80000.0f, mins, 1.5, false);
 }
-// end
 
 // ************************************************************************************************
 // FXRipperBall
@@ -437,4 +436,3 @@ void FXRipperExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 
 }
-// end

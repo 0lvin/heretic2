@@ -140,5 +140,3 @@ void FXSsithraArrowExplode(centity_t *owner, int type, int flags, vec3_t origin)
 //NOTE: depends on impacted surface & material and if exploding arrow
 	fxi.S_StartSound(origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/ramphit1.wav"), 1, ATTN_NORM, 0);
 }
-
-// end

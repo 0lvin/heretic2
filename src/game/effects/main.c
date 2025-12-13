@@ -790,8 +790,6 @@ AddServerEntities(frame_t *frame)
 	}
 }
 
-// end
-
 /*
 ==============
 GetRefAPI

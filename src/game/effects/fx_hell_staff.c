@@ -249,5 +249,3 @@ FXHellstaffPower(centity_t *owner,int type,int flags, vec3_t origin)
 	if	(flags & CEF_FLAG6)
 		HellLaserBurn(endpos, fwd, right, up);
 }
-
-// end

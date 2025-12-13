@@ -57,4 +57,3 @@ void FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	}
 	fxi.S_StartSound(Origin, -1, CHAN_AUTO, fxi.S_RegisterSound("weapons/Spell Blue Ring.wav"), 1, ATTN_NORM, 0);
 }
-// end

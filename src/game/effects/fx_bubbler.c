@@ -194,5 +194,3 @@ void FXRandWaterBubble(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	self->radius = 20;
 	AddEffect(Owner, self);
 }
-
-// end

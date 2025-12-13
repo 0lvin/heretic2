@@ -616,4 +616,3 @@ AddEntityToView(entity_t *ent)
 
 	return true;
 }
-// end

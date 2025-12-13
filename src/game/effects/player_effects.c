@@ -70,5 +70,3 @@ void FXPlayerPersistant(centity_t *owner, int type, int flags, vec3_t origin)
 
 	fxi.Cvar_SetValue("clfx_gravity", gravity);
 }
-
-// end

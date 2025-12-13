@@ -90,4 +90,3 @@ void FXMist(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(NULL, mist);
 }
-// end
