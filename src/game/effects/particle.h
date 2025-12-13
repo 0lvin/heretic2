@@ -141,10 +141,8 @@ typedef struct client_particle_s
 
 // Additional particle flags
 #define PFL_PULSE_ALPHA	0x10000000	// If the alpha delta's to above 255, it "bounces" back down towards zero.
-#define PFL_SOFT_MASK	0x20000000	// For defining single point particles in software (unused in gl - here to stop
-									// people using _this bit)
-#define PFL_ADDITIVE	0x40000000	// Particle is added to additive particle list
-#define PFL_NEARCULL	0x80000000	// Force near culling
+#define PFL_ADDITIVE	0x20000000	// Particle is added to additive particle list
+#define PFL_NEARCULL	0x40000000	// Force near culling
 
 #define CYL_RADIUS		0		// These are used in the vectors for origin, velocity and acceleration in particles
 #define CYL_YAW			1		//		that use Cylindrical coordinates.

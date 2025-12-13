@@ -79,7 +79,7 @@ void PlayerTeleportin(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, teleport_fx);
 
 	// Use single point particles if we are in software
-	particle_type = PART_4x4_WHITE | PFL_SOFT_MASK;
+	particle_type = PART_4x4_WHITE;
 
 	// spawn particles
 	count = GetScaledCount(NUM_TELE_PARTS, 0.3);
@@ -143,7 +143,7 @@ void PlayerTeleportout(centity_t *owner, int type, int flags, vec3_t origin)
 	AddEffect(owner, teleport_fx);
 
 	// Use single point particles if we are in software
-	particle_type = PART_4x4_WHITE | PFL_SOFT_MASK;
+	particle_type = PART_4x4_WHITE;
 
 	// spawn particles
 	count = GetScaledCount(NUM_TELE_PARTS, 0.3);

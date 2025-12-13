@@ -56,7 +56,6 @@ static qboolean FXShieldSparkThink(struct client_entity_s *shield, centity_t *ow
 			shield->SpawnInfo++;
 			if (shield->SpawnInfo & 1)
 			{
-				part |= PFL_SOFT_MASK;
 				color.c = 0xffff0000;
 			}
 		}

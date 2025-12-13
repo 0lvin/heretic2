@@ -1745,10 +1745,7 @@ FXUnderWaterWakeUpdate(struct client_entity_s *self, centity_t *owner)
 	num_parts = irand(3, 7);
 	for(i = 0; i < num_parts; i++)
 	{
-		if (r_detail->value > DETAIL_LOW)
-			p = ClientParticle_new(water_particle[irand(0, 5)], LightColor, irand(1000, 1500));
-		else
-			p = ClientParticle_new(water_particle[irand(0, 5)]|PFL_SOFT_MASK, LightColor, irand(1000, 1500));
+		p = ClientParticle_new(water_particle[irand(0, 5)], LightColor, irand(1000, 1500));
 
 		VectorSet(p->origin, crandk() * 8.0, crandk() * 8.0, crandk() * 4);
 		VectorAdd(self->r.origin, p->origin, p->origin);

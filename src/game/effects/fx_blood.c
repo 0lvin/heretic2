@@ -79,7 +79,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 						bpart = PART_4x4_GREENBLOOD1;
 					else
 						bpart = PART_4x4_BLOOD1;
-					drop = ClientParticle_new(bpart | PFL_SOFT_MASK, pal2, 650);
+					drop = ClientParticle_new(bpart, pal2, 650);
 				}
 				else
 				{
@@ -105,7 +105,7 @@ client_entity_t *DoBloodSplash(vec3_t loc, int amount, qboolean yellow_blood)
 						bpart = PART_8x8_GLOBBIT1;
 					else
 						bpart = PART_8x8_BLOOD;
-					drop = ClientParticle_new(bpart | PFL_SOFT_MASK, pal2, 650);
+					drop = ClientParticle_new(bpart, pal2, 650);
 				}
 				else
 				{
@@ -192,9 +192,9 @@ void DoBloodTrail(client_entity_t *spawner, int amount)
 				if (r_detail->value != DETAIL_HIGH)
 				{
 					if (yellow_blood)
-						drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)] | PFL_SOFT_MASK, pal2, 800);
+						drop = ClientParticle_new(InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)], pal2, 800);
 					else
-						drop = ClientParticle_new(PART_4x4_BLOOD1 | PFL_SOFT_MASK, pal2, 800);
+						drop = ClientParticle_new(PART_4x4_BLOOD1, pal2, 800);
 				}
 				else
 				{
@@ -281,7 +281,6 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = PART_4x4_BLOOD1;
-			p = ClientParticle_new(bpart|PFL_SOFT_MASK, color, 800);
 		}
 		else
 		{
@@ -289,8 +288,9 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = irand(PART_4x4_BLOOD1, PART_4x4_BLOOD2);
-			p = ClientParticle_new(bpart, color, 800);
 		}
+
+		p = ClientParticle_new(bpart, color, 800);
 		p->acceleration[2] = GetGravity() * 0.2;
 		VectorRandomCopy(self->endpos2, vel, 10.0F);
 		VectorScale(vel, flrand(2, 5), p->velocity);
@@ -300,11 +300,14 @@ qboolean BloodSplatSplishUpdate (client_entity_t *self, centity_t *owner)
 		AddParticleToList(self, p);
 		self->SpawnInfo--;
 	}
+
 	fxi.S_StartSound(p->origin, -1, CHAN_AUTO,
 		fxi.S_RegisterSound(va("ambient/waterdrop%c.wav", irand('1', '3'))), flrand(0.5, 0.8), ATTN_STATIC, 0);
 
 	if (!irand(0, 2))
+	{
 		VectorSet(self->startpos, crandk(), crandk(), 0);
+	}
 
 	self->Update = BloodSplatDripUpdate;
 	self->updateTime = irand(400, 1600);
@@ -339,7 +342,7 @@ qboolean BloodSplatDripUpdate (client_entity_t *self, centity_t *owner)
 				bpart = InsectBloodParticle[irand(0, NUM_INSECT_BLOOD_PARTICLES - 1)];
 			else
 				bpart = PART_4x4_BLOOD1;
-			p = ClientParticle_new(bpart | PFL_SOFT_MASK, color, 1600);
+			p = ClientParticle_new(bpart, color, 1600);
 		}
 		else
 		{

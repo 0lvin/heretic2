@@ -102,7 +102,7 @@ static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner
 	{
 		// spawn particles
 		color.a = 255;
-		p = ClientParticle_new(PART_4x4_WHITE | PFL_SOFT_MASK, color, 600);
+		p = ClientParticle_new(PART_4x4_WHITE, color, 600);
 
 		VectorSet(p->origin, crandk() * HEALTH_RADIUS, crandk() * HEALTH_RADIUS, 0.0);
 		VectorSet(p->velocity, 0.0, 0.0, flrand(20.0, 40.0));

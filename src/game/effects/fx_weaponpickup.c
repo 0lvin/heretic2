@@ -72,15 +72,6 @@ static qboolean FXWeaponPickupThink(struct client_entity_s *self, centity_t *own
 		return true;		// No effect
 	}
 
-	if (r_detail->value != DETAIL_HIGH)
-	{
-		part |= PFL_SOFT_MASK;
-	}
-	else
-	{
-		color.c = 0xffffffff;
-	}
-
 	spark = ClientParticle_new(part, color, 500);
 	spark->origin[0] = cos(self->SpawnData*4.0) * WP_PART_RADIUS;
 	spark->origin[1] = sin(self->SpawnData*4.0) * WP_PART_RADIUS;

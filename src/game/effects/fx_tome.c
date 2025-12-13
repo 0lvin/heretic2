@@ -89,9 +89,6 @@ qboolean FXHomeTomeAddToView(client_entity_t *tome, centity_t *owner)
 // update that Tome of power, so that more sparkles zip out of it, and the light casts pulses
 qboolean FXTomeThink(client_entity_t *tome, centity_t *owner)
 {
-	client_particle_t	*spark;
-	int					i;
-
 	// are we waiting for the shrine light to vanish ?
 	if (tome->SpawnInfo)
 	{

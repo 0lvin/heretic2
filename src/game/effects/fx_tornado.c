@@ -245,7 +245,7 @@ void FXTornadoBallExplode(centity_t *owner, int type, int flags, vec3_t origin)
 	for(i = 0; i < count; i++)
 	{
 		color.g = color.b = irand(0,255);
-		ce = ClientParticle_new(PART_4x4_WHITE | PFL_SOFT_MASK, color, 400);
+		ce = ClientParticle_new(PART_4x4_WHITE, color, 400);
 
 		VectorSet(ce->origin, 1.0,1.0,1.0);
 		VectorSet(angles, flrand(0, 6.28), flrand(0, 6.28), flrand(0, 6.28));

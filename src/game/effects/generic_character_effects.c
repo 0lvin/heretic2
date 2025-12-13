@@ -340,7 +340,7 @@ void CreateWaterParticles(client_entity_t *self)
 	// Scale number of particles by detail level
 	for(i = 0; i < (WATER_DENSITY * r_detail->value); i++)
 	{
-		p = ClientParticle_new(PART_4x4_WHITE | PFL_SOFT_MASK, self->color, 1000000);
+		p = ClientParticle_new(PART_4x4_WHITE, self->color, 1000000);
 
 		SetupWaterParticle(p, false);
 
@@ -469,10 +469,7 @@ void DoWake(client_entity_t *self, centity_t *owner, int refpt)
 
 	for(i = 0; i < num_parts; i++)
 	{
-		if (r_detail->value > DETAIL_LOW)
-			p = ClientParticle_new(wake_particle[irand(0, 5)], LightColor, irand(1000, 2000));
-		else
-			p = ClientParticle_new(wake_particle[irand(0, 5)]|PFL_SOFT_MASK, LightColor, irand(1000, 2000));
+		p = ClientParticle_new(wake_particle[irand(0, 5)], LightColor, irand(1000, 2000));
 
 		VectorSet(p->origin, crandk() * 4, crandk() * 4, crandk() * 4);
 		VectorAdd(handpt, p->origin, p->origin);
@@ -716,7 +713,7 @@ void FXCorpseRemove(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 		vel = flrand(vel1,vel1*2.5);
 		VectorSet(p->velocity, vel * cos(curAng), vel * sin(curAng), 0);
 		VectorScale(p->velocity, -0.3, p->acceleration);
-		p->type |= PFL_ADDITIVE | PFL_SOFT_MASK;
+		p->type |= PFL_ADDITIVE;
 
 		AddParticleToList(flameitem, p);
 
