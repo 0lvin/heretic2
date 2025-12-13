@@ -2654,6 +2654,10 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	{
 		ent->s.skinnum = 1;
 	}
+	else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
+	{
+		ent->s.skinnum = 1;
+	}
 
 	if (item->flags & IT_WEAPON)
 	{
@@ -2813,7 +2817,7 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_HellStaff,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,									// world model flags
 		NULL,									// view model
 		"icons/i_hell.m8",						// Icon name (char *)
 		"hell",									// Pickup name (char *)
@@ -2845,15 +2849,15 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_MagicMissileSpread,			// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
-		"icons/i_array.m8",				// Icon name (char *)
+		"icons/i_array.m8",						// Icon name (char *)
 		"array",								// Pickup name (char *)
 		0,										// Number of digits to display
 		AMMO_USE_MAGICMISSILE,					// Ammo/ammo use per shot
 		"Off-mana",								// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_MAGICMISSILE,				// tag ?
 		NULL,									// precaches
@@ -2877,15 +2881,15 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_RedRainBow,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,									// world model flags
 		NULL,									// view model
-		"icons/i_rain.m8",				// Icon name (char *)
+		"icons/i_rain.m8",						// Icon name (char *)
 		"rain",									// Pickup name (char *)
 		2,										// Number of digits to display
 		AMMO_USE_REDRAIN,						// Ammo/ammo use per shot
 		"Red-Rain-Arrows",						// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_REDRAINBOW,					// tag ?
 		NULL,									// precaches
@@ -2909,7 +2913,7 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_Firewall,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
 		"icons/i_fwall.m8",						// Icon name (char *)
 		"fwall",								// Pickup name (char *)
@@ -2917,7 +2921,7 @@ static const gitem_t gameitemlist[] = {
 		AMMO_USE_FIREWALL,						// Ammo/ammo use per shot
 		"Off-mana",								// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_FIREWALL,					// tag ?
 		NULL,									// precaches
@@ -2941,15 +2945,15 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_PhoenixBow,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,									// world model flags
 		NULL,									// view model
-		"icons/i_phoen.m8",					// Icon name (char *)
+		"icons/i_phoen.m8",						// Icon name (char *)
 		"phoen",								// Pickup name (char *)
 		2,										// Number of digits to display
 		AMMO_USE_PHOENIX,						// Ammo/ammo use per shot
 		"Phoenix-Arrows",						// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_PHOENIXBOW,					// tag ?
 		NULL,									// precaches
@@ -2973,15 +2977,15 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_SphereOfAnnihilation,		// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
-		"icons/i_sphere.m8",			// Icon name (char *)
+		"icons/i_sphere.m8",					// Icon name (char *)
 		"sphere",								// Pickup name (char *)
 		0,										// Number of digits to display
 		AMMO_USE_SPHERE,						// Ammo/ammo use per shot
 		"Off-mana",								// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_SPHEREOFANNIHILATION,		// tag ?
 		NULL,									// precaches
@@ -3005,15 +3009,15 @@ static const gitem_t gameitemlist[] = {
 		WeaponThink_Maceballs,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
-		"icons/i_mace.m8",				// Icon name (char *)
+		"icons/i_mace.m8",						// Icon name (char *)
 		"mace",									// Pickup name (char *)
 		0,										// Number of digits to display
 		AMMO_USE_MACEBALL,						// Ammo/ammo use per shot
 		"Off-mana",								// Ammo (char *)
 		IT_WEAPON | IT_OFFENSE,					// flags
-		0,									// weapon model index
+		0,										// weapon model index
 		NULL,									// void * ?
 		ITEM_WEAPON_MACEBALLS,					// tag ?
 		NULL,									// precaches

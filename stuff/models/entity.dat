@@ -676,12 +676,12 @@ item_puzzle_tome|models/items/puzzles/book/tris.fm|1.0|1.0|1.0|general|-10.0|-10
 item_puzzle_townkey|models/items/puzzles/townkey/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Town key|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_spitter||1.0|1.0|1.0|general|-4.0|-4.0|-4.0|4.0|4.0|4.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Triggered item spawner|0|0.5|0.8|0|0|0|0|0|0|0|none|0
 item_weapon_firewall|models/items/weapons/firewall/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Firewall|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_weapon_hellstaff|models/items/weapons/hellstaff/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hell Staff|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_weapon_maceballs|models/items/weapons/maceballs/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Maceballs|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_weapon_magicmissile|models/items/weapons/array/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Magic Missile|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_weapon_phoenixbow|models/items/weapons/bow/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Phoenix Bow|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_weapon_redrain_bow|models/items/weapons/bow/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Red Rain Bow|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_weapon_sphereofannihilation||1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Sphere of Annihilation|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_weapon_hellstaff|models/items/weapons/hellstaff/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Hell Staff|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_weapon_maceballs|models/items/weapons/maceballs/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Maceballs|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_weapon_magicmissile|models/items/weapons/array/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Magic Missile|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_weapon_phoenixbow|models/items/weapons/bow/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Phoenix Bow|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_weapon_redrain_bow|models/items/weapons/bow/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Red Rain Bow|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_weapon_sphereofannihilation|models/items/weapons/sphere/tris.fm|0.5|0.5|0.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Sphere of Annihilation|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 light_buglight|models/objects/lights/bug/tris.fm|1.0|1.0|1.0|general|-7.0|-7.0|-7.0|7.0|7.0|25.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Bug light|0.0|1.0|0.0|0|0|0|0|0|0|0|none|0
 light_chandelier1|models/objects/chandelier/chan1/tris.fm|1.0|1.0|1.0|general|-36.0|-36.0|-43.0|36.0|36.0|43.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Chandelier (dirty gold) A tarnished gold chandelier hung from chains.|0.0|1.0|0.0|0|0|0|0|0|0|0|none|0
 light_chandelier2|models/objects/chandelier/chan2/tris.fm|1.0|1.0|1.0|general|-18.0|-18.0|-40.0|18.0|18.0|40.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Chandelier (dirty metal) A tarnished metal chandelier hung from chains.|0.0|1.0|0.0|0|0|0|0|0|0|0|none|0

@@ -18,22 +18,10 @@
 #include "../header/g_items.h"
 
 #define BOB_HEIGHT		6.0
-#define BOB_SPEED		ANGLE_10
 #define WP_PART_RADIUS	16.0
-
-#define	NUM_ITEMWEAPONS	7
-
-static struct model_s *weapon_models[NUM_ITEMWEAPONS];
 
 void PreCacheItemWeapons()
 {
-	weapon_models[0] = fxi.RegisterModel("models/items/weapons/hellstaff/tris.fm");  // ITEM_WEAPON_HELLSTAFF
-	weapon_models[1] = fxi.RegisterModel("models/items/weapons/array/tris.fm");  // ITEM_WEAPON_MAGICMISSILE
-	weapon_models[2] = fxi.RegisterModel("models/items/weapons/bow/tris.fm");  // ITEM_WEAPON_REDRAINBOW
-	weapon_models[3] = fxi.RegisterModel("models/items/weapons/sphere/tris.fm");  // ITEM_WEAPON_SPHEREOFANNIHILIATION
-	weapon_models[4] = fxi.RegisterModel("models/items/weapons/bow/tris.fm");  // ITEM_WEAPON_PHOENIXBOW
-	weapon_models[5] = fxi.RegisterModel("models/items/weapons/maceballs/tris.fm");  // ITEM_WEAPON_MACEBALLS
-	weapon_models[6] = fxi.RegisterModel("models/items/weapons/firewall/tris.fm");  // ITEM_WEAPON_FIREWALL
 }
 
 // --------------------------------------------------------------
@@ -82,13 +70,16 @@ static qboolean FXWeaponPickupThink(struct client_entity_s *self, centity_t *own
 		break;
 	default:
 		return true;		// No effect
-		break;
 	}
 
 	if (r_detail->value != DETAIL_HIGH)
+	{
 		part |= PFL_SOFT_MASK;
+	}
 	else
+	{
 		color.c = 0xffffffff;
+	}
 
 	spark = ClientParticle_new(part, color, 500);
 	spark->origin[0] = cos(self->SpawnData*4.0) * WP_PART_RADIUS;
@@ -120,7 +111,7 @@ void FXWeaponPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	}
 	else
 	{
-		ce->r.model = weapon_models[tag - 2];
+		ce->r.model = NULL;
 	}
 
 	VectorSet(ce->r.scale, 0.5, 0.5, 0.5);
@@ -133,10 +124,7 @@ void FXWeaponPickup(centity_t *owner, int type, int flags, vec3_t origin)
 		VectorSet(ce->r.scale, 1.0, 1.0, 1.0);
 	}
 
-	if (tag == ITEM_WEAPON_PHOENIXBOW)
-		ce->r.skinnum = 1;
-
-	ce->SpawnInfo = tag-2;
+	ce->SpawnInfo = tag - 2;
 
 	AddEffect(owner, ce);
 }

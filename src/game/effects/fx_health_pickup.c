@@ -17,12 +17,7 @@
 #include "../common/angles.h"
 
 #define BOB_HEIGHT		6.0
-#define BOB_SPEED		ANGLE_10
 #define HEALTH_RADIUS	6.0
-
-#define	NUM_HEALTH_MODELS	2
-#define HEALTH_SMALL 0
-#define HEALTH_BIG   1
 
 void PreCacheHealth()
 {

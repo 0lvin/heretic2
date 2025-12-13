@@ -15,6 +15,7 @@
 #define DETAIL_HIGH		2
 #define DETAIL_UBERHIGH	3
 #define DETAIL_DEFAULT	"2.0"
+#define BOB_SPEED ANGLE_10
 #define AVG_VEC3T(scale) (((scale)[0] + (scale)[1] + (scale)[2]) / 3)
 
 extern client_fx_import_t fxi;

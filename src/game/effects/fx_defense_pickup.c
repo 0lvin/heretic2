@@ -19,7 +19,6 @@
 #include "../header/g_items.h"
 
 #define BOB_HEIGHT				6.0
-#define BOB_SPEED				ANGLE_10
 #define HEALTH_RADIUS			6.0
 #define NUM_DEF_PICKUP_SPARKS	4
 #define EGG_TRAIL_DELAY			100

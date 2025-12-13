@@ -32,7 +32,6 @@ typedef enum
 } itemammo_t;
 
 #define BOB_HEIGHT		6.0
-#define BOB_SPEED		ANGLE_10
 #define HEALTH_RADIUS	6.0
 
 #define	NUM_AMMO_MODELS	9
