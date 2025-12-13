@@ -19,11 +19,11 @@
 #define FLAME_DURATION		500
 #define FLAME_DELTA_ALPHA	(1000/FLAME_DURATION)
 
-#define	NUM_RING_MODELS	1
-static struct model_s *blue_models[NUM_RING_MODELS];
+static struct model_s *blue_model;
+
 void PreCacheBluering()
 {
-	blue_models[0] = fxi.RegisterModel("sprites/spells/bluering.sp2");
+	blue_model = fxi.RegisterModel("sprites/spells/bluering.sp2");
 }
 
 void FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
@@ -42,7 +42,7 @@ void FXBlueRing(centity_t *Owner, int Type, int Flags, vec3_t Origin)
 	{
 		flameitem = ClientEntity_new(Type, Flags & ~CEF_OWNERS_ORIGIN, Origin, NULL, FLAME_DURATION);
 
-		flameitem->r.model = blue_models[0];
+		flameitem->r.model = blue_model;
 		flameitem->r.flags = RF_FULLBRIGHT | RF_TRANSLUCENT | RF_TRANS_ADD | RF_TRANS_ADD_ALPHA;
 		flameitem->r.frame = 0;
 		VectorSet(flameitem->r.scale,

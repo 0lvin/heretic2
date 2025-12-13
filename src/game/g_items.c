@@ -1504,20 +1504,6 @@ Pickup_Ammo(edict_t *ent, edict_t *other)
 	return true;
 }
 
-/*
-===============
-Pickup_Manna
-
-Separate routine so we can distinguish between ammo and mana.
-===============
-*/
-
-qboolean
-Pickup_Mana(edict_t *ent, edict_t *other)
-{
-	return(Pickup_Ammo(ent, other));
-}
-
 void
 Drop_Ammo(edict_t *ent, gitem_t *item)
 {
@@ -2290,7 +2276,17 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
 	assert(!ent->PersistantCFX);
 
 	if ((ent->spawnflags & ITEM_COOP_ONLY) && (!coop->value))
+	{
 		return;
+	}
+
+	if (ent->item->tag == AMMO_HELLSTAFF ||
+		ent->item->tag == AMMO_REDRAIN ||
+		ent->item->tag == AMMO_PHOENIX
+	)
+	{
+		return;
+	}
 
 	if (ent->item->flags & IT_WEAPON)
 	{
@@ -2646,15 +2642,11 @@ SpawnItem(edict_t *ent, gitem_t *item)
 	ent->s.renderfx = RF_GLOW | RF_TRANSLUCENT;
 	ent->s.effects |= EF_ALWAYS_ADD_EFFECTS;
 
-	if (item->tag == ITEM_TAVERNKEY)
-	{
-		ent->s.skinnum = 1;
-	}
-	else if (item->tag == ITEM_CANKEY)
-	{
-		ent->s.skinnum = 1;
-	}
-	else if (item->tag == ITEM_WEAPON_PHOENIXBOW)
+	if (item->tag == AMMO_MANA_DEFENSIVE_HALF ||
+		item->tag == AMMO_MANA_DEFENSIVE_FULL ||
+		item->tag == ITEM_TAVERNKEY ||
+		item->tag == ITEM_CANKEY ||
+		item->tag == ITEM_WEAPON_PHOENIXBOW)
 	{
 		ent->s.skinnum = 1;
 	}
@@ -3231,13 +3223,13 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_mana_offensive_half",				// Spawnname
-		Pickup_Mana,							// Pickup (f)
+		Pickup_Ammo,							// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
 		"player/picup.wav",						// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,										// world model flags
 		NULL,									// view model
 		NULL,									// Icon name (char *)
 		"Off-mana",								// Pickup name (char *)
@@ -3263,13 +3255,13 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_mana_offensive_full",				// Spawnname
-		Pickup_Mana,									// Pickup (f)
+		Pickup_Ammo,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
 		"player/picup.wav",						// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,										// world model flags
 		NULL,									// view model
 		NULL,									// Icon name (char *)
 		"Off-mana",								// Pickup name (char *)
@@ -3295,13 +3287,13 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_mana_defensive_half",				// Spawnname
-		Pickup_Mana,									// Pickup (f)
+		Pickup_Ammo,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
 		"player/picup.wav",						// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,										// world model flags
 		NULL,									// view model
 		NULL,									// Icon name (char *)
 		"Def-mana",								// Pickup name (char *)
@@ -3327,13 +3319,13 @@ static const gitem_t gameitemlist[] = {
 	 */
 	{
 		"item_mana_defensive_full",				// Spawnname
-		Pickup_Mana,									// Pickup (f)
+		Pickup_Ammo,									// Pickup (f)
 		NULL,									// Use (f)
 		NULL,									// Drop	(f)
 		NULL,									// Think (f)
 		"player/picup.wav",						// Pickup sound (char *)
 		NULL,									// world model (char *)
-		0,										// world model flags
+		EF_BOB,										// world model flags
 		NULL,									// view model
 		NULL,									// Icon name (char *)
 		"Def-mana",								// Pickup name (char *)
@@ -3358,24 +3350,24 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup for both defensive & offensive mana (25 points).
 	 */
 	{
-		"item_mana_combo_quarter",					  // Spawnname
-		Pickup_Mana,								  // Pickup (f)
-		NULL,										  // Use (f)
-		NULL,										  // Drop	(f)
-		NULL,										  // Think (f)
-		"player/picup.wav",							  // Pickup sound (char *)
-		NULL,										  // world model (char *)
-		0,											  // world model flags
-		NULL,									// view model
-		NULL,										  // Icon name (char *)
-		"Def-mana",									  // Pickup name (char *)
-		0,											  // Number of digits to display
-		HALF_COMBO_MANA,							  // Ammo/ammo use per shot
-		NULL,										  // Ammo (char *)
-		IT_AMMO,									  // flags
+		"item_mana_combo_quarter",						// Spawnname
+		Pickup_Ammo,									// Pickup (f)
+		NULL,											// Use (f)
+		NULL,											// Drop	(f)
+		NULL,											// Think (f)
+		"player/picup.wav",								// Pickup sound (char *)
+		NULL,											// world model (char *)
+		EF_BOB,											// world model flags
+		NULL,											// view model
+		NULL,											// Icon name (char *)
+		"Def-mana",										// Pickup name (char *)
+		0,												// Number of digits to display
+		HALF_COMBO_MANA,								// Ammo/ammo use per shot
+		NULL,											// Ammo (char *)
+		IT_AMMO,										// flags
 		0,									// weapon model index
-		NULL,										  // void * ?
-		AMMO_MANA_COMBO_QUARTER,				  // tag ?
+		NULL,											// void * ?
+		AMMO_MANA_COMBO_QUARTER,					// tag ?
 		NULL,									// precaches
 		GM_COMBMANAS,										// pickup message
 		0,
@@ -3390,24 +3382,24 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup for both defensive & offensive mana (50 points).
 	 */
 	{
-		"item_mana_combo_half",					  // Spawnname
-		Pickup_Mana,								  // Pickup (f)
-		NULL,										  // Use (f)
-		NULL,										  // Drop	(f)
-		NULL,										  // Think (f)
-		"player/picup.wav",							  // Pickup sound (char *)
-		NULL,										  // world model (char *)
-		0,											  // world model flags
-		NULL,									// view model
+		"item_mana_combo_half",						// Spawnname
+		Pickup_Ammo,									// Pickup (f)
+		NULL,											// Use (f)
+		NULL,											// Drop	(f)
+		NULL,											// Think (f)
+		"player/picup.wav",								// Pickup sound (char *)
+		NULL,											// world model (char *)
+		EF_BOB,											// world model flags
+		NULL,											// view model
 		NULL,										// Icon name (char *)
-		"Def-mana",									  // Pickup name (char *)
-		0,											  // Number of digits to display
-		FULL_COMBO_MANA,							  // Ammo/ammo use per shot
-		NULL,										  // Ammo (char *)
-		IT_AMMO,									  // flags
+		"Def-mana",										// Pickup name (char *)
+		0,												// Number of digits to display
+		FULL_COMBO_MANA,								// Ammo/ammo use per shot
+		NULL,											// Ammo (char *)
+		IT_AMMO,										// flags
 		0,									// weapon model index
-		NULL,										  // void * ?
-		AMMO_MANA_COMBO_HALF,					  // tag ?
+		NULL,											// void * ?
+		AMMO_MANA_COMBO_HALF,						// tag ?
 		NULL,									// precaches
 		GM_COMBMANAB,										// pickup message
 		0,
@@ -3422,29 +3414,29 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup ammo for the Red Rain Bow
 	 */
 	{
-		"item_ammo_redrain",						  // Spawnname
-		Pickup_Ammo,								  // Pickup (f)
-		NULL,										  // Use (f)
-		NULL,										  // Drop	(f)
-		NULL,										  // Think (f)
-		"player/picup.wav",							  // Pickup sound (char *)
-		NULL,										  // world model (char *)
-		0,											  // world model flags
-		NULL,									// view model
-		"icons/i_ammo-redrain.m8",								  // Icon name (char *)
-		"Red-Rain-Arrows",							  // Pickup name (char *)
-		0,											  // Number of digits to display
-		AMMO_COUNT_REDRAINBOW,						  // Ammo/ammo use per shot
-		NULL,										  // Ammo (char *)
-		IT_AMMO | IT_OFFENSE,						  // flags
-		0,									// weapon model index
-		NULL,										  // void * ?
-		AMMO_REDRAIN,								  // tag ?
-		NULL,									// precaches
-		GM_STORMARROWS,										// pickup message
+		"item_ammo_redrain",							// Spawnname
+		Pickup_Ammo,									// Pickup (f)
+		NULL,											// Use (f)
+		NULL,											// Drop	(f)
+		NULL,											// Think (f)
+		"player/picup.wav",								// Pickup sound (char *)
+		NULL,											// world model (char *)
+		EF_BOB,											// world model flags
+		NULL,										// view model
+		"icons/i_ammo-redrain.m8",					// Icon name (char *)
+		"Red-Rain-Arrows",							// Pickup name (char *)
+		0,											// Number of digits to display
+		AMMO_COUNT_REDRAINBOW,						// Ammo/ammo use per shot
+		NULL,										// Ammo (char *)
+		IT_AMMO | IT_OFFENSE,						// flags
+		0,											// weapon model index
+		NULL,										// void * ?
+		AMMO_REDRAIN,								// tag ?
+		NULL,										// precaches
+		GM_STORMARROWS,								// pickup message
 		0,
-		PICKUP_MIN,							// Bounding box mins
-		PICKUP_MAX,							// Bounding box maxs
+		PICKUP_MIN,									// Bounding box mins
+		PICKUP_MAX,									// Bounding box maxs
 		ASEQ_NONE,									// Player animation sequence to engage when used
 		ASEQ_NONE,									// Alternate player animation sequence to engage when used
 	},
@@ -3454,30 +3446,30 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup ammo for the Phoenix Bow
 	 */
 	{
-		"item_ammo_phoenix",							  // Spawnname
-		Pickup_Ammo,								  // Pickup (f)
-		NULL,										  // Use (f)
-		NULL,										  // Drop	(f)
-		NULL,										  // Think (f)
-		"player/picup.wav",							  // Pickup sound (char *)
-		NULL,										  // world model (char *)
-		0,											  // world model flags
-		NULL,									// view model
-		"icons/i_ammo-phoen.m8",								  // Icon name (char *)
-		"Phoenix-Arrows",							  // Pickup name (char *)
-		0,											  // Number of digits to display
-		AMMO_COUNT_PHOENIXBOW,						  // Ammo/ammo use per shot
-		NULL,										  // Ammo (char *)
-		IT_AMMO | IT_OFFENSE,						  // flags
-		0,									// weapon model index
-		NULL,										// void * ?
-		AMMO_PHOENIX,							  // tag ?
-		NULL,									// precaches
-		GM_PHOENARROWS,										// pickup message
+		"item_ammo_phoenix",							// Spawnname
+		Pickup_Ammo,									// Pickup (f)
+		NULL,											// Use (f)
+		NULL,											// Drop	(f)
+		NULL,											// Think (f)
+		"player/picup.wav",								// Pickup sound (char *)
+		NULL,											// world model (char *)
+		EF_BOB,											// world model flags
+		NULL,											// view model
+		"icons/i_ammo-phoen.m8",						// Icon name (char *)
+		"Phoenix-Arrows",								// Pickup name (char *)
+		0,												// Number of digits to display
+		AMMO_COUNT_PHOENIXBOW,							// Ammo/ammo use per shot
+		NULL,											// Ammo (char *)
+		IT_AMMO | IT_OFFENSE,							// flags
+		0,												// weapon model index
+		NULL,											// void * ?
+		AMMO_PHOENIX,									// tag ?
+		NULL,											// precaches
+		GM_PHOENARROWS,									// pickup message
 		0,
-		PICKUP_MIN,									// Bounding box mins
-		PICKUP_MAX,									// Bounding box maxs
-		ASEQ_NONE,									// Player animation sequence to engage when used
+		PICKUP_MIN,										// Bounding box mins
+		PICKUP_MAX,										// Bounding box maxs
+		ASEQ_NONE,										// Player animation sequence to engage when used
 		ASEQ_NONE,										// Alternate player animation sequence to engage when used
 	},
 
@@ -3486,31 +3478,31 @@ static const gitem_t gameitemlist[] = {
 	 * Pickup ammo for the Hellstaff
 	 */
 	{
-		"item_ammo_hellstaff",						  // Spawnname
-		Pickup_Ammo,								  // Pickup (f)
-		NULL,										  // Use (f)
-		NULL,										  // Drop	(f)
-		NULL,										  // Think (f)
-		"player/picup.wav",							  // Pickup sound (char *)
-		NULL,										  // world model (char *)
-		0,											  // world model flags
-		NULL,									// view model
-		"icons/i_ammo-hellstaff.m8",				  // Icon name (char *)
-		"Hell-staff-ammo",							  // Pickup name (char *)
-		0,											  // Number of digits to display
-		AMMO_COUNT_HELLSTAFF,						  // Ammo/ammo use per shot
-		NULL,										  // Ammo (char *)
-		IT_AMMO | IT_OFFENSE,						  // flags
-		0,									// weapon model index
-		NULL,										  // void * ?
-		AMMO_HELLSTAFF,						  // tag ?
-		NULL,									// precaches
+		"item_ammo_hellstaff",							// Spawnname
+		Pickup_Ammo,									// Pickup (f)
+		NULL,											// Use (f)
+		NULL,											// Drop	(f)
+		NULL,											// Think (f)
+		"player/picup.wav",								// Pickup sound (char *)
+		NULL,											// world model (char *)
+		EF_BOB,											// world model flags
+		NULL,											// view model
+		"icons/i_ammo-hellstaff.m8",					// Icon name (char *)
+		"Hell-staff-ammo",								// Pickup name (char *)
+		0,												// Number of digits to display
+		AMMO_COUNT_HELLSTAFF,							// Ammo/ammo use per shot
+		NULL,											// Ammo (char *)
+		IT_AMMO | IT_OFFENSE,							// flags
+		0,												// weapon model index
+		NULL,											// void * ?
+		AMMO_HELLSTAFF,									// tag ?
+		NULL,											// precaches
 		GM_HELLORB,										// pickup message
 		0,
-		PICKUP_MIN,									// Bounding box mins
-		PICKUP_MAX,									// Bounding box maxs
-		ASEQ_NONE,									// Player animation sequence to engage when used
-		ASEQ_NONE,									// Alternate player animation sequence to engage when used
+		PICKUP_MIN,										// Bounding box mins
+		PICKUP_MAX,										// Bounding box maxs
+		ASEQ_NONE,										// Player animation sequence to engage when used
+		ASEQ_NONE,										// Alternate player animation sequence to engage when used
 	},
 
 	// ============================================================================================

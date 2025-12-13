@@ -47,7 +47,7 @@ void PreCacheIEffects()
 	globe_models[1] = fxi.RegisterModel("sprites/fx/halo.sp2");
 	globe_models[2] = fxi.RegisterModel("Sprites/Spells/spark_blue.sp2");//"sprites/spells/glowball.sp2");
 	globe_models[3] = fxi.RegisterModel("models/spells/sphere/tris.fm");
-	globe_models[4] = fxi.RegisterModel("sprites/fx/neon.sp2");//bluball.sp2");//bluball.sp2");
+	globe_models[4] = fxi.RegisterModel("sprites/fx/neon.sp2");//bluball.sp2");
 }
 
 // --------------------------------------------------------------

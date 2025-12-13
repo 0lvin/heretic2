@@ -40,8 +40,8 @@ void PreCacheItemDefense()
 	defense_models[7] = fxi.RegisterModel("sprites/spells/meteorbarrier.sp2");				// Meteor cloud
 	defense_models[8] = fxi.RegisterModel("sprites/spells/spark_green.sp2");				// green spark
 	defense_models[9] = fxi.RegisterModel("sprites/spells/spark_red.sp2");					// red spark
-	defense_models[10] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");					// blue spark
-	defense_models[11] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");					// blue spark
+	defense_models[10] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");				// blue spark
+	defense_models[11] = fxi.RegisterModel("sprites/spells/spark_blue.sp2");				// blue spark
 }
 
 static qboolean FXEggSparkThink(struct client_entity_s *shield, centity_t *owner)

@@ -436,9 +436,9 @@ void FXFireWave(centity_t *owner, int type, int flags, vec3_t origin)
 
 	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_FIREWAVE].formatString, &shortyaw, &shortpitch);
 
-	wall->r.angles[YAW]=(float)shortyaw * (360.0/65536.0);
-	wall->r.angles[PITCH]=(float)shortpitch * (360.0/65536.0);
-	wall->r.angles[ROLL]=0.0;
+	wall->r.angles[YAW] = (float)shortyaw * (360.0/65536.0);
+	wall->r.angles[PITCH] = (float)shortpitch * (360.0/65536.0);
+	wall->r.angles[ROLL] = 0.0;
 	AngleVectors(wall->r.angles, wall->direction, wall->right, NULL);
 
 	if (flags & CEF_FLAG8)	// Since we're in deathmatch, throw it faster.
@@ -717,9 +717,9 @@ void FXFireBurst(centity_t *owner, int type, int flags, vec3_t origin)
 	wall = ClientEntity_new(type, flags | CEF_NO_DRAW | CEF_ADDITIVE_PARTS | CEF_ABSOLUTE_PARTS | CEF_DONT_LINK, origin, NULL, 150);
 	FXGetEffect(owner,flags,clientEffectSpawners[FX_WEAPON_FIREBURST].formatString, &shortyaw, &shortpitch);
 
-	wall->r.angles[YAW]=(float)shortyaw * (360.0/65536.0);
-	wall->r.angles[PITCH]=(float)shortpitch * (360.0/65536.0);
-	wall->r.angles[ROLL]=0.0;
+	wall->r.angles[YAW] = (float)shortyaw * (360.0/65536.0);
+	wall->r.angles[PITCH] = (float)shortpitch * (360.0/65536.0);
+	wall->r.angles[ROLL] = 0.0;
 
 	// The Build the velocity out of the fwd vector constructed from the two angles given.
 	AngleVectors(wall->r.angles, fwd, wall->right, NULL);

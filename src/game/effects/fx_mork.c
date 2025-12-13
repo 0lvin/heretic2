@@ -267,10 +267,10 @@ FXMPPExplosionSmallBallThink(client_entity_t *explosion, centity_t *owner)
 
 	// Spin the ball of fire while it expands and fades.
 	if ((explosion->r.angles[0]-=(M_PI/64.0))>(M_PI*2.0))
-		explosion->r.angles[0]=0.0;
+		explosion->r.angles[0] = 0.0;
 
 	if ((explosion->r.angles[1]+=(M_PI/64.0))>(M_PI*2.0))
-		explosion->r.angles[1]=0.0;
+		explosion->r.angles[1] = 0.0;
 
 	return true;
 }

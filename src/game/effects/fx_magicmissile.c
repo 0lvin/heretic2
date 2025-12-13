@@ -153,9 +153,9 @@ void FXMagicMissile(centity_t *Owner,int Type,int Flags,vec3_t Origin)
 
 	FXGetEffect(Owner,Flags,clientEffectSpawners[FX_WEAPON_MAGICMISSILE].formatString, &shortyaw, &shortpitch);
 
-	ang[YAW]=(float)shortyaw * (360.0/65536.0);
-	ang[PITCH]=(float)shortpitch * (360.0/65536.0);
-	ang[ROLL]=0.0;
+	ang[YAW] = (float)shortyaw * (360.0/65536.0);
+	ang[PITCH] = (float)shortpitch * (360.0/65536.0);
+	ang[ROLL] = 0.0;
 
 	AngleVectors(ang, fwd, right, up);
 

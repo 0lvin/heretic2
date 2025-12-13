@@ -34,19 +34,8 @@ typedef enum
 #define BOB_HEIGHT		6.0
 #define HEALTH_RADIUS	6.0
 
-#define	NUM_AMMO_MODELS	9
-static struct model_s *ammomodels[NUM_AMMO_MODELS];
 void PreCacheItemAmmo()
 {
-	ammomodels[0] = fxi.RegisterModel("models/items/mana/half/tris.fm");	// AMMO_MANA_DEFENSIVE_HALF
-	ammomodels[1] = fxi.RegisterModel("models/items/mana/full/tris.fm");	// AMMO_MANA_DEFENSIVE_FULL
-	ammomodels[2] = fxi.RegisterModel("models/items/mana/half/tris.fm");	// AMMO_MANA_OFFENSIVE_HALF
-	ammomodels[3] = fxi.RegisterModel("models/items/mana/full/tris.fm");	// AMMO_MANA_OFFENSIVE_FULL
-	ammomodels[4] = fxi.RegisterModel("models/items/mana/combo/tris.fm");		// AMMO_MANA_COMBO_QUARTER
-	ammomodels[5] = fxi.RegisterModel("models/items/mana/combo/tris.fm");		// AMMO_MANA_COMBO_HALF
-	ammomodels[6] = fxi.RegisterModel("models/items/ammo/hellstaff/tris.fm");		// AMMO_HELLSTAFF
-	ammomodels[7] = fxi.RegisterModel("models/items/ammo/redrain/tris.fm");		// AMMO_REDRAIN
-	ammomodels[8] = fxi.RegisterModel("models/items/ammo/phoenix/tris.fm");		// AMMO_PHOENIX
 }
 
 // --------------------------------------------------------------
@@ -57,7 +46,12 @@ static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner
 	client_particle_t	*p;
 	paletteRGBA_t		color;
 
-	// Rotate and bob
+	if (self->SpawnInfo >= AMMO_HELLSTAFF)
+	{
+		return true;
+	}
+
+	/* Rotate and bob */
 	self->r.angles[YAW] += ANGLE_5;
 	VectorCopy(owner->current.origin, self->r.origin);
 	self->r.origin[2] += (cos(self->SpawnData) * BOB_HEIGHT);
@@ -65,50 +59,46 @@ static qboolean FXAmmoPickupThink(struct client_entity_s *self, centity_t *owner
 
 	switch(self->SpawnInfo)
 	{
-
-	case 0:
-	case 1:
-		color.g = irand(50, 90);
-		color.b = irand(210, 255);
-		color.r = color.g;
-		break;
-
-	case 2:
-	case 3:
-		color.r = irand(50, 90);
-		color.g = irand(210, 255);
-		color.b = color.r;
-		break;
-
-	case 4:
-	case 5:
-		if (irand(0,1))
-		{
+		case AMMO_MANA_DEFENSIVE_HALF:
+		case AMMO_MANA_DEFENSIVE_FULL:
 			color.g = irand(50, 90);
 			color.b = irand(210, 255);
 			color.r = color.g;
-		}
-		else
-		{
+			break;
+
+		case AMMO_MANA_OFFENSIVE_HALF:
+		case AMMO_MANA_OFFENSIVE_FULL:
 			color.r = irand(50, 90);
 			color.g = irand(210, 255);
 			color.b = color.r;
-		}
-		break;
+			break;
 
+		case AMMO_MANA_COMBO_QUARTER:
+		case AMMO_MANA_COMBO_HALF:
+			if (irand(0,1))
+			{
+				color.g = irand(50, 90);
+				color.b = irand(210, 255);
+				color.r = color.g;
+			}
+			else
+			{
+				color.r = irand(50, 90);
+				color.g = irand(210, 255);
+				color.b = color.r;
+			}
+			break;
 	}
 
-	if (self->SpawnInfo < 6)
-	{
-		// spawn particles
-		color.a = 255;
-		p = ClientParticle_new(PART_4x4_WHITE, color, 600);
+	/* spawn particles */
+	color.a = 255;
+	p = ClientParticle_new(PART_4x4_WHITE, color, 600);
 
-		VectorSet(p->origin, crandk() * HEALTH_RADIUS, crandk() * HEALTH_RADIUS, 0.0);
-		VectorSet(p->velocity, 0.0, 0.0, flrand(20.0, 40.0));
-		p->acceleration[2] = 20.0;
-		AddParticleToList(self, p);
-	}
+	VectorSet(p->origin, crandk() * HEALTH_RADIUS, crandk() * HEALTH_RADIUS, 0.0);
+	VectorSet(p->velocity, 0.0, 0.0, flrand(20.0, 40.0));
+	p->acceleration[2] = 20.0;
+	AddParticleToList(self, p);
+
 	return true;
 }
 
@@ -123,16 +113,11 @@ void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 	ce = ClientEntity_new(type, flags | CEF_DONT_LINK | CEF_CHECK_OWNER | CEF_VIEWSTATUSCHANGED, origin, NULL, 50);
 
 	VectorCopy(ce->r.origin, ce->origin);
-	ce->r.model = ammomodels[tag];
-
-	if (tag == 0)		// Blue stuff
-		ce->r.skinnum = 1;
-	if (tag == 1)		// Blue stuff
-		ce->r.skinnum = 1;
-
+	ce->r.model = NULL;
 	ce->r.flags = RF_TRANSLUCENT | RF_GLOW;
 
-	if ((tag == AMMO_MANA_COMBO_HALF) || (tag == AMMO_MANA_DEFENSIVE_FULL) ||
+	if ((tag == AMMO_MANA_COMBO_HALF) ||
+		(tag == AMMO_MANA_DEFENSIVE_FULL) ||
 		(tag == AMMO_MANA_OFFENSIVE_FULL))
 	{
 		VectorSet(ce->r.scale, 1.25, 1.25, 1.25);
@@ -148,5 +133,3 @@ void FXAmmoPickup(centity_t *owner, int type, int flags, vec3_t origin)
 
 	AddEffect(owner, ce);
 }
-
-// end
