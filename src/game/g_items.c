@@ -2602,11 +2602,6 @@ SpawnItem(edict_t *ent, gitem_t *item)
 		return;
 	}
 
-	if (!(item->world_model_flags & EF_BOB))
-	{
-		ent->s.modelindex = 0;
-	}
-
 	PrecacheItem(item);
 
 	if (coop->value && !(ent->spawnflags & ITEM_NO_TOUCH) && (strcmp(ent->classname, "key_power_cube") == 0))
@@ -3023,7 +3018,7 @@ static const gitem_t gameitemlist[] = {
 
 	/*
 	 * QUAKED item_defense_powerup (.3 .3 1) (-16 -16 -16) (16 16 16)  COOP_ONLY
-	 * This can't be placed in the editor
+	 * This can't be placed in the editor, default defense on client startup
 	 */
 	{
 		"item_defense_powerup",					// Spawnname
@@ -3065,7 +3060,7 @@ static const gitem_t gameitemlist[] = {
 		DefenceThink_RingOfRepulsion,			// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,								// world model flags
 		NULL,									// view model
 		"icons/i_ring.m8",			// Icon name (char *)
 		"ring",									// Pickup name (char *)
@@ -3097,7 +3092,7 @@ static const gitem_t gameitemlist[] = {
 		DefenceThink_Shield,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
 		"icons/i_shield.m8",			// Icon name (char *)
 		"lshield",								// Pickup name (char *)
@@ -3129,7 +3124,7 @@ static const gitem_t gameitemlist[] = {
 		DefenceThink_Teleport,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
 		"icons/i_tele.m8",						// Icon name (char *)
 		"tele",									// Pickup name (char *)
@@ -3161,7 +3156,7 @@ static const gitem_t gameitemlist[] = {
 		DefenceThink_Morph,						// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,								// world model flags
 		NULL,									// view model
 		"icons/i_morph.m8",					// Icon name (char *)
 		"morph",								// Pickup name (char *)
@@ -3193,9 +3188,9 @@ static const gitem_t gameitemlist[] = {
 		DefenceThink_MeteorBarrier,				// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
-		"icons/i_meteor.m8",			// Icon name (char *)
+		"icons/i_meteor.m8",					// Icon name (char *)
 		"meteor",								// Pickup name (char *)
 		0,										// Number of digits to display
 		MANA_USE_METEORS,						// Ammo/ammo use per shot
@@ -4269,7 +4264,7 @@ static const gitem_t gameitemlist[] = {
 		DefenceThink_Tornado,					// Think (f)
 		"player/getweapon.wav",					// Pickup sound (char *)
 		NULL,									// world model (char *)
-		EF_ROTATE,								// world model flags
+		EF_ROTATE | EF_BOB,						// world model flags
 		NULL,									// view model
 		"icons/i_tornado.m8",					// Icon name (char *)
 		"tornado",								// Pickup name (char *)

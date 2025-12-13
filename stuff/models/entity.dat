@@ -641,10 +641,9 @@ item_ammo_phoenix|models/items/ammo/phoenix/tris.fm|1.0|1.0|1.0|general|-10.0|-1
 item_ammo_redrain|models/items/ammo/redrain/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Red rain ammo|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_defense_meteorbarrier|models/items/defense/meteorbarrier/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Meteor Barrier spell|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_defense_polymorph|models/items/defense/polymorph/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Polymorph Spell|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_defense_powerup||1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Power Up|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_defense_ringofrepulsion|models/items/defense/repulsion/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Ring of Repulsion|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_defense_shield|models/items/defense/lightshield/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Shield Spell|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
-item_defense_teleport|models/items/defense/teleport/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Teleport Spell|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
+item_defense_teleport|models/items/defense/teleport/tris.fm|1.25|1.25|1.25|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Teleport Spell|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_defense_tornado|models/items/defense/tornado/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Whirlwind spell (Enhancement patch)|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_health_full|models/items/health/healthbig/tris.fm|1.0|1.0|1.0|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Full Health|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0
 item_health_half|models/items/health/healthsmall/tris.fm|1.5|1.5|1.5|general|-10.0|-10.0|-10.0|10.0|10.0|10.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Half Health|0.3|0.3|1.0|0|0|0|0|0|0|0|none|0

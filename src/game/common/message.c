@@ -157,7 +157,7 @@ int GetParms(SinglyLinkedList_t *_this, char *format, va_list marker)
 			/* TODO: recheck and rewrite */
 			va_arg(marker, float*);
 
-			SLList_PostIncrement(_this).t_float_p;
+			SLList_PostIncrement(_this);
 			break;
 		case 'e':	// a pointer is a pointer is a pointer
 		case 'g':

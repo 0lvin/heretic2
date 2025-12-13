@@ -4360,11 +4360,10 @@ PM_trace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end)
 void
 ClientThink(edict_t *ent, usercmd_t *ucmd)
 {
+	edict_t *other, *TargetEnt;
 	gclient_t *client;
-	edict_t *other;
+	vec3_t LOSOrigin;
 	int i, j;
-	vec3_t		LOSOrigin, ang;
-	edict_t		*TargetEnt;
 
 	if (!ent || !ucmd)
 	{
