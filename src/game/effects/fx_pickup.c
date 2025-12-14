@@ -6,7 +6,6 @@
 //
 
 #include "../../common/header/common.h"
-#include "ce_defaultmessagehandler.h"
 #include "client_effects.h"
 #include "client_entities.h"
 #include "particle.h"

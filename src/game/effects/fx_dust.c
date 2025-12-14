@@ -7,7 +7,6 @@
 #include "../../common/header/common.h"
 #include "client_entities.h"
 #include "client_effects.h"
-#include "ce_defaultmessagehandler.h"
 #include "../common/effectflags.h"
 #include "../header/g_physics.h"
 #include "../common/h2rand.h"

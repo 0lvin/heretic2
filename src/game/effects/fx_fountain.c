@@ -6,7 +6,6 @@
 #include "../../common/header/common.h"
 #include "client_effects.h"
 #include "client_entities.h"
-#include "ce_defaultmessagehandler.h"
 #include "particle.h"
 #include "../common/resourcemanager.h"
 #include "../common/angles.h"

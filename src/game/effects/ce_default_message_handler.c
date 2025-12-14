@@ -4,7 +4,6 @@
 //
 
 #include "../../common/header/common.h"
-#include "ce_defaultmessagehandler.h"
 #include "client_entities.h"
 
 static CE_MsgReceiver_t CE_DefaultMessageReceivers[NUM_MESSAGES] =

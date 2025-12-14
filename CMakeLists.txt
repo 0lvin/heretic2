@@ -671,7 +671,6 @@ set(Effects-Source
 	${EFFECTS_SRC_DIR}/fx_spellhands.c
 	${EFFECTS_SRC_DIR}/fx_sphereofannihlation.c
 	${EFFECTS_SRC_DIR}/fx_spoo.c
-	${EFFECTS_SRC_DIR}/fx_ssarrow.c
 	${EFFECTS_SRC_DIR}/fx_ssithra.c
 	${EFFECTS_SRC_DIR}/fx_staff.c
 	${EFFECTS_SRC_DIR}/fx_tbeast.c
@@ -691,7 +690,6 @@ set(Effects-Source
 	)
 
 set(Effects-Header
-	${EFFECTS_SRC_DIR}/ce_defaultmessagehandler.h
 	${EFFECTS_SRC_DIR}/ce_dlight.h
 	${EFFECTS_SRC_DIR}/ce_message.h
 	${EFFECTS_SRC_DIR}/client_effects.h

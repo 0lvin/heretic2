@@ -1457,7 +1457,6 @@ EFFECTS_OBJS_ = \
 	src/game/effects/fx_spellhands.o \
 	src/game/effects/fx_sphereofannihlation.o \
 	src/game/effects/fx_spoo.o \
-	src/game/effects/fx_ssarrow.o \
 	src/game/effects/fx_ssithra.o \
 	src/game/effects/fx_staff.o \
 	src/game/effects/fx_tbeast.o \
