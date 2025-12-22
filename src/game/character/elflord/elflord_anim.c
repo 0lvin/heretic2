@@ -8,7 +8,6 @@
 //==============================================================================
 
 #include "../../header/local.h"
-
 #include "elflord_anim.h"
 #include "elflord.h"
 #include "../ai.h"
@@ -34,20 +33,20 @@ static mframe_t Elflord_frames_c_death1 [] =
 	{FRAME_death14, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death15, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_death1 = { 15, Elflord_frames_c_death1, ai_c_cycleend};
+mmove_t Elflord_move_c_death1 = {FRAME_death1, FRAME_death15, Elflord_frames_c_death1, ai_c_cycleend};
 
 
 static mframe_t Elflord_frames_c_death2 [] =
 {
-	{FRAME_death1, elflord_mist,  0, 0, 0, NULL, 0, Elflord_c_boom},
-	{FRAME_death2, ai_c_move, 0,  0, 0, NULL, 0, NULL},
-	{FRAME_death3, elflord_mist,  0, 0, 0, NULL, 0, NULL},
-	{FRAME_death4, ai_c_move, 0,  0, 0, NULL, 0, NULL},
-	{FRAME_death5, elflord_mist,  0, 0, 0, NULL, 0, NULL},
-	{FRAME_death6, ai_c_move, 0,  0, 0, NULL, 0, NULL},
-	{FRAME_death7, elflord_mist,  0, 0, 0, NULL, 0, NULL},
-	{FRAME_death8, ai_c_move, 0,  0, 0, NULL, 0, Elflord_c_boom},
-	{FRAME_death9, elflord_mist,  0, 0, 0, NULL, 0, NULL},
+	{FRAME_death1, elflord_mist, 0, 0, 0, NULL, 0, Elflord_c_boom},
+	{FRAME_death2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death3, elflord_mist, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death5, elflord_mist, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death7, elflord_mist, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death8, ai_c_move, 0, 0, 0, NULL, 0, Elflord_c_boom},
+	{FRAME_death9, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death11, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death12, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -55,7 +54,7 @@ static mframe_t Elflord_frames_c_death2 [] =
 	{FRAME_death14, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death15, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_death2 = { 15, Elflord_frames_c_death2, ai_c_cycleend};
+mmove_t Elflord_move_c_death2 = {FRAME_death1, FRAME_death15, Elflord_frames_c_death2, ai_c_cycleend};
 
 static mframe_t Elflord_frames_c_idle1 [] =
 {
@@ -84,7 +83,7 @@ static mframe_t Elflord_frames_c_idle1 [] =
 	{FRAME_idle23, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_idle1 = { 24, Elflord_frames_c_idle1, ai_c_cycleend};
+mmove_t Elflord_move_c_idle1 = {FRAME_idle1, FRAME_idle24, Elflord_frames_c_idle1, ai_c_cycleend};
 
 static mframe_t Elflord_frames_c_idle2 [] =
 {
@@ -109,7 +108,7 @@ static mframe_t Elflord_frames_c_idle2 [] =
 	{FRAME_cidle19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cidle20, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_idle2 = { 20, Elflord_frames_c_idle2, ai_c_cycleend};
+mmove_t Elflord_move_c_idle2 = {FRAME_cidle1, FRAME_cidle20, Elflord_frames_c_idle2, ai_c_cycleend};
 
 
 static mframe_t Elflord_frames_c_action1 [] =
@@ -356,7 +355,7 @@ static mframe_t Elflord_frames_c_action1 [] =
 	{FRAME_Dialoguea219, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialoguea220, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_action1 = { 220, Elflord_frames_c_action1, ai_c_cycleend};
+mmove_t Elflord_move_c_action1 = {FRAME_Dialoguea1, FRAME_Dialoguea220, Elflord_frames_c_action1, ai_c_cycleend};
 
 
 static mframe_t Elflord_frames_c_action2 [] =
@@ -588,4 +587,4 @@ static mframe_t Elflord_frames_c_action2 [] =
 	{FRAME_Dialogueb205, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialogueb206, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_action2 = { 206, Elflord_frames_c_action2, ai_c_cycleend};
+mmove_t Elflord_move_c_action2 = {FRAME_Dialogueb1, FRAME_Dialogueb206, Elflord_frames_c_action2, ai_c_cycleend};

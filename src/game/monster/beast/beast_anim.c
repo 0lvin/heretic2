@@ -8,10 +8,8 @@
 //==============================================================================
 
 #include "../../header/local.h"
-
 #include "beast_anim.h"
 #include "beast.h"
-
 #include "../../header/g_monster.h"
 
 void ai_charge2 (edict_t *self, float dist);
@@ -30,7 +28,7 @@ static mframe_t tbeast_frames_biteup2[] =
 	{FRAME_atkc7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_atkc8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_biteup2 = {8, tbeast_frames_biteup2, tbeast_pause};
+mmove_t tbeast_move_biteup2 = {FRAME_atkc1, FRAME_atkc8, tbeast_frames_biteup2, tbeast_pause};
 
 /*----------------------------------------------------------------------
    TB bite up
@@ -47,7 +45,7 @@ static mframe_t tbeast_frames_biteup[] =
 	{FRAME_atka8, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_atka9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_biteup = {9, tbeast_frames_biteup, tbeast_pause};
+mmove_t tbeast_move_biteup = {FRAME_atka1, FRAME_atka9, tbeast_frames_biteup, tbeast_pause};
 
 /*----------------------------------------------------------------------
    TB bite low
@@ -66,7 +64,7 @@ static mframe_t tbeast_frames_bitelow[] =
 	{FRAME_atkb10, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_atkb11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_bitelow = {11, tbeast_frames_bitelow, tbeast_pause};
+mmove_t tbeast_move_bitelow = {FRAME_atkb1, FRAME_atkb11, tbeast_frames_bitelow, tbeast_pause};
 
 /*----------------------------------------------------------------------
   TB eating twitch?
@@ -82,7 +80,7 @@ static mframe_t tbeast_frames_eating_twitch [] =
 	{FRAME_eatingb7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_eatingb8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_eating_twitch = {8, tbeast_frames_eating_twitch, tbeast_eatorder};
+mmove_t tbeast_move_eating_twitch = {FRAME_eatingb1, FRAME_eatingb8, tbeast_frames_eating_twitch, tbeast_eatorder};
 
 /*----------------------------------------------------------------------
   Gorgon Eat3 - pull back, then bend back down to eat
@@ -96,7 +94,7 @@ static mframe_t tbeast_frames_eating [] =
 	{FRAME_eatingc5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_eatingc6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_eating = {6, tbeast_frames_eating, tbeast_eatorder};
+mmove_t tbeast_move_eating = {FRAME_eatingc1, FRAME_eatingc6, tbeast_frames_eating, tbeast_eatorder};
 
 
 /*----------------------------------------------------------------------
@@ -118,7 +116,7 @@ static mframe_t tbeast_frames_eatdown [] =
 	{FRAME_eatran12, NULL, 0, 0, 0, NULL, 0, tbeast_gibs},
 	{FRAME_eatran13, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_eatdown = {13, tbeast_frames_eatdown, tbeast_eatorder};
+mmove_t tbeast_move_eatdown = {FRAME_eatran1, FRAME_eatran13, tbeast_frames_eatdown, tbeast_eatorder};
 
 /*----------------------------------------------------------------------
   TB Walking
@@ -144,7 +142,7 @@ static mframe_t tbeast_frames_walk [] =
 	{FRAME_walk17, NULL, 0, 0, 0, tbeast_run_think, 16, NULL},
 	{FRAME_walk18, NULL, 0, 0, 0, tbeast_run_think, 24, NULL},
 };
-mmove_t tbeast_move_walk = {18, tbeast_frames_walk, tbeast_walkorder};
+mmove_t tbeast_move_walk = {FRAME_walk1, FRAME_walk18, tbeast_frames_walk, tbeast_walkorder};
 
 /*----------------------------------------------------------------------
   TB Turning left while running
@@ -170,7 +168,7 @@ static mframe_t tbeast_frames_walkleft [] =
 	{FRAME_wlklft17, NULL, 0, 0, 0, tbeast_run_think, 16, tbeast_growl},
 	{FRAME_wlklft18, NULL, 0, 0, 0, tbeast_run_think, 24, NULL},
 };
-mmove_t tbeast_move_walkleft = {18, tbeast_frames_walkleft, tbeast_walkorder};
+mmove_t tbeast_move_walkleft = {FRAME_wlklft1, FRAME_wlklft18, tbeast_frames_walkleft, tbeast_walkorder};
 
 /*----------------------------------------------------------------------
   TB Turning right while running
@@ -196,13 +194,13 @@ static mframe_t tbeast_frames_walkrt [] =
 	{FRAME_wlkrt17, 	NULL, 0, 0, 0, tbeast_run_think, 16, NULL},
 	{FRAME_wlkrt18, 	NULL, 0, 0, 0, tbeast_run_think, 24, tbeast_snort},
 };
-mmove_t tbeast_move_walkrt = {18, tbeast_frames_walkrt, tbeast_walkorder};
+mmove_t tbeast_move_walkrt = {FRAME_wlkrt1, FRAME_wlkrt18, tbeast_frames_walkrt, tbeast_walkorder};
 
 static mframe_t tbeast_frames_inair [] =
 {
 	{FRAME_jumpb16, 	NULL, 0, 0, 0, NULL, 0, tbeast_check_landed},
 };
-mmove_t tbeast_move_inair = {1, tbeast_frames_inair, NULL};
+mmove_t tbeast_move_inair = {FRAME_jumpb16, FRAME_jumpb16, tbeast_frames_inair, NULL};
 
 static mframe_t tbeast_frames_land [] =
 {
@@ -214,7 +212,7 @@ static mframe_t tbeast_frames_land [] =
 	{FRAME_jumpb22, 	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb23, 	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_land = {7, tbeast_frames_land, tbeast_pause};
+mmove_t tbeast_move_land = {FRAME_jumpb17, FRAME_jumpb23, tbeast_frames_land, tbeast_pause};
 /*----------------------------------------------------------------------
    TB jump
 -----------------------------------------------------------------------*/
@@ -236,7 +234,7 @@ static mframe_t tbeast_frames_jump [] =
 	{FRAME_jumpb14,	NULL, 0, 0, 0, NULL, 0, tbeast_check_landed},
 	{FRAME_jumpb15, 	NULL, 0, 0, 0, NULL, 0, tbeast_check_landed},
 };
-mmove_t tbeast_move_jump = {15, tbeast_frames_jump, tbeast_inair};
+mmove_t tbeast_move_jump = {FRAME_jumpb1, FRAME_jumpb15, tbeast_frames_jump, tbeast_inair};
 
 /*----------------------------------------------------------------------
    TB jump
@@ -259,7 +257,7 @@ static mframe_t tbeast_frames_forced_jump [] =
 	{FRAME_jumpb14,	NULL, 0, 0, 0, NULL, 0, tbeast_check_landed},
 	{FRAME_jumpb15, 	NULL, 0, 0, 0, NULL, 0, tbeast_check_landed},
 };
-mmove_t tbeast_move_forced_jump = {15, tbeast_frames_forced_jump, tbeast_inair};
+mmove_t tbeast_move_forced_jump = {FRAME_jumpb1, FRAME_jumpb15, tbeast_frames_forced_jump, tbeast_inair};
 
 /*----------------------------------------------------------------------
 	TB wait
@@ -281,7 +279,7 @@ static mframe_t tbeast_frames_stand [] =
 	{FRAME_wait13,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_wait14,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t tbeast_move_stand = {14, tbeast_frames_stand, tbeast_standorder};
+mmove_t tbeast_move_stand = {FRAME_wait1, FRAME_wait14, tbeast_frames_stand, tbeast_standorder};
 
 
 /*----------------------------------------------------------------------
@@ -304,7 +302,7 @@ static mframe_t tbeast_frames_delay [] =
 	{FRAME_wait13,	NULL, 0, 0, 0, NULL, 0, tbeast_mood},
 	{FRAME_wait14,	NULL, 0, 0, 0, NULL, 0, tbeast_mood},
 };
-mmove_t tbeast_move_delay = {14, tbeast_frames_delay, tbeast_pause};
+mmove_t tbeast_move_delay = {FRAME_wait1, FRAME_wait14, tbeast_frames_delay, tbeast_pause};
 
 static mframe_t tbeast_frames_die [] =
 {
@@ -329,7 +327,7 @@ static mframe_t tbeast_frames_die [] =
 	{FRAME_death19,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death20,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_die = {20, tbeast_frames_die, tbeast_dead};
+mmove_t tbeast_move_die = {FRAME_death1, FRAME_death20, tbeast_frames_die, tbeast_dead};
 
 static mframe_t tbeast_frames_die_norm [] =
 {
@@ -365,7 +363,7 @@ static mframe_t tbeast_frames_die_norm [] =
 	{FRAME_deatha30,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha31,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_die_norm = {31, tbeast_frames_die_norm, tbeast_dead};
+mmove_t tbeast_move_die_norm = {FRAME_deatha1, FRAME_deatha31, tbeast_frames_die_norm, tbeast_dead};
 
 static mframe_t tbeast_frames_charge [] =
 {
@@ -445,7 +443,7 @@ static mframe_t tbeast_frames_charge [] =
 	{FRAME_charge9 , NULL, 0, 0, 0, tbeast_charge, 16, NULL},
 	{FRAME_charge10, NULL, 0, 0, 0, tbeast_charge, 24, tbeast_walkorder}, //18 + 35 = 53
 };
-mmove_t tbeast_move_charge = {75, tbeast_frames_charge, tbeast_walkorder};
+mmove_t tbeast_move_charge = {FRAME_roar1, FRAME_roar1 + 74, tbeast_frames_charge, tbeast_walkorder};
 
 static mframe_t tbeast_frames_roar [] =
 {
@@ -500,7 +498,7 @@ static mframe_t tbeast_frames_roar [] =
 	{FRAME_roar49,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_roar50,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_roar = {50, tbeast_frames_roar, tbeast_pause};
+mmove_t tbeast_move_roar = {FRAME_roar1, FRAME_roar50, tbeast_frames_roar, tbeast_pause};
 
 static mframe_t tbeast_frames_walkatk [] =
 {
@@ -523,7 +521,7 @@ static mframe_t tbeast_frames_walkatk [] =
 	{FRAME_wlkatk17, NULL, 0, 0, 0, tbeast_run_think, 36, tbeast_growl},
 	{FRAME_wlkatk18, NULL, 0, 0, 0, tbeast_run_think, 36, NULL},
 };
-mmove_t tbeast_move_walkatk = {18, tbeast_frames_walkatk, tbeast_pause};
+mmove_t tbeast_move_walkatk = {FRAME_wlkatk1, FRAME_wlkatk18, tbeast_frames_walkatk, tbeast_pause};
 
 static mframe_t tbeast_frames_stun [] =
 {//FIXME: don't walk back so long
@@ -556,7 +554,7 @@ static mframe_t tbeast_frames_stun [] =
 	{FRAME_stun18,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_stun19,	NULL, 0, 0, 0, NULL, 0, tbeast_snort},
 };
-mmove_t tbeast_move_stun = {28, tbeast_frames_stun, tbeast_pause};
+mmove_t tbeast_move_stun = {FRAME_walk18, FRAME_walk18 + 27, tbeast_frames_stun, tbeast_pause};
 
 //========================================================================
 
@@ -570,7 +568,7 @@ static mframe_t tbeast_frames_biteup2_sfin[] =
 	{FRAME_atkc6, tbeast_toy_ofs, 160, -12, 80, NULL, 0, NULL},
 	{FRAME_atkc7, tbeast_toy_ofs, 152, -4, 72, NULL, 0, NULL},
 };
-mmove_t tbeast_move_biteup2_sfin = {4, tbeast_frames_biteup2_sfin, tbeast_go_snatch};
+mmove_t tbeast_move_biteup2_sfin = {FRAME_atkc4, FRAME_atkc7, tbeast_frames_biteup2_sfin, tbeast_go_snatch};
 
 /*----------------------------------------------------------------------
    TB bite up success finish
@@ -582,7 +580,7 @@ static mframe_t tbeast_frames_biteup_sfin[] =
 	{FRAME_atka6, tbeast_toy_ofs, 160, -12, 80, NULL, 0, NULL},
 	{FRAME_atka7, tbeast_toy_ofs, 152, -4, 72, NULL, 0, NULL},
 };
-mmove_t tbeast_move_biteup_sfin = {4, tbeast_frames_biteup_sfin, tbeast_go_snatch};
+mmove_t tbeast_move_biteup_sfin = {FRAME_atka4, FRAME_atka7, tbeast_frames_biteup_sfin, tbeast_go_snatch};
 
 /*----------------------------------------------------------------------
    TB bite low success finish
@@ -596,33 +594,33 @@ static mframe_t tbeast_frames_bitelow_sfin[] =
 	{FRAME_atkb9 , tbeast_toy_ofs, 176, 2, 60, NULL, 0, tbeast_anger_sound},
 	{FRAME_atkb10, tbeast_toy_ofs, 178, 10, 64, NULL, 0, NULL},
 };
-mmove_t tbeast_move_bitelow_sfin = {6, tbeast_frames_bitelow_sfin, tbeast_go_snatch};
+mmove_t tbeast_move_bitelow_sfin = {FRAME_atkb5, FRAME_atkb10, tbeast_frames_bitelow_sfin, tbeast_go_snatch};
 
 /*----------------------------------------------------------------------
    TB snatch throw & catch
 -----------------------------------------------------------------------*/
 static mframe_t tbeast_frames_snatch [] =
 {
-	{FRAME_eatinga6, tbeast_toy_ofs, 164, -16, 94,  NULL, 0,  NULL},
-	{FRAME_eatinga7, tbeast_toy_ofs, 152, -68, 60,  NULL, 0,  NULL},
-	{FRAME_eatinga8, tbeast_toy_ofs, 112, -88, 56,  NULL, 0,  tbeast_anger_sound},
-	{FRAME_eatinga9, tbeast_toy_ofs, 104, -80, 64,  NULL, 0,  NULL},
-	{FRAME_eatinga10, tbeast_toy_ofs, 128, -64, 80,  NULL, 0,  NULL},
-	{FRAME_eatinga11, tbeast_toy_ofs, 160, -16, 84,  NULL, 0,  NULL},
-	{FRAME_eatinga12, tbeast_toy_ofs, 152, 104, 112,  NULL, 0,  tbeast_anger_sound},
-	{FRAME_eatinga13, tbeast_toy_ofs, 128, 116, 128,  NULL, 0,  NULL},
-	{FRAME_eatinga14, tbeast_toy_ofs, 136, 124, 132,  NULL, 0,  NULL},
-	{FRAME_eatinga15, tbeast_toy_ofs, 160, 48, 124,  NULL, 0,  NULL},
-	{FRAME_eatinga16, tbeast_toy_ofs, 168, -56, 98,  NULL, 0,  tbeast_anger_sound},
-	{FRAME_eatinga17, tbeast_toy_ofs, 136, -100, 56,  NULL, 0,  NULL},
-	{FRAME_eatinga18, tbeast_toy_ofs, 104, -96, 52,  NULL, 0,  NULL},
-	{FRAME_eatinga19, tbeast_toy_ofs, 88, -92, 49,  NULL, 0,  NULL},
-	{FRAME_eatinga20, tbeast_toy_ofs, 96, -88, 64,  NULL, 0,  tbeast_anger_sound},
-	{FRAME_eatinga21, tbeast_toy_ofs, 126, -80, 64,  NULL, 0,  NULL},
-	{FRAME_eatinga22, tbeast_toy_ofs, 142, -56, 53,  NULL, 0,  NULL},
-	{FRAME_eatinga23, tbeast_toy_ofs, 146, -18, 34,  NULL, 0,  tbeast_anger_sound},
-	{FRAME_eatinga24, tbeast_toy_ofs, 136, 24, 16,  NULL, 0,  NULL},
-	{FRAME_eatinga25, tbeast_toy_ofs, 120, 48, -8,  NULL, 0,  NULL},
+	{FRAME_eatinga6, tbeast_toy_ofs, 164, -16, 94, NULL, 0, NULL},
+	{FRAME_eatinga7, tbeast_toy_ofs, 152, -68, 60, NULL, 0, NULL},
+	{FRAME_eatinga8, tbeast_toy_ofs, 112, -88, 56, NULL, 0, tbeast_anger_sound},
+	{FRAME_eatinga9, tbeast_toy_ofs, 104, -80, 64, NULL, 0, NULL},
+	{FRAME_eatinga10, tbeast_toy_ofs, 128, -64, 80, NULL, 0, NULL},
+	{FRAME_eatinga11, tbeast_toy_ofs, 160, -16, 84, NULL, 0, NULL},
+	{FRAME_eatinga12, tbeast_toy_ofs, 152, 104, 112, NULL, 0, tbeast_anger_sound},
+	{FRAME_eatinga13, tbeast_toy_ofs, 128, 116, 128, NULL, 0, NULL},
+	{FRAME_eatinga14, tbeast_toy_ofs, 136, 124, 132, NULL, 0, NULL},
+	{FRAME_eatinga15, tbeast_toy_ofs, 160, 48, 124, NULL, 0, NULL},
+	{FRAME_eatinga16, tbeast_toy_ofs, 168, -56, 98, NULL, 0, tbeast_anger_sound},
+	{FRAME_eatinga17, tbeast_toy_ofs, 136, -100, 56, NULL, 0, NULL},
+	{FRAME_eatinga18, tbeast_toy_ofs, 104, -96, 52, NULL, 0, NULL},
+	{FRAME_eatinga19, tbeast_toy_ofs, 88, -92, 49, NULL, 0, NULL},
+	{FRAME_eatinga20, tbeast_toy_ofs, 96, -88, 64, NULL, 0, tbeast_anger_sound},
+	{FRAME_eatinga21, tbeast_toy_ofs, 126, -80, 64, NULL, 0, NULL},
+	{FRAME_eatinga22, tbeast_toy_ofs, 142, -56, 53, NULL, 0, NULL},
+	{FRAME_eatinga23, tbeast_toy_ofs, 146, -18, 34, NULL, 0, tbeast_anger_sound},
+	{FRAME_eatinga24, tbeast_toy_ofs, 136, 24, 16, NULL, 0, NULL},
+	{FRAME_eatinga25, tbeast_toy_ofs, 120, 48, -8, NULL, 0, NULL},
 	{FRAME_jumpb21 , tbeast_toy_ofs, 96, -32, 8, NULL, 0, tbeast_anger_sound},
 	{FRAME_jumpb20 , tbeast_toy_ofs, 128, -34, 12, NULL, 0, tbeast_anger_sound},
 	{FRAME_jumpb19 , tbeast_toy_ofs, 164, 0, 128, NULL, 0, tbeast_anger_sound},
@@ -632,13 +630,13 @@ static mframe_t tbeast_frames_snatch [] =
 	{FRAME_jumpb2 , NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb3 , NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_snatch = {29, tbeast_frames_snatch, tbeast_ready_catch};
+mmove_t tbeast_move_snatch = {FRAME_eatinga6, FRAME_eatinga6 + 28, tbeast_frames_snatch, tbeast_ready_catch};
 
 static mframe_t tbeast_frames_ready_catch [] =
 {
 	{FRAME_jumpb4 , 	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_ready_catch = {1, tbeast_frames_ready_catch, tbeast_ready_catch};
+mmove_t tbeast_move_ready_catch = {FRAME_jumpb4, FRAME_jumpb4, tbeast_frames_ready_catch, tbeast_ready_catch};
 
 static mframe_t tbeast_frames_catch [] =
 {
@@ -654,13 +652,13 @@ static mframe_t tbeast_frames_catch [] =
 	{FRAME_jumpb14,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb15, 	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tbeast_move_catch = {10, tbeast_frames_catch, tbeast_ginair};
+mmove_t tbeast_move_catch = {FRAME_jumpb5, FRAME_jumpb15, tbeast_frames_catch, tbeast_ginair};
 
 static mframe_t tbeast_frames_ginair [] =
 {
 	{FRAME_jumpb16, 	NULL, 0, 0, 0, NULL, 0, tbeast_gcheck_landed},
 };
-mmove_t tbeast_move_ginair = {1, tbeast_frames_ginair, NULL};
+mmove_t tbeast_move_ginair = {FRAME_jumpb16, FRAME_jumpb16, tbeast_frames_ginair, NULL};
 
 static mframe_t tbeast_frames_gland [] =
 {
@@ -672,7 +670,7 @@ static mframe_t tbeast_frames_gland [] =
 	{FRAME_jumpb22, 	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb23, 	NULL, 0, 0, 0, NULL, 0, tbeast_done_gore},
 };
-mmove_t tbeast_move_gland = {7, tbeast_frames_gland, tbeast_done_gore};
+mmove_t tbeast_move_gland = {FRAME_jumpb17, FRAME_jumpb23, tbeast_frames_gland, tbeast_done_gore};
 
 static mframe_t tbeast_frames_quick_charge [] =
 {
@@ -727,4 +725,4 @@ static mframe_t tbeast_frames_quick_charge [] =
 	{FRAME_charge9 , NULL, 0, 0, 0, tbeast_charge, 16, NULL},
 	{FRAME_charge10, NULL, 0, 0, 0, tbeast_charge, 24, tbeast_walkorder}, //18 + 35 = 53
 };
-mmove_t tbeast_move_quick_charge = {50, tbeast_frames_quick_charge, tbeast_walkorder};
+mmove_t tbeast_move_quick_charge = {FRAME_charge1, FRAME_charge1 + 49, tbeast_frames_quick_charge, tbeast_walkorder};

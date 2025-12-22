@@ -8,10 +8,8 @@
 //==============================================================================
 
 #include "../../header/local.h"
-
 #include "gorgon_anim.h"
 #include "gorgon.h"
-
 #include "../../header/utilities.h"
 #include "../../header/g_defaultmessagehandler.h"
 #include "../../header/g_monster.h"
@@ -81,7 +79,7 @@ static mframe_t gorgon_frames_stand3 [] =
 	{FRAME_painc4,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_painc5,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t gorgon_move_stand3 = {5, gorgon_frames_stand3, gorgon_mood};
+mmove_t gorgon_move_stand3 = {FRAME_painc1, FRAME_painc5, gorgon_frames_stand3, gorgon_mood};
 
 /*----------------------------------------------------------------------
 	STAND2 -   Gorgon Standing and looking left
@@ -94,7 +92,7 @@ static mframe_t gorgon_frames_stand2 [] =
 	{FRAME_painb4,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_painb5,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t gorgon_move_stand2 = {5, gorgon_frames_stand2, gorgon_mood};
+mmove_t gorgon_move_stand2 = {FRAME_painb1, FRAME_painb5, gorgon_frames_stand2, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -111,7 +109,7 @@ static mframe_t gorgon_frames_stand1 [] =
 	{FRAME_wait7,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_wait8,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t gorgon_move_stand1 = {8, gorgon_frames_stand1, gorgon_mood};
+mmove_t gorgon_move_stand1 = {FRAME_wait1, FRAME_wait8, gorgon_frames_stand1, gorgon_mood};
 
 /*----------------------------------------------------------------------
 	STAND1 -   Gorgon Standing and wagging it's tail
@@ -127,27 +125,27 @@ static mframe_t gorgon_frames_stand4 [] =
 	{FRAME_wait7,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_wait8,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t gorgon_move_stand4 = {8, gorgon_frames_stand4, gorgon_mood};
+mmove_t gorgon_move_stand4 = {FRAME_wait1, FRAME_wait8, gorgon_frames_stand4, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon Turning right while running
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_walk3 [] =
 {
-	{FRAME_wlkrt1, NULL, 0, 0, 0, ai_walk, 8,  gorgon_footstep},
-	{FRAME_wlkrt2, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt3, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt4, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt5, NULL, 0, 0, 0, ai_walk, 8,  gorgon_footstep},
-	{FRAME_wlkrt6, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt7, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt8, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt9, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt10, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt11, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlkrt12, NULL, 0, 0, 0, ai_walk, 8,  NULL},
+	{FRAME_wlkrt1, NULL, 0, 0, 0, ai_walk, 8, gorgon_footstep},
+	{FRAME_wlkrt2, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt3, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt4, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt5, NULL, 0, 0, 0, ai_walk, 8, gorgon_footstep},
+	{FRAME_wlkrt6, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt7, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt8, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt9, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt10, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt11, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlkrt12, NULL, 0, 0, 0, ai_walk, 8, NULL},
 };
-mmove_t gorgon_move_walk3 = {12, gorgon_frames_walk3, gorgon_mood};
+mmove_t gorgon_move_walk3 = {FRAME_wlkrt1, FRAME_wlkrt12, gorgon_frames_walk3, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -155,41 +153,41 @@ mmove_t gorgon_move_walk3 = {12, gorgon_frames_walk3, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_walk2 [] =
 {
-	{FRAME_wlklft1,NULL, 0, 0, 0, ai_walk, 8,  gorgon_footstep},
-	{FRAME_wlklft2,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft3,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft4,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft5,NULL, 0, 0, 0, ai_walk, 8,  gorgon_footstep},
-	{FRAME_wlklft6,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft7,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft8,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft9,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft10,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft11,NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_wlklft12,NULL, 0, 0, 0, ai_walk, 8,  NULL},
+	{FRAME_wlklft1,NULL, 0, 0, 0, ai_walk, 8, gorgon_footstep},
+	{FRAME_wlklft2,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft3,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft4,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft5,NULL, 0, 0, 0, ai_walk, 8, gorgon_footstep},
+	{FRAME_wlklft6,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft7,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft8,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft9,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft10,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft11,NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_wlklft12,NULL, 0, 0, 0, ai_walk, 8, NULL},
 };
-mmove_t gorgon_move_walk2 = {12, gorgon_frames_walk2, gorgon_mood};
+mmove_t gorgon_move_walk2 = {FRAME_wlklft1, FRAME_wlklft12, gorgon_frames_walk2, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon Walking
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_walk [] =
 {
-	{FRAME_walk1,  NULL, 0, 0, 0, ai_walk, 7,  gorgon_footstep},
-	{FRAME_walk2,  NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk3,  NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk4,  NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk5,  NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk6,  NULL, 0, 0, 0, ai_walk, 6,  gorgon_footstep},
-	{FRAME_walk7,  NULL, 0, 0, 0, ai_walk, 7,  NULL},
-	{FRAME_walk8,  NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk9,  NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk10, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk11, NULL, 0, 0, 0, ai_walk, 8,  NULL},
-	{FRAME_walk12, NULL, 0, 0, 0, ai_walk, 6,  gorgon_growl},
+	{FRAME_walk1, NULL, 0, 0, 0, ai_walk, 7, gorgon_footstep},
+	{FRAME_walk2, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk3, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk4, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk5, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk6, NULL, 0, 0, 0, ai_walk, 6, gorgon_footstep},
+	{FRAME_walk7, NULL, 0, 0, 0, ai_walk, 7, NULL},
+	{FRAME_walk8, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk9, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk10, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk11, NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk12, NULL, 0, 0, 0, ai_walk, 6, gorgon_growl},
 };
 
-mmove_t gorgon_move_walk = {12, gorgon_frames_walk, gorgon_mood};
+mmove_t gorgon_move_walk = {FRAME_walk1, FRAME_walk12, gorgon_frames_walk, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon  Melee while Running
@@ -218,44 +216,44 @@ void gorgon_ai_charge2 (edict_t *self, float dist)
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_fjump [] =
 {
-	{FRAME_jumpb1,NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_jumpb2,NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_jumpb3,NULL, 0, 0, 0, NULL, 0,  gorgon_growl},
-	{FRAME_jumpb4,NULL, 0, 0, 0, NULL, 0,  gorgonApplyJump},
-	{FRAME_jumpb5,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb6,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb7,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb8,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb9,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb10,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb11,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb12,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb13,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
-	{FRAME_jumpb14,NULL, 0, 0, 0, NULL, 0,  gorgon_check_landed},
+	{FRAME_jumpb1,NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb2,NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb3,NULL, 0, 0, 0, NULL, 0, gorgon_growl},
+	{FRAME_jumpb4,NULL, 0, 0, 0, NULL, 0, gorgonApplyJump},
+	{FRAME_jumpb5,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb6,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb7,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb8,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb9,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb10,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb11,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb12,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb13,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
+	{FRAME_jumpb14,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 };
-mmove_t gorgon_move_fjump = {14, gorgon_frames_fjump, gorgon_go_inair};
+mmove_t gorgon_move_fjump = {FRAME_jumpb1, FRAME_jumpb14, gorgon_frames_fjump, gorgon_go_inair};
 
 /*----------------------------------------------------------------------
 	land 1
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_land [] =
 {
-	{FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0,  gorgon_land},
-	{FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0,  gorgon_growl},
-	{FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0, gorgon_land},
+	{FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0, gorgon_growl},
+	{FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_land = {3, gorgon_frames_land, gorgon_mood};
+mmove_t gorgon_move_land = {FRAME_jumpa15, FRAME_jumpa17, gorgon_frames_land, gorgon_mood};
 
 /*----------------------------------------------------------------------
 	land 2
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_land2 [] =
 {
-	{FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0,  gorgon_land},
-	{FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0,  gorgon_growl},
-	{FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0, gorgon_land},
+	{FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0, gorgon_growl},
+	{FRAME_jumpa17,NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_land2 = {3, gorgon_frames_land2, gorgon_mood};
+mmove_t gorgon_move_land2 = {FRAME_jumpa15, FRAME_jumpa17, gorgon_frames_land2, gorgon_mood};
 
 /*----------------------------------------------------------------------
 	in air
@@ -264,17 +262,17 @@ static mframe_t gorgon_frames_inair [] =
 {
 	{FRAME_jumpa14,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 };
-mmove_t gorgon_move_inair = {1, gorgon_frames_inair, NULL};
+mmove_t gorgon_move_inair = {FRAME_jumpa14, FRAME_jumpa14, gorgon_frames_inair, NULL};
 
 /*----------------------------------------------------------------------
 	MELEE10 - jump up at player
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee10 [] =
 {
-	{FRAME_jumpa1,NULL, 0, 0, 0, gorgon_ai_charge2, 0,  NULL},
-	{FRAME_jumpa2,NULL, 0, 0, 0, gorgon_ai_charge2, 0,  NULL},
-	{FRAME_jumpa3,NULL, 0, 0, 0, gorgon_ai_charge2, 0,  gorgon_growl},
-	{FRAME_jumpa4,NULL, 0, 0, 0, NULL, 0,  gorgon_jump},
+	{FRAME_jumpa1,NULL, 0, 0, 0, gorgon_ai_charge2, 0, NULL},
+	{FRAME_jumpa2,NULL, 0, 0, 0, gorgon_ai_charge2, 0, NULL},
+	{FRAME_jumpa3,NULL, 0, 0, 0, gorgon_ai_charge2, 0, gorgon_growl},
+	{FRAME_jumpa4,NULL, 0, 0, 0, NULL, 0, gorgon_jump},
 	{FRAME_jumpa5,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 	{FRAME_jumpa6,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 	{FRAME_jumpa7,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
@@ -286,7 +284,7 @@ static mframe_t gorgon_frames_melee10 [] =
 	{FRAME_jumpa13,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 	{FRAME_jumpa14,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 };
-mmove_t gorgon_move_melee10 = {14, gorgon_frames_melee10, gorgon_go_inair};
+mmove_t gorgon_move_melee10 = {FRAME_jumpa1, FRAME_jumpa14, gorgon_frames_melee10, gorgon_go_inair};
 
 
 /*----------------------------------------------------------------------
@@ -294,72 +292,72 @@ mmove_t gorgon_move_melee10 = {14, gorgon_frames_melee10, gorgon_go_inair};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee9 [] =
 {
-	{FRAME_hop1,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop2,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop3,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop4,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop5,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop6,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop7,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop8,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop4, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop5, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop6, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop7, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop8, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop9, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee9 = {10, gorgon_frames_melee9, gorgon_mood};
+mmove_t gorgon_move_melee9 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee9, gorgon_mood};
 
 /*----------------------------------------------------------------------
 	MELEE8 - hop forward
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee8 [] =
 {
-	{FRAME_hop1,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop2,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop3,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop4,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop5,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop6,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop7,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop8,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop4, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop5, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop6, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop7, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop8, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop9, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee8 = {10, gorgon_frames_melee8, gorgon_mood};
+mmove_t gorgon_move_melee8 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee8, gorgon_mood};
 
 /*----------------------------------------------------------------------
   MELEE7 - hop right
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee7 [] =
 {
-	{FRAME_hop1,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop2,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop3,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop4,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop5,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop6,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop7,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop8,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop4, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop5, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop6, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop7, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop8, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop9, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee7 = {10, gorgon_frames_melee7, gorgon_mood};
+mmove_t gorgon_move_melee7 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee7, gorgon_mood};
 
 /*----------------------------------------------------------------------
   MELEE6 - hop left
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee6 [] =
 {
-	{FRAME_hop1,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop2,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop3,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop4,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop5,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop6,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop7,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop8,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgon_hop},
-	{FRAME_hop9,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop4, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop5, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop6, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop7, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop8, NULL, 0, 0, 0, ai_goal_charge, 0, gorgon_hop},
+	{FRAME_hop9, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_hop10, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee6 = {10, gorgon_frames_melee6, gorgon_mood};
+mmove_t gorgon_move_melee6 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee6, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -367,7 +365,7 @@ mmove_t gorgon_move_melee6 = {10, gorgon_frames_melee6, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee5 [] =
 {
-	{FRAME_runatk1,  NULL, 0, 0, 0, ai_goal_charge, 20, gorgon_melee5check},
+	{FRAME_runatk1, NULL, 0, 0, 0, ai_goal_charge, 20, gorgon_melee5check},
 	{FRAME_runatk2,	NULL, 0, 0, 0, ai_goal_charge, 20, NULL},
 	{FRAME_runatk3,	NULL, 0, 0, 0, ai_goal_charge, 22, NULL},
 	{FRAME_runatk4,	NULL, 0, 0, 0, ai_goal_charge, 21, gorgonbite},
@@ -378,7 +376,7 @@ static mframe_t gorgon_frames_melee5 [] =
 };
 
 
-mmove_t gorgon_move_melee5 = {8, gorgon_frames_melee5, gorgon_mood};
+mmove_t gorgon_move_melee5 = {FRAME_runatk1, FRAME_runatk8, gorgon_frames_melee5, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -386,12 +384,12 @@ mmove_t gorgon_move_melee5 = {8, gorgon_frames_melee5, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee4 [] =
 {
-	{FRAME_atkc1, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkc2, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkc3, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkc4, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_atkc1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkc2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkc3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkc4, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee4 = {4, gorgon_frames_melee4, gorgon_mood};
+mmove_t gorgon_move_melee4 = {FRAME_atkc1, FRAME_atkc4, gorgon_frames_melee4, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -399,12 +397,12 @@ mmove_t gorgon_move_melee4 = {4, gorgon_frames_melee4, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee3 [] =
 {
-	{FRAME_atkd1, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkd2, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkd3, NULL, 0, 0, 0, ai_goal_charge, 0,  gorgonbite},
-	{FRAME_atkd4, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_atkd1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkd2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkd3, NULL, 0, 0, 0, ai_goal_charge, 0, gorgonbite},
+	{FRAME_atkd4, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee3 = {4, gorgon_frames_melee3, gorgon_mood};
+mmove_t gorgon_move_melee3 = {FRAME_atkd1, FRAME_atkd4, gorgon_frames_melee3, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -412,12 +410,12 @@ mmove_t gorgon_move_melee3 = {4, gorgon_frames_melee3, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee2 [] =
 {
-	{FRAME_atkb1,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkb2,  NULL, 0, 0, 0, ai_goal_charge, 0,  gorgonbite},
-	{FRAME_atkb3,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atkb4,  NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_atkb1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkb2, NULL, 0, 0, 0, ai_goal_charge, 0, gorgonbite},
+	{FRAME_atkb3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atkb4, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee2 = {4, gorgon_frames_melee2, gorgon_mood};
+mmove_t gorgon_move_melee2 = {FRAME_atkb1, FRAME_atkb4, gorgon_frames_melee2, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -425,12 +423,12 @@ mmove_t gorgon_move_melee2 = {4, gorgon_frames_melee2, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_melee1 [] =
 {
-	{FRAME_atka1, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atka2, NULL, 0, 0, 0, ai_goal_charge, 0,  gorgonbite},
-	{FRAME_atka3, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
-	{FRAME_atka4, NULL, 0, 0, 0, ai_goal_charge, 0,  NULL},
+	{FRAME_atka1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atka2, NULL, 0, 0, 0, ai_goal_charge, 0, gorgonbite},
+	{FRAME_atka3, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
+	{FRAME_atka4, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 };
-mmove_t gorgon_move_melee1 = {4, gorgon_frames_melee1, gorgon_mood};
+mmove_t gorgon_move_melee1 = {FRAME_atka1, FRAME_atka4, gorgon_frames_melee1, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -438,20 +436,20 @@ mmove_t gorgon_move_melee1 = {4, gorgon_frames_melee1, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_run3 [] =
 {
-	{FRAME_wlkrt1, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep},
-	{FRAME_wlkrt2, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt3, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt4, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt5, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt6, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt7, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt8, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt9, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt10, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt11, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgonCheckSlip},
-	{FRAME_wlkrt12, NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_growl},
+	{FRAME_wlkrt1, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_footstep},
+	{FRAME_wlkrt2, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt3, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt4, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt5, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt6, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt7, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt8, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt9, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt10, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt11, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
+	{FRAME_wlkrt12, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_growl},
 };
-mmove_t gorgon_move_run3 = {12, gorgon_frames_run3, gorgon_mood};
+mmove_t gorgon_move_run3 = {FRAME_wlkrt1, FRAME_wlkrt12, gorgon_frames_run3, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -459,20 +457,20 @@ mmove_t gorgon_move_run3 = {12, gorgon_frames_run3, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_run2 [] =
 {
-	{FRAME_wlklft1,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep},
-	{FRAME_wlklft2,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft3,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft4,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft5,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_footstep},
-	{FRAME_wlklft6,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft7,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft8,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft9,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft10,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft11,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_mood},
-	{FRAME_wlklft12,NULL, 0, 0, 0, gorgon_ai_run, 16,  gorgon_growl},
+	{FRAME_wlklft1,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_footstep},
+	{FRAME_wlklft2,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft3,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft4,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft5,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_footstep},
+	{FRAME_wlklft6,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft7,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft8,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft9,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft10,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft11,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
+	{FRAME_wlklft12,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_growl},
 };
-mmove_t gorgon_move_run2 = {12, gorgon_frames_run2, gorgon_mood};
+mmove_t gorgon_move_run2 = {FRAME_wlklft1, FRAME_wlklft12, gorgon_frames_run2, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -489,24 +487,24 @@ static mframe_t gorgon_frames_run1 [] =
 	{FRAME_run7,	NULL, 0, 0, 0, gorgon_ai_run, 32, gorgon_mood},
 	{FRAME_run8,	NULL, 0, 0, 0, gorgon_ai_run, 34, gorgon_growl},
 };
-mmove_t gorgon_move_run1 = {8, gorgon_frames_run1, gorgon_mood};
+mmove_t gorgon_move_run1 = {FRAME_run1, FRAME_run8, gorgon_frames_run1, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon Pain1 - step back while bending head down
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_pain1 [] =
 {
-	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain8, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_pain9, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_pain9, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_pain1 = {9, gorgon_frames_pain1, gorgon_mood};
+mmove_t gorgon_move_pain1 = {FRAME_pain1, FRAME_pain9, gorgon_frames_pain1, gorgon_mood};
 
 
 /*----------------------------------------------------------------------
@@ -514,42 +512,35 @@ mmove_t gorgon_move_pain1 = {9, gorgon_frames_pain1, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_pain2 [] =
 {
-	{FRAME_painb1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painb2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painb3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painb4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painb5, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_painb1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painb2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painb3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painb4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painb5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_pain2 = {5, gorgon_frames_pain2, gorgon_mood};
+mmove_t gorgon_move_pain2 = {FRAME_painb1, FRAME_painb5, gorgon_frames_pain2, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon Pain3 - bend head to the right
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_pain3 [] =
 {
-	{FRAME_painc1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painc2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painc3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painc4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_painc5, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_painc1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painc2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painc3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painc4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_painc5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_pain3 = {5, gorgon_frames_pain3, gorgon_mood};
+mmove_t gorgon_move_pain3 = {FRAME_painc1, FRAME_painc5, gorgon_frames_pain3, gorgon_mood};
 
 
 void gorgon_smoke(edict_t *self)
 {
-	//CL_SmokeAndFlash(self->s.origin);
 	gorgon_land(self);
-	//gi.sound(self, CHAN_WEAPON, sounds[SND_GROWL3], 1, ATTN_NORM, 0);
 }
 
 void gorgondeath1_fall (edict_t *self)
 {
-//	vec3_t		forward,right, up,hold_angles;
-
-//	if (self->s.frame == FRAME_deatha11)
-//		carnasaur_noshadow(self);
-
 	if (self->s.frame == FRAME_deatha13)
 		gorgon_smoke(self);
 
@@ -558,27 +549,27 @@ void gorgondeath1_fall (edict_t *self)
 
 static mframe_t gorgon_frames_die1 [] =
 {
-	{FRAME_deatha1, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha2, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha3, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha4, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha5, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha6, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha7, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha8, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha9, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_deatha10, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},
-	{FRAME_deatha11, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha15, NULL, 0, 0, 0, ai_move, 0,  NULL},
-	{FRAME_deatha16, NULL, 0, 0, 0, ai_move, 0,  NULL},
-	{FRAME_deatha17, NULL, 0, 0, 0, ai_move, 0,  NULL},  //carnasaur_drip,
-	{FRAME_deatha18, NULL, 0, 0, 0, ai_move, 0,  NULL},
-	{FRAME_deatha19, NULL, 0, 0, 0, ai_move, 0,  NULL},
+	{FRAME_deatha1, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha2, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha3, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha4, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha5, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha6, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha7, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha8, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha9, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_deatha10, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall},
+	{FRAME_deatha11, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha15, NULL, 0, 0, 0, ai_move, 0, NULL},
+	{FRAME_deatha16, NULL, 0, 0, 0, ai_move, 0, NULL},
+	{FRAME_deatha17, NULL, 0, 0, 0, ai_move, 0, NULL}, //carnasaur_drip,
+	{FRAME_deatha18, NULL, 0, 0, 0, ai_move, 0, NULL},
+	{FRAME_deatha19, NULL, 0, 0, 0, ai_move, 0, NULL},
 };
-mmove_t gorgon_move_die1 = {19, gorgon_frames_die1, gorgon_dead};
+mmove_t gorgon_move_die1 = {FRAME_deatha1, FRAME_deatha19, gorgon_frames_die1, gorgon_dead};
 
 /*----------------------------------------------------------------------
   Gorgon Death2 - fly backwards and twitch
@@ -595,11 +586,11 @@ void gorgon_nexttwitch(edict_t *self)
 
 static mframe_t gorgon_frames_death2twitch [] =
 {
-	{FRAME_twitch,  NULL, 0, 0, 0, NULL, 0,  gorgon_starttwitch},
-	{FRAME_twitch_1,NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_twitch_2,NULL, 0, 0, 0, NULL, 0,  gorgon_nexttwitch},
+	{FRAME_twitch, NULL, 0, 0, 0, NULL, 0, gorgon_starttwitch},
+	{FRAME_twitch_1,NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_twitch_2,NULL, 0, 0, 0, NULL, 0, gorgon_nexttwitch},
 };
-mmove_t gorgon_move_death2twitch = {3, gorgon_frames_death2twitch, NULL};
+mmove_t gorgon_move_death2twitch = {FRAME_twitch, FRAME_twitch_2, gorgon_frames_death2twitch, NULL};
 
 void gorgon_death2twitch (edict_t *self)
 {
@@ -614,39 +605,39 @@ void gorgon_death2twitch (edict_t *self)
 
 static mframe_t gorgon_frames_death2slide [] =
 {
-	{FRAME_slide1, NULL, 0, 0, 0, ai_move, -16,  NULL},
-	{FRAME_slide2, NULL, 0, 0, 0, ai_move, -14,  NULL},
-	{FRAME_slide3, NULL, 0, 0, 0, ai_move, -12,  NULL},
-	{FRAME_slide4, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide5, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide6, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide7, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide8, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide9, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide10, NULL, 0, 0, 0, ai_move, -8,  NULL},
-	{FRAME_slide11, NULL, 0, 0, 0, ai_move, -4,  NULL},
-	{FRAME_slide12, NULL, 0, 0, 0, ai_move, -2,  NULL},
-	{FRAME_slide13, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide14, NULL, 0, 0, 0, NULL, 0,  NULL}, //gorgonChooseDeath,
-	{FRAME_slide15, NULL, 0, 0, 0, ai_moveright, -2,  NULL},
-	{FRAME_slide16, NULL, 0, 0, 0, ai_moveright, -4,  NULL},
-	{FRAME_slide17, NULL, 0, 0, 0, ai_moveright, -2,  NULL},
-	{FRAME_slide18, NULL, 0, 0, 0, ai_moveright, -6,  NULL},
-	{FRAME_slide19, NULL, 0, 0, 0, ai_moveright, -2,  NULL},
-	{FRAME_slide20, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide21, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide22, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide23, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide24, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide25, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide26, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide27, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide28, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide29, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide30, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_slide31, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_slide1, NULL, 0, 0, 0, ai_move, -16, NULL},
+	{FRAME_slide2, NULL, 0, 0, 0, ai_move, -14, NULL},
+	{FRAME_slide3, NULL, 0, 0, 0, ai_move, -12, NULL},
+	{FRAME_slide4, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide5, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide6, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide7, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide8, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide9, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide10, NULL, 0, 0, 0, ai_move, -8, NULL},
+	{FRAME_slide11, NULL, 0, 0, 0, ai_move, -4, NULL},
+	{FRAME_slide12, NULL, 0, 0, 0, ai_move, -2, NULL},
+	{FRAME_slide13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide14, NULL, 0, 0, 0, NULL, 0, NULL}, //gorgonChooseDeath,
+	{FRAME_slide15, NULL, 0, 0, 0, ai_moveright, -2, NULL},
+	{FRAME_slide16, NULL, 0, 0, 0, ai_moveright, -4, NULL},
+	{FRAME_slide17, NULL, 0, 0, 0, ai_moveright, -2, NULL},
+	{FRAME_slide18, NULL, 0, 0, 0, ai_moveright, -6, NULL},
+	{FRAME_slide19, NULL, 0, 0, 0, ai_moveright, -2, NULL},
+	{FRAME_slide20, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide24, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide25, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide26, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide27, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide28, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide29, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide30, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_slide31, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_death2slide = {31, gorgon_frames_death2slide, gorgon_dead};
+mmove_t gorgon_move_death2slide = {FRAME_slide1, FRAME_slide31, gorgon_frames_death2slide, gorgon_dead};
 
 void gorgon_death2_slide (edict_t *self)
 {
@@ -663,26 +654,23 @@ void gorgon_death2throw (edict_t *self)
 
 	VectorScale (forward, -375, self->velocity);
 	self->velocity[2] = 200;
-//	self->movetype= MOVETYPE_BOUNCE;//elasticity?
 }
 
 void gorgon_death2 (edict_t *self)
 {
-
-//	self->movetype= MOVETYPE_STEP;
 	self->velocity[2] = -120;
 }
 
 static mframe_t gorgon_frames_die2 [] =
 {
-	{FRAME_hit1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_hit3, NULL, 0, 0, 0, NULL, 0,  gorgon_death2throw},
-	{FRAME_hit5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_hit7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_hit9, NULL, 0, 0, 0, NULL, 0,  gorgon_death2},
-	{FRAME_hit11, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_hit1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_hit3, NULL, 0, 0, 0, NULL, 0, gorgon_death2throw},
+	{FRAME_hit5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_hit7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_hit9, NULL, 0, 0, 0, NULL, 0, gorgon_death2},
+	{FRAME_hit11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_die2 = {6, gorgon_frames_die2, gorgon_death2_slide};
+mmove_t gorgon_move_die2 = {FRAME_hit1, FRAME_hit6, gorgon_frames_die2, gorgon_death2_slide};
 
 
 /*
@@ -705,24 +693,24 @@ static mframe_t gorgon_frames_catch [] =
 	{FRAME_jumpb13,NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb14,NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb15,NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jumpb16,NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_jumpb17,NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_jumpb18,NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_jumpb19,NULL, 0, 0, 0, NULL, 0,  gorgon_anger_sound},
+	{FRAME_jumpb16,NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb17,NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb18,NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb19,NULL, 0, 0, 0, NULL, 0, gorgon_anger_sound},
 };
-mmove_t gorgon_move_catch = {15, gorgon_frames_catch, gorgon_done_gore};
+mmove_t gorgon_move_catch = {FRAME_jumpb5, FRAME_jumpb19, gorgon_frames_catch, gorgon_done_gore};
 
 /*----------------------------------------------------------------------
   Gorgon Eat3 - pull back, then bend back down to eat
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_miss [] =
 {
-	{FRAME_eatinga4, NULL, 0, 0, 0, NULL, 0,  gorgon_miss_sound},
-	{FRAME_eatinga3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatinga2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatinga1, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_eatinga4, NULL, 0, 0, 0, NULL, 0, gorgon_miss_sound},
+	{FRAME_eatinga3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_miss = {4, gorgon_frames_miss, gorgon_mood};
+mmove_t gorgon_move_miss = {FRAME_eatinga1, FRAME_eatinga4, gorgon_frames_miss, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Shake and toss up toy
@@ -731,73 +719,73 @@ mmove_t gorgon_move_miss = {4, gorgon_frames_miss, gorgon_mood};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_snatch [] =
 {
-	{FRAME_eatingb5, gorgon_toy_ofs, 70, 0, 66,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb6, gorgon_toy_ofs, 68, -44, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb7, gorgon_toy_ofs, 56, -64, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb8, gorgon_toy_ofs, 60, -56, 66,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb9, gorgon_toy_ofs, 68, -24, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb10, gorgon_toy_ofs, 72, 40, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb11, gorgon_toy_ofs, 60, 70, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb12, gorgon_toy_ofs, 70, 48, 66,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb13, gorgon_toy_ofs, 74, -32, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb14, gorgon_toy_ofs, 64, -70, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb15, gorgon_toy_ofs, 40, -72, 66,  NULL, 0,  NULL},
-	{FRAME_eatingb16, gorgon_toy_ofs, 42, -70, 66,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb17, gorgon_toy_ofs, 60, -60, 62,  NULL, 0,  NULL},
-	{FRAME_eatingb18, gorgon_toy_ofs, 66, -40, 56,  NULL, 0,  NULL},
-	{FRAME_eatingb19, gorgon_toy_ofs, 72, -10, 32,  NULL, 0,  NULL},
-	{FRAME_eatingb20, gorgon_toy_ofs, 62, 16, 12,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb21, gorgon_toy_ofs, 56, 32, 0,  NULL, 0,  NULL},
-	{FRAME_eatinga4, gorgon_toy_ofs, 48, 16, 64,  NULL, 0,  NULL},
-	{FRAME_eatinga3, gorgon_toy_ofs, 50, 14, 96,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatinga2, gorgon_toy_ofs, 80, 8, 80,  NULL, 0,  NULL},
-	{FRAME_eatinga1, gorgon_toy_ofs, 96, 0, 76,  NULL, 0,  NULL},
-	{FRAME_jumpa1, gorgon_toy_ofs, 100, 8, 78,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_jumpa2, gorgon_toy_ofs, 90, 6, 64,  NULL, 0,  NULL},
-	{FRAME_jumpa3, gorgon_toy_ofs, 76, 4, 48,  NULL, 0,  NULL},
-	{FRAME_jumpa4, gorgon_toy_ofs, 96, 6, 140,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_jumpa5, gorgon_toy_ofs, 90, 6, 208,  NULL, 0, gorgon_throw_toy},
-	{FRAME_jumpb4, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_eatingb5, gorgon_toy_ofs, 70, 0, 66, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb6, gorgon_toy_ofs, 68, -44, 66, NULL, 0, NULL},
+	{FRAME_eatingb7, gorgon_toy_ofs, 56, -64, 66, NULL, 0, NULL},
+	{FRAME_eatingb8, gorgon_toy_ofs, 60, -56, 66, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb9, gorgon_toy_ofs, 68, -24, 66, NULL, 0, NULL},
+	{FRAME_eatingb10, gorgon_toy_ofs, 72, 40, 66, NULL, 0, NULL},
+	{FRAME_eatingb11, gorgon_toy_ofs, 60, 70, 66, NULL, 0, NULL},
+	{FRAME_eatingb12, gorgon_toy_ofs, 70, 48, 66, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb13, gorgon_toy_ofs, 74, -32, 66, NULL, 0, NULL},
+	{FRAME_eatingb14, gorgon_toy_ofs, 64, -70, 66, NULL, 0, NULL},
+	{FRAME_eatingb15, gorgon_toy_ofs, 40, -72, 66, NULL, 0, NULL},
+	{FRAME_eatingb16, gorgon_toy_ofs, 42, -70, 66, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb17, gorgon_toy_ofs, 60, -60, 62, NULL, 0, NULL},
+	{FRAME_eatingb18, gorgon_toy_ofs, 66, -40, 56, NULL, 0, NULL},
+	{FRAME_eatingb19, gorgon_toy_ofs, 72, -10, 32, NULL, 0, NULL},
+	{FRAME_eatingb20, gorgon_toy_ofs, 62, 16, 12, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb21, gorgon_toy_ofs, 56, 32, 0, NULL, 0, NULL},
+	{FRAME_eatinga4, gorgon_toy_ofs, 48, 16, 64, NULL, 0, NULL},
+	{FRAME_eatinga3, gorgon_toy_ofs, 50, 14, 96, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatinga2, gorgon_toy_ofs, 80, 8, 80, NULL, 0, NULL},
+	{FRAME_eatinga1, gorgon_toy_ofs, 96, 0, 76, NULL, 0, NULL},
+	{FRAME_jumpa1, gorgon_toy_ofs, 100, 8, 78, NULL, 0, gorgon_anger_sound},
+	{FRAME_jumpa2, gorgon_toy_ofs, 90, 6, 64, NULL, 0, NULL},
+	{FRAME_jumpa3, gorgon_toy_ofs, 76, 4, 48, NULL, 0, NULL},
+	{FRAME_jumpa4, gorgon_toy_ofs, 96, 6, 140, NULL, 0, gorgon_anger_sound},
+	{FRAME_jumpa5, gorgon_toy_ofs, 90, 6, 208, NULL, 0, gorgon_throw_toy},
+	{FRAME_jumpb4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_snatch = {27, gorgon_frames_snatch, gorgon_ready_catch};
+mmove_t gorgon_move_snatch = {FRAME_eatingb5, FRAME_eatingb5 + 26, gorgon_frames_snatch, gorgon_ready_catch};
 
 /*----------------------------------------------------------------------
   Gorgon Eat3 - pull back, then bend back down to eat
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_readycatch [] =
 {
-	{FRAME_jumpb4, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_jumpb4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_readycatch = {1, gorgon_frames_readycatch, gorgon_ready_catch};
+mmove_t gorgon_move_readycatch = {FRAME_jumpb4, FRAME_jumpb4, gorgon_frames_readycatch, gorgon_ready_catch};
 
 /*----------------------------------------------------------------------
   Gorgon
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_snatchhi [] =
 {
-	{FRAME_atkd1, NULL, 0, 0, 0, gorgon_ai_charge2, 10,  NULL},
-	{FRAME_atkd2, NULL, 0, 0, 0, gorgon_ai_charge2, 10,  NULL},
-	{FRAME_atkd3, gorgon_check_snatch, 96, 0, 56, NULL, 0,  NULL},
-	{FRAME_atkd4, gorgon_toy_ofs, 96, 16, 160, NULL, 0,  NULL},
+	{FRAME_atkd1, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
+	{FRAME_atkd2, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
+	{FRAME_atkd3, gorgon_check_snatch, 96, 0, 56, NULL, 0, NULL},
+	{FRAME_atkd4, gorgon_toy_ofs, 96, 16, 160, NULL, 0, NULL},
 };
-mmove_t gorgon_move_snatchhi = {4, gorgon_frames_snatchhi, gorgon_go_snatch};
+mmove_t gorgon_move_snatchhi = {FRAME_atkd1, FRAME_atkd4, gorgon_frames_snatchhi, gorgon_go_snatch};
 
 /*----------------------------------------------------------------------
   Gorgon
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_snatchlow [] =
 {
-	{FRAME_eatinga1, NULL, 0, 0, 0, gorgon_ai_charge2, 10,  NULL},
-	{FRAME_eatinga2, NULL, 0, 0, 0, gorgon_ai_charge2, 10,  NULL},
-	{FRAME_eatinga3, NULL, 0, 0, 0, gorgon_ai_charge2, 10,  NULL},
-	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_charge2, 10,  NULL},
-	{FRAME_eatinga5, gorgon_check_snatch, 64, 0, -48, NULL, 0,  NULL},
-	{FRAME_eatingb1, gorgon_toy_ofs, 48, -32, 0, NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb2, gorgon_toy_ofs, 48, 10, 10,  NULL, 0,  NULL},
-	{FRAME_eatingb3, gorgon_toy_ofs, 48, 0, 20,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatingb4, gorgon_toy_ofs, 56, 0, 24,  NULL, 0,  NULL},
+	{FRAME_eatinga1, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
+	{FRAME_eatinga2, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
+	{FRAME_eatinga3, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
+	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
+	{FRAME_eatinga5, gorgon_check_snatch, 64, 0, -48, NULL, 0, NULL},
+	{FRAME_eatingb1, gorgon_toy_ofs, 48, -32, 0, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb2, gorgon_toy_ofs, 48, 10, 10, NULL, 0, NULL},
+	{FRAME_eatingb3, gorgon_toy_ofs, 48, 0, 20, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatingb4, gorgon_toy_ofs, 56, 0, 24, NULL, 0, NULL},
 };
-mmove_t gorgon_move_snatchlow = {9, gorgon_frames_snatchlow, gorgon_go_snatch};
+mmove_t gorgon_move_snatchlow = {FRAME_eatinga1, FRAME_eatinga1 + 8, gorgon_frames_snatchlow, gorgon_go_snatch};
 
 
 /*----------------
@@ -805,78 +793,78 @@ mmove_t gorgon_move_snatchlow = {9, gorgon_frames_snatchlow, gorgon_go_snatch};
 -----------------------*/
 static mframe_t gorgon_frames_slip [] =
 {
-	{FRAME_deatha1, NULL, 0, 0, 0, gorgonSlide, -200,  NULL},
-	{FRAME_deatha2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha8, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha9, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_deatha10, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},
-	{FRAME_deatha11, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha15, NULL, 0, 0, 0, gorgonRoll, -60,  NULL},
-	{FRAME_deatha16, NULL, 0, 0, 0, gorgonRoll, -120,  NULL},
-	{FRAME_deatha17, NULL, 0, 0, 0, gorgonRoll, -180,  NULL},  //carnasaur_drip,
-	{FRAME_deatha18, NULL, 0, 0, 0, gorgonRoll, -240,  NULL},
-	{FRAME_deatha19, NULL, 0, 0, 0, gorgonRoll, -300,  gorgonLerpOff},
-	{FRAME_eatingb1, NULL, 0, 0, 0, gorgonRoll, 0,  NULL},
-	{FRAME_eatingb3, NULL, 0, 0, 0, NULL, 0,  gorgonLerpOn},
-	{FRAME_eatingb4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb8, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb10, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb11, NULL, 0, 0, 0, NULL, 0,  NULL},  // carnasaur_fall,
-	{FRAME_eatingb13, NULL, 0, 0, 0, NULL, 0,  NULL},  // carnasaur_fall,
-	{FRAME_eatingb15, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb18, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb21, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatinga4, NULL, 0, 0, 0,  NULL, 0,  NULL},
-	{FRAME_eatinga3, NULL, 0, 0, 0,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatinga2, NULL, 0, 0, 0,  NULL, 0,  NULL},
-	{FRAME_eatinga1, NULL, 0, 0, 0,  gorgonSlide, 0,  NULL},
+	{FRAME_deatha1, NULL, 0, 0, 0, gorgonSlide, -200, NULL},
+	{FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha10, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall},
+	{FRAME_deatha11, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha15, NULL, 0, 0, 0, gorgonRoll, -60, NULL},
+	{FRAME_deatha16, NULL, 0, 0, 0, gorgonRoll, -120, NULL},
+	{FRAME_deatha17, NULL, 0, 0, 0, gorgonRoll, -180, NULL}, //carnasaur_drip,
+	{FRAME_deatha18, NULL, 0, 0, 0, gorgonRoll, -240, NULL},
+	{FRAME_deatha19, NULL, 0, 0, 0, gorgonRoll, -300, gorgonLerpOff},
+	{FRAME_eatingb1, NULL, 0, 0, 0, gorgonRoll, 0, NULL},
+	{FRAME_eatingb3, NULL, 0, 0, 0, NULL, 0, gorgonLerpOn},
+	{FRAME_eatingb4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb11, NULL, 0, 0, 0, NULL, 0, NULL}, // carnasaur_fall,
+	{FRAME_eatingb13, NULL, 0, 0, 0, NULL, 0, NULL}, // carnasaur_fall,
+	{FRAME_eatingb15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga3, NULL, 0, 0, 0, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatinga2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga1, NULL, 0, 0, 0, gorgonSlide, 0, NULL},
 };
-mmove_t gorgon_move_slip = {36, gorgon_frames_slip, gorgon_mood};
+mmove_t gorgon_move_slip = {FRAME_deatha1, FRAME_deatha1 + 35, gorgon_frames_slip, gorgon_mood};
 
 /*----------------
 ?
 -----------------------*/
 static mframe_t gorgon_frames_slip_pain [] =
 {
-	{FRAME_deatha11, NULL, 0, 0, 0, gorgonSlide, -200,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0,  gorgondeath1_fall},  // carnasaur_fall,
-	{FRAME_rollover1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_rollover2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_rollover3, NULL, 0, 0, 0, NULL, 0,  NULL},  //carnasaur_drip,
-	{FRAME_rollover4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_rollover5, NULL, 0, 0, 0, NULL, 0,  gorgonLerpOff},
-	{FRAME_eatingb1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb3, NULL, 0, 0, 0, NULL, 0,  gorgonLerpOn},
-	{FRAME_eatingb4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb8, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb10, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb11, NULL, 0, 0, 0, NULL, 0,  NULL},  // carnasaur_fall,
-	{FRAME_eatingb13, NULL, 0, 0, 0, NULL, 0,  NULL},  // carnasaur_fall,
-	{FRAME_eatingb15, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb18, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatingb21, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_eatinga4, NULL, 0, 0, 0,  NULL, 0,  NULL},
-	{FRAME_eatinga3, NULL, 0, 0, 0,  NULL, 0,  gorgon_anger_sound},
-	{FRAME_eatinga2, NULL, 0, 0, 0,  NULL, 0,  NULL},
-	{FRAME_eatinga1, NULL, 0, 0, 0,  gorgonSlide, 0,  NULL},
+	{FRAME_deatha11, NULL, 0, 0, 0, gorgonSlide, -200, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
+	{FRAME_rollover1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollover2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollover3, NULL, 0, 0, 0, NULL, 0, NULL}, //carnasaur_drip,
+	{FRAME_rollover4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_rollover5, NULL, 0, 0, 0, NULL, 0, gorgonLerpOff},
+	{FRAME_eatingb1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb3, NULL, 0, 0, 0, NULL, 0, gorgonLerpOn},
+	{FRAME_eatingb4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb11, NULL, 0, 0, 0, NULL, 0, NULL}, // carnasaur_fall,
+	{FRAME_eatingb13, NULL, 0, 0, 0, NULL, 0, NULL}, // carnasaur_fall,
+	{FRAME_eatingb15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatingb21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga3, NULL, 0, 0, 0, NULL, 0, gorgon_anger_sound},
+	{FRAME_eatinga2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_eatinga1, NULL, 0, 0, 0, gorgonSlide, 0, NULL},
 };
-mmove_t gorgon_move_slip_pain = {26, gorgon_frames_slip_pain, gorgon_mood};
+mmove_t gorgon_move_slip_pain = {FRAME_deatha11, FRAME_deatha11 + 25, gorgon_frames_slip_pain, gorgon_mood};
 
 /*----------------------------------------------------------------------
 	delay
@@ -892,61 +880,61 @@ static mframe_t gorgon_frames_delay [] =
 	{FRAME_wait7,	NULL, 0, 0, 0, NULL, 0, gorgon_mood},
 	{FRAME_wait8,	NULL, 0, 0, 0, NULL, 0, gorgon_mood},
 };
-mmove_t gorgon_move_delay = {8, gorgon_frames_delay, gorgon_mood};
+mmove_t gorgon_move_delay = {FRAME_wait1, FRAME_wait8, gorgon_frames_delay, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon roar- make noise, alert others
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_roar [] =
 {
-	{FRAME_speak1, NULL, 0, 0, 0, NULL, 0,  gorgonRoar},
-	{FRAME_speak2, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak7, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak8, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak9, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak10, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak11, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak12, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak13, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak14, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak15, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak16, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak17, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak18, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak19, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_speak1, NULL, 0, 0, 0, NULL, 0, gorgonRoar},
+	{FRAME_speak2, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak7, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak13, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak17, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak19, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_roar = {19, gorgon_frames_roar, gorgon_mood};
+mmove_t gorgon_move_roar = {FRAME_speak1, FRAME_speak19, gorgon_frames_roar, gorgon_mood};
 
 /*----------------------------------------------------------------------
   Gorgon roar2- make noise in response to main roar
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_roar2 [] =
 {
-	{FRAME_speak1, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak4, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak8, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak9, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak10, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak11, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak12, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak13, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak14, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak15, NULL, 0, 0, 0, NULL, 0,  gorgon_roar_sound},
-	{FRAME_speak16, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak17, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak18, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_speak19, NULL, 0, 0, 0, NULL, 0,  NULL},
+	{FRAME_speak1, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak4, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak8, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak10, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak15, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
+	{FRAME_speak16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_speak19, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_roar2 = {19, gorgon_frames_roar2, gorgon_mood};
+mmove_t gorgon_move_roar2 = {FRAME_speak1, FRAME_speak19, gorgon_frames_roar2, gorgon_mood};
 
 //=====================================================
 
@@ -965,7 +953,7 @@ static mframe_t gorgon_frames_to_swim [] =
 	{FRAME_swim4,	NULL, 0, 0, 0, NULL, 0, gorgonCheckInWater},
 	{FRAME_swim5,	NULL, 0, 0, 0, NULL, 0, gorgonCheckInWater},
 };
-mmove_t gorgon_move_to_swim = {5, gorgon_frames_to_swim, gorgonGoSwim};
+mmove_t gorgon_move_to_swim = {FRAME_swim1, FRAME_swim5, gorgon_frames_to_swim, gorgonGoSwim};
 
 static mframe_t gorgon_frames_swim [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
@@ -983,7 +971,7 @@ static mframe_t gorgon_frames_swim [] =
 	{FRAME_swim17,	NULL, 0, 0, 0, gorgon_ai_swim, 32, NULL},
 	{FRAME_swim18,	NULL, 0, 0, 0, gorgon_ai_swim, 34, NULL},
 };
-mmove_t gorgon_move_swim = {13, gorgon_frames_swim, NULL};
+mmove_t gorgon_move_swim = {FRAME_swim6, FRAME_swim18, gorgon_frames_swim, NULL};
 
 static mframe_t gorgon_frames_swim_bite_a [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
@@ -1002,7 +990,7 @@ static mframe_t gorgon_frames_swim_bite_a [] =
 	{FRAME_swimata13,NULL, 0, 0, 0, gorgon_ai_swim, 34, NULL},
 	{FRAME_swimata14,NULL, 0, 0, 0, gorgon_ai_swim, 34, NULL},
 };
-mmove_t gorgon_move_swim_bite_a = {14, gorgon_frames_swim_bite_a, NULL};
+mmove_t gorgon_move_swim_bite_a = {FRAME_swimata1, FRAME_swimata14, gorgon_frames_swim_bite_a, NULL};
 
 static mframe_t gorgon_frames_swim_bite_b [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
@@ -1021,32 +1009,32 @@ static mframe_t gorgon_frames_swim_bite_b [] =
 	{FRAME_swimatb13,NULL, 0, 0, 0, gorgon_ai_swim, 34, NULL},
 	{FRAME_swimatb14,NULL, 0, 0, 0, gorgon_ai_swim, 34, NULL},
 };
-mmove_t gorgon_move_swim_bite_b = {14, gorgon_frames_swim_bite_b, NULL};
+mmove_t gorgon_move_swim_bite_b = {FRAME_swimatb1, FRAME_swimatb14, gorgon_frames_swim_bite_b, NULL};
 
 static mframe_t gorgon_frames_outwater [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
-	{FRAME_swimata1,	NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
-	{FRAME_swimata3,	NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
-	{FRAME_swimata6,	NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
-	{FRAME_swimata8,	NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
-	{FRAME_swimata10,NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
-	{FRAME_swimata12,NULL, 0, 0, 0, gorgon_ai_swim, -1, gorgon_growl},
-	{FRAME_swimata14,NULL, 0, 0, 0, gorgon_ai_swim, -1, gorgonJumpOutWater},
-	{FRAME_jumpb5,	NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_jumpb6,	NULL, 0, 0, 0, NULL, 0,  gorgonFixPitch},
-	{FRAME_jumpb7,	NULL, 0, 0, 0, NULL, 0,  gorgonFixPitch},
-	{FRAME_jumpb8,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb9,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb10,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb11,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb12,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb13,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb14,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonFixPitch},
-	{FRAME_jumpb15,	NULL, 0, 0, 0, gorgonForward, 100,  gorgonZeroPitch},
-	{FRAME_jumpb16,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jumpb17,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_swimata1, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
+	{FRAME_swimata3, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
+	{FRAME_swimata6, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
+	{FRAME_swimata8, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
+	{FRAME_swimata10, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
+	{FRAME_swimata12, NULL, 0, 0, 0, gorgon_ai_swim, -1, gorgon_growl},
+	{FRAME_swimata14, NULL, 0, 0, 0, gorgon_ai_swim, -1, gorgonJumpOutWater},
+	{FRAME_jumpb5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb6, NULL, 0, 0, 0, NULL, 0, gorgonFixPitch},
+	{FRAME_jumpb7, NULL, 0, 0, 0, NULL, 0, gorgonFixPitch},
+	{FRAME_jumpb8, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb9, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb10, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb11, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb12, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb13, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb14, NULL, 0, 0, 0, gorgonForward, 100, gorgonFixPitch},
+	{FRAME_jumpb15, NULL, 0, 0, 0, gorgonForward, 100, gorgonZeroPitch},
+	{FRAME_jumpb16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jumpb17, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t gorgon_move_outwater = {20, gorgon_frames_outwater, gorgon_mood};
+mmove_t gorgon_move_outwater = {FRAME_swimata1, FRAME_swimata1 + 19, gorgon_frames_outwater, gorgon_mood};
 
 //=============================================================================
 
@@ -1066,7 +1054,7 @@ static mframe_t gorgon_frames_eat_down [] =
 	{FRAME_eatinga3,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatinga4,	NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_down = {4, gorgon_frames_eat_down, NULL};
+mmove_t gorgon_move_eat_down = {FRAME_eatinga1, FRAME_eatinga4, gorgon_frames_eat_down, NULL};
 
 /*----------------------------------------------------------------------
 	eating trans to up
@@ -1078,50 +1066,50 @@ static mframe_t gorgon_frames_eat_up [] =
 	{FRAME_eatinga2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatinga1,	NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_up = {4, gorgon_frames_eat_up, NULL};
+mmove_t gorgon_move_eat_up = {FRAME_eatinga1, FRAME_eatinga4, gorgon_frames_eat_up, NULL};
 
 /*----------------------------------------------------------------------
   eat cycle
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_eat_loop [] =
 {
-	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga6, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga7, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga8, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga9, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga10, NULL, 0, 0, 0, gorgon_ai_eat, -1,  NULL},
+	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga6, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga7, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga8, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga9, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga10, NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_loop = {6, gorgon_frames_eat_loop, NULL};
+mmove_t gorgon_move_eat_loop = {FRAME_eatinga5, FRAME_eatinga10, gorgon_frames_eat_loop, NULL};
 
 /*----------------------------------------------------------------------
   eating - tear
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_eat_tear [] =
 {
-	{FRAME_eatingb1, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb2, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb3, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb4, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb5, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb6, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb7, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb8, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb9, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb10, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb11, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb12, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb13, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb14, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb15, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb16, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb17, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb18, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb19, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb20, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatingb21, NULL, 0, 0, 0, gorgon_ai_eat, -1,  NULL},
+	{FRAME_eatingb1, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb2, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb3, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb4, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb5, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb6, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb7, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb8, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb9, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb10, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb11, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb12, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb13, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb14, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb15, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb16, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb17, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb18, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb19, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb20, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatingb21, NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_tear = {21, gorgon_frames_eat_tear, NULL};
+mmove_t gorgon_move_eat_tear = {FRAME_eatingb1, FRAME_eatingb21, gorgon_frames_eat_tear, NULL};
 
 
 /*----------------------------------------------------------------------
@@ -1129,13 +1117,13 @@ mmove_t gorgon_move_eat_tear = {21, gorgon_frames_eat_tear, NULL};
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_eat_pullback [] =
 {
-	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga3, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_eat, 0,  NULL},
-	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, -1,  NULL},
+	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga3, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
+	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_pullback = {5, gorgon_frames_eat_pullback, NULL};
+mmove_t gorgon_move_eat_pullback = {FRAME_eatinga5, FRAME_eatinga5 + 4, gorgon_frames_eat_pullback, NULL};
 
 /*----------------------------------------------------------------------
 	look around
@@ -1164,7 +1152,7 @@ static mframe_t gorgon_frames_look_around [] =
 	{FRAME_idleb20,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_idleb21,	NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_look_around = {21, gorgon_frames_look_around, NULL};
+mmove_t gorgon_move_look_around = {FRAME_idleb1, FRAME_idleb21, gorgon_frames_look_around, NULL};
 
 /*----------------------------------------------------------------------
 	looking left from eat
@@ -1215,7 +1203,7 @@ static mframe_t gorgon_frames_eat_left [] =
 	{FRAME_loklft2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_loklft1,	NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_left = {43, gorgon_frames_eat_left, NULL};
+mmove_t gorgon_move_eat_left = {FRAME_loklft1, FRAME_loklft1 + 42, gorgon_frames_eat_left, NULL};
 
 /*----------------------------------------------------------------------
 	looking right from eat
@@ -1262,37 +1250,37 @@ static mframe_t gorgon_frames_eat_right [] =
 	{FRAME_lokrt2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_lokrt1,	NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_right = {39, gorgon_frames_eat_right, NULL};
+mmove_t gorgon_move_eat_right = {FRAME_lokrt1, FRAME_lokrt1 + 38, gorgon_frames_eat_right, NULL};
 
 /*----------------------------------------------------------------------
   snap at something to right
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_eat_snap [] =
 {
-	{FRAME_snap1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_snap2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_snap3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_snap4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_snap5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_snap6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_snap7, NULL, 0, 0, 0, gorgon_ai_eat, -1,  NULL},
+	{FRAME_snap1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_snap2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_snap3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_snap4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_snap5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_snap6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_snap7, NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_snap = {7, gorgon_frames_eat_snap, NULL};
+mmove_t gorgon_move_eat_snap = {FRAME_snap1, FRAME_snap7, gorgon_frames_eat_snap, NULL};
 
 /*----------------------------------------------------------------------
   react tp something to left
 -----------------------------------------------------------------------*/
 static mframe_t gorgon_frames_eat_react [] =
 {
-	{FRAME_react1, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react2, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react3, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react4, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react5, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react6, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react7, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react8, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react9, NULL, 0, 0, 0, NULL, 0,  NULL},
-	{FRAME_react10, NULL, 0, 0, 0, gorgon_ai_eat, -1,  NULL},
+	{FRAME_react1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_react10, NULL, 0, 0, 0, gorgon_ai_eat, -1, NULL},
 };
-mmove_t gorgon_move_eat_react = {10, gorgon_frames_eat_react, NULL};
+mmove_t gorgon_move_eat_react = {FRAME_react1, FRAME_react10, gorgon_frames_eat_react, NULL};

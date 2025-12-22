@@ -339,7 +339,7 @@ void plagueElf_strike (edict_t *self)
 	}
 
 	VectorSet(mins, -4, -4, -4);
-	VectorSet(maxs,  4,  4,  4);
+	VectorSet(maxs, 4, 4, 4);
 
 	VectorSubtract(soff, eoff, bloodDir);
 	VectorNormalize(bloodDir);

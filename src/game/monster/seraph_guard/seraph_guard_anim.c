@@ -9,15 +9,15 @@
 
 static mframe_t seraph_guard_frames_stand[] =
 {
-	{FRAME_idle1,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle2,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle3,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle4,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle5,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle6,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle7,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle8,  NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle9,  NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle1, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle2, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle3, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle4, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle5, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle6, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle7, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle8, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle9, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle10, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle11, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle12, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -39,24 +39,24 @@ static mframe_t seraph_guard_frames_stand[] =
 	{FRAME_idle28, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle29, NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t seraph_guard_move_stand = {29, seraph_guard_frames_stand, seraph_guard_pause};
+mmove_t seraph_guard_move_stand = {FRAME_idle1, FRAME_idle29, seraph_guard_frames_stand, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_melee[] =
 {
-	{FRAME_axea1,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea2,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea3,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea3,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea4,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea5,  seraph_guard_strike, SGUARD_DMG_AXE, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea5,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea5,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea5,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea6,  NULL, 0, 0, 0, ai_charge, 0, seraph_guard_checkpoke},
-	{FRAME_axea7,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea8,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea9,  NULL, 0, 0, 0, ai_charge, 0, NULL},
-	{FRAME_axea9,  NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea1, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea2, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea3, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea3, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea4, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea5, seraph_guard_strike, SGUARD_DMG_AXE, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea5, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea5, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea5, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea6, NULL, 0, 0, 0, ai_charge, 0, seraph_guard_checkpoke},
+	{FRAME_axea7, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea8, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea9, NULL, 0, 0, 0, ai_charge, 0, NULL},
+	{FRAME_axea9, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_axea10, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_axea11, seraph_guard_strike, SGUARD_DMG_AXE, 0, 0, ai_charge, 0, NULL},
 	{FRAME_axea11, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -66,7 +66,7 @@ static mframe_t seraph_guard_frames_melee[] =
 	{FRAME_axea12, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_axea13, NULL, 0, 0, 0, ai_charge, 0, NULL},
 };
-mmove_t seraph_guard_move_melee = {22,seraph_guard_frames_melee, seraph_guard_pause};
+mmove_t seraph_guard_move_melee = {FRAME_axea1, FRAME_axea1 + 21, seraph_guard_frames_melee, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_pain[] =
 {
@@ -76,7 +76,7 @@ static mframe_t seraph_guard_frames_pain[] =
 	{FRAME_pain4, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain5, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t seraph_guard_move_pain = {5,seraph_guard_frames_pain, seraph_guard_pause};
+mmove_t seraph_guard_move_pain = {FRAME_pain1, FRAME_pain5, seraph_guard_frames_pain, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_runmelee[] =
 {
@@ -89,7 +89,7 @@ static mframe_t seraph_guard_frames_runmelee[] =
 	{FRAME_runaxe2, NULL, 0, 0, 0, ai_charge, 20, NULL},
 	{FRAME_runaxe3, NULL, 0, 0, 0, ai_charge, 20, NULL},
 };
-mmove_t seraph_guard_move_runmelee = {8,seraph_guard_frames_runmelee, seraph_guard_pause};
+mmove_t seraph_guard_move_runmelee = {FRAME_runaxe4, FRAME_runaxe4 + 7, seraph_guard_frames_runmelee, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_run[] =
 {
@@ -102,7 +102,7 @@ static mframe_t seraph_guard_frames_run[] =
 	{FRAME_run7, NULL, 0, 0, 0, ai_run, 20, seraph_guard_pause},
 	{FRAME_run8, NULL, 0, 0, 0, ai_run, 20, seraph_guard_pause},
 };
-mmove_t seraph_guard_move_run = {8,seraph_guard_frames_run, seraph_guard_pause};
+mmove_t seraph_guard_move_run = {FRAME_run1, FRAME_run8, seraph_guard_frames_run, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_fjump[] =
 {
@@ -115,19 +115,19 @@ static mframe_t seraph_guard_frames_fjump[] =
 	{FRAME_run7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_run8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t seraph_guard_move_fjump = {8,seraph_guard_frames_fjump, seraph_guard_pause};
+mmove_t seraph_guard_move_fjump = {FRAME_run1, FRAME_run8, seraph_guard_frames_fjump, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_walk[] =
 {
-	{FRAME_walk1,  NULL, 0, 0, 0, ai_walk, 6, NULL},
-	{FRAME_walk2,  NULL, 0, 0, 0, ai_walk, 6, NULL},
-	{FRAME_walk3,  NULL, 0, 0, 0, ai_walk, 6, NULL},
-	{FRAME_walk4,  NULL, 0, 0, 0, ai_walk, 5, NULL},
-	{FRAME_walk5,  NULL, 0, 0, 0, ai_walk, 4, NULL},
-	{FRAME_walk6,  NULL, 0, 0, 0, ai_walk, 4, NULL},
-	{FRAME_walk7,  NULL, 0, 0, 0, ai_walk, 5, NULL},
-	{FRAME_walk8,  NULL, 0, 0, 0, ai_walk, 6, NULL},
-	{FRAME_walk9,  NULL, 0, 0, 0, ai_walk, 6, NULL},
+	{FRAME_walk1, NULL, 0, 0, 0, ai_walk, 6, NULL},
+	{FRAME_walk2, NULL, 0, 0, 0, ai_walk, 6, NULL},
+	{FRAME_walk3, NULL, 0, 0, 0, ai_walk, 6, NULL},
+	{FRAME_walk4, NULL, 0, 0, 0, ai_walk, 5, NULL},
+	{FRAME_walk5, NULL, 0, 0, 0, ai_walk, 4, NULL},
+	{FRAME_walk6, NULL, 0, 0, 0, ai_walk, 4, NULL},
+	{FRAME_walk7, NULL, 0, 0, 0, ai_walk, 5, NULL},
+	{FRAME_walk8, NULL, 0, 0, 0, ai_walk, 6, NULL},
+	{FRAME_walk9, NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_walk10, NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_walk11, NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_walk12, NULL, 0, 0, 0, ai_walk, 5, NULL},
@@ -136,7 +136,7 @@ static mframe_t seraph_guard_frames_walk[] =
 	{FRAME_walk15, NULL, 0, 0, 0, ai_walk, 5, NULL},
 	{FRAME_walk16, NULL, 0, 0, 0, ai_walk, 6, NULL},
 };
-mmove_t seraph_guard_move_walk = {16,seraph_guard_frames_walk, seraph_guard_pause};
+mmove_t seraph_guard_move_walk = {FRAME_walk1, FRAME_walk16, seraph_guard_frames_walk, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_melee2[] =
 {
@@ -153,40 +153,40 @@ static mframe_t seraph_guard_frames_melee2[] =
 	{FRAME_axeb5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_axeb6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t seraph_guard_move_melee2 = {12, seraph_guard_frames_melee2, seraph_guard_pause};
+mmove_t seraph_guard_move_melee2 = {FRAME_axeb1, FRAME_axeb1 + 11, seraph_guard_frames_melee2, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_melee3[] =
 {
-	{FRAME_axec1,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec2,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec2,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec3,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec4,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec5,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec6,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec7,  seraph_guard_strike, SGUARD_DMG_AXE, 0, 0, NULL, 0, NULL},
-	{FRAME_axec7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec8,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_axec9,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec7, seraph_guard_strike, SGUARD_DMG_AXE, 0, 0, NULL, 0, NULL},
+	{FRAME_axec7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_axec9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_axec10, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t seraph_guard_move_melee3 = {16, seraph_guard_frames_melee3, seraph_guard_pause};
+mmove_t seraph_guard_move_melee3 = {FRAME_axec1, FRAME_axec1 + 15, seraph_guard_frames_melee3, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_death1[] =
 {
-	{FRAME_deatha1,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha2,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha3,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha4,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha5,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha6,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha8,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_deatha9,  NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_deatha9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha10, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha11, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -203,29 +203,29 @@ static mframe_t seraph_guard_frames_death1[] =
 	{FRAME_deatha23, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha24, NULL, 0, 0, 0, NULL, 0, seraph_guard_dead},
 };
-mmove_t seraph_guard_move_death1 = {24, seraph_guard_frames_death1, NULL};
+mmove_t seraph_guard_move_death1 = {FRAME_deatha1, FRAME_deatha24, seraph_guard_frames_death1, NULL};
 
 static mframe_t seraph_guard_frames_death2_go[] =
 {
-	{FRAME_deathb1,   NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
-	{FRAME_deathb2,   NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
-	{FRAME_deathb3,   NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
-	{FRAME_deathb4,   NULL, 0, 0, 0, NULL, 0, seraph_guard_death_loop},
+	{FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb3, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb4, NULL, 0, 0, 0, NULL, 0, seraph_guard_death_loop},
 };
-mmove_t seraph_guard_move_death2_go = {4, seraph_guard_frames_death2_go, NULL};
+mmove_t seraph_guard_move_death2_go = {FRAME_deathb1, FRAME_deathb4, seraph_guard_frames_death2_go, NULL};
 
 static mframe_t seraph_guard_frames_death2_loop[] =
 {
-	{FRAME_deathb5,   NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb5, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 };
-mmove_t seraph_guard_move_death2_loop = {1, seraph_guard_frames_death2_loop, NULL};
+mmove_t seraph_guard_move_death2_loop = {FRAME_deathb5, FRAME_deathb5, seraph_guard_frames_death2_loop, NULL};
 
 static mframe_t seraph_guard_frames_death2_end[] =
 {
-	{FRAME_deathb6,  NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
-	{FRAME_deathb7,  NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
-	{FRAME_deathb8,  NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
-	{FRAME_deathb9,  NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb6, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb7, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb8, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
+	{FRAME_deathb9, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 	{FRAME_deathb10, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 	{FRAME_deathb11, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 	{FRAME_deathb12, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
@@ -233,7 +233,7 @@ static mframe_t seraph_guard_frames_death2_end[] =
 	{FRAME_deathb14, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 	{FRAME_deathb15, NULL, 0, 0, 0, NULL, 0, seraph_guard_dead},
 };
-mmove_t seraph_guard_move_death2_end = {10, seraph_guard_frames_death2_end, NULL};
+mmove_t seraph_guard_move_death2_end = {FRAME_deathb6, FRAME_deathb15, seraph_guard_frames_death2_end, NULL};
 
 static mframe_t seraph_guard_frames_backup[] =
 {
@@ -254,35 +254,35 @@ static mframe_t seraph_guard_frames_backup[] =
 	{FRAME_backup15, NULL, 0, 0, 0, seraph_guard_back, 24, NULL},
 	{FRAME_backup16, NULL, 0, 0, 0, seraph_guard_back, 20, NULL},
 };
-mmove_t seraph_guard_move_backup = {16, seraph_guard_frames_backup, seraph_guard_pause};
+mmove_t seraph_guard_move_backup = {FRAME_backup1, FRAME_backup16, seraph_guard_frames_backup, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_missile[] =
 {
-	{FRAME_newshot1,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot2,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot3,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot4,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot5,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot6,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot7,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot8,  NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_newshot9,  NULL, 0, 0, 0, NULL, 0, seraph_guard_fire},
+	{FRAME_newshot1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_newshot9, NULL, 0, 0, 0, NULL, 0, seraph_guard_fire},
 	{FRAME_newshot10, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_newshot11, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t seraph_guard_move_missile = {11, seraph_guard_frames_missile, seraph_guard_pause};
+mmove_t seraph_guard_move_missile = {FRAME_newshot1, FRAME_newshot11, seraph_guard_frames_missile, seraph_guard_pause};
 
 static mframe_t seraph_guard_frames_delay[] =
 {
-	{FRAME_idle1,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle2,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle3,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle4,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle5,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle6,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle7,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle8,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
-	{FRAME_idle9,  NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle1, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle2, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle3, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle4, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle5, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle6, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle7, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle8, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
+	{FRAME_idle9, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
 	{FRAME_idle10, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
 	{FRAME_idle11, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
 	{FRAME_idle12, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
@@ -304,4 +304,4 @@ static mframe_t seraph_guard_frames_delay[] =
 	{FRAME_idle28, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
 	{FRAME_idle29, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
 };
-mmove_t seraph_guard_move_delay = {29, seraph_guard_frames_delay, seraph_guard_pause};
+mmove_t seraph_guard_move_delay = {FRAME_idle1, FRAME_idle29, seraph_guard_frames_delay, seraph_guard_pause};

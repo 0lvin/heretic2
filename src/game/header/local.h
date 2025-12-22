@@ -107,7 +107,7 @@
 typedef enum
 {
 	DAMAGE_NO,
-	DAMAGE_YES,         /* will take damage if hit */
+	DAMAGE_YES, /* will take damage if hit */
 	DAMAGE_AIM          /* auto targeting recognizes this */
 } damage_t;
 
@@ -253,20 +253,20 @@ typedef enum
 /* edict->movetype values */
 typedef enum
 {
-	MOVETYPE_NONE,      /* never moves */
+	MOVETYPE_NONE, /* never moves */
 	MOVETYPE_STATIC,
-	MOVETYPE_NOCLIP,    /* origin and angles change with no interaction */
-	MOVETYPE_STEP,      /* gravity, special edge handling */
+	MOVETYPE_NOCLIP, /* origin and angles change with no interaction */
+	MOVETYPE_STEP, /* gravity, special edge handling */
 	MOVETYPE_FLY,
-	MOVETYPE_PUSH,      /* no clip to world, push on box contact */
-	MOVETYPE_STOP,      /* no clip to world, stops on box contact */
+	MOVETYPE_PUSH, /* no clip to world, push on box contact */
+	MOVETYPE_STOP, /* no clip to world, stops on box contact */
 
-	MOVETYPE_WALK,      /* gravity */
-	MOVETYPE_TOSS,      /* gravity */
+	MOVETYPE_WALK, /* gravity */
+	MOVETYPE_TOSS, /* gravity */
 	MOVETYPE_FLYMISSILE, /* extra size to monsters */
 	MOVETYPE_BOUNCE, /* added this (the comma at the end of line) */
 	MOVETYPE_WALLBOUNCE,
-	MOVETYPE_NEWTOSS,    /* for deathball */
+	MOVETYPE_NEWTOSS, /* for deathball */
 	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
 } movetype_t;
 
@@ -1024,7 +1024,8 @@ typedef struct
 
 typedef struct
 {
-	int numframes;
+	int firstframe;
+	int lastframe;
 	mframe_t *frame;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
@@ -1046,8 +1047,6 @@ typedef struct
 	void (*melee)(edict_t *self);
 	void (*sight)(edict_t *self, edict_t *other);
 	qboolean (*checkattack)(edict_t *self);
-	void (*dismember)(edict_t *self, int damage, int HitLocation);
-	qboolean (*alert)(edict_t *self, alertent_t *alerter, edict_t *enemy);
 
 	/* dynamic actions */
 	const char *action;
@@ -1098,6 +1097,10 @@ typedef struct
 	float quad_framenum;
 	float invincible_framenum;
 	float double_framenum;
+
+	/* Heretic 2 */
+	void (*dismember)(edict_t *self, int damage, int HitLocation);
+	qboolean (*alert)(edict_t *self, alertent_t *alerter, edict_t *enemy);
 
 	int aistate;						// Last order given to the monster (ORD_XXX).
 	int currframeindex;					// Index to current monster frame.
@@ -1364,18 +1367,18 @@ typedef enum
 {
 	F_INT,
 	F_FLOAT,
-	F_LSTRING,          /* string on disk, pointer in memory, TAG_LEVEL */
-	F_GSTRING,          /* string on disk, pointer in memory, TAG_GAME */
+	F_LSTRING, /* string on disk, pointer in memory, TAG_LEVEL */
+	F_GSTRING, /* string on disk, pointer in memory, TAG_GAME */
 	F_VECTOR,
 	F_ANGLEHACK,
-	F_EDICT,            /* index on disk, pointer in memory */
-	F_ITEM,             /* index on disk, pointer in memory */
-	F_CLIENT,           /* index on disk, pointer in memory */
+	F_EDICT, /* index on disk, pointer in memory */
+	F_ITEM, /* index on disk, pointer in memory */
+	F_CLIENT, /* index on disk, pointer in memory */
 	F_FUNCTION,
 	F_MMOVE,
 	F_IGNORE,
 	F_RGBA,
-	F_LRAWSTRING,       /* raw string on disk, pointer in memory, TAG_LEVEL */
+	F_LRAWSTRING, /* raw string on disk, pointer in memory, TAG_LEVEL */
 } fieldtype_t;
 
 typedef struct

@@ -8,10 +8,8 @@
 //==============================================================================
 
 #include "../../header/local.h"
-
 #include "mother_anim.h"
 #include "mother.h"
-
 #include "../../header/g_monster.h"
 #include "../../character/ai.h"
 
@@ -32,7 +30,7 @@ static mframe_t mother_frames_pain [] =
 	{FRAME_pain017, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain019, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mother_move_pain = {10, mother_frames_pain, mother_pause};
+mmove_t mother_move_pain = {FRAME_pain001, FRAME_pain001 + 9, mother_frames_pain, mother_pause};
 
 /*----------------------------------------------------------------------
 -----------------------------------------------------------------------*/
@@ -100,4 +98,4 @@ static mframe_t mother_frames_stand [] =
 	{FRAME_poly059, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_poly060, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mother_move_stand = {61, mother_frames_stand, mother_pause};
+mmove_t mother_move_stand = {FRAME_poly000, FRAME_poly060, mother_frames_stand, mother_pause};

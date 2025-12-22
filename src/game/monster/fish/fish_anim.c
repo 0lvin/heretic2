@@ -7,14 +7,8 @@
 //==============================================================================
 
 #include "../../header/local.h"
-
 #include "fish_anim.h"
 #include "fish.h"
-
-#define FISH_WALK_SPEED 3
-#define FISH_RUN_SPEED 7
-#define FISH_FLEE_SPEED 9
-
 
 /*----------------------------------------------------------------------
   Fish Melee1 -
@@ -36,7 +30,7 @@ static mframe_t fish_frames_melee [] =
 	{FRAME_attfrnzy13,	NULL, 0, 0, 0, NULL, 0, fish_target},
 	{FRAME_attfrnzy14,	NULL, 0, 0, 0, NULL, 0, fish_target},
 };
-mmove_t fish_move_melee = {14, fish_frames_melee, fish_pause};
+mmove_t fish_move_melee = {FRAME_attfrnzy1, FRAME_attfrnzy14, fish_frames_melee, fish_pause};
 
 
 /*----------------------------------------------------------------------
@@ -52,7 +46,7 @@ static mframe_t fish_frames_bite [] =
 	{FRAME_attbite6,	NULL, 0, 0, 0, NULL, 0, fishbite},
 	{FRAME_attbite7,	NULL, 0, 0, 0, NULL, 0, fish_target},
 };
-mmove_t fish_move_bite = {7, fish_frames_bite, fish_pause};
+mmove_t fish_move_bite = {FRAME_attbite1, FRAME_attbite7, fish_frames_bite, fish_pause};
 
 /*----------------------------------------------------------------------
   Fish Run1 -
@@ -68,7 +62,7 @@ static mframe_t fish_frames_run1 [] =
 	{FRAME_swim7,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_swim8,	NULL, 0, 0, 0, fish_swim_sound, 1, fish_chase},
 };
-mmove_t fish_move_run1 = {8, fish_frames_run1, finished_runswim};
+mmove_t fish_move_run1 = {FRAME_swim1, FRAME_swim8, fish_frames_run1, finished_runswim};
 
 /*----------------------------------------------------------------------
   Fish Run2 -
@@ -85,7 +79,7 @@ static mframe_t fish_frames_run2 [] =
 	{FRAME_swimLEFT8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_swimLEFT9,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t fish_move_run2 = {9, fish_frames_run2, fish_run};
+mmove_t fish_move_run2 = {FRAME_swimLEFT1, FRAME_swimLEFT9, fish_frames_run2, fish_run};
 
 /*----------------------------------------------------------------------
   Fish Run3 -
@@ -102,7 +96,7 @@ static mframe_t fish_frames_run3 [] =
 	{FRAME_swimRIGHT8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_swimRIGHT9,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t fish_move_run3 = {9, fish_frames_run3, fish_run};
+mmove_t fish_move_run3 = {FRAME_swimRIGHT1, FRAME_swimRIGHT9, fish_frames_run3, fish_run};
 
 /*----------------------------------------------------------------------
   Fish Walk1 -
@@ -134,7 +128,7 @@ static mframe_t fish_frames_walk1 [] =
 	{FRAME_fishpat23,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_fishpat24,	NULL, 0, 0, 0, NULL, 0, fish_chase},
 };
-mmove_t fish_move_walk1 = {24, fish_frames_walk1, finished_swim};
+mmove_t fish_move_walk1 = {FRAME_fishpat1, FRAME_fishpat24, fish_frames_walk1, finished_swim};
 
 
 /*----------------------------------------------------------------------
@@ -152,7 +146,7 @@ static mframe_t fish_frames_walk2 [] =
 	{FRAME_slowturnl8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_slowturnl9,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t fish_move_walk2 = {9, fish_frames_walk2, fish_walk};
+mmove_t fish_move_walk2 = {FRAME_slowturnl1, FRAME_slowturnl9, fish_frames_walk2, fish_walk};
 
 /*----------------------------------------------------------------------
   Fish Walk3 -  Swim to the right
@@ -169,7 +163,7 @@ static mframe_t fish_frames_walk3 [] =
 	{FRAME_slowturnr8,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_slowturnr9,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t fish_move_walk3 = {9, fish_frames_walk3, fish_walk};
+mmove_t fish_move_walk3 = {FRAME_slowturnr1, FRAME_slowturnr9, fish_frames_walk3, fish_walk};
 
 /*----------------------------------------------------------------------
   Fish Stand1 -
@@ -201,7 +195,7 @@ static mframe_t fish_frames_stand1 [] =
 	{FRAME_fishpat23,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_fishpat24,	NULL, 0, 0, 0, ai_stand, 0, fish_chase},
 };
-mmove_t fish_move_stand1 = {24, fish_frames_stand1, fish_idle };
+mmove_t fish_move_stand1 = {FRAME_fishpat1, FRAME_fishpat24, fish_frames_stand1, fish_idle };
 
 
 /*----------------------------------------------------------------------
@@ -217,7 +211,7 @@ static mframe_t fish_frames_pain1 [] =
 	{FRAME_pain6,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain7,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t fish_move_pain1 = {7, fish_frames_pain1, finished_fish_pain };
+mmove_t fish_move_pain1 = {FRAME_pain1, FRAME_pain7, fish_frames_pain1, finished_fish_pain };
 
 /*----------------------------------------------------------------------
   Fish Death1 -
@@ -258,4 +252,4 @@ static mframe_t fish_frames_death [] =
 	{FRAME_Death32,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Death33,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t fish_move_death = {33, fish_frames_death, fish_dead};
+mmove_t fish_move_death = {FRAME_Death1, FRAME_Death33, fish_frames_death, fish_dead};

@@ -13,7 +13,6 @@
 #include "elflord.h"
 
 void elflord_finish_death(edict_t *self);
-void elflord_soa_loop(edict_t *self);
 void elflord_soa_end(edict_t *self);
 void ai_charge2 (edict_t *self, float dist);
 
@@ -48,7 +47,7 @@ static mframe_t elflord_frames_idle [] =
 	{FRAME_idle23,	NULL, 0, 0, 0, elflord_ai_stand, 0, NULL},
 	{FRAME_idle24,	NULL, 0, 0, 0, elflord_ai_stand, 0, NULL},
 };
-mmove_t elflord_move_idle = {24, elflord_frames_idle, NULL};
+mmove_t elflord_move_idle = {FRAME_idle1, FRAME_idle24, elflord_frames_idle, NULL};
 
 static mframe_t elflord_frames_run [] =
 {
@@ -64,7 +63,7 @@ static mframe_t elflord_frames_run [] =
 	{FRAME_ftforwd10,NULL, 0, 0, 0, elflord_flymove, 7, elflordRandomRushSound},
 	{FRAME_ftforwd11,NULL, 0, 0, 0, elflord_flymove, 7, NULL},
 };
-mmove_t elflord_move_run = {11, elflord_frames_run, NULL};
+mmove_t elflord_move_run = {FRAME_ftforwd1, FRAME_ftforwd11, elflord_frames_run, NULL};
 
 static mframe_t elflord_frames_charge [] =
 {
@@ -80,30 +79,30 @@ static mframe_t elflord_frames_charge [] =
 	{FRAME_charge12, NULL, 0, 0, 0, elflord_flymove, 12, NULL},
 	{FRAME_charge13, NULL, 0, 0, 0, elflord_flymove, 12, NULL},
 };
-mmove_t elflord_move_charge = {11, elflord_frames_charge, elfLordPause};
+mmove_t elflord_move_charge = {FRAME_charge3, FRAME_charge13, elflord_frames_charge, elfLordPause};
 
 static mframe_t elflord_frames_charge_trans [] =
 {
 	{FRAME_charge1, NULL, 0, 0, 0, elflord_flymove, 8, NULL},
 	{FRAME_charge2, NULL, 0, 0, 0, elflord_flymove, 8, NULL},
 };
-mmove_t elflord_move_charge_trans = {2, elflord_frames_charge_trans, elfLordGoCharge};
+mmove_t elflord_move_charge_trans = {FRAME_charge1, FRAME_charge2, elflord_frames_charge_trans, elfLordGoCharge};
 
 static mframe_t elflord_frames_floatback[] =
 {
-	{FRAME_ftback1,  NULL, 0, 0, 0, elflord_flymove, -1,  NULL},
-	{FRAME_ftback2,  NULL, 0, 0, 0, elflord_flymove, -2,  NULL},
-	{FRAME_ftback3,  NULL, 0, 0, 0, elflord_flymove, -4,  NULL},
-	{FRAME_ftback4,  NULL, 0, 0, 0, elflord_flymove, -8,  NULL},
-	{FRAME_ftback5,  NULL, 0, 0, 0, elflord_flymove, -16, NULL},
-	{FRAME_ftback6,  NULL, 0, 0, 0, elflord_flymove, -24, NULL},
-	{FRAME_ftback7,  NULL, 0, 0, 0, elflord_flymove, -16, NULL},
-	{FRAME_ftback8,  NULL, 0, 0, 0, elflord_flymove, -8,  NULL},
-	{FRAME_ftback9,  NULL, 0, 0, 0, elflord_flymove, -4,  NULL},
-	{FRAME_ftback10, NULL, 0, 0, 0, elflord_flymove, -2,  NULL},
-	{FRAME_ftback11, NULL, 0, 0, 0, elflord_flymove, -1,  NULL},
+	{FRAME_ftback1, NULL, 0, 0, 0, elflord_flymove, -1, NULL},
+	{FRAME_ftback2, NULL, 0, 0, 0, elflord_flymove, -2, NULL},
+	{FRAME_ftback3, NULL, 0, 0, 0, elflord_flymove, -4, NULL},
+	{FRAME_ftback4, NULL, 0, 0, 0, elflord_flymove, -8, NULL},
+	{FRAME_ftback5, NULL, 0, 0, 0, elflord_flymove, -16, NULL},
+	{FRAME_ftback6, NULL, 0, 0, 0, elflord_flymove, -24, NULL},
+	{FRAME_ftback7, NULL, 0, 0, 0, elflord_flymove, -16, NULL},
+	{FRAME_ftback8, NULL, 0, 0, 0, elflord_flymove, -8, NULL},
+	{FRAME_ftback9, NULL, 0, 0, 0, elflord_flymove, -4, NULL},
+	{FRAME_ftback10, NULL, 0, 0, 0, elflord_flymove, -2, NULL},
+	{FRAME_ftback11, NULL, 0, 0, 0, elflord_flymove, -1, NULL},
 };
-mmove_t elflord_move_floatback = {11, elflord_frames_floatback, elfLordPause};
+mmove_t elflord_move_floatback = {FRAME_ftback1, FRAME_ftback11, elflord_frames_floatback, elfLordPause};
 
 static mframe_t elflord_frames_dodgeright[] =
 {
@@ -115,7 +114,7 @@ static mframe_t elflord_frames_dodgeright[] =
 	{FRAME_dgrite6, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_dgrite7, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t elflord_move_dodgeright = {7, elflord_frames_dodgeright, elfLordPause};
+mmove_t elflord_move_dodgeright = {FRAME_dgrite1, FRAME_dgrite7, elflord_frames_dodgeright, elfLordPause};
 
 static mframe_t elflord_frames_dodgeleft[] =
 {
@@ -127,7 +126,7 @@ static mframe_t elflord_frames_dodgeleft[] =
 	{FRAME_dgleft6, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_dgleft7, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t elflord_move_dodgeleft = {7, elflord_frames_dodgeleft, elfLordPause};
+mmove_t elflord_move_dodgeleft = {FRAME_dgleft1, FRAME_dgleft7, elflord_frames_dodgeleft, elfLordPause};
 
 static mframe_t elflord_frames_soa_begin[] =
 {
@@ -152,19 +151,19 @@ static mframe_t elflord_frames_soa_begin[] =
 	{FRAME_attkb19, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attkb20, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_soa_begin = {20, elflord_frames_soa_begin, elfLordPause};
+mmove_t elflord_move_soa_begin = {FRAME_attkb1, FRAME_attkb20, elflord_frames_soa_begin, elfLordPause};
 
 static mframe_t elflord_frames_soa_loop[] =
 {
 	{FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_soa_loop = {1, elflord_frames_soa_loop, elflord_soa_end};
+mmove_t elflord_move_soa_loop = {FRAME_attka1, FRAME_attka1, elflord_frames_soa_loop, elflord_soa_end};
 
 static mframe_t elflord_frames_soa_end[] =
 {
 	{FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_soa_end = {2, elflord_frames_soa_end, elfLordPause};
+mmove_t elflord_move_soa_end = {FRAME_attka1, FRAME_attka1, elflord_frames_soa_end, elfLordPause};
 
 static mframe_t elflord_frames_ls[] =
 {
@@ -223,7 +222,7 @@ static mframe_t elflord_frames_ls[] =
 	{FRAME_attkb19, NULL, 0, 0, 0, NULL, 0, elflord_EndBeam},
 	{FRAME_attkb20, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_ls = {50, elflord_frames_ls, elfLordPause};
+mmove_t elflord_move_ls = {FRAME_attkb1, FRAME_attkb1 + 49, elflord_frames_ls, elfLordPause};
 
 static mframe_t elflord_frames_pain[] =
 {
@@ -235,7 +234,7 @@ static mframe_t elflord_frames_pain[] =
 	{FRAME_pain6, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_pain = {7, elflord_frames_pain, elfLordPause};
+mmove_t elflord_move_pain = {FRAME_pain1, FRAME_pain7, elflord_frames_pain, elfLordPause};
 
 static mframe_t elflord_frames_death_btrans[] =
 {
@@ -246,7 +245,7 @@ static mframe_t elflord_frames_death_btrans[] =
 	{FRAME_death5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death6, NULL, 0, 0, 0, NULL, 0, elflord_finish_death},
 };
-mmove_t elflord_move_death_btrans = {6, elflord_frames_death_btrans, NULL};
+mmove_t elflord_move_death_btrans = {FRAME_death1, FRAME_death6, elflord_frames_death_btrans, NULL};
 
 static mframe_t elflord_frames_death_loop[] =
 {
@@ -261,7 +260,7 @@ static mframe_t elflord_frames_death_loop[] =
 	{FRAME_death15, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death16, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_death_loop = {10, elflord_frames_death_loop, M_EndDeath};
+mmove_t elflord_move_death_loop = {FRAME_death7, FRAME_death16, elflord_frames_death_loop, M_EndDeath};
 
 static mframe_t elflord_frames_shield[] =
 {
@@ -289,19 +288,19 @@ static mframe_t elflord_frames_shield[] =
 	{FRAME_shield22, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_shield23, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_shield = {23, elflord_frames_shield, elfLordPause};
+mmove_t elflord_move_shield = {FRAME_shield1, FRAME_shield23, elflord_frames_shield, elfLordPause};
 
 static mframe_t elflord_frames_attack[] =
 {
-	{FRAME_newatk1,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk2,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk3,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk4,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk5,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk6,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk7,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk8,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newatk9,  NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk3, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk4, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk5, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk6, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk7, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk8, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newatk9, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newatk10, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newatk11, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newatk12, NULL, 0, 0, 0, ai_charge2, 0, elford_Attack},
@@ -310,7 +309,7 @@ static mframe_t elflord_frames_attack[] =
 	{FRAME_newatk15, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newatk16, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t elflord_move_attack = {16, elflord_frames_attack, elfLordPause};
+mmove_t elflord_move_attack = {FRAME_newatk1, FRAME_newatk16, elflord_frames_attack, elfLordPause};
 
 #define ELFLORD_DECELL	0.8
 
@@ -344,7 +343,7 @@ static mframe_t elflord_frames_move [] =
 	{FRAME_idle23,	NULL, 0, 0, 0, elflord_decell, ELFLORD_DECELL, elflord_face},
 	{FRAME_idle24,	NULL, 0, 0, 0, elflord_decell, ELFLORD_DECELL, elflord_face},
 };
-mmove_t elflord_move_move = {24, elflord_frames_move, elfLordPause};
+mmove_t elflord_move_move = {FRAME_idle1, FRAME_idle24, elflord_frames_move, elfLordPause};
 
 /*----------------------------------------------------------------------
   Idle - Sit and float
@@ -376,7 +375,7 @@ static mframe_t elflord_frames_wait [] =
 	{FRAME_idle23,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_idle24,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t elflord_move_wait = {24, elflord_frames_wait, elflord_Attack};
+mmove_t elflord_move_wait = {FRAME_idle1, FRAME_idle24, elflord_frames_wait, elflord_Attack};
 
 static mframe_t elflord_frames_come_to_life [] =
 {
@@ -392,7 +391,6 @@ static mframe_t elflord_frames_come_to_life [] =
 	{FRAME_attka10, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attka11, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
-//Charge
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
@@ -403,7 +401,6 @@ static mframe_t elflord_frames_come_to_life [] =
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
-//
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
@@ -414,9 +411,8 @@ static mframe_t elflord_frames_come_to_life [] =
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
 	{FRAME_attka12, NULL, 0, 0, 0, NULL, 0, elflord_SlideMeter},
-//
 	{FRAME_attka13, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attka14, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attka15, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t elflord_move_come_to_life = {35, elflord_frames_come_to_life, elflord_Attack};
+mmove_t elflord_move_come_to_life = {FRAME_attka1, FRAME_attka1 + 34, elflord_frames_come_to_life, elflord_Attack};

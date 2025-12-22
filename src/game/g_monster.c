@@ -27,17 +27,12 @@
  */
 
 #include <limits.h>
-
 #include "header/local.h"
 #include "header/g_monster.h"
 #include "monster/stats/stats.h"
 #include "header/g_defaultmessagehandler.h"
 #include "header/g_playstats.h"
-
 #include "common/h2rand.h"
-
-//JWEIER START INCLUDES
-//JWEIER END INCLUDES
 #include "header/g_hitlocation.h"
 #include "header/mg_guide.h"
 
@@ -1207,11 +1202,14 @@ M_MoveFrame(edict_t *self)
 		if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
 		{
 			++self->monsterinfo.currframeindex;
-			if (self->monsterinfo.currframeindex >= move->numframes)
-				self->monsterinfo.currframeindex = 0;
+			{
+				int numframes = move->lastframe - move->firstframe + 1;
+				if (self->monsterinfo.currframeindex >= numframes)
+					self->monsterinfo.currframeindex = 0;
+			}
 		}
 
-		if (self->monsterinfo.currframeindex == (move->numframes - 1))
+		if (self->monsterinfo.currframeindex == ( (move->lastframe - move->firstframe + 1) - 1))
 		{
 			if (move->endfunc)
 			{
@@ -2660,8 +2658,6 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 		VectorCopy(startspot, endspot);
 		endspot[2] -= 300;
 		trace = gi.trace(forwhom->s.origin, vec3_origin, vec3_origin, endspot, forwhom, MASK_SOLID);
-//		if (trace_fraction>0.05&&forwhom.movetype==MOVETYPE_STEP)
-//			forwhom.flags(-)FL_ONGROUND;
 
 		if (trace.fraction==1.0)
 			return;
@@ -3087,7 +3083,7 @@ int M_PredictTargetEvasion( edict_t *attacker, edict_t *target, vec3_t pursue_ve
 
 	//Setup the movement directions
 	VectorCopy(pursue_vel, attackMove);
-	VectorCopy(evade_vel,  targetMove);
+	VectorCopy(evade_vel, targetMove);
 
 	//Setup the distances of attack
 	attackDist = VectorNormalize(attackMove);
@@ -3098,7 +3094,7 @@ int M_PredictTargetEvasion( edict_t *attacker, edict_t *target, vec3_t pursue_ve
 	targetDist = pred_frames * (targetDist * FRAMETIME);
 
 	VectorMA(attacker->s.origin, attackDist, attackMove, pAttackPos);
-	VectorMA(target->s.origin,   targetDist, targetMove, pTargetPos);
+	VectorMA(target->s.origin, targetDist, targetMove, pTargetPos);
 
 	//Find the distance between them
 	VectorSubtract(pAttackPos, pTargetPos, vec);
@@ -3135,7 +3131,7 @@ void M_PredictTargetPosition( edict_t *target, vec3_t evade_vel, float pred_fram
 	float	targetDist;
 
 	//Setup the movement directions
-	VectorCopy(evade_vel,  targetMove);
+	VectorCopy(evade_vel, targetMove);
 
 	//Setup the distances of attack
 	targetDist = VectorNormalize(targetMove);
@@ -3143,7 +3139,7 @@ void M_PredictTargetPosition( edict_t *target, vec3_t evade_vel, float pred_fram
 	//Obtain movement per frame, then apply it over the number of predicted frames
 	targetDist = pred_frames * (targetDist * FRAMETIME);
 
-	VectorMA(target->s.origin,   targetDist, targetMove, pTargetPos);
+	VectorMA(target->s.origin, targetDist, targetMove, pTargetPos);
 }
 
 /*====================================================================================================================
@@ -3160,7 +3156,7 @@ void M_PredictTargetPosition( edict_t *target, vec3_t evade_vel, float pred_fram
 
 ======================================================================================================================*/
 
-void M_StartDeath( edict_t *self,  int animID)
+void M_StartDeath( edict_t *self, int animID)
 {
 	self->msgHandler = DeadMsgHandler;
 
