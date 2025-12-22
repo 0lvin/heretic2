@@ -1157,8 +1157,7 @@ void
 M_MoveFrame(edict_t *self)
 {
 	mmove_t *move;
-#if 1
-	int index;
+	int index, firstframe, lastframe;
 
 	if (!self)
 	{
@@ -1166,7 +1165,18 @@ M_MoveFrame(edict_t *self)
 	}
 
 	move = self->monsterinfo.currentmove;
-	if (!move)
+	if (move)
+	{
+		firstframe = move->firstframe;
+		lastframe = move->lastframe;
+	}
+	else if (self->monsterinfo.action)
+	{
+		firstframe = self->monsterinfo.firstframe;
+		lastframe = self->monsterinfo.lastframe;
+		lastframe += firstframe - 1;
+	}
+	else
 	{
 		/* if move is NULL, then this monster needs to have an anim set on it or all is lost. */
 		gi.dprintf("MONSTER: '%s', at %s has no move pointer.  Setting to move zero.\n", self->classname, self->s.origin);
@@ -1175,6 +1185,7 @@ M_MoveFrame(edict_t *self)
 		return;
 	}
 
+#if 1
 	self->nextthink = level.time + self->monsterinfo.thinkinc;
 
 	//There is a voice sound waiting to play
@@ -1228,59 +1239,39 @@ M_MoveFrame(edict_t *self)
 	}
 
 	index = self->monsterinfo.currframeindex;
-	self->s.frame = move->frame[index].framenum;
+	self->s.frame = move->h2frames[index].framenum;
 
 	//this is consistent with the mmove_t in the monster anims.
 	//currently all of the *real* movement happens in the
 	//"actionfunc" instead of the move func
 	if (!(self->monsterinfo.aiflags & AI_DONT_THINK))
 	{
-		if (move->frame[index].movefunc)
+		if (move->h2frames[index].movefunc)
 		{
-			move->frame[index].movefunc(self, move->frame[index].var1, move->frame[index].var2,
-				move->frame[index].var3);
+			move->h2frames[index].movefunc(self,
+				move->h2frames[index].var1,
+				move->h2frames[index].var2,
+				move->h2frames[index].var3);
 		}
 
-		if (move->frame[index].actionfunc)
+		if (move->h2frames[index].actionfunc)
 		{
 			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
 			{//Put scaling into SV_Movestep since this isn't ALWAYS the movement function
-				move->frame[index].actionfunc (self, move->frame[index].var4);//* self->monsterinfo.scale);
+				move->h2frames[index].actionfunc(self, move->h2frames[index].var4);//* self->monsterinfo.scale);
 			}
 			else
-				move->frame[index].actionfunc (self, 0);
+			{
+				move->h2frames[index].actionfunc (self, 0);
+			}
 		}
 
-		if (move->frame[index].thinkfunc)
+		if (move->h2frames[index].thinkfunc)
 		{
-			move->frame[index].thinkfunc(self);
+			move->h2frames[index].thinkfunc(self);
 		}
 	}
 #else
-	int index, firstframe, lastframe;
-
-	if (!self)
-	{
-		return;
-	}
-
-	move = self->monsterinfo.currentmove;
-	if (move)
-	{
-		firstframe = move->firstframe;
-		lastframe = move->lastframe;
-	}
-	else if (self->monsterinfo.action)
-	{
-		firstframe = self->monsterinfo.firstframe;
-		lastframe = self->monsterinfo.lastframe;
-		lastframe += firstframe - 1;
-	}
-	else
-	{
-		return;
-	}
-
 	self->nextthink = level.time + FRAMETIME;
 
 	if ((self->monsterinfo.nextframe) &&
@@ -2166,7 +2157,9 @@ monster_start(edict_t *self)
 #endif
 
 	if (!self->mass)
+	{
 		self->mass = 200;
+	}
 
 	self->s.frame = 1;
 

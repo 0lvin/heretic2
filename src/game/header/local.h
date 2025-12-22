@@ -1033,7 +1033,7 @@ typedef struct
 {
 	int firstframe;
 	int lastframe;
-	mh2frame_t *frame;
+	mh2frame_t *h2frames;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
 
