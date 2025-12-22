@@ -23,7 +23,7 @@
 /*----------------------------------------------------------------------
   Tome of Power
 -----------------------------------------------------------------------*/
-static mframe_t tome_frames_c_idle1 [] =
+static mh2frame_t tome_frames_c_idle1 [] =
 {
 	{FRAME_poly000, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_poly001, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -62,7 +62,7 @@ mmove_t tome_move_c_idle1 = {FRAME_poly000, FRAME_poly000 + 30, tome_frames_c_id
 /*----------------------------------------------------------------------
   Tome of Power
 -----------------------------------------------------------------------*/
-static mframe_t tome_frames_c_idle2 [] =
+static mh2frame_t tome_frames_c_idle2 [] =
 {
 	{FRAME_poly000, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };

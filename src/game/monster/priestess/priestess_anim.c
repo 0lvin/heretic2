@@ -6,7 +6,7 @@
 #include "priestess.h"
 #include "priestess_anim.h"
 
-static mframe_t priestess_frames_stand1[] =
+static mh2frame_t priestess_frames_stand1[] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle2, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -29,7 +29,7 @@ static mframe_t priestess_frames_stand1[] =
 };
 mmove_t priestess_move_stand1 = {FRAME_idle1, FRAME_idle18, priestess_frames_stand1, priestess_idle};
 
-static mframe_t priestess_frames_attack1_go[] =
+static mh2frame_t priestess_frames_attack1_go[] =
 {
 	{FRAME_attackA7,	  NULL,				0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_attackA8,	  NULL,				0, 0, 0, ai_charge, 0, NULL},
@@ -44,7 +44,7 @@ static mframe_t priestess_frames_attack1_go[] =
 };
 mmove_t priestess_move_attack1_go = {FRAME_attackA7, FRAME_attackA16, priestess_frames_attack1_go, priestess_attack1_pause};
 
-static mframe_t priestess_frames_attack1_loop[] =
+static mh2frame_t priestess_frames_attack1_loop[] =
 {
 	{FRAME_attackA7,	  NULL,				0, 0, 0, NULL, 0, NULL},
 	{FRAME_attackA8,	  NULL,				0, 0, 0, NULL, 0, NULL},
@@ -55,7 +55,7 @@ static mframe_t priestess_frames_attack1_loop[] =
 };
 mmove_t priestess_move_attack1_loop = {FRAME_attackA7, FRAME_attackA12, priestess_frames_attack1_loop, priestess_idle};
 
-static mframe_t priestess_frames_attack1_end[] =
+static mh2frame_t priestess_frames_attack1_end[] =
 {
 	{FRAME_attackA13, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attackA14, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -66,7 +66,7 @@ mmove_t priestess_move_attack1_end = {FRAME_attackA13, FRAME_attackA16, priestes
 
 //Attack 2
 
-static mframe_t priestess_frames_attack2[] =
+static mh2frame_t priestess_frames_attack2[] =
 {
 	{FRAME_attackB1,	  NULL, 0, 0, 0, ai_charge, 2, NULL},
 	{FRAME_attackB2,	  NULL, 0, 0, 0, ai_charge, 2, NULL},
@@ -90,7 +90,7 @@ static mframe_t priestess_frames_attack2[] =
 };
 mmove_t priestess_move_attack2 = {FRAME_attackB1, FRAME_attackB19, priestess_frames_attack2, priestess_pause};
 
-static mframe_t priestess_frames_pounce_attack[] =
+static mh2frame_t priestess_frames_pounce_attack[] =
 {
 	{FRAME_atttrans1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_atttrans2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -104,7 +104,7 @@ static mframe_t priestess_frames_pounce_attack[] =
 };
 mmove_t priestess_move_pounce_attack = {FRAME_atttrans1, FRAME_attackB17, priestess_frames_pounce_attack, priestess_pounce_attack};
 
-static mframe_t priestess_frames_backup[] =
+static mh2frame_t priestess_frames_backup[] =
 {
 	{FRAME_backup3, NULL, 0, 0, 0, ai_run, -8, NULL},
 	{FRAME_backup4, NULL, 0, 0, 0, ai_run, -8, NULL},
@@ -121,7 +121,7 @@ static mframe_t priestess_frames_backup[] =
 };
 mmove_t priestess_move_backup = {FRAME_backup3, FRAME_backup14, priestess_frames_backup, priestess_pause};
 
-static mframe_t priestess_frames_death[] =
+static mh2frame_t priestess_frames_death[] =
 {
 	{FRAME_death1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -196,7 +196,7 @@ static mframe_t priestess_frames_death[] =
 };
 mmove_t priestess_move_death = {FRAME_death1, FRAME_death70, priestess_frames_death, priestess_dead};
 
-static mframe_t priestess_frames_idle[] =
+static mh2frame_t priestess_frames_idle[] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -219,7 +219,7 @@ static mframe_t priestess_frames_idle[] =
 };
 mmove_t priestess_move_idle = {FRAME_idle1, FRAME_idle18, priestess_frames_idle, priestess_idle};
 
-static mframe_t priestess_frames_jump[] =
+static mh2frame_t priestess_frames_jump[] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -238,7 +238,7 @@ static mframe_t priestess_frames_jump[] =
 };
 mmove_t priestess_move_jump = {FRAME_jump1, FRAME_jump14, priestess_frames_jump, priestess_pause};
 
-static mframe_t priestess_frames_jump_forward[] =
+static mh2frame_t priestess_frames_jump_forward[] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -257,7 +257,7 @@ static mframe_t priestess_frames_jump_forward[] =
 };
 mmove_t priestess_move_jump_forward = {FRAME_jump1, FRAME_jump14, priestess_frames_jump_forward, priestess_pause};
 
-static mframe_t priestess_frames_jump_back[] =
+static mh2frame_t priestess_frames_jump_back[] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -276,7 +276,7 @@ static mframe_t priestess_frames_jump_back[] =
 };
 mmove_t priestess_move_jump_back = {FRAME_jump1, FRAME_jump14, priestess_frames_jump_back, priestess_pause};
 
-static mframe_t priestess_frames_jump_right[] =
+static mh2frame_t priestess_frames_jump_right[] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -295,7 +295,7 @@ static mframe_t priestess_frames_jump_right[] =
 };
 mmove_t priestess_move_jump_right = {FRAME_jump1, FRAME_jump14, priestess_frames_jump_right, priestess_pause};
 
-static mframe_t priestess_frames_jump_left[] =
+static mh2frame_t priestess_frames_jump_left[] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -314,7 +314,7 @@ static mframe_t priestess_frames_jump_left[] =
 };
 mmove_t priestess_move_jump_left= {FRAME_jump1, FRAME_jump14, priestess_frames_jump_left, priestess_pause};
 
-static mframe_t priestess_frames_jump_pounce[] =
+static mh2frame_t priestess_frames_jump_pounce[] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -333,7 +333,7 @@ static mframe_t priestess_frames_jump_pounce[] =
 };
 mmove_t priestess_move_jump_pounce = {FRAME_jump1, FRAME_jump14, priestess_frames_jump_pounce, priestess_pounce_attack};
 
-static mframe_t priestess_frames_pain[] =
+static mh2frame_t priestess_frames_pain[] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -344,7 +344,7 @@ static mframe_t priestess_frames_pain[] =
 };
 mmove_t priestess_move_pain = {FRAME_pain1, FRAME_pain6, priestess_frames_pain, priestess_pause};
 
-static mframe_t priestess_frames_idle_pose[] =
+static mh2frame_t priestess_frames_idle_pose[] =
 {
 	{FRAME_poseidle1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_poseidle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -358,7 +358,7 @@ static mframe_t priestess_frames_idle_pose[] =
 };
 mmove_t priestess_move_idle_pose = {FRAME_poseidle1, FRAME_poseidle9, priestess_frames_idle_pose, priestess_idle};
 
-static mframe_t priestess_frames_pose_trans[] =
+static mh2frame_t priestess_frames_pose_trans[] =
 {
 	{FRAME_pose2ready1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pose2ready2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -369,7 +369,7 @@ static mframe_t priestess_frames_pose_trans[] =
 };
 mmove_t priestess_move_pose_trans = {FRAME_pose2ready1, FRAME_pose2ready6, priestess_frames_pose_trans, priestess_idle};
 
-static mframe_t priestess_frames_shield_go[] =
+static mh2frame_t priestess_frames_shield_go[] =
 {
 	{FRAME_shield1, NULL, 0, 0, 0, NULL,					0.0, NULL},
 	{FRAME_shield2, NULL, 0, 0, 0, NULL,					0.0, priestess_teleport_go},
@@ -389,7 +389,7 @@ static mframe_t priestess_frames_shield_go[] =
 };
 mmove_t priestess_move_shield_go = {FRAME_shield1, FRAME_shield1 + 14, priestess_frames_shield_go, NULL};
 
-static mframe_t priestess_frames_shield_end[] =
+static mh2frame_t priestess_frames_shield_end[] =
 {
 	{FRAME_shield8, NULL, 0, 0, 0, priestess_delta_alpha, 32.0, priestess_teleport_end},
 	{FRAME_shield7, NULL, 0, 0, 0, priestess_delta_alpha, 32.0, NULL},
@@ -403,7 +403,7 @@ static mframe_t priestess_frames_shield_end[] =
 };
 mmove_t priestess_move_shield_end = {FRAME_shield1, FRAME_shield8, priestess_frames_shield_end, priestess_pause};
 
-static mframe_t priestess_frames_dodge_left[] =
+static mh2frame_t priestess_frames_dodge_left[] =
 {
 	{FRAME_sidestplft1, priestess_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_sidestplft2, priestess_move, 0, 0, 0, NULL, 0, NULL},
@@ -419,7 +419,7 @@ static mframe_t priestess_frames_dodge_left[] =
 };
 mmove_t priestess_move_dodge_left = {FRAME_sidestplft1, FRAME_sidestplft11, priestess_frames_dodge_left, priestess_pause};
 
-static mframe_t priestess_frames_dodge_right[] =
+static mh2frame_t priestess_frames_dodge_right[] =
 {
 	{FRAME_sidestprt1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_sidestprt2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -435,7 +435,7 @@ static mframe_t priestess_frames_dodge_right[] =
 };
 mmove_t priestess_move_dodge_right = {FRAME_sidestprt1, FRAME_sidestprt11, priestess_frames_dodge_right, priestess_pause};
 
-static mframe_t priestess_frames_walk[] =
+static mh2frame_t priestess_frames_walk[] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_run, 6, NULL},
 	{FRAME_walk2, NULL, 0, 0, 0, ai_run, 8, NULL},
@@ -456,7 +456,7 @@ static mframe_t priestess_frames_walk[] =
 };
 mmove_t priestess_move_walk = {FRAME_walk1, FRAME_walk16, priestess_frames_walk, priestess_pause};
 
-static mframe_t priestess_frames_attack3_go[] =
+static mh2frame_t priestess_frames_attack3_go[] =
 {
 	{FRAME_attackc1, NULL, 0, 0, 0, ai_charge, 6, NULL},
 	{FRAME_attackc2, NULL, 0, 0, 0, ai_charge, 6, NULL},
@@ -473,13 +473,13 @@ static mframe_t priestess_frames_attack3_go[] =
 };
 mmove_t priestess_move_attack3_go = {FRAME_attackc1, FRAME_attackc12, priestess_frames_attack3_go, priestess_attack3_loop};
 
-static mframe_t priestess_frames_attack3_loop[] =
+static mh2frame_t priestess_frames_attack3_loop[] =
 {
 	{FRAME_attackc13, NULL, 0, 0, 0, NULL, 0, priestess_attack3_loop_fire},
 };
 mmove_t priestess_move_attack3_loop = {FRAME_attackc13, FRAME_attackc13, priestess_frames_attack3_loop, NULL};
 
-static mframe_t priestess_frames_attack3_end[] =
+static mh2frame_t priestess_frames_attack3_end[] =
 {
 	{FRAME_attackc14, NULL, 0, 0, 0, ai_charge, -8, NULL},
 	{FRAME_attackc15, NULL, 0, 0, 0, ai_charge, -8, NULL},
@@ -487,7 +487,7 @@ static mframe_t priestess_frames_attack3_end[] =
 };
 mmove_t priestess_move_attack3_end = {FRAME_attackc14, FRAME_attackc16, priestess_frames_attack3_end, priestess_pause};
 
-static mframe_t priestess_frames_jump_attack[] =
+static mh2frame_t priestess_frames_jump_attack[] =
 {
 	{FRAME_jumpatt1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jumpatt2, NULL, 0, 0, 0, ai_charge, 0, NULL},

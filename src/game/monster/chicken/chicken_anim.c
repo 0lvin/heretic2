@@ -23,7 +23,7 @@
 /*----------------------------------------------------------------------
   Chicken Standing -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_stand1 [] =
+static mh2frame_t chicken_frames_stand1 [] =
 {
 	{FRAME_wait1,	NULL, 0, 0, 0, ai_stand, 0, chicken_check},
 	{FRAME_wait2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -37,7 +37,7 @@ mmove_t chicken_move_stand1 = {FRAME_wait1, FRAME_wait6, chicken_frames_stand1, 
 /*----------------------------------------------------------------------
   Chicken running -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_run [] =
+static mh2frame_t chicken_frames_run [] =
 {
 	{FRAME_run1,	NULL, 0, 0, 0, ai_run, ENEMY_RUN_SPEED, chicken_check},
 	{FRAME_run2,	NULL, 0, 0, 0, ai_run, ENEMY_RUN_SPEED, NULL},
@@ -51,7 +51,7 @@ mmove_t chicken_move_run = {FRAME_run1, FRAME_run6, chicken_frames_run, chicken_
 /*----------------------------------------------------------------------
   Chicken walking -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_walk [] =
+static mh2frame_t chicken_frames_walk [] =
 {
 	{FRAME_walk1,	NULL, 0, 0, 0, ai_walk, ENEMY_WALK_SPEED, chicken_check},
 	{FRAME_walk2,	NULL, 0, 0, 0, ai_walk, ENEMY_WALK_SPEED, NULL},
@@ -67,7 +67,7 @@ mmove_t chicken_move_walk = {FRAME_walk1, FRAME_walk8, chicken_frames_walk, chic
 /*----------------------------------------------------------------------
   Chicken cluck -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_cluck [] =
+static mh2frame_t chicken_frames_cluck [] =
 {
 	{FRAME_cluck1,	NULL, 0, 0, 0, ai_stand, 0, chicken_check},
 	{FRAME_cluck2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -94,7 +94,7 @@ mmove_t chicken_move_cluck = {FRAME_cluck1, FRAME_cluck19, chicken_frames_cluck,
 /*----------------------------------------------------------------------
   Chicken attacking -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_attack [] =
+static mh2frame_t chicken_frames_attack [] =
 {
 	{FRAME_attack1,	NULL, 0, 0, 0, ai_stand, 0, chicken_check},
 	{FRAME_attack2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -108,7 +108,7 @@ mmove_t chicken_move_attack = {FRAME_attack1, FRAME_attack6, chicken_frames_atta
 /*----------------------------------------------------------------------
   Chicken eating -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_eat [] =
+static mh2frame_t chicken_frames_eat [] =
 {
 	{FRAME_peck1,	NULL, 0, 0, 0, ai_stand, 0, chicken_check},
 	{FRAME_peck2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -145,7 +145,7 @@ mmove_t chicken_move_eat = {FRAME_peck1, FRAME_peck29, chicken_frames_eat, chick
 /*----------------------------------------------------------------------
   Chicken jumping -
 -----------------------------------------------------------------------*/
-static mframe_t chicken_frames_jump [] =
+static mh2frame_t chicken_frames_jump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, ai_walk, 8, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, ai_walk, 8, NULL},

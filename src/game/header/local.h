@@ -888,6 +888,16 @@ typedef enum
 
 #define MOD_FRIENDLY_FIRE	0x8000000
 
+typedef struct
+{
+	int framenum;
+	void (*movefunc)(edict_t *self, float var1, float var2, float var3);
+	float var1, var2, var3;
+	void (*actionfunc)(edict_t *self, float var4);
+	float var4;
+	void (*thinkfunc)(edict_t *self);
+} mh2frame_t;
+
 /* shadow light data structures */
 typedef enum
 {
@@ -1014,11 +1024,8 @@ typedef struct
 
 typedef struct
 {
-	int framenum;
-	void (*movefunc)(edict_t *self, float var1, float var2, float var3);
-	float var1, var2, var3;
-	void (*actionfunc)(edict_t *self, float var4);
-	float var4;
+	void (*aifunc)(edict_t *self, float dist);
+	float dist;
 	void (*thinkfunc)(edict_t *self);
 } mframe_t;
 
@@ -1026,7 +1033,7 @@ typedef struct
 {
 	int firstframe;
 	int lastframe;
-	mframe_t *frame;
+	mh2frame_t *frame;
 	void (*endfunc)(edict_t *self);
 } mmove_t;
 

@@ -20,7 +20,7 @@ void ai_charge2 (edict_t *self, float dist);
 /*----------------------------------------------------------------------
   Idle - Sit and float
 -----------------------------------------------------------------------*/
-static mframe_t elflord_frames_idle [] =
+static mh2frame_t elflord_frames_idle [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, elflord_ai_stand, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0, elflord_ai_stand, 0, NULL},
@@ -49,7 +49,7 @@ static mframe_t elflord_frames_idle [] =
 };
 mmove_t elflord_move_idle = {FRAME_idle1, FRAME_idle24, elflord_frames_idle, NULL};
 
-static mframe_t elflord_frames_run [] =
+static mh2frame_t elflord_frames_run [] =
 {
 	{FRAME_ftforwd1,	NULL, 0, 0, 0, elflord_flymove, 7, NULL},
 	{FRAME_ftforwd2,	NULL, 0, 0, 0, elflord_flymove, 7, elflordRandomRushSound},
@@ -65,7 +65,7 @@ static mframe_t elflord_frames_run [] =
 };
 mmove_t elflord_move_run = {FRAME_ftforwd1, FRAME_ftforwd11, elflord_frames_run, NULL};
 
-static mframe_t elflord_frames_charge [] =
+static mh2frame_t elflord_frames_charge [] =
 {
 	{FRAME_charge3, NULL, 0, 0, 0, elflord_flymove, 12, NULL},
 	{FRAME_charge4, NULL, 0, 0, 0, elflord_flymove, 12, NULL},
@@ -81,14 +81,14 @@ static mframe_t elflord_frames_charge [] =
 };
 mmove_t elflord_move_charge = {FRAME_charge3, FRAME_charge13, elflord_frames_charge, elfLordPause};
 
-static mframe_t elflord_frames_charge_trans [] =
+static mh2frame_t elflord_frames_charge_trans [] =
 {
 	{FRAME_charge1, NULL, 0, 0, 0, elflord_flymove, 8, NULL},
 	{FRAME_charge2, NULL, 0, 0, 0, elflord_flymove, 8, NULL},
 };
 mmove_t elflord_move_charge_trans = {FRAME_charge1, FRAME_charge2, elflord_frames_charge_trans, elfLordGoCharge};
 
-static mframe_t elflord_frames_floatback[] =
+static mh2frame_t elflord_frames_floatback[] =
 {
 	{FRAME_ftback1, NULL, 0, 0, 0, elflord_flymove, -1, NULL},
 	{FRAME_ftback2, NULL, 0, 0, 0, elflord_flymove, -2, NULL},
@@ -104,7 +104,7 @@ static mframe_t elflord_frames_floatback[] =
 };
 mmove_t elflord_move_floatback = {FRAME_ftback1, FRAME_ftback11, elflord_frames_floatback, elfLordPause};
 
-static mframe_t elflord_frames_dodgeright[] =
+static mh2frame_t elflord_frames_dodgeright[] =
 {
 	{FRAME_dgrite1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_dgrite2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -116,7 +116,7 @@ static mframe_t elflord_frames_dodgeright[] =
 };
 mmove_t elflord_move_dodgeright = {FRAME_dgrite1, FRAME_dgrite7, elflord_frames_dodgeright, elfLordPause};
 
-static mframe_t elflord_frames_dodgeleft[] =
+static mh2frame_t elflord_frames_dodgeleft[] =
 {
 	{FRAME_dgleft1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_dgleft2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -128,7 +128,7 @@ static mframe_t elflord_frames_dodgeleft[] =
 };
 mmove_t elflord_move_dodgeleft = {FRAME_dgleft1, FRAME_dgleft7, elflord_frames_dodgeleft, elfLordPause};
 
-static mframe_t elflord_frames_soa_begin[] =
+static mh2frame_t elflord_frames_soa_begin[] =
 {
 	{FRAME_attkb1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attkb2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -153,19 +153,19 @@ static mframe_t elflord_frames_soa_begin[] =
 };
 mmove_t elflord_move_soa_begin = {FRAME_attkb1, FRAME_attkb20, elflord_frames_soa_begin, elfLordPause};
 
-static mframe_t elflord_frames_soa_loop[] =
+static mh2frame_t elflord_frames_soa_loop[] =
 {
 	{FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t elflord_move_soa_loop = {FRAME_attka1, FRAME_attka1, elflord_frames_soa_loop, elflord_soa_end};
 
-static mframe_t elflord_frames_soa_end[] =
+static mh2frame_t elflord_frames_soa_end[] =
 {
 	{FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t elflord_move_soa_end = {FRAME_attka1, FRAME_attka1, elflord_frames_soa_end, elfLordPause};
 
-static mframe_t elflord_frames_ls[] =
+static mh2frame_t elflord_frames_ls[] =
 {
 	{FRAME_attkb1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attkb2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -224,7 +224,7 @@ static mframe_t elflord_frames_ls[] =
 };
 mmove_t elflord_move_ls = {FRAME_attkb1, FRAME_attkb1 + 49, elflord_frames_ls, elfLordPause};
 
-static mframe_t elflord_frames_pain[] =
+static mh2frame_t elflord_frames_pain[] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -236,7 +236,7 @@ static mframe_t elflord_frames_pain[] =
 };
 mmove_t elflord_move_pain = {FRAME_pain1, FRAME_pain7, elflord_frames_pain, elfLordPause};
 
-static mframe_t elflord_frames_death_btrans[] =
+static mh2frame_t elflord_frames_death_btrans[] =
 {
 	{FRAME_death1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -247,7 +247,7 @@ static mframe_t elflord_frames_death_btrans[] =
 };
 mmove_t elflord_move_death_btrans = {FRAME_death1, FRAME_death6, elflord_frames_death_btrans, NULL};
 
-static mframe_t elflord_frames_death_loop[] =
+static mh2frame_t elflord_frames_death_loop[] =
 {
 	{FRAME_death7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death8, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -262,7 +262,7 @@ static mframe_t elflord_frames_death_loop[] =
 };
 mmove_t elflord_move_death_loop = {FRAME_death7, FRAME_death16, elflord_frames_death_loop, M_EndDeath};
 
-static mframe_t elflord_frames_shield[] =
+static mh2frame_t elflord_frames_shield[] =
 {
 	{FRAME_shield1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_shield2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -290,7 +290,7 @@ static mframe_t elflord_frames_shield[] =
 };
 mmove_t elflord_move_shield = {FRAME_shield1, FRAME_shield23, elflord_frames_shield, elfLordPause};
 
-static mframe_t elflord_frames_attack[] =
+static mh2frame_t elflord_frames_attack[] =
 {
 	{FRAME_newatk1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newatk2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -316,7 +316,7 @@ mmove_t elflord_move_attack = {FRAME_newatk1, FRAME_newatk16, elflord_frames_att
 /*----------------------------------------------------------------------
   move - hover to a nearby waypoint
 -----------------------------------------------------------------------*/
-static mframe_t elflord_frames_move [] =
+static mh2frame_t elflord_frames_move [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, elflord_decell, ELFLORD_DECELL, elflord_face},
 	{FRAME_idle2,	NULL, 0, 0, 0, elflord_decell, ELFLORD_DECELL, elflord_face},
@@ -348,7 +348,7 @@ mmove_t elflord_move_move = {FRAME_idle1, FRAME_idle24, elflord_frames_move, elf
 /*----------------------------------------------------------------------
   Idle - Sit and float
 -----------------------------------------------------------------------*/
-static mframe_t elflord_frames_wait [] =
+static mh2frame_t elflord_frames_wait [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -377,7 +377,7 @@ static mframe_t elflord_frames_wait [] =
 };
 mmove_t elflord_move_wait = {FRAME_idle1, FRAME_idle24, elflord_frames_wait, elflord_Attack};
 
-static mframe_t elflord_frames_come_to_life [] =
+static mh2frame_t elflord_frames_come_to_life [] =
 {
 	{FRAME_attka1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_attka2, NULL, 0, 0, 0, NULL, 0, NULL},

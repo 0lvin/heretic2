@@ -13,7 +13,7 @@
 /*----------------------------------------------------------------------
   Fish Melee1 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_melee [] =
+static mh2frame_t fish_frames_melee [] =
 {
 	{FRAME_attfrnzy1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_attfrnzy2,	NULL, 0, 0, 0, NULL, 0, fish_target},
@@ -36,7 +36,7 @@ mmove_t fish_move_melee = {FRAME_attfrnzy1, FRAME_attfrnzy14, fish_frames_melee,
 /*----------------------------------------------------------------------
   Fish bite -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_bite [] =
+static mh2frame_t fish_frames_bite [] =
 {
 	{FRAME_attbite1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_attbite2,	NULL, 0, 0, 0, NULL, 0, fish_target},
@@ -51,7 +51,7 @@ mmove_t fish_move_bite = {FRAME_attbite1, FRAME_attbite7, fish_frames_bite, fish
 /*----------------------------------------------------------------------
   Fish Run1 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_run1 [] =
+static mh2frame_t fish_frames_run1 [] =
 {
 	{FRAME_swim1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_swim2,	NULL, 0, 0, 0, NULL, 0, fish_under_water_wake},
@@ -67,7 +67,7 @@ mmove_t fish_move_run1 = {FRAME_swim1, FRAME_swim8, fish_frames_run1, finished_r
 /*----------------------------------------------------------------------
   Fish Run2 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_run2 [] =
+static mh2frame_t fish_frames_run2 [] =
 {
 	{FRAME_swimLEFT1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_swimLEFT2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -84,7 +84,7 @@ mmove_t fish_move_run2 = {FRAME_swimLEFT1, FRAME_swimLEFT9, fish_frames_run2, fi
 /*----------------------------------------------------------------------
   Fish Run3 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_run3 [] =
+static mh2frame_t fish_frames_run3 [] =
 {
 	{FRAME_swimRIGHT1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_swimRIGHT2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -101,7 +101,7 @@ mmove_t fish_move_run3 = {FRAME_swimRIGHT1, FRAME_swimRIGHT9, fish_frames_run3, 
 /*----------------------------------------------------------------------
   Fish Walk1 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_walk1 [] =
+static mh2frame_t fish_frames_walk1 [] =
 {
 	{FRAME_fishpat1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_fishpat2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -134,7 +134,7 @@ mmove_t fish_move_walk1 = {FRAME_fishpat1, FRAME_fishpat24, fish_frames_walk1, f
 /*----------------------------------------------------------------------
   Fish Walk2 - swim to the left
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_walk2 [] =
+static mh2frame_t fish_frames_walk2 [] =
 {
 	{FRAME_slowturnl1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_slowturnl2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -151,7 +151,7 @@ mmove_t fish_move_walk2 = {FRAME_slowturnl1, FRAME_slowturnl9, fish_frames_walk2
 /*----------------------------------------------------------------------
   Fish Walk3 -  Swim to the right
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_walk3 [] =
+static mh2frame_t fish_frames_walk3 [] =
 {
 	{FRAME_slowturnr1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_slowturnr2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -168,7 +168,7 @@ mmove_t fish_move_walk3 = {FRAME_slowturnr1, FRAME_slowturnr9, fish_frames_walk3
 /*----------------------------------------------------------------------
   Fish Stand1 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_stand1 [] =
+static mh2frame_t fish_frames_stand1 [] =
 {
 	{FRAME_fishpat1,		NULL, 0, 0, 0, ai_stand, 0, fish_update_yaw},
 	{FRAME_fishpat2,		NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -201,7 +201,7 @@ mmove_t fish_move_stand1 = {FRAME_fishpat1, FRAME_fishpat24, fish_frames_stand1,
 /*----------------------------------------------------------------------
   Fish Pain1 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_pain1 [] =
+static mh2frame_t fish_frames_pain1 [] =
 {
 	{FRAME_pain1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_pain2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -216,7 +216,7 @@ mmove_t fish_move_pain1 = {FRAME_pain1, FRAME_pain7, fish_frames_pain1, finished
 /*----------------------------------------------------------------------
   Fish Death1 -
 -----------------------------------------------------------------------*/
-static mframe_t fish_frames_death [] =
+static mh2frame_t fish_frames_death [] =
 {
 	{FRAME_Death1,	NULL, 0, 0, 0, NULL, 0, fish_update_yaw},
 	{FRAME_Death2,	NULL, 0, 0, 0, NULL, 0, NULL},

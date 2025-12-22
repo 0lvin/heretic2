@@ -22,7 +22,7 @@
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_action1 [] =
+static mh2frame_t corvus_frames_c_action1 [] =
 {
 	{FRAME_c_wheelA1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_c_wheelA2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -35,7 +35,7 @@ mmove_t corvus_move_c_action1 = {FRAME_c_wheelA1, FRAME_c_wheelA4, corvus_frames
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_action2 [] =
+static mh2frame_t corvus_frames_c_action2 [] =
 {
 	{FRAME_c_wheelB1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_c_wheelB2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -66,7 +66,7 @@ mmove_t corvus_move_c_action2 = {FRAME_c_wheelB1, FRAME_c_wheelB22, corvus_frame
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_action3 [] =
+static mh2frame_t corvus_frames_c_action3 [] =
 {
 	{FRAME_c_idleA1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_c_idleA2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -85,7 +85,7 @@ mmove_t corvus_move_c_action3 = {FRAME_c_idleA1, FRAME_c_idleA10, corvus_frames_
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_action4 [] =
+static mh2frame_t corvus_frames_c_action4 [] =
 {
 	{FRAME_plagued1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_plagued2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -134,7 +134,7 @@ mmove_t corvus_move_c_action4 = {FRAME_plagued1, FRAME_plagued40, corvus_frames_
 /*----------------------------------------------------------------------
   Corvus Standing -
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_idle1 [] =
+static mh2frame_t corvus_frames_c_idle1 [] =
 {
 	{FRAME_breath1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_breath2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -167,7 +167,7 @@ mmove_t corvus_move_c_idle1 = {FRAME_breath1, FRAME_breath23, corvus_frames_c_id
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_idle2 [] =
+static mh2frame_t corvus_frames_c_idle2 [] =
 {
 	{FRAME_c_idleB1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_c_idleB2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -197,7 +197,7 @@ mmove_t corvus_move_c_idle2 = {FRAME_c_idleB1, FRAME_c_idleB20, corvus_frames_c_
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_walk1 [] =
+static mh2frame_t corvus_frames_c_walk1 [] =
 {
 	{FRAME_jog1, ai_c_move, 10, 10, 0, NULL, 0, NULL},
 	{FRAME_jog2, ai_c_move, 16, 10, 0, NULL, 0, NULL},
@@ -214,7 +214,7 @@ mmove_t corvus_move_c_walk1 = {FRAME_jog1, FRAME_jog8, corvus_frames_c_walk1, ai
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_strafeleft [] =
+static mh2frame_t corvus_frames_c_strafeleft [] =
 {
 	{FRAME_Lstep1, ai_c_move, 0, 6, 0, NULL, 0, NULL},
 	{FRAME_Lstep2, ai_c_move, 0, 6, 0, NULL, 0, NULL},
@@ -229,7 +229,7 @@ mmove_t corvus_move_c_strafeleft = {FRAME_Lstep1, FRAME_Lstep5, corvus_frames_c_
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_straferight [] =
+static mh2frame_t corvus_frames_c_straferight [] =
 {
 	{FRAME_Rstep1, ai_c_move, 0, 6, 0, NULL, 0, NULL},
 	{FRAME_Rstep2, ai_c_move, 0, 6, 0, NULL, 0, NULL},
@@ -245,7 +245,7 @@ mmove_t corvus_move_c_straferight = {FRAME_Rstep1, FRAME_Rstep5, corvus_frames_c
 /*----------------------------------------------------------------------
   Corvus
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_walk2 [] =
+static mh2frame_t corvus_frames_c_walk2 [] =
 {
 	{FRAME_cinewalk1, ai_c_move, 4, 6, 0, NULL, 0, NULL},
 	{FRAME_cinewalk2, ai_c_move, 4, 6, 0, NULL, 0, NULL},
@@ -271,7 +271,7 @@ mmove_t corvus_move_c_walk2 = {FRAME_cinewalk1, FRAME_cinewalk16, corvus_frames_
 /*----------------------------------------------------------------------
   Corvus - starting his walk anims
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_walkstart [] =
+static mh2frame_t corvus_frames_c_walkstart [] =
 {
 	{FRAME_gorun2, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_gorun3, ai_c_move, 4, 0, 0, NULL, 0, NULL},
@@ -282,7 +282,7 @@ mmove_t corvus_move_c_walkstart = {FRAME_gorun2, FRAME_gorun3, corvus_frames_c_w
 /*----------------------------------------------------------------------
   Corvus - stopping his walk with right foot in front
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_walkstop1 [] =
+static mh2frame_t corvus_frames_c_walkstop1 [] =
 {
 	{FRAME_jog1, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_jog2, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -292,7 +292,7 @@ mmove_t corvus_move_c_walkstop1 = {FRAME_jog1, FRAME_jog2, corvus_frames_c_walks
 /*----------------------------------------------------------------------
   Corvus - stopping his walk with left foot in front
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_walkstop2 [] =
+static mh2frame_t corvus_frames_c_walkstop2 [] =
 {
 	{FRAME_jog5, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_jog6, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -303,14 +303,14 @@ mmove_t corvus_move_c_walkstop2 = {FRAME_jog5, FRAME_jog6, corvus_frames_c_walks
 /*----------------------------------------------------------------------
   Corvus - starting his pivot to the left
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_pivotleftgo [] =
+static mh2frame_t corvus_frames_c_pivotleftgo [] =
 {
 	{FRAME_Lpivot1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus_move_c_pivotleftgo = {FRAME_Lpivot1, FRAME_Lpivot2, corvus_frames_c_pivotleftgo, ai_c_cycleend};
 
-static mframe_t corvus_frames_c_pivotleft [] =
+static mh2frame_t corvus_frames_c_pivotleft [] =
 {
 	{FRAME_Lpivot3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -318,7 +318,7 @@ static mframe_t corvus_frames_c_pivotleft [] =
 mmove_t corvus_move_c_pivotleft = {FRAME_Lpivot3, FRAME_Lpivot4, corvus_frames_c_pivotleft, ai_c_cycleend};
 
 
-static mframe_t corvus_frames_c_pivotleftstop [] =
+static mh2frame_t corvus_frames_c_pivotleftstop [] =
 {
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
@@ -328,21 +328,21 @@ mmove_t corvus_move_c_pivotleftstop = {FRAME_Lpivot4, FRAME_Lpivot4, corvus_fram
 /*----------------------------------------------------------------------
   Corvus - starting his pivot to the right
 -----------------------------------------------------------------------*/
-static mframe_t corvus_frames_c_pivotrightgo [] =
+static mh2frame_t corvus_frames_c_pivotrightgo [] =
 {
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus_move_c_pivotrightgo = {FRAME_Lpivot3, FRAME_Lpivot4, corvus_frames_c_pivotrightgo, ai_c_cycleend};
 
-static mframe_t corvus_frames_c_pivotright [] =
+static mh2frame_t corvus_frames_c_pivotright [] =
 {
 	{FRAME_Lpivot2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t corvus_move_c_pivotright = {FRAME_Lpivot1, FRAME_Lpivot2, corvus_frames_c_pivotright, ai_c_cycleend};
 
-static mframe_t corvus_frames_c_pivotrightstop [] =
+static mh2frame_t corvus_frames_c_pivotrightstop [] =
 {
 	{FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL},
 };

@@ -21,7 +21,7 @@
 
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_stand1[] =
+static mh2frame_t seraph_frames_stand1[] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle2, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -48,7 +48,7 @@ mmove_t seraph_move_stand1 = {FRAME_idle1, FRAME_idle20, seraph_frames_stand1, s
 
 //Look right
 
-static mframe_t seraph_frames_stand1_tr[] =
+static mh2frame_t seraph_frames_stand1_tr[] =
 {
 	{FRAME_idle_htr1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle_htr2, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -72,7 +72,7 @@ static mframe_t seraph_frames_stand1_tr[] =
 };
 mmove_t seraph_move_stand1_tr = {FRAME_idle_htr1, FRAME_idle_htr19, seraph_frames_stand1_tr, seraph_idle};
 
-static mframe_t seraph_frames_stand1_r[] =
+static mh2frame_t seraph_frames_stand1_r[] =
 {
 	{FRAME_idle_hrt1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle_hrt2, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -96,7 +96,7 @@ static mframe_t seraph_frames_stand1_r[] =
 };
 mmove_t seraph_move_stand1_r = {FRAME_idle_hrt1, FRAME_idle_hrt19, seraph_frames_stand1_r, seraph_idle};
 
-static mframe_t seraph_frames_stand1_trc[] =
+static mh2frame_t seraph_frames_stand1_trc[] =
 {
 	{FRAME_idle_hrc1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle_hrc2, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -122,7 +122,7 @@ mmove_t seraph_move_stand1_trc = {FRAME_idle_hrc1, FRAME_idle_hrc19, seraph_fram
 
 //Look left
 
-static mframe_t seraph_frames_stand1_tl[] =
+static mh2frame_t seraph_frames_stand1_tl[] =
 {
 	{FRAME_idle_htl1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle_htl2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -146,7 +146,7 @@ static mframe_t seraph_frames_stand1_tl[] =
 };
 mmove_t seraph_move_stand1_tl = {FRAME_idle_htl1, FRAME_idle_htl19, seraph_frames_stand1_tl, seraph_idle};
 
-static mframe_t seraph_frames_stand1_l[] =
+static mh2frame_t seraph_frames_stand1_l[] =
 {
 	{FRAME_idle_hl1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle_hl2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -170,7 +170,7 @@ static mframe_t seraph_frames_stand1_l[] =
 };
 mmove_t seraph_move_stand1_l = {FRAME_idle_hl1, FRAME_idle_hl19, seraph_frames_stand1_l, seraph_idle};
 
-static mframe_t seraph_frames_stand1_tlc[] =
+static mh2frame_t seraph_frames_stand1_tlc[] =
 {
 	{FRAME_idle_hlc1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle_hlc2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -197,7 +197,7 @@ mmove_t seraph_move_stand1_tlc = {FRAME_idle_hlc1, FRAME_idle_hlc19, seraph_fram
 /*----------------------------------------------------
 	seraph walking
 ----------------------------------------------------*/
-static mframe_t seraph_frames_walk1[] =
+static mh2frame_t seraph_frames_walk1[] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_walk2, NULL, 0, 0, 0, ai_walk, 6, NULL},
@@ -218,7 +218,7 @@ static mframe_t seraph_frames_walk1[] =
 };
 mmove_t seraph_move_walk1 = {FRAME_walk1, FRAME_walk16, seraph_frames_walk1, seraph_pause};
 
-static mframe_t seraph_frames_walk2[] =
+static mh2frame_t seraph_frames_walk2[] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, seraph_ai_walk, 6, NULL},
 	{FRAME_walk2, NULL, 0, 0, 0, seraph_ai_walk, 6, NULL},
@@ -247,7 +247,7 @@ mmove_t seraph_move_walk2 = {FRAME_walk1, FRAME_walk16, seraph_frames_walk2, ser
 	whip1_end	- end transition
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_whip1[] =
+static mh2frame_t seraph_frames_whip1[] =
 {
 	{FRAME_whip1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_whip2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -268,7 +268,7 @@ static mframe_t seraph_frames_whip1[] =
 };
 mmove_t seraph_move_whip1 = {FRAME_whip1, FRAME_whip17, seraph_frames_whip1, seraph_pause};
 
-static mframe_t seraph_frames_whip1_loop[] =
+static mh2frame_t seraph_frames_whip1_loop[] =
 {
 	{FRAME_whip7, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_whip8, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -279,7 +279,7 @@ static mframe_t seraph_frames_whip1_loop[] =
 };
 mmove_t seraph_move_whip1_loop = {FRAME_whip7, FRAME_whip13, seraph_frames_whip1_loop, seraph_pause};
 
-static mframe_t seraph_frames_whip1_end[] =
+static mh2frame_t seraph_frames_whip1_end[] =
 {
 	{FRAME_whip14, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_whip15, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -291,7 +291,7 @@ mmove_t seraph_move_whip1_end = {FRAME_whip14, FRAME_whip16, seraph_frames_whip1
 	seraph pointing and yelling
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_point1[] =
+static mh2frame_t seraph_frames_point1[] =
 {
 	{FRAME_point1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_point2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -323,7 +323,7 @@ mmove_t seraph_move_point1 = {FRAME_point1, FRAME_point21, seraph_frames_point1,
 	the names are self explanitory
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_run1[] =
+static mh2frame_t seraph_frames_run1[] =
 {
 	{FRAME_run1, NULL, 0, 0, 0, ai_run, 20, NULL},
 	{FRAME_run2, NULL, 0, 0, 0, ai_run, 16, NULL},
@@ -336,7 +336,7 @@ static mframe_t seraph_frames_run1[] =
 };
 mmove_t seraph_move_run1 = {FRAME_run1, FRAME_run8, seraph_frames_run1, seraph_pause};
 
-static mframe_t seraph_frames_fjump[] =
+static mh2frame_t seraph_frames_fjump[] =
 {
 	{FRAME_run1, NULL, 0, 0, 0, NULL, 0, seraphApplyJump},
 	{FRAME_run2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -349,7 +349,7 @@ static mframe_t seraph_frames_fjump[] =
 };
 mmove_t seraph_move_fjump = {FRAME_run1, FRAME_run8, seraph_frames_fjump, seraph_pause};
 
-static mframe_t seraph_frames_run1_whip[] =
+static mh2frame_t seraph_frames_run1_whip[] =
 {
 	{FRAME_run_whip1, NULL, 0, 0, 0, ai_charge, 20, NULL},
 	{FRAME_run_whip2, NULL, 0, 0, 0, ai_charge, 16, NULL},
@@ -366,7 +366,7 @@ mmove_t seraph_move_run1_whip = {FRAME_run_whip1, FRAME_run_whip8, seraph_frames
 	seraph pain
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_pain[] =
+static mh2frame_t seraph_frames_pain[] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -380,7 +380,7 @@ mmove_t seraph_move_pain = {FRAME_pain1, FRAME_pain5, seraph_frames_pain, seraph
 	seraph swipe
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_swipe[] =
+static mh2frame_t seraph_frames_swipe[] =
 {
 	{FRAME_swipe1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_swipe2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -396,7 +396,7 @@ mmove_t seraph_move_swipe = {FRAME_swipe1, FRAME_swipe5, seraph_frames_swipe, se
 	yells at the ogle, slaps the ogle, then goes back to standing
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_get2work[] =
+static mh2frame_t seraph_frames_get2work[] =
 {
 	{FRAME_get_work1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_get_work2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -454,7 +454,7 @@ mmove_t seraph_move_get2work = {FRAME_get_work1, FRAME_get_work1 + 46, seraph_fr
 	yells at the ogle, whips the ogle, then goes back to standing
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_get2work2[] =
+static mh2frame_t seraph_frames_get2work2[] =
 {
 	{FRAME_get_work1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_get_work2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -521,7 +521,7 @@ mmove_t seraph_move_get2work2 = {FRAME_get_work1, FRAME_get_work1 + 56, seraph_f
 	seraph startle
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_startle[] =
+static mh2frame_t seraph_frames_startle[] =
 {
 	{FRAME_startle1,	NULL, 0, 0, 0, NULL, 0, seraph_sound_startle},
 	{FRAME_startle2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -547,7 +547,7 @@ mmove_t seraph_move_startle = {FRAME_startle1, FRAME_startle15, seraph_frames_st
 	transition frame various frames to standing with arms folded
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_ready2idle[] =
+static mh2frame_t seraph_frames_ready2idle[] =
 {
 	{FRAME_rdy_idle1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rdy_idle2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -569,7 +569,7 @@ mmove_t seraph_move_ready2idle = {FRAME_rdy_idle1, FRAME_rdy_idle11, seraph_fram
 	backing up...
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_backup[] =
+static mh2frame_t seraph_frames_backup[] =
 {
 	{FRAME_backup1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_backup2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -596,7 +596,7 @@ mmove_t seraph_move_backup = {FRAME_backup1, FRAME_backup16, seraph_frames_backu
 	death1	-	dying due to massive ogle overload
 ----------------------------------------------------*/
 
-static mframe_t seraph_frames_death1[] =
+static mh2frame_t seraph_frames_death1[] =
 {
 	{FRAME_odeath1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_odeath2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -635,7 +635,7 @@ static mframe_t seraph_frames_death1[] =
 };
 mmove_t seraph_move_death1 = {FRAME_odeath1, FRAME_odeath34, seraph_frames_death1, seraph_dead};
 
-static mframe_t seraph_frames_death2_go[] =
+static mh2frame_t seraph_frames_death2_go[] =
 {
 	{FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, seraph_check_land},
 	{FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, seraph_check_land},
@@ -644,13 +644,13 @@ static mframe_t seraph_frames_death2_go[] =
 };
 mmove_t seraph_move_death2_go = {FRAME_deathb1, FRAME_deathb4, seraph_frames_death2_go, NULL};
 
-static mframe_t seraph_frames_death2_loop[] =
+static mh2frame_t seraph_frames_death2_loop[] =
 {
 	{FRAME_deathb5, NULL, 0, 0, 0, NULL, 0, seraph_check_land},
 };
 mmove_t seraph_move_death2_loop = {FRAME_deathb5, FRAME_deathb5, seraph_frames_death2_loop, NULL};
 
-static mframe_t seraph_frames_death2_end[] =
+static mh2frame_t seraph_frames_death2_end[] =
 {
 	{FRAME_deathb6, NULL, 0, 0, 0, NULL, 0, seraph_check_land},
 	{FRAME_deathb7, NULL, 0, 0, 0, NULL, 0, seraph_check_land},
@@ -665,7 +665,7 @@ static mframe_t seraph_frames_death2_end[] =
 };
 mmove_t seraph_move_death2_end = {FRAME_deathb6, FRAME_deathb15, seraph_frames_death2_end, NULL};
 
-static mframe_t seraph_frames_backup2[] =
+static mh2frame_t seraph_frames_backup2[] =
 {
 	{FRAME_backup1, NULL, 0, 0, 0, seraph_back, 24, NULL},
 	{FRAME_backup2, NULL, 0, 0, 0, seraph_back, 20, NULL},

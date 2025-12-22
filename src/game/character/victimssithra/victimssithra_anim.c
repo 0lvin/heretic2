@@ -15,7 +15,7 @@
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static mframe_t ssithra_frames_c_action1 [] =
+static mh2frame_t ssithra_frames_c_action1 [] =
 {
 	{FRAME_rackpain1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rackpain2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -43,7 +43,7 @@ mmove_t victimSsithra_move_c_action1 = {FRAME_rackpain1, FRAME_rackpain20, ssith
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static mframe_t ssithra_frames_c_action2 [] =
+static mh2frame_t ssithra_frames_c_action2 [] =
 {
 	{FRAME_release1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_release2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -74,7 +74,7 @@ mmove_t victimSsithra_move_c_action2 = {FRAME_release1, FRAME_release23, ssithra
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static mframe_t ssithra_frames_c_action3 [] =
+static mh2frame_t ssithra_frames_c_action3 [] =
 {
 	{FRAME_recover1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_recover2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -115,7 +115,7 @@ mmove_t victimSsithra_move_c_action3 = {FRAME_recover1, FRAME_recover33, ssithra
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static mframe_t ssithra_frames_c_action4 [] =
+static mh2frame_t ssithra_frames_c_action4 [] =
 {
 	{FRAME_tv_toolate1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_tv_toolate2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -280,7 +280,7 @@ mmove_t victimSsithra_move_c_action4 = {FRAME_tv_toolate1, FRAME_tv_toolate142, 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static mframe_t ssithra_frames_c_action5 [110] =
+static mh2frame_t ssithra_frames_c_action5 [110] =
 {
 	{FRAME_tv_itwillA1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_tv_itwillA2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -398,7 +398,7 @@ mmove_t victimSsithra_move_c_action5 = {FRAME_tv_itwillA1, FRAME_tv_itwillA110, 
 //==============================================================================
 // victimSsitra
 //==============================================================================
-static mframe_t ssithra_frames_c_action6 [129] =
+static mh2frame_t ssithra_frames_c_action6 [129] =
 {
 	{FRAME_tv_itwillB1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_tv_itwillB2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},

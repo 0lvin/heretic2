@@ -13,7 +13,7 @@
 #include "../ai.h"
 
 
-static mframe_t priestess_frames_c_action1[] =
+static mh2frame_t priestess_frames_c_action1[] =
 {
 	{FRAME_hltalk1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hltalk2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -49,7 +49,7 @@ static mframe_t priestess_frames_c_action1[] =
 mmove_t priestess_move_c_action1 = {FRAME_hltalk1, FRAME_hltalk30, priestess_frames_c_action1, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action2[] =
+static mh2frame_t priestess_frames_c_action2[] =
 {
 	{FRAME_hlidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hlidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -90,7 +90,7 @@ static mframe_t priestess_frames_c_action2[] =
 mmove_t priestess_move_c_action2 = {FRAME_hlidle1, FRAME_hlidle35, priestess_frames_c_action2, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action3[] =
+static mh2frame_t priestess_frames_c_action3[] =
 {
 	{FRAME_hltalk1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hltalk2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -248,7 +248,7 @@ static mframe_t priestess_frames_c_action3[] =
 mmove_t priestess_move_c_action3 = {FRAME_hltalk1, FRAME_hltalk1 + 150, priestess_frames_c_action3, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action4[] =
+static mh2frame_t priestess_frames_c_action4[] =
 {
 	{FRAME_hlidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hlidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -474,7 +474,7 @@ static mframe_t priestess_frames_c_action4[] =
 mmove_t priestess_move_c_action4 = {FRAME_hlidle1, FRAME_hlidle1 + 215, priestess_frames_c_action4, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action5[] =
+static mh2frame_t priestess_frames_c_action5[] =
 {
 	{FRAME_hlrtran1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hlrtran2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -681,7 +681,7 @@ static mframe_t priestess_frames_c_action5[] =
 mmove_t priestess_move_c_action5 = {FRAME_hlrtran1, FRAME_hlrtran1 + 195, priestess_frames_c_action5, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action6[] =
+static mh2frame_t priestess_frames_c_action6[] =
 {
 	{FRAME_hridle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hridle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -699,7 +699,7 @@ static mframe_t priestess_frames_c_action6[] =
 mmove_t priestess_move_c_action6 = {FRAME_hridle1, FRAME_hridle11, priestess_frames_c_action6, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action7[] =
+static mh2frame_t priestess_frames_c_action7[] =
 {
 	{FRAME_hbutyou1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hbutyou2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -716,7 +716,7 @@ static mframe_t priestess_frames_c_action7[] =
 mmove_t priestess_move_c_action7 = {FRAME_hbutyou1, FRAME_hbutyou11, priestess_frames_c_action7, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action8[] =
+static mh2frame_t priestess_frames_c_action8[] =
 {
 	{FRAME_hbutyou12, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hbutyou13, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -786,7 +786,7 @@ static mframe_t priestess_frames_c_action8[] =
 };
 mmove_t priestess_move_c_action8 = {FRAME_hbutyou12, FRAME_hbutyou76, priestess_frames_c_action8, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action9[] =
+static mh2frame_t priestess_frames_c_action9[] =
 {
 	{FRAME_hbutyou77, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hbutyou78, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -894,7 +894,7 @@ static mframe_t priestess_frames_c_action9[] =
 };
 mmove_t priestess_move_c_action9 = {FRAME_hbutyou77, FRAME_hbutyou77 + 101, priestess_frames_c_action9, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action10[] =
+static mh2frame_t priestess_frames_c_action10[] =
 {
 	{FRAME_hlidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hlidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -939,7 +939,7 @@ static mframe_t priestess_frames_c_action10[] =
 };
 mmove_t priestess_move_c_action10 = {FRAME_hlidle1, FRAME_hlidle40, priestess_frames_c_action10, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action11[] =
+static mh2frame_t priestess_frames_c_action11[] =
 {
 	{FRAME_hnotfully1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hnotfully2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1126,7 +1126,7 @@ static mframe_t priestess_frames_c_action11[] =
 mmove_t priestess_move_c_action11 = {FRAME_hnotfully1, FRAME_hnotfully1 + 178, priestess_frames_c_action11, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_action12[] =
+static mh2frame_t priestess_frames_c_action12[] =
 {
 	{FRAME_hlidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hlidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1185,7 +1185,7 @@ static mframe_t priestess_frames_c_action12[] =
 };
 mmove_t priestess_move_c_action12 = {FRAME_hlidle1, FRAME_hlidle1 + 52, priestess_frames_c_action12, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action13[] =
+static mh2frame_t priestess_frames_c_action13[] =
 {
 	{FRAME_hltalk1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hltalk2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1248,7 +1248,7 @@ static mframe_t priestess_frames_c_action13[] =
 };
 mmove_t priestess_move_c_action13 = {FRAME_hltalk1, FRAME_hltalk58, priestess_frames_c_action13, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action14[] =
+static mh2frame_t priestess_frames_c_action14[] =
 {
 	{FRAME_hlidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hlidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1266,7 +1266,7 @@ static mframe_t priestess_frames_c_action14[] =
 };
 mmove_t priestess_move_c_action14 = {FRAME_hlidle1, FRAME_hlidle13, priestess_frames_c_action14, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action15[] =
+static mh2frame_t priestess_frames_c_action15[] =
 {
 	{FRAME_hrtalk1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hrtalk2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1414,7 +1414,7 @@ static mframe_t priestess_frames_c_action15[] =
 };
 mmove_t priestess_move_c_action15 = {FRAME_hrtalk1, FRAME_hrtalk1 + 141, priestess_frames_c_action15, ai_c_cycleend};
 
-static mframe_t priestess_frames_c_action16[] =
+static mh2frame_t priestess_frames_c_action16[] =
 {
 	{FRAME_hridle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hridle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1593,7 +1593,7 @@ static mframe_t priestess_frames_c_action16[] =
 mmove_t priestess_move_c_action16 = {FRAME_hridle1, FRAME_hridle1 + 168, priestess_frames_c_action16, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_idle1[] =
+static mh2frame_t priestess_frames_c_idle1[] =
 {
 	{FRAME_idle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1617,14 +1617,14 @@ static mframe_t priestess_frames_c_idle1[] =
 mmove_t priestess_move_c_idle1 = {FRAME_idle1, FRAME_idle18, priestess_frames_c_idle1, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_idle2[] =
+static mh2frame_t priestess_frames_c_idle2[] =
 {
 	{FRAME_hpstart1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t priestess_move_c_idle2 = {FRAME_hpstart1, FRAME_hpstart1, priestess_frames_c_idle2, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_walk1[] =
+static mh2frame_t priestess_frames_c_walk1[] =
 {
 	{FRAME_walk1, ai_c_move, 6, 0, 0, NULL, 0, NULL},
 	{FRAME_walk2, ai_c_move, 8, 0, 0, NULL, 0, NULL},
@@ -1646,7 +1646,7 @@ static mframe_t priestess_frames_c_walk1[] =
 mmove_t priestess_move_c_walk1 = {FRAME_walk1, FRAME_walk16, priestess_frames_c_walk1, ai_c_cycleend};
 
 
-static mframe_t priestess_frames_c_backpedal1 [] =
+static mh2frame_t priestess_frames_c_backpedal1 [] =
 {
 	{FRAME_backup3, ai_c_move, -8, 0, 0, NULL, 0, NULL},
 	{FRAME_backup4, ai_c_move, -8, 0, 0, NULL, 0, NULL},

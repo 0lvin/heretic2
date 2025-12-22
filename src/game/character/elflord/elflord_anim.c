@@ -15,7 +15,7 @@
 void Elflord_c_throwhead(edict_t *self);
 void elflord_mist(edict_t *self, float x, float y, float z);
 
-static mframe_t Elflord_frames_c_death1 [] =
+static mh2frame_t Elflord_frames_c_death1 [] =
 {
 	{FRAME_death1, ai_c_move, 0, 0, 0, NULL, 0, Elflord_c_throwhead},
 	{FRAME_death2, elflord_mist, 0, 0, 0, NULL, 0, NULL},
@@ -36,7 +36,7 @@ static mframe_t Elflord_frames_c_death1 [] =
 mmove_t Elflord_move_c_death1 = {FRAME_death1, FRAME_death15, Elflord_frames_c_death1, ai_c_cycleend};
 
 
-static mframe_t Elflord_frames_c_death2 [] =
+static mh2frame_t Elflord_frames_c_death2 [] =
 {
 	{FRAME_death1, elflord_mist, 0, 0, 0, NULL, 0, Elflord_c_boom},
 	{FRAME_death2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -56,7 +56,7 @@ static mframe_t Elflord_frames_c_death2 [] =
 };
 mmove_t Elflord_move_c_death2 = {FRAME_death1, FRAME_death15, Elflord_frames_c_death2, ai_c_cycleend};
 
-static mframe_t Elflord_frames_c_idle1 [] =
+static mh2frame_t Elflord_frames_c_idle1 [] =
 {
 	{FRAME_idle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -85,7 +85,7 @@ static mframe_t Elflord_frames_c_idle1 [] =
 };
 mmove_t Elflord_move_c_idle1 = {FRAME_idle1, FRAME_idle24, Elflord_frames_c_idle1, ai_c_cycleend};
 
-static mframe_t Elflord_frames_c_idle2 [] =
+static mh2frame_t Elflord_frames_c_idle2 [] =
 {
 	{FRAME_cidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -111,7 +111,7 @@ static mframe_t Elflord_frames_c_idle2 [] =
 mmove_t Elflord_move_c_idle2 = {FRAME_cidle1, FRAME_cidle20, Elflord_frames_c_idle2, ai_c_cycleend};
 
 
-static mframe_t Elflord_frames_c_action1 [] =
+static mh2frame_t Elflord_frames_c_action1 [] =
 {
 	{FRAME_Dialoguea1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialoguea2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -358,7 +358,7 @@ static mframe_t Elflord_frames_c_action1 [] =
 mmove_t Elflord_move_c_action1 = {FRAME_Dialoguea1, FRAME_Dialoguea220, Elflord_frames_c_action1, ai_c_cycleend};
 
 
-static mframe_t Elflord_frames_c_action2 [] =
+static mh2frame_t Elflord_frames_c_action2 [] =
 {
 	{FRAME_Dialogueb1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialogueb2, ai_c_move, 0, 0, 0, NULL, 0, NULL},

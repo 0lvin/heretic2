@@ -21,7 +21,7 @@
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_idle1 [] =
+static mh2frame_t dranor_frames_c_idle1 [] =
 {
 	{FRAME_1idle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_1idle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -40,7 +40,7 @@ mmove_t dranor_move_c_idle1 = {FRAME_1idle1, FRAME_1idle10, dranor_frames_c_idle
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_idle2 [] =
+static mh2frame_t dranor_frames_c_idle2 [] =
 {
 	{FRAME_relax1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_relax2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -60,7 +60,7 @@ mmove_t dranor_move_c_idle2 = {FRAME_relax1, FRAME_relax11, dranor_frames_c_idle
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_idle3 [] =
+static mh2frame_t dranor_frames_c_idle3 [] =
 {
 	{FRAME_2idle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_2idle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -89,7 +89,7 @@ mmove_t dranor_move_c_idle3 = {FRAME_2idle1, FRAME_2idle20, dranor_frames_c_idle
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action1 [] =
+static mh2frame_t dranor_frames_c_action1 [] =
 {
 	{FRAME_go1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_go2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -102,7 +102,7 @@ mmove_t dranor_move_c_action1 = {FRAME_go1, FRAME_go4, dranor_frames_c_action1, 
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action2 [] =
+static mh2frame_t dranor_frames_c_action2 [] =
 {
 	{FRAME_go5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_go6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -232,7 +232,7 @@ mmove_t dranor_move_c_action2 = {FRAME_go5, FRAME_go114, dranor_frames_c_action2
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action3 [] =
+static mh2frame_t dranor_frames_c_action3 [] =
 {
 	{FRAME_slayer1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_slayer2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -295,7 +295,7 @@ static mframe_t dranor_frames_c_action3 [] =
 mmove_t dranor_move_c_action3 = {FRAME_slayer1, FRAME_slayer52, dranor_frames_c_action3, ai_c_cycleend};
 
 
-static mframe_t dranor_frames_c_action4 [] =
+static mh2frame_t dranor_frames_c_action4 [] =
 {
 	{FRAME_1iwas1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_1iwas2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -312,7 +312,7 @@ mmove_t dranor_move_c_action4 = {FRAME_1iwas1, FRAME_1iwas8, dranor_frames_c_act
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action5 [] =
+static mh2frame_t dranor_frames_c_action5 [] =
 {
 	{FRAME_2iwas1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_2iwas2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -402,7 +402,7 @@ mmove_t dranor_move_c_action5 = {FRAME_2iwas1, FRAME_2iwas74, dranor_frames_c_ac
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action6 [] =
+static mh2frame_t dranor_frames_c_action6 [] =
 {
 	{FRAME_1iwas8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_1iwas7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -419,7 +419,7 @@ mmove_t dranor_move_c_action6 = {FRAME_1iwas1, FRAME_1iwas8, dranor_frames_c_act
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action7 [] =
+static mh2frame_t dranor_frames_c_action7 [] =
 {
 	{FRAME_2iwas74, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_2iwas73, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -518,7 +518,7 @@ mmove_t dranor_move_c_action7 = {FRAME_2iwas74, FRAME_2iwas74 + 73, dranor_frame
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action8 [] =
+static mh2frame_t dranor_frames_c_action8 [] =
 {
 	{FRAME_1butyou1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_1butyou2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -605,7 +605,7 @@ mmove_t dranor_move_c_action8 = {FRAME_1butyou1, FRAME_1butyou71, dranor_frames_
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action9 [] =
+static mh2frame_t dranor_frames_c_action9 [] =
 {
 	{FRAME_2butyou1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_2butyou2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -650,7 +650,7 @@ mmove_t dranor_move_c_action9 = {FRAME_2butyou1, FRAME_2butyou33, dranor_frames_
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action10 [] =
+static mh2frame_t dranor_frames_c_action10 [] =
 {
 	{FRAME_2insert1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_2insert2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -695,7 +695,7 @@ mmove_t dranor_move_c_action10 = {FRAME_2insert1, FRAME_2insert33, dranor_frames
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action11 [] =
+static mh2frame_t dranor_frames_c_action11 [] =
 {
 	{FRAME_1insert1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_1insert2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -712,7 +712,7 @@ mmove_t dranor_move_c_action11 = {FRAME_1insert1, FRAME_1insert8, dranor_frames_
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_action12 [] =
+static mh2frame_t dranor_frames_c_action12 [] =
 {
 	{FRAME_2insert33, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
@@ -722,7 +722,7 @@ mmove_t dranor_move_c_action12 = {FRAME_2insert33, FRAME_2insert33, dranor_frame
 /*----------------------------------------------------------------------
   Dranor -
 -----------------------------------------------------------------------*/
-static mframe_t dranor_frames_c_death1 [] =
+static mh2frame_t dranor_frames_c_death1 [] =
 {
 	{FRAME_death1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death2, ai_c_move, 0, 0, 0, NULL, 0, NULL},

@@ -71,7 +71,7 @@ void gorgon_ai_run (edict_t *self, float dist)
 /*----------------------------------------------------------------------
 	STAND3 -   Gorgon Standing and looking right
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_stand3 [] =
+static mh2frame_t gorgon_frames_stand3 [] =
 {
 	{FRAME_painc1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_painc2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -84,7 +84,7 @@ mmove_t gorgon_move_stand3 = {FRAME_painc1, FRAME_painc5, gorgon_frames_stand3, 
 /*----------------------------------------------------------------------
 	STAND2 -   Gorgon Standing and looking left
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_stand2 [] =
+static mh2frame_t gorgon_frames_stand2 [] =
 {
 	{FRAME_painb1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_painb2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -98,7 +98,7 @@ mmove_t gorgon_move_stand2 = {FRAME_painb1, FRAME_painb5, gorgon_frames_stand2, 
 /*----------------------------------------------------------------------
 	STAND1 -   Gorgon Standing and wagging it's tail
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_stand1 [] =
+static mh2frame_t gorgon_frames_stand1 [] =
 {
 	{FRAME_wait1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_wait2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -114,7 +114,7 @@ mmove_t gorgon_move_stand1 = {FRAME_wait1, FRAME_wait8, gorgon_frames_stand1, go
 /*----------------------------------------------------------------------
 	STAND1 -   Gorgon Standing and wagging it's tail
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_stand4 [] =
+static mh2frame_t gorgon_frames_stand4 [] =
 {
 	{FRAME_wait1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_wait2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -130,7 +130,7 @@ mmove_t gorgon_move_stand4 = {FRAME_wait1, FRAME_wait8, gorgon_frames_stand4, go
 /*----------------------------------------------------------------------
   Gorgon Turning right while running
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_walk3 [] =
+static mh2frame_t gorgon_frames_walk3 [] =
 {
 	{FRAME_wlkrt1, NULL, 0, 0, 0, ai_walk, 8, gorgon_footstep},
 	{FRAME_wlkrt2, NULL, 0, 0, 0, ai_walk, 8, NULL},
@@ -151,7 +151,7 @@ mmove_t gorgon_move_walk3 = {FRAME_wlkrt1, FRAME_wlkrt12, gorgon_frames_walk3, g
 /*----------------------------------------------------------------------
   Gorgon Turning left while running
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_walk2 [] =
+static mh2frame_t gorgon_frames_walk2 [] =
 {
 	{FRAME_wlklft1,NULL, 0, 0, 0, ai_walk, 8, gorgon_footstep},
 	{FRAME_wlklft2,NULL, 0, 0, 0, ai_walk, 8, NULL},
@@ -171,7 +171,7 @@ mmove_t gorgon_move_walk2 = {FRAME_wlklft1, FRAME_wlklft12, gorgon_frames_walk2,
 /*----------------------------------------------------------------------
   Gorgon Walking
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_walk [] =
+static mh2frame_t gorgon_frames_walk [] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_walk, 7, gorgon_footstep},
 	{FRAME_walk2, NULL, 0, 0, 0, ai_walk, 8, NULL},
@@ -214,7 +214,7 @@ void gorgon_ai_charge2 (edict_t *self, float dist)
 /*----------------------------------------------------------------------
 	Forced Jump - jump from a buoy
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_fjump [] =
+static mh2frame_t gorgon_frames_fjump [] =
 {
 	{FRAME_jumpb1,NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb2,NULL, 0, 0, 0, NULL, 0, NULL},
@@ -236,7 +236,7 @@ mmove_t gorgon_move_fjump = {FRAME_jumpb1, FRAME_jumpb14, gorgon_frames_fjump, g
 /*----------------------------------------------------------------------
 	land 1
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_land [] =
+static mh2frame_t gorgon_frames_land [] =
 {
 	{FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0, gorgon_land},
 	{FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0, gorgon_growl},
@@ -247,7 +247,7 @@ mmove_t gorgon_move_land = {FRAME_jumpa15, FRAME_jumpa17, gorgon_frames_land, go
 /*----------------------------------------------------------------------
 	land 2
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_land2 [] =
+static mh2frame_t gorgon_frames_land2 [] =
 {
 	{FRAME_jumpa15,NULL, 0, 0, 0, NULL, 0, gorgon_land},
 	{FRAME_jumpa16,NULL, 0, 0, 0, NULL, 0, gorgon_growl},
@@ -258,7 +258,7 @@ mmove_t gorgon_move_land2 = {FRAME_jumpa15, FRAME_jumpa17, gorgon_frames_land2, 
 /*----------------------------------------------------------------------
 	in air
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_inair [] =
+static mh2frame_t gorgon_frames_inair [] =
 {
 	{FRAME_jumpa14,NULL, 0, 0, 0, NULL, 0, gorgon_check_landed},
 };
@@ -267,7 +267,7 @@ mmove_t gorgon_move_inair = {FRAME_jumpa14, FRAME_jumpa14, gorgon_frames_inair, 
 /*----------------------------------------------------------------------
 	MELEE10 - jump up at player
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee10 [] =
+static mh2frame_t gorgon_frames_melee10 [] =
 {
 	{FRAME_jumpa1,NULL, 0, 0, 0, gorgon_ai_charge2, 0, NULL},
 	{FRAME_jumpa2,NULL, 0, 0, 0, gorgon_ai_charge2, 0, NULL},
@@ -290,7 +290,7 @@ mmove_t gorgon_move_melee10 = {FRAME_jumpa1, FRAME_jumpa14, gorgon_frames_melee1
 /*----------------------------------------------------------------------
 	MELEE9 - hop backward
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee9 [] =
+static mh2frame_t gorgon_frames_melee9 [] =
 {
 	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
@@ -308,7 +308,7 @@ mmove_t gorgon_move_melee9 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee9, gor
 /*----------------------------------------------------------------------
 	MELEE8 - hop forward
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee8 [] =
+static mh2frame_t gorgon_frames_melee8 [] =
 {
 	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
@@ -326,7 +326,7 @@ mmove_t gorgon_move_melee8 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee8, gor
 /*----------------------------------------------------------------------
   MELEE7 - hop right
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee7 [] =
+static mh2frame_t gorgon_frames_melee7 [] =
 {
 	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
@@ -344,7 +344,7 @@ mmove_t gorgon_move_melee7 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee7, gor
 /*----------------------------------------------------------------------
   MELEE6 - hop left
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee6 [] =
+static mh2frame_t gorgon_frames_melee6 [] =
 {
 	{FRAME_hop1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_hop2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
@@ -363,7 +363,7 @@ mmove_t gorgon_move_melee6 = {FRAME_hop1, FRAME_hop10, gorgon_frames_melee6, gor
 /*----------------------------------------------------------------------
   Melee5 -  running attack
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee5 [] =
+static mh2frame_t gorgon_frames_melee5 [] =
 {
 	{FRAME_runatk1, NULL, 0, 0, 0, ai_goal_charge, 20, gorgon_melee5check},
 	{FRAME_runatk2,	NULL, 0, 0, 0, ai_goal_charge, 20, NULL},
@@ -382,7 +382,7 @@ mmove_t gorgon_move_melee5 = {FRAME_runatk1, FRAME_runatk8, gorgon_frames_melee5
 /*----------------------------------------------------------------------
    Melee4 -   Gorgon Attack Pullback
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee4 [] =
+static mh2frame_t gorgon_frames_melee4 [] =
 {
 	{FRAME_atkc1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_atkc2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
@@ -395,7 +395,7 @@ mmove_t gorgon_move_melee4 = {FRAME_atkc1, FRAME_atkc4, gorgon_frames_melee4, go
 /*----------------------------------------------------------------------
    Melee3 -   Gorgon Attack Up
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee3 [] =
+static mh2frame_t gorgon_frames_melee3 [] =
 {
 	{FRAME_atkd1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_atkd2, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
@@ -408,7 +408,7 @@ mmove_t gorgon_move_melee3 = {FRAME_atkd1, FRAME_atkd4, gorgon_frames_melee3, go
 /*----------------------------------------------------------------------
    Melee2 -   Gorgon Attack Right
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee2 [] =
+static mh2frame_t gorgon_frames_melee2 [] =
 {
 	{FRAME_atkb1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_atkb2, NULL, 0, 0, 0, ai_goal_charge, 0, gorgonbite},
@@ -421,7 +421,7 @@ mmove_t gorgon_move_melee2 = {FRAME_atkb1, FRAME_atkb4, gorgon_frames_melee2, go
 /*----------------------------------------------------------------------
    Melee1 -   Gorgon Attack Left
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_melee1 [] =
+static mh2frame_t gorgon_frames_melee1 [] =
 {
 	{FRAME_atka1, NULL, 0, 0, 0, ai_goal_charge, 0, NULL},
 	{FRAME_atka2, NULL, 0, 0, 0, ai_goal_charge, 0, gorgonbite},
@@ -434,7 +434,7 @@ mmove_t gorgon_move_melee1 = {FRAME_atka1, FRAME_atka4, gorgon_frames_melee1, go
 /*----------------------------------------------------------------------
   RUN3 - Turning right while running
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_run3 [] =
+static mh2frame_t gorgon_frames_run3 [] =
 {
 	{FRAME_wlkrt1, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_footstep},
 	{FRAME_wlkrt2, NULL, 0, 0, 0, gorgon_ai_run, 16, gorgonCheckSlip},
@@ -455,7 +455,7 @@ mmove_t gorgon_move_run3 = {FRAME_wlkrt1, FRAME_wlkrt12, gorgon_frames_run3, gor
 /*----------------------------------------------------------------------
   RUN2 - Turning left while running
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_run2 [] =
+static mh2frame_t gorgon_frames_run2 [] =
 {
 	{FRAME_wlklft1,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_footstep},
 	{FRAME_wlklft2,NULL, 0, 0, 0, gorgon_ai_run, 16, gorgon_mood},
@@ -476,7 +476,7 @@ mmove_t gorgon_move_run2 = {FRAME_wlklft1, FRAME_wlklft12, gorgon_frames_run2, g
 /*----------------------------------------------------------------------
   Gorgon Running
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_run1 [] =
+static mh2frame_t gorgon_frames_run1 [] =
 {
 	{FRAME_run1, NULL, 0, 0, 0, gorgon_ai_run, 30, gorgon_footstep},
 	{FRAME_run2,	NULL, 0, 0, 0, gorgon_ai_run, 31, gorgon_mood},
@@ -492,7 +492,7 @@ mmove_t gorgon_move_run1 = {FRAME_run1, FRAME_run8, gorgon_frames_run1, gorgon_m
 /*----------------------------------------------------------------------
   Gorgon Pain1 - step back while bending head down
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_pain1 [] =
+static mh2frame_t gorgon_frames_pain1 [] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -510,7 +510,7 @@ mmove_t gorgon_move_pain1 = {FRAME_pain1, FRAME_pain9, gorgon_frames_pain1, gorg
 /*----------------------------------------------------------------------
   Gorgon Pain2 - bend head to the left
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_pain2 [] =
+static mh2frame_t gorgon_frames_pain2 [] =
 {
 	{FRAME_painb1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_painb2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -523,7 +523,7 @@ mmove_t gorgon_move_pain2 = {FRAME_painb1, FRAME_painb5, gorgon_frames_pain2, go
 /*----------------------------------------------------------------------
   Gorgon Pain3 - bend head to the right
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_pain3 [] =
+static mh2frame_t gorgon_frames_pain3 [] =
 {
 	{FRAME_painc1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_painc2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -547,7 +547,7 @@ void gorgondeath1_fall (edict_t *self)
 	M_walkmove(self,flrand(180, 345), flrand(0, -8));
 }
 
-static mframe_t gorgon_frames_die1 [] =
+static mh2frame_t gorgon_frames_die1 [] =
 {
 	{FRAME_deatha1, NULL, 0, 0, 0, ai_move, -8, NULL},
 	{FRAME_deatha2, NULL, 0, 0, 0, ai_move, -8, NULL},
@@ -584,7 +584,7 @@ void gorgon_nexttwitch(edict_t *self)
 	self->monsterinfo.thinkinc = FRAMETIME * 4  + flrand(0.0, 4.0);
 }
 
-static mframe_t gorgon_frames_death2twitch [] =
+static mh2frame_t gorgon_frames_death2twitch [] =
 {
 	{FRAME_twitch, NULL, 0, 0, 0, NULL, 0, gorgon_starttwitch},
 	{FRAME_twitch_1,NULL, 0, 0, 0, NULL, 0, NULL},
@@ -603,7 +603,7 @@ void gorgon_death2twitch (edict_t *self)
 }
 
 
-static mframe_t gorgon_frames_death2slide [] =
+static mh2frame_t gorgon_frames_death2slide [] =
 {
 	{FRAME_slide1, NULL, 0, 0, 0, ai_move, -16, NULL},
 	{FRAME_slide2, NULL, 0, 0, 0, ai_move, -14, NULL},
@@ -661,7 +661,7 @@ void gorgon_death2 (edict_t *self)
 	self->velocity[2] = -120;
 }
 
-static mframe_t gorgon_frames_die2 [] =
+static mh2frame_t gorgon_frames_die2 [] =
 {
 	{FRAME_hit1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hit3, NULL, 0, 0, 0, NULL, 0, gorgon_death2throw},
@@ -680,7 +680,7 @@ CHOMP!
 /*----------------------------------------------------------------------
    Melee3 -   Gorgon Attack Up
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_catch [] =
+static mh2frame_t gorgon_frames_catch [] =
 {
 	{FRAME_jumpb5,NULL, 0, 0, 0, gorgon_gore_toy, 150, NULL},
 	{FRAME_jumpb6,NULL, 0, 0, 0, gorgon_gore_toy, 0, NULL},
@@ -703,7 +703,7 @@ mmove_t gorgon_move_catch = {FRAME_jumpb5, FRAME_jumpb19, gorgon_frames_catch, g
 /*----------------------------------------------------------------------
   Gorgon Eat3 - pull back, then bend back down to eat
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_miss [] =
+static mh2frame_t gorgon_frames_miss [] =
 {
 	{FRAME_eatinga4, NULL, 0, 0, 0, NULL, 0, gorgon_miss_sound},
 	{FRAME_eatinga3, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -717,7 +717,7 @@ mmove_t gorgon_move_miss = {FRAME_eatinga1, FRAME_eatinga4, gorgon_frames_miss, 
 
   Chance of throwing it to left or right, maybe carry away?
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_snatch [] =
+static mh2frame_t gorgon_frames_snatch [] =
 {
 	{FRAME_eatingb5, gorgon_toy_ofs, 70, 0, 66, NULL, 0, gorgon_anger_sound},
 	{FRAME_eatingb6, gorgon_toy_ofs, 68, -44, 66, NULL, 0, NULL},
@@ -752,7 +752,7 @@ mmove_t gorgon_move_snatch = {FRAME_eatingb5, FRAME_eatingb5 + 26, gorgon_frames
 /*----------------------------------------------------------------------
   Gorgon Eat3 - pull back, then bend back down to eat
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_readycatch [] =
+static mh2frame_t gorgon_frames_readycatch [] =
 {
 	{FRAME_jumpb4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
@@ -761,7 +761,7 @@ mmove_t gorgon_move_readycatch = {FRAME_jumpb4, FRAME_jumpb4, gorgon_frames_read
 /*----------------------------------------------------------------------
   Gorgon
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_snatchhi [] =
+static mh2frame_t gorgon_frames_snatchhi [] =
 {
 	{FRAME_atkd1, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
 	{FRAME_atkd2, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
@@ -773,7 +773,7 @@ mmove_t gorgon_move_snatchhi = {FRAME_atkd1, FRAME_atkd4, gorgon_frames_snatchhi
 /*----------------------------------------------------------------------
   Gorgon
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_snatchlow [] =
+static mh2frame_t gorgon_frames_snatchlow [] =
 {
 	{FRAME_eatinga1, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
 	{FRAME_eatinga2, NULL, 0, 0, 0, gorgon_ai_charge2, 10, NULL},
@@ -791,7 +791,7 @@ mmove_t gorgon_move_snatchlow = {FRAME_eatinga1, FRAME_eatinga1 + 8, gorgon_fram
 /*----------------
 ?
 -----------------------*/
-static mframe_t gorgon_frames_slip [] =
+static mh2frame_t gorgon_frames_slip [] =
 {
 	{FRAME_deatha1, NULL, 0, 0, 0, gorgonSlide, -200, NULL},
 	{FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -835,7 +835,7 @@ mmove_t gorgon_move_slip = {FRAME_deatha1, FRAME_deatha1 + 35, gorgon_frames_sli
 /*----------------
 ?
 -----------------------*/
-static mframe_t gorgon_frames_slip_pain [] =
+static mh2frame_t gorgon_frames_slip_pain [] =
 {
 	{FRAME_deatha11, NULL, 0, 0, 0, gorgonSlide, -200, gorgondeath1_fall}, // carnasaur_fall,
 	{FRAME_deatha12, NULL, 0, 0, 0, NULL, 0, gorgondeath1_fall}, // carnasaur_fall,
@@ -869,7 +869,7 @@ mmove_t gorgon_move_slip_pain = {FRAME_deatha11, FRAME_deatha11 + 25, gorgon_fra
 /*----------------------------------------------------------------------
 	delay
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_delay [] =
+static mh2frame_t gorgon_frames_delay [] =
 {
 	{FRAME_wait1,	NULL, 0, 0, 0, NULL, 0, gorgon_mood},
 	{FRAME_wait2,	NULL, 0, 0, 0, NULL, 0, gorgon_mood},
@@ -885,7 +885,7 @@ mmove_t gorgon_move_delay = {FRAME_wait1, FRAME_wait8, gorgon_frames_delay, gorg
 /*----------------------------------------------------------------------
   Gorgon roar- make noise, alert others
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_roar [] =
+static mh2frame_t gorgon_frames_roar [] =
 {
 	{FRAME_speak1, NULL, 0, 0, 0, NULL, 0, gorgonRoar},
 	{FRAME_speak2, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
@@ -912,7 +912,7 @@ mmove_t gorgon_move_roar = {FRAME_speak1, FRAME_speak19, gorgon_frames_roar, gor
 /*----------------------------------------------------------------------
   Gorgon roar2- make noise in response to main roar
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_roar2 [] =
+static mh2frame_t gorgon_frames_roar2 [] =
 {
 	{FRAME_speak1, NULL, 0, 0, 0, NULL, 0, gorgon_roar_sound},
 	{FRAME_speak2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -945,7 +945,7 @@ mmove_t gorgon_move_roar2 = {FRAME_speak1, FRAME_speak19, gorgon_frames_roar2, g
 /*----------------------------------------------------------------------
   Gorgon Swimming
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_to_swim [] =
+static mh2frame_t gorgon_frames_to_swim [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
 	{FRAME_swim1,	NULL, 0, 0, 0, NULL, 0, gorgonCheckInWater},
 	{FRAME_swim2,	NULL, 0, 0, 0, NULL, 0, gorgonCheckInWater},
@@ -955,7 +955,7 @@ static mframe_t gorgon_frames_to_swim [] =
 };
 mmove_t gorgon_move_to_swim = {FRAME_swim1, FRAME_swim5, gorgon_frames_to_swim, gorgonGoSwim};
 
-static mframe_t gorgon_frames_swim [] =
+static mh2frame_t gorgon_frames_swim [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
 	{FRAME_swim6,	NULL, 0, 0, 0, gorgon_ai_swim, 31, fish_under_water_wake},
 	{FRAME_swim7,	NULL, 0, 0, 0, gorgon_ai_swim, 32, NULL},
@@ -973,7 +973,7 @@ static mframe_t gorgon_frames_swim [] =
 };
 mmove_t gorgon_move_swim = {FRAME_swim6, FRAME_swim18, gorgon_frames_swim, NULL};
 
-static mframe_t gorgon_frames_swim_bite_a [] =
+static mh2frame_t gorgon_frames_swim_bite_a [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
 	{FRAME_swimata1,	NULL, 0, 0, 0, gorgon_ai_swim, 31, fish_under_water_wake},
 	{FRAME_swimata2,	NULL, 0, 0, 0, gorgon_ai_swim, 32, NULL},
@@ -992,7 +992,7 @@ static mframe_t gorgon_frames_swim_bite_a [] =
 };
 mmove_t gorgon_move_swim_bite_a = {FRAME_swimata1, FRAME_swimata14, gorgon_frames_swim_bite_a, NULL};
 
-static mframe_t gorgon_frames_swim_bite_b [] =
+static mh2frame_t gorgon_frames_swim_bite_b [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
 	{FRAME_swimatb1,	NULL, 0, 0, 0, gorgon_ai_swim, 31, fish_under_water_wake},
 	{FRAME_swimatb2,	NULL, 0, 0, 0, gorgon_ai_swim, 32, NULL},
@@ -1011,7 +1011,7 @@ static mframe_t gorgon_frames_swim_bite_b [] =
 };
 mmove_t gorgon_move_swim_bite_b = {FRAME_swimatb1, FRAME_swimatb14, gorgon_frames_swim_bite_b, NULL};
 
-static mframe_t gorgon_frames_outwater [] =
+static mh2frame_t gorgon_frames_outwater [] =
 { //FIXME: add wake and bubbles and sploosh swim sounds
 	{FRAME_swimata1, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
 	{FRAME_swimata3, NULL, 0, 0, 0, gorgon_ai_swim, -1, NULL},
@@ -1047,7 +1047,7 @@ mmove_t gorgon_move_outwater = {FRAME_swimata1, FRAME_swimata1 + 19, gorgon_fram
 /*----------------------------------------------------------------------
 	eating trand to down
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_down [] =
+static mh2frame_t gorgon_frames_eat_down [] =
 {
 	{FRAME_eatinga1,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatinga2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1059,7 +1059,7 @@ mmove_t gorgon_move_eat_down = {FRAME_eatinga1, FRAME_eatinga4, gorgon_frames_ea
 /*----------------------------------------------------------------------
 	eating trans to up
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_up [] =
+static mh2frame_t gorgon_frames_eat_up [] =
 {
 	{FRAME_eatinga4,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatinga3,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1071,7 +1071,7 @@ mmove_t gorgon_move_eat_up = {FRAME_eatinga1, FRAME_eatinga4, gorgon_frames_eat_
 /*----------------------------------------------------------------------
   eat cycle
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_loop [] =
+static mh2frame_t gorgon_frames_eat_loop [] =
 {
 	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatinga6, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1085,7 +1085,7 @@ mmove_t gorgon_move_eat_loop = {FRAME_eatinga5, FRAME_eatinga10, gorgon_frames_e
 /*----------------------------------------------------------------------
   eating - tear
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_tear [] =
+static mh2frame_t gorgon_frames_eat_tear [] =
 {
 	{FRAME_eatingb1, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatingb2, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1115,7 +1115,7 @@ mmove_t gorgon_move_eat_tear = {FRAME_eatingb1, FRAME_eatingb21, gorgon_frames_e
 /*----------------------------------------------------------------------
   eat- up & down
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_pullback [] =
+static mh2frame_t gorgon_frames_eat_pullback [] =
 {
 	{FRAME_eatinga5, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_eatinga4, NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1128,7 +1128,7 @@ mmove_t gorgon_move_eat_pullback = {FRAME_eatinga5, FRAME_eatinga5 + 4, gorgon_f
 /*----------------------------------------------------------------------
 	look around
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_look_around [] =
+static mh2frame_t gorgon_frames_look_around [] =
 {//fixme: modify view_ofs so they actually look behind them
 	{FRAME_idleb1,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_idleb2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1157,7 +1157,7 @@ mmove_t gorgon_move_look_around = {FRAME_idleb1, FRAME_idleb21, gorgon_frames_lo
 /*----------------------------------------------------------------------
 	looking left from eat
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_left [] =
+static mh2frame_t gorgon_frames_eat_left [] =
 {
 	{FRAME_loklft1,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_loklft2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1208,7 +1208,7 @@ mmove_t gorgon_move_eat_left = {FRAME_loklft1, FRAME_loklft1 + 42, gorgon_frames
 /*----------------------------------------------------------------------
 	looking right from eat
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_right [] =
+static mh2frame_t gorgon_frames_eat_right [] =
 {
 	{FRAME_lokrt1,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
 	{FRAME_lokrt2,	NULL, 0, 0, 0, gorgon_ai_eat, 0, NULL},
@@ -1255,7 +1255,7 @@ mmove_t gorgon_move_eat_right = {FRAME_lokrt1, FRAME_lokrt1 + 38, gorgon_frames_
 /*----------------------------------------------------------------------
   snap at something to right
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_snap [] =
+static mh2frame_t gorgon_frames_eat_snap [] =
 {
 	{FRAME_snap1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_snap2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -1270,7 +1270,7 @@ mmove_t gorgon_move_eat_snap = {FRAME_snap1, FRAME_snap7, gorgon_frames_eat_snap
 /*----------------------------------------------------------------------
   react tp something to left
 -----------------------------------------------------------------------*/
-static mframe_t gorgon_frames_eat_react [] =
+static mh2frame_t gorgon_frames_eat_react [] =
 {
 	{FRAME_react1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_react2, NULL, 0, 0, 0, NULL, 0, NULL},

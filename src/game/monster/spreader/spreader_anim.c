@@ -17,7 +17,7 @@ void ai_charge2 (edict_t *self, float dist);
 /*------------------------------------------------------------------
 	spreader attack 1 -- the throw
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_attack1 [] =
+static mh2frame_t spreader_frames_attack1 [] =
 {
 	{FRAME_atacka1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_atacka2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -45,7 +45,7 @@ mmove_t spreader_move_attack1 = {FRAME_atacka1, FRAME_atacka16, spreader_frames_
 	func because the action func is already being used as a move
 	func...
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_attack2 [] =
+static mh2frame_t spreader_frames_attack2 [] =
 {
 	{FRAME_atackb1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_atackb2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -67,7 +67,7 @@ mmove_t spreader_move_attack2 = {FRAME_atackb1, FRAME_atackb14, spreader_frames_
 /*------------------------------------------------------------------
 	spreader backattack 1 -- the spreader backpedals while shooting
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_backattack1 [] =
+static mh2frame_t spreader_frames_backattack1 [] =
 {
 	{FRAME_bkatck1, spreader_mist, 14.4, 10.24, 16, ai_run, -5, spreader_miststartsound},
 	{FRAME_bkatck2, spreader_mist, 14.22, 10.03, 16, ai_run, -5, NULL},
@@ -88,7 +88,7 @@ mmove_t spreader_move_backattack1 = {FRAME_bkatck1, FRAME_bkatck13, spreader_fra
 /*------------------------------------------------------------------
 	spreader backup 1 -- the spreader backpedals
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_backup1 [] =
+static mh2frame_t spreader_frames_backup1 [] =
 {
 	{FRAME_backup1, NULL, 0, 0, 0, ai_run, -5, NULL},
 	{FRAME_backup2, NULL, 0, 0, 0, ai_run, -5, NULL},
@@ -109,19 +109,19 @@ mmove_t spreader_move_backup1 = {FRAME_backup1, FRAME_backup13, spreader_frames_
 /*------------------------------------------------------------------
 	spreader death -- the spreader spreads no more (big death)
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_death1_go [] =
+static mh2frame_t spreader_frames_death1_go [] =
 {
 	{FRAME_death1, NULL, 0, 0, 0, NULL, 0, spreader_flyback_move},
 };
 mmove_t spreader_move_death1_go = {FRAME_death1, FRAME_death1, spreader_frames_death1_go, spreader_flyback_loop };
 
-static mframe_t spreader_frames_death1_loop [] =
+static mh2frame_t spreader_frames_death1_loop [] =
 {
 	{FRAME_death2, NULL, 0, 0, 0, NULL, 0, spreader_flyback_move},
 };
 mmove_t spreader_move_death1_loop = {FRAME_death2, FRAME_death2, spreader_frames_death1_loop, NULL };
 
-static mframe_t spreader_frames_death1_end [] =
+static mh2frame_t spreader_frames_death1_end [] =
 {
 	{FRAME_death3, NULL, 0, 0, 0, ai_move, -4, spreader_flyback_move},
 	{FRAME_death4, NULL, 0, 0, 0, ai_move, -4, spreader_flyback_move},
@@ -144,7 +144,7 @@ mmove_t spreader_move_death1_end = {FRAME_death3, FRAME_death17, spreader_frames
 /*------------------------------------------------------------------
 	spreader death -- the spreader spreads no more (little death)
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_death2 [] =
+static mh2frame_t spreader_frames_death2 [] =
 {
 	{FRAME_deathb1, NULL, 0, 0, 0, ai_move, 0, NULL},
 	{FRAME_deathb2, NULL, 0, 0, 0, ai_move, 0, NULL},
@@ -167,7 +167,7 @@ mmove_t spreader_move_death2 = {FRAME_deathb1, FRAME_deathb14, spreader_frames_d
 /*------------------------------------------------------------------
 	spreader duck attack 1 -- spreader ducking, shoots, rises
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_dkatck1 [] =
+static mh2frame_t spreader_frames_dkatck1 [] =
 {
 	{FRAME_dkatck_1, spreader_mist, 21.39, 11.26, -16, ai_move, 0, spreader_miststartsound},
 	{FRAME_dkatck_2, spreader_mist, 12.08, 24.16, -16, ai_move, 0, NULL},
@@ -181,7 +181,7 @@ mmove_t spreader_move_dkatck1 = {FRAME_dkatck_1, FRAME_dkatck_6, spreader_frames
 /*------------------------------------------------------------------
 	spreader duck  -- spreader ducks and rises
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_duck1 [] =
+static mh2frame_t spreader_frames_duck1 [] =
 {
 	{FRAME_duck1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_duck2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -196,7 +196,7 @@ mmove_t spreader_move_duck1 = {FRAME_duck1, FRAME_duck7, spreader_frames_duck1, 
 /*-------------------------------------------------------------------------
 	spreader ducks
 -------------------------------------------------------------------------*/
-static mframe_t spreader_frames_duckdown [] =
+static mh2frame_t spreader_frames_duckdown [] =
 {
 	{FRAME_duck1, NULL, 0,0,0, ai_charge2, 0, NULL},
 	{FRAME_duck2, NULL, 0,0,0, ai_charge2, 0, NULL},
@@ -208,7 +208,7 @@ mmove_t spreader_move_duckdown = {FRAME_duck1, FRAME_duck4, spreader_frames_duck
 /*------------------------------------------------------------------
 	spreader duck still 1 -- the spreader ducking, still
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_duckstill [] =
+static mh2frame_t spreader_frames_duckstill [] =
 {
 	{FRAME_dkidle1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_dkidle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -229,7 +229,7 @@ mmove_t spreader_move_duckstill = {FRAME_dkidle1, FRAME_dkidle12, spreader_frame
 /*-------------------------------------------------------------------------
 	spreader rises from a ducking pos
 -------------------------------------------------------------------------*/
-static mframe_t spreader_frames_duckup [] =
+static mh2frame_t spreader_frames_duckup [] =
 {
 	{FRAME_duck4, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_duck5, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -241,7 +241,7 @@ mmove_t spreader_move_duckup = {FRAME_duck4, FRAME_duck7, spreader_frames_duckup
 /*------------------------------------------------------------------
 	spreader idle 1 -- the spreader stands around
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_idle1 [] =
+static mh2frame_t spreader_frames_idle1 [] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -260,7 +260,7 @@ mmove_t spreader_move_idle1 = {FRAME_idle1, FRAME_idle11, spreader_frames_idle1,
 /*------------------------------------------------------------------
 	spreader pain  -- spreader recoils from hit
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_pain1 [] =
+static mh2frame_t spreader_frames_pain1 [] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, ai_move, 0, spreader_pain_sound},
 	{FRAME_pain2, NULL, 0, 0, 0, ai_move, 0, NULL},
@@ -275,7 +275,7 @@ mmove_t spreader_move_pain1 = {FRAME_pain1, FRAME_pain7, spreader_frames_pain1, 
 /*------------------------------------------------------------------
 	spreader pivot left  -- spreader turns left
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_pvtlt1 [] =
+static mh2frame_t spreader_frames_pvtlt1 [] =
 {
 	{FRAME_pvtlt1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_pvtlt2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -288,7 +288,7 @@ mmove_t spreader_move_pvtlt1 = {FRAME_pvtlt1, FRAME_pvtlt5, spreader_frames_pvtl
 /*------------------------------------------------------------------
 	spreader pivot right  -- spreader turns right
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_pvtrt1 [] =
+static mh2frame_t spreader_frames_pvtrt1 [] =
 {
 	{FRAME_pvtrt1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_pvtrt2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -301,7 +301,7 @@ mmove_t spreader_move_pvtrt1 = {FRAME_pvtrt1, FRAME_pvtrt5, spreader_frames_pvtr
 /*------------------------------------------------------------------
 	spreader run 1 -- the spreader runs
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_run1 [] =
+static mh2frame_t spreader_frames_run1 [] =
 {
 	{FRAME_run1, NULL, 0, 0, 0, ai_run, 20, spreader_pause},
 	{FRAME_run2, NULL, 0, 0, 0, ai_run, 18, NULL},
@@ -317,7 +317,7 @@ mmove_t spreader_move_run1 = {FRAME_run1, FRAME_run8, spreader_frames_run1, spre
 /*------------------------------------------------------------------
 	spreader land
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_land [] =
+static mh2frame_t spreader_frames_land [] =
 {
 	{FRAME_jump17, NULL, 0, 0, 0, NULL, 0, spreader_land},
 	{FRAME_jump18, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -332,7 +332,7 @@ mmove_t spreader_move_land = {FRAME_jump17, FRAME_jump23, spreader_frames_land, 
 /*------------------------------------------------------------------
 	spreader jump from buoy
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_inair [] =
+static mh2frame_t spreader_frames_inair [] =
 {
 	{FRAME_jump16, NULL, 0, 0, 0, MG_CheckLanded, ANIM_LAND, NULL},
 };
@@ -341,7 +341,7 @@ mmove_t spreader_move_inair = {FRAME_jump16, FRAME_jump16, spreader_frames_inair
 /*------------------------------------------------------------------
 	spreader jump from buoy
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_fjump [] =
+static mh2frame_t spreader_frames_fjump [] =
 {
 	{FRAME_jump1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jump2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -364,7 +364,7 @@ mmove_t spreader_move_fjump = {FRAME_jump1, FRAME_jump15, spreader_frames_fjump,
 /*------------------------------------------------------------------
 	spreader run attack -- the spreader runs and shoots
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_rnatck1 [] =
+static mh2frame_t spreader_frames_rnatck1 [] =
 {
 	{FRAME_rnatck1, spreader_mist_fast, 38.0*2, 5, 16, ai_run, 20, spreader_miststartsound},
 	{FRAME_rnatck2, spreader_mist_fast, 39.27*2, 5, 16, ai_run, 18, NULL},
@@ -380,7 +380,7 @@ mmove_t spreader_move_rnatck1 = {FRAME_rnatck1, FRAME_rnatck8, spreader_frames_r
 /*------------------------------------------------------------------
 	spreader walk 1 -- the spreader walks
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_walk1 [] =
+static mh2frame_t spreader_frames_walk1 [] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_walk, 8, spreader_idlenoise},
 	{FRAME_walk2, NULL, 0, 0, 0, ai_walk, 8, NULL},
@@ -401,7 +401,7 @@ mmove_t spreader_move_walk1 = {FRAME_walk1, FRAME_walk13, spreader_frames_walk1,
 /*------------------------------------------------------------------
 	spreader walk 2 -- the spreader walks
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_walk2 [] =
+static mh2frame_t spreader_frames_walk2 [] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_run, 6, spreader_pause},
 	{FRAME_walk2, NULL, 0, 0, 0, ai_run, 6, spreader_pause},
@@ -422,7 +422,7 @@ mmove_t spreader_move_walk2 = {FRAME_walk1, FRAME_walk13, spreader_frames_walk2,
 /*------------------------------------------------------------------
 	spreader fly into air- ouch!
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_flyloop [] =
+static mh2frame_t spreader_frames_flyloop [] =
 {
 	{FRAME_pain5, NULL, 0, 0, 0, NULL, 0, spreaderFly},
 };
@@ -431,7 +431,7 @@ mmove_t spreader_move_flyloop = {FRAME_pain5, FRAME_pain5, spreader_frames_flylo
 /*------------------------------------------------------------------
 	spreader fly into air- ouch!
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_fly [] =
+static mh2frame_t spreader_frames_fly [] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, spreaderFly},
 	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, spreaderFly},
@@ -441,13 +441,13 @@ static mframe_t spreader_frames_fly [] =
 mmove_t spreader_move_fly = {FRAME_pain1, FRAME_pain4, spreader_frames_fly, spreaderFlyLoop};
 
 
-static mframe_t spreader_frames_dead [] =
+static mh2frame_t spreader_frames_dead [] =
 {
 	{FRAME_deathb17, NULL, 0, 0, 0, NULL, 0, spreaderSolidAgain}
 };
 mmove_t spreader_move_dead = {FRAME_deathb17, FRAME_deathb17, spreader_frames_dead, NULL};
 
-static mframe_t spreader_frames_fdie [] =
+static mh2frame_t spreader_frames_fdie [] =
 {
 	{FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, spreaderSolidAgain},
 	{FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, spreaderSolidAgain},
@@ -469,7 +469,7 @@ mmove_t spreader_move_fdie = {FRAME_deathb1, FRAME_deathb17, spreader_frames_fdi
 /*------------------------------------------------------------------
 	spreader delay
 -------------------------------------------------------------------*/
-static mframe_t spreader_frames_delay [] =
+static mh2frame_t spreader_frames_delay [] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, NULL, 0, spreader_pause},
 	{FRAME_idle2, NULL, 0, 0, 0, NULL, 0, spreader_pause},

@@ -27,7 +27,7 @@ void ai_moveright(edict_t *self, float dist);
 /*----------------------------------------------------------------------
   assassin daggerL - assassin attacking left hand
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_daggerl [] =
+static mh2frame_t assassin_frames_daggerl [] =
 {
 	{FRAME_ataka1,	NULL, 0, 0, 0, mg_ai_charge, 0, assassingrowl},
 	{FRAME_ataka2,	NULL, 0, 0, 0, mg_ai_charge, 0, NULL},
@@ -49,7 +49,7 @@ mmove_t assassin_move_daggerl = {FRAME_ataka1, FRAME_ataka14, assassin_frames_da
 /*----------------------------------------------------------------------
   assassin daggerR - assassin attacking right hand
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_daggerr [] =
+static mh2frame_t assassin_frames_daggerr [] =
 {
 	{FRAME_atakb1,	NULL, 0, 0, 0, mg_ai_charge, 0, assassingrowl},
 	{FRAME_atakb2,	NULL, 0, 0, 0, mg_ai_charge, 0, NULL},
@@ -72,7 +72,7 @@ mmove_t assassin_move_daggerr = {FRAME_atakb1, FRAME_atakb15, assassin_frames_da
 /*----------------------------------------------------------------------
   assassin daggerB - assassin attacking left hand
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_daggerb [] =
+static mh2frame_t assassin_frames_daggerb [] =
 {
 	{FRAME_atakc1,	NULL, 0, 0, 0, mg_ai_charge, 0, assassingrowl},
 	{FRAME_atakc2,	NULL, 0, 0, 0, mg_ai_charge, 0, NULL},
@@ -94,7 +94,7 @@ mmove_t assassin_move_daggerb = {FRAME_atakc1, FRAME_atakc14, assassin_frames_da
 /*----------------------------------------------------------------------
   assassin daggerC - assassin attacking crouched
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_daggerc [] =
+static mh2frame_t assassin_frames_daggerc [] =
 {
 	{FRAME_lndatk1,	NULL, 0, 0, 0, mg_ai_charge, 0, assassingrowl},
 	{FRAME_lndatk2,	NULL, 0, 0, 0, mg_ai_charge, 0, NULL},
@@ -110,7 +110,7 @@ static mframe_t assassin_frames_daggerc [] =
 };
 mmove_t assassin_move_daggerc = {FRAME_lndatk1, FRAME_lndatk11, assassin_frames_daggerc, assassin_pause};
 
-static mframe_t assassin_frames_newdagger [] =
+static mh2frame_t assassin_frames_newdagger [] =
 {
 	{FRAME_newattackA1,	NULL, 0, 0, 0, assassinNodeOn, MESH__RKNIFE, assassingrowl},
 	{FRAME_newattackA2,	NULL, 0, 0, 0, mg_ai_charge, 0, NULL},
@@ -130,7 +130,7 @@ static mframe_t assassin_frames_newdagger [] =
 };
 mmove_t assassin_move_newdagger = {FRAME_newattackA1, FRAME_newattackA15, assassin_frames_newdagger, assassin_pause};
 
-static mframe_t assassin_frames_newdaggerb [] =
+static mh2frame_t assassin_frames_newdaggerb [] =
 {
 	{FRAME_newattackB1,	NULL, 0, 0, 0, mg_ai_charge, 0, assassingrowl},
 	{FRAME_newattackB2,	NULL, 0, 0, 0, assassinNodeOn, MESH__RKNIFE, NULL},
@@ -160,7 +160,7 @@ mmove_t assassin_move_newdaggerb = {FRAME_newattackB1, FRAME_newattackB17, assas
 /*----------------------------------------------------------------------
   assassin crouch
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_crouch [] =
+static mh2frame_t assassin_frames_crouch [] =
 {
 	{FRAME_jump14,	NULL, 0, 0, 0, NULL, 0, assassinSetCrouched},
 	{FRAME_jump15,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -171,7 +171,7 @@ mmove_t assassin_move_crouch = {FRAME_jump14, FRAME_jump16, assassin_frames_crou
 /*----------------------------------------------------------------------
   assassin uncrouch
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_uncrouch [] =
+static mh2frame_t assassin_frames_uncrouch [] =
 {
 	{FRAME_jump17,	NULL, 0, 0, 0, NULL, 0, assassinUndoCrouched}
 };
@@ -180,7 +180,7 @@ mmove_t assassin_move_uncrouch = {FRAME_jump17, FRAME_jump17, assassin_frames_un
 /*----------------------------------------------------------------------
   assassin in air
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_evinair [] =
+static mh2frame_t assassin_frames_evinair [] =
 {
 	{FRAME_jump12,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL}, // hang here until land
 };
@@ -189,7 +189,7 @@ mmove_t assassin_move_evinair = {FRAME_jump12, FRAME_jump12, assassin_frames_evi
 /*----------------------------------------------------------------------
   assassin in air
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_inair [] =
+static mh2frame_t assassin_frames_inair [] =
 {
 	{FRAME_jump12,	MG_InAirMove, 50, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_LAND, NULL}, // hang here until land
 };
@@ -198,7 +198,7 @@ mmove_t assassin_move_inair = {FRAME_jump12, FRAME_jump12, assassin_frames_inair
 /*----------------------------------------------------------------------
   assassin land
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_land [] =
+static mh2frame_t assassin_frames_land [] =
 {
 	{FRAME_jump13,	assassin_sound, CHAN_BODY, SND_LAND, ATTN_NORM, NULL, 0, NULL},
 	{FRAME_jump14,	NULL, 0, 0, 0, NULL, 0, assassinSetCrouched},
@@ -211,7 +211,7 @@ mmove_t assassin_move_land = {FRAME_jump13, FRAME_jump17, assassin_frames_land, 
 /*----------------------------------------------------------------------
   assassin jump
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_evade_jump [] =
+static mh2frame_t assassin_frames_evade_jump [] =
 {
 	{FRAME_jump7,	assassinGoJump, 100, 400, 0, ai_charge, 0, assassingrowl},
 	{FRAME_jump8,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -224,7 +224,7 @@ mmove_t assassin_move_evade_jump = {FRAME_jump7, FRAME_jump11, assassin_frames_e
 /*----------------------------------------------------------------------
   assassin backflipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_evade_backflip [] =
+static mh2frame_t assassin_frames_evade_backflip [] =
 {
 	{FRAME_bkflp6,	assassinGoJump, -150, 400, 0, NULL, 0, assassingrowl},
 	{FRAME_bkflp7,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -239,7 +239,7 @@ mmove_t assassin_move_evade_backflip = {FRAME_bkflp6, FRAME_bkflp12, assassin_fr
 /*----------------------------------------------------------------------
   assassin front flipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_evade_frontflip [] =
+static mh2frame_t assassin_frames_evade_frontflip [] =
 {
 	{FRAME_fntflp6,	assassinGoJump, 150, 400, 0, NULL, 0, assassingrowl},
 	{FRAME_fntflp7,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -253,7 +253,7 @@ mmove_t assassin_move_evade_frontflip = {FRAME_fntflp6, FRAME_fntflp11, assassin
 /*----------------------------------------------------------------------
   assassin dodging right
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_dodge_right [] =
+static mh2frame_t assassin_frames_dodge_right [] =
 {
 	{FRAME_dgert4,	assassin_sound, CHAN_BODY, SND_SLIDE, ATTN_NORM, ai_moveright, 24, NULL},
 	{FRAME_dgert5,	NULL, 0, 0, 0, ai_moveright, 16, NULL},
@@ -268,7 +268,7 @@ mmove_t assassin_move_dodge_right = {FRAME_dgert4, FRAME_dgert10, assassin_frame
 /*----------------------------------------------------------------------
   assassin dodging left
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_dodge_left [] =
+static mh2frame_t assassin_frames_dodge_left [] =
 {
 	{FRAME_dgelft5,	assassin_sound, CHAN_BODY, SND_SLIDE, ATTN_NORM, ai_moveright, -24, NULL},
 	{FRAME_dgelft6,	NULL, 0, 0, 0, ai_moveright, -16, NULL},
@@ -288,7 +288,7 @@ mmove_t assassin_move_dodge_left = {FRAME_dgelft5, FRAME_dgelft10, assassin_fram
 /*----------------------------------------------------------------------
   assassin DeathA
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_deatha [] =
+static mh2frame_t assassin_frames_deatha [] =
 {
 	{FRAME_deatha1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -310,7 +310,7 @@ mmove_t assassin_move_deatha = {FRAME_deatha1, FRAME_deatha14, assassin_frames_d
 /*-------------------------------------------------------------------------
 	assassin Death B
 -------------------------------------------------------------------------*/
-static mframe_t assassin_frames_deathb [] =
+static mh2frame_t assassin_frames_deathb [] =
 {
 	{FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -339,7 +339,7 @@ mmove_t assassin_move_deathb = {FRAME_deathb1, FRAME_deathb15, assassin_frames_d
 /*----------------------------------------------------------------------
   assassin jump
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_jump [] =
+static mh2frame_t assassin_frames_jump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -358,7 +358,7 @@ mmove_t assassin_move_jump = {FRAME_jump1, FRAME_jump11, assassin_frames_jump, a
 /*----------------------------------------------------------------------
   assassin forced jump
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_forcedjump [] =
+static mh2frame_t assassin_frames_forcedjump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -378,7 +378,7 @@ mmove_t assassin_move_forcedjump = {FRAME_jump1, FRAME_jump11, assassin_frames_f
 /*----------------------------------------------------------------------
   assassin forced jump
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_fjump [] =
+static mh2frame_t assassin_frames_fjump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -397,7 +397,7 @@ mmove_t assassin_move_fjump = {FRAME_jump1, FRAME_jump11, assassin_frames_fjump,
 /*----------------------------------------------------------------------
   assassin backflipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_bfland [] =
+static mh2frame_t assassin_frames_bfland [] =
 {
 	{FRAME_bkflp14,	assassin_sound, CHAN_BODY, SND_LAND, ATTN_NORM, NULL, 0, NULL},
 	{FRAME_bkflp15,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -408,7 +408,7 @@ mmove_t assassin_move_bfland = {FRAME_bkflp14, FRAME_bkflp16, assassin_frames_bf
 /*----------------------------------------------------------------------
   assassin backflipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_bfinair [] =
+static mh2frame_t assassin_frames_bfinair [] =
 {
 	{FRAME_bkflp13,	NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_BFLAND, NULL},
 };
@@ -417,7 +417,7 @@ mmove_t assassin_move_bfinair = {FRAME_bkflp13, FRAME_bkflp13, assassin_frames_b
 /*----------------------------------------------------------------------
   assassin backflipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_backflip [] =
+static mh2frame_t assassin_frames_backflip [] =
 {
 	{FRAME_bkflp1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_bkflp2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -435,7 +435,7 @@ static mframe_t assassin_frames_backflip [] =
 mmove_t assassin_move_backflip = {FRAME_bkflp1, FRAME_bkflp12, assassin_frames_backflip, assassin_go_bfinair};
 
 
-static mframe_t assassin_frames_backspring [] =
+static mh2frame_t assassin_frames_backspring [] =
 {
 	{FRAME_newbackspring1, NULL, 0, 0, 0, ai_charge2, -4, assassingrowl},
 	{FRAME_newbackspring2, NULL, 0, 0, 0, ai_charge2, -8, NULL},
@@ -459,7 +459,7 @@ mmove_t assassin_move_backspring = {FRAME_newbackspring1, FRAME_newbackspring15,
 /*----------------------------------------------------------------------
   assassin front flipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_ffland [] =
+static mh2frame_t assassin_frames_ffland [] =
 {
 	{FRAME_fntflp12,	assassin_sound, CHAN_BODY, SND_LAND, ATTN_NORM, NULL, 0, NULL},
 	{FRAME_fntflp13,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -472,7 +472,7 @@ mmove_t assassin_move_ffland = {FRAME_fntflp12, FRAME_fntflp16, assassin_frames_
 /*----------------------------------------------------------------------
   assassin front flipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_ffinair [] =
+static mh2frame_t assassin_frames_ffinair [] =
 {
 	{FRAME_fntflp11, NULL, 0, 0, 0, MG_CheckLanded, ASSASSIN_ANIM_FFLAND, NULL},
 };
@@ -481,7 +481,7 @@ mmove_t assassin_move_ffinair = {FRAME_fntflp11, FRAME_fntflp11, assassin_frames
 /*----------------------------------------------------------------------
   assassin front flipping
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_frontflip [] =
+static mh2frame_t assassin_frames_frontflip [] =
 {
 	{FRAME_fntflp1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_fntflp2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -499,7 +499,7 @@ mmove_t assassin_move_frontflip = {FRAME_fntflp1, FRAME_fntflp10, assassin_frame
 /*----------------------------------------------------------------------
   assassin Running - assassin running
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_run [] =
+static mh2frame_t assassin_frames_run [] =
 {//recalc movement values with new anim
 	{FRAME_run1,	NULL, 0, 0, 0, assassin_go_run, 20, assassingrowl},
 	{FRAME_run2,	NULL, 0, 0, 0, assassin_go_run, 18, assassin_pause},
@@ -514,7 +514,7 @@ static mframe_t assassin_frames_run [] =
 };
 mmove_t assassin_move_run = {FRAME_run1, FRAME_run10, assassin_frames_run, assassin_pause};
 
-static mframe_t assassin_frames_walk [] =
+static mh2frame_t assassin_frames_walk [] =
 {
 	{FRAME_newwalk1, NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_newwalk2, NULL, 0, 0, 0, ai_walk, 6, NULL},
@@ -522,7 +522,7 @@ static mframe_t assassin_frames_walk [] =
 };
 mmove_t assassin_move_walk = {FRAME_newwalk1, FRAME_newwalk3, assassin_frames_walk, assasin_walk_loop_go};
 
-static mframe_t assassin_frames_walk_loop [] =
+static mh2frame_t assassin_frames_walk_loop [] =
 {
 	{FRAME_newwalk4, NULL, 0, 0, 0, assassin_ai_walk, 8, assassingrowl},
 	{FRAME_newwalk5, NULL, 0, 0, 0, assassin_ai_walk, 8, NULL},
@@ -548,7 +548,7 @@ mmove_t assassin_move_walk_loop = {FRAME_newwalk4, FRAME_newwalk14, assassin_fra
   assassin Pain - assassin gets hit
 -----------------------------------------------------------------------*/
 
-static mframe_t assassin_frames_pain1 [] =
+static mh2frame_t assassin_frames_pain1 [] =
 {
 	{FRAME_painb1,	NULL, 0, 0, 0, ai_move, -16, assassinsqueal},
 };
@@ -558,7 +558,7 @@ mmove_t assassin_move_pain1 = {FRAME_painb1, FRAME_painb1, assassin_frames_pain1
 /*----------------------------------------------------------------------
   assassin Pain - assassin gets hit
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_pain2 [] =
+static mh2frame_t assassin_frames_pain2 [] =
 {
 	{FRAME_painb1,	NULL, 0, 0, 0, ai_move, -10, assassinsqueal},
 	{FRAME_painb2,	NULL, 0, 0, 0, ai_move, -8, NULL},
@@ -577,7 +577,7 @@ mmove_t assassin_move_pain2 = {FRAME_painb1, FRAME_painb5, assassin_frames_pain2
   assassin chillin out
 -----------------------------------------------------------------------*/
 
-static mframe_t assassin_frames_stand [] =
+static mh2frame_t assassin_frames_stand [] =
 {
 	{FRAME_newidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newidle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -594,7 +594,7 @@ static mframe_t assassin_frames_stand [] =
 };
 mmove_t assassin_move_stand = {FRAME_newidle1, FRAME_newidle12, assassin_frames_stand, assassin_pause};
 
-static mframe_t assassin_frames_delay [] =
+static mh2frame_t assassin_frames_delay [] =
 {
 	{FRAME_newidle1, NULL, 0, 0, 0, NULL, 0, assassin_pause},
 	{FRAME_newidle2, NULL, 0, 0, 0, NULL, 0, assassin_pause},
@@ -613,7 +613,7 @@ mmove_t assassin_move_delay = {FRAME_newidle1, FRAME_newidle12, assassin_frames_
 
 //crouches
 
-static mframe_t assassin_frames_crouch_trans [] =
+static mh2frame_t assassin_frames_crouch_trans [] =
 {
 	{FRAME_newcrchtrn1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_newcrchtrn2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -623,7 +623,7 @@ static mframe_t assassin_frames_crouch_trans [] =
 };
 mmove_t assassin_move_crouch_trans = {FRAME_newcrchtrn1, FRAME_newcrchtrn5, assassin_frames_crouch_trans, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_idle [] =
+static mh2frame_t assassin_frames_crouch_idle [] =
 {
 	{FRAME_newcrouchidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrouchidle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -640,7 +640,7 @@ static mframe_t assassin_frames_crouch_idle [] =
 };
 mmove_t assassin_move_crouch_idle = {FRAME_newcrouchidle1, FRAME_newcrouchidle12, assassin_frames_crouch_idle, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_right[] =
+static mh2frame_t assassin_frames_crouch_look_right[] =
 {
 	{FRAME_newcrchlkrit1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrchlkrit2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -657,7 +657,7 @@ static mframe_t assassin_frames_crouch_look_right[] =
 };
 mmove_t assassin_move_crouch_look_right = {FRAME_newcrchlkrit1, FRAME_newcrchlkrit12, assassin_frames_crouch_look_right, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_right_idle[] =
+static mh2frame_t assassin_frames_crouch_look_right_idle[] =
 {
 	{FRAME_newcrhlkrtidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrhlkrtidle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -674,7 +674,7 @@ static mframe_t assassin_frames_crouch_look_right_idle[] =
 };
 mmove_t assassin_move_crouch_look_right_idle = {FRAME_newcrhlkrtidle1, FRAME_newcrhlkrtidle12, assassin_frames_crouch_look_right_idle, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_l2r[] =
+static mh2frame_t assassin_frames_crouch_look_l2r[] =
 {
 	{FRAME_newcrchlklr1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrchlklr2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -691,7 +691,7 @@ static mframe_t assassin_frames_crouch_look_l2r[] =
 };
 mmove_t assassin_move_crouch_look_l2r = {FRAME_newcrchlklr1, FRAME_newcrchlklr12, assassin_frames_crouch_look_l2r, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_left[] =
+static mh2frame_t assassin_frames_crouch_look_left[] =
 {
 	{FRAME_newcrchlklft1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrchlklft2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -708,7 +708,7 @@ static mframe_t assassin_frames_crouch_look_left[] =
 };
 mmove_t assassin_move_crouch_look_left = {FRAME_newcrchlklft1, FRAME_newcrchlklft12, assassin_frames_crouch_look_left, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_left_idle[] =
+static mh2frame_t assassin_frames_crouch_look_left_idle[] =
 {
 	{FRAME_newlkleftidle1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newlkleftidle2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -725,7 +725,7 @@ static mframe_t assassin_frames_crouch_look_left_idle[] =
 };
 mmove_t assassin_move_crouch_look_left_idle = {FRAME_newlkleftidle1, FRAME_newlkleftidle12, assassin_frames_crouch_look_left_idle, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_r2l[] =
+static mh2frame_t assassin_frames_crouch_look_r2l[] =
 {
 	{FRAME_newcrchlklr12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrchlklr11, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -742,7 +742,7 @@ static mframe_t assassin_frames_crouch_look_r2l[] =
 };
 mmove_t assassin_move_crouch_look_r2l = {FRAME_newcrchlklr1, FRAME_newcrchlklr12, assassin_frames_crouch_look_r2l, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_r2c[] =
+static mh2frame_t assassin_frames_crouch_look_r2c[] =
 {
 	{FRAME_newcrchlkrit12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrchlkrit11, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -759,7 +759,7 @@ static mframe_t assassin_frames_crouch_look_r2c[] =
 };
 mmove_t assassin_move_crouch_look_r2c = {FRAME_newcrchlkrit1, FRAME_newcrchlkrit12, assassin_frames_crouch_look_r2c, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_look_l2c[] =
+static mh2frame_t assassin_frames_crouch_look_l2c[] =
 {
 	{FRAME_newcrchlklft12, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_newcrchlklft11, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -776,7 +776,7 @@ static mframe_t assassin_frames_crouch_look_l2c[] =
 };
 mmove_t assassin_move_crouch_look_l2c = {FRAME_newcrchlklft1, FRAME_newcrchlklft12, assassin_frames_crouch_look_l2c, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_end[] =
+static mh2frame_t assassin_frames_crouch_end[] =
 {
 	{FRAME_newcrchtrn5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_newcrchtrn4, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -786,7 +786,7 @@ static mframe_t assassin_frames_crouch_end[] =
 };
 mmove_t assassin_move_crouch_end = {FRAME_newcrchtrn1, FRAME_newcrchtrn5, assassin_frames_crouch_end, assassin_crouch_idle_decision};
 
-static mframe_t assassin_frames_crouch_poke[] =
+static mh2frame_t assassin_frames_crouch_poke[] =
 {
 	{FRAME_poke1, NULL, 0, 0, 0, ai_stand, 0, assassingrowl},
 	{FRAME_poke2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -817,7 +817,7 @@ mmove_t assassin_move_crouch_poke = {FRAME_poke1, FRAME_poke24, assassin_frames_
 /*----------------------------------------------------------------------
   assassin teleport - throws smoke bomb, then gone
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_teleport [] =
+static mh2frame_t assassin_frames_teleport [] =
 {
 	{FRAME_ataka3,	NULL, 0, 0, 0, NULL, 0, assassinSkipFrameSkillCheck},
 	{FRAME_ataka4,	NULL, 0, 0, 0, NULL, 0, assassinSkipFrameSkillCheck},
@@ -831,7 +831,7 @@ static mframe_t assassin_frames_teleport [] =
 };
 mmove_t assassin_move_teleport = {FRAME_ataka3, FRAME_ataka11, assassin_frames_teleport, assassinGone};
 
-static mframe_t assassin_frames_cloak [] =
+static mh2frame_t assassin_frames_cloak [] =
 {
 	{FRAME_jump14,	NULL, 0, 0, 0, NULL, 0, assassinSetCrouched},
 	{FRAME_jump15,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -846,7 +846,7 @@ mmove_t assassin_move_cloak = {FRAME_jump14, FRAME_jump16, assassin_frames_cloak
  *
  *************************************************************************/
 
-static mframe_t assassin_frames_c_idle1 [] =
+static mh2frame_t assassin_frames_c_idle1 [] =
 {
 	{FRAME_ataka1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ataka2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -862,7 +862,7 @@ mmove_t assassin_move_c_idle1 = {FRAME_ataka1, FRAME_ataka1 + 6, assassin_frames
 /*----------------------------------------------------------------------
   assassin Running - assassin running
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_c_run1 [] =
+static mh2frame_t assassin_frames_c_run1 [] =
 {
 	{FRAME_run1,	ai_c_move, 20, 0, 0, NULL, 0, assassingrowl},
 	{FRAME_run2,	ai_c_move, 18, 0, 0, NULL, 0, NULL},
@@ -881,7 +881,7 @@ mmove_t assassin_move_c_run1 = {FRAME_run1, FRAME_run10, assassin_frames_c_run1,
 /*----------------------------------------------------------------------
   assassin daggerL - assassin attacking left hand
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_c_attack1 [] =
+static mh2frame_t assassin_frames_c_attack1 [] =
 {
 	{FRAME_ataka1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ataka2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -904,7 +904,7 @@ mmove_t assassin_move_c_attack1 = {FRAME_ataka1, FRAME_ataka14, assassin_frames_
 /*----------------------------------------------------------------------
   assassin daggerR - assassin attacking right hand
 -----------------------------------------------------------------------*/
-static mframe_t assassin_frames_c_attack2 [] =
+static mh2frame_t assassin_frames_c_attack2 [] =
 {
 	{FRAME_atakb1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_atakb2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},

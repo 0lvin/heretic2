@@ -17,7 +17,7 @@ void ai_charge2 (edict_t *self, float dist);
 /*----------------------------------------------------------------------
    TB bite way up
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_biteup2[] =
+static mh2frame_t tbeast_frames_biteup2[] =
 {
 	{FRAME_atkc1, NULL, 0, 0, 0, ai_charge2, 0, tbeast_growl},
 	{FRAME_atkc2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -33,7 +33,7 @@ mmove_t tbeast_move_biteup2 = {FRAME_atkc1, FRAME_atkc8, tbeast_frames_biteup2, 
 /*----------------------------------------------------------------------
    TB bite up
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_biteup[] =
+static mh2frame_t tbeast_frames_biteup[] =
 {
 	{FRAME_atka1, NULL, 0, 0, 0, ai_charge2, 0, tbeast_growl},
 	{FRAME_atka2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -50,7 +50,7 @@ mmove_t tbeast_move_biteup = {FRAME_atka1, FRAME_atka9, tbeast_frames_biteup, tb
 /*----------------------------------------------------------------------
    TB bite low
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_bitelow[] =
+static mh2frame_t tbeast_frames_bitelow[] =
 {
 	{FRAME_atkb1 , NULL, 0, 0, 0, ai_charge2, 0, tbeast_growl},
 	{FRAME_atkb2 , NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -69,7 +69,7 @@ mmove_t tbeast_move_bitelow = {FRAME_atkb1, FRAME_atkb11, tbeast_frames_bitelow,
 /*----------------------------------------------------------------------
   TB eating twitch?
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_eating_twitch [] =
+static mh2frame_t tbeast_frames_eating_twitch [] =
 {
 	{FRAME_eatingb1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_eatingb2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -85,7 +85,7 @@ mmove_t tbeast_move_eating_twitch = {FRAME_eatingb1, FRAME_eatingb8, tbeast_fram
 /*----------------------------------------------------------------------
   Gorgon Eat3 - pull back, then bend back down to eat
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_eating [] =
+static mh2frame_t tbeast_frames_eating [] =
 {
 	{FRAME_eatingc1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_eatingc2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -100,7 +100,7 @@ mmove_t tbeast_move_eating = {FRAME_eatingc1, FRAME_eatingc6, tbeast_frames_eati
 /*----------------------------------------------------------------------
   TB bending down, eating
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_eatdown [] =
+static mh2frame_t tbeast_frames_eatdown [] =
 {
 	{FRAME_eatran1 , NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_eatran2 , NULL, 0, 0, 0, NULL, 0, NULL},
@@ -121,7 +121,7 @@ mmove_t tbeast_move_eatdown = {FRAME_eatran1, FRAME_eatran13, tbeast_frames_eatd
 /*----------------------------------------------------------------------
   TB Walking
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_walk [] =
+static mh2frame_t tbeast_frames_walk [] =
 {
 	{FRAME_walk1 , NULL, 0, 0, 0, tbeast_run_think, 32, tbeast_footstep},
 	{FRAME_walk2 , NULL, 0, 0, 0, tbeast_run_think, 16, NULL},
@@ -147,7 +147,7 @@ mmove_t tbeast_move_walk = {FRAME_walk1, FRAME_walk18, tbeast_frames_walk, tbeas
 /*----------------------------------------------------------------------
   TB Turning left while running
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_walkleft [] =
+static mh2frame_t tbeast_frames_walkleft [] =
 {
 	{FRAME_wlklft1 , NULL, 0, 0, 0, tbeast_run_think, 32, tbeast_footstep},
 	{FRAME_wlklft2 , NULL, 0, 0, 0, tbeast_run_think, 16, NULL},
@@ -173,7 +173,7 @@ mmove_t tbeast_move_walkleft = {FRAME_wlklft1, FRAME_wlklft18, tbeast_frames_wal
 /*----------------------------------------------------------------------
   TB Turning right while running
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_walkrt [] =
+static mh2frame_t tbeast_frames_walkrt [] =
 {
 	{FRAME_wlkrt1 , 	NULL, 0, 0, 0, tbeast_run_think, 32, tbeast_footstep},
 	{FRAME_wlkrt2 , 	NULL, 0, 0, 0, tbeast_run_think, 16, NULL},
@@ -196,13 +196,13 @@ static mframe_t tbeast_frames_walkrt [] =
 };
 mmove_t tbeast_move_walkrt = {FRAME_wlkrt1, FRAME_wlkrt18, tbeast_frames_walkrt, tbeast_walkorder};
 
-static mframe_t tbeast_frames_inair [] =
+static mh2frame_t tbeast_frames_inair [] =
 {
 	{FRAME_jumpb16, 	NULL, 0, 0, 0, NULL, 0, tbeast_check_landed},
 };
 mmove_t tbeast_move_inair = {FRAME_jumpb16, FRAME_jumpb16, tbeast_frames_inair, NULL};
 
-static mframe_t tbeast_frames_land [] =
+static mh2frame_t tbeast_frames_land [] =
 {
 	{FRAME_jumpb17, 	NULL, 0, 0, 0, NULL, 0, tbeast_land},
 	{FRAME_jumpb18, 	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -216,7 +216,7 @@ mmove_t tbeast_move_land = {FRAME_jumpb17, FRAME_jumpb23, tbeast_frames_land, tb
 /*----------------------------------------------------------------------
    TB jump
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_jump [] =
+static mh2frame_t tbeast_frames_jump [] =
 {
 	{FRAME_jumpb1 , 	NULL, 0, 0, 0, NULL, 0, tbeast_growl},
 	{FRAME_jumpb2 , 	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -239,7 +239,7 @@ mmove_t tbeast_move_jump = {FRAME_jumpb1, FRAME_jumpb15, tbeast_frames_jump, tbe
 /*----------------------------------------------------------------------
    TB jump
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_forced_jump [] =
+static mh2frame_t tbeast_frames_forced_jump [] =
 {
 	{FRAME_jumpb1 , 	NULL, 0, 0, 0, NULL, 0, tbeast_growl},
 	{FRAME_jumpb2 , 	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -262,7 +262,7 @@ mmove_t tbeast_move_forced_jump = {FRAME_jumpb1, FRAME_jumpb15, tbeast_frames_fo
 /*----------------------------------------------------------------------
 	TB wait
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_stand [] =
+static mh2frame_t tbeast_frames_stand [] =
 {
 	{FRAME_wait1 , 	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_wait2 , 	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -285,7 +285,7 @@ mmove_t tbeast_move_stand = {FRAME_wait1, FRAME_wait14, tbeast_frames_stand, tbe
 /*----------------------------------------------------------------------
 	delay
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_delay [] =
+static mh2frame_t tbeast_frames_delay [] =
 {
 	{FRAME_wait1,	NULL, 0, 0, 0, NULL, 0, tbeast_mood},
 	{FRAME_wait2,	NULL, 0, 0, 0, NULL, 0, tbeast_mood},
@@ -304,7 +304,7 @@ static mframe_t tbeast_frames_delay [] =
 };
 mmove_t tbeast_move_delay = {FRAME_wait1, FRAME_wait14, tbeast_frames_delay, tbeast_pause};
 
-static mframe_t tbeast_frames_die [] =
+static mh2frame_t tbeast_frames_die [] =
 {
 	{FRAME_death1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -329,7 +329,7 @@ static mframe_t tbeast_frames_die [] =
 };
 mmove_t tbeast_move_die = {FRAME_death1, FRAME_death20, tbeast_frames_die, tbeast_dead};
 
-static mframe_t tbeast_frames_die_norm [] =
+static mh2frame_t tbeast_frames_die_norm [] =
 {
 	{FRAME_deatha1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -365,7 +365,7 @@ static mframe_t tbeast_frames_die_norm [] =
 };
 mmove_t tbeast_move_die_norm = {FRAME_deatha1, FRAME_deatha31, tbeast_frames_die_norm, tbeast_dead};
 
-static mframe_t tbeast_frames_charge [] =
+static mh2frame_t tbeast_frames_charge [] =
 {
 	{FRAME_roar1,	NULL, 0, 0, 0, NULL, 0, tbeast_roar_short},
 	{FRAME_roar3,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -445,7 +445,7 @@ static mframe_t tbeast_frames_charge [] =
 };
 mmove_t tbeast_move_charge = {FRAME_roar1, FRAME_roar1 + 74, tbeast_frames_charge, tbeast_walkorder};
 
-static mframe_t tbeast_frames_roar [] =
+static mh2frame_t tbeast_frames_roar [] =
 {
 	{FRAME_roar1,	NULL, 0, 0, 0, NULL, 0, tbeast_roar},
 	{FRAME_roar2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -500,7 +500,7 @@ static mframe_t tbeast_frames_roar [] =
 };
 mmove_t tbeast_move_roar = {FRAME_roar1, FRAME_roar50, tbeast_frames_roar, tbeast_pause};
 
-static mframe_t tbeast_frames_walkatk [] =
+static mh2frame_t tbeast_frames_walkatk [] =
 {
 	{FRAME_wlkatk1 , NULL, 0, 0, 0, tbeast_run_think, 36, tbeast_footstep},
 	{FRAME_wlkatk2 , NULL, 0, 0, 0, tbeast_run_think, 36, NULL},
@@ -523,7 +523,7 @@ static mframe_t tbeast_frames_walkatk [] =
 };
 mmove_t tbeast_move_walkatk = {FRAME_wlkatk1, FRAME_wlkatk18, tbeast_frames_walkatk, tbeast_pause};
 
-static mframe_t tbeast_frames_stun [] =
+static mh2frame_t tbeast_frames_stun [] =
 {//FIXME: don't walk back so long
 	{FRAME_walk18, NULL, 0, 0, 0, ai_move, -40, NULL},
 	{FRAME_walk16, NULL, 0, 0, 0, ai_move, -32, NULL},
@@ -561,7 +561,7 @@ mmove_t tbeast_move_stun = {FRAME_walk18, FRAME_walk18 + 27, tbeast_frames_stun,
 /*----------------------------------------------------------------------
    TB bite way up success finish
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_biteup2_sfin[] =
+static mh2frame_t tbeast_frames_biteup2_sfin[] =
 {
 	{FRAME_atkc4, tbeast_toy_ofs, 200, 0, 132, NULL, 0, tbeast_anger_sound},
 	{FRAME_atkc5, tbeast_toy_ofs, 176, -4, 96, NULL, 0, NULL},
@@ -573,7 +573,7 @@ mmove_t tbeast_move_biteup2_sfin = {FRAME_atkc4, FRAME_atkc7, tbeast_frames_bite
 /*----------------------------------------------------------------------
    TB bite up success finish
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_biteup_sfin[] =
+static mh2frame_t tbeast_frames_biteup_sfin[] =
 {
 	{FRAME_atka4, tbeast_toy_ofs, 200, 0, 132, NULL, 0, tbeast_anger_sound},
 	{FRAME_atka5, tbeast_toy_ofs, 176, -4, 96, NULL, 0, NULL},
@@ -585,7 +585,7 @@ mmove_t tbeast_move_biteup_sfin = {FRAME_atka4, FRAME_atka7, tbeast_frames_biteu
 /*----------------------------------------------------------------------
    TB bite low success finish
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_bitelow_sfin[] =
+static mh2frame_t tbeast_frames_bitelow_sfin[] =
 {
 	{FRAME_atkb5 , tbeast_toy_ofs, 216, 0, 64, NULL, 0, NULL},
 	{FRAME_atkb6 , tbeast_toy_ofs, 208, 0, 62, NULL, 0, tbeast_anger_sound},
@@ -599,7 +599,7 @@ mmove_t tbeast_move_bitelow_sfin = {FRAME_atkb5, FRAME_atkb10, tbeast_frames_bit
 /*----------------------------------------------------------------------
    TB snatch throw & catch
 -----------------------------------------------------------------------*/
-static mframe_t tbeast_frames_snatch [] =
+static mh2frame_t tbeast_frames_snatch [] =
 {
 	{FRAME_eatinga6, tbeast_toy_ofs, 164, -16, 94, NULL, 0, NULL},
 	{FRAME_eatinga7, tbeast_toy_ofs, 152, -68, 60, NULL, 0, NULL},
@@ -632,13 +632,13 @@ static mframe_t tbeast_frames_snatch [] =
 };
 mmove_t tbeast_move_snatch = {FRAME_eatinga6, FRAME_eatinga6 + 28, tbeast_frames_snatch, tbeast_ready_catch};
 
-static mframe_t tbeast_frames_ready_catch [] =
+static mh2frame_t tbeast_frames_ready_catch [] =
 {
 	{FRAME_jumpb4 , 	NULL, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t tbeast_move_ready_catch = {FRAME_jumpb4, FRAME_jumpb4, tbeast_frames_ready_catch, tbeast_ready_catch};
 
-static mframe_t tbeast_frames_catch [] =
+static mh2frame_t tbeast_frames_catch [] =
 {
 	{FRAME_jumpb5 , 	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jumpb6 , 	NULL, 0, 0, 0, tbeast_gore_toy, 150, NULL},
@@ -654,13 +654,13 @@ static mframe_t tbeast_frames_catch [] =
 };
 mmove_t tbeast_move_catch = {FRAME_jumpb5, FRAME_jumpb15, tbeast_frames_catch, tbeast_ginair};
 
-static mframe_t tbeast_frames_ginair [] =
+static mh2frame_t tbeast_frames_ginair [] =
 {
 	{FRAME_jumpb16, 	NULL, 0, 0, 0, NULL, 0, tbeast_gcheck_landed},
 };
 mmove_t tbeast_move_ginair = {FRAME_jumpb16, FRAME_jumpb16, tbeast_frames_ginair, NULL};
 
-static mframe_t tbeast_frames_gland [] =
+static mh2frame_t tbeast_frames_gland [] =
 {
 	{FRAME_jumpb17, 	NULL, 0, 0, 0, NULL, 0, tbeast_land},
 	{FRAME_jumpb18, 	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -672,7 +672,7 @@ static mframe_t tbeast_frames_gland [] =
 };
 mmove_t tbeast_move_gland = {FRAME_jumpb17, FRAME_jumpb23, tbeast_frames_gland, tbeast_done_gore};
 
-static mframe_t tbeast_frames_quick_charge [] =
+static mh2frame_t tbeast_frames_quick_charge [] =
 {
 	{FRAME_charge1 , NULL, 0, 0, 0, tbeast_charge, 32, tbeast_footstep},
 	{FRAME_charge2 , NULL, 0, 0, 0, tbeast_charge, 16, NULL},

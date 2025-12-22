@@ -14,7 +14,7 @@
 /*----------------------------------------------------------------------
   mssithra Idle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_idle1 [] =
+static mh2frame_t mssithra_frames_idle1 [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -43,7 +43,7 @@ mmove_t mssithra_move_idle1 = {FRAME_idle1, FRAME_idle21, mssithra_frames_idle1,
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_walk1 [] =
+static mh2frame_t mssithra_frames_walk1 [] =
 {
 	{FRAME_walk1, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
 	{FRAME_walk2, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
@@ -67,7 +67,7 @@ mmove_t mssithra_move_walk1 = {FRAME_walk1, FRAME_walk16, mssithra_frames_walk1,
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_run1 [] =
+static mh2frame_t mssithra_frames_run1 [] =
 {
 	{FRAME_walk1, 	NULL, 0, 0, 0, ai_run, 8, NULL},
 	{FRAME_walk2, 	NULL, 0, 0, 0, ai_run, 8, NULL},
@@ -91,7 +91,7 @@ mmove_t mssithra_move_run1 = {FRAME_walk1, FRAME_walk16, mssithra_frames_run1, N
 /*----------------------------------------------------------------------
   mssithra backpedal - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_backpedal1 [] =
+static mh2frame_t mssithra_frames_backpedal1 [] =
 {
 	{FRAME_walk16,	NULL, 0, 0, 0, ai_charge2, -8, NULL},
 	{FRAME_walk15,	NULL, 0, 0, 0, ai_charge2, -8, NULL},
@@ -116,7 +116,7 @@ mmove_t mssithra_move_backpedal1 = {FRAME_walk1, FRAME_walk16, mssithra_frames_b
 /*----------------------------------------------------------------------
   mssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_death1 [] =
+static mh2frame_t mssithra_frames_death1 [] =
 {
 	{FRAME_death1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -170,7 +170,7 @@ mmove_t mssithra_move_death1 = {FRAME_death1, FRAME_death45, mssithra_frames_dea
 /*----------------------------------------------------------------------
   mssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_claw1 [] =
+static mh2frame_t mssithra_frames_claw1 [] =
 {
 	{FRAME_claw1,	NULL, 0, 0, 0, ai_charge2, 20, NULL},
 	{FRAME_claw2,	NULL, 0, 0, 0, ai_charge2, 10, mmssithraRandomGrowlSound},
@@ -189,7 +189,7 @@ mmove_t mssithra_move_claw1 = {FRAME_claw1, FRAME_claw7, mssithra_frames_claw1, 
 /*----------------------------------------------------------------------
   mssithra jump
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_jump1 [] =
+static mh2frame_t mssithra_frames_jump1 [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -211,7 +211,7 @@ mmove_t mssithra_move_jump1 = {FRAME_jump1, FRAME_jump14, mssithra_frames_jump1,
 /*----------------------------------------------------------------------
   mssithra forced jump
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_fjump [] =
+static mh2frame_t mssithra_frames_fjump [] =
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -237,7 +237,7 @@ mmove_t mssithra_move_fjump = {FRAME_jump1, FRAME_jump14, mssithra_frames_fjump,
 /*----------------------------------------------------------------------
   mssithra shoot
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_shoota1 [] =
+static mh2frame_t mssithra_frames_shoota1 [] =
 {
 	{FRAME_shoota1,	NULL, 0, 0, 0, ai_charge2, 0, NULL}, //0
 	{FRAME_shoota2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -268,7 +268,7 @@ mmove_t mssithra_move_shoota1 = {FRAME_shoota1, FRAME_shoota23, mssithra_frames_
 /*----------------------------------------------------------------------
   mssithra shoot
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_shootb1 [] =
+static mh2frame_t mssithra_frames_shootb1 [] =
 {
 	{FRAME_shootb1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},//0
 	{FRAME_shootb2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -298,7 +298,7 @@ mmove_t mssithra_move_shootb1 = {FRAME_shootb1, FRAME_shootb22, mssithra_frames_
 /*----------------------------------------------------------------------
   mssithra roar
 -----------------------------------------------------------------------*/
-static mframe_t mssithra_frames_roar [] =
+static mh2frame_t mssithra_frames_roar [] =
 {
 	{FRAME_roar1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_roar2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -328,7 +328,7 @@ static mframe_t mssithra_frames_roar [] =
 mmove_t mssithra_move_roar = {FRAME_roar1, FRAME_roar24, mssithra_frames_roar, mssithraMood};//mssithra_decide_gallop};
 
 
-static mframe_t mssithra_frames_delay [] =
+static mh2frame_t mssithra_frames_delay [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -355,7 +355,7 @@ static mframe_t mssithra_frames_delay [] =
 mmove_t mssithra_move_delay = {FRAME_idle1, FRAME_idle21, mssithra_frames_delay, NULL};//mssithraMood};
 
 //New shooting animations
-static mframe_t mssithra_frames_shoot1_trans [] =
+static mh2frame_t mssithra_frames_shoot1_trans [] =
 {
 	{FRAME_newshot1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newshot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -363,7 +363,7 @@ static mframe_t mssithra_frames_shoot1_trans [] =
 };
 mmove_t mssithra_move_shoot1_trans = {FRAME_newshot1, FRAME_newshot3, mssithra_frames_shoot1_trans, mssithra_ShotLoop};
 
-static mframe_t mssithra_frames_shoot1_loop [] =
+static mh2frame_t mssithra_frames_shoot1_loop [] =
 {
 	{FRAME_newshot4,	NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
 	{FRAME_newshot5,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -374,7 +374,7 @@ static mframe_t mssithra_frames_shoot1_loop [] =
 };
 mmove_t mssithra_move_shoot1_loop = {FRAME_newshot4, FRAME_newshot9, mssithra_frames_shoot1_loop, mssithraCheckShotLoop};
 
-static mframe_t mssithra_frames_shoot1_detrans [] =
+static mh2frame_t mssithra_frames_shoot1_detrans [] =
 {
 	{FRAME_newshot3,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_newshot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},

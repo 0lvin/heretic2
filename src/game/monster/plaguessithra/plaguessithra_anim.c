@@ -36,7 +36,7 @@ void ssithra_ai_run (edict_t *self, float dist)
 /*----------------------------------------------------------------------
   Ssithra Idle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_idle1 [] =
+static mh2frame_t ssithra_frames_idle1 [] =
 {
 	{FRAME_idle01,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle02,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -84,7 +84,7 @@ mmove_t ssithra_move_idle1 = {FRAME_idle01, FRAME_idle40, ssithra_frames_idle1, 
 /*----------------------------------------------------------------------
   Ssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_walk1 [] =
+static mh2frame_t ssithra_frames_walk1 [] =
 {
 	{FRAME_walk1, 	NULL, 0, 0, 0, ai_walk, 5, NULL},
 	{FRAME_walk2, 	NULL, 0, 0, 0, ai_walk, 5, NULL},
@@ -106,7 +106,7 @@ mmove_t ssithra_move_walk1 = {FRAME_walk1, FRAME_walk14, ssithra_frames_walk1, S
 /*----------------------------------------------------------------------
   Ssithra backpedal - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_backpedal1 [] =
+static mh2frame_t ssithra_frames_backpedal1 [] =
 {
 	{FRAME_backpedal1,	NULL, 0, 0, 0, ai_charge2, -5, NULL},
 	{FRAME_backpedal2,	NULL, 0, 0, 0, ai_charge2, -5, NULL},
@@ -124,7 +124,7 @@ mmove_t ssithra_move_backpedal1 = {FRAME_backpedal1, FRAME_backpedal10, ssithra_
 /*----------------------------------------------------------------------
   Ssithra bound - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_bound1 [] =
+static mh2frame_t ssithra_frames_bound1 [] =
 {
 	{FRAME_bound09,	NULL, 0, 0, 0, ssithra_ai_run, 16, NULL},//ssithraBoundCheck,
 	{FRAME_bound10,	NULL, 0, 0, 0, ssithra_ai_run, 16, NULL},
@@ -141,7 +141,7 @@ mmove_t ssithra_move_bound1 = {FRAME_bound09, FRAME_bound16, ssithra_frames_boun
 /*----------------------------------------------------------------------
   Ssithra death_a
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_death_a1 [] =
+static mh2frame_t ssithra_frames_death_a1 [] =
 {
 	{FRAME_death_a1,	ssithraSound, SND_DIE, CHAN_VOICE, 0, NULL, 0, NULL},
 	{FRAME_death_a2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -161,7 +161,7 @@ mmove_t ssithra_move_death_a1 = {FRAME_death_a1, FRAME_death_a12, ssithra_frames
 /*----------------------------------------------------------------------
   Ssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_death_b1 [] =
+static mh2frame_t ssithra_frames_death_b1 [] =
 {
 	{FRAME_death_b1,	ssithraSound, SND_DIE, CHAN_VOICE, 0, NULL, 0, NULL},
 	{FRAME_death_b2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -205,7 +205,7 @@ mmove_t ssithra_move_death_b1 = {FRAME_death_b1, FRAME_death_b36, ssithra_frames
 /*----------------------------------------------------------------------
   Ssithra dive - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_dive1 [] =
+static mh2frame_t ssithra_frames_dive1 [] =
 {
 	{FRAME_dive1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_dive2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -239,7 +239,7 @@ mmove_t ssithra_move_dive1 = {FRAME_dive1, FRAME_dive26, ssithra_frames_dive1, s
 /*----------------------------------------------------------------------
   Ssithra duckshoot
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_unduck [] =
+static mh2frame_t ssithra_frames_unduck [] =
 {
 	{FRAME_duckshoot3,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_duckshoot2,	NULL, 0, 0, 0, ai_charge2, 0, ssithraUnCrouch},
@@ -247,13 +247,13 @@ static mframe_t ssithra_frames_unduck [] =
 };
 mmove_t ssithra_move_unduck = {FRAME_duckshoot1, FRAME_duckshoot3, ssithra_frames_unduck, ssithra_decide_gallop};
 
-static mframe_t ssithra_frames_duckloop [] =
+static mh2frame_t ssithra_frames_duckloop [] =
 {
 	{FRAME_duckshoot6,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t ssithra_move_duckloop = {FRAME_duckshoot6, FRAME_duckshoot6, ssithra_frames_duckloop, ssithraCheckUnDuck};
 
-static mframe_t ssithra_frames_duckshoot1 [] =
+static mh2frame_t ssithra_frames_duckshoot1 [] =
 {
 	{FRAME_duckshoot1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_duckshoot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -274,7 +274,7 @@ mmove_t ssithra_move_duckshoot1 = {FRAME_duckshoot1, FRAME_duckshoot1 + 10, ssit
 /*----------------------------------------------------------------------
   Ssithra duck
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_duck1 [] =
+static mh2frame_t ssithra_frames_duck1 [] =
 {//oops, duckframes same as duckshoot?
 	{FRAME_duckshoot1,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE, NULL, 0, ssithraGrowlSound},
 	{FRAME_duckshoot2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -288,7 +288,7 @@ mmove_t ssithra_move_duck1 = {FRAME_duckshoot1, FRAME_duckshoot6, ssithra_frames
 /*----------------------------------------------------------------------
   Ssithra gallop - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_gallop1 [] =
+static mh2frame_t ssithra_frames_gallop1 [] =
 {
 	{FRAME_gallop1,	ssithraJump, 100, 50, 0, ssithra_ai_run, 20, NULL},
 //	{FRAME_gallop1,	NULL, 0, 0, 0, ssithra_ai_run, 20, NULL},
@@ -305,7 +305,7 @@ mmove_t ssithra_move_gallop1 = {FRAME_gallop1, FRAME_gallop8, ssithra_frames_gal
 /*----------------------------------------------------------------------
   Ssithra jump from buoy
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_fjump[] =
+static mh2frame_t ssithra_frames_fjump[] =
 {
 	{FRAME_bound09,	NULL, 0, 0, 0, NULL, 0, ssithraApplyJump},
 	{FRAME_bound10,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -321,7 +321,7 @@ mmove_t ssithra_move_fjump = {FRAME_bound09, FRAME_bound16, ssithra_frames_fjump
 /*----------------------------------------------------------------------
   Ssithra idlebasic - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_idlebasic1 [] =
+static mh2frame_t ssithra_frames_idlebasic1 [] =
 {
 	{FRAME_idlebasic01,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idlebasic02,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -369,7 +369,7 @@ mmove_t ssithra_move_idlebasic1 = {FRAME_idlebasic01, FRAME_idlebasic40, ssithra
 /*----------------------------------------------------------------------
   Ssithra idleright - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_idleright1 [] =
+static mh2frame_t ssithra_frames_idleright1 [] =
 {
 	{FRAME_idleright01,	ssithraSound, SND_GROWL2, CHAN_VOICE, ATTN_IDLE, ai_stand, 0, ssithraGrowlSound},
 	{FRAME_idleright02,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -402,7 +402,7 @@ mmove_t ssithra_move_idleright1 = {FRAME_idleright01, FRAME_idleright01 + 23, ss
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_melee1 [] =
+static mh2frame_t ssithra_frames_melee1 [] =
 {
 	{FRAME_melee1,	ssithraSound, SND_SWIPE, CHAN_WEAPON, 0, ai_charge2, 20, NULL},
 	{FRAME_melee2,	NULL, 0, 0, 0, ai_charge2, 10, NULL},
@@ -417,7 +417,7 @@ mmove_t ssithra_move_melee1 = {FRAME_melee1, FRAME_melee7, ssithra_frames_melee1
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_meleest [] =
+static mh2frame_t ssithra_frames_meleest [] =
 {
 	{FRAME_Melee_stand1,	ssithraSound, SND_SWIPE, CHAN_WEAPON, 0, NULL, 0, NULL},
 	{FRAME_Melee_stand2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -432,7 +432,7 @@ mmove_t ssithra_move_meleest = {FRAME_Melee_stand1, FRAME_Melee_stand7, ssithra_
 /*----------------------------------------------------------------------
   Ssithra namor - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_namor1 [] =
+static mh2frame_t ssithra_frames_namor1 [] =
 {
 	{FRAME_namor1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_namor2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -465,7 +465,7 @@ mmove_t ssithra_move_namor1 = {FRAME_namor1, FRAME_namor25, ssithra_frames_namor
 /*----------------------------------------------------------------------
   Ssithra pain_a - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_pain_a1 [] =
+static mh2frame_t ssithra_frames_pain_a1 [] =
 {
 	{FRAME_pain_a1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain_a2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -475,7 +475,7 @@ mmove_t ssithra_move_pain_a1 = {FRAME_pain_a1, FRAME_pain_a2, ssithra_frames_pai
 /*----------------------------------------------------------------------
   Ssithra shoot
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_shoot1 [] =
+static mh2frame_t ssithra_frames_shoot1 [] =
 {
 	{FRAME_shoot1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_shoot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -491,7 +491,7 @@ mmove_t ssithra_move_shoot1 = {FRAME_shoot1, FRAME_shoot1 + 7, ssithra_frames_sh
 /*----------------------------------------------------------------------
   Ssithra lunge from shooting
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_lunge [] =
+static mh2frame_t ssithra_frames_lunge [] =
 {
 	{FRAME_shoot12,	NULL, 0, 0, 0, ai_charge2, 0, ssithraApplyJump},
 	{FRAME_shoot13,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -509,7 +509,7 @@ mmove_t ssithra_move_lunge = {FRAME_shoot12, FRAME_shoot21, ssithra_frames_lunge
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_startle1 [] =
+static mh2frame_t ssithra_frames_startle1 [] =
 {
 	{FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE, ai_stand, 0, ssithraGrowlSound},
 	{FRAME_startle3,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -555,7 +555,7 @@ mmove_t ssithra_move_startle1 = {FRAME_startle2, FRAME_startle39, ssithra_frames
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_spinleft_go [] =
+static mh2frame_t ssithra_frames_spinleft_go [] =
 {
 	{FRAME_idlebasic41,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
@@ -564,7 +564,7 @@ mmove_t ssithra_move_spinleft_go = {FRAME_idlebasic41, FRAME_idlebasic41, ssithr
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_spinleft [] =
+static mh2frame_t ssithra_frames_spinleft [] =
 {
 	{FRAME_idlebasic41,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_idlebasic42,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -592,7 +592,7 @@ mmove_t ssithra_move_spinleft = {FRAME_idlebasic41, FRAME_idlebasic60, ssithra_f
 /*----------------------------------------------------------------------
   Ssithra startle - turn left as you aniimate turn around
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_spinright_go [] =
+static mh2frame_t ssithra_frames_spinright_go [] =
 {
 	{FRAME_idlebasic41,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
@@ -601,7 +601,7 @@ mmove_t ssithra_move_spinright_go = {FRAME_idlebasic41, FRAME_idlebasic41, ssith
 /*----------------------------------------------------------------------
   Ssithra startle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_spinright [] =
+static mh2frame_t ssithra_frames_spinright [] =
 {
 	{FRAME_idlebasic61,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_idlebasic62,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -630,7 +630,7 @@ mmove_t ssithra_move_spinright = {FRAME_idlebasic61, FRAME_idlebasic80, ssithra_
 /*----------------------------------------------------------------------
   Ssithra swimforward - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_swimforward1 [] =
+static mh2frame_t ssithra_frames_swimforward1 [] =
 {
 	{FRAME_swimforward01,	NULL, 0, 0, 0, ssithra_ai_run, 10, ssithraCheckRipple},
 	{FRAME_swimforward02,	NULL, 0, 0, 0, ssithra_ai_run, 10, NULL},
@@ -653,7 +653,7 @@ mmove_t ssithra_move_swimforward1 = {FRAME_swimforward01, FRAME_swimforward15, s
 /*----------------------------------------------------------------------
   Ssithra swimwander - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_swimwander [] =
+static mh2frame_t ssithra_frames_swimwander [] =
 {
 	{FRAME_swimforward01,	NULL, 0, 0, 0, ai_walk, 10, ssithraCheckRipple},
 	{FRAME_swimforward02,	NULL, 0, 0, 0, ai_walk, 10, ssithraCheckRipple},
@@ -676,7 +676,7 @@ mmove_t ssithra_move_swimwander = {FRAME_swimforward01, FRAME_swimforward15, ssi
 /*----------------------------------------------------------------------
   Ssithra water_death - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_water_death1 [] =
+static mh2frame_t ssithra_frames_water_death1 [] =
 {
 	{FRAME_water_death1,	ssithraSound, SND_DIE, CHAN_VOICE, 0, NULL, 0, NULL},
 	{FRAME_water_death2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -733,7 +733,7 @@ mmove_t ssithra_move_water_death1 = {FRAME_water_death1, FRAME_water_death49, ss
 /*----------------------------------------------------------------------
   Ssithra water_idle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_water_idle1 [] =
+static mh2frame_t ssithra_frames_water_idle1 [] =
 {//water idle sound?
 	{FRAME_water_idle1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_water_idle2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -761,7 +761,7 @@ mmove_t ssithra_move_water_idle1 = {FRAME_water_idle1, FRAME_water_idle20, ssith
 /*----------------------------------------------------------------------
   Ssithra water_pain_a - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_water_pain_a1 [] =
+static mh2frame_t ssithra_frames_water_pain_a1 [] =
 {
 	{FRAME_water_pain_a1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_water_pain_a2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -771,7 +771,7 @@ mmove_t ssithra_move_water_pain_a1 = {FRAME_water_pain_a1, FRAME_water_pain_a2, 
 /*----------------------------------------------------------------------
   Ssithra water_pain_b - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_water_pain_b1 [] =
+static mh2frame_t ssithra_frames_water_pain_b1 [] =
 {
 	{FRAME_water_pain_b1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_water_pain_b2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -781,7 +781,7 @@ mmove_t ssithra_move_water_pain_b1 = {FRAME_water_pain_b1, FRAME_water_pain_b2, 
 /*----------------------------------------------------------------------
   Ssithra water_shoot - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_water_shoot1 [] =
+static mh2frame_t ssithra_frames_water_shoot1 [] =
 {
 	{FRAME_water_shoot01,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_water_shoot2,		NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -803,7 +803,7 @@ static mframe_t ssithra_frames_water_shoot1 [] =
 };
 mmove_t ssithra_move_water_shoot1 = {FRAME_water_shoot01, FRAME_water_shoot17, ssithra_frames_water_shoot1, ssithra_decide_swimforward};
 
-static mframe_t ssithra_frames_run1 [] =
+static mh2frame_t ssithra_frames_run1 [] =
 {
 	{FRAME_run1,	NULL, 0, 0, 0, ssithra_ai_run, 16, ssithraBoundCheck},
 	{FRAME_run2,	NULL, 0, 0, 0, ssithra_ai_run, 18, ssithraDiveCheck},
@@ -819,7 +819,7 @@ mmove_t ssithra_move_run1 = {FRAME_run1, FRAME_run8, ssithra_frames_run1, ssithr
 /*----------------------------------------------------------------------
   Ssithra face and namor
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_faceandnamor [] =
+static mh2frame_t ssithra_frames_faceandnamor [] =
 {
 	{FRAME_water_idle1,	NULL, 0, 0, 0, ai_charge2, 0, ssithraCheckFacedNamor},
 	{FRAME_water_idle2,	NULL, 0, 0, 0, ai_charge2, 0, ssithraCheckFacedNamor},
@@ -847,7 +847,7 @@ mmove_t ssithra_move_faceandnamor = {FRAME_water_idle1, FRAME_water_idle20, ssit
 /*----------------------------------------------------------------------
   Ssithra look left
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_lookleft [] =
+static mh2frame_t ssithra_frames_lookleft [] =
 {
 	{FRAME_idlebasic41,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE, ai_stand, 0, NULL},
 	{FRAME_idlebasic42,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -875,7 +875,7 @@ mmove_t ssithra_move_lookleft = {FRAME_idlebasic41, FRAME_idlebasic60, ssithra_f
 /*----------------------------------------------------------------------
   Ssithra look right
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_lookright [] =
+static mh2frame_t ssithra_frames_lookright [] =
 {
 	{FRAME_idlebasic61,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE, ai_stand, 0, NULL},
 	{FRAME_idlebasic62,	NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -903,7 +903,7 @@ mmove_t ssithra_move_lookright = {FRAME_idlebasic61, FRAME_idlebasic80, ssithra_
 /*----------------------------------------------------------------------
   Ssithra trans up
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_transup [] =
+static mh2frame_t ssithra_frames_transup [] =
 {
 	{FRAME_Water_trans1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Water_trans2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -915,7 +915,7 @@ mmove_t ssithra_move_transup = {FRAME_Water_trans1, FRAME_Water_trans4, ssithra_
 /*----------------------------------------------------------------------
   Ssithra trans down
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_transdown [] =
+static mh2frame_t ssithra_frames_transdown [] =
 {
 	{FRAME_Water_trans4,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Water_trans3,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -931,7 +931,7 @@ Headless
 /*----------------------------------------------------------------------
   Ssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_death_c [] =
+static mh2frame_t ssithra_frames_death_c [] =
 {
 	{FRAME_shoot5,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_shoot4,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -977,7 +977,7 @@ static mframe_t ssithra_frames_death_c [] =
 };
 mmove_t ssithra_move_death_c = {FRAME_shoot5, FRAME_shoot5 + 40, ssithra_frames_death_c, ssithra_dead};
 
-static mframe_t ssithra_frames_headlessloop [] =
+static mh2frame_t ssithra_frames_headlessloop [] =
 {
 	{FRAME_shoot8,	NULL, 0, 0, 0, ai_spin, -5, NULL},
 	{FRAME_shoot9,	NULL, 0, 0, 0, ai_spin, -4, ssithraPanicArrow},
@@ -988,7 +988,7 @@ static mframe_t ssithra_frames_headlessloop [] =
 };
 mmove_t ssithra_move_headlessloop = {FRAME_shoot8, FRAME_shoot13, ssithra_frames_headlessloop, ssithraCollapse};
 
-static mframe_t ssithra_frames_headless [] =
+static mh2frame_t ssithra_frames_headless [] =
 {
 	{FRAME_shoot1,	NULL, 0, 0, 0, ai_spin, -20, NULL},
 	{FRAME_shoot2,	NULL, 0, 0, 0, ai_spin, -12, NULL},
@@ -1009,19 +1009,19 @@ mmove_t ssithra_move_headless = {FRAME_shoot1, FRAME_shoot13, ssithra_frames_hea
 /*----------------------------------------------------------------------
   Ssithra dead
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_dead_a [] =
+static mh2frame_t ssithra_frames_dead_a [] =
 {
 	{FRAME_death_a12,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t ssithra_move_dead_a = {FRAME_death_a12, FRAME_death_a12, ssithra_frames_dead_a, NULL};
 
-static mframe_t ssithra_frames_dead_b [] =
+static mh2frame_t ssithra_frames_dead_b [] =
 {
 	{FRAME_death_b36,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t ssithra_move_dead_b = {FRAME_death_b36, FRAME_death_b36, ssithra_frames_dead_b, NULL};
 
-static mframe_t ssithra_frames_dead_water [] =
+static mh2frame_t ssithra_frames_dead_water [] =
 {
 	{FRAME_water_death49,	NULL, 0, 0, 0, NULL, 0, NULL},
 };
@@ -1030,7 +1030,7 @@ mmove_t ssithra_move_dead_water = {FRAME_water_death49, FRAME_water_death49, ssi
 /*----------------------------------------------------------------------
   Ssithra sliced
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_sliced [] =
+static mh2frame_t ssithra_frames_sliced [] =
 {
 	{FRAME_death_b1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death_b2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -1075,7 +1075,7 @@ mmove_t ssithra_move_sliced = {FRAME_death_b1, FRAME_death_b36, ssithra_frames_s
 /*----------------------------------------------------------------------
   Ssithra delay - stop and look around
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_delay [] =
+static mh2frame_t ssithra_frames_delay [] =
 {
 	{FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE, NULL, 0, SsithraMood},
 	{FRAME_startle3,	NULL, 0, 0, 0, NULL, 0, SsithraMood},
@@ -1121,7 +1121,7 @@ mmove_t ssithra_move_delay = {FRAME_startle2, FRAME_startle39, ssithra_frames_de
 /*----------------------------------------------------------------------
   Ssithra Idle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_idle1 [] =
+static mh2frame_t ssithra_c_frames_idle1 [] =
 {
 	{FRAME_idle01,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle02,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1169,7 +1169,7 @@ mmove_t ssithra_c_move_idle1 = {FRAME_idle01, FRAME_idle40, ssithra_c_frames_idl
 /*----------------------------------------------------------------------
   Ssithra Walk - walking along
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_walk1 [] =
+static mh2frame_t ssithra_c_frames_walk1 [] =
 {
 	{FRAME_walk1, 	ai_c_move, 0, 0, 0, NULL, 2, NULL},
 	{FRAME_walk2, 	ai_c_move, 0, 0, 0, NULL, 3, NULL},
@@ -1191,7 +1191,7 @@ mmove_t ssithra_c_move_walk1 = {FRAME_walk1, FRAME_walk14, ssithra_c_frames_walk
 /*----------------------------------------------------------------------
   Ssithra backpedal -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_backpedal1 [] =
+static mh2frame_t ssithra_c_frames_backpedal1 [] =
 {
 	{FRAME_backpedal1,	ai_c_move, -5, 0, 0, NULL, 0, NULL},
 	{FRAME_backpedal2,	ai_c_move, -5, 0, 0, NULL, 0, NULL},
@@ -1210,7 +1210,7 @@ mmove_t ssithra_c_move_backpedal1 = {FRAME_backpedal1, FRAME_backpedal10, ssithr
 /*----------------------------------------------------------------------
   Ssithra bound -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action1 [] =
+static mh2frame_t ssithra_c_frames_action1 [] =
 {
 	{FRAME_bound09,	ai_c_move, 16, 0, 0, NULL, 0, NULL},
 	{FRAME_bound10,	ai_c_move, 16, 0, 0, NULL, 0, NULL},
@@ -1226,7 +1226,7 @@ mmove_t ssithra_c_move_action1 = {FRAME_bound09, FRAME_bound16, ssithra_c_frames
 /*----------------------------------------------------------------------
   Ssithra death_a
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_death2 [] =
+static mh2frame_t ssithra_c_frames_death2 [] =
 {
 	{FRAME_death_a1,	ssithraSound, SND_DIE, CHAN_VOICE, 0, NULL, 0, NULL},
 	{FRAME_death_a2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1246,7 +1246,7 @@ mmove_t ssithra_c_move_death2 = {FRAME_death_a1, FRAME_death_a12, ssithra_c_fram
 /*----------------------------------------------------------------------
   Ssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_death3 [] =
+static mh2frame_t ssithra_c_frames_death3 [] =
 {
 	{FRAME_death_b1,		ssithraSound, SND_DIE, CHAN_VOICE, 0, NULL, 0, NULL},
 	{FRAME_death_b2,		ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1290,7 +1290,7 @@ mmove_t ssithra_c_move_death3 = {FRAME_death_b1, FRAME_death_b36, ssithra_c_fram
 /*----------------------------------------------------------------------
   Ssithra dive - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action2 [] =
+static mh2frame_t ssithra_c_frames_action2 [] =
 {
 	{FRAME_dive1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_dive2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1324,7 +1324,7 @@ mmove_t ssithra_c_move_action2 = {FRAME_dive1, FRAME_dive26, ssithra_c_frames_ac
 /*----------------------------------------------------------------------
   Ssithra duckshoot
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action3 [] =
+static mh2frame_t ssithra_c_frames_action3 [] =
 {
 	{FRAME_duckshoot3,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_duckshoot2,	ai_c_move, 0, 0, 0, NULL, 0, ssithraUnCrouch},
@@ -1332,13 +1332,13 @@ static mframe_t ssithra_c_frames_action3 [] =
 };
 mmove_t ssithra_c_move_action3 = {FRAME_duckshoot1, FRAME_duckshoot3, ssithra_c_frames_action3, ai_c_cycleend};
 
-static mframe_t ssithra_c_frames_action4 [] =
+static mh2frame_t ssithra_c_frames_action4 [] =
 {
 	{FRAME_duckshoot6,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
 mmove_t ssithra_c_move_action4 = {FRAME_duckshoot6, FRAME_duckshoot6, ssithra_c_frames_action4, ai_c_cycleend};
 
-static mframe_t ssithra_c_frames_action5 [] =
+static mh2frame_t ssithra_c_frames_action5 [] =
 {
 	{FRAME_duckshoot1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_duckshoot2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1352,7 +1352,7 @@ mmove_t ssithra_c_move_action5 = {FRAME_duckshoot1, FRAME_duckshoot6, ssithra_c_
 /*----------------------------------------------------------------------
   Ssithra duck
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action6 [] =
+static mh2frame_t ssithra_c_frames_action6 [] =
 {//oops, duckframes same as duckshoot?
 	{FRAME_duckshoot1,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_duckshoot2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1366,7 +1366,7 @@ mmove_t ssithra_c_move_action6 = {FRAME_duckshoot1, FRAME_duckshoot6, ssithra_c_
 /*----------------------------------------------------------------------
   Ssithra gallop - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_run1 [] =
+static mh2frame_t ssithra_c_frames_run1 [] =
 {
 	{FRAME_gallop1,	ai_c_move, 20, 0, 0, NULL, 0, NULL},
 	{FRAME_gallop2,	ai_c_move, 24, 0, 0, NULL, 0, NULL},
@@ -1382,7 +1382,7 @@ mmove_t ssithra_c_move_run1 = {FRAME_gallop1, FRAME_gallop8, ssithra_c_frames_ru
 /*----------------------------------------------------------------------
   Ssithra jump from buoy
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action7[] =
+static mh2frame_t ssithra_c_frames_action7[] =
 {
 	{FRAME_bound09,	ai_c_move, 0, 0, 0, NULL, 0, ssithraApplyJump},
 	{FRAME_bound10,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1398,7 +1398,7 @@ mmove_t ssithra_c_move_action7 = {FRAME_bound09, FRAME_bound16, ssithra_c_frames
 /*----------------------------------------------------------------------
   Ssithra idle2 -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_idle2 [] =
+static mh2frame_t ssithra_c_frames_idle2 [] =
 {
 	{FRAME_idlebasic01,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idlebasic02,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1446,7 +1446,7 @@ mmove_t ssithra_c_move_idle2 = {FRAME_idlebasic01, FRAME_idlebasic40, ssithra_c_
 /*----------------------------------------------------------------------
   Ssithra idle3 -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_idle3 [] =
+static mh2frame_t ssithra_c_frames_idle3 [] =
 {
 	{FRAME_idleright01,	ssithraSound, SND_GROWL2, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_idleright02,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1479,7 +1479,7 @@ mmove_t ssithra_c_move_idle3 = {FRAME_idleright01, FRAME_idleright20, ssithra_c_
 /*----------------------------------------------------------------------
   Ssithra attack1 -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_attack1 [] =
+static mh2frame_t ssithra_c_frames_attack1 [] =
 {
 	{FRAME_melee1,	ai_c_move, 20, 0, 0, NULL, 0, NULL},
 	{FRAME_melee2,	ai_c_move, 10, 0, 0, NULL, 0, NULL},
@@ -1494,7 +1494,7 @@ mmove_t ssithra_c_move_attack1 = {FRAME_melee1, FRAME_melee7, ssithra_c_frames_a
 /*----------------------------------------------------------------------
   Ssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_attack2 [] =
+static mh2frame_t ssithra_c_frames_attack2 [] =
 {
 	{FRAME_Melee_stand1,	ssithraSound, SND_SWIPE, CHAN_WEAPON, 0, NULL, 0, NULL},
 	{FRAME_Melee_stand2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1509,7 +1509,7 @@ mmove_t ssithra_c_move_attack2 = {FRAME_Melee_stand1, FRAME_Melee_stand7, ssithr
 /*----------------------------------------------------------------------
   Ssithra namor - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action8 [] =
+static mh2frame_t ssithra_c_frames_action8 [] =
 {
 	{FRAME_namor1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_namor2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1542,7 +1542,7 @@ mmove_t ssithra_c_move_action8 = {FRAME_namor1, FRAME_namor25, ssithra_c_frames_
 /*----------------------------------------------------------------------
   Ssithra pain_a - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_pain1 [] =
+static mh2frame_t ssithra_c_frames_pain1 [] =
 {
 	{FRAME_pain_a1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain_a2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1552,7 +1552,7 @@ mmove_t ssithra_c_move_pain1 = {FRAME_pain_a1, FRAME_pain_a2, ssithra_c_frames_p
 /*----------------------------------------------------------------------
   Ssithra shoot
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_attack3 [] =
+static mh2frame_t ssithra_c_frames_attack3 [] =
 {
 	{FRAME_shoot1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_shoot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
@@ -1568,7 +1568,7 @@ mmove_t ssithra_c_move_attack3 = {FRAME_shoot1, FRAME_shoot8, ssithra_c_frames_a
 /*----------------------------------------------------------------------
   Ssithra lunge from shooting
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action9 [] =
+static mh2frame_t ssithra_c_frames_action9 [] =
 {
 	{FRAME_shoot12,	ai_c_move, 0, 0, 0, NULL, 0, ssithraApplyJump},
 	{FRAME_shoot13,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1586,7 +1586,7 @@ mmove_t ssithra_c_move_action9 = {FRAME_shoot12, FRAME_shoot21, ssithra_c_frames
 /*----------------------------------------------------------------------
   Ssithra startle -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action10 [] =
+static mh2frame_t ssithra_c_frames_action10 [] =
 {
 	{FRAME_startle2,	ssithraSound, SND_GROWL3, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_startle3,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1632,7 +1632,7 @@ mmove_t ssithra_c_move_action10 = {FRAME_startle2, FRAME_startle39, ssithra_c_fr
 /*----------------------------------------------------------------------
   Ssithra startle -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action11 [] =
+static mh2frame_t ssithra_c_frames_action11 [] =
 {
 	{FRAME_idlebasic41,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_idlebasic42,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1660,7 +1660,7 @@ mmove_t ssithra_c_move_action11 = {FRAME_idlebasic41, FRAME_idlebasic60, ssithra
 /*----------------------------------------------------------------------
   Ssithra startle -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_action12 [] =
+static mh2frame_t ssithra_c_frames_action12 [] =
 {
 	{FRAME_idlebasic61,	ssithraSound, SND_GROWL1, CHAN_VOICE, ATTN_IDLE, NULL, 0, NULL},
 	{FRAME_idlebasic62,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1689,7 +1689,7 @@ mmove_t ssithra_c_move_action12 = {FRAME_idlebasic61, FRAME_idlebasic80, ssithra
 /*----------------------------------------------------------------------
   Ssithra swimforward - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_swim1 [] =
+static mh2frame_t ssithra_c_frames_swim1 [] =
 {
 	{FRAME_swimforward01,	ai_c_move, 16, 0, 0, NULL, 16, ssithraCheckRipple},
 	{FRAME_swimforward02,	ai_c_move, 16, 0, 0, NULL, 16, NULL},
@@ -1712,7 +1712,7 @@ mmove_t ssithra_c_move_swim1 = {FRAME_swimforward01, FRAME_swimforward15, ssithr
 /*----------------------------------------------------------------------
   Ssithra water_death -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_death1 [] =
+static mh2frame_t ssithra_c_frames_death1 [] =
 {
 	{FRAME_water_death1,	ssithraSound, SND_DIE, CHAN_VOICE, 0, NULL, 0, NULL},
 	{FRAME_water_death2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1769,7 +1769,7 @@ mmove_t ssithra_c_move_death1 = {FRAME_water_death1, FRAME_water_death49, ssithr
 /*----------------------------------------------------------------------
   Ssithra water_idle - looking around and standing
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_frames_idle4 [] =
+static mh2frame_t ssithra_frames_idle4 [] =
 {//water idle sound?
 	{FRAME_water_idle1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_water_idle2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1797,7 +1797,7 @@ mmove_t ssithra_move_idle4 = {FRAME_water_idle1, FRAME_water_idle20, ssithra_fra
 /*----------------------------------------------------------------------
   Ssithra water_pain_a -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_pain2 [] =
+static mh2frame_t ssithra_c_frames_pain2 [] =
 {
 	{FRAME_water_pain_a1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_water_pain_a2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -1807,7 +1807,7 @@ mmove_t ssithra_c_move_pain2 = {FRAME_water_pain_a1, FRAME_water_pain_a2, ssithr
 /*----------------------------------------------------------------------
   Ssithra water_pain_b -
 -----------------------------------------------------------------------*/
-static mframe_t ssithra_c_frames_pain3 [] =
+static mh2frame_t ssithra_c_frames_pain3 [] =
 {
 	{FRAME_water_pain_b1,	ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_water_pain_b2,	ai_c_move, 0, 0, 0, NULL, 0, NULL},

@@ -21,7 +21,7 @@
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action1[] =
+static mh2frame_t scout_frames_c_action1[] =
 {
 	{FRAME_ss_recover1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_recover2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -69,7 +69,7 @@ mmove_t scout_move_c_action1 = {FRAME_ss_recover1, FRAME_ss_recover39, scout_fra
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action2[] =
+static mh2frame_t scout_frames_c_action2[] =
 {
 	{FRAME_ss_hecured1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_hecured2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -138,7 +138,7 @@ mmove_t scout_move_c_action2 = {FRAME_ss_hecured1, FRAME_ss_hecured60, scout_fra
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action3[] =
+static mh2frame_t scout_frames_c_action3[] =
 {
 	{FRAME_ss_talk1A1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk1A2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -233,7 +233,7 @@ mmove_t scout_move_c_action3 = {FRAME_ss_talk1A1, FRAME_ss_talk1A86, scout_frame
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action4[] =
+static mh2frame_t scout_frames_c_action4[] =
 {
 	{FRAME_ss_talk1B1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk1B2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -286,7 +286,7 @@ mmove_t scout_move_c_action4 = {FRAME_ss_talk1B1, FRAME_ss_talk1B44, scout_frame
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action5[] =
+static mh2frame_t scout_frames_c_action5[] =
 {
 	{FRAME_ss_coughA1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_coughA2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -321,7 +321,7 @@ mmove_t scout_move_c_action5 = {FRAME_ss_coughA1, FRAME_ss_coughA26, scout_frame
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action6[] =
+static mh2frame_t scout_frames_c_action6[] =
 {
 	{FRAME_ss_noshe1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_noshe2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -364,7 +364,7 @@ mmove_t scout_move_c_action6 = {FRAME_ss_noshe1, FRAME_ss_noshe34, scout_frames_
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action7[] =
+static mh2frame_t scout_frames_c_action7[] =
 {
 	{FRAME_ss_talk2A1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk2A2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -443,7 +443,7 @@ mmove_t scout_move_c_action7 = {FRAME_ss_talk2A1, FRAME_ss_talk2A70, scout_frame
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action8[] =
+static mh2frame_t scout_frames_c_action8[] =
 {
 	{FRAME_ss_talk2B1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk2B2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -514,7 +514,7 @@ mmove_t scout_move_c_action8 = {FRAME_ss_talk2B1, FRAME_ss_talk2B62, scout_frame
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action9[] =
+static mh2frame_t scout_frames_c_action9[] =
 {
 	{FRAME_ss_talk2C1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk2C2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -548,7 +548,7 @@ mmove_t scout_move_c_action9 = {FRAME_ss_talk2C1, FRAME_ss_talk2C25, scout_frame
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_action10[] =
+static mh2frame_t scout_frames_c_action10[] =
 {
 	{FRAME_ss_coughB1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_coughB2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -576,7 +576,7 @@ mmove_t scout_move_c_action10 = {FRAME_ss_coughB1, FRAME_ss_coughB19, scout_fram
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_death1[] =
+static mh2frame_t scout_frames_c_death1[] =
 {
 	{FRAME_ss_death1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_death2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -639,7 +639,7 @@ mmove_t scout_move_c_death1 = {FRAME_ss_death1, FRAME_ss_death54, scout_frames_c
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_idle1 [] =
+static mh2frame_t scout_frames_c_idle1 [] =
 {
 	{FRAME_ss_breath1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_breath2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -679,7 +679,7 @@ mmove_t scout_move_c_idle1 = {FRAME_ss_breath1, FRAME_ss_breath31, scout_frames_
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_idle2 [] =
+static mh2frame_t scout_frames_c_idle2 [] =
 {
 	{FRAME_ss_idleA1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_idleA2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -704,7 +704,7 @@ mmove_t scout_move_c_idle2 = {FRAME_ss_idleA1, FRAME_ss_idleA16, scout_frames_c_
 /*----------------------------------------------------------------------
   Ssithra Scout -
 -----------------------------------------------------------------------*/
-static mframe_t scout_frames_c_idle3 [] =
+static mh2frame_t scout_frames_c_idle3 [] =
 {
 	{FRAME_ss_idleB1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_idleB2, ai_c_move, 0, 0, 0, NULL, 0, NULL},

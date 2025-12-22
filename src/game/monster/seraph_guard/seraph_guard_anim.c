@@ -7,7 +7,7 @@
 #include "seraph_guard_anim.h"
 #include "../stats/stats.h"
 
-static mframe_t seraph_guard_frames_stand[] =
+static mh2frame_t seraph_guard_frames_stand[] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 	{FRAME_idle2, NULL, 0, 0, 0, ai_stand, 0, NULL},
@@ -41,7 +41,7 @@ static mframe_t seraph_guard_frames_stand[] =
 };
 mmove_t seraph_guard_move_stand = {FRAME_idle1, FRAME_idle29, seraph_guard_frames_stand, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_melee[] =
+static mh2frame_t seraph_guard_frames_melee[] =
 {
 	{FRAME_axea1, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_axea2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -68,7 +68,7 @@ static mframe_t seraph_guard_frames_melee[] =
 };
 mmove_t seraph_guard_move_melee = {FRAME_axea1, FRAME_axea1 + 21, seraph_guard_frames_melee, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_pain[] =
+static mh2frame_t seraph_guard_frames_pain[] =
 {
 	{FRAME_pain1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pain2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -78,7 +78,7 @@ static mframe_t seraph_guard_frames_pain[] =
 };
 mmove_t seraph_guard_move_pain = {FRAME_pain1, FRAME_pain5, seraph_guard_frames_pain, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_runmelee[] =
+static mh2frame_t seraph_guard_frames_runmelee[] =
 {
 	{FRAME_runaxe4, NULL, 0, 0, 0, ai_charge, 20, NULL},
 	{FRAME_runaxe5, NULL, 0, 0, 0, ai_charge, 24, NULL},
@@ -91,7 +91,7 @@ static mframe_t seraph_guard_frames_runmelee[] =
 };
 mmove_t seraph_guard_move_runmelee = {FRAME_runaxe4, FRAME_runaxe4 + 7, seraph_guard_frames_runmelee, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_run[] =
+static mh2frame_t seraph_guard_frames_run[] =
 {
 	{FRAME_run1, NULL, 0, 0, 0, ai_run, 24, seraph_guard_pause},
 	{FRAME_run2, NULL, 0, 0, 0, ai_run, 20, seraph_guard_pause},
@@ -104,7 +104,7 @@ static mframe_t seraph_guard_frames_run[] =
 };
 mmove_t seraph_guard_move_run = {FRAME_run1, FRAME_run8, seraph_guard_frames_run, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_fjump[] =
+static mh2frame_t seraph_guard_frames_fjump[] =
 {
 	{FRAME_run1, NULL, 0, 0, 0, NULL, 0, seraphGuardApplyJump},
 	{FRAME_run2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -117,7 +117,7 @@ static mframe_t seraph_guard_frames_fjump[] =
 };
 mmove_t seraph_guard_move_fjump = {FRAME_run1, FRAME_run8, seraph_guard_frames_fjump, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_walk[] =
+static mh2frame_t seraph_guard_frames_walk[] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_walk, 6, NULL},
 	{FRAME_walk2, NULL, 0, 0, 0, ai_walk, 6, NULL},
@@ -138,7 +138,7 @@ static mframe_t seraph_guard_frames_walk[] =
 };
 mmove_t seraph_guard_move_walk = {FRAME_walk1, FRAME_walk16, seraph_guard_frames_walk, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_melee2[] =
+static mh2frame_t seraph_guard_frames_melee2[] =
 {
 	{FRAME_axeb1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_axeb2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -155,7 +155,7 @@ static mframe_t seraph_guard_frames_melee2[] =
 };
 mmove_t seraph_guard_move_melee2 = {FRAME_axeb1, FRAME_axeb1 + 11, seraph_guard_frames_melee2, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_melee3[] =
+static mh2frame_t seraph_guard_frames_melee3[] =
 {
 	{FRAME_axec1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_axec2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -176,7 +176,7 @@ static mframe_t seraph_guard_frames_melee3[] =
 };
 mmove_t seraph_guard_move_melee3 = {FRAME_axec1, FRAME_axec1 + 15, seraph_guard_frames_melee3, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_death1[] =
+static mh2frame_t seraph_guard_frames_death1[] =
 {
 	{FRAME_deatha1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -205,7 +205,7 @@ static mframe_t seraph_guard_frames_death1[] =
 };
 mmove_t seraph_guard_move_death1 = {FRAME_deatha1, FRAME_deatha24, seraph_guard_frames_death1, NULL};
 
-static mframe_t seraph_guard_frames_death2_go[] =
+static mh2frame_t seraph_guard_frames_death2_go[] =
 {
 	{FRAME_deathb1, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 	{FRAME_deathb2, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
@@ -214,13 +214,13 @@ static mframe_t seraph_guard_frames_death2_go[] =
 };
 mmove_t seraph_guard_move_death2_go = {FRAME_deathb1, FRAME_deathb4, seraph_guard_frames_death2_go, NULL};
 
-static mframe_t seraph_guard_frames_death2_loop[] =
+static mh2frame_t seraph_guard_frames_death2_loop[] =
 {
 	{FRAME_deathb5, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 };
 mmove_t seraph_guard_move_death2_loop = {FRAME_deathb5, FRAME_deathb5, seraph_guard_frames_death2_loop, NULL};
 
-static mframe_t seraph_guard_frames_death2_end[] =
+static mh2frame_t seraph_guard_frames_death2_end[] =
 {
 	{FRAME_deathb6, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
 	{FRAME_deathb7, NULL, 0, 0, 0, NULL, 0, seraph_guard_check_land},
@@ -235,7 +235,7 @@ static mframe_t seraph_guard_frames_death2_end[] =
 };
 mmove_t seraph_guard_move_death2_end = {FRAME_deathb6, FRAME_deathb15, seraph_guard_frames_death2_end, NULL};
 
-static mframe_t seraph_guard_frames_backup[] =
+static mh2frame_t seraph_guard_frames_backup[] =
 {
 	{FRAME_backup1, NULL, 0, 0, 0, seraph_guard_back, 24, NULL},
 	{FRAME_backup2, NULL, 0, 0, 0, seraph_guard_back, 20, NULL},
@@ -256,7 +256,7 @@ static mframe_t seraph_guard_frames_backup[] =
 };
 mmove_t seraph_guard_move_backup = {FRAME_backup1, FRAME_backup16, seraph_guard_frames_backup, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_missile[] =
+static mh2frame_t seraph_guard_frames_missile[] =
 {
 	{FRAME_newshot1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_newshot2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -272,7 +272,7 @@ static mframe_t seraph_guard_frames_missile[] =
 };
 mmove_t seraph_guard_move_missile = {FRAME_newshot1, FRAME_newshot11, seraph_guard_frames_missile, seraph_guard_pause};
 
-static mframe_t seraph_guard_frames_delay[] =
+static mh2frame_t seraph_guard_frames_delay[] =
 {
 	{FRAME_idle1, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},
 	{FRAME_idle2, NULL, 0, 0, 0, NULL, 0, seraph_guard_pause},

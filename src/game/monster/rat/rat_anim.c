@@ -17,7 +17,7 @@ void rat_ai_run (edict_t *self, float dist);
 /*----------------------------------------------------------------------
   Rat Death 2 - the little death, flipping over
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_death2 [] =
+static mh2frame_t rat_frames_death2 [] =
 {
 	{FRAME_DeathB1,	NULL, 0, 0, 0, NULL, 0, ratdeathsqueal},
 	{FRAME_DeathB2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -35,7 +35,7 @@ mmove_t rat_move_death2 = {FRAME_DeathB1, FRAME_DeathB9, rat_frames_death2, M_En
 /*----------------------------------------------------------------------
   Rat Death 1 - the big death, flying backwards and flipping over
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_death1 [] =
+static mh2frame_t rat_frames_death1 [] =
 {
 	{FRAME_deathA1,	NULL, 0, 0, 0, ai_move, 0, ratdeathsqueal},
 	{FRAME_deathA2,	NULL, 0, 0, 0, ai_move, 0, NULL},
@@ -58,7 +58,7 @@ mmove_t rat_move_death1 = {FRAME_deathA1, FRAME_deathA14, rat_frames_death1, M_E
 /*----------------------------------------------------------------------
   Rat Pain - backup and run away
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_pain1 [] =
+static mh2frame_t rat_frames_pain1 [] =
 {
 	{FRAME_backup1,	NULL, 0, 0, 0, ai_move, -4, ratsqueal},
 	{FRAME_backup2,	NULL, 0, 0, 0, ai_move, -4, NULL},
@@ -72,7 +72,7 @@ mmove_t rat_move_pain1 = {FRAME_backup1, FRAME_backup6, rat_frames_pain1, rat_pa
 /*----------------------------------------------------------------------
   Rat Melee - rat attacking at feet
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_melee1 [] =
+static mh2frame_t rat_frames_melee1 [] =
 {
 	{FRAME_eat1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_eat2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -87,7 +87,7 @@ mmove_t rat_move_melee1 = {FRAME_eat1, FRAME_eat5, rat_frames_melee1, rat_pause}
 /*----------------------------------------------------------------------
   Rat Melee - rat attacking jumping in the air
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_melee2 [] =
+static mh2frame_t rat_frames_melee2 [] =
 {
 	{FRAME_attack1,	NULL, 0, 0, 0, ai_move, 0, ratjump},
 	{FRAME_attack2,	NULL, 0, 0, 0, ai_move, 0, NULL},
@@ -106,7 +106,7 @@ mmove_t rat_move_melee2 = {FRAME_attack1, FRAME_attack11, rat_frames_melee2, rat
 /*----------------------------------------------------------------------
   Rat Melee - rat attacking 2
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_melee3 [] =
+static mh2frame_t rat_frames_melee3 [] =
 {
 	{FRAME_eat12,	NULL, 0, 0, 0, ai_move, 0, NULL},
 	{FRAME_eat13,	NULL, 0, 0, 0, ai_move, 0, NULL},
@@ -128,7 +128,7 @@ mmove_t rat_move_melee3 = {FRAME_eat12, FRAME_eat24, rat_frames_melee3, rat_paus
 /*----------------------------------------------------------------------
   Rat Running - rat running to the right
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_run3 [] =
+static mh2frame_t rat_frames_run3 [] =
 {
 	{FRAME_run_rt1,	NULL, 0, 0, 0, rat_ai_run, 10, ratchatter},
 	{FRAME_run_rt2,	NULL, 0, 0, 0, rat_ai_run, 10, NULL},
@@ -141,7 +141,7 @@ mmove_t rat_move_run3 = {FRAME_run_rt1, FRAME_run_rt4, rat_frames_run3, NULL};
 /*----------------------------------------------------------------------
   Rat Running - rat running to the left
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_run2 [] =
+static mh2frame_t rat_frames_run2 [] =
 {
 	{FRAME_run_lft1,	NULL, 0, 0, 0, rat_ai_run, 10, ratchatter},
 	{FRAME_run_lft2,	NULL, 0, 0, 0, rat_ai_run, 10, NULL},
@@ -153,7 +153,7 @@ mmove_t rat_move_run2 = {FRAME_run_lft1, FRAME_run_lft4, rat_frames_run2, rat_ru
 /*----------------------------------------------------------------------
   Rat Running - rat running
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_run1 [] =
+static mh2frame_t rat_frames_run1 [] =
 {
 	{FRAME_run1,	NULL, 0, 0, 0, rat_ai_run, 10, ratchatter},
 	{FRAME_run2,	NULL, 0, 0, 0, rat_ai_run, 20, NULL},
@@ -166,7 +166,7 @@ mmove_t rat_move_run1 = {FRAME_run1, FRAME_run5, rat_frames_run1, rat_runorder};
 /*----------------------------------------------------------------------
   Rat Walking - rat walking
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_walk1 [] =
+static mh2frame_t rat_frames_walk1 [] =
 {
 	{FRAME_walk1,	NULL, 0, 0, 0, ai_walk, 4, ratchatter},
 	{FRAME_walk2,	NULL, 0, 0, 0, ai_walk, 4, NULL},
@@ -181,7 +181,7 @@ mmove_t rat_move_walk1 = {FRAME_walk1, FRAME_walk6, rat_frames_walk1, NULL};
   Rat Stand8 - from haunches, dropping down to ground
 -----------------------------------------------------------------------*/
 
-static mframe_t rat_frames_stand8 [] =
+static mh2frame_t rat_frames_stand8 [] =
 {
 	{FRAME_haunch44,	NULL, 0, 0, 0, rat_ai_stand, 0, NULL},
 	{FRAME_haunch45,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -195,7 +195,7 @@ mmove_t rat_move_stand8 = {FRAME_haunch44, FRAME_haunch49, rat_frames_stand8, ra
 /*----------------------------------------------------------------------
   Rat Stand7 - sitting on haunches, scratch right
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand7 [] =
+static mh2frame_t rat_frames_stand7 [] =
 {
 	{FRAME_haunch38,	NULL, 0, 0, 0, rat_ai_stand, 0, NULL},
 	{FRAME_haunch39,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -208,7 +208,7 @@ mmove_t rat_move_stand7 = {FRAME_haunch38, FRAME_haunch42, rat_frames_stand7, ra
 /*----------------------------------------------------------------------
   Rat Stand6 - sitting on haunches, scratch left
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand6 [] =
+static mh2frame_t rat_frames_stand6 [] =
 {
 	{FRAME_haunch32,	NULL, 0, 0, 0, rat_ai_stand, 0, NULL},
 	{FRAME_haunch33,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -221,7 +221,7 @@ mmove_t rat_move_stand6 = {FRAME_haunch32, FRAME_haunch36, rat_frames_stand6, ra
 /*----------------------------------------------------------------------
   Rat Stand5 - sitting on haunches, look right
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand5 [] =
+static mh2frame_t rat_frames_stand5 [] =
 {
 	{FRAME_haunch26,	NULL, 0, 0, 0, rat_ai_stand, 0, NULL},
 	{FRAME_haunch27,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -234,7 +234,7 @@ mmove_t rat_move_stand5 = {FRAME_haunch26, FRAME_haunch30, rat_frames_stand5, ra
 /*----------------------------------------------------------------------
   Rat Stand4 - sitting on haunches, looking left
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand4 [] =
+static mh2frame_t rat_frames_stand4 [] =
 {
 	{FRAME_haunch20,	NULL, 0, 0, 0, rat_ai_stand, 0, NULL},
 	{FRAME_haunch21,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -247,7 +247,7 @@ mmove_t rat_move_stand4 = {FRAME_haunch20, FRAME_haunch24, rat_frames_stand4, ra
 /*----------------------------------------------------------------------
   Rat Stand3 - sitting on haunches
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand3 [] =
+static mh2frame_t rat_frames_stand3 [] =
 {
 	{FRAME_haunch12,	NULL, 0, 0, 0, rat_ai_stand, 0, ratchatter},
 	{FRAME_haunch13,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -262,7 +262,7 @@ mmove_t rat_move_stand3 = {FRAME_haunch12, FRAME_haunch18, rat_frames_stand3, ra
 /*----------------------------------------------------------------------
   Rat Stand2 - rising up to sit on haunches
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand2 [] =
+static mh2frame_t rat_frames_stand2 [] =
 {
 	{FRAME_haunch1,	NULL, 0, 0, 0, rat_ai_stand, 0, NULL},
 	{FRAME_haunch2,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -280,7 +280,7 @@ mmove_t rat_move_stand2 = {FRAME_haunch1, FRAME_haunch10, rat_frames_stand2, rat
 /*----------------------------------------------------------------------
   Rat Standing -
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_stand1 [] =
+static mh2frame_t rat_frames_stand1 [] =
 {
 	{FRAME_idle1,	NULL, 0, 0, 0, rat_ai_stand, 0, ratchatter},
 	{FRAME_idle2,	NULL, 0, 0, 0, NULL/*ai_stand*/, 0, NULL},
@@ -297,7 +297,7 @@ mmove_t rat_move_stand1 = {FRAME_idle1, FRAME_idle8, rat_frames_stand1, rat_stan
 /*----------------------------------------------------------------------
   Rat Watch2 - Stand up and hiss then go back to all fours
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_watch2 [] =
+static mh2frame_t rat_frames_watch2 [] =
 {
 	{FRAME_hiss1,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hiss2,	NULL, 0, 0, 0, NULL, 0, NULL},
@@ -318,7 +318,7 @@ mmove_t rat_move_watch2 = {FRAME_hiss1, FRAME_hiss13, rat_frames_watch2, rat_eat
 /*----------------------------------------------------------------------
   Rat Hiss 1 - Hiss while on all fours
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_watch1 [] =
+static mh2frame_t rat_frames_watch1 [] =
 {
 	{FRAME_hiss14,	NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hiss15,	NULL, 0, 0, 0, NULL, 0, rathiss},
@@ -342,7 +342,7 @@ mmove_t rat_move_watch1 = {FRAME_hiss14, FRAME_hiss29, rat_frames_watch1, rat_ea
 /*----------------------------------------------------------------------
   Rat Eat3 - Bite and pull back a little
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_eat3 [] =
+static mh2frame_t rat_frames_eat3 [] =
 {
 	{FRAME_eat9,		NULL, 0, 0, 0, rat_ai_eat, 0, NULL},
 	{FRAME_eat10,	NULL, 0, 0, 0, NULL/*rat_ai_eat*/, 0, NULL},
@@ -354,7 +354,7 @@ mmove_t rat_move_eat3 = {FRAME_eat9, FRAME_eat12, rat_frames_eat3, rat_eatorder}
 /*----------------------------------------------------------------------
   Rat Eat2 - Bite low and tear up
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_eat2 [] =
+static mh2frame_t rat_frames_eat2 [] =
 {
 	{FRAME_eat12,	NULL, 0, 0, 0, rat_ai_eat, 0, NULL},
 	{FRAME_eat13,	NULL, 0, 0, 0, NULL/*rat_ai_eat*/, 0, NULL},
@@ -375,7 +375,7 @@ mmove_t rat_move_eat2 = {FRAME_eat12, FRAME_eat24, rat_frames_eat2, rat_eatorder
 /*----------------------------------------------------------------------
   Rat Eat1 - Bite down low
 -----------------------------------------------------------------------*/
-static mframe_t rat_frames_eat1 [] =
+static mh2frame_t rat_frames_eat1 [] =
 {
 	{FRAME_eat1,	NULL, 0, 0, 0, rat_ai_eat, 0, NULL},
 	{FRAME_eat2,	NULL, 0, 0, 0, NULL/*rat_ai_eat*/, 0, NULL},

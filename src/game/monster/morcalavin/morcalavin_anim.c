@@ -6,7 +6,7 @@
 #include "morcalavin.h"
 #include "morcalavin_anim.h"
 
-static mframe_t morcalavin_frames_float[] =
+static mh2frame_t morcalavin_frames_float[] =
 {
 	{FRAME_fltidl1, NULL, 0, 0, 0, mork_ai_hover, 60, NULL},
 	{FRAME_fltidl2, NULL, 0, 0, 0, mork_ai_hover, 59, NULL},
@@ -26,7 +26,7 @@ static mframe_t morcalavin_frames_float[] =
 };
 mmove_t morcalavin_move_float = {FRAME_fltidl1, FRAME_fltidl15, morcalavin_frames_float, morcalavin_idle};
 
-static mframe_t morcalavin_frames_hurtidle[] =
+static mh2frame_t morcalavin_frames_hurtidle[] =
 {
 	{FRAME_hrtidl1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hrtidl2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -48,7 +48,7 @@ static mframe_t morcalavin_frames_hurtidle[] =
 };
 mmove_t morcalavin_move_hurtidle = {FRAME_hrtidl1, FRAME_hrtidl17, morcalavin_frames_hurtidle, morcalavin_getup};
 
-static mframe_t morcalavin_frames_attack1[] =
+static mh2frame_t morcalavin_frames_attack1[] =
 {
 	{FRAME_ataka1, NULL,				0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_ataka2, NULL,				0, 0, 0, ai_charge, 0, NULL},
@@ -68,7 +68,7 @@ mmove_t morcalavin_move_attack1 = {FRAME_ataka1, FRAME_ataka13, morcalavin_frame
 
 //Attack 2
 
-static mframe_t morcalavin_frames_attack2[] =
+static mh2frame_t morcalavin_frames_attack2[] =
 {
 	{FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -96,7 +96,7 @@ static mframe_t morcalavin_frames_attack2[] =
 };
 mmove_t morcalavin_move_attack2 = {FRAME_atakb1, FRAME_atakb17, morcalavin_frames_attack2, morcalavin_fade_out};
 
-static mframe_t morcalavin_frames_attack2b[] =
+static mh2frame_t morcalavin_frames_attack2b[] =
 {
 	{FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_atakb2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -119,7 +119,7 @@ static mframe_t morcalavin_frames_attack2b[] =
 mmove_t morcalavin_move_attack2b = {FRAME_atakb1, FRAME_atakb17, morcalavin_frames_attack2b, morcalavin_pause};
 //Attack 3
 
-static mframe_t morcalavin_frames_attack3[] =
+static mh2frame_t morcalavin_frames_attack3[] =
 {
 	{FRAME_atakc1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_atakc2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -146,7 +146,7 @@ static mframe_t morcalavin_frames_attack3[] =
 mmove_t morcalavin_move_attack3 = {FRAME_atakc1, FRAME_atakc21, morcalavin_frames_attack3, morcalavin_pause};
 
 
-static mframe_t morcalavin_frames_def1[] =
+static mh2frame_t morcalavin_frames_def1[] =
 {
 	{FRAME_defnsa1,	  NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_defnsa2,	  NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -173,7 +173,7 @@ static mframe_t morcalavin_frames_def1[] =
 };
 mmove_t morcalavin_move_def1 = {FRAME_defnsa1, FRAME_defnsa21, morcalavin_frames_def1, morcalavin_pause};
 
-static mframe_t morcalavin_frames_def2[] =
+static mh2frame_t morcalavin_frames_def2[] =
 {
 	{FRAME_defnsb1,	 NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_defnsb2,	 NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -195,7 +195,7 @@ static mframe_t morcalavin_frames_def2[] =
 };
 mmove_t morcalavin_move_def2 = {FRAME_defnsb1, FRAME_defnsb17, morcalavin_frames_def2, morcalavin_pause};
 
-static mframe_t morcalavin_frames_walk[] =
+static mh2frame_t morcalavin_frames_walk[] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, mork_ai_run, 6, NULL},
 	{FRAME_walk2, NULL, 0, 0, 0, mork_ai_run, 8, NULL},
@@ -212,7 +212,7 @@ static mframe_t morcalavin_frames_walk[] =
 };
 mmove_t morcalavin_move_walk = {FRAME_walk1, FRAME_walk12, morcalavin_frames_walk, morcalavin_pause};
 
-static mframe_t morcalavin_frames_fly[] =
+static mh2frame_t morcalavin_frames_fly[] =
 {
 	{FRAME_fltmve1, NULL, 0, 0, 0, mork_ai_run, 16, morcalavin_rush_sound},
 	{FRAME_fltmve2, NULL, 0, 0, 0, mork_ai_run, 24, NULL},
@@ -232,7 +232,7 @@ static mframe_t morcalavin_frames_fly[] =
 };
 mmove_t morcalavin_move_fly = {FRAME_fltmve1, FRAME_fltmve15, morcalavin_frames_fly, morcalavin_pause};
 
-static mframe_t morcalavin_frames_getup[] =
+static mh2frame_t morcalavin_frames_getup[] =
 {
 	{FRAME_getupa1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_getupa2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -251,7 +251,7 @@ static mframe_t morcalavin_frames_getup[] =
 };
 mmove_t morcalavin_move_getup = {FRAME_getupa1, FRAME_getupa14, morcalavin_frames_getup, morcalavin_retort};
 
-static mframe_t morcalavin_frames_retort[] =
+static mh2frame_t morcalavin_frames_retort[] =
 {
 	{FRAME_getupb1,	 NULL, 0, 0, 0, mork_ai_hover, 120, NULL},
 	{FRAME_getupb2,	 NULL, 0, 0, 0, mork_ai_hover, 120, NULL},
@@ -290,7 +290,7 @@ static mframe_t morcalavin_frames_retort[] =
 };
 mmove_t morcalavin_move_retort = {FRAME_getupb1, FRAME_getupb1 + 33, morcalavin_frames_retort, morcalavin_end_retort};
 
-static mframe_t morcalavin_frames_fall[] =
+static mh2frame_t morcalavin_frames_fall[] =
 {
 	{FRAME_knkdwn1, NULL, 0, 0, 0, ai_move, -8, NULL},
 	{FRAME_knkdwn2, NULL, 0, 0, 0, ai_move, -8, NULL},
@@ -316,7 +316,7 @@ static mframe_t morcalavin_frames_fall[] =
 };
 mmove_t morcalavin_move_fall = {FRAME_knkdwn1, FRAME_knkdwn21, morcalavin_frames_fall, morcalavin_hurtidle};
 
-static mframe_t morcalavin_frames_glide[] =
+static mh2frame_t morcalavin_frames_glide[] =
 {
 	{FRAME_fltmve1, NULL, 0, 0, 0, mork_ai_run, 6, NULL},
 	{FRAME_fltmve2, NULL, 0, 0, 0, mork_ai_run, 8, NULL},
@@ -336,7 +336,7 @@ static mframe_t morcalavin_frames_glide[] =
 };
 mmove_t morcalavin_move_glide = {FRAME_fltmve1, FRAME_fltmve15, morcalavin_frames_glide, morcalavin_pause};
 
-static mframe_t morcalavin_frames_tracking_attack1[] =
+static mh2frame_t morcalavin_frames_tracking_attack1[] =
 {
 	{FRAME_defnsb1,	 NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_defnsb2,	 NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -358,7 +358,7 @@ static mframe_t morcalavin_frames_tracking_attack1[] =
 };
 mmove_t morcalavin_move_tracking_attack1 = {FRAME_defnsb1, FRAME_defnsb17, morcalavin_frames_tracking_attack1, morcalavin_pause};
 
-static mframe_t morcalavin_frames_ground_attack[] =
+static mh2frame_t morcalavin_frames_ground_attack[] =
 {
 	{FRAME_atakb1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_atakb2,	NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -380,7 +380,7 @@ static mframe_t morcalavin_frames_ground_attack[] =
 };
 mmove_t morcalavin_move_ground_attack = {FRAME_atakb1, FRAME_atakb17, morcalavin_frames_ground_attack, morcalavin_pause};
 
-static mframe_t morcalavin_frames_attack4[] =
+static mh2frame_t morcalavin_frames_attack4[] =
 {
 	{FRAME_defnsa1,	NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_defnsa2,	NULL, 0, 0, 0, ai_charge, 0, NULL},

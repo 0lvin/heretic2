@@ -12,7 +12,7 @@
 #include "priestess2.h"
 #include "../ai.h"
 
-static mframe_t priestess2_frames_c_action1[] =
+static mh2frame_t priestess2_frames_c_action1[] =
 {
 	{FRAME_hpod1, ai_c_move, 1, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod2, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -45,7 +45,7 @@ static mframe_t priestess2_frames_c_action1[] =
 mmove_t priestess2_move_c_action1 = {FRAME_hpod1, FRAME_hpod27, priestess2_frames_c_action1, ai_c_cycleend};
 
 
-static mframe_t priestess2_frames_c_action2[] =
+static mh2frame_t priestess2_frames_c_action2[] =
 {
 	{FRAME_hpod28, ai_c_move, 1, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod29, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -62,7 +62,7 @@ static mframe_t priestess2_frames_c_action2[] =
 mmove_t priestess2_move_c_action2 = {FRAME_hpod28, FRAME_hpod38, priestess2_frames_c_action2, ai_c_cycleend};
 
 
-static mframe_t priestess2_frames_c_action3[] =
+static mh2frame_t priestess2_frames_c_action3[] =
 {
 	{FRAME_hpod39, ai_c_move, 1, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod40, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -167,7 +167,7 @@ static mframe_t priestess2_frames_c_action3[] =
 mmove_t priestess2_move_c_action3 = {FRAME_hpod39, FRAME_hpod137, priestess2_frames_c_action3, ai_c_cycleend};
 
 
-static mframe_t priestess2_frames_c_action4[] =
+static mh2frame_t priestess2_frames_c_action4[] =
 {
 	{FRAME_hpod138, ai_c_move, 1, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod139, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -237,7 +237,7 @@ static mframe_t priestess2_frames_c_action4[] =
 mmove_t priestess2_move_c_action4 = {FRAME_hpod138, FRAME_hpod201, priestess2_frames_c_action4, ai_c_cycleend};
 
 
-static mframe_t priestess2_frames_c_action5[] =
+static mh2frame_t priestess2_frames_c_action5[] =
 {
 	{FRAME_hpod202, ai_c_move, 1, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod203, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -342,7 +342,7 @@ static mframe_t priestess2_frames_c_action5[] =
 mmove_t priestess2_move_c_action5 = {FRAME_hpod202, FRAME_hpod300, priestess2_frames_c_action5, ai_c_cycleend};
 
 
-static mframe_t priestess2_frames_c_action6[] =
+static mh2frame_t priestess2_frames_c_action6[] =
 {
 	{FRAME_hpod301, ai_c_move, 1, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod302, ai_c_move, 2, 0, 0, NULL, 0, NULL},
@@ -395,7 +395,7 @@ static mframe_t priestess2_frames_c_action6[] =
 };
 mmove_t priestess2_move_c_action6 = {FRAME_hpod301, FRAME_hpod348, priestess2_frames_c_action6, ai_c_cycleend};
 
-static mframe_t priestess2_frames_c_action7[] =
+static mh2frame_t priestess2_frames_c_action7[] =
 {
 	{FRAME_hpod349, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod350, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -523,7 +523,7 @@ static mframe_t priestess2_frames_c_action7[] =
 mmove_t priestess2_move_c_action7 = {FRAME_hpod349, FRAME_hpod470, priestess2_frames_c_action7, ai_c_cycleend};
 
 
-static mframe_t priestess2_frames_c_idle1[] =
+static mh2frame_t priestess2_frames_c_idle1[] =
 {
 	{FRAME_hpod1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hpod1, ai_c_move, 0, 0, 0, NULL, 0, NULL},

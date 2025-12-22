@@ -22,7 +22,7 @@
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/
-static mframe_t siernan2_frames_c_action1 [] =
+static mh2frame_t siernan2_frames_c_action1 [] =
 {
 	{FRAME_Minions1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -161,7 +161,7 @@ mmove_t siernan2_move_c_action1 = {FRAME_Minions1, FRAME_Minions130, siernan2_fr
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/
-static mframe_t siernan2_frames_c_action2 [] =
+static mh2frame_t siernan2_frames_c_action2 [] =
 {
 	{FRAME_Minions1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
@@ -290,7 +290,7 @@ mmove_t siernan2_move_c_action2 = {FRAME_Minions1, FRAME_Minions120, siernan2_fr
 /*----------------------------------------------------------------------
   Siernan
 -----------------------------------------------------------------------*/
-static mframe_t siernan2_frames_c_idle1 [] =
+static mh2frame_t siernan2_frames_c_idle1 [] =
 {
 	{FRAME_Minions1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions1, ai_c_move, 0, 0, 0, NULL, 0, NULL},

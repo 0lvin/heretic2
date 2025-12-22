@@ -16,7 +16,7 @@
 // Stand1 - Laid down, resting, still on the floor.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesStand1[]=
+static mh2frame_t GkrokonFramesStand1[]=
 {
 	{FRAME_bwait1,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
 	{FRAME_bwait2,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
@@ -39,7 +39,7 @@ mmove_t GkrokonMoveStand1 = {FRAME_bwait1, FRAME_bwait14, GkrokonFramesStand1, G
 // Stand2 - Getting up off the floor.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesStand2[]=
+static mh2frame_t GkrokonFramesStand2[]=
 {
 	{FRAME_birth1,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
 	{FRAME_birth2,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
@@ -60,7 +60,7 @@ mmove_t GkrokonMoveStand2 = {FRAME_birth1, FRAME_birth12, GkrokonFramesStand2, G
 // Stand3 - Standing fairly still, waiting.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesStand3[]=
+static mh2frame_t GkrokonFramesStand3[]=
 {
 	{FRAME_wait1,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
 	{FRAME_wait2,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
@@ -77,7 +77,7 @@ mmove_t GkrokonMoveStand3 = {FRAME_wait1, FRAME_wait8, GkrokonFramesStand3, Gkro
 // Stand4 - Settling down onto the floor.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesStand4[]=
+static mh2frame_t GkrokonFramesStand4[]=
 {
 	{FRAME_birth5,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
 	{FRAME_birth4,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
@@ -91,7 +91,7 @@ mmove_t GkrokonMoveStand4 = {FRAME_birth5, FRAME_birth5 + 4, GkrokonFramesStand4
 // Crouch1 - Crouched down on the floor (stalking enemy).
 // ****************************************************************************
 
-static mframe_t GkrokonFramesCrouch1[]=
+static mh2frame_t GkrokonFramesCrouch1[]=
 {
 	{FRAME_bwait1,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
 	{FRAME_bwait2,	NULL, 0, 0, 0, beetle_ai_stand,	0,	NULL},
@@ -114,7 +114,7 @@ mmove_t GkrokonMoveCrouch1 = {FRAME_bwait1, FRAME_bwait14, GkrokonFramesCrouch1,
 // Crouch2 - Getting up off the floor from crouching (stalking enemy).
 // ****************************************************************************
 
-static mframe_t GkrokonFramesCrouch2[]=
+static mh2frame_t GkrokonFramesCrouch2[]=
 {
 	{FRAME_birth1,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_birth2,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -127,7 +127,7 @@ mmove_t GkrokonMoveCrouch2 = {FRAME_birth1, FRAME_birth4, GkrokonFramesCrouch2, 
 // Crouch3 - Settling down into crouching position (stalking enemy).
 // ****************************************************************************
 
-static mframe_t GkrokonFramesCrouch3[]=
+static mh2frame_t GkrokonFramesCrouch3[]=
 {
 	{FRAME_birth4,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_birth3,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -140,7 +140,7 @@ mmove_t GkrokonMoveCrouch3 = {FRAME_birth1, FRAME_birth4, GkrokonFramesCrouch3, 
 // Walk1 - A leisurely ambling gait.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesWalk1[]=
+static mh2frame_t GkrokonFramesWalk1[]=
 {
 	{FRAME_walkB1,	NULL, 0, 0, 0, beetle_ai_stand,	6,	NULL},
 	{FRAME_walkB2,	NULL, 0, 0, 0, beetle_ai_stand,	7,	NULL},
@@ -157,7 +157,7 @@ mmove_t GkrokonMoveWalk1 = {FRAME_walkB1, FRAME_walkB8, GkrokonFramesWalk1, Gkro
 // Run1 - A galloping run.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesRun1[]=
+static mh2frame_t GkrokonFramesRun1[]=
 {
 	{FRAME_gallop1,	NULL, 0, 0, 0, ai_run,	16,	NULL},
 	{FRAME_gallop2,	NULL, 0, 0, 0, ai_run,	24,	NULL},
@@ -172,7 +172,7 @@ mmove_t GkrokonMoveRun1 = {FRAME_gallop1, FRAME_gallop6, GkrokonFramesRun1, Gkro
 // Run2 - A skittering, insectlike run.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesRun2[]=
+static mh2frame_t GkrokonFramesRun2[]=
 {
 	{FRAME_skittr1,	NULL, 0, 0, 0, ai_run,	12,	NULL},
 	{FRAME_skittr2,	NULL, 0, 0, 0, ai_run,	12,	NULL},
@@ -181,7 +181,7 @@ static mframe_t GkrokonFramesRun2[]=
 };
 mmove_t GkrokonMoveRun2 = {FRAME_skittr1, FRAME_skittr4, GkrokonFramesRun2, GkrokonPause};//GkrokonOrderRun};
 
-static mframe_t GkrokonFramesRunAway[]=
+static mh2frame_t GkrokonFramesRunAway[]=
 {
 	{FRAME_skittr4,	gkrokonSound, CHAN_VOICE, SND_FLEE, ATTN_NORM, ai_run,	-14,	NULL},
 	{FRAME_skittr3,	NULL, 0, 0, 0, ai_run,	-16,	NULL},
@@ -198,7 +198,7 @@ mmove_t GkrokonMoveRunAway = {FRAME_skittr1, FRAME_skittr1 + 7, GkrokonFramesRun
 // Jump1 - Jumping.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesJump1[]=
+static mh2frame_t GkrokonFramesJump1[]=
 {
 	{FRAME_jump1,	gkrokonSound, CHAN_VOICE, SND_ANGRY, ATTN_NORM, NULL,	0,	NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -215,7 +215,7 @@ static mframe_t GkrokonFramesJump1[]=
 };
 mmove_t GkrokonMoveJump1 = {FRAME_jump1, FRAME_jump1 + 11, GkrokonFramesJump1, GkrokonPause}; //GkrokonOrderRun};
 
-static mframe_t GkrokonFramesForcedJump[]=
+static mh2frame_t GkrokonFramesForcedJump[]=
 {
 	{FRAME_jump1,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_jump2,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -235,7 +235,7 @@ mmove_t GkrokonMoveForcedJump = {FRAME_jump1, FRAME_jump1 + 11, GkrokonFramesFor
 // ****************************************************************************
 // GkrokonFramesMeleeAttack1 - A bite attack on my enemy.
 // ****************************************************************************
-static mframe_t GkrokonFramesMeleeAttack1[]=
+static mh2frame_t GkrokonFramesMeleeAttack1[]=
 {
 	{FRAME_latack1,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_latack2,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -248,7 +248,7 @@ static mframe_t GkrokonFramesMeleeAttack1[]=
 };
 mmove_t GkrokonMoveMeleeAttack1 = {FRAME_latack1, FRAME_latack8, GkrokonFramesMeleeAttack1, GkrokonPause};//GkrokonOrderStand};
 
-static mframe_t GkrokonFramesMeleeAttack2[]=
+static mh2frame_t GkrokonFramesMeleeAttack2[]=
 {
 	{FRAME_ratack1,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_ratack2,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -265,7 +265,7 @@ mmove_t GkrokonMoveMeleeAttack2 = {FRAME_ratack1, FRAME_ratack8, GkrokonFramesMe
 // GkrokonFramesMissileAttack1 - Firing spoo-goo from spoo launcher.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesMissileAttack1[]=
+static mh2frame_t GkrokonFramesMissileAttack1[]=
 {
 	{FRAME_spoo1,	NULL, 0, 0, 0, ai_charge,	0,	NULL},
 	{FRAME_spoo2,	NULL, 0, 0, 0, ai_charge,	0,	NULL},
@@ -275,7 +275,7 @@ static mframe_t GkrokonFramesMissileAttack1[]=
 };
 mmove_t GkrokonMoveMissileAttack1 = {FRAME_spoo1, FRAME_spoo5, GkrokonFramesMissileAttack1, GkrokonPause};//GkrokonOrderRun};
 
-static mframe_t GkrokonFramesMissileAttack2[]=
+static mh2frame_t GkrokonFramesMissileAttack2[]=
 {
 	{FRAME_spoo1,	NULL, 0, 0, 0, ai_charge,	0,	NULL},
 	{FRAME_spoo2,	NULL, 0, 0, 0, ai_charge,	0,	NULL},
@@ -289,7 +289,7 @@ mmove_t GkrokonMoveMissileAttack2 = {FRAME_spoo1, FRAME_spoo5, GkrokonFramesMiss
 // GkrokonFramesEat1 - Going from ready to eating.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesEat1[]=
+static mh2frame_t GkrokonFramesEat1[]=
 {
 	{FRAME_eat1,	NULL, 0, 0, 0, ai_eat,	0,	NULL},
 	{FRAME_eat2,	NULL, 0, 0, 0, ai_eat,	0,	NULL},
@@ -302,7 +302,7 @@ mmove_t GkrokonMoveEat1 = {FRAME_eat1, FRAME_eat4, GkrokonFramesEat1, GkrokonPau
 // GkrokonFramesEat2 - The eat cycle.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesEat2[]=
+static mh2frame_t GkrokonFramesEat2[]=
 {
 	{FRAME_eat5,	NULL, 0, 0, 0, ai_eat,	0,	NULL},
 	{FRAME_eat6,	NULL, 0, 0, 0, ai_eat,	0,	NULL},
@@ -316,7 +316,7 @@ mmove_t GkrokonMoveEat2 = {FRAME_eat5, FRAME_eat9, GkrokonFramesEat2, GkrokonPau
 // GkrokonFramesEat3 - Going from eating to ready.
 // ****************************************************************************
 
-static mframe_t GkrokonFramesEat3[]=
+static mh2frame_t GkrokonFramesEat3[]=
 {
 	{FRAME_EATTRANS1,	NULL, 0, 0, 0, ai_eat,	0,	NULL},
 	{FRAME_EATTRANS2,	NULL, 0, 0, 0, ai_eat,	0,	NULL},
@@ -329,7 +329,7 @@ mmove_t GkrokonMoveEat3 = {FRAME_EATTRANS1, FRAME_EATTRANS4, GkrokonFramesEat3, 
 // Pain1 -
 // ****************************************************************************
 
-static mframe_t GkrokonFramesPain1[]=
+static mh2frame_t GkrokonFramesPain1[]=
 {
 	{FRAME_pain1,	NULL, 0, 0, 0, ai_charge,	-1,	NULL},
 	{FRAME_pain2,	NULL, 0, 0, 0, ai_charge,	-1,	NULL},
@@ -346,7 +346,7 @@ mmove_t GkrokonMovePain1 = {FRAME_pain1, FRAME_pain8, GkrokonFramesPain1, Gkroko
 // Death1 -
 // ****************************************************************************
 
-mframe_t GkrokonFramesDeath1[]=
+static mh2frame_t GkrokonFramesDeath1[]=
 {
 	{FRAME_death1,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_death2,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -377,7 +377,7 @@ mframe_t GkrokonFramesDeath1[]=
 };
 mmove_t GkrokonMoveDeath1 = {FRAME_death1, FRAME_death26, GkrokonFramesDeath1, GkrokonDead};
 
-static mframe_t GkrokonStartHop[]=
+static mh2frame_t GkrokonStartHop[]=
 {
 	{FRAME_birth5,	NULL, 0, 0, 0, NULL,	0,	NULL},
 	{FRAME_birth4,	NULL, 0, 0, 0, NULL,	0,	NULL},
@@ -392,7 +392,7 @@ static mframe_t GkrokonStartHop[]=
 };
 mmove_t GkrokonMoveHop1 = {FRAME_birth5, FRAME_birth12, GkrokonStartHop, GkrokonPause};
 
-static mframe_t GkrokonFramesDelay[]=
+static mh2frame_t GkrokonFramesDelay[]=
 {
 	{FRAME_bwait1,	NULL, 0, 0, 0, NULL, 0,	GkrokonPause},
 	{FRAME_bwait2,	NULL, 0, 0, 0, NULL, 0,	GkrokonPause},
