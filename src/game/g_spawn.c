@@ -1220,6 +1220,13 @@ ED_ParseEdict(char *data, edict_t *ent)
 		}
 
 		ED_ParseField(keyname, com_token, ent);
+
+		/* Enable brush model animation only if provided */
+		if (!strcmp(keyname, "bmodel_anim_start") ||
+			!strcmp(keyname, "bmodel_anim_end"))
+		{
+			ent->bmodel_anim.enabled = true;
+		}
 	}
 
 	if (!init)
@@ -1622,6 +1629,9 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 	}
 
 	AI_NewMap();//JABot
+
+	/* setup server-side shadow lights */
+	setup_shadow_lights();
 }
 
 /* =================================================================== */
@@ -3133,6 +3143,8 @@ GetDynamicItems(int *count)
 
 	for (i = 0; i < ndynamicentities; i++)
 	{
+		char* classname;
+
 		if (strncmp(dynamicentities[i].classname, "item_", 5) &&
 			strncmp(dynamicentities[i].classname, "weapon_", 7) &&
 			strncmp(dynamicentities[i].classname, "key_", 4) &&
@@ -3154,8 +3166,24 @@ GetDynamicItems(int *count)
 			continue;
 		}
 
+		classname = dynamicentities[i].classname;
+
+		/* Fix class names to sync with ED_CallSpawn */
+		if (!strcmp(classname, "weapon_nailgun"))
+		{
+			classname = "weapon_etf_rifle";
+		}
+		else if (!strcmp(classname, "ammo_nails"))
+		{
+			classname = "ammo_flechettes";
+		}
+		else if (!strcmp(classname, "weapon_heatbeam"))
+		{
+			classname = "weapon_plasmabeam";
+		}
+
 		/* Could be dynamic item */
-		items[itemcount].classname = dynamicentities[i].classname;
+		items[itemcount].classname = classname;
 		items[itemcount].world_model = dynamicentities[i].model_path;
 		items[itemcount].pickup_name = dynamicentities[i].description;
 		itemcount++;

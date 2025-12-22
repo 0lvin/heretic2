@@ -2018,7 +2018,17 @@ button_done(edict_t *self)
 	}
 
 	self->moveinfo.state = STATE_BOTTOM;
-	self->s.frame = 0;
+
+	if (!self->bmodel_anim.enabled)
+	{
+		self->s.frame = 0;
+		// self->s.effects &= ~EF_ANIM23;
+		// self->s.effects |= EF_ANIM01;
+	}
+	else
+	{
+		self->bmodel_anim.alternate = false;
+	}
 }
 
 void
@@ -2050,6 +2060,17 @@ button_wait(edict_t *self)
 	}
 
 	self->moveinfo.state = STATE_TOP;
+
+	if (!self->bmodel_anim.enabled)
+	{
+		// self->s.effects &= ~EF_ANIM01;
+		// self->s.effects |= EF_ANIM23;
+	}
+	else
+	{
+		self->bmodel_anim.alternate = true;
+	}
+
 	G_UseTargets(self, self->activator);
 	self->s.frame = 1;
 
@@ -2243,6 +2264,11 @@ SP_func_button(edict_t *ent)
 	VectorMA(ent->pos1, dist, ent->movedir, ent->pos2);
 
 	ent->use = button_use;
+
+	if (!ent->bmodel_anim.enabled)
+	{
+		// ent->s.effects |= EF_ANIM01;
+	}
 
 	if (ent->health)
 	{

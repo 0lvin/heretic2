@@ -572,14 +572,12 @@ guardian_dead(edict_t *self)
 
 	for (n = 0; n < 2; n++)
 	{
-		ThrowGib(self, "models/objects/gibs/sm_meat/tris.md2",
-				125, GIB_ORGANIC);
+		ThrowGib(self, NULL, 125, GIB_ORGANIC);
 	}
 
 	for (n = 0; n < 4; n++)
 	{
-		ThrowGib(self, "models/objects/gibs/sm_metal/tris.md2",
-				125, GIB_METALLIC);
+		ThrowGib(self, NULL, 125, GIB_METALLIC);
 	}
 
 	for (n = 0; n < 6; n++)

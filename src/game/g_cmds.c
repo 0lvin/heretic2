@@ -406,6 +406,13 @@ Cmd_Give_f(edict_t *ent)
 				continue;
 			}
 
+			if (!ItemHasValidModel(it))
+			{
+				gi.dprintf("Item %s does not have valid model\n",
+					it->classname ? it->classname : "<unknown>");
+				continue;
+			}
+
 			ent->client->pers.inventory[i] += 1;
 
 			if ((it->playeranimseq == ASEQ_WRRBOW_GO)||(it->playeranimseq == ASEQ_WPHBOW_GO))
@@ -494,6 +501,13 @@ Cmd_Give_f(edict_t *ent)
 
 			if (!(it->flags & IT_AMMO))
 			{
+				continue;
+			}
+
+			if (!ItemHasValidModel(it))
+			{
+				gi.dprintf("Item %s does not have valid model\n",
+					it->classname ? it->classname : "<unknown>");
 				continue;
 			}
 
@@ -705,6 +719,11 @@ Cmd_Give_f(edict_t *ent)
 
 		if (!it)
 		{
+			it = FindItemByClassname(name);
+		}
+
+		if (!it)
+		{
 			gi.cprintf(ent, PRINT_HIGH, "unknown item: %s\n", name);
 			return;
 		}
@@ -769,11 +788,38 @@ Cmd_ListItems_f(edict_t *ent)
 
 	for (i = 0; i < game.num_items; i++)
 	{
+		const char *item_type = "<unknow>";
 		it = itemlist + i;
 
-		gi.dprintf("#%d: '%s' => '%s' #%d\n",
+		if (it->flags & IT_WEAPON)
+		{
+			item_type = "weapon";
+		}
+		else if (it->flags & IT_AMMO)
+		{
+			item_type = "ammo";
+		}
+		else if (it->flags & IT_ARMOR)
+		{
+			item_type = "armor";
+		}
+		else if (it->flags & IT_KEY)
+		{
+			item_type = "key";
+		}
+		else if (it->flags & IT_POWERUP)
+		{
+			item_type = "powerup";
+		}
+		else if (it->flags & IT_TECH)
+		{
+			item_type = "tech";
+		}
+
+		gi.dprintf("#%d: '%s' '%s' %s #%d\n",
 			i, it->classname ? it->classname : "",
 			it->pickup_name ? it->pickup_name: "",
+			item_type,
 			it->quantity);
 	}
 }

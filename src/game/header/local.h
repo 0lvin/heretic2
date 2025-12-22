@@ -297,31 +297,32 @@ typedef struct
 #define IT_HEALTH 0x000000400 /* JABot */
 #define IT_FLAG	0x000000800 /* JABot */
 
-/* gitem_t->weapmodel for weapons indicates model index */
-#define WEAP_BLASTER 1
-#define WEAP_SHOTGUN 2
-#define WEAP_SUPERSHOTGUN 3
-#define WEAP_MACHINEGUN 4
-#define WEAP_CHAINGUN 5
-#define WEAP_GRENADES 6
-#define WEAP_GRENADELAUNCHER 7
-#define WEAP_ROCKETLAUNCHER 8
-#define WEAP_HYPERBLASTER 9
-#define WEAP_RAILGUN 10
-#define WEAP_BFG 11
-#define WEAP_PHALANX 12
-#define WEAP_BOOMER 13
-#define WEAP_DISRUPTOR 14
-#define WEAP_ETFRIFLE 15
-#define WEAP_PLASMA 16
-#define WEAP_PROXLAUNCH 17
-#define WEAP_CHAINFIST 18
-#define WEAP_GRAPPLE 19
-
-//JABot[start]
-#define WEAP_NONE			0
-#define WEAP_TOTAL			20
-//JABot[end]
+/* gitem_t->weapmodel for weapons indicates model index,
+ * update MAX_CLIENTWEAPONMODELS on client side if changed */
+typedef enum
+{
+	WEAP_NONE,
+	WEAP_BLASTER,
+	WEAP_SHOTGUN,
+	WEAP_SUPERSHOTGUN,
+	WEAP_MACHINEGUN,
+	WEAP_CHAINGUN,
+	WEAP_GRENADES,
+	WEAP_GRENADELAUNCHER,
+	WEAP_ROCKETLAUNCHER,
+	WEAP_HYPERBLASTER,
+	WEAP_RAILGUN,
+	WEAP_BFG,
+	WEAP_PHALANX,
+	WEAP_BOOMER,
+	WEAP_DISRUPTOR,
+	WEAP_ETFRIFLE,
+	WEAP_PLASMA,
+	WEAP_PROXLAUNCH,
+	WEAP_CHAINFIST,
+	WEAP_GRAPPLE,
+	WEAP_TOTAL
+} weapmodel_t;
 
 typedef struct gitem_s
 {
@@ -344,7 +345,7 @@ typedef struct gitem_s
 	char *ammo;                 /* for weapons */
 	int flags;                  /* IT_* flags */
 
-	int weapmodel;              /* weapon model index (for weapons) */
+	weapmodel_t weapmodel;      /* weapon model index (for weapons) */
 
 	void *info;
 	int tag;
@@ -800,6 +801,7 @@ typedef struct
 	int body_que;                   /* dead bodies */
 
 	int power_cubes;                /* ugly necessity for coop */
+	int shadow_light_count;          /* number of shadow lights in level */
 
 	edict_t *disguise_violator;
 	int disguise_violation_framenum;
@@ -834,57 +836,81 @@ typedef struct
 
 typedef enum
 {
-	MOD_UNKNOWN			,
+	MOD_UNKNOWN,
 
-	MOD_STAFF			,
-	MOD_FIREBALL		,
-	MOD_MMISSILE		,
-	MOD_SPHERE			,
-	MOD_SPHERE_SPL		,
-	MOD_IRONDOOM		,
-	MOD_FIREWALL		,
-	MOD_STORM			,
-	MOD_PHOENIX			,
-	MOD_PHOENIX_SPL		,
-	MOD_HELLSTAFF		,
+	MOD_STAFF,
+	MOD_FIREBALL,
+	MOD_MMISSILE,
+	MOD_SPHERE,
+	MOD_SPHERE_SPL,
+	MOD_IRONDOOM,
+	MOD_FIREWALL,
+	MOD_STORM,
+	MOD_PHOENIX,
+	MOD_PHOENIX_SPL,
+	MOD_HELLSTAFF,
 
-	MOD_P_STAFF			,
-	MOD_P_FIREBALL		,
-	MOD_P_MMISSILE		,
-	MOD_P_SPHERE	 	,
-	MOD_P_SPHERE_SPL 	,
-	MOD_P_IRONDOOM		,
-	MOD_P_FIREWALL		,
-	MOD_P_STORM			,
-	MOD_P_PHOENIX	 	,
-	MOD_P_PHOENIX_SPL	,
-	MOD_P_HELLSTAFF		,
+	MOD_P_STAFF,
+	MOD_P_FIREBALL,
+	MOD_P_MMISSILE,
+	MOD_P_SPHERE	 ,
+	MOD_P_SPHERE_SPL ,
+	MOD_P_IRONDOOM,
+	MOD_P_FIREWALL,
+	MOD_P_STORM,
+	MOD_P_PHOENIX	 ,
+	MOD_P_PHOENIX_SPL,
+	MOD_P_HELLSTAFF,
 
-	MOD_KICKED			,
-	MOD_METEORS			,
-	MOD_ROR				,
-	MOD_SHIELD			,
-	MOD_CHICKEN			,
-	MOD_TELEFRAG		,
-	MOD_WATER			,
-	MOD_SLIME			,
-	MOD_LAVA			,
-	MOD_CRUSH			,
-	MOD_FALLING			,
-	MOD_SUICIDE			,
-	MOD_BARREL			,
-	MOD_EXIT			,
-	MOD_BURNT			,
-	MOD_BLEED			,
-	MOD_SPEAR			,
-	MOD_DIED			,
-	MOD_KILLED_SLF		,
-	MOD_DECAP			,
-	MOD_TORN			,
+	MOD_KICKED,
+	MOD_METEORS,
+	MOD_ROR,
+	MOD_SHIELD,
+	MOD_CHICKEN,
+	MOD_TELEFRAG,
+	MOD_WATER,
+	MOD_SLIME,
+	MOD_LAVA,
+	MOD_CRUSH,
+	MOD_FALLING,
+	MOD_SUICIDE,
+	MOD_BARREL,
+	MOD_EXIT,
+	MOD_BURNT,
+	MOD_BLEED,
+	MOD_SPEAR,
+	MOD_DIED,
+	MOD_KILLED_SLF,
+	MOD_DECAP,
+	MOD_TORN,
 	MOD_MAX
 } MOD_t;
 
 #define MOD_FRIENDLY_FIRE	0x8000000
+
+/* shadow light data structures */
+typedef enum
+{
+	SHADOW_LIGHT_POINT = 0,
+	SHADOW_LIGHT_CONE  = 1
+} shadow_light_type_t;
+
+typedef struct
+{
+	int lighttype; /* shadow_light_type_t */
+	float radius;
+	int resolution;
+	float intensity;
+	float fade_start;
+	float fade_end;
+	int lightstyle;
+	float coneangle;
+	float conedirection[3];
+} shadow_light_data_t;
+
+/* shadow light helpers */
+void setup_shadow_lights(void);
+void G_LoadShadowLights(void);
 
 /* spawn_temp_t is only used to hold entity field values that
    can be set from the editor, but aren't actualy present/
@@ -922,6 +948,15 @@ typedef struct
 	char *goals;
 	int effects;
 	int renderfx;
+	/* shadow/light specific spawn fields */
+	float sl_radius;           /* shadow map resolution */
+	int sl_resolution;         /* shadow map resolution */
+	float sl_intensity;        /* shadow light intensity */
+	float sl_fade_start;       /* start fade distance */
+	float sl_fade_end;         /* end fade distance */
+	int sl_lightstyle;         /* index to bind lightstyle */
+	float sl_coneangle;        /* _cone key for spotlights */
+	char *sl_lightstyletarget; /* target used to bind a lightstyle */
 
 	/* Addional fields for models */
 	vec3_t scale;
@@ -1375,6 +1410,7 @@ void droptofloor(edict_t *ent);
 void FixEntityPosition(edict_t *ent);
 void PrecacheItem(gitem_t *it);
 void InitItems(void);
+qboolean ItemHasValidModel(gitem_t *item);
 void SetItemNames(void);
 gitem_t *FindItem(const char *pickup_name);
 gitem_t *FindItemByClassname(const char *classname);
@@ -2451,6 +2487,32 @@ typedef struct {
 	float end_dist_off;
 } edicthfog_t;
 
+typedef enum
+{
+	BMODEL_ANIM_FORWARDS,
+	BMODEL_ANIM_BACKWARDS,
+	BMODEL_ANIM_RANDOM
+} bmodel_animstyle_t;
+
+typedef struct
+{
+	/* range, inclusive */
+	int start, end;
+	bmodel_animstyle_t style;
+	int speed; /* in milliseconds */
+	qboolean nowrap;
+
+	int alt_start, alt_end;
+	bmodel_animstyle_t alt_style;
+	int alt_speed; /* in milliseconds */
+	qboolean alt_nowrap;
+
+	/* game-only */
+	bool enabled;
+	bool alternate, currently_alternate;
+	float next_tick;
+} bmodel_anim_t;
+
 struct edict_s
 {
 	entity_state_t s;
@@ -2507,6 +2569,7 @@ struct edict_s
 	char *deathtarget;
 	char *pathtargetname;
 	char *combattarget;
+	char *itemtarget; /* extra target string used by dynamic lights */
 	edict_t *target_ent;
 
 	float speed, accel, decel;
@@ -2622,13 +2685,21 @@ struct edict_s
 	edictfog_t fog;
 	edicthfog_t heightfog;
 
+	/* Custom On/Off light */
+	const char *style_on;
+	const char *style_off;
+
+	/* brush model animation */
+	bmodel_anim_t bmodel_anim;
+
 	/* Third person view */
 	int chasedist1;
 	int chasedist2;
 
 	/* jabot */
 	ai_handle_t *ai;
-	qboolean is_swim;	//AI_CategorizePosition
+	/* AI_CategorizePosition */
+	qboolean is_swim;
 	qboolean is_step;
 	qboolean is_ladder;
 	qboolean was_swim;

@@ -1648,4 +1648,7 @@ ReadLevel(const char *filename)
 			}
 		}
 	}
+
+	/* reload shadow light data from configstrings */
+	G_LoadShadowLights();
 }

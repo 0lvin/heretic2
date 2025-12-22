@@ -426,6 +426,7 @@ extern void dying_elf_pain (edict_t *self, edict_t *other, float kick, int damag
 extern void dying_elf_reach_anim(edict_t *self) ;
 extern void dying_elf_sounds (edict_t *self, int type) ;
 extern void dying_elf_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf) ;
+extern void dynamic_light_use (edict_t * self, edict_t * other , edict_t * activator ) ;
 extern void dynamicspawn_think ( edict_t *self );
 extern void dynamicspawn_touch ( edict_t * ent , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void enfbolt_touch ( edict_t * self , edict_t * other , cplane_t * plane, csurface_t *surf);
@@ -552,8 +553,7 @@ extern void fly_vertical2 ( edict_t * self ) ;
 extern void fly_vertical ( edict_t * self ) ;
 extern void force_wall_think ( edict_t * self ) ;
 extern void force_wall_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
-extern void func_clock_format_countdown ( edict_t * self ) ;
-extern void func_clock_reset ( edict_t * self ) ;
+extern void func_animation_use ( edict_t * self ) ;
 extern void func_clock_think ( edict_t * self ) ;
 extern void func_clock_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void func_conveyor_use ( edict_t * self , edict_t * other , edict_t * activator ) ;

@@ -1712,21 +1712,19 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 		if (!self->deadflag)
 		{
 			self->client->respawn_time=level.time + 1.0;
-			self->client->ps.pmove.pm_type=PM_DEAD;
+			self->client->ps.pmove.pm_type = PM_DEAD;
 
 			// If player died in a deathmatch or coop, show scores.
-
 			Cmd_Help_f(self);
 
 			// Check if a chicken?
-
 			if (self->flags & FL_CHICKEN)
 			{
 				// We're a chicken, so die a chicken's death.
-
 				PlayerChickenDeath(self);
 				player_make_gib(self, attacker);
 				self->s.modelindex = 0;
+
 				// Won`t get sent to client if mi 0 unless flag is set
 				self->svflags |= SVF_ALWAYS_SEND;
 				self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
@@ -1827,7 +1825,7 @@ Player_GiveStartItems(edict_t *ent, const char *ptr)
 		{
 			buffer_end = ptr + strlen(ptr);
 		}
-		Q_strlcpy(buffer, ptr, Q_min(MAX_QPATH, buffer_end - ptr));
+		Q_strlcpy(buffer, ptr, Q_min(MAX_QPATH, buffer_end - ptr + 1));
 
 		curr_buf = buffer;
 		item_name = COM_Parse(&curr_buf);
@@ -2593,6 +2591,29 @@ body_die(edict_t *self, edict_t *inflictor /* unused */,
 		vec3_t point /* unused */)
 {
 	BecomeDebris(self);
+#if 0
+	int n;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (self->health < -40)
+	{
+		gi.sound(self, CHAN_BODY, gi.soundindex(
+						"misc/udeath.wav"), 1, ATTN_NORM, 0);
+
+		for (n = 0; n < 4; n++)
+		{
+			ThrowGib(self, NULL, damage, GIB_ORGANIC);
+		}
+
+		self->s.origin[2] -= 48;
+		ThrowClientHead(self, damage);
+		self->takedamage = DAMAGE_NO;
+	}
+#endif
 }
 
 void
