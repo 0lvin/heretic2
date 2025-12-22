@@ -593,7 +593,6 @@ M_CheckGround(edict_t *ent)
 
 	if (ent->velocity[2] >= 50)
 	{
-//		ent->groundentity = NULL;
 		return;
 	}
 
@@ -609,7 +608,6 @@ M_CheckGround(edict_t *ent)
 	/* check steepness */
 	if ((trace.plane.normal[2] < 0.7) && !trace.startsolid)
 	{
-//		ent->groundentity = NULL;
 		return;
 	}
 
@@ -844,14 +842,10 @@ M_droptofloor(edict_t *ent)
 		return;
 	}
 
-	if (trace.fraction == 1.0)
+	if ((trace.fraction == 1) || trace.allsolid)
 	{
-		gi.dprintf("ERROR : Object (%s) more than 256 off ground, waiting to fall\n", ent->classname);
 		return;
 	}
-
-	if (mgai_debug->value)
-		gi.dprintf("%s at %s dropped to floor at %s\n", ent->classname, vtos(ent->s.origin), vtos(trace.endpos));
 
 	VectorCopy(trace.endpos, ent->s.origin);
 
@@ -1816,13 +1810,11 @@ monster_think(edict_t *self)
 
 	M_MoveFrame(self);
 
-/*
 	if (self->linkcount != self->monsterinfo.linkcount)
 	{
 		self->monsterinfo.linkcount = self->linkcount;
 		M_CheckGround(self);
 	}
-*/
 
 	M_CatagorizePosition(self);
 	M_WorldEffects(self);
@@ -2037,7 +2029,7 @@ monster_start(edict_t *self)
 		return false;
 	}
 
-	if (deathmatch->value && !((int)sv_cheats->value & self_spawn))
+	if (deathmatch->value)
 	{
 		G_FreeEdict(self);
 		return false;
@@ -2066,10 +2058,11 @@ monster_start(edict_t *self)
 
 	self->clipmask = MASK_MONSTERSOLID;
 	if (!self->gib)
+	{
 		self->gib = GIB_ORGANIC;
+	}
 
-	// Stop the camera clipping with monsters, except the trial beast.
-
+	/* Stop the camera clipping with monsters, except the trial beast. */
 	if (self->classID != CID_TBEAST)
 	{
 		self->s.effects|=EF_CAMERA_NO_CLIP;
@@ -2137,7 +2130,6 @@ monster_start(edict_t *self)
 		}
 	}
 
-#if 0
 	/* randomize what frame they start on */
 	if (self->monsterinfo.currentmove)
 	{
@@ -2154,14 +2146,11 @@ monster_start(edict_t *self)
 
 		self->s.frame = ofs_frames + (randk() % num_frames);
 	}
-#endif
 
 	if (!self->mass)
 	{
 		self->mass = 200;
 	}
-
-	self->s.frame = 1;
 
 	self->oldenemy_debounce_time = -1;
 
@@ -2211,8 +2200,6 @@ monster_start_go(edict_t *self)
 	{
 		return;
 	}
-
-	self->nextthink = level.time + FRAMETIME;
 
 	if (self->health <= 0)
 	{
@@ -2365,6 +2352,7 @@ monster_start_go(edict_t *self)
 	}
 
 	self->think = monster_think;
+	self->nextthink = level.time + FRAMETIME;
 }
 
 void
@@ -2729,8 +2717,6 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 			//We want the full magnitude of the vector, not just drop magnitude
 			VectorCopy(other->velocity, dir);
 
-			//Do damage to the thing getting hit based on how hard the collision was
-//			T_Damage (self, other, other, dir, pos2, vec3_origin, 1 + (dropmag/FALLDAMAGE_MODIFIER), 0, DAMAGE_NO_BLOOD | DAMAGE_NO_KNOCKBACK);
 			if (!irand(0, 9))//10% chance
 			{
 				int damage;
@@ -2749,9 +2735,6 @@ void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 			//Randomly reverse those random numbers
 			if (irand(0,1))
 				VectorScale(other->velocity, -1, other->velocity);
-
-			//Let the other entity move at its velocity
-//			other->groundentity = NULL;
 		}
 	}
 }
