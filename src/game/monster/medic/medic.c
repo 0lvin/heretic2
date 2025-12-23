@@ -371,7 +371,7 @@ medic_idle(edict_t *self)
 			self->enemy->owner = self;
 			self->enemy->monsterinfo.healer = self;
 			self->monsterinfo.aiflags |= AI_MEDIC;
-			FoundTarget(self);
+			FoundTarget(self, true);
 		}
 	}
 }
@@ -407,7 +407,7 @@ medic_search(edict_t *self)
 			self->enemy->owner = self;
 			self->enemy->monsterinfo.healer = self;
 			self->monsterinfo.aiflags |= AI_MEDIC;
-			FoundTarget(self);
+			FoundTarget(self, true);
 		}
 	}
 }
@@ -617,7 +617,7 @@ medic_run(edict_t *self)
 			self->enemy->owner = self;
 			self->enemy->monsterinfo.healer = self;
 			self->monsterinfo.aiflags |= AI_MEDIC;
-			FoundTarget(self);
+			FoundTarget(self, true);
 			return;
 		}
 	}
@@ -1003,7 +1003,7 @@ medic_dodge(edict_t *self, edict_t *attacker, float eta,
 	if (!self->enemy)
 	{
 		self->enemy = attacker;
-		FoundTarget(self);
+		FoundTarget(self, true);
 	}
 
 	self->monsterinfo.currentmove = &medic_move_duck;
@@ -1256,7 +1256,7 @@ medic_cable_attack(edict_t *self)
 				(self->oldenemy->health > 0))
 			{
 				self->enemy->enemy = self->oldenemy;
-				FoundTarget(self->enemy);
+				FoundTarget(self->enemy, true);
 			}
 			else
 			{
@@ -1728,7 +1728,7 @@ medic_finish_spawn(edict_t *self)
 			(designated_enemy->health > 0))
 		{
 			ent->enemy = designated_enemy;
-			FoundTarget(ent);
+			FoundTarget(ent, true);
 		}
 		else
 		{

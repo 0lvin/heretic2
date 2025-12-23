@@ -145,7 +145,7 @@ fixbot_search(edict_t *self)
 			self->enemy = ent;
 			self->enemy->owner = self;
 			self->monsterinfo.aiflags |= AI_MEDIC;
-			FoundTarget(self);
+			FoundTarget(self, true);
 			return 1;
 		}
 	}

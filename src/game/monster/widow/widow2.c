@@ -310,7 +310,6 @@ widow2_ready_spawn(edict_t *self)
 	}
 }
 
-#if 0
 static mframe_t widow2_frames_stand[] = {
 	{ai_stand, 0, NULL}
 };
@@ -402,7 +401,6 @@ mmove_t widow2_move_attack_post_beam = {
 	widow2_frames_attack_post_beam,
 	widow2_run
 };
-#endif
 
 void
 WidowDisrupt(edict_t *self)
@@ -475,7 +473,6 @@ widow2_disrupt_reattack(edict_t *self)
 	}
 }
 
-#if 0
 static mframe_t widow2_frames_attack_disrupt[] = {
 	{ai_charge, 2, NULL},
 	{ai_charge, 2, NULL},
@@ -492,7 +489,6 @@ mmove_t widow2_move_attack_disrupt = {
 	widow2_frames_attack_disrupt,
 	widow2_run
 };
-#endif
 
 void
 Widow2SaveBeamTarget(edict_t *self)
@@ -537,7 +533,6 @@ Widow2StartSweep(edict_t *self)
 	Widow2SaveBeamTarget(self);
 }
 
-#if 0
 static mframe_t widow2_frames_spawn[] = {
 	{ai_charge, 0, NULL},
 	{ai_charge, 0, NULL},
@@ -565,7 +560,6 @@ mmove_t widow2_move_spawn = {
 	widow2_frames_spawn,
 	NULL
 };
-#endif
 
 static qboolean
 widow2_tongue_attack_ok(vec3_t start, vec3_t end, float range)
@@ -749,7 +743,6 @@ Widow2Toss(edict_t *self)
 	return;
 }
 
-#if 0
 static mframe_t widow2_frames_tongs[] = {
 	{ai_charge, 0, Widow2Tongue},
 	{ai_charge, 0, Widow2Tongue},
@@ -889,7 +882,6 @@ mmove_t widow2_move_really_dead = {
 	widow2_frames_really_dead,
 	NULL
 };
-#endif
 
 void
 widow2_start_searching(edict_t *self)
@@ -902,7 +894,6 @@ widow2_start_searching(edict_t *self)
 	self->count = 0;
 }
 
-#if 0
 void
 widow2_keep_searching(edict_t *self)
 {
@@ -921,7 +912,6 @@ widow2_keep_searching(edict_t *self)
 
 	self->monsterinfo.currentmove = &widow2_move_really_dead;
 }
-#endif
 
 void
 widow2_finaldeath(edict_t *self)
@@ -939,7 +929,6 @@ widow2_finaldeath(edict_t *self)
 	gi.linkentity(self);
 }
 
-#if 0
 void
 widow2_stand(edict_t *self)
 {
@@ -1208,7 +1197,6 @@ widow2_pain(edict_t *self, edict_t *other /* unused */, float kick, int damage)
 		}
 	}
 }
-#endif
 
 void
 widow2_dead(edict_t *self)
@@ -1246,7 +1234,6 @@ KillChildren(edict_t *self)
 	}
 }
 
-#if 0
 void
 widow2_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
 		int damage, vec3_t point /* unused */)
@@ -1315,7 +1302,6 @@ widow2_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* 
 	self->monsterinfo.invincible_framenum = 0;
 	self->monsterinfo.currentmove = &widow2_move_death;
 }
-#endif
 
 qboolean
 Widow2_CheckAttack(edict_t *self)
@@ -1480,7 +1466,6 @@ Widow2Precache(void)
 	gi.modelindex("models/monsters/blackwidow2/gib4/tris.md2");
 }
 
-#if 0
 /*
  * QUAKED monster_widow2 (1 .5 0) (-70 -70 0) (70 70 144) Ambush Trigger_Spawn Sight
  */
@@ -1551,7 +1536,6 @@ SP_monster_widow2(edict_t *self)
 	WidowCalcSlots(self);
 	walkmonster_start(self);
 }
-#endif
 
 static void
 WidowVelocityForDamage(int damage, vec3_t v)
@@ -1803,7 +1787,6 @@ ThrowMoreStuff(edict_t *self, vec3_t point)
 	}
 }
 
-#if 0
 void
 WidowExplode(edict_t *self)
 {
@@ -1940,7 +1923,6 @@ WidowExplode(edict_t *self)
 
 	self->nextthink = level.time + 0.1;
 }
-#endif
 
 void
 WidowExplosion1(edict_t *self)

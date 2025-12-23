@@ -453,7 +453,6 @@ widow_step(edict_t *self)
 	gi.sound(self, CHAN_BODY, gi.soundindex("widow/bwstep3.wav"), 1, ATTN_NORM, 0);
 }
 
-#if 0
 static mframe_t widow_frames_stand[] = {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -521,7 +520,6 @@ mmove_t widow_move_run = {
 	widow_frames_run,
 	NULL
 };
-#endif
 
 void
 widow_stepshoot(edict_t *self)
@@ -535,7 +533,6 @@ widow_stepshoot(edict_t *self)
 	WidowBlaster(self);
 }
 
-#if 0
 static mframe_t widow_frames_run_attack[] = {
 	{ai_charge, 13, widow_stepshoot},
 	{ai_charge, 11.72, WidowBlaster},
@@ -675,7 +672,6 @@ mmove_t widow_move_attack_post_blaster_l = {
 	widow_frames_attack_post_blaster_l,
 	NULL
 };
-#endif
 
 void
 WidowRail(edict_t *self)
@@ -751,7 +747,6 @@ widow_rail_done(edict_t *self)
 	self->monsterinfo.aiflags &= ~AI_MANUAL_STEERING;
 }
 
-#if 0
 static mframe_t widow_frames_attack_pre_rail[] = {
 	{ai_charge, 0, widow_start_rail},
 	{ai_charge, 0, NULL},
@@ -847,7 +842,6 @@ widow_attack_rail(edict_t *self)
 		self->monsterinfo.currentmove = &widow_move_attack_rail;
 	}
 }
-#endif
 
 void
 widow_start_spawn(edict_t *self)
@@ -871,7 +865,6 @@ widow_done_spawn(edict_t *self)
 	self->monsterinfo.aiflags &= ~AI_MANUAL_STEERING;
 }
 
-#if 0
 static mframe_t widow_frames_spawn[] = {
 	{ai_charge, 0, NULL},                       /* 1 */
 	{ai_charge, 0, NULL},
@@ -935,7 +928,6 @@ mmove_t widow_move_pain_light = {
 	widow_frames_pain_light,
 	widow_run
 };
-#endif
 
 void
 spawn_out_start(edict_t *self)
@@ -1003,7 +995,6 @@ spawn_out_do(edict_t *self)
 	G_FreeEdict(self);
 }
 
-#if 0
 static mframe_t widow_frames_death[] = {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -1044,7 +1035,6 @@ mmove_t widow_move_death = {
 	widow_frames_death,
 	NULL
 };
-#endif
 
 void
 widow_attack_kick(edict_t *self)
@@ -1068,7 +1058,6 @@ widow_attack_kick(edict_t *self)
 	}
 }
 
-#if 0
 static mframe_t widow_frames_attack_kick[] = {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -1367,7 +1356,6 @@ widow_pain(edict_t *self, edict_t *other /* unused */, float kick, int damage)
 		gi.sound(self, CHAN_VOICE, sound_pain3, 1, ATTN_NONE, 0);
 	}
 }
-#endif
 
 void
 widow_dead(edict_t *self)
@@ -1382,7 +1370,6 @@ widow_dead(edict_t *self)
 	monster_dynamic_dead(self);
 }
 
-#if 0
 void
 widow_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
 		int damage /* unused */, vec3_t point /* unused */)
@@ -1411,7 +1398,6 @@ widow_melee(edict_t *self)
 
 	self->monsterinfo.currentmove = &widow_move_attack_kick;
 }
-#endif
 
 void
 WidowGoinQuad(edict_t *self, float framenum)
@@ -1607,7 +1593,6 @@ WidowPowerups(edict_t *self)
 	}
 }
 
-#if 0
 qboolean
 Widow_CheckAttack(edict_t *self)
 {
@@ -1780,7 +1765,6 @@ widow_blocked(edict_t *self, float dist)
 
 	return false;
 }
-#endif
 
 void
 WidowCalcSlots(edict_t *self)
@@ -1848,7 +1832,6 @@ WidowPrecache(void)
 	gi.soundindex("widow/bwstep2.wav");
 }
 
-#if 0
 /*
  * QUAKED monster_widow (1 .5 0) (-40 -40 0) (40 40 144) Ambush Trigger_Spawn Sight
  */
@@ -1924,4 +1907,3 @@ SP_monster_widow(edict_t *self)
 
 	walkmonster_start(self);
 }
-#endif

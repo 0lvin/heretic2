@@ -1226,7 +1226,7 @@ MakronSpawn(edict_t *self)
 
 	if (enemy)
 	{
-		FoundTarget(self);
+		FoundTarget(self, true);
 		VectorCopy(self->pos1, self->monsterinfo.last_sighting);
 	}
 

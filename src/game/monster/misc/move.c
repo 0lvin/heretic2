@@ -891,9 +891,9 @@ M_MoveToGoal(edict_t *ent, float dist)
 		return;
 	}
 
+	/* if the next step hits the enemy, return immediately */
 	// This was commented out because it was causing monsters to get stuck on the edges of bounding
 	// boxes and they'd keep running.
-	// if the next step hits the enemy, return immediately
 	//	if (ent->enemy && SV_CloseEnough(ent, ent->enemy, dist))
 	//		return;
 

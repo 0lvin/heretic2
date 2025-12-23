@@ -1202,23 +1202,52 @@ GAME_OBJS_ = \
 	src/game/dm/ball.o \
 	src/game/dm/tag.o \
 	src/game/menu/menu.o \
+	src/game/monster/actor/actor.o \
+	src/game/monster/arachnid/arachnid.o \
+	src/game/monster/army/army.o \
 	src/game/monster/assassin/assassin_anim.o \
 	src/game/monster/assassin/assassin.o \
 	src/game/monster/beast/beast_anim.o \
 	src/game/monster/beast/beast.o \
+	src/game/monster/berserker/berserker.o \
+	src/game/monster/boss2/boss2.o \
+	src/game/monster/boss3/boss31.o \
+	src/game/monster/boss3/boss32.o \
+	src/game/monster/boss3/boss3.o \
+	src/game/monster/boss5/boss5.o \
+	src/game/monster/brain/brain.o \
+	src/game/monster/carrier/carrier.o \
+	src/game/monster/chick/chick.o \
 	src/game/monster/chicken/chicken_anim.o \
 	src/game/monster/chicken/chicken.o \
+	src/game/monster/demon/demon.o \
+	src/game/monster/dog/dog.o \
 	src/game/monster/elflord/elflord_anims.o \
 	src/game/monster/elflord/elflord.o \
+	src/game/monster/enforcer/enforcer.o \
 	src/game/monster/fish/fish_anim.o \
 	src/game/monster/fish/fish.o \
+	src/game/monster/fixbot/fixbot.o \
+	src/game/monster/flipper/flipper.o \
+	src/game/monster/float/float.o \
+	src/game/monster/flyer/flyer.o \
+	src/game/monster/gekk/gekk.o \
 	src/game/monster/gkrokon/gkrokon_anim.o \
 	src/game/monster/gkrokon/gkrokon.o \
+	src/game/monster/gladiator/gladb.o \
+	src/game/monster/gladiator/gladiator.o \
 	src/game/monster/gorgon/gorgon_anim.o \
 	src/game/monster/gorgon/gorgon.o \
+	src/game/monster/guardian/guardian.o \
+	src/game/monster/gunner/gunner.o \
 	src/game/monster/harpy/harpy_anim.o \
 	src/game/monster/harpy/harpy.o \
+	src/game/monster/hknight/hknight.o \
+	src/game/monster/hover/hover.o \
 	src/game/monster/infantry/infantry.o \
+	src/game/monster/insane/insane.o \
+	src/game/monster/knight/knight.o \
+	src/game/monster/medic/medic.o \
 	src/game/monster/misc/move.o \
 	src/game/monster/morcalavin/morcalavin_anim.o \
 	src/game/monster/morcalavin/morcalavin.o \
@@ -1226,8 +1255,11 @@ GAME_OBJS_ = \
 	src/game/monster/mother/mother.o \
 	src/game/monster/mssithra/mssithra_anim.o \
 	src/game/monster/mssithra/mssithra.o \
+	src/game/monster/mutant/mutant.o \
 	src/game/monster/ogle/ogle_anim.o \
 	src/game/monster/ogle/ogle.o \
+	src/game/monster/ogre/ogre.o \
+	src/game/monster/parasite/parasite.o \
 	src/game/monster/plagueelf/plagueelf_anim.o \
 	src/game/monster/plagueelf/plagueelf.o \
 	src/game/monster/plaguessithra/plaguessithra_anim.o \
@@ -1236,19 +1268,30 @@ GAME_OBJS_ = \
 	src/game/monster/priestess/priestess.o \
 	src/game/monster/rat/rat_anim.o \
 	src/game/monster/rat/rat.o \
-	src/game/monster/seraph/seraph_anim.o \
-	src/game/monster/seraph/seraph.o \
+	src/game/monster/rotfish/rotfish.o \
 	src/game/monster/seraph_guard/seraph_guard_anim.o \
 	src/game/monster/seraph_guard/seraph_guard.o \
+	src/game/monster/seraph/seraph_anim.o \
+	src/game/monster/seraph/seraph.o \
+	src/game/monster/shalrath/shalrath.o \
+	src/game/monster/shambler/shambler.o \
+	src/game/monster/soldier/soldier.o \
 	src/game/monster/spreader/spreader_anim.o \
 	src/game/monster/spreader/spreadermist.o \
 	src/game/monster/spreader/spreader.o \
+	src/game/monster/stalker/stalker.o \
 	src/game/monster/stats/stats.o \
+	src/game/monster/supertank/supertank.o \
+	src/game/monster/tank/tank.o \
+	src/game/monster/tarbaby/tarbaby.o \
 	src/game/monster/tcheckrik/tcheckrik_anim.o \
 	src/game/monster/tcheckrik/tcheckrik.o \
 	src/game/monster/tcheckrik/tcheckrik_spells.o \
+	src/game/monster/turret/turret.o \
 	src/game/monster/widow/widow2.o \
 	src/game/monster/widow/widow.o \
+	src/game/monster/wizard/wizard.o \
+	src/game/monster/zombie/zombie.o \
 	src/game/player/chase.o \
 	src/game/player/client.o \
 	src/game/player/funcs.o \

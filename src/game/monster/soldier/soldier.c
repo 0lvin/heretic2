@@ -1376,7 +1376,7 @@ soldier_dodge(edict_t *self, edict_t *attacker, float eta,
 	if (!self->enemy)
 	{
 		self->enemy = attacker;
-		FoundTarget(self);
+		FoundTarget(self, true);
 	}
 
 	if (skill->value == SKILL_EASY)

@@ -1144,7 +1144,7 @@ stalker_dodge(edict_t *self, edict_t *attacker, float eta, trace_t *tr /* unused
 	if (!self->enemy)
 	{
 		self->enemy = attacker;
-		FoundTarget(self);
+		FoundTarget(self, true);
 		return;
 	}
 

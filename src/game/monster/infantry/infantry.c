@@ -69,7 +69,7 @@ infantry_footstep(edict_t *self)
 	}
 }
 
-#if 0
+
 static mframe_t infantry_frames_stand[] = {
 	{ai_stand, 0, NULL},
 	{ai_stand, 0, NULL},
@@ -102,7 +102,6 @@ mmove_t infantry_move_stand =
 	infantry_frames_stand,
 	NULL
 };
-#endif
 
 void
 infantry_stand(edict_t *self)
@@ -112,10 +111,9 @@ infantry_stand(edict_t *self)
 		return;
 	}
 
-	// self->monsterinfo.currentmove = &infantry_move_stand;
+	self->monsterinfo.currentmove = &infantry_move_stand;
 }
 
-#if 0
 static mframe_t infantry_frames_fidget[] = {
 	{ai_stand, 1, NULL},
 	{ai_stand, 0, NULL},
@@ -353,7 +351,6 @@ infantry_pain(edict_t *self, edict_t *other /* unused */,
 		monster_duck_up(self);
 	}
 }
-#endif
 
 vec3_t aimangles[] = {
 	{0.0, 5.0, 0.0},
@@ -449,7 +446,6 @@ infantry_dead(edict_t *self)
 	M_FlyCheck(self);
 }
 
-#if 0
 static mframe_t infantry_frames_death1[] = {
 	{ai_move, -4, NULL},
 	{ai_move, 0, NULL},
@@ -537,7 +533,6 @@ mmove_t infantry_move_death3 =
 	infantry_frames_death3,
 	infantry_dead
 };
-#endif
 
 void
 infantry_die(edict_t *self, edict_t *inflictor /* unused */,
@@ -584,7 +579,6 @@ infantry_die(edict_t *self, edict_t *inflictor /* unused */,
 
 	n = randk() % 3;
 
-/*
 	if (n == 0)
 	{
 		self->monsterinfo.currentmove = &infantry_move_death1;
@@ -600,7 +594,6 @@ infantry_die(edict_t *self, edict_t *inflictor /* unused */,
 		self->monsterinfo.currentmove = &infantry_move_death3;
 		gi.sound(self, CHAN_VOICE, sound_die2, 1, ATTN_NORM, 0);
 	}
-*/
 }
 
 void
@@ -674,7 +667,6 @@ infantry_jump_wait_land(edict_t *self)
 	}
 }
 
-#if 0
 static mframe_t infantry_frames_jump[] = {
 	{ai_move, 0, NULL},
 	{ai_move, 0, NULL},
@@ -847,12 +839,11 @@ infantry_dodge(edict_t *self, edict_t *attacker, float eta /* unused */,
 	if (!self->enemy)
 	{
 		self->enemy = attacker;
-		FoundTarget(self);
+		FoundTarget(self, true);
 	}
 
 	self->monsterinfo.currentmove = &infantry_move_duck;
 }
-#endif
 
 void
 infantry_set_firetime(edict_t *self)
@@ -903,7 +894,6 @@ infantry_fire(edict_t *self)
 	}
 }
 
-#if 0
 static mframe_t infantry_frames_attack1[] = {
 	{ai_charge, -3, infantry_set_firetime},                  /* 101 */
 	{ai_charge, -2, NULL},                  /* 102 */
@@ -929,7 +919,6 @@ mmove_t infantry_move_attack1 =
 	infantry_frames_attack1,
 	infantry_run
 };
-#endif
 
 void
 infantry_swing(edict_t *self)
@@ -960,7 +949,6 @@ infantry_smack(edict_t *self)
 	}
 }
 
-#if 0
 static mframe_t infantry_frames_attack2[] = {
 	{ai_charge, 3, NULL},
 	{ai_charge, 6, NULL},
@@ -1145,4 +1133,3 @@ SP_monster_infantry(edict_t *self)
 
 	walkmonster_start(self);
 }
-#endif

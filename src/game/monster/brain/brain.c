@@ -420,7 +420,7 @@ brain_dodge(edict_t *self, edict_t *attacker, float eta,
 	if (!self->enemy)
 	{
 		self->enemy = attacker;
-		FoundTarget(self);
+		FoundTarget(self, true);
 	}
 
 	self->monsterinfo.pausetime = level.time + eta + 0.5;

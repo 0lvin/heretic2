@@ -489,7 +489,7 @@ CarrierSpawn(edict_t *self)
 		if ((self->enemy->inuse) && (self->enemy->health > 0))
 		{
 			ent->enemy = self->enemy;
-			FoundTarget(ent);
+			FoundTarget(ent, true);
 
 			if (mytime == 1)
 			{
