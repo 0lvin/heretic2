@@ -15,7 +15,7 @@ static mh2frame_t ogle_frames_stand1[] =
 {
 	{FRAME_walk1, NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t ogle_move_stand1 = {FRAME_walk1, FRAME_walk1, ogle_frames_stand1, ogle_pause};
+mmove_t ogle_move_stand1 = {FRAME_walk1, FRAME_walk1, NULL, ogle_pause, ogle_frames_stand1};
 
 /*----------------------------------------------------
 	ogle walking
@@ -31,7 +31,7 @@ static mh2frame_t ogle_frames_walk1[] =
 	{FRAME_walk7, NULL, 0, 0, 0, ai_run, 2, NULL},
 	{FRAME_walk8, NULL, 0, 0, 0, ai_run, 2, NULL},
 };
-mmove_t ogle_move_walk1 = {FRAME_walk1, FRAME_walk8, ogle_frames_walk1, ogle_pause};
+mmove_t ogle_move_walk1 = {FRAME_walk1, FRAME_walk8, NULL, ogle_pause, ogle_frames_walk1};
 
 /*----------------------------------------------------
 	ogle pushing anims
@@ -40,7 +40,6 @@ mmove_t ogle_move_walk1 = {FRAME_walk1, FRAME_walk8, ogle_frames_walk1, ogle_pau
 	push2	- pushing a cart, both hands equal
 	push3	- pushing a cart, left hand higher than right
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_push1[] =
 {
 	{FRAME_pusha1, NULL, 0, 0, 0, ogle_push, 4, NULL},
@@ -52,7 +51,7 @@ static mh2frame_t ogle_frames_push1[] =
 	{FRAME_pusha7, NULL, 0, 0, 0, ogle_push, 4, NULL},
 	{FRAME_pusha8, NULL, 0, 0, 0, ogle_push, 4, NULL},
 };
-mmove_t ogle_move_push1 = {FRAME_pusha1, FRAME_pusha8, ogle_frames_push1, NULL};
+mmove_t ogle_move_push1 = {FRAME_pusha1, FRAME_pusha8, NULL, NULL, ogle_frames_push1};
 
 static mh2frame_t ogle_frames_push2[] =
 {
@@ -65,7 +64,7 @@ static mh2frame_t ogle_frames_push2[] =
 	{FRAME_pushb7, NULL, 0, 0, 0, ogle_push, 4, NULL},
 	{FRAME_pushb8, NULL, 0, 0, 0, ogle_push, 4, NULL},
 };
-mmove_t ogle_move_push2 = {FRAME_pushb1, FRAME_pushb8, ogle_frames_push2, NULL};
+mmove_t ogle_move_push2 = {FRAME_pushb1, FRAME_pushb8, NULL, NULL, ogle_frames_push2};
 
 static mh2frame_t ogle_frames_push3[] =
 {
@@ -78,7 +77,7 @@ static mh2frame_t ogle_frames_push3[] =
 	{FRAME_pushc7, NULL, 0, 0, 0, ogle_push, 4, NULL},
 	{FRAME_pushc8, NULL, 0, 0, 0, ogle_push, 4, NULL},
 };
-mmove_t ogle_move_push3 = {FRAME_pushc1, FRAME_pushc8, ogle_frames_push3, NULL};
+mmove_t ogle_move_push3 = {FRAME_pushc1, FRAME_pushc8, NULL, NULL, ogle_frames_push3};
 
 /*----------------------------------------------------
 	ogle working anims
@@ -89,7 +88,6 @@ mmove_t ogle_move_push3 = {FRAME_pushc1, FRAME_pushc8, ogle_frames_push3, NULL};
 	work4	- picking with axe, straight
 	work5	- picking with axe, downward
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_work1[] =
 {
 	{FRAME_hamupa2, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -98,7 +96,7 @@ static mh2frame_t ogle_frames_work1[] =
 	{FRAME_hamupa5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamupa1, NULL, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_move_work1 = {FRAME_hamupa1, FRAME_hamupa1 + 4, ogle_frames_work1, ogle_pause};
+mmove_t ogle_move_work1 = {FRAME_hamupa1, FRAME_hamupa1 + 4, NULL, ogle_pause, ogle_frames_work1};
 
 static mh2frame_t ogle_frames_work2[] =
 {
@@ -112,7 +110,7 @@ static mh2frame_t ogle_frames_work2[] =
 	{FRAME_hamupb9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamupb1, NULL, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_move_work2 = {FRAME_hamupb2, FRAME_hamupb2 + 8, ogle_frames_work2, ogle_pause};
+mmove_t ogle_move_work2 = {FRAME_hamupb2, FRAME_hamupb2 + 8, NULL, ogle_pause, ogle_frames_work2};
 
 static mh2frame_t ogle_frames_work3[] =
 {
@@ -126,7 +124,7 @@ static mh2frame_t ogle_frames_work3[] =
 	{FRAME_hamdwn9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamdwn1, NULL, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_move_work3 = {FRAME_hamdwn2, FRAME_hamdwn2 + 8, ogle_frames_work3, ogle_pause};
+mmove_t ogle_move_work3 = {FRAME_hamdwn2, FRAME_hamdwn2 + 8, NULL, ogle_pause, ogle_frames_work3};
 
 static mh2frame_t ogle_frames_work4[] =
 {
@@ -138,7 +136,7 @@ static mh2frame_t ogle_frames_work4[] =
 	{FRAME_pikxup7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pikxup1, NULL, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_move_work4 = {FRAME_pikxup2, FRAME_pikxup2 + 6, ogle_frames_work4, ogle_pause};
+mmove_t ogle_move_work4 = {FRAME_pikxup2, FRAME_pikxup2 + 6, NULL, ogle_pause, ogle_frames_work4};
 
 static mh2frame_t ogle_frames_work5[] =
 {
@@ -150,7 +148,7 @@ static mh2frame_t ogle_frames_work5[] =
 	{FRAME_pikxdn7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pikxdn1, NULL, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_move_work5 = {FRAME_pikxdn2, FRAME_pikxdn2 + 6, ogle_frames_work5, ogle_pause};
+mmove_t ogle_move_work5 = {FRAME_pikxdn2, FRAME_pikxdn2 + 6, NULL, ogle_pause, ogle_frames_work5};
 
 /*----------------------------------------------------
 	ogle pain anims
@@ -159,7 +157,6 @@ mmove_t ogle_move_work5 = {FRAME_pikxdn2, FRAME_pikxdn2 + 6, ogle_frames_work5, 
 	pain2	- transition from rest1 back into work4
 	pain3	- transition from rest4 back into work4
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_pain1[] =
 {
 	{FRAME_paina1, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -171,7 +168,7 @@ static mh2frame_t ogle_frames_pain1[] =
 	{FRAME_paina3, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_pain1 = {FRAME_paina1, FRAME_paina1 + 7, ogle_frames_pain1, ogle_pause};
+mmove_t ogle_move_pain1 = {FRAME_paina1, FRAME_paina1 + 7, NULL, ogle_pause, ogle_frames_pain1};
 
 static mh2frame_t ogle_frames_pain2[] =
 {
@@ -188,7 +185,7 @@ static mh2frame_t ogle_frames_pain2[] =
 	{FRAME_rstapn7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rstapn8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_pain2 = {FRAME_rstapn1, FRAME_rstapn1 + 11, ogle_frames_pain2, ogle_pause};
+mmove_t ogle_move_pain2 = {FRAME_rstapn1, FRAME_rstapn1 + 11, NULL, ogle_pause, ogle_frames_pain2};
 
 static mh2frame_t ogle_frames_pain3[] =
 {
@@ -199,7 +196,7 @@ static mh2frame_t ogle_frames_pain3[] =
 	{FRAME_brkpn5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brkpn6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_pain3 = {FRAME_brkpn1, FRAME_brkpn6, ogle_frames_pain3, ogle_pause};
+mmove_t ogle_move_pain3 = {FRAME_brkpn1, FRAME_brkpn6, NULL, ogle_pause, ogle_frames_pain3};
 
 /*----------------------------------------------------
 	ogle rest anims
@@ -213,7 +210,6 @@ mmove_t ogle_move_pain3 = {FRAME_brkpn1, FRAME_brkpn6, ogle_frames_pain3, ogle_p
 	rest4_trans2	- transition from chisel to resting pick on shoulder
 	rest4			- resting pick on shoulder, breathing
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_rest1_trans[] =
 {
 	{FRAME_rsta1, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -223,7 +219,7 @@ static mh2frame_t ogle_frames_rest1_trans[] =
 	{FRAME_rsta5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rsta6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest1_trans = {FRAME_rsta1, FRAME_rsta6, ogle_frames_rest1_trans, ogle_rest};
+mmove_t ogle_move_rest1_trans = {FRAME_rsta1, FRAME_rsta6, NULL, ogle_rest, ogle_frames_rest1_trans};
 
 static mh2frame_t ogle_frames_rest1[] =
 {
@@ -236,7 +232,7 @@ static mh2frame_t ogle_frames_rest1[] =
 	{FRAME_rstaid7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rstaid8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest1 = {FRAME_rstaid1, FRAME_rstaid8, ogle_frames_rest1, ogle_rest};
+mmove_t ogle_move_rest1 = {FRAME_rstaid1, FRAME_rstaid8, NULL, ogle_rest, ogle_frames_rest1};
 
 static mh2frame_t ogle_frames_rest1_wipe[] =
 {
@@ -252,7 +248,7 @@ static mh2frame_t ogle_frames_rest1_wipe[] =
 	{FRAME_rstawp10,NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rstawp11,NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest1_wipe = {FRAME_rstawp1, FRAME_rstawp11, ogle_frames_rest1_wipe, ogle_rest};
+mmove_t ogle_move_rest1_wipe = {FRAME_rstawp1, FRAME_rstawp11, NULL, ogle_rest, ogle_frames_rest1_wipe};
 
 static mh2frame_t ogle_frames_rest2_wipe[] =
 {
@@ -267,7 +263,7 @@ static mh2frame_t ogle_frames_rest2_wipe[] =
 	{FRAME_pkaxwp9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pkaxwp10,NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest2_wipe = {FRAME_pkaxwp1, FRAME_pkaxwp10, ogle_frames_rest2_wipe, ogle_rest};
+mmove_t ogle_move_rest2_wipe = {FRAME_pkaxwp1, FRAME_pkaxwp10, NULL, ogle_rest, ogle_frames_rest2_wipe};
 
 static mh2frame_t ogle_frames_rest3_wipe[] =
 {
@@ -285,7 +281,7 @@ static mh2frame_t ogle_frames_rest3_wipe[] =
 	{FRAME_hamwp12,NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamwp13,NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest3_wipe = {FRAME_hamwp1, FRAME_hamwp13, ogle_frames_rest3_wipe, ogle_rest};
+mmove_t ogle_move_rest3_wipe = {FRAME_hamwp1, FRAME_hamwp13, NULL, ogle_rest, ogle_frames_rest3_wipe};
 
 static mh2frame_t ogle_frames_rest4_trans[] =
 {
@@ -297,7 +293,7 @@ static mh2frame_t ogle_frames_rest4_trans[] =
 	{FRAME_brka6, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brka7, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest4_trans = {FRAME_brka1, FRAME_brka7, ogle_frames_rest4_trans, ogle_rest};
+mmove_t ogle_move_rest4_trans = {FRAME_brka1, FRAME_brka7, NULL, ogle_rest, ogle_frames_rest4_trans};
 
 static mh2frame_t ogle_frames_rest4_trans2[] =
 {
@@ -308,7 +304,7 @@ static mh2frame_t ogle_frames_rest4_trans2[] =
 	{FRAME_brkb5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brkb6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest4_trans2 = {FRAME_brkb1, FRAME_brkb6, ogle_frames_rest4_trans2, ogle_rest};
+mmove_t ogle_move_rest4_trans2 = {FRAME_brkb1, FRAME_brkb6, NULL, ogle_rest, ogle_frames_rest4_trans2};
 
 static mh2frame_t ogle_frames_rest4[] =
 {
@@ -321,7 +317,7 @@ static mh2frame_t ogle_frames_rest4[] =
 	{FRAME_brkidl7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brkidl8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_rest4 = {FRAME_brkidl1, FRAME_brkidl8, ogle_frames_rest4, ogle_rest};
+mmove_t ogle_move_rest4 = {FRAME_brkidl1, FRAME_brkidl8, NULL, ogle_rest, ogle_frames_rest4};
 
 /*----------------------------------------------------
 	ogle celebration anims
@@ -335,7 +331,6 @@ mmove_t ogle_move_rest4 = {FRAME_brkidl1, FRAME_brkidl8, ogle_frames_rest4, ogle
 	celebrate5_trans - transition from celebrate2
 	celebrate5  - butt wigglin'
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_celebrate1[] =
 {
 	{FRAME_cela1, NULL, 0, 0, 0, NULL, 0, NULL},
@@ -345,7 +340,7 @@ static mh2frame_t ogle_frames_celebrate1[] =
 	{FRAME_cela5, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cela6, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate1 = {FRAME_cela1, FRAME_cela6, ogle_frames_celebrate1, ogle_celebrate};
+mmove_t ogle_move_celebrate1 = {FRAME_cela1, FRAME_cela6, NULL, ogle_celebrate, ogle_frames_celebrate1};
 
 static mh2frame_t ogle_frames_celebrate2[] =
 {
@@ -360,14 +355,14 @@ static mh2frame_t ogle_frames_celebrate2[] =
 	{FRAME_celb9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celb10, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate2 = {FRAME_celb1, FRAME_celb10, ogle_frames_celebrate2, ogle_celebrate};
+mmove_t ogle_move_celebrate2 = {FRAME_celb1, FRAME_celb10, NULL, ogle_celebrate, ogle_frames_celebrate2};
 
 static mh2frame_t ogle_frames_celebrate3_trans[] =
 {
 	{FRAME_celc1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celc2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate3_trans = {FRAME_celc1, FRAME_celc2, ogle_frames_celebrate3_trans, ogle_celebrate};
+mmove_t ogle_move_celebrate3_trans = {FRAME_celc1, FRAME_celc2, NULL, ogle_celebrate, ogle_frames_celebrate3_trans};
 
 static mh2frame_t ogle_frames_celebrate3[] =
 {
@@ -378,7 +373,7 @@ static mh2frame_t ogle_frames_celebrate3[] =
 	{FRAME_celc7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celc8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate3 = {FRAME_celc3, FRAME_celc8, ogle_frames_celebrate3, ogle_celebrate};
+mmove_t ogle_move_celebrate3 = {FRAME_celc3, FRAME_celc8, NULL, ogle_celebrate, ogle_frames_celebrate3};
 
 static mh2frame_t ogle_frames_celebrate4_trans[] =
 {
@@ -387,7 +382,7 @@ static mh2frame_t ogle_frames_celebrate4_trans[] =
 	{FRAME_celd3, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celd4, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate4_trans = {FRAME_celd1, FRAME_celd4, ogle_frames_celebrate4_trans, ogle_celebrate};
+mmove_t ogle_move_celebrate4_trans = {FRAME_celd1, FRAME_celd4, NULL, ogle_celebrate, ogle_frames_celebrate4_trans};
 
 static mh2frame_t ogle_frames_celebrate4[] =
 {
@@ -398,14 +393,14 @@ static mh2frame_t ogle_frames_celebrate4[] =
 	{FRAME_celd9, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celd10, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate4 = {FRAME_celd5, FRAME_celd10, ogle_frames_celebrate4, ogle_celebrate};
+mmove_t ogle_move_celebrate4 = {FRAME_celd5, FRAME_celd10, NULL, ogle_celebrate, ogle_frames_celebrate4};
 
 static mh2frame_t ogle_frames_celebrate5_trans[] =
 {
 	{FRAME_cele1, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cele2, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate5_trans = {FRAME_cele1, FRAME_cele2, ogle_frames_celebrate5_trans, ogle_celebrate};
+mmove_t ogle_move_celebrate5_trans = {FRAME_cele1, FRAME_cele2, NULL, ogle_celebrate, ogle_frames_celebrate5_trans};
 
 static mh2frame_t ogle_frames_celebrate5[] =
 {
@@ -414,7 +409,7 @@ static mh2frame_t ogle_frames_celebrate5[] =
 	{FRAME_cele7, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cele8, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_celebrate5 = {FRAME_cele5, FRAME_cele8, ogle_frames_celebrate5, ogle_celebrate};
+mmove_t ogle_move_celebrate5 = {FRAME_cele5, FRAME_cele8, NULL, ogle_celebrate, ogle_frames_celebrate5};
 
 /*----------------------------------------------------
 	ogle charge anims
@@ -425,7 +420,6 @@ mmove_t ogle_move_celebrate5 = {FRAME_cele5, FRAME_cele8, ogle_frames_celebrate5
 	charge4 -	both arms in arm, moving them in unison left and right
 	charge5 -	both arms in arm, moving them in opposingly left and right
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_charge1[] =
 {
 	{FRAME_charga1, NULL, 0, 0, 0, ai_run, 10, NULL},
@@ -437,7 +431,7 @@ static mh2frame_t ogle_frames_charge1[] =
 	{FRAME_charga7, NULL, 0, 0, 0, ai_run, 8, NULL},
 	{FRAME_charga8, NULL, 0, 0, 0, ai_run, 10, NULL},
 };
-mmove_t ogle_move_charge1 = {FRAME_charga1, FRAME_charga8, ogle_frames_charge1, ogle_pause};
+mmove_t ogle_move_charge1 = {FRAME_charga1, FRAME_charga8, NULL, ogle_pause, ogle_frames_charge1};
 
 static mh2frame_t ogle_frames_charge2[] =
 {
@@ -450,7 +444,7 @@ static mh2frame_t ogle_frames_charge2[] =
 	{FRAME_chargb7, NULL, 0, 0, 0, ai_run, 8, NULL},
 	{FRAME_chargb8, NULL, 0, 0, 0, ai_run, 10, NULL},
 };
-mmove_t ogle_move_charge2 = {FRAME_chargb1, FRAME_chargb8, ogle_frames_charge2, ogle_pause};
+mmove_t ogle_move_charge2 = {FRAME_chargb1, FRAME_chargb8, NULL, ogle_pause, ogle_frames_charge2};
 
 static mh2frame_t ogle_frames_charge3[] =
 {
@@ -463,7 +457,7 @@ static mh2frame_t ogle_frames_charge3[] =
 	{FRAME_chargc7, NULL, 0, 0, 0, ai_run, 8, NULL},
 	{FRAME_chargc8, NULL, 0, 0, 0, ai_run, 10, NULL},
 };
-mmove_t ogle_move_charge3 = {FRAME_chargc1, FRAME_chargc8, ogle_frames_charge3, ogle_pause};
+mmove_t ogle_move_charge3 = {FRAME_chargc1, FRAME_chargc8, NULL, ogle_pause, ogle_frames_charge3};
 
 static mh2frame_t ogle_frames_charge4[] =
 {
@@ -476,20 +470,20 @@ static mh2frame_t ogle_frames_charge4[] =
 	{FRAME_chargd7, NULL, 0, 0, 0, ai_run, 8, NULL},
 	{FRAME_chargd8, NULL, 0, 0, 0, ai_run, 10, NULL},
 };
-mmove_t ogle_move_charge4 = {FRAME_chargd1, FRAME_chargd8, ogle_frames_charge4, ogle_pause};
+mmove_t ogle_move_charge4 = {FRAME_chargd1, FRAME_chargd8, NULL, ogle_pause, ogle_frames_charge4};
 
 static mh2frame_t ogle_frames_charge5[] =
 {
-	{FRAME_charge1, NULL, 0, 0, 0, ai_run,	10, NULL},
-	{FRAME_charge2, NULL, 0, 0, 0, ai_run,	9, NULL},
-	{FRAME_charge3, NULL, 0, 0, 0, ai_run,	8, NULL},
-	{FRAME_charge4, NULL, 0, 0, 0, ai_run,	9, NULL},
-	{FRAME_charge5, NULL, 0, 0, 0, ai_run,	10, NULL},
-	{FRAME_charge6, NULL, 0, 0, 0, ai_run,	9, NULL},
-	{FRAME_charge7, NULL, 0, 0, 0, ai_run,	8, NULL},
-	{FRAME_charge8, NULL, 0, 0, 0, ai_run,	10, NULL},
+	{FRAME_charge1, NULL, 0, 0, 0, ai_run, 10, NULL},
+	{FRAME_charge2, NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_charge3, NULL, 0, 0, 0, ai_run, 8, NULL},
+	{FRAME_charge4, NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_charge5, NULL, 0, 0, 0, ai_run, 10, NULL},
+	{FRAME_charge6, NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_charge7, NULL, 0, 0, 0, ai_run, 8, NULL},
+	{FRAME_charge8, NULL, 0, 0, 0, ai_run, 10, NULL},
 };
-mmove_t ogle_move_charge5 = {FRAME_charge1, FRAME_charge8, ogle_frames_charge5, ogle_pause};
+mmove_t ogle_move_charge5 = {FRAME_charge1, FRAME_charge8, NULL, ogle_pause, ogle_frames_charge5};
 
 /*----------------------------------------------------
 	ogle attack anims
@@ -498,7 +492,6 @@ mmove_t ogle_move_charge5 = {FRAME_charge1, FRAME_charge8, ogle_frames_charge5, 
 	attack2 -	running attack
 	attack3 -	running attack 2
 ----------------------------------------------------*/
-
 static mh2frame_t ogle_frames_attack1[] =
 {
 	{FRAME_pikxup2, NULL, 0, 0, 0, ai_charge, 0, NULL},
@@ -509,7 +502,7 @@ static mh2frame_t ogle_frames_attack1[] =
 	{FRAME_pikxup7, NULL, 0, 0, 0, ai_charge, 0, NULL},
 	{FRAME_pikxup1, NULL, 0, 0, 0, ai_charge, 0, ogle_strike},
 };
-mmove_t ogle_move_attack1 = {FRAME_pikxup2, FRAME_pikxup2 + 6, ogle_frames_attack1, ogle_pause};
+mmove_t ogle_move_attack1 = {FRAME_pikxup2, FRAME_pikxup2 + 6, NULL, ogle_pause, ogle_frames_attack1};
 
 static mh2frame_t ogle_frames_attack2[] =
 {
@@ -522,7 +515,7 @@ static mh2frame_t ogle_frames_attack2[] =
 	{FRAME_rnatka8, NULL, 0, 0, 0, ai_charge, 11, NULL},
 	{FRAME_rnatka1, NULL, 0, 0, 0, ai_charge, 12, ogle_strike},
 };
-mmove_t ogle_move_attack2 = {FRAME_rnatka2, FRAME_rnatka2 + 7, ogle_frames_attack2, ogle_pause};
+mmove_t ogle_move_attack2 = {FRAME_rnatka2, FRAME_rnatka2 + 7, NULL, ogle_pause, ogle_frames_attack2};
 
 static mh2frame_t ogle_frames_attack3[] =
 {
@@ -535,8 +528,7 @@ static mh2frame_t ogle_frames_attack3[] =
 	{FRAME_rnatkb8, NULL, 0, 0, 0, ai_charge, 11, NULL},
 	{FRAME_rnatkb1, NULL, 0, 0, 0, ai_charge, 12, ogle_strike},
 };
-mmove_t ogle_move_attack3 = {FRAME_rnatkb2, FRAME_rnatkb2 + 7, ogle_frames_attack3, ogle_pause};
-
+mmove_t ogle_move_attack3 = {FRAME_rnatkb2, FRAME_rnatkb2 + 7, NULL, ogle_pause, ogle_frames_attack3};
 
 static mh2frame_t ogle_frames_death1[] =
 {
@@ -555,7 +547,7 @@ static mh2frame_t ogle_frames_death1[] =
 	{FRAME_deatha13, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha14, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_death1 = {FRAME_deatha1, FRAME_deatha14, ogle_frames_death1, M_EndDeath};
+mmove_t ogle_move_death1 = {FRAME_deatha1, FRAME_deatha14, NULL, M_EndDeath, ogle_frames_death1};
 
 static mh2frame_t ogle_frames_death2[] =
 {
@@ -574,7 +566,7 @@ static mh2frame_t ogle_frames_death2[] =
 	{FRAME_deathb13, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deathb14, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_move_death2 = {FRAME_deathb1, FRAME_deathb14, ogle_frames_death2, M_EndDeath};
+mmove_t ogle_move_death2 = {FRAME_deathb1, FRAME_deathb14, NULL, M_EndDeath, ogle_frames_death2};
 
 /*----------------------------------------------------
 	ogle actions
@@ -587,7 +579,7 @@ static mh2frame_t ogle_c_frames_action1[] =
 	{FRAME_hamupa5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamupa1, ai_c_move, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_c_move_action1 = {FRAME_hamupa2, FRAME_hamupa2 + 4, ogle_c_frames_action1, ai_c_cycleend};
+mmove_t ogle_c_move_action1 = {FRAME_hamupa2, FRAME_hamupa2 + 4, NULL, ai_c_cycleend, ogle_c_frames_action1};
 
 static mh2frame_t ogle_c_frames_action2[] =
 {
@@ -601,7 +593,7 @@ static mh2frame_t ogle_c_frames_action2[] =
 	{FRAME_hamupb9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamupb1, ai_c_move, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_c_move_action2 = {FRAME_hamupb2, FRAME_hamupb2 + 8, ogle_c_frames_action2, ai_c_cycleend};
+mmove_t ogle_c_move_action2 = {FRAME_hamupb2, FRAME_hamupb2 + 8, NULL, ai_c_cycleend, ogle_c_frames_action2};
 
 static mh2frame_t ogle_c_frames_action3[] =
 {
@@ -615,7 +607,7 @@ static mh2frame_t ogle_c_frames_action3[] =
 	{FRAME_hamdwn9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamdwn1, ai_c_move, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_c_move_action3 = {FRAME_hamdwn2, FRAME_hamdwn2 + 8, ogle_c_frames_action3, ai_c_cycleend};
+mmove_t ogle_c_move_action3 = {FRAME_hamdwn2, FRAME_hamdwn2 + 8, NULL, ai_c_cycleend, ogle_c_frames_action3};
 
 static mh2frame_t ogle_c_frames_action4[] =
 {
@@ -627,7 +619,7 @@ static mh2frame_t ogle_c_frames_action4[] =
 	{FRAME_pikxup7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pikxup1, ai_c_move, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_c_move_action4 = {FRAME_pikxup2, FRAME_pikxup2 + 6, ogle_c_frames_action4, ai_c_cycleend};
+mmove_t ogle_c_move_action4 = {FRAME_pikxup2, FRAME_pikxup2 + 6, NULL, ai_c_cycleend, ogle_c_frames_action4};
 
 static mh2frame_t ogle_c_frames_action5[] =
 {
@@ -639,8 +631,7 @@ static mh2frame_t ogle_c_frames_action5[] =
 	{FRAME_pikxdn7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pikxdn1, ai_c_move, 0, 0, 0, NULL, 0, ogle_pick_dust},
 };
-mmove_t ogle_c_move_action5 = {FRAME_pikxdn2, FRAME_pikxdn2 + 6, ogle_c_frames_action5, ai_c_cycleend};
-
+mmove_t ogle_c_move_action5 = {FRAME_pikxdn2, FRAME_pikxdn2 + 6, NULL, ai_c_cycleend, ogle_c_frames_action5};
 
 static mh2frame_t ogle_c_frames_action6[] =
 {
@@ -651,7 +642,7 @@ static mh2frame_t ogle_c_frames_action6[] =
 	{FRAME_cela5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cela6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action6 = {FRAME_cela1, FRAME_cela6, ogle_c_frames_action6, ai_c_cycleend};
+mmove_t ogle_c_move_action6 = {FRAME_cela1, FRAME_cela6, NULL, ai_c_cycleend, ogle_c_frames_action6};
 
 static mh2frame_t ogle_c_frames_action7[] =
 {
@@ -666,8 +657,7 @@ static mh2frame_t ogle_c_frames_action7[] =
 	{FRAME_celb9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celb10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action7 = {FRAME_celb1, FRAME_celb10, ogle_c_frames_action7, ai_c_cycleend};
-
+mmove_t ogle_c_move_action7 = {FRAME_celb1, FRAME_celb10, NULL, ai_c_cycleend, ogle_c_frames_action7};
 
 static mh2frame_t ogle_c_frames_action8[] =
 {
@@ -678,7 +668,7 @@ static mh2frame_t ogle_c_frames_action8[] =
 	{FRAME_celc7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celc8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action8 = {FRAME_celc3, FRAME_celc8, ogle_c_frames_action8, ai_c_cycleend};
+mmove_t ogle_c_move_action8 = {FRAME_celc3, FRAME_celc8, NULL, ai_c_cycleend, ogle_c_frames_action8};
 
 static mh2frame_t ogle_c_frames_action9[] =
 {
@@ -689,7 +679,7 @@ static mh2frame_t ogle_c_frames_action9[] =
 	{FRAME_celd9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celd10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action9 = {FRAME_celd5, FRAME_celd10, ogle_c_frames_action9, ai_c_cycleend};
+mmove_t ogle_c_move_action9 = {FRAME_celd5, FRAME_celd10, NULL, ai_c_cycleend, ogle_c_frames_action9};
 
 static mh2frame_t ogle_c_frames_action10[] =
 {
@@ -698,8 +688,7 @@ static mh2frame_t ogle_c_frames_action10[] =
 	{FRAME_cele7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cele8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action10 = {FRAME_cele5, FRAME_cele8, ogle_c_frames_action10, ai_c_cycleend};
-
+mmove_t ogle_c_move_action10 = {FRAME_cele5, FRAME_cele8, NULL, ai_c_cycleend, ogle_c_frames_action10};
 
 static mh2frame_t ogle_c_frames_action11[] =
 {
@@ -712,7 +701,7 @@ static mh2frame_t ogle_c_frames_action11[] =
 	{FRAME_charga7, ai_c_move, 8, 0, 0, NULL, 0, NULL},
 	{FRAME_charga8, ai_c_move, 10, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action11 = {FRAME_charga1, FRAME_charga8, ogle_c_frames_action11, ai_c_cycleend};
+mmove_t ogle_c_move_action11 = {FRAME_charga1, FRAME_charga8, NULL, ai_c_cycleend, ogle_c_frames_action11};
 
 static mh2frame_t ogle_c_frames_action12[] =
 {
@@ -725,7 +714,7 @@ static mh2frame_t ogle_c_frames_action12[] =
 	{FRAME_chargb7, ai_c_move, 8, 0, 0, NULL, 0, NULL},
 	{FRAME_chargb8, ai_c_move, 10, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action12 = {FRAME_chargb1, FRAME_chargb8, ogle_c_frames_action12, ai_c_cycleend};
+mmove_t ogle_c_move_action12 = {FRAME_chargb1, FRAME_chargb8, NULL, ai_c_cycleend, ogle_c_frames_action12};
 
 static mh2frame_t ogle_c_frames_action13[] =
 {
@@ -738,7 +727,7 @@ static mh2frame_t ogle_c_frames_action13[] =
 	{FRAME_chargc7, ai_c_move, 9, 0, 0, NULL, 0, NULL},
 	{FRAME_chargc8, ai_c_move, 10, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action13 = {FRAME_chargc1, FRAME_chargc8, ogle_c_frames_action13, ai_c_cycleend};
+mmove_t ogle_c_move_action13 = {FRAME_chargc1, FRAME_chargc8, NULL, ai_c_cycleend, ogle_c_frames_action13};
 
 static mh2frame_t ogle_c_frames_action14[] =
 {
@@ -751,21 +740,20 @@ static mh2frame_t ogle_c_frames_action14[] =
 	{FRAME_chargd7, ai_c_move, 8, 0, 0, NULL, 0, NULL},
 	{FRAME_chargd8, ai_c_move, 10, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action14 = {FRAME_chargd1, FRAME_chargd8, ogle_c_frames_action14, ai_c_cycleend};
+mmove_t ogle_c_move_action14 = {FRAME_chargd1, FRAME_chargd8, NULL, ai_c_cycleend, ogle_c_frames_action14};
 
 static mh2frame_t ogle_c_frames_action15[] =
 {
-	{FRAME_charge1, ai_c_move, 10, 0, 0, NULL,	0, NULL},
-	{FRAME_charge2, ai_c_move, 9, 0, 0, NULL,	0, NULL},
-	{FRAME_charge3, ai_c_move, 8, 0, 0, NULL,	0, NULL},
-	{FRAME_charge4, ai_c_move, 9, 0, 0, NULL,	0, NULL},
-	{FRAME_charge5, ai_c_move, 10, 0, 0, NULL,	0, NULL},
-	{FRAME_charge6, ai_c_move, 9, 0, 0, NULL,	0, NULL},
-	{FRAME_charge7, ai_c_move, 8, 0, 0, NULL,	0, NULL},
-	{FRAME_charge8, ai_c_move, 10, 0, 0, NULL,	0, NULL},
+	{FRAME_charge1, ai_c_move, 10, 0, 0, NULL, 0, NULL},
+	{FRAME_charge2, ai_c_move, 9, 0, 0, NULL, 0, NULL},
+	{FRAME_charge3, ai_c_move, 8, 0, 0, NULL, 0, NULL},
+	{FRAME_charge4, ai_c_move, 9, 0, 0, NULL, 0, NULL},
+	{FRAME_charge5, ai_c_move, 10, 0, 0, NULL, 0, NULL},
+	{FRAME_charge6, ai_c_move, 9, 0, 0, NULL, 0, NULL},
+	{FRAME_charge7, ai_c_move, 8, 0, 0, NULL, 0, NULL},
+	{FRAME_charge8, ai_c_move, 10, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_action15 = {FRAME_charge1, FRAME_charge8, ogle_c_frames_action15, ai_c_cycleend};
-
+mmove_t ogle_c_move_action15 = {FRAME_charge1, FRAME_charge8, NULL, ai_c_cycleend, ogle_c_frames_action15};
 
 static mh2frame_t ogle_c_frames_attack1[] =
 {
@@ -777,7 +765,7 @@ static mh2frame_t ogle_c_frames_attack1[] =
 	{FRAME_pikxup7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pikxup1, ai_c_move, 0, 0, 0, NULL, 0, ogle_strike},
 };
-mmove_t ogle_c_move_attack1 = {FRAME_pikxup2, FRAME_pikxup2 + 6, ogle_c_frames_attack1, ai_c_cycleend};
+mmove_t ogle_c_move_attack1 = {FRAME_pikxup2, FRAME_pikxup2 + 6, NULL, ai_c_cycleend, ogle_c_frames_attack1};
 
 static mh2frame_t ogle_c_frames_attack2[] =
 {
@@ -790,7 +778,7 @@ static mh2frame_t ogle_c_frames_attack2[] =
 	{FRAME_rnatka8, ai_c_move, 11, 0, 0, NULL, 0, NULL},
 	{FRAME_rnatka1, ai_c_move, 12, 0, 0, NULL, 0, ogle_strike},
 };
-mmove_t ogle_c_move_attack2 = {FRAME_rnatka2, FRAME_rnatka2 + 7, ogle_c_frames_attack2, ai_c_cycleend};
+mmove_t ogle_c_move_attack2 = {FRAME_rnatka2, FRAME_rnatka2 + 7, NULL, ai_c_cycleend, ogle_c_frames_attack2};
 
 static mh2frame_t ogle_c_frames_attack3[] =
 {
@@ -803,7 +791,7 @@ static mh2frame_t ogle_c_frames_attack3[] =
 	{FRAME_rnatkb8, ai_c_move, 11, 0, 0, NULL, 0, NULL},
 	{FRAME_rnatkb1, ai_c_move, 12, 0, 0, NULL, 0, ogle_strike},
 };
-mmove_t ogle_c_move_attack3 = {FRAME_rnatkb2, FRAME_rnatkb2 + 7, ogle_c_frames_attack3, ai_c_cycleend};
+mmove_t ogle_c_move_attack3 = {FRAME_rnatkb2, FRAME_rnatkb2 + 7, NULL, ai_c_cycleend, ogle_c_frames_attack3};
 
 /*----------------------------------------------------
 	ogle death
@@ -825,7 +813,7 @@ static mh2frame_t ogle_c_frames_death1[] =
 	{FRAME_deatha13, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deatha14, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_death1 = {FRAME_deatha1, FRAME_deatha14, ogle_c_frames_death1, ai_c_cycleend};
+mmove_t ogle_c_move_death1 = {FRAME_deatha1, FRAME_deatha14, NULL, ai_c_cycleend, ogle_c_frames_death1};
 
 static mh2frame_t ogle_c_frames_death2[] =
 {
@@ -844,7 +832,7 @@ static mh2frame_t ogle_c_frames_death2[] =
 	{FRAME_deathb13, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_deathb14, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_death2 = {FRAME_deathb1, FRAME_deathb14, ogle_c_frames_death2, ai_c_cycleend};
+mmove_t ogle_c_move_death2 = {FRAME_deathb1, FRAME_deathb14, NULL, ai_c_cycleend, ogle_c_frames_death2};
 
 /*----------------------------------------------------
 	ogle standing - temp
@@ -854,8 +842,7 @@ static mh2frame_t ogle_c_frames_idle1[] =
 	{FRAME_walk1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_walk1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_idle1 = {FRAME_walk1, FRAME_walk1 + 1, ogle_c_frames_idle1, ai_c_cycleend};
-
+mmove_t ogle_c_move_idle1 = {FRAME_walk1, FRAME_walk1 + 1, NULL, ai_c_cycleend, ogle_c_frames_idle1};
 
 static mh2frame_t ogle_c_frames_idle2[] =
 {
@@ -868,7 +855,7 @@ static mh2frame_t ogle_c_frames_idle2[] =
 	{FRAME_rstaid7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rstaid8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_idle2 = {FRAME_rstaid1, FRAME_rstaid8, ogle_c_frames_idle2, ai_c_cycleend};
+mmove_t ogle_c_move_idle2 = {FRAME_rstaid1, FRAME_rstaid8, NULL, ai_c_cycleend, ogle_c_frames_idle2};
 
 static mh2frame_t ogle_c_frames_idle3[] =
 {
@@ -884,7 +871,7 @@ static mh2frame_t ogle_c_frames_idle3[] =
 	{FRAME_rstawp10,ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rstawp11,ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_idle3 = {FRAME_rstawp1, FRAME_rstawp11, ogle_c_frames_idle3, ai_c_cycleend};
+mmove_t ogle_c_move_idle3 = {FRAME_rstawp1, FRAME_rstawp11, NULL, ai_c_cycleend, ogle_c_frames_idle3};
 
 static mh2frame_t ogle_c_frames_idle4[] =
 {
@@ -899,7 +886,7 @@ static mh2frame_t ogle_c_frames_idle4[] =
 	{FRAME_pkaxwp9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pkaxwp10,ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_idle4 = {FRAME_pkaxwp1, FRAME_pkaxwp10, ogle_c_frames_idle4, ai_c_cycleend};
+mmove_t ogle_c_move_idle4 = {FRAME_pkaxwp1, FRAME_pkaxwp10, NULL, ai_c_cycleend, ogle_c_frames_idle4};
 
 static mh2frame_t ogle_c_frames_idle5[] =
 {
@@ -917,7 +904,7 @@ static mh2frame_t ogle_c_frames_idle5[] =
 	{FRAME_hamwp12,ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_hamwp13,ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_idle5 = {FRAME_hamwp1, FRAME_hamwp13, ogle_c_frames_idle5, ai_c_cycleend};
+mmove_t ogle_c_move_idle5 = {FRAME_hamwp1, FRAME_hamwp13, NULL, ai_c_cycleend, ogle_c_frames_idle5};
 
 static mh2frame_t ogle_c_frames_idle6[] =
 {
@@ -930,8 +917,7 @@ static mh2frame_t ogle_c_frames_idle6[] =
 	{FRAME_brkidl7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brkidl8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_idle6 = {FRAME_brkidl1, FRAME_brkidl8, ogle_c_frames_idle6, ai_c_cycleend};
-
+mmove_t ogle_c_move_idle6 = {FRAME_brkidl1, FRAME_brkidl8, NULL, ai_c_cycleend, ogle_c_frames_idle6};
 
 /*----------------------------------------------------
 	ogle pain
@@ -943,7 +929,7 @@ static mh2frame_t ogle_c_frames_pain1[] =
 	{FRAME_paina3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_paina4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_pain1 = {FRAME_paina1, FRAME_paina4, ogle_c_frames_pain1, ai_c_cycleend};
+mmove_t ogle_c_move_pain1 = {FRAME_paina1, FRAME_paina4, NULL, ai_c_cycleend, ogle_c_frames_pain1};
 
 static mh2frame_t ogle_c_frames_pain2[] =
 {
@@ -956,7 +942,7 @@ static mh2frame_t ogle_c_frames_pain2[] =
 	{FRAME_rstapn7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rstapn8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_pain2 = {FRAME_rstapn1, FRAME_rstapn8, ogle_c_frames_pain2, ai_c_cycleend};
+mmove_t ogle_c_move_pain2 = {FRAME_rstapn1, FRAME_rstapn8, NULL, ai_c_cycleend, ogle_c_frames_pain2};
 
 static mh2frame_t ogle_c_frames_pain3[] =
 {
@@ -967,8 +953,7 @@ static mh2frame_t ogle_c_frames_pain3[] =
 	{FRAME_brkpn5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brkpn6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_pain3 = {FRAME_brkpn1, FRAME_brkpn6, ogle_c_frames_pain3, ai_c_cycleend};
-
+mmove_t ogle_c_move_pain3 = {FRAME_brkpn1, FRAME_brkpn6, NULL, ai_c_cycleend, ogle_c_frames_pain3};
 
 /*----------------------------------------------------
 	ogle transitions
@@ -982,8 +967,7 @@ static mh2frame_t ogle_c_frames_trans1[] =
 	{FRAME_rsta5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rsta6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_trans1 = {FRAME_rsta1, FRAME_rsta6, ogle_c_frames_trans1, ai_c_cycleend};
-
+mmove_t ogle_c_move_trans1 = {FRAME_rsta1, FRAME_rsta6, NULL, ai_c_cycleend, ogle_c_frames_trans1};
 
 static mh2frame_t ogle_c_frames_trans2[] =
 {
@@ -995,7 +979,7 @@ static mh2frame_t ogle_c_frames_trans2[] =
 	{FRAME_brka6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brka7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_trans2 = {FRAME_brka1, FRAME_brka7, ogle_c_frames_trans2, ai_c_cycleend};
+mmove_t ogle_c_move_trans2 = {FRAME_brka1, FRAME_brka7, NULL, ai_c_cycleend, ogle_c_frames_trans2};
 
 static mh2frame_t ogle_c_frames_trans3[] =
 {
@@ -1006,14 +990,14 @@ static mh2frame_t ogle_c_frames_trans3[] =
 	{FRAME_brkb5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_brkb6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_trans3 = {FRAME_brkb1, FRAME_brkb6, ogle_c_frames_trans3, ai_c_cycleend};
+mmove_t ogle_c_move_trans3 = {FRAME_brkb1, FRAME_brkb6, NULL, ai_c_cycleend, ogle_c_frames_trans3};
 
 static mh2frame_t ogle_c_frames_trans4[] =
 {
 	{FRAME_celc1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celc2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_trans4 = {FRAME_celc1, FRAME_celc2, ogle_c_frames_trans4, ai_c_cycleend};
+mmove_t ogle_c_move_trans4 = {FRAME_celc1, FRAME_celc2, NULL, ai_c_cycleend, ogle_c_frames_trans4};
 
 static mh2frame_t ogle_c_frames_trans5[] =
 {
@@ -1022,15 +1006,14 @@ static mh2frame_t ogle_c_frames_trans5[] =
 	{FRAME_celd3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_celd4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_trans5 = {FRAME_celd1, FRAME_celd4, ogle_c_frames_trans5, ai_c_cycleend};
+mmove_t ogle_c_move_trans5 = {FRAME_celd1, FRAME_celd4, NULL, ai_c_cycleend, ogle_c_frames_trans5};
 
 static mh2frame_t ogle_c_frames_trans6[] =
 {
 	{FRAME_cele1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cele2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_trans6 = {FRAME_cele1, FRAME_cele2, ogle_c_frames_trans6, ai_c_cycleend};
-
+mmove_t ogle_c_move_trans6 = {FRAME_cele1, FRAME_cele2, NULL, ai_c_cycleend, ogle_c_frames_trans6};
 
 /*----------------------------------------------------
 	ogle walking
@@ -1046,8 +1029,7 @@ static mh2frame_t ogle_c_frames_walk1[] =
 	{FRAME_walk7, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_walk8, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_walk1 = {FRAME_walk1, FRAME_walk8, ogle_c_frames_walk1, ai_c_cycleend};
-
+mmove_t ogle_c_move_walk1 = {FRAME_walk1, FRAME_walk8, NULL, ai_c_cycleend, ogle_c_frames_walk1};
 
 static mh2frame_t ogle_c_frames_walk2[] =
 {
@@ -1060,7 +1042,7 @@ static mh2frame_t ogle_c_frames_walk2[] =
 	{FRAME_pusha7, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_pusha8, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_walk2 = {FRAME_pusha1, FRAME_pusha8, ogle_c_frames_walk2, ai_c_cycleend};
+mmove_t ogle_c_move_walk2 = {FRAME_pusha1, FRAME_pusha8, NULL, ai_c_cycleend, ogle_c_frames_walk2};
 
 static mh2frame_t ogle_c_frames_walk3[] =
 {
@@ -1073,7 +1055,7 @@ static mh2frame_t ogle_c_frames_walk3[] =
 	{FRAME_pushb7, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_pushb8, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_walk3 = {FRAME_pushb1, FRAME_pushb8, ogle_c_frames_walk3, ai_c_cycleend};
+mmove_t ogle_c_move_walk3 = {FRAME_pushb1, FRAME_pushb8, NULL, ai_c_cycleend, ogle_c_frames_walk3};
 
 static mh2frame_t ogle_c_frames_walk4[] =
 {
@@ -1086,4 +1068,4 @@ static mh2frame_t ogle_c_frames_walk4[] =
 	{FRAME_pushc7, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_pushc8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t ogle_c_move_walk4 = {FRAME_pushc1, FRAME_pushc8, ogle_c_frames_walk4, ai_c_cycleend};
+mmove_t ogle_c_move_walk4 = {FRAME_pushc1, FRAME_pushc8, NULL, ai_c_cycleend, ogle_c_frames_walk4};

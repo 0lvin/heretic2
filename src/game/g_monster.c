@@ -1285,7 +1285,6 @@ M_MoveFrame(edict_t *self)
 		return;
 	}
 
-#if 0
 	self->nextthink = level.time + FRAMETIME;
 
 	if ((self->monsterinfo.nextframe) &&
@@ -1453,7 +1452,6 @@ M_MoveFrame(edict_t *self)
 			monster_dynamic_damage(self);
 		}
 	}
-#endif
 }
 
 void

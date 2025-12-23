@@ -16,219 +16,216 @@
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_idle1 [] =
 {
-	{FRAME_idle1,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle2,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle3,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle4,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle5,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle6,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle7,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle8,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle9,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle10, 	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle11,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle12,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle13,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle14,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle15,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle16,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle17,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle18,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle19,	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle20, 	NULL, 0, 0, 0, ai_stand, 0, NULL},
-	{FRAME_idle21,	NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle1, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle2, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle3, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle4, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle5, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle6, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle7, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle8, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle9, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle10,	NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle11, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle12, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle13, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle14, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle15, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle16, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle17, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle18, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle19, NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle20,	NULL, 0, 0, 0, ai_stand, 0, NULL},
+	{FRAME_idle21, NULL, 0, 0, 0, ai_stand, 0, NULL},
 };
-mmove_t mssithra_move_idle1 = {FRAME_idle1, FRAME_idle21, mssithra_frames_idle1, mssithraMood};
+mmove_t mssithra_move_idle1 = {FRAME_idle1, FRAME_idle21, NULL, mssithraMood, mssithra_frames_idle1};
 
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_walk1 [] =
 {
-	{FRAME_walk1, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
-	{FRAME_walk2, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
-	{FRAME_walk3, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
-	{FRAME_walk4, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
-	{FRAME_walk5, 	NULL, 0, 0, 0, ai_walk, 9, NULL},
-	{FRAME_walk6, 	NULL, 0, 0, 0, ai_walk, 9, NULL},
-	{FRAME_walk7, 	NULL, 0, 0, 0, ai_walk, 9, NULL},
-	{FRAME_walk8, 	NULL, 0, 0, 0, ai_walk, 10, NULL},
-	{FRAME_walk9, 	NULL, 0, 0, 0, ai_walk, 10, NULL},
-	{FRAME_walk10, 	NULL, 0, 0, 0, ai_walk, 10, NULL},
-	{FRAME_walk11, 	NULL, 0, 0, 0, ai_walk, 10, NULL},
-	{FRAME_walk12, 	NULL, 0, 0, 0, ai_walk, 10, NULL},
-	{FRAME_walk13, 	NULL, 0, 0, 0, ai_walk, 9, NULL},
-	{FRAME_walk14, 	NULL, 0, 0, 0, ai_walk, 9, NULL},
-	{FRAME_walk15, 	NULL, 0, 0, 0, ai_walk, 9, NULL},
-	{FRAME_walk16, 	NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk1,	NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk2,	NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk3,	NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk4,	NULL, 0, 0, 0, ai_walk, 8, NULL},
+	{FRAME_walk5,	NULL, 0, 0, 0, ai_walk, 9, NULL},
+	{FRAME_walk6,	NULL, 0, 0, 0, ai_walk, 9, NULL},
+	{FRAME_walk7,	NULL, 0, 0, 0, ai_walk, 9, NULL},
+	{FRAME_walk8,	NULL, 0, 0, 0, ai_walk, 10, NULL},
+	{FRAME_walk9,	NULL, 0, 0, 0, ai_walk, 10, NULL},
+	{FRAME_walk10,	NULL, 0, 0, 0, ai_walk, 10, NULL},
+	{FRAME_walk11,	NULL, 0, 0, 0, ai_walk, 10, NULL},
+	{FRAME_walk12,	NULL, 0, 0, 0, ai_walk, 10, NULL},
+	{FRAME_walk13,	NULL, 0, 0, 0, ai_walk, 9, NULL},
+	{FRAME_walk14,	NULL, 0, 0, 0, ai_walk, 9, NULL},
+	{FRAME_walk15,	NULL, 0, 0, 0, ai_walk, 9, NULL},
+	{FRAME_walk16,	NULL, 0, 0, 0, ai_walk, 8, NULL},
 };
-mmove_t mssithra_move_walk1 = {FRAME_walk1, FRAME_walk16, mssithra_frames_walk1, NULL};//mssithraMood};
+mmove_t mssithra_move_walk1 = {FRAME_walk1, FRAME_walk16, NULL, NULL, mssithra_frames_walk1};
 
 /*----------------------------------------------------------------------
   mssithra Walk - walking along
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_run1 [] =
 {
-	{FRAME_walk1, 	NULL, 0, 0, 0, ai_run, 8, NULL},
-	{FRAME_walk2, 	NULL, 0, 0, 0, ai_run, 8, NULL},
-	{FRAME_walk3, 	NULL, 0, 0, 0, ai_run, 8, NULL},
-	{FRAME_walk4, 	NULL, 0, 0, 0, ai_run, 8, NULL},
-	{FRAME_walk5, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk6, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk7, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk8, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk9, 	NULL, 0, 0, 0, ai_run, 10, NULL},
-	{FRAME_walk10, 	NULL, 0, 0, 0, ai_run, 10, NULL},
-	{FRAME_walk11, 	NULL, 0, 0, 0, ai_run, 10, NULL},
-	{FRAME_walk12, 	NULL, 0, 0, 0, ai_run, 10, NULL},
-	{FRAME_walk13, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk14, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk15, 	NULL, 0, 0, 0, ai_run, 9, NULL},
-	{FRAME_walk16, 	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk1,	NULL, 0, 0, 0, ai_run, 8, NULL},
+	{FRAME_walk2,	NULL, 0, 0, 0, ai_run, 8, NULL},
+	{FRAME_walk3,	NULL, 0, 0, 0, ai_run, 8, NULL},
+	{FRAME_walk4,	NULL, 0, 0, 0, ai_run, 8, NULL},
+	{FRAME_walk5,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk6,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk7,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk8,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk9,	NULL, 0, 0, 0, ai_run, 10, NULL},
+	{FRAME_walk10,	NULL, 0, 0, 0, ai_run, 10, NULL},
+	{FRAME_walk11,	NULL, 0, 0, 0, ai_run, 10, NULL},
+	{FRAME_walk12,	NULL, 0, 0, 0, ai_run, 10, NULL},
+	{FRAME_walk13,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk14,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk15,	NULL, 0, 0, 0, ai_run, 9, NULL},
+	{FRAME_walk16,	NULL, 0, 0, 0, ai_run, 9, NULL},
 };
-mmove_t mssithra_move_run1 = {FRAME_walk1, FRAME_walk16, mssithra_frames_run1, NULL};//mssithra_decide_gallop};
+mmove_t mssithra_move_run1 = {FRAME_walk1, FRAME_walk16, NULL, NULL, mssithra_frames_run1};
 
 /*----------------------------------------------------------------------
   mssithra backpedal - looking around and standing
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_backpedal1 [] =
 {
-	{FRAME_walk16,	NULL, 0, 0, 0, ai_charge2, -8, NULL},
-	{FRAME_walk15,	NULL, 0, 0, 0, ai_charge2, -8, NULL},
-	{FRAME_walk14,	NULL, 0, 0, 0, ai_charge2, -8, NULL}, //mssithraArrow,
-	{FRAME_walk13,	NULL, 0, 0, 0, ai_charge2, -8, NULL},
-	{FRAME_walk12,	NULL, 0, 0, 0, ai_charge2, -9, NULL},
-	{FRAME_walk11,	NULL, 0, 0, 0, ai_charge2, -9, NULL},
-	{FRAME_walk10,	NULL, 0, 0, 0, ai_charge2, -9, NULL}, //mssithraArrow,
-	{FRAME_walk9,	NULL, 0, 0, 0, ai_charge2, -9, NULL},
-	{FRAME_walk8,	NULL, 0, 0, 0, ai_charge2, -10, NULL},
-	{FRAME_walk7, 	NULL, 0, 0, 0, ai_charge2, -10, NULL},
-	{FRAME_walk6,	NULL, 0, 0, 0, ai_charge2, -10, NULL},
-	{FRAME_walk5,	NULL, 0, 0, 0, ai_charge2, -10, NULL},
-	{FRAME_walk4,	NULL, 0, 0, 0, ai_charge2, -9, NULL}, //mssithraArrow,
-	{FRAME_walk3,	NULL, 0, 0, 0, ai_charge2, -9, NULL},
-	{FRAME_walk2,	NULL, 0, 0, 0, ai_charge2, -9, NULL},
-	{FRAME_walk1,	NULL, 0, 0, 0, ai_charge2, -9, NULL},
+	{FRAME_walk16, NULL, 0, 0, 0, ai_charge2, -8, NULL},
+	{FRAME_walk15, NULL, 0, 0, 0, ai_charge2, -8, NULL},
+	{FRAME_walk14, NULL, 0, 0, 0, ai_charge2, -8, NULL}, //mssithraArrow,
+	{FRAME_walk13, NULL, 0, 0, 0, ai_charge2, -8, NULL},
+	{FRAME_walk12, NULL, 0, 0, 0, ai_charge2, -9, NULL},
+	{FRAME_walk11, NULL, 0, 0, 0, ai_charge2, -9, NULL},
+	{FRAME_walk10, NULL, 0, 0, 0, ai_charge2, -9, NULL}, //mssithraArrow,
+	{FRAME_walk9, NULL, 0, 0, 0, ai_charge2, -9, NULL},
+	{FRAME_walk8, NULL, 0, 0, 0, ai_charge2, -10, NULL},
+	{FRAME_walk7,	NULL, 0, 0, 0, ai_charge2, -10, NULL},
+	{FRAME_walk6, NULL, 0, 0, 0, ai_charge2, -10, NULL},
+	{FRAME_walk5, NULL, 0, 0, 0, ai_charge2, -10, NULL},
+	{FRAME_walk4, NULL, 0, 0, 0, ai_charge2, -9, NULL}, //mssithraArrow,
+	{FRAME_walk3, NULL, 0, 0, 0, ai_charge2, -9, NULL},
+	{FRAME_walk2, NULL, 0, 0, 0, ai_charge2, -9, NULL},
+	{FRAME_walk1, NULL, 0, 0, 0, ai_charge2, -9, NULL},
 };
-mmove_t mssithra_move_backpedal1 = {FRAME_walk1, FRAME_walk16, mssithra_frames_backpedal1, NULL};//mssithra_decide_backpedal};
-
+mmove_t mssithra_move_backpedal1 = {FRAME_walk1, FRAME_walk16, NULL, NULL, mssithra_frames_backpedal1};
 
 /*----------------------------------------------------------------------
   mssithra death_b - looking around and standing
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_death1 [] =
 {
-	{FRAME_death1,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death2,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death3,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death4,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death5,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death6,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death7,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death8,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death9,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death10, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death11,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death12,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death13,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death14,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death15,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death16,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death17,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death18,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death19,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death20, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death21,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death22,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death23,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death24,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death25,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death26,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death27,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death28,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death29,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death30, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death31,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death32,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death33,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death34,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death35,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death36,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death37,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death38,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death39,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death40, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death41,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death42,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death43,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death44,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_death45,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death10,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death20,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death24, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death25, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death26, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death27, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death28, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death29, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death30,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death31, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death32, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death33, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death34, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death35, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death36, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death37, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death38, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death39, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death40,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death41, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death42, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death43, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death44, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_death45, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mssithra_move_death1 = {FRAME_death1, FRAME_death45, mssithra_frames_death1, mssithra_dead};
-
+mmove_t mssithra_move_death1 = {FRAME_death1, FRAME_death45, NULL, mssithra_dead, mssithra_frames_death1};
 
 /*----------------------------------------------------------------------
   mssithra melee - looking around and standing
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_claw1 [] =
 {
-	{FRAME_claw1,	NULL, 0, 0, 0, ai_charge2, 20, NULL},
-	{FRAME_claw2,	NULL, 0, 0, 0, ai_charge2, 10, mmssithraRandomGrowlSound},
-	{FRAME_claw3,	NULL, 0, 0, 0, ai_charge2, 8, NULL},
-	{FRAME_claw4,	NULL, 0, 0, 0, ai_charge2, 6, NULL},
-	{FRAME_claw5,	NULL, 0, 0, 0, ai_charge2, 4, mssithraSwipe},
-	{FRAME_claw6,	NULL, 0, 0, 0, ai_charge2, 3, NULL},
-	{FRAME_claw7,	NULL, 0, 0, 0, ai_charge2, 3, NULL},
-	{FRAME_claw8,	NULL, 0, 0, 0, ai_charge2, 4, mssithraSwipe},
-	{FRAME_claw9,	NULL, 0, 0, 0, ai_charge2, 3, NULL},
-	{FRAME_claw10,	NULL, 0, 0, 0, ai_charge2, 3, NULL},
+	{FRAME_claw1, NULL, 0, 0, 0, ai_charge2, 20, NULL},
+	{FRAME_claw2, NULL, 0, 0, 0, ai_charge2, 10, mmssithraRandomGrowlSound},
+	{FRAME_claw3, NULL, 0, 0, 0, ai_charge2, 8, NULL},
+	{FRAME_claw4, NULL, 0, 0, 0, ai_charge2, 6, NULL},
+	{FRAME_claw5, NULL, 0, 0, 0, ai_charge2, 4, mssithraSwipe},
+	{FRAME_claw6, NULL, 0, 0, 0, ai_charge2, 3, NULL},
+	{FRAME_claw7, NULL, 0, 0, 0, ai_charge2, 3, NULL},
+	{FRAME_claw8, NULL, 0, 0, 0, ai_charge2, 4, mssithraSwipe},
+	{FRAME_claw9, NULL, 0, 0, 0, ai_charge2, 3, NULL},
+	{FRAME_claw10, NULL, 0, 0, 0, ai_charge2, 3, NULL},
 };
-mmove_t mssithra_move_claw1 = {FRAME_claw1, FRAME_claw7, mssithra_frames_claw1, mssithraMood};//mssithra_decide_gallop};
-
+mmove_t mssithra_move_claw1 = {FRAME_claw1, FRAME_claw7, NULL, mssithraMood, mssithra_frames_claw1};
 
 /*----------------------------------------------------------------------
   mssithra jump
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_jump1 [] =
 {
-	{FRAME_jump1,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump2,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump3,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump4,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump5,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump6,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump7,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump8,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump9,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump10,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump11,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump12,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump13,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump14,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump14, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mssithra_move_jump1 = {FRAME_jump1, FRAME_jump14, mssithra_frames_jump1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_jump1 = {FRAME_jump1, FRAME_jump14, NULL, mssithraMood, mssithra_frames_jump1};
 
 /*----------------------------------------------------------------------
   mssithra forced jump
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_fjump [] =
 {
-	{FRAME_jump1,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump2,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump3,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump4,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump5,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump6,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump7,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump8,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump9,	NULL, 0, 0, 0, NULL, 0, NULL}, //mmssithraRandomGrowlSound,
-	{FRAME_jump10,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump11,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump12,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump13,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_jump14,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump9, NULL, 0, 0, 0, NULL, 0, NULL}, //mmssithraRandomGrowlSound,
+	{FRAME_jump10, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_jump14, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mssithra_move_fjump = {FRAME_jump1, FRAME_jump14, mssithra_frames_fjump, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_fjump = {FRAME_jump1, FRAME_jump14, NULL, mssithraMood, mssithra_frames_fjump};
 
 /*----------------------------------------------------------------------
   mssithra pain_a - looking around and standing
@@ -239,145 +236,144 @@ mmove_t mssithra_move_fjump = {FRAME_jump1, FRAME_jump14, mssithra_frames_fjump,
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_shoota1 [] =
 {
-	{FRAME_shoota1,	NULL, 0, 0, 0, ai_charge2, 0, NULL}, //0
-	{FRAME_shoota2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota3,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota4,	NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
-	{FRAME_shoota5,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota6,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota7,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota8,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota9,	NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow}, //8: arrow here
+	{FRAME_shoota1, NULL, 0, 0, 0, ai_charge2, 0, NULL}, //0
+	{FRAME_shoota2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota3, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota4, NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
+	{FRAME_shoota5, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota6, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota7, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota8, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota9, NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow}, //8: arrow here
 	{FRAME_shoota10, NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota11,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota12,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota13,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota14,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota15,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota16,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota17,	NULL, 0, 0, 0, ai_charge2, 0, NULL}, //check here to loop back to 8
-	{FRAME_shoota18,	NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
-	{FRAME_shoota19,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota11, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota12, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota13, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota14, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota15, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota16, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota17, NULL, 0, 0, 0, ai_charge2, 0, NULL}, //check here to loop back to 8
+	{FRAME_shoota18, NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
+	{FRAME_shoota19, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_shoota20, NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota21,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shoota22,	NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
-	{FRAME_shoota23,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota21, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shoota22, NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
+	{FRAME_shoota23, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t mssithra_move_shoota1 = {FRAME_shoota1, FRAME_shoota23, mssithra_frames_shoota1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_shoota1 = {FRAME_shoota1, FRAME_shoota23, NULL, mssithraMood, mssithra_frames_shoota1};
 
 /*----------------------------------------------------------------------
   mssithra shoot
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_shootb1 [] =
 {
-	{FRAME_shootb1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},//0
-	{FRAME_shootb2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb3,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb4,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb5,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb6,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb7,	NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
-	{FRAME_shootb8,	NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow}, //7: shoot here
-	{FRAME_shootb9,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb1, NULL, 0, 0, 0, ai_charge2, 0, NULL},//0
+	{FRAME_shootb2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb3, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb4, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb5, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb6, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb7, NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
+	{FRAME_shootb8, NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow}, //7: shoot here
+	{FRAME_shootb9, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_shootb10, NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb11,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb12,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb13,	NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
-	{FRAME_shootb14,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb15,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb16,	NULL, 0, 0, 0, ai_charge2, 0, NULL}, //check here to loop back to 7
-	{FRAME_shootb17,	NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
-	{FRAME_shootb18,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb19,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb11, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb12, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb13, NULL, 0, 0, 0, ai_charge2, 0, mmssithraRandomGrowlSound},
+	{FRAME_shootb14, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb15, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb16, NULL, 0, 0, 0, ai_charge2, 0, NULL}, //check here to loop back to 7
+	{FRAME_shootb17, NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
+	{FRAME_shootb18, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb19, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 	{FRAME_shootb20, NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb21,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_shootb22,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb21, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_shootb22, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t mssithra_move_shootb1 = {FRAME_shootb1, FRAME_shootb22, mssithra_frames_shootb1, mssithraMood};//mssithra_decide_gallop};
+mmove_t mssithra_move_shootb1 = {FRAME_shootb1, FRAME_shootb22, NULL, mssithraMood, mssithra_frames_shootb1};
 
 /*----------------------------------------------------------------------
   mssithra roar
 -----------------------------------------------------------------------*/
 static mh2frame_t mssithra_frames_roar [] =
 {
-	{FRAME_roar1,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar2,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar3,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar4,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar5,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar6,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar7,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar8,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar9,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar10, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar11,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar12,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar13,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar14,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar15,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar16,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar17,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar18,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar19,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar20, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar21,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar22,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar23,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_roar24,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar10,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar20,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar21, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar22, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar23, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_roar24, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mssithra_move_roar = {FRAME_roar1, FRAME_roar24, mssithra_frames_roar, mssithraMood};//mssithra_decide_gallop};
-
+mmove_t mssithra_move_roar = {FRAME_roar1, FRAME_roar24, NULL, mssithraMood, mssithra_frames_roar};
 
 static mh2frame_t mssithra_frames_delay [] =
 {
-	{FRAME_idle1,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle2,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle3,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle4,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle5,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle6,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle7,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle8,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle9,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle10, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle11,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle12,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle13,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle14,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle15,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle16,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle17,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle18,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle19,	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle20, 	NULL, 0, 0, 0, NULL, 0, NULL},
-	{FRAME_idle21,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle1, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle2, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle3, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle4, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle5, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle6, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle7, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle8, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle9, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle10,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle11, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle12, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle13, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle14, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle15, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle16, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle17, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle18, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle19, NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle20,	NULL, 0, 0, 0, NULL, 0, NULL},
+	{FRAME_idle21, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t mssithra_move_delay = {FRAME_idle1, FRAME_idle21, mssithra_frames_delay, NULL};//mssithraMood};
+mmove_t mssithra_move_delay = {FRAME_idle1, FRAME_idle21, NULL, NULL, mssithra_frames_delay};
 
 //New shooting animations
 static mh2frame_t mssithra_frames_shoot1_trans [] =
 {
-	{FRAME_newshot1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot3,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot3, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t mssithra_move_shoot1_trans = {FRAME_newshot1, FRAME_newshot3, mssithra_frames_shoot1_trans, mssithra_ShotLoop};
+mmove_t mssithra_move_shoot1_trans = {FRAME_newshot1, FRAME_newshot3, NULL, mssithra_ShotLoop, mssithra_frames_shoot1_trans};
 
 static mh2frame_t mssithra_frames_shoot1_loop [] =
 {
-	{FRAME_newshot4,	NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
-	{FRAME_newshot5,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot6,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot7,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot8,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot9,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot4, NULL, 0, 0, 0, ai_charge2, 0, mssithraArrow},
+	{FRAME_newshot5, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot6, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot7, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot8, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot9, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t mssithra_move_shoot1_loop = {FRAME_newshot4, FRAME_newshot9, mssithra_frames_shoot1_loop, mssithraCheckShotLoop};
+mmove_t mssithra_move_shoot1_loop = {FRAME_newshot4, FRAME_newshot9, NULL, mssithraCheckShotLoop, mssithra_frames_shoot1_loop};
 
 static mh2frame_t mssithra_frames_shoot1_detrans [] =
 {
-	{FRAME_newshot3,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot2,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
-	{FRAME_newshot1,	NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot3, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot2, NULL, 0, 0, 0, ai_charge2, 0, NULL},
+	{FRAME_newshot1, NULL, 0, 0, 0, ai_charge2, 0, NULL},
 };
-mmove_t mssithra_move_shoot1_detrans = {FRAME_newshot1, FRAME_newshot3, mssithra_frames_shoot1_detrans, mssithraMood};
+mmove_t mssithra_move_shoot1_detrans = {FRAME_newshot1, FRAME_newshot3, NULL, mssithraMood, mssithra_frames_shoot1_detrans};

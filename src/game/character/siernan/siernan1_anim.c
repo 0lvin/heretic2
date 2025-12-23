@@ -45,7 +45,7 @@ static mh2frame_t siernan1_frames_c_action1 [] =
 	{FRAME_A20, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_A21, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action1 = {FRAME_A1, FRAME_A21, siernan1_frames_c_action1, ai_c_cycleend};
+mmove_t siernan1_move_c_action1 = {FRAME_A1, FRAME_A21, NULL, ai_c_cycleend, siernan1_frames_c_action1};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -73,7 +73,7 @@ static mh2frame_t siernan1_frames_c_action2 [] =
 	{FRAME_B19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_B20, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action2 = {FRAME_B1, FRAME_B20, siernan1_frames_c_action2, ai_c_cycleend};
+mmove_t siernan1_move_c_action2 = {FRAME_B1, FRAME_B20, NULL, ai_c_cycleend, siernan1_frames_c_action2};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -97,8 +97,7 @@ static mh2frame_t siernan1_frames_c_action3 [] =
 	{FRAME_C15, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_C16, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action3 = {FRAME_C1, FRAME_C16, siernan1_frames_c_action3, ai_c_cycleend};
-
+mmove_t siernan1_move_c_action3 = {FRAME_C1, FRAME_C16, NULL, ai_c_cycleend, siernan1_frames_c_action3};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -117,7 +116,7 @@ static mh2frame_t siernan1_frames_c_action4 [] =
 	{FRAME_D10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_D11, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action4 = {FRAME_D1, FRAME_D11, siernan1_frames_c_action4, ai_c_cycleend};
+mmove_t siernan1_move_c_action4 = {FRAME_D1, FRAME_D11, NULL, ai_c_cycleend, siernan1_frames_c_action4};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -162,8 +161,7 @@ static mh2frame_t siernan1_frames_c_action5 [] =
 	{FRAME_E36, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_E37, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action5 = {FRAME_E1, FRAME_E37, siernan1_frames_c_action5, ai_c_cycleend};
-
+mmove_t siernan1_move_c_action5 = {FRAME_E1, FRAME_E37, NULL, ai_c_cycleend, siernan1_frames_c_action5};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -308,8 +306,7 @@ static mh2frame_t siernan1_frames_c_action6 [] =
 	{FRAME_uhave135, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_uhave136, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action6 = {FRAME_uhave1, FRAME_uhave136, siernan1_frames_c_action6, ai_c_cycleend};
-
+mmove_t siernan1_move_c_action6 = {FRAME_uhave1, FRAME_uhave136, NULL, ai_c_cycleend, siernan1_frames_c_action6};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -385,7 +382,7 @@ static mh2frame_t siernan1_frames_c_action7 [] =
 	{FRAME_rember67, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_rember68, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action7 = {FRAME_rember1, FRAME_rember68, siernan1_frames_c_action7, ai_c_cycleend};
+mmove_t siernan1_move_c_action7 = {FRAME_rember1, FRAME_rember68, NULL, ai_c_cycleend, siernan1_frames_c_action7};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -474,7 +471,7 @@ static mh2frame_t siernan1_frames_c_action8 [] =
 	{FRAME_noknow80, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_noknow81, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action8 = {FRAME_noknow1, FRAME_noknow81, siernan1_frames_c_action8, ai_c_cycleend};
+mmove_t siernan1_move_c_action8 = {FRAME_noknow1, FRAME_noknow81, NULL, ai_c_cycleend, siernan1_frames_c_action8};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -600,7 +597,7 @@ static mh2frame_t siernan1_frames_c_action9 [] =
 	{FRAME_ifear116, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ifear117, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action9 = {FRAME_ifear1, FRAME_ifear117, siernan1_frames_c_action9, ai_c_cycleend};
+mmove_t siernan1_move_c_action9 = {FRAME_ifear1, FRAME_ifear117, NULL, ai_c_cycleend, siernan1_frames_c_action9};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -752,7 +749,7 @@ static mh2frame_t siernan1_frames_c_action10 [] =
 	{FRAME_notin142, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_notin143, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action10 = {FRAME_notin1, FRAME_notin143, siernan1_frames_c_action10, ai_c_cycleend};
+mmove_t siernan1_move_c_action10 = {FRAME_notin1, FRAME_notin143, NULL, ai_c_cycleend, siernan1_frames_c_action10};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -860,7 +857,7 @@ static mh2frame_t siernan1_frames_c_action11 [] =
 	{FRAME_yes99, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_yes100, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action11 = {FRAME_yes1, FRAME_yes100, siernan1_frames_c_action11, ai_c_cycleend};
+mmove_t siernan1_move_c_action11 = {FRAME_yes1, FRAME_yes100, NULL, ai_c_cycleend, siernan1_frames_c_action11};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -890,8 +887,7 @@ static mh2frame_t siernan1_frames_c_action12 [] =
 	{FRAME_siping21, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_siping22, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action12 = {FRAME_siping1, FRAME_siping22, siernan1_frames_c_action12, ai_c_cycleend};
-
+mmove_t siernan1_move_c_action12 = {FRAME_siping1, FRAME_siping22, NULL, ai_c_cycleend, siernan1_frames_c_action12};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -908,7 +904,7 @@ static mh2frame_t siernan1_frames_c_action13 [] =
 	{FRAME_accept8, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_accept9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_action13 = {FRAME_accept1, FRAME_accept9, siernan1_frames_c_action13, ai_c_cycleend};
+mmove_t siernan1_move_c_action13 = {FRAME_accept1, FRAME_accept9, NULL, ai_c_cycleend, siernan1_frames_c_action13};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -940,7 +936,7 @@ static mh2frame_t siernan1_frames_c_idle1 [] =
 	{FRAME_Idle23, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Idle24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_idle1 = {FRAME_Idle1, FRAME_Idle24, siernan1_frames_c_idle1, ai_c_cycleend};
+mmove_t siernan1_move_c_idle1 = {FRAME_Idle1, FRAME_Idle24, NULL, ai_c_cycleend, siernan1_frames_c_idle1};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -950,7 +946,7 @@ static mh2frame_t siernan1_frames_c_idle2 [] =
 	{FRAME_Idle24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Idle24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_idle2 = {FRAME_Idle24, FRAME_Idle24 + 1, siernan1_frames_c_idle2, ai_c_cycleend};
+mmove_t siernan1_move_c_idle2 = {FRAME_Idle24, FRAME_Idle24 + 1, NULL, ai_c_cycleend, siernan1_frames_c_idle2};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -960,7 +956,7 @@ static mh2frame_t siernan1_frames_c_idle3 [] =
 	{FRAME_accept1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_accept1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_idle3 = {FRAME_accept1, FRAME_accept2, siernan1_frames_c_idle3, ai_c_cycleend};
+mmove_t siernan1_move_c_idle3 = {FRAME_accept1, FRAME_accept2, NULL, ai_c_cycleend, siernan1_frames_c_idle3};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -970,7 +966,7 @@ static mh2frame_t siernan1_frames_c_idle4 [] =
 	{FRAME_accept9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_accept9, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_idle4 = {FRAME_accept9, FRAME_accept9 + 1, siernan1_frames_c_idle4, ai_c_cycleend};
+mmove_t siernan1_move_c_idle4 = {FRAME_accept9, FRAME_accept9 + 1, NULL, ai_c_cycleend, siernan1_frames_c_idle4};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -980,7 +976,7 @@ static mh2frame_t siernan1_frames_c_idle5 [] =
 	{FRAME_siping22, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_siping22, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_idle5 = {FRAME_siping22, FRAME_siping22 + 1, siernan1_frames_c_idle5, ai_c_cycleend};
+mmove_t siernan1_move_c_idle5 = {FRAME_siping22, FRAME_siping22 + 1, NULL, ai_c_cycleend, siernan1_frames_c_idle5};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -1000,7 +996,7 @@ static mh2frame_t siernan1_frames_c_walk1 [] =
 	{FRAME_walk11, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_walk12, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_walk1 = {FRAME_walk1, FRAME_walk12, siernan1_frames_c_walk1, ai_c_cycleend};
+mmove_t siernan1_move_c_walk1 = {FRAME_walk1, FRAME_walk12, NULL, ai_c_cycleend, siernan1_frames_c_walk1};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -1014,8 +1010,7 @@ static mh2frame_t siernan1_frames_c_walkstart [] =
 	{FRAME_strtwalk5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_strtwalk6, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_walkstart = {FRAME_strtwalk1, FRAME_strtwalk6, siernan1_frames_c_walkstart, ai_c_cycleend};
-
+mmove_t siernan1_move_c_walkstart = {FRAME_strtwalk1, FRAME_strtwalk6, NULL, ai_c_cycleend, siernan1_frames_c_walkstart};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -1028,4 +1023,4 @@ static mh2frame_t siernan1_frames_c_walkstop1 [] =
 	{FRAME_stpwalk4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_stpwalk5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan1_move_c_walkstop1 = {FRAME_stpwalk1, FRAME_stpwalk5, siernan1_frames_c_walkstop1, ai_c_cycleend};
+mmove_t siernan1_move_c_walkstop1 = {FRAME_stpwalk1, FRAME_stpwalk5, NULL, ai_c_cycleend, siernan1_frames_c_walkstop1};

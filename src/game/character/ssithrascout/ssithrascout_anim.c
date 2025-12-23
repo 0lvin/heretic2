@@ -63,8 +63,7 @@ static mh2frame_t scout_frames_c_action1[] =
 	{FRAME_ss_recover38, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_recover39, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action1 = {FRAME_ss_recover1, FRAME_ss_recover39, scout_frames_c_action1, ai_c_cycleend};
-
+mmove_t scout_move_c_action1 = {FRAME_ss_recover1, FRAME_ss_recover39, NULL, ai_c_cycleend, scout_frames_c_action1};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -132,8 +131,7 @@ static mh2frame_t scout_frames_c_action2[] =
 	{FRAME_ss_hecured59, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_hecured60, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action2 = {FRAME_ss_hecured1, FRAME_ss_hecured60, scout_frames_c_action2, ai_c_cycleend};
-
+mmove_t scout_move_c_action2 = {FRAME_ss_hecured1, FRAME_ss_hecured60, NULL, ai_c_cycleend, scout_frames_c_action2};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -227,8 +225,7 @@ static mh2frame_t scout_frames_c_action3[] =
 	{FRAME_ss_talk1A85, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk1A86, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action3 = {FRAME_ss_talk1A1, FRAME_ss_talk1A86, scout_frames_c_action3, ai_c_cycleend};
-
+mmove_t scout_move_c_action3 = {FRAME_ss_talk1A1, FRAME_ss_talk1A86, NULL, ai_c_cycleend, scout_frames_c_action3};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -280,8 +277,7 @@ static mh2frame_t scout_frames_c_action4[] =
 	{FRAME_ss_talk1B43, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk1B44, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action4 = {FRAME_ss_talk1B1, FRAME_ss_talk1B44, scout_frames_c_action4, ai_c_cycleend};
-
+mmove_t scout_move_c_action4 = {FRAME_ss_talk1B1, FRAME_ss_talk1B44, NULL, ai_c_cycleend, scout_frames_c_action4};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -315,8 +311,7 @@ static mh2frame_t scout_frames_c_action5[] =
 	{FRAME_ss_coughA25, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_coughA26, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action5 = {FRAME_ss_coughA1, FRAME_ss_coughA26, scout_frames_c_action5, ai_c_cycleend};
-
+mmove_t scout_move_c_action5 = {FRAME_ss_coughA1, FRAME_ss_coughA26, NULL, ai_c_cycleend, scout_frames_c_action5};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -358,8 +353,7 @@ static mh2frame_t scout_frames_c_action6[] =
 	{FRAME_ss_noshe33, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_noshe34, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action6 = {FRAME_ss_noshe1, FRAME_ss_noshe34, scout_frames_c_action6, ai_c_cycleend};
-
+mmove_t scout_move_c_action6 = {FRAME_ss_noshe1, FRAME_ss_noshe34, NULL, ai_c_cycleend, scout_frames_c_action6};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -437,8 +431,7 @@ static mh2frame_t scout_frames_c_action7[] =
 	{FRAME_ss_talk2A69, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk2A70, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action7 = {FRAME_ss_talk2A1, FRAME_ss_talk2A70, scout_frames_c_action7, ai_c_cycleend};
-
+mmove_t scout_move_c_action7 = {FRAME_ss_talk2A1, FRAME_ss_talk2A70, NULL, ai_c_cycleend, scout_frames_c_action7};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -508,8 +501,7 @@ static mh2frame_t scout_frames_c_action8[] =
 	{FRAME_ss_talk2B61, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk2B62, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action8 = {FRAME_ss_talk2B1, FRAME_ss_talk2B62, scout_frames_c_action8, ai_c_cycleend};
-
+mmove_t scout_move_c_action8 = {FRAME_ss_talk2B1, FRAME_ss_talk2B62, NULL, ai_c_cycleend, scout_frames_c_action8};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -542,8 +534,7 @@ static mh2frame_t scout_frames_c_action9[] =
 	{FRAME_ss_talk2C24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_talk2C25, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action9 = {FRAME_ss_talk2C1, FRAME_ss_talk2C25, scout_frames_c_action9, ai_c_cycleend};
-
+mmove_t scout_move_c_action9 = {FRAME_ss_talk2C1, FRAME_ss_talk2C25, NULL, ai_c_cycleend, scout_frames_c_action9};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -570,8 +561,7 @@ static mh2frame_t scout_frames_c_action10[] =
 	{FRAME_ss_coughB18, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_coughB19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_action10 = {FRAME_ss_coughB1, FRAME_ss_coughB19, scout_frames_c_action10, ai_c_cycleend};
-
+mmove_t scout_move_c_action10 = {FRAME_ss_coughB1, FRAME_ss_coughB19, NULL, ai_c_cycleend, scout_frames_c_action10};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -633,8 +623,7 @@ static mh2frame_t scout_frames_c_death1[] =
 	{FRAME_ss_death53, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_death54, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_death1 = {FRAME_ss_death1, FRAME_ss_death54, scout_frames_c_death1, ai_c_cycleend};
-
+mmove_t scout_move_c_death1 = {FRAME_ss_death1, FRAME_ss_death54, NULL, ai_c_cycleend, scout_frames_c_death1};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -673,8 +662,7 @@ static mh2frame_t scout_frames_c_idle1 [] =
 	{FRAME_ss_breath30, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_breath31, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_idle1 = {FRAME_ss_breath1, FRAME_ss_breath31, scout_frames_c_idle1, ai_c_cycleend};
-
+mmove_t scout_move_c_idle1 = {FRAME_ss_breath1, FRAME_ss_breath31, NULL, ai_c_cycleend, scout_frames_c_idle1};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -698,8 +686,7 @@ static mh2frame_t scout_frames_c_idle2 [] =
 	{FRAME_ss_idleA15, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_idleA16, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_idle2 = {FRAME_ss_idleA1, FRAME_ss_idleA16, scout_frames_c_idle2, ai_c_cycleend};
-
+mmove_t scout_move_c_idle2 = {FRAME_ss_idleA1, FRAME_ss_idleA16, NULL, ai_c_cycleend, scout_frames_c_idle2};
 
 /*----------------------------------------------------------------------
   Ssithra Scout -
@@ -732,4 +719,4 @@ static mh2frame_t scout_frames_c_idle3 [] =
 	{FRAME_ss_idleB24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ss_idleB25, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t scout_move_c_idle3 = {FRAME_ss_idleB1, FRAME_ss_idleB25, scout_frames_c_idle3, ai_c_cycleend};
+mmove_t scout_move_c_idle3 = {FRAME_ss_idleB1, FRAME_ss_idleB25, NULL, ai_c_cycleend, scout_frames_c_idle3};

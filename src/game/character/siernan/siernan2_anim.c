@@ -13,7 +13,6 @@
 #include "../../header/g_monster.h"
 #include "../ai.h"
 
-
 /************************************************************************
  *
  *  Cinematic Frames
@@ -156,7 +155,7 @@ static mh2frame_t siernan2_frames_c_action1 [] =
 	{FRAME_Minions129, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions130, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan2_move_c_action1 = {FRAME_Minions1, FRAME_Minions130, siernan2_frames_c_action1, ai_c_cycleend};
+mmove_t siernan2_move_c_action1 = {FRAME_Minions1, FRAME_Minions130, NULL, ai_c_cycleend, siernan2_frames_c_action1};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -285,7 +284,7 @@ static mh2frame_t siernan2_frames_c_action2 [] =
 	{FRAME_Minions119, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions120, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan2_move_c_action2 = {FRAME_Minions1, FRAME_Minions120, siernan2_frames_c_action2, ai_c_cycleend};
+mmove_t siernan2_move_c_action2 = {FRAME_Minions1, FRAME_Minions120, NULL, ai_c_cycleend, siernan2_frames_c_action2};
 
 /*----------------------------------------------------------------------
   Siernan
@@ -299,4 +298,4 @@ static mh2frame_t siernan2_frames_c_idle1 [] =
 	{FRAME_Minions1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Minions1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t siernan2_move_c_idle1 = {FRAME_Minions1, FRAME_Minions6, siernan2_frames_c_idle1, ai_c_cycleend};
+mmove_t siernan2_move_c_idle1 = {FRAME_Minions1, FRAME_Minions6, NULL, ai_c_cycleend, siernan2_frames_c_idle1};

@@ -33,8 +33,7 @@ static mh2frame_t Elflord_frames_c_death1 [] =
 	{FRAME_death14, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death15, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_death1 = {FRAME_death1, FRAME_death15, Elflord_frames_c_death1, ai_c_cycleend};
-
+mmove_t Elflord_move_c_death1 = {FRAME_death1, FRAME_death15, NULL, ai_c_cycleend, Elflord_frames_c_death1};
 
 static mh2frame_t Elflord_frames_c_death2 [] =
 {
@@ -54,7 +53,7 @@ static mh2frame_t Elflord_frames_c_death2 [] =
 	{FRAME_death14, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_death15, elflord_mist, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_death2 = {FRAME_death1, FRAME_death15, Elflord_frames_c_death2, ai_c_cycleend};
+mmove_t Elflord_move_c_death2 = {FRAME_death1, FRAME_death15, NULL, ai_c_cycleend, Elflord_frames_c_death2};
 
 static mh2frame_t Elflord_frames_c_idle1 [] =
 {
@@ -83,7 +82,7 @@ static mh2frame_t Elflord_frames_c_idle1 [] =
 	{FRAME_idle23, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_idle24, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_idle1 = {FRAME_idle1, FRAME_idle24, Elflord_frames_c_idle1, ai_c_cycleend};
+mmove_t Elflord_move_c_idle1 = {FRAME_idle1, FRAME_idle24, NULL, ai_c_cycleend, Elflord_frames_c_idle1};
 
 static mh2frame_t Elflord_frames_c_idle2 [] =
 {
@@ -108,8 +107,7 @@ static mh2frame_t Elflord_frames_c_idle2 [] =
 	{FRAME_cidle19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cidle20, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_idle2 = {FRAME_cidle1, FRAME_cidle20, Elflord_frames_c_idle2, ai_c_cycleend};
-
+mmove_t Elflord_move_c_idle2 = {FRAME_cidle1, FRAME_cidle20, NULL, ai_c_cycleend, Elflord_frames_c_idle2};
 
 static mh2frame_t Elflord_frames_c_action1 [] =
 {
@@ -355,8 +353,7 @@ static mh2frame_t Elflord_frames_c_action1 [] =
 	{FRAME_Dialoguea219, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialoguea220, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_action1 = {FRAME_Dialoguea1, FRAME_Dialoguea220, Elflord_frames_c_action1, ai_c_cycleend};
-
+mmove_t Elflord_move_c_action1 = {FRAME_Dialoguea1, FRAME_Dialoguea220, NULL, ai_c_cycleend, Elflord_frames_c_action1};
 
 static mh2frame_t Elflord_frames_c_action2 [] =
 {
@@ -587,4 +584,4 @@ static mh2frame_t Elflord_frames_c_action2 [] =
 	{FRAME_Dialogueb205, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Dialogueb206, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t Elflord_move_c_action2 = {FRAME_Dialogueb1, FRAME_Dialogueb206, Elflord_frames_c_action2, ai_c_cycleend};
+mmove_t Elflord_move_c_action2 = {FRAME_Dialogueb1, FRAME_Dialogueb206, NULL, ai_c_cycleend, Elflord_frames_c_action2};

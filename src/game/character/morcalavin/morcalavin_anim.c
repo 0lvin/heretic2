@@ -27,8 +27,7 @@ static mh2frame_t morcalavin_frames_c_idle1 [] =
 	{FRAME_talka1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_talka1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_idle1 = {FRAME_talka1, FRAME_talka1 + 2, morcalavin_frames_c_idle1, ai_c_cycleend};
-
+mmove_t morcalavin_move_c_idle1 = {FRAME_talka1, FRAME_talka1 + 2, NULL, ai_c_cycleend, morcalavin_frames_c_idle1};
 
 /*----------------------------------------------------------------------
   morcalavin
@@ -37,8 +36,7 @@ static mh2frame_t morcalavin_frames_c_idle2 [] =
 {
 	{FRAME_talkb1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_idle2 = {FRAME_talkb1, FRAME_talkb1, morcalavin_frames_c_idle2, ai_c_cycleend};
-
+mmove_t morcalavin_move_c_idle2 = {FRAME_talkb1, FRAME_talkb1, NULL, ai_c_cycleend, morcalavin_frames_c_idle2};
 
 /*----------------------------------------------------------------------
   morcalavin
@@ -47,7 +45,7 @@ static mh2frame_t morcalavin_frames_c_idle3 [] =
 {
 	{FRAME_talkc66, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_idle3 = {FRAME_talkc66, FRAME_talkc66, morcalavin_frames_c_idle3, ai_c_cycleend};
+mmove_t morcalavin_move_c_idle3 = {FRAME_talkc66, FRAME_talkc66, NULL, ai_c_cycleend, morcalavin_frames_c_idle3};
 
 /*----------------------------------------------------------------------
   morcalavin
@@ -56,8 +54,7 @@ static mh2frame_t morcalavin_frames_c_idle4 [] =
 {
 	{FRAME_talkc1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_idle4 = {FRAME_talkc1, FRAME_talkc1, morcalavin_frames_c_idle4, ai_c_cycleend};
-
+mmove_t morcalavin_move_c_idle4 = {FRAME_talkc1, FRAME_talkc1, NULL, ai_c_cycleend, morcalavin_frames_c_idle4};
 
 /*----------------------------------------------------------------------
   morcalavin
@@ -365,8 +362,7 @@ static mh2frame_t morcalavin_frames_c_action1 [] =
 	{FRAME_talka299, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_talka300, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_action1 = {FRAME_talka1, FRAME_talka300, morcalavin_frames_c_action1, ai_c_cycleend};
-
+mmove_t morcalavin_move_c_action1 = {FRAME_talka1, FRAME_talka300, NULL, ai_c_cycleend, morcalavin_frames_c_action1};
 
 /*----------------------------------------------------------------------
   morcalavin
@@ -475,8 +471,7 @@ static mh2frame_t morcalavin_frames_c_action2 [] =
 	{FRAME_talkb100, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_talkb101, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_action2 = {FRAME_talkb1, FRAME_talkb101, morcalavin_frames_c_action2, ai_c_cycleend};
-
+mmove_t morcalavin_move_c_action2 = {FRAME_talkb1, FRAME_talkb101, NULL, ai_c_cycleend, morcalavin_frames_c_action2};
 
 /*----------------------------------------------------------------------
   morcalavin
@@ -566,4 +561,4 @@ static mh2frame_t morcalavin_frames_c_action3 [] =
 	{FRAME_talkc81, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_talkc82, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t morcalavin_move_c_action3 = {FRAME_talkc1, FRAME_talkc82, morcalavin_frames_c_action3, ai_c_cycleend};
+mmove_t morcalavin_move_c_action3 = {FRAME_talkc1, FRAME_talkc82, NULL, ai_c_cycleend, morcalavin_frames_c_action3};

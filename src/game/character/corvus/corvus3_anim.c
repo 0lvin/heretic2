@@ -12,10 +12,10 @@
 #include "corvus3.h"
 #include "../ai.h"
 
-void corvus3_teleporteffect (edict_t *self);
-void corvus3_teleportsmalleffect (edict_t *self);
-void corvus3_visible (edict_t *self);
-void corvus3_invisible (edict_t *self);
+void corvus3_teleporteffect(edict_t *self);
+void corvus3_teleportsmalleffect(edict_t *self);
+void corvus3_visible(edict_t *self);
+void corvus3_invisible(edict_t *self);
 
 /************************************************************************
  *
@@ -60,7 +60,7 @@ static mh2frame_t corvus3_frames_c_action1 [] =
 	{FRAME_calie10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_calie11, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action1 = {FRAME_cridle1, FRAME_cridle1 + 29, corvus3_frames_c_action1, ai_c_cycleend};
+mmove_t corvus3_move_c_action1 = {FRAME_cridle1, FRAME_cridle1 + 29, NULL, ai_c_cycleend, corvus3_frames_c_action1};
 
 
 /*----------------------------------------------------------------------
@@ -106,7 +106,7 @@ static mh2frame_t corvus3_frames_c_action2 [] =
 	{FRAME_calie46, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_calie47, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action2 = {FRAME_calie12, FRAME_calie46, corvus3_frames_c_action2, ai_c_cycleend};
+mmove_t corvus3_move_c_action2 = {FRAME_calie12, FRAME_calie46, NULL, ai_c_cycleend, corvus3_frames_c_action2};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -287,7 +287,7 @@ static mh2frame_t corvus3_frames_c_action3 [] =
 	{FRAME_caidle10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_caidle11, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action3 = {FRAME_calie48, FRAME_calie48 + 150, corvus3_frames_c_action3, ai_c_cycleend};
+mmove_t corvus3_move_c_action3 = {FRAME_calie48, FRAME_calie48 + 150, NULL, ai_c_cycleend, corvus3_frames_c_action3};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -524,7 +524,7 @@ static mh2frame_t corvus3_frames_c_action4 [] =
 	{FRAME_cridle4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 
 };
-mmove_t corvus3_move_c_action4 = {FRAME_catalk1, FRAME_catalk1 + 215, corvus3_frames_c_action4, ai_c_cycleend};
+mmove_t corvus3_move_c_action4 = {FRAME_catalk1, FRAME_catalk1 + 215, NULL, ai_c_cycleend, corvus3_frames_c_action4};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -735,7 +735,7 @@ static mh2frame_t corvus3_frames_c_action5 [] =
 	{FRAME_cwhat28, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cwhat29, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action5 = {FRAME_cridle1, FRAME_cridle1 + 195, corvus3_frames_c_action5, ai_c_cycleend};
+mmove_t corvus3_move_c_action5 = {FRAME_cridle1, FRAME_cridle1 + 195, NULL, ai_c_cycleend, corvus3_frames_c_action5};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -756,7 +756,7 @@ static mh2frame_t corvus3_frames_c_action6 [] =
 	{FRAME_csidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_csidle3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action6 = {FRAME_cwhat29, FRAME_cwhat29 + 11, corvus3_frames_c_action6, ai_c_cycleend};
+mmove_t corvus3_move_c_action6 = {FRAME_cwhat29, FRAME_cwhat29 + 11, NULL, ai_c_cycleend, corvus3_frames_c_action6};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -775,7 +775,7 @@ static mh2frame_t corvus3_frames_c_action7 [] =
 	{FRAME_cridle10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cridle11, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action7 = {FRAME_cridle1, FRAME_cridle11, corvus3_frames_c_action7, ai_c_cycleend};
+mmove_t corvus3_move_c_action7 = {FRAME_cridle1, FRAME_cridle11, NULL, ai_c_cycleend, corvus3_frames_c_action7};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -850,7 +850,7 @@ static mh2frame_t corvus3_frames_c_action8 [] =
 	{FRAME_crtalk16, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_crtalk17, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action8 = {FRAME_crtalk1, FRAME_crtalk1 + 64, corvus3_frames_c_action8, ai_c_cycleend};
+mmove_t corvus3_move_c_action8 = {FRAME_crtalk1, FRAME_crtalk1 + 64, NULL, ai_c_cycleend, corvus3_frames_c_action8};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -965,7 +965,7 @@ static mh2frame_t corvus3_frames_c_action9 [] =
 	{FRAME_cridle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cridle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action9 = {FRAME_cridle1, FRAME_cridle1 + 101, corvus3_frames_c_action9, ai_c_cycleend};
+mmove_t corvus3_move_c_action9 = {FRAME_cridle1, FRAME_cridle1 + 101, NULL, ai_c_cycleend, corvus3_frames_c_action9};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1015,7 +1015,7 @@ static mh2frame_t corvus3_frames_c_action10 [] =
 	{FRAME_crtalk16, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 
 };
-mmove_t corvus3_move_c_action10 = {FRAME_crtalk1, FRAME_crtalk1 + 39, corvus3_frames_c_action10, ai_c_cycleend};
+mmove_t corvus3_move_c_action10 = {FRAME_crtalk1, FRAME_crtalk1 + 39, NULL, ai_c_cycleend, corvus3_frames_c_action10};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1210,7 +1210,7 @@ static mh2frame_t corvus3_frames_c_action11 [] =
 	{FRAME_cridle18, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cridle19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action11 = {FRAME_cridle1, FRAME_cridle1 + 178, corvus3_frames_c_action11, ai_c_cycleend};
+mmove_t corvus3_move_c_action11 = {FRAME_cridle1, FRAME_cridle1 + 178, NULL, ai_c_cycleend, corvus3_frames_c_action11};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1273,7 +1273,7 @@ static mh2frame_t corvus3_frames_c_action12 [] =
 	{FRAME_crtalk4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_crtalk5, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action12 = {FRAME_crtalk1, FRAME_crtalk1 + 52, corvus3_frames_c_action12, ai_c_cycleend};
+mmove_t corvus3_move_c_action12 = {FRAME_crtalk1, FRAME_crtalk1 + 52, NULL, ai_c_cycleend, corvus3_frames_c_action12};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1341,7 +1341,7 @@ static mh2frame_t corvus3_frames_c_action13 [] =
 	{FRAME_cridle17, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cridle18, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action13 = {FRAME_cridle1, FRAME_cridle1 + 57, corvus3_frames_c_action13, ai_c_cycleend};
+mmove_t corvus3_move_c_action13 = {FRAME_cridle1, FRAME_cridle1 + 57, NULL, ai_c_cycleend, corvus3_frames_c_action13};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1365,7 +1365,7 @@ static mh2frame_t corvus3_frames_c_action14 [] =
 
 	{FRAME_cido17, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action14 = {FRAME_cido2, FRAME_cido2 + 12, corvus3_frames_c_action14, ai_c_cycleend};
+mmove_t corvus3_move_c_action14 = {FRAME_cido2, FRAME_cido2 + 12, NULL, ai_c_cycleend, corvus3_frames_c_action14};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1522,7 +1522,7 @@ static mh2frame_t corvus3_frames_c_action15 [] =
 	{FRAME_csidle1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_csidle2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action15 = {FRAME_csidle1, FRAME_csidle1 + 141, corvus3_frames_c_action15, ai_c_cycleend};
+mmove_t corvus3_move_c_action15 = {FRAME_csidle1, FRAME_csidle1 + 141, NULL, ai_c_cycleend, corvus3_frames_c_action15};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1686,7 +1686,7 @@ static mh2frame_t corvus3_frames_c_action16 [] =
 	{FRAME_csidle10, ai_c_move, 0, 0, 0, NULL, 0, corvus3_teleporteffect},
 	{FRAME_csidle11, ai_c_move, 0, 0, 0, NULL, 0, corvus3_invisible},
 };
-mmove_t corvus3_move_c_action16 = {FRAME_cstalk1, FRAME_cstalk1 + 148, corvus3_frames_c_action16, ai_c_cycleend};
+mmove_t corvus3_move_c_action16 = {FRAME_cstalk1, FRAME_cstalk1 + 148, NULL, ai_c_cycleend, corvus3_frames_c_action16};
 
 
 /*----------------------------------------------------------------------
@@ -1715,7 +1715,7 @@ static mh2frame_t corvus3_frames_c_action17 [] =
 	{FRAME_cpidle19, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cpidle20, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action17 = {FRAME_cpidle1, FRAME_cpidle20, corvus3_frames_c_action17, ai_c_cycleend};
+mmove_t corvus3_move_c_action17 = {FRAME_cpidle1, FRAME_cpidle20, NULL, ai_c_cycleend, corvus3_frames_c_action17};
 
 
 /*----------------------------------------------------------------------
@@ -1735,7 +1735,7 @@ static mh2frame_t corvus3_frames_c_action18 [] =
 	{FRAME_cwish10, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cwish11, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action18 = {FRAME_cwish1, FRAME_cwish11, corvus3_frames_c_action18, ai_c_cycleend};
+mmove_t corvus3_move_c_action18 = {FRAME_cwish1, FRAME_cwish11, NULL, ai_c_cycleend, corvus3_frames_c_action18};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -1807,7 +1807,7 @@ static mh2frame_t corvus3_frames_c_action19 [] =
 	{FRAME_ciwill63, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_ciwill64, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action19 = {FRAME_ciwill1, FRAME_ciwill64, corvus3_frames_c_action19, ai_c_cycleend};
+mmove_t corvus3_move_c_action19 = {FRAME_ciwill1, FRAME_ciwill64, NULL, ai_c_cycleend, corvus3_frames_c_action19};
 
 
 /*----------------------------------------------------------------------
@@ -1864,7 +1864,7 @@ static mh2frame_t corvus3_frames_c_action20 [] =
 	{FRAME_cyour47, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_cyour48, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_action20 = {FRAME_cyour1, FRAME_cyour48, corvus3_frames_c_action20, ai_c_cycleend};
+mmove_t corvus3_move_c_action20 = {FRAME_cyour1, FRAME_cyour48, NULL, ai_c_cycleend, corvus3_frames_c_action20};
 
 /*----------------------------------------------------------------------
   Corvus Standing -
@@ -1895,7 +1895,7 @@ static mh2frame_t corvus3_frames_c_idle1 [] =
 	{FRAME_Breath22, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Breath23, ai_c_move, 0, 0, 0, NULL, 0, NULL}
 };
-mmove_t corvus3_move_c_idle1 = {FRAME_Breath1, FRAME_Breath23, corvus3_frames_c_idle1, ai_c_cycleend};
+mmove_t corvus3_move_c_idle1 = {FRAME_Breath1, FRAME_Breath23, NULL, ai_c_cycleend, corvus3_frames_c_idle1};
 
 
 /*----------------------------------------------------------------------
@@ -1928,7 +1928,7 @@ static mh2frame_t corvus3_frames_c_idle2 [] =
 	{FRAME_stance23, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_stance24, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_idle2 = {FRAME_stance1, FRAME_stance24, corvus3_frames_c_idle2, ai_c_cycleend};
+mmove_t corvus3_move_c_idle2 = {FRAME_stance1, FRAME_stance24, NULL, ai_c_cycleend, corvus3_frames_c_idle2};
 
 
 /*----------------------------------------------------------------------
@@ -1961,7 +1961,7 @@ static mh2frame_t corvus3_frames_c_idle3 [] =
 	{FRAME_stance23, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_stance24, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_idle3 = {FRAME_stance1, FRAME_stance24, corvus3_frames_c_idle3, ai_c_cycleend};
+mmove_t corvus3_move_c_idle3 = {FRAME_stance1, FRAME_stance24, NULL, ai_c_cycleend, corvus3_frames_c_idle3};
 
 /*----------------------------------------------------------------------
   Corvus - starting his pivot to the left
@@ -1971,21 +1971,21 @@ static mh2frame_t corvus3_frames_c_pivotleftgo [] =
 	{FRAME_Lpivot1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_pivotleftgo = {FRAME_Lpivot1, FRAME_Lpivot2, corvus3_frames_c_pivotleftgo, ai_c_cycleend};
+mmove_t corvus3_move_c_pivotleftgo = {FRAME_Lpivot1, FRAME_Lpivot2, NULL, ai_c_cycleend, corvus3_frames_c_pivotleftgo};
 
 static mh2frame_t corvus3_frames_c_pivotleft [] =
 {
 	{FRAME_Lpivot3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_pivotleft = {FRAME_Lpivot3, FRAME_Lpivot4, corvus3_frames_c_pivotleft, ai_c_cycleend};
+mmove_t corvus3_move_c_pivotleft = {FRAME_Lpivot3, FRAME_Lpivot4, NULL, ai_c_cycleend, corvus3_frames_c_pivotleft};
 
 
 static mh2frame_t corvus3_frames_c_pivotleftstop [] =
 {
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_pivotleftstop = {FRAME_Lpivot4, FRAME_Lpivot4, corvus3_frames_c_pivotleftstop, ai_c_cycleend};
+mmove_t corvus3_move_c_pivotleftstop = {FRAME_Lpivot4, FRAME_Lpivot4, NULL, ai_c_cycleend, corvus3_frames_c_pivotleftstop};
 
 
 /*----------------------------------------------------------------------
@@ -1996,21 +1996,21 @@ static mh2frame_t corvus3_frames_c_pivotrightgo [] =
 	{FRAME_Lpivot4, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot3, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_pivotrightgo = {FRAME_Lpivot3, FRAME_Lpivot4, corvus3_frames_c_pivotrightgo, ai_c_cycleend};
+mmove_t corvus3_move_c_pivotrightgo = {FRAME_Lpivot3, FRAME_Lpivot4, NULL, ai_c_cycleend, corvus3_frames_c_pivotrightgo};
 
 static mh2frame_t corvus3_frames_c_pivotright [] =
 {
 	{FRAME_Lpivot2, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_Lpivot1, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_pivotright = {FRAME_Lpivot1, FRAME_Lpivot2, corvus3_frames_c_pivotright, ai_c_cycleend};
+mmove_t corvus3_move_c_pivotright = {FRAME_Lpivot1, FRAME_Lpivot2, NULL, ai_c_cycleend, corvus3_frames_c_pivotright};
 
 
 static mh2frame_t corvus3_frames_c_pivotrightstop [] =
 {
 	{FRAME_Lpivot1, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_pivotrightstop = {FRAME_Lpivot1, FRAME_Lpivot1, corvus3_frames_c_pivotrightstop, ai_c_cycleend};
+mmove_t corvus3_move_c_pivotrightstop = {FRAME_Lpivot1, FRAME_Lpivot1, NULL, ai_c_cycleend, corvus3_frames_c_pivotrightstop};
 
 
 /*----------------------------------------------------------------------
@@ -2027,7 +2027,7 @@ static mh2frame_t corvus3_frames_c_walk1 [] =
 	{FRAME_jog7, ai_c_move, 15, 0, 0, NULL, 0, NULL},
 	{FRAME_jog8, ai_c_move, 16, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_walk1 = {FRAME_jog1, FRAME_jog8, corvus3_frames_c_walk1, ai_c_cycleend};
+mmove_t corvus3_move_c_walk1 = {FRAME_jog1, FRAME_jog8, NULL, ai_c_cycleend, corvus3_frames_c_walk1};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -2051,7 +2051,7 @@ static mh2frame_t corvus3_frames_c_walk2 [] =
 	{FRAME_cinewalk15, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_cinewalk16, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_walk2 = {FRAME_cinewalk1, FRAME_cinewalk16, corvus3_frames_c_walk2, ai_c_cycleend};
+mmove_t corvus3_move_c_walk2 = {FRAME_cinewalk1, FRAME_cinewalk16, NULL, ai_c_cycleend, corvus3_frames_c_walk2};
 
 /*----------------------------------------------------------------------
   Corvus
@@ -2079,7 +2079,7 @@ static mh2frame_t corvus3_frames_c_walk3 [] =
 	{FRAME_cinewalk3, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_cinewalk4, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_walk3 = {FRAME_cinewalk1, FRAME_cinewalk1 + 19, corvus3_frames_c_walk3, ai_c_cycleend};
+mmove_t corvus3_move_c_walk3 = {FRAME_cinewalk1, FRAME_cinewalk1 + 19, NULL, ai_c_cycleend, corvus3_frames_c_walk3};
 
 /*----------------------------------------------------------------------
   Corvus - starting his walk anims
@@ -2089,7 +2089,7 @@ static mh2frame_t corvus3_frames_c_walkstart [] =
 	{FRAME_gorun2, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 	{FRAME_gorun3, ai_c_move, 4, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_walkstart = {FRAME_gorun2, FRAME_gorun3, corvus3_frames_c_walkstart, ai_c_cycleend};
+mmove_t corvus3_move_c_walkstart = {FRAME_gorun2, FRAME_gorun3, NULL, ai_c_cycleend, corvus3_frames_c_walkstart};
 
 
 /*----------------------------------------------------------------------
@@ -2100,7 +2100,7 @@ static mh2frame_t corvus3_frames_c_walkstop1 [] =
 	{FRAME_jog1, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_jog2, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_walkstop1 = {FRAME_jog1, FRAME_jog2, corvus3_frames_c_walkstop1, ai_c_cycleend};
+mmove_t corvus3_move_c_walkstop1 = {FRAME_jog1, FRAME_jog2, NULL, ai_c_cycleend, corvus3_frames_c_walkstop1};
 
 /*----------------------------------------------------------------------
   Corvus - stopping his walk with left foot in front
@@ -2110,4 +2110,4 @@ static mh2frame_t corvus3_frames_c_walkstop2 [] =
 	{FRAME_jog5, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 	{FRAME_jog6, ai_c_move, 2, 0, 0, NULL, 0, NULL},
 };
-mmove_t corvus3_move_c_walkstop2 = {FRAME_jog5, FRAME_jog6, corvus3_frames_c_walkstop2, ai_c_cycleend};
+mmove_t corvus3_move_c_walkstop2 = {FRAME_jog5, FRAME_jog6, NULL, ai_c_cycleend, corvus3_frames_c_walkstop2};

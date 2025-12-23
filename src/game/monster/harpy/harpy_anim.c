@@ -27,7 +27,7 @@ static mh2frame_t harpy_frames_die1[] =
 	{FRAME_death14, NULL, 0, 0, 0, NULL, 0, harpy_fix_angles},
 	{FRAME_death15, NULL, 0, 0, 0, NULL, 0, harpy_fix_angles},
 };
-mmove_t harpy_move_die1 = {FRAME_death1, FRAME_death15, harpy_frames_die1, harpy_dead};
+mmove_t harpy_move_die1 = {FRAME_death1, FRAME_death15, NULL, harpy_dead, harpy_frames_die1};
 
 /*----------------------------------------------------
 harpy flying 1
@@ -47,7 +47,7 @@ static mh2frame_t harpy_frames_fly1[] =
 	{FRAME_fly11, harpy_ai_fly, 48, 0, 0, NULL, 15, move_harpy_fly},
 	{FRAME_fly12, harpy_ai_fly, 52, 0, 0, NULL, 15, move_harpy_fly},
 };
-mmove_t harpy_move_fly1 = {FRAME_fly1, FRAME_fly12, harpy_frames_fly1, harpy_pause};
+mmove_t harpy_move_fly1 = {FRAME_fly1, FRAME_fly12, NULL, harpy_pause, harpy_frames_fly1};
 
 /*------------------------------------------------------
 harpy flying backwards 1
@@ -61,8 +61,7 @@ static mh2frame_t harpy_frames_flyback1[] =
 	{FRAME_flyback5, harpy_ai_fly, -42, 0, 32, NULL, 0, move_harpy_fly},
 	{FRAME_flyback6, harpy_ai_fly, -36, 0, 24, NULL, 0, move_harpy_fly},
 };
-mmove_t harpy_move_flyback1 = {FRAME_flyback1, FRAME_flyback6, harpy_frames_flyback1, harpy_pause};
-
+mmove_t harpy_move_flyback1 = {FRAME_flyback1, FRAME_flyback6, NULL, harpy_pause, harpy_frames_flyback1};
 
 /*-------------------------------------------------------
 harpy hovering
@@ -78,7 +77,7 @@ static mh2frame_t harpy_frames_hover1[] =
 	{FRAME_hover7, NULL, 0, 0, 0, harpy_ai_hover, 1, NULL},
 	{FRAME_hover8, NULL, 0, 0, 0, harpy_ai_hover, 2, NULL},
 };
-mmove_t harpy_move_hover1 = {FRAME_hover1, FRAME_hover8, harpy_frames_hover1, move_harpy_hover};
+mmove_t harpy_move_hover1 = {FRAME_hover1, FRAME_hover8, NULL, move_harpy_hover, harpy_frames_hover1};
 
 static mh2frame_t harpy_frames_tumble[] =
 {
@@ -91,7 +90,7 @@ static mh2frame_t harpy_frames_tumble[] =
 	{FRAME_hover7, NULL, 0, 0, 0, NULL, 0, move_harpy_tumble},
 	{FRAME_hover8, NULL, 0, 0, 0, NULL, 0, move_harpy_tumble},
 };
-mmove_t harpy_move_tumble = {FRAME_hover1, FRAME_hover8, harpy_frames_tumble, NULL};
+mmove_t harpy_move_tumble = {FRAME_hover1, FRAME_hover8, NULL, NULL, harpy_frames_tumble};
 
 /*-------------------------------------------------------
 harpy hovering and screaming
@@ -115,8 +114,7 @@ static mh2frame_t harpy_frames_hoverscream[] =
 	{FRAME_hoverscream15,NULL, 0, 0, 0, harpy_ai_hover, 1, NULL},
 	{FRAME_hoverscream16,NULL, 0, 0, 0, harpy_ai_hover, 2, NULL},
 };
-mmove_t harpy_move_hoverscream = {FRAME_hoverscream1, FRAME_hoverscream16, harpy_frames_hoverscream, move_harpy_hover};
-
+mmove_t harpy_move_hoverscream = {FRAME_hoverscream1, FRAME_hoverscream16, NULL, move_harpy_hover, harpy_frames_hoverscream};
 
 /*-------------------------------------------------------
 harpy diving and attacking
@@ -130,7 +128,7 @@ static mh2frame_t harpy_frames_dive_go[] =
 	{FRAME_dive05, NULL, 0, 0, 0, NULL, 0, move_harpy_dive},
 	{FRAME_dive06, NULL, 0, 0, 0, NULL, 0, move_harpy_dive},
 };
-mmove_t harpy_move_dive_go = {FRAME_dive01, FRAME_dive06, harpy_frames_dive_go, harpy_dive_loop};
+mmove_t harpy_move_dive_go = {FRAME_dive01, FRAME_dive06, NULL, harpy_dive_loop, harpy_frames_dive_go};
 
 static mh2frame_t harpy_frames_dive_loop[] =
 {
@@ -141,7 +139,7 @@ static mh2frame_t harpy_frames_dive_loop[] =
 	{FRAME_dive11, NULL, 0, 0, 0, NULL, 0, move_harpy_dive},
 	{FRAME_dive12, NULL, 0, 0, 0, NULL, 0, move_harpy_dive},
 };
-mmove_t harpy_move_dive_loop = {FRAME_dive07, FRAME_dive12, harpy_frames_dive_loop, NULL};
+mmove_t harpy_move_dive_loop = {FRAME_dive07, FRAME_dive12, NULL, NULL, harpy_frames_dive_loop};
 
 static mh2frame_t harpy_frames_dive_trans[] =
 {
@@ -151,13 +149,13 @@ static mh2frame_t harpy_frames_dive_trans[] =
 	{FRAME_dive16, NULL, 0, 0, 0, NULL, 0, move_harpy_dive_end},
 	{FRAME_dive17, NULL, 0, 0, 0, NULL, 0, move_harpy_dive_end},
 };
-mmove_t harpy_move_dive_trans = {FRAME_dive13, FRAME_dive17, harpy_frames_dive_trans, harpy_hit_loop};
+mmove_t harpy_move_dive_trans = {FRAME_dive13, FRAME_dive17, NULL, harpy_hit_loop, harpy_frames_dive_trans};
 
 static mh2frame_t harpy_frames_dive_hit_loop[] =
 {
 	{FRAME_dive18, NULL, 0, 0, 0, NULL, 0, move_harpy_dive_end},
 };
-mmove_t harpy_move_dive_hit_loop = {FRAME_dive18, FRAME_dive18, harpy_frames_dive_hit_loop, NULL};
+mmove_t harpy_move_dive_hit_loop = {FRAME_dive18, FRAME_dive18, NULL, NULL, harpy_frames_dive_hit_loop};
 
 static mh2frame_t harpy_frames_dive_end[] =
 {
@@ -174,7 +172,7 @@ static mh2frame_t harpy_frames_dive_end[] =
 	{FRAME_dive29, NULL, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_dive30, NULL, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t harpy_move_dive_end = {FRAME_dive19, FRAME_dive30, harpy_frames_dive_end, harpy_flyback};
+mmove_t harpy_move_dive_end = {FRAME_dive19, FRAME_dive30, NULL, harpy_flyback, harpy_frames_dive_end};
 
 /*-------------------------------------------------------
 harpy attacking up close
@@ -188,8 +186,7 @@ static mh2frame_t harpy_frames_closeattack[] =
 	{FRAME_dive25, NULL, 0, 0, 0, NULL, 6, NULL},
 	{FRAME_dive27, NULL, 0, 0, 0, NULL, 6, NULL},
 };
-mmove_t harpy_closeattack = {FRAME_dive17, FRAME_dive17 + 5, harpy_frames_closeattack, harpy_pause};
-
+mmove_t harpy_closeattack = {FRAME_dive17, FRAME_dive17 + 5, NULL, harpy_pause, harpy_frames_closeattack};
 
 /*-------------------------------------------------------
 harpy pain
@@ -205,7 +202,7 @@ static mh2frame_t harpy_frames_pain1 [] =
 	{FRAME_pain7, NULL, 0, 0, 0, NULL, 1, move_harpy_hover},
 	{FRAME_pain8, NULL, 0, 0, 0, NULL, 2, move_harpy_hover},
 };
-mmove_t harpy_move_pain1 = {FRAME_pain1, FRAME_pain8, harpy_frames_pain1, harpy_pause};
+mmove_t harpy_move_pain1 = {FRAME_pain1, FRAME_pain8, NULL, harpy_pause, harpy_frames_pain1};
 
 static mh2frame_t harpy_frames_glide [] =
 {
@@ -222,7 +219,7 @@ static mh2frame_t harpy_frames_glide [] =
 	{FRAME_glide11, harpy_ai_glide, 64, 0, 0, NULL, 0, NULL},
 	{FRAME_glide12, harpy_ai_glide, 64, 0, 0, NULL, 0, NULL},
 };
-mmove_t harpy_move_glide = {FRAME_glide1, FRAME_glide12, harpy_frames_glide, NULL};
+mmove_t harpy_move_glide = {FRAME_glide1, FRAME_glide12, NULL, NULL, harpy_frames_glide};
 
 //pirch 1
 static mh2frame_t harpy_frames_pirch1_idle [] =
@@ -238,7 +235,7 @@ static mh2frame_t harpy_frames_pirch1_idle [] =
 	{FRAME_pirch9, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch10, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch1_idle = {FRAME_pirch1, FRAME_pirch10, harpy_frames_pirch1_idle, NULL};
+mmove_t harpy_move_pirch1_idle = {FRAME_pirch1, FRAME_pirch10, NULL, NULL, harpy_frames_pirch1_idle};
 
 //pirch 2
 static mh2frame_t harpy_frames_pirch2_idle [] =
@@ -254,7 +251,7 @@ static mh2frame_t harpy_frames_pirch2_idle [] =
 	{FRAME_pirch19, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch20, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch2_idle = {FRAME_pirch11, FRAME_pirch20, harpy_frames_pirch2_idle, NULL};
+mmove_t harpy_move_pirch2_idle = {FRAME_pirch11, FRAME_pirch20, NULL, NULL, harpy_frames_pirch2_idle};
 
 //pirch 3
 static mh2frame_t harpy_frames_pirch3_idle [] =
@@ -270,7 +267,7 @@ static mh2frame_t harpy_frames_pirch3_idle [] =
 	{FRAME_pirch29, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch30, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch3_idle = {FRAME_pirch21, FRAME_pirch30, harpy_frames_pirch3_idle, NULL};
+mmove_t harpy_move_pirch3_idle = {FRAME_pirch21, FRAME_pirch30, NULL, NULL, harpy_frames_pirch3_idle};
 
 //pirch 4
 static mh2frame_t harpy_frames_pirch4_idle [] =
@@ -286,7 +283,7 @@ static mh2frame_t harpy_frames_pirch4_idle [] =
 	{FRAME_pirch39, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch40, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch4_idle = {FRAME_pirch31, FRAME_pirch40, harpy_frames_pirch4_idle, NULL};
+mmove_t harpy_move_pirch4_idle = {FRAME_pirch31, FRAME_pirch40, NULL, NULL, harpy_frames_pirch4_idle};
 
 //pirch 5
 static mh2frame_t harpy_frames_pirch5_idle [] =
@@ -302,7 +299,7 @@ static mh2frame_t harpy_frames_pirch5_idle [] =
 	{FRAME_pirch49, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch50, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch5_idle = {FRAME_pirch41, FRAME_pirch50, harpy_frames_pirch5_idle, NULL};
+mmove_t harpy_move_pirch5_idle = {FRAME_pirch41, FRAME_pirch50, NULL, NULL, harpy_frames_pirch5_idle};
 
 //pirch 6
 static mh2frame_t harpy_frames_pirch6_idle [] =
@@ -318,7 +315,7 @@ static mh2frame_t harpy_frames_pirch6_idle [] =
 	{FRAME_pirch59, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch60, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch6_idle = {FRAME_pirch51, FRAME_pirch60, harpy_frames_pirch6_idle, NULL};
+mmove_t harpy_move_pirch6_idle = {FRAME_pirch51, FRAME_pirch60, NULL, NULL, harpy_frames_pirch6_idle};
 
 //pirch 7
 static mh2frame_t harpy_frames_pirch7_idle [] =
@@ -334,7 +331,7 @@ static mh2frame_t harpy_frames_pirch7_idle [] =
 	{FRAME_pirch69, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch70, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch7_idle = {FRAME_pirch61, FRAME_pirch70, harpy_frames_pirch7_idle, NULL};
+mmove_t harpy_move_pirch7_idle = {FRAME_pirch61, FRAME_pirch70, NULL, NULL, harpy_frames_pirch7_idle};
 
 //pirch 8
 static mh2frame_t harpy_frames_pirch8_idle [] =
@@ -350,7 +347,7 @@ static mh2frame_t harpy_frames_pirch8_idle [] =
 	{FRAME_pirch79, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch80, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch8_idle = {FRAME_pirch71, FRAME_pirch80, harpy_frames_pirch8_idle, NULL};
+mmove_t harpy_move_pirch8_idle = {FRAME_pirch71, FRAME_pirch80, NULL, NULL, harpy_frames_pirch8_idle};
 
 //pirch 9
 static mh2frame_t harpy_frames_pirch9_idle [] =
@@ -366,7 +363,7 @@ static mh2frame_t harpy_frames_pirch9_idle [] =
 	{FRAME_pirch89, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 	{FRAME_pirch90, NULL, 0, 0, 0, NULL, 0, harpy_ai_pirch},
 };
-mmove_t harpy_move_pirch9_idle = {FRAME_pirch81, FRAME_pirch90, harpy_frames_pirch9_idle, NULL};
+mmove_t harpy_move_pirch9_idle = {FRAME_pirch81, FRAME_pirch90, NULL, NULL, harpy_frames_pirch9_idle};
 
 static mh2frame_t harpy_frames_takeoff [] =
 {
@@ -379,7 +376,7 @@ static mh2frame_t harpy_frames_takeoff [] =
 	{FRAME_takeoff13, harpy_ai_fly, -64, 0, 32, NULL, 0, NULL},
 	{FRAME_takeoff15, harpy_ai_fly, -32, 0, 32, NULL, 0, NULL},
 };
-mmove_t harpy_move_takeoff = {FRAME_takeoff1, FRAME_takeoff1 + 7, harpy_frames_takeoff, harpy_pause};
+mmove_t harpy_move_takeoff = {FRAME_takeoff1, FRAME_takeoff1 + 7, NULL, harpy_pause, harpy_frames_takeoff};
 
 static mh2frame_t harpy_frames_circle [] =
 {
@@ -396,7 +393,7 @@ static mh2frame_t harpy_frames_circle [] =
 	{FRAME_glide11, harpy_ai_circle, 32, 0, 0, NULL, 0, NULL},
 	{FRAME_glide12, harpy_ai_circle, 32, 0, 0, NULL, 0, NULL},
 };
-mmove_t harpy_move_circle = {FRAME_glide1, FRAME_glide12, harpy_frames_circle, harpy_pause};
+mmove_t harpy_move_circle = {FRAME_glide1, FRAME_glide12, NULL, harpy_pause, harpy_frames_circle};
 
 static mh2frame_t harpy_frames_circle_flap [] =
 {
@@ -413,4 +410,4 @@ static mh2frame_t harpy_frames_circle_flap [] =
 	{FRAME_fly11, harpy_ai_circle, 36, 0, 0, NULL, 0, NULL},
 	{FRAME_fly12, harpy_ai_circle, 32, 0, 0, NULL, 0, NULL},
 };
-mmove_t harpy_move_circle_flap = {FRAME_fly1, FRAME_fly1 + 11, harpy_frames_circle_flap, harpy_pause};
+mmove_t harpy_move_circle_flap = {FRAME_fly1, FRAME_fly1 + 11, NULL, harpy_pause, harpy_frames_circle_flap};

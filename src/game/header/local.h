@@ -163,18 +163,18 @@ typedef enum
 /* gib types */
 typedef enum
 {
-	GIB_STONE,			// 0
-	GIB_GREYSTONE,		// 1
-	GIB_CLOTH,			// 2
-	GIB_METALLIC,		// 3
-	GIB_ORGANIC,		// 4
-	GIB_POTTERY,		// 5
-	GIB_GLASS,			// 6
-	GIB_LEAF,			// 7
-	GIB_WOOD,			// 8
-	GIB_BROWNSTONE,		// 9
-	GIB_NONE,			// 10
-	GIB_INSECT,			// 11
+	GIB_STONE,		// 0
+	GIB_GREYSTONE,	// 1
+	GIB_CLOTH,		// 2
+	GIB_METALLIC,	// 3
+	GIB_ORGANIC,	// 4
+	GIB_POTTERY,	// 5
+	GIB_GLASS,		// 6
+	GIB_LEAF,		// 7
+	GIB_WOOD,		// 8
+	GIB_BROWNSTONE,	// 9
+	GIB_NONE,		// 10
+	GIB_INSECT,		// 11
 } gibtype_t;
 
 /* monster ai flags */
@@ -267,7 +267,7 @@ typedef enum
 	MOVETYPE_BOUNCE, /* added this (the comma at the end of line) */
 	MOVETYPE_WALLBOUNCE,
 	MOVETYPE_NEWTOSS, /* for deathball */
-	MOVETYPE_SCRIPT_ANGULAR,	// moves with the rotation of another entity
+	MOVETYPE_SCRIPT_ANGULAR, // moves with the rotation of another entity
 } movetype_t;
 
 typedef struct
@@ -822,7 +822,7 @@ typedef struct
 
 	alertent_t	alertents[MAX_ALERT_ENTS];	//all the alert ents on the map
 	int			num_alert_ents;				//Number of actual alert entities on the level
-	alertent_t	*alert_entity,				//the alert entity linked list start
+	alertent_t	*alert_entity,			//the alert entity linked list start
 				*last_alert;				//the last entity in alert entity linked list
 
 	qboolean	fighting_beast;				//fighting a beast, do extra checks with trace instant weapons
@@ -1033,8 +1033,9 @@ typedef struct
 {
 	int firstframe;
 	int lastframe;
-	mh2frame_t *h2frames;
+	mframe_t *frame;
 	void (*endfunc)(edict_t *self);
+	mh2frame_t *h2frames;
 } mmove_t;
 
 typedef struct

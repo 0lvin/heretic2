@@ -13,7 +13,6 @@
 #include "../../header/g_monster.h"
 #include "../ai.h"
 
-
 /************************************************************************
  *
  *  Cinematic Frames
@@ -57,7 +56,7 @@ static mh2frame_t tome_frames_c_idle1 [] =
 	{FRAME_poly029, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 	{FRAME_poly030, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tome_move_c_idle1 = {FRAME_poly000, FRAME_poly000 + 30, tome_frames_c_idle1, ai_c_cycleend};
+mmove_t tome_move_c_idle1 = {FRAME_poly000, FRAME_poly000 + 30, NULL, ai_c_cycleend, tome_frames_c_idle1};
 
 /*----------------------------------------------------------------------
   Tome of Power
@@ -66,4 +65,4 @@ static mh2frame_t tome_frames_c_idle2 [] =
 {
 	{FRAME_poly000, ai_c_move, 0, 0, 0, NULL, 0, NULL},
 };
-mmove_t tome_move_c_idle2 = {FRAME_poly000, FRAME_poly000, tome_frames_c_idle2, ai_c_cycleend};
+mmove_t tome_move_c_idle2 = {FRAME_poly000, FRAME_poly000, NULL, ai_c_cycleend, tome_frames_c_idle2};
