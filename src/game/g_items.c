@@ -828,7 +828,7 @@ Use_Compass(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Nuke(edict_t *ent, gitem_t *item)
+Use_Ammo_Nuke(edict_t *ent, gitem_t *item)
 {
 	vec3_t forward, right, start;
 	float speed;
@@ -5108,7 +5108,7 @@ static const gitem_t gameitemlist[] = {
 	{
 		"ammo_nuke",
 		Pickup_Nuke,
-		Use_Nuke,
+		Use_Ammo_Nuke,
 		Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
