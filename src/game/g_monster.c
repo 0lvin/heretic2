@@ -1150,8 +1150,9 @@ extern qboolean MonsterAdvanceFrame;
 void
 M_MoveFrame(edict_t *self)
 {
-	mmove_t *move;
 	int index, firstframe, lastframe;
+	qboolean reverse = false;
+	mmove_t *move;
 
 	if (!self)
 	{
@@ -1163,12 +1164,26 @@ M_MoveFrame(edict_t *self)
 	{
 		firstframe = move->firstframe;
 		lastframe = move->lastframe;
+
+		if (lastframe < firstframe)
+		{
+			reverse = true;
+			firstframe = move->lastframe;
+			lastframe = move->firstframe;
+		}
 	}
 	else if (self->monsterinfo.action)
 	{
 		firstframe = self->monsterinfo.firstframe;
-		lastframe = self->monsterinfo.lastframe;
-		lastframe += firstframe - 1;
+
+		if (self->monsterinfo.numframes > 0)
+		{
+			lastframe = firstframe + self->monsterinfo.numframes - 1;
+		}
+		else
+		{
+			lastframe = firstframe - self->monsterinfo.numframes - 1;
+		}
 	}
 	else
 	{
@@ -1179,93 +1194,98 @@ M_MoveFrame(edict_t *self)
 		return;
 	}
 
-#if 1
-	self->nextthink = level.time + self->monsterinfo.thinkinc;
-
-	//There is a voice sound waiting to play
-	if (self->monsterinfo.sound_pending && self->monsterinfo.sound_start <= level.time)
+	if (move && move->h2frames)
 	{
-		//Post a message and make the monster speak
-		G_QPostMessage(self, MSG_VOICE_PUPPET, PRI_DIRECTIVE, "i", self->monsterinfo.sound_pending);
+		self->nextthink = level.time + self->monsterinfo.thinkinc;
 
-		//Sound queue is free
-		self->monsterinfo.sound_pending = 0;
-	}
-
-	// If this is set, the monster runs absolutely no animations or ai
-	if (sv_freezemonsters->value != 0 && !MonsterAdvanceFrame)
-		return;
-
-	// Forcing the next frame index - usually the start of an animation
-	if (self->monsterinfo.nextframeindex > -1)
-	{
-		self->monsterinfo.currframeindex = self->monsterinfo.nextframeindex;
-		self->monsterinfo.nextframeindex = -1;
-	}
-	else
-	{
-		if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
+		//There is a voice sound waiting to play
+		if (self->monsterinfo.sound_pending && self->monsterinfo.sound_start <= level.time)
 		{
-			++self->monsterinfo.currframeindex;
-			{
-				int numframes = move->lastframe - move->firstframe + 1;
-				if (self->monsterinfo.currframeindex >= numframes)
-					self->monsterinfo.currframeindex = 0;
-			}
+			//Post a message and make the monster speak
+			G_QPostMessage(self, MSG_VOICE_PUPPET, PRI_DIRECTIVE, "i", self->monsterinfo.sound_pending);
+
+			//Sound queue is free
+			self->monsterinfo.sound_pending = 0;
 		}
 
-		if (self->monsterinfo.currframeindex == ( (move->lastframe - move->firstframe + 1) - 1))
+		// If this is set, the monster runs absolutely no animations or ai
+		if (sv_freezemonsters->value != 0 && !MonsterAdvanceFrame)
+			return;
+
+		// Forcing the next frame index - usually the start of an animation
+		if (self->monsterinfo.nextframeindex > -1)
 		{
-			if (move->endfunc)
+			self->monsterinfo.currframeindex = self->monsterinfo.nextframeindex;
+			self->monsterinfo.nextframeindex = -1;
+		}
+		else
+		{
+			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
 			{
-				move->endfunc(self);
-
-				/* regrab move, endfunc is very likely to change it */
-				move = self->monsterinfo.currentmove;
-
-				/* check for death */
-				if (self->svflags & SVF_DEADMONSTER)
+				++self->monsterinfo.currframeindex;
 				{
-					return;
+					int numframes = move->lastframe - move->firstframe + 1;
+					if (self->monsterinfo.currframeindex >= numframes)
+						self->monsterinfo.currframeindex = 0;
+				}
+			}
+
+			if (self->monsterinfo.currframeindex == ( (move->lastframe - move->firstframe + 1) - 1))
+			{
+				if (move->endfunc)
+				{
+					move->endfunc(self);
+
+					/* regrab move, endfunc is very likely to change it */
+					move = self->monsterinfo.currentmove;
+
+					/* check for death */
+					if (self->svflags & SVF_DEADMONSTER)
+					{
+						return;
+					}
 				}
 			}
 		}
-	}
 
-	index = self->monsterinfo.currframeindex;
-	self->s.frame = move->h2frames[index].framenum;
+		index = self->monsterinfo.currframeindex;
+		self->s.frame = move->h2frames[index].framenum;
 
-	//this is consistent with the mmove_t in the monster anims.
-	//currently all of the *real* movement happens in the
-	//"actionfunc" instead of the move func
-	if (!(self->monsterinfo.aiflags & AI_DONT_THINK))
-	{
-		if (move->h2frames[index].movefunc)
+		//this is consistent with the mmove_t in the monster anims.
+		//currently all of the *real* movement happens in the
+		//"actionfunc" instead of the move func
+		if (!(self->monsterinfo.aiflags & AI_DONT_THINK))
 		{
-			move->h2frames[index].movefunc(self,
-				move->h2frames[index].var1,
-				move->h2frames[index].var2,
-				move->h2frames[index].var3);
-		}
-
-		if (move->h2frames[index].actionfunc)
-		{
-			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
-			{//Put scaling into SV_Movestep since this isn't ALWAYS the movement function
-				move->h2frames[index].actionfunc(self, move->h2frames[index].var4);//* self->monsterinfo.scale);
-			}
-			else
+			if (move->h2frames[index].movefunc)
 			{
-				move->h2frames[index].actionfunc (self, 0);
+				move->h2frames[index].movefunc(self,
+					move->h2frames[index].var1,
+					move->h2frames[index].var2,
+					move->h2frames[index].var3);
+			}
+
+			if (move->h2frames[index].actionfunc)
+			{
+				if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
+				{//Put scaling into SV_Movestep since this isn't ALWAYS the movement function
+					move->h2frames[index].actionfunc(self, move->h2frames[index].var4);//* self->monsterinfo.scale);
+				}
+				else
+				{
+					move->h2frames[index].actionfunc (self, 0);
+				}
+			}
+
+			if (move->h2frames[index].thinkfunc)
+			{
+				move->h2frames[index].thinkfunc(self);
 			}
 		}
 
-		if (move->h2frames[index].thinkfunc)
-		{
-			move->h2frames[index].thinkfunc(self);
-		}
+		return;
 	}
-#else
+
+#if 0
 	self->nextthink = level.time + FRAMETIME;
 
 	if ((self->monsterinfo.nextframe) &&
@@ -1285,7 +1305,8 @@ M_MoveFrame(edict_t *self)
 		/* prevent nextframe from leaking into a future move */
 		self->monsterinfo.nextframe = 0;
 
-		if (self->s.frame == lastframe)
+		if (((self->s.frame == lastframe) && !reverse) ||
+			((self->s.frame == firstframe) && reverse))
 		{
 			if (move && move->endfunc)
 			{
@@ -1328,11 +1349,23 @@ M_MoveFrame(edict_t *self)
 		{
 			if (!(self->monsterinfo.aiflags & AI_HOLD_FRAME))
 			{
-				self->s.frame++;
-
-				if (self->s.frame > lastframe)
+				if (!reverse)
 				{
-					self->s.frame = firstframe;
+					self->s.frame++;
+
+					if (self->s.frame > lastframe)
+					{
+						self->s.frame = firstframe;
+					}
+				}
+				else
+				{
+					self->s.frame--;
+
+					if (self->s.frame < firstframe)
+					{
+						self->s.frame = lastframe;
+					}
 				}
 			}
 		}
@@ -1450,13 +1483,26 @@ monster_dynamic_damage(edict_t *self)
 static void
 monster_dynamic_setframes(edict_t *self, int select)
 {
+	qboolean reverse = false;
+
 	if (!self || !self->monsterinfo.action)
 	{
 		return;
 	}
 
+	if (self->monsterinfo.numframes < 0)
+	{
+		self->monsterinfo.numframes *= -1;
+		reverse = true;
+	}
+
 	M_SetAnimGroupFrameValues(self, self->monsterinfo.action,
-		&self->monsterinfo.firstframe, &self->monsterinfo.lastframe, select);
+		&self->monsterinfo.firstframe, &self->monsterinfo.numframes, select);
+
+	if (reverse)
+	{
+		self->monsterinfo.numframes *= -1;
+	}
 }
 
 void

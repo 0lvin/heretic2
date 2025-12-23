@@ -43,14 +43,16 @@
 #define BUILD_DATE __DATE__
 #endif
 
-#ifdef _WIN32
- #define CFGDIR "YamagiH2"
+#define CFGDIRNAME_SHORT "yqh2"
+
+#if defined(USE_XDG)
+  #define CFGDIRNAME "YamagiH2"
 #else
- #ifndef __HAIKU__
-   #define CFGDIR ".yqh2"
- #else
-   #define CFGDIR "yqh2"
- #endif
+  #ifdef __HAIKU__
+    #define CFGDIRNAME CFGDIRNAME_SHORT
+  #else
+    #define CFGDIRNAME "." CFGDIRNAME_SHORT
+  #endif
 #endif
 
 #ifndef YQ2ARCH
@@ -833,10 +835,11 @@ extern cvar_t *sv_entfile;
 /* Hack for portable client */
 extern qboolean is_portable;
 
-/* Hack for external datadir */
+/* Hack for external datadir, this is where baseq2 is located */
 extern char datadir[MAX_OSPATH];
 
-/* Hack for external datadir */
+/* Hack for external datadir, this is the NAME of the folder where config
+ * and save files are located */
 extern char cfgdir[MAX_OSPATH];
 
 /* Hack for working 'game' cmd */
