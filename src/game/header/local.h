@@ -321,6 +321,8 @@ typedef enum
 	WEAP_PROXLAUNCH,
 	WEAP_CHAINFIST,
 	WEAP_GRAPPLE,
+	WEAP_FLAREGUN,
+	WEAP_BETA_DISRUPTOR,
 	WEAP_TOTAL
 } weapmodel_t;
 
@@ -1649,7 +1651,7 @@ void fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 void fire_blaster(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 		int speed, int effect, qboolean hyper);
 void fire_grenade(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
-		int speed, float timer, float damage_radius);
+		int speed, float timer, float damage_radius, qboolean monster);
 void fire_grenade2(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 		int speed, float timer, float damage_radius, qboolean held);
 void fire_rocket(edict_t *self, vec3_t start, vec3_t dir, int damage,
@@ -1669,6 +1671,8 @@ void fire_plasma(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed,
 		float damage_radius, int radius_damage);
 void fire_trap(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 		int speed, float timer, float damage_radius, qboolean held);
+void fire_flaregun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
+		int speed, float timer, float damage_radius);
 
 /* g_ptrail.c */
 void PlayerTrail_Init(void);
@@ -1724,8 +1728,8 @@ void PlayerNoise(edict_t *who, vec3_t where, int type);
 void P_ProjectSource(const edict_t *ent, const vec3_t distance,
 		vec3_t forward, const vec3_t right, vec3_t result);
 void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
-		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames,
-		int *fire_frames, void (*fire)(edict_t *ent));
+		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, const int *pause_frames,
+		const int *fire_frames, void (*fire)(edict_t *ent));
 qboolean Pickup_Weapon(edict_t *ent, edict_t *other);
 void Use_Weapon(edict_t *ent, gitem_t *inv);
 void Use_Weapon2(edict_t *ent, gitem_t *inv);
@@ -1743,6 +1747,7 @@ void Weapon_Railgun(edict_t *ent);
 void Weapon_BFG(edict_t *ent);
 void Weapon_ChainFist(edict_t *ent);
 void Weapon_Disintegrator(edict_t *ent);
+void Weapon_Beta_Disintegrator(edict_t *ent);
 void Weapon_ETF_Rifle(edict_t *ent);
 void Weapon_Heatbeam(edict_t *ent);
 void Weapon_Prox(edict_t *ent);
@@ -1751,6 +1756,7 @@ void Weapon_ProxLauncher(edict_t *ent);
 void Weapon_Ionripper(edict_t *ent);
 void Weapon_Phalanx(edict_t *ent);
 void Weapon_Trap(edict_t *ent);
+void Weapon_FlareGun(edict_t *ent);
 
 /* m_move.c */
 qboolean M_CheckBottom(edict_t *ent);
@@ -1761,6 +1767,10 @@ void M_MoveAwayFromGoal(edict_t *ent, float dist);
 void M_SetAnimGroupFrame(edict_t *self, const char *name, qboolean fixpos);
 void M_SetAnimGroupFrameValues(edict_t *self, const char *name,
 	int *ofs_frames, int *num_frames, int select);
+void M_SetAnimGroupMMove(edict_t *self, mmove_t *mmove, const mmove_t *mmove_base,
+	const char *name, int select);
+void M_SetAnimGroupMMoveOffset(edict_t *self, mmove_t *mmove, const mmove_t *mmove_base,
+	const char *name, int select, int offset);
 
 /* g_phys.c */
 void G_RunEntity(edict_t *ent);

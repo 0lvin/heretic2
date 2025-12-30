@@ -456,7 +456,7 @@ monster_fire_grenade(edict_t *self, vec3_t start, vec3_t aimdir,
 		return;
 	}
 
-	fire_grenade(self, start, aimdir, damage, speed, 2.5, damage + 40);
+	fire_grenade(self, start, aimdir, damage, speed, 2.5, damage + 40, true);
 
 	monster_muzzleflash2(self, start, flashtype);
 }
@@ -1070,11 +1070,12 @@ M_SetAnimGroupFrameValues(edict_t *self, const char *name,
 		/* no dodge animations */
 		M_SetAnimGroupFrameValuesInt(self, "duck", ofs_frames, num_frames, select);
 	}
-	else if (!strcmp(name, "swim"))
+	else if (!strcmp(name, "swim") ||
+			!strcmp(name, "jump"))
 	{
 		if (!M_SetAnimGroupFrameValuesInt(self, "run", ofs_frames, num_frames, select))
 		{
-			/* no swim -> run -> walk animations */
+			/* no swim / jump -> run -> walk animations */
 			M_SetAnimGroupFrameValuesInt(self, "walk", ofs_frames, num_frames, select);
 		}
 	}
@@ -1138,6 +1139,76 @@ M_SetAnimGroupFrame(edict_t *self, const char *name, qboolean fixpos)
 			self->mins, self->maxs);
 		M_FixStuckMonster(self);
 	}
+}
+
+void
+M_SetAnimGroupMMoveInt(edict_t *self, mmove_t *mmove, const char *name, int select)
+{
+	int ofs_frames, num_frames, base_numframe;
+
+	if (mmove->firstframe < mmove->lastframe)
+	{
+		ofs_frames = mmove->firstframe;
+		num_frames = mmove->lastframe - mmove->firstframe + 1;
+	}
+	else
+	{
+		ofs_frames = mmove->lastframe;
+		num_frames = mmove->firstframe - mmove->lastframe + 1;
+	}
+
+	base_numframe = num_frames;
+
+	M_SetAnimGroupFrameValues(self, name, &ofs_frames, &num_frames, select);
+
+	num_frames = Q_min(num_frames, base_numframe);
+
+	if (mmove->firstframe < mmove->lastframe)
+	{
+		mmove->firstframe = ofs_frames;
+		mmove->lastframe = ofs_frames + num_frames - 1;
+	}
+	else
+	{
+		mmove->lastframe = ofs_frames;
+		mmove->firstframe = ofs_frames + num_frames - 1;
+	}
+}
+
+void
+M_SetAnimGroupMMove(edict_t *self, mmove_t *mmove, const mmove_t *mmove_base,
+	const char *name, int select)
+{
+	if (mmove->firstframe || mmove->lastframe)
+	{
+		return;
+	}
+
+	memcpy(mmove, mmove_base, sizeof(mmove_t));
+
+	M_SetAnimGroupMMoveInt(self, mmove, name, select);
+}
+
+void
+M_SetAnimGroupMMoveOffset(edict_t *self, mmove_t *mmove, const mmove_t *mmove_base,
+	const char *name, int select, int offset)
+{
+	int numframes;
+
+	/* mmove started not from begin and has limited frames*/
+	if (mmove->firstframe || mmove->lastframe)
+	{
+		return;
+	}
+
+	numframes = mmove_base->lastframe - mmove_base->firstframe;
+	memcpy(mmove, mmove_base, sizeof(mmove_t));
+	mmove->firstframe -= offset;
+
+	M_SetAnimGroupMMoveInt(self, mmove, name, select);
+
+	mmove->firstframe += offset;
+	mmove->lastframe = Q_min(mmove->lastframe, mmove->firstframe + numframes);
 }
 
 /* ------------------------------------------------------------------------------

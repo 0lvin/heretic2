@@ -487,8 +487,16 @@ static const replacement_t replacements[] = {
 	{"models/vault/monsters/mutant/tris", "models/monsters/mutant/tris"},
 	{"models/vault/monsters/flyer/tris", "models/monsters/flyer/tris"},
 	{"models/vault/monsters/float/tris", "models/monsters/float/tris"},
+	/* grapple -> flareg for classic */
+	{"models/weapons/grapple/tris", "models/weapons/v_flareg/tris"},
+	{"models/weapons/grapple/hook/tris", "models/weapons/g_flareg/tris"},
+	/* grenade */
+	{"models/objects/grenade4/tris", "models/objects/grenade/tris"},
+	{"models/objects/grenade3/tris", "models/objects/grenade2/tris"},
 	/* DoD vs Daikatana */
 	{"models/weapons/ammo/g_bolt", "models/e3/wa_bolt"},
+	/* q2demo */
+	{"models/objects/gibs/head2/tris", "models/objects/gibs/head/tris"},
 };
 
 const model_t *

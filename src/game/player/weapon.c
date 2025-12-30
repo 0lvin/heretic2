@@ -401,6 +401,20 @@ PlayerNoise(edict_t *who, vec3_t where, int type)
 	gi.linkentity(noise);
 }
 
+static void
+G_RemoveAmmo(edict_t *ent)
+{
+	if (!((int)dmflags->value & DF_INFINITE_AMMO))
+	{
+		ent->client->pers.inventory[ent->client->ammo_index] -= ent->client->pers.weapon->quantity;
+
+		if (ent->client->pers.inventory[ent->client->ammo_index] < 0)
+		{
+			ent->client->pers.inventory[ent->client->ammo_index] = 0;
+		}
+	}
+}
+
 qboolean
 AddWeaponToInventory(gitem_t *item, edict_t *player)
 {
@@ -945,8 +959,8 @@ PlayerApplyAttack(edict_t *ent)
  */
 static void
 Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
-		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames,
-		int *fire_frames, void (*fire)(edict_t *ent))
+		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, const int *pause_frames,
+		const int *fire_frames, void (*fire)(edict_t *ent))
 {
 	int n;
 	const unsigned short int change_speed = (g_swap_speed->value > 1)?
@@ -1107,8 +1121,8 @@ Weapon_Generic2(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 
 void
 Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
-		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, int *pause_frames,
-		int *fire_frames, void (*fire)(edict_t *ent))
+		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, const int *pause_frames,
+		const int *fire_frames, void (*fire)(edict_t *ent))
 {
 	int oldstate = ent->client->weaponstate;
 
@@ -1217,10 +1231,7 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 			break;
 	}
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index]--;
-	}
+	G_RemoveAmmo(ent);
 
 	ent->client->grenade_time = level.time + 1.0;
 
@@ -1513,7 +1524,7 @@ weapon_grenadelauncher_fire(edict_t *ent)
 			fire_prox(ent, start, forward, damage_multiplier, 600);
 			break;
 		default:
-			fire_grenade(ent, start, forward, damage, 600, 2.5, radius);
+			fire_grenade(ent, start, forward, damage, 600, 2.5, radius, false);
 			break;
 	}
 
@@ -1550,10 +1561,7 @@ weapon_grenadelauncher_fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index]--;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -1667,10 +1675,7 @@ Weapon_RocketLauncher_Fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index]--;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -1875,10 +1880,7 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 
 			Blaster_Fire(ent, offset, damage, true, effect);
 
-			if (!((int)dmflags->value & DF_INFINITE_AMMO))
-			{
-				ent->client->pers.inventory[ent->client->ammo_index]--;
-			}
+			G_RemoveAmmo(ent);
 
 			PlayerApplyAttack(ent);
 		}
@@ -2042,10 +2044,7 @@ Machinegun_Fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index]--;
-	}
+	G_RemoveAmmo(ent);
 
 	PlayerApplyAttack(ent);
 
@@ -2349,10 +2348,7 @@ weapon_shotgun_fire(edict_t *ent)
 	ent->client->ps.gunframe++;
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index]--;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -2494,10 +2490,7 @@ weapon_supershotgun_fire(edict_t *ent)
 	ent->client->ps.gunframe++;
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index] -= 2;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -2603,10 +2596,7 @@ weapon_railgun_fire(edict_t *ent)
 	ent->client->ps.gunframe++;
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index]--;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -2704,7 +2694,7 @@ weapon_bfg_fire(edict_t *ent)
 
 	/* cells can go down during windup (from power armor hits), so
 	   check again and abort firing if we don't have enough now */
-	if (ent->client->pers.inventory[ent->client->ammo_index] < 50)
+	if (ent->client->pers.inventory[ent->client->ammo_index] < ent->client->pers.weapon->quantity)
 	{
 		ent->client->ps.gunframe++;
 		return;
@@ -2753,10 +2743,7 @@ weapon_bfg_fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index] -= 50;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -2778,6 +2765,17 @@ Weapon_BFG(edict_t *ent)
 		Weapon_Generic(ent, 8, 32, 55, 58, pause_frames,
 				fire_frames, weapon_bfg_fire);
 	}
+}
+
+//======================================================================
+
+void
+Weapon_Beta_Disintegrator(edict_t *ent)
+{
+	static int pause_frames[] = { 30, 37, 45, 0 };
+	static int fire_frames[] = { 17, 0 };
+
+	Weapon_Generic(ent, 16, 23, 46, 50, pause_frames, fire_frames, weapon_bfg_fire);
 }
 
 /* CHAINFIST */
@@ -2823,7 +2821,7 @@ weapon_chainfist_fire(edict_t *ent)
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
 	ent->client->ps.gunframe++;
-	ent->client->pers.inventory[ent->client->ammo_index] -= ent->client->pers.weapon->quantity;
+	G_RemoveAmmo(ent);
 }
 
 /*
@@ -3027,7 +3025,7 @@ weapon_tracker_fire(edict_t *self)
 	PlayerNoise(self, start, PNOISE_WEAPON);
 
 	self->client->ps.gunframe++;
-	self->client->pers.inventory[self->client->ammo_index] -= self->client->pers.weapon->quantity;
+	G_RemoveAmmo(self);
 }
 
 void
@@ -3117,10 +3115,7 @@ weapon_etf_rifle_fire(edict_t *ent)
 
 	ent->client->ps.gunframe++;
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index] -= ent->client->pers.weapon->quantity;
-	}
+	G_RemoveAmmo(ent);
 
 	PlayerApplyAttack(ent);
 }
@@ -3211,10 +3206,7 @@ Heatbeam_Fire(edict_t *ent)
 
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index] -= ent->client->pers.weapon->quantity;
-	}
+	G_RemoveAmmo(ent);
 
 	PlayerApplyAttack(ent);
 }
@@ -3318,16 +3310,7 @@ weapon_ionripper_fire(edict_t *ent)
 	ent->client->ps.gunframe++;
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 
-	if (!((int)dmflags->value & DF_INFINITE_AMMO))
-	{
-		ent->client->pers.inventory[ent->client->ammo_index] -=
-			ent->client->pers.weapon->quantity;
-	}
-
-	if (ent->client->pers.inventory[ent->client->ammo_index] < 0)
-	{
-		ent->client->pers.inventory[ent->client->ammo_index] = 0;
-	}
+	G_RemoveAmmo(ent);
 }
 
 void
@@ -3406,10 +3389,7 @@ weapon_phalanx_fire(edict_t *ent)
 		gi.WriteByte(MZ_PHALANX2 | is_silenced);
 		gi.multicast(ent->s.origin, MULTICAST_PVS);
 
-		if (!((int)dmflags->value & DF_INFINITE_AMMO))
-		{
-			ent->client->pers.inventory[ent->client->ammo_index]--;
-		}
+		G_RemoveAmmo(ent);
 	}
 	else
 	{
@@ -3487,7 +3467,7 @@ weapon_trap_fire(edict_t *ent, qboolean held)
 		((GRENADE_MAXSPEED - GRENADE_MINSPEED) / GRENADE_TIMER);
 	fire_trap(ent, start, forward, damage, speed, timer, radius, held);
 
-	ent->client->pers.inventory[ent->client->ammo_index]--;
+	G_RemoveAmmo(ent);
 	ent->client->grenade_time = level.time + 1.0;
 }
 
@@ -3628,6 +3608,76 @@ Weapon_Trap(edict_t *ent)
 			ent->client->weaponstate = WEAPON_READY;
 		}
 	}
+}
+
+//======================================================================
+
+/*
+ * weapon_flaregun_fire (edict_t *ent)
+ *
+ * Basically used to wrap the call to fire_flaregun(), this function
+ * calculates all the parameters needed by fire_flaregun.  Calls
+ * fire_flaregun and then subtracts 1 from the firing entity's
+ * cell stash.
+ */
+static void
+weapon_flaregun_fire(edict_t *ent)
+{
+	vec3_t offset, forward, right, start;
+	float volume = 1.0;
+
+	/* Setup the parameters used in the call to fire_flaregun() */
+	VectorSet(offset, 8, 8, ent->viewheight - 8);
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+	P_ProjectSource(ent, offset, forward, right, start);
+
+	VectorScale(forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	/* Make the flaregun actually shoot the flare */
+	fire_flaregun(ent, start, forward, 0, 800, 25, 0);
+
+	if (ent->client->silencer_shots)
+	{
+		volume = 0.2;
+	}
+
+	gi.sound(ent, CHAN_RELIABLE + CHAN_WEAPON,
+			gi.soundindex("weapons/grapple/grfire.wav"), volume, ATTN_NORM, 0);
+
+	/* Bump the gunframe */
+	ent->client->ps.gunframe++;
+
+	PlayerNoise(ent, start, PNOISE_WEAPON);
+
+	G_RemoveAmmo(ent);
+}
+
+/*
+ * Weapon_FlareGun (edict_t *ent)
+ *
+ * This is the function that is referenced in the itemlist structure
+ * defined in g_items.c.  It is called every frame when our weapon is
+ * active.  It calls Weapon_Generic() to handle per-frame weapon
+ * handling (like animation and stuff).  Haven't delved too deeply
+ * into Weapon_Generic()'s responsiblities... if someone has insight
+ * drop me a line :)
+ */
+void
+Weapon_FlareGun(edict_t *ent)
+{
+	/*
+	 * active 0..8
+	 * pow    9..13
+	 * idle   14..49
+	 * putway 50..53
+	 */
+	static int pause_frames[] = { 14, 23, 50, 0 };
+	static int fire_frames[] = { 9, 0 };
+
+	/* Check the top of p_weapon.c for definition of Weapon_Generic */
+	Weapon_Generic(ent, 8, 13, 49, 53, pause_frames,
+		fire_frames, weapon_flaregun_fire);
 }
 
 // ************************************************************************************************
@@ -4351,26 +4401,9 @@ WeaponThink_PhoenixBow(edict_t *caster)
 
 void WeaponThink_HellStaff(edict_t *caster)
 {
-	vec3_t	StartPos;	//, off;
+	vec3_t	StartPos;
 	vec3_t	fwd, right;
-//	vec3_t	startangle;
 
-	// Set up the Hellstaff's starting position and aiming angles then cast the spell.
-//	VectorSet(off, 34.0, -6.0, 0.0);
-//	VectorGetOffsetOrigin(off, caster->s.origin, caster->client->ps.viewangles[YAW], StartPos);
-
-	// Two-thirds of the player angle is torso movement.
-/*	startangle[PITCH] = (caster->client->ps.viewangles[PITCH] - caster->s.angles[PITCH]) * 2.0 / 3.0;
-	startangle[YAW] = caster->client->ps.viewangles[YAW] - caster->s.angles[YAW];
-	if (startangle[YAW] > 180.0)
-		startangle[YAW] -= 360.0;
-	else if (startangle[YAW] < -180.0)
-		startangle[YAW] += 360;
-	startangle[YAW] *= 2.0/3.0;
-	startangle[ROLL] = 0.0;
-*/
-//	VectorAdd(startangle, caster->s.angles, startangle);
-//	AngleVectors(startangle, fwd, right, NULL);
 	AngleVectors(caster->client->ps.viewangles, fwd, right, NULL);
 	VectorMA(caster->s.origin,30,fwd,StartPos);
 	VectorMA(StartPos,10,right,StartPos);
