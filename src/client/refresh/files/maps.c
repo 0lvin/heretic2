@@ -841,10 +841,10 @@ Mod_LoadBSPXReadByte(struct rctx_s *ctx)
 static int
 Mod_LoadBSPXReadInt(struct rctx_s *ctx)
 {
-	int r = (int)Mod_LoadBSPXReadByte(ctx)<<0;
-		r|= (int)Mod_LoadBSPXReadByte(ctx)<<8;
-		r|= (int)Mod_LoadBSPXReadByte(ctx)<<16;
-		r|= (int)Mod_LoadBSPXReadByte(ctx)<<24;
+	int r = (int)Mod_LoadBSPXReadByte(ctx) << 0;
+		r|= (int)Mod_LoadBSPXReadByte(ctx) << 8;
+		r|= (int)Mod_LoadBSPXReadByte(ctx) << 16;
+		r|= (int)Mod_LoadBSPXReadByte(ctx) << 24;
 	return r;
 }
 
@@ -1053,7 +1053,9 @@ calcTexinfoAndQFacesSize(const byte *mod_base, const lump_t *fl, const lump_t *t
 		if (texFlags & SURF_WARP)
 		{
 			if (numverts > 60)
+			{
 				return 0; // will error out in R_SubdividePolygon()
+			}
 
 			// R_SubdivideSurface(out, loadmodel); /* cut up polygon for warps */
 			// for each (pot. recursive) call to R_SubdividePolygon():

@@ -309,6 +309,7 @@ void SV_WriteClientEffectsToClient(client_frame_t* from, client_frame_t* to, siz
 #define OPTIMIZE_MSGUTIL 1
 #define OPTIMIZE_SENDRATE 2
 #define OPTIMIZE_RECONNECT 4
+#define OPTIMIZE_HUDSEND 8
 
 int SV_Optimizations(void);
 

@@ -156,10 +156,10 @@ Mod_LoadMaterialConvertFlags(int flags, maptype_t maptype, char *value)
 }
 
 /*
- * Convert Quake 1 games flags to Quake 2 context flags
+ * Convert Quake 1 games flags to Quake 2 content flags
  */
 static int
-ModLoadContextQuake1(int flags)
+ModLoadContentQuake1(int flags)
 {
 	switch (flags)
 	{
@@ -169,15 +169,29 @@ ModLoadContextQuake1(int flags)
 		case CONTENTS_Q1_SLIME: return CONTENTS_SLIME;
 		case CONTENTS_Q1_LAVA: return CONTENTS_LAVA;
 		case CONTENTS_Q1_SKY: return 0;
+		case CONTENTS_Q1_CLIP: return CONTENTS_SOLID;
+		case CONTENTS_Q1_ORIGIN: return CONTENTS_ORIGIN;
+		case CONTENTS_Q1_CURRENT_0: return CONTENTS_CURRENT_0;
+		case CONTENTS_Q1_CURRENT_90: return CONTENTS_CURRENT_90;
+		case CONTENTS_Q1_CURRENT_180: return CONTENTS_CURRENT_180;
+		case CONTENTS_Q1_CURRENT_270: return CONTENTS_CURRENT_270;
+		case CONTENTS_Q1_CURRENT_UP: return CONTENTS_CURRENT_UP;
+		case CONTENTS_Q1_CURRENT_DOWN: return CONTENTS_CURRENT_DOWN;
+		case CONTENTS_HL_TRANSLUCENT: return CONTENTS_TRANSLUCENT;
+		case CONTENTS_HL_LADDER: return CONTENTS_LADDER;
+		/* Ignored:
+		 * CONTENTS_HL_FLYFIELD,
+		 * CONTENTS_HL_GRAVITY_FLYFIELD,
+		 * CONTENTS_HL_FOG. */
 		default: return 0;
 	}
 }
 
 /*
- * Convert other games flags to Quake 2 context flags
+ * Convert other games flags to Quake 2 content flags
  */
 static int
-Mod_LoadContextConvertFlags(int flags, maptype_t maptype)
+Mod_LoadContentConvertFlags(int flags, maptype_t maptype)
 {
 	const int *convert;
 
@@ -188,7 +202,7 @@ Mod_LoadContextConvertFlags(int flags, maptype_t maptype)
 		case map_hexen2:
 			/* fall through */
 		case map_halflife1:
-			return ModLoadContextQuake1(flags);
+			return ModLoadContentQuake1(flags);
 		case map_quake2: convert = quake2_contents_flags; break;
 		case map_quake3: convert = quake3_contents_flags; break;
 		case map_heretic2: convert = heretic2_contents_flags; break;
@@ -606,13 +620,17 @@ Mod_Load2QBSP_IBSP29_TEXINFO(byte *outbuf, dheader_t *outheader,
 	const byte *inbuf, const lump_t *lumps, size_t rule_size,
 	maptype_t maptype, int outlumppos, int inlumppos)
 {
-	size_t i, count;
+	dq1mipheader_t *miptextures;
+	size_t i, count, tex_count, tex_offs;
 	dq1texinfo_t *in;
 	xtexinfo_t *out;
 
 	count = lumps[inlumppos].filelen / rule_size;
 	in = (dq1texinfo_t *)(inbuf + lumps[inlumppos].fileofs);
 	out = (xtexinfo_t *)(outbuf + outheader->lumps[outlumppos].fileofs);
+	tex_count = lumps[LUMP_BSP29_MIPTEX].filelen;
+	tex_offs = lumps[LUMP_BSP29_MIPTEX].fileofs;
+	miptextures = (dq1mipheader_t *)(inbuf + tex_offs);
 
 	for (i = 0; i < count; i++)
 	{
@@ -627,6 +645,32 @@ Mod_Load2QBSP_IBSP29_TEXINFO(byte *outbuf, dheader_t *outheader,
 		out->flags = Mod_LoadSurfConvertFlags(LittleLong(in->animated), maptype);
 		out->nexttexinfo = -1;
 		snprintf(out->texture, sizeof(out->texture), "#%d", LittleLong(in->texture_id));
+		if (in->texture_id < tex_count)
+		{
+			int texture_offset;
+
+			texture_offset = LittleLong(miptextures->offset[in->texture_id]);
+			if (texture_offset > 0)
+			{
+				dq1miptex_t *texture;
+
+				texture = (dq1miptex_t *)(inbuf + tex_offs + texture_offset);
+
+				if (!strncmp(texture->name, "sky", 3))
+				{
+					out->flags = SURF_SKY;
+				}
+				else if ((maptype == map_quake1 || maptype == map_hexen2) &&
+					texture->name[0] == '*')
+				{
+					out->flags = SURF_WARP;
+				}
+				else if ((maptype == map_halflife1) && texture->name[0] == '!')
+				{
+					out->flags = SURF_WARP;
+				}
+			}
+		}
 
 		out++;
 		in++;
@@ -891,7 +935,7 @@ Mod_Load2QBSP_IBSP_LEAFS(byte *outbuf, dheader_t *outheader,
 			out->maxs[j] = LittleShort(in->maxs[j]);
 		}
 
-		out->contents = Mod_LoadContextConvertFlags(LittleLong(in->contents), maptype);
+		out->contents = Mod_LoadContentConvertFlags(LittleLong(in->contents), maptype);
 		out->cluster = LittleShort(in->cluster);
 		out->area = LittleShort(in->area);
 
@@ -929,7 +973,7 @@ Mod_Load2QBSP_IBSP29_LEAFS(byte *outbuf, dheader_t *outheader,
 			out->maxs[j] = LittleShort(in->maxs[j]);
 		}
 
-		out->contents = Mod_LoadContextConvertFlags(LittleLong(in->type), maptype);
+		out->contents = Mod_LoadContentConvertFlags(LittleLong(in->type), maptype);
 		out->cluster = 0;
 		out->area = 0;
 
@@ -967,7 +1011,7 @@ Mod_Load2QBSP_DKBSP_LEAFS(byte *outbuf, dheader_t *outheader,
 			out->maxs[j] = LittleShort(in->maxs[j]);
 		}
 
-		out->contents = Mod_LoadContextConvertFlags(LittleLong(in->contents), maptype);
+		out->contents = Mod_LoadContentConvertFlags(LittleLong(in->contents), maptype);
 		out->cluster = LittleShort(in->cluster);
 		out->area = LittleShort(in->area);
 
@@ -1005,7 +1049,7 @@ Mod_Load2QBSP_QBSP_LEAFS(byte *outbuf, dheader_t *outheader,
 			out->maxs[j] = LittleFloat(in->maxs[j]);
 		}
 
-		out->contents = Mod_LoadContextConvertFlags(LittleLong(in->contents), maptype);
+		out->contents = Mod_LoadContentConvertFlags(LittleLong(in->contents), maptype);
 		out->cluster = LittleLong(in->cluster);
 		out->area = LittleLong(in->area);
 
@@ -1042,7 +1086,7 @@ Mod_Load2QBSP_IBSP46_LEAFS(byte *outbuf, dheader_t *outheader,
 	in_brush = (dq3brush_t *)(inbuf + lumps[LUMP_BSP46_BRUSHES].fileofs);
 
 	count_shader = lumps[LUMP_BSP46_SHADERS].filelen / sizeof(dshader_t);
-	in_shader = (dshader_t *)(in + lumps[LUMP_BSP46_SHADERS].fileofs);
+	in_shader = (dshader_t *)(inbuf + lumps[LUMP_BSP46_SHADERS].fileofs);
 
 	for (i = 0; i < count; i++)
 	{
@@ -1063,7 +1107,7 @@ Mod_Load2QBSP_IBSP46_LEAFS(byte *outbuf, dheader_t *outheader,
 		out->firstleafbrush = LittleLong(in->firstleafbrush) & 0xFFFFFFFF;
 		out->numleafbrushes = LittleLong(in->numleafbrushes) & 0xFFFFFFFF;
 
-		/* get context flags */
+		/* get content flags */
 		brushleaf_index = LittleLong(in->firstleafbrush);
 		if (brushleaf_index >= count_leafbrush)
 		{
@@ -1088,8 +1132,14 @@ Mod_Load2QBSP_IBSP46_LEAFS(byte *outbuf, dheader_t *outheader,
 			return;
 		}
 
-		out->contents = Mod_LoadContextConvertFlags(
+		out->contents = Mod_LoadContentConvertFlags(
 			LittleLong(in_shader[shader_index].content_flags), maptype);
+
+		if (!(out->contents & (CONTENTS_SOLID | CONTENTS_LAVA | CONTENTS_SLIME |
+								CONTENTS_WATER | CONTENTS_MIST)))
+		{
+			out->contents = 0;
+		}
 
 		out++;
 		in++;
@@ -1207,22 +1257,26 @@ Mod_Load2QBSP_QBSP_EDGES(byte *outbuf, dheader_t *outheader,
 }
 
 static void
-Mod_Load2QBSP_IBSP46_EDGES(byte *outbuf, dheader_t *outheader,
+Mod_Load2QBSP_IBSP46_VERTEXES(byte *outbuf, dheader_t *outheader,
 	const byte *inbuf, const lump_t *lumps, size_t rule_size,
 	maptype_t maptype, int outlumppos, int inlumppos)
 {
 	q3drawvert_t *in;
 	size_t i, count;
-	dqedge_t *out;
+	dvertex_t *out;
 
 	count = lumps[inlumppos].filelen / rule_size;
 	in = (q3drawvert_t *)(inbuf + lumps[inlumppos].fileofs);
-	out = (dqedge_t *)(outbuf + outheader->lumps[outlumppos].fileofs);
+	out = (dvertex_t *)(outbuf + outheader->lumps[outlumppos].fileofs);
 
 	for (i = 0; i < count; i++)
 	{
-		out->v[0] = (unsigned int)LittleFloat(in->st[0]);
-		out->v[1] = (unsigned int)LittleFloat(in->st[1]);
+		int j;
+
+		for (j = 0; j < 3; j++)
+		{
+			out->point[j] = LittleFloat(in->xyz[j]);
+		}
 
 		out++;
 		in++;
@@ -1376,7 +1430,7 @@ Mod_Load2QBSP_IBSP_BRUSHES(byte *outbuf, dheader_t *outheader,
 	{
 		out->firstside = LittleLong(in->firstside) & 0xFFFFFFFF;
 		out->numsides = LittleLong(in->numsides) & 0xFFFFFFFF;
-		out->contents = Mod_LoadContextConvertFlags(LittleLong(in->contents), maptype);
+		out->contents = Mod_LoadContentConvertFlags(LittleLong(in->contents), maptype);
 
 		out++;
 		in++;
@@ -1409,7 +1463,7 @@ Mod_Load2QBSP_IBSP46_BRUSHES(byte *outbuf, dheader_t *outheader,
 		out->numsides = LittleLong(in->numsides) & 0xFFFFFFFF;
 		out->contents = 0;
 
-		/* get context flags */
+		/* get content flags */
 		shader_index = LittleLong(in->shader_index) & 0xFFFFFFFF;
 		if (shader_index >= count_shader)
 		{
@@ -1418,7 +1472,7 @@ Mod_Load2QBSP_IBSP46_BRUSHES(byte *outbuf, dheader_t *outheader,
 			return;
 		}
 
-		out->contents = Mod_LoadContextConvertFlags(
+		out->contents = Mod_LoadContentConvertFlags(
 			LittleLong(in_shader[shader_index].content_flags), maptype);
 
 		out++;
@@ -1820,7 +1874,7 @@ static const rule_t idq3bsplumps[HEADER_Q3LUMPS] = {
 	{LUMP_MODELS, sizeof(dq3model_t), Mod_Load2QBSP_IBSP46_MODELS},
 	{LUMP_BRUSHES, sizeof(dq3brush_t), Mod_Load2QBSP_IBSP46_BRUSHES},
 	{LUMP_BRUSHSIDES, sizeof(dqbrushside_t), Mod_Load2QBSP_QBSP_BRUSHSIDES},
-	{LUMP_EDGES, sizeof(q3drawvert_t), Mod_Load2QBSP_IBSP46_EDGES},
+	{LUMP_VERTEXES, sizeof(q3drawvert_t), Mod_Load2QBSP_IBSP46_VERTEXES},
 	{-1, 0, NULL}, /* LUMP_BSP46_DRAWINDEXES */
 	{-1, 0, NULL}, /* LUMP_BSP46_FOGS */
 	{LUMP_FACES, sizeof(dq3surface_t), Mod_Load2QBSP_IBSP46_FACES},

@@ -35,7 +35,6 @@
  */
 
 #include <SDL3/SDL.h>
-#include <limits.h>
 
 #include "SDL3/SDL_gamepad.h"
 #include "SDL3/SDL_properties.h"
@@ -1924,8 +1923,6 @@ In_FlushQueue(void)
 
 /* ------------------------------------------------------------------ */
 
-static void IN_Haptic_Shutdown(void);
-
 /*
  * Init haptic effects
  */
@@ -2497,13 +2494,34 @@ IN_InitGyro(void)
 }
 
 /*
+ * Steps after calling SDL_OpenHapticFrom...()
+ */
+static void
+IN_Haptic_Prepare(void)
+{
+	if (joystick_haptic &&
+		(SDL_GetHapticFeatures(joystick_haptic) & SDL_HAPTIC_SINE) == 0)
+	{
+		/* Disable haptic for joysticks/mice without SINE */
+		SDL_CloseHaptic(joystick_haptic);
+		joystick_haptic = NULL;
+	}
+
+	if (joystick_haptic)
+	{
+		IN_Haptic_Effects_Info();
+		show_haptic = true;
+	}
+}
+
+/*
  * Game Controller
  */
 static void
 IN_Controller_Init(qboolean notify_user)
 {
 	cvar_t *cvar;
-	int nummappings;
+	int nummappings, numjoysticks, joy_num, i;
 	char controllerdb[MAX_OSPATH] = {0};
 	SDL_Joystick *joystick = NULL;
 	bool is_controller = false;
@@ -2525,7 +2543,8 @@ IN_Controller_Init(qboolean notify_user)
 	}
 
 	cvar = Cvar_Get("in_initjoy", "1", CVAR_NOSET);
-	if (!cvar->value)
+	joy_num = (int)cvar->value;
+	if (joy_num < 1)
 	{
 		return;
 	}
@@ -2544,7 +2563,6 @@ IN_Controller_Init(qboolean notify_user)
 		}
 	}
 
-	int numjoysticks;
 	const SDL_JoystickID *joysticks = SDL_GetJoysticks(&numjoysticks);
 
 	if (joysticks != NULL)
@@ -2552,24 +2570,10 @@ IN_Controller_Init(qboolean notify_user)
 		Com_Printf ("%i joysticks were found.\n", numjoysticks);
 	}
 
-
 	if (numjoysticks == 0)
 	{
 		joystick_haptic = SDL_OpenHapticFromMouse();
-
-		if (joystick_haptic &&
-			(SDL_GetHapticFeatures(joystick_haptic) & SDL_HAPTIC_SINE) == 0)
-		{
-			/* Disable haptic for joysticks without SINE */
-			SDL_CloseHaptic(joystick_haptic);
-			joystick_haptic = NULL;
-		}
-
-		if (joystick_haptic)
-		{
-			IN_Haptic_Effects_Info();
-			show_haptic = true;
-		}
+		IN_Haptic_Prepare();
 
 		SDL_free((void *)joysticks);
 
@@ -2584,13 +2588,16 @@ IN_Controller_Init(qboolean notify_user)
 			Com_Printf ("%d mappings loaded from gamecontrollerdb.txt\n", nummappings);
 	}
 
-	for (int i = 0; i < numjoysticks; i++)
+	if (joy_num > numjoysticks) joy_num = 1;
+	joy_num--;
+	i = joy_num;
+	do
 	{
 		joystick = SDL_OpenJoystick(joysticks[i]);
 		if (!joystick)
 		{
 			Com_Printf ("Couldn't open joystick %d: %s.\n", i+1, SDL_GetError());
-			continue;	// try next joystick
+			goto next_joy;	// try next joystick
 		}
 
 		const char* joystick_name = SDL_GetJoystickName(joystick);
@@ -2630,7 +2637,7 @@ IN_Controller_Init(qboolean notify_user)
 				Com_Printf ("skipping.\n");
 			}
 #endif
-			continue;
+			goto next_joy;
 		}
 
 		Com_Printf ("Buttons = %d, Axes = %d, Hats = %d\n", SDL_GetNumJoystickButtons(joystick),
@@ -2659,7 +2666,7 @@ IN_Controller_Init(qboolean notify_user)
 			if (!controller)
 			{
 				Com_Printf("SDL Gamepad error: %s.\n", SDL_GetError());
-				continue;	// try next joystick
+				goto next_joy;	// try next joystick
 			}
 
 			show_gamepad = true;
@@ -2711,20 +2718,7 @@ IN_Controller_Init(qboolean notify_user)
 #endif	// !NO_SDL_GYRO
 
 			joystick_haptic = SDL_OpenHapticFromJoystick(SDL_GetGamepadJoystick(controller));
-
-			if (joystick_haptic &&
-				(SDL_GetHapticFeatures(joystick_haptic) & SDL_HAPTIC_SINE) == 0)
-			{
-				/* Disable haptic for joysticks without SINE */
-				SDL_CloseHaptic(joystick_haptic);
-				joystick_haptic = NULL;
-			}
-
-			if (joystick_haptic)
-			{
-				IN_Haptic_Effects_Info();
-				show_haptic = true;
-			}
+			IN_Haptic_Prepare();
 
 			bool hasRumble = SDL_GetBooleanProperty(SDL_GetGamepadProperties(controller), SDL_PROP_GAMEPAD_CAP_RUMBLE_BOOLEAN, false);
 			if (hasRumble)
@@ -2741,7 +2735,12 @@ IN_Controller_Init(qboolean notify_user)
 			break;
 #endif
 		}
+
+next_joy:
+		i++;
+		if (i == numjoysticks) i = 0;
 	}
+	while (i != joy_num);
 
 	SDL_free((void *)joysticks);
 	IN_GamepadLabels_Changed();
@@ -2908,20 +2907,8 @@ IN_Init(void)
 }
 
 /*
- * Shuts the backend down
+ * Shuts down gamepad and haptic
  */
-static void
-IN_Haptic_Shutdown(void)
-{
-	if (joystick_haptic)
-	{
-		IN_Haptic_Effects_Shutdown();
-
-		SDL_CloseHaptic(joystick_haptic);
-		joystick_haptic = NULL;
-	}
-}
-
 static void
 IN_Controller_Shutdown(qboolean notify_user)
 {
@@ -2930,7 +2917,12 @@ IN_Controller_Shutdown(qboolean notify_user)
 		Com_Printf("- Gamepad disconnected -\n");
 	}
 
-	IN_Haptic_Shutdown();
+	if (joystick_haptic)
+	{
+		IN_Haptic_Effects_Shutdown();
+		SDL_CloseHaptic(joystick_haptic);
+		joystick_haptic = NULL;
+	}
 
 	if (controller)
 	{

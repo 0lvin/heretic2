@@ -63,9 +63,9 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   enable/disable optimizations that speed up level load times (or more
   accurately, client connection).
   sp stands for singleplayer and mp for multiplayer, respectively.
-  The sp version is enabled by default (value 7) while multiplayer
+  The sp version is enabled by default (value 15) while multiplayer
   is 0.
-  The cvar value is a bitmask for 3 optimization features:
+  The cvar value is a bitmask for 4 optimization features:
 
   - **1: Message utilization**: When the server sends the client
     configstrings and other data during the connection process, the
@@ -83,10 +83,19 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
     clients, and then a "reconnect" command. The delay between these
     commands can be quite long, ~1 second. This flag will avoid this
     delay when set, by sending the two commands within the same message.
+  - **8: HUD code send**: HUD code is stored in several configstring
+    slots. When the server sends these slots to clients, it sends the
+    full code and then increasingly smaller substrings of the code,
+    which has a lot of redundancy. With this optimization enabled,
+    only the initial, full HUD code string is sent. This is a
+    very minor optimization, will in some cases reduce number of
+    configstring packets by 1. The saving would be bigger in
+    multiplayer due to the added networking latency, and mods with
+    longer HUD code would also benefit more from this.
 
   Simply add these flag values together to get the cvar value you want.
   For example, sendrate + reconnect = 2 + 4 = 6.
-  Set to 7 for all optimizations, or 0 to disable them entirely.
+  Set to 15 for all optimizations, or 0 to disable them entirely.
 
 * **cl_maxfps**: The approximate framerate for client/server ("packet")
   frames if *cl_async* is `1`. If set to `-1` (the default), the engine
@@ -445,7 +454,7 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   pixels wide. Set *r_mode* to `-1` to use the custom resolution.
 
 * **r_farsee**: Normally Quake II renders only up to 4096 units. If set
-  to `1` the limit is increased to 8192 units. This helps with some
+  to `1` the limit is increased to whole map size units. This helps with some
   custom maps and is problematic with other custom maps.
 
 * **r_fixsurfsky**: Some maps misuse sky surfaces for interior
@@ -542,7 +551,7 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 
 * **vid_renderer**: Selects the renderer library. Possible options are
   `gl3` (the default) for the OpenGL 3.2 renderer, `gles3` for the
-  OpenGL ES3 renderer, gl1 for the original OpenGL 1.4 renderer and
+  OpenGL ES3 renderer, `gl1` for the original OpenGL 1.4 renderer and
   `soft` for the software renderer.
 
 * **r_dynamic**: Enamble dynamic light in gl1 and vk renders.
@@ -686,9 +695,9 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 
 ## Gamepad
 
-* **in_initjoy**: Toggles initialization of game controller. Default is
-  `1`, which enables gamepad usage; `0` disables its detection at
-  startup. Can only be set from command line.
+* **in_initjoy**: Chooses the preferred gamepad to initialize, starting
+  with `1` (default); `0` disables gamepad usage. Can only be set from
+  command line.
 
 * **joy_escbutton**: Defines which button is used in the gamepad as
   the `Esc` key, to pull the main menu and 'cancel' / 'go back' on its
@@ -708,8 +717,8 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **joy_confirm**: Style of *confirm* and *cancel* buttons in menus. As
   with the previous one, SDL 2.0.12 is required for `-1` to work.
   - `-1`: *Autodetect*, sets to `1` if Nintendo gamepad, `0` otherwise
-  - `0`: *Standard style*: SOUTH to confirm, EAST to cancel
-  - `1`: *Japanese style*: EAST to confirm, SOUTH to cancel
+  - `0`: *Standard style* - SOUTH to confirm, EAST to cancel
+  - `1`: *Japanese style* - EAST to confirm, SOUTH to cancel
 
 * **joy_sensitivity**: Simple sensitivity adjustment for yaw and pitch.
   Changing this applies a preset that adjusts the advanced cvars listed

@@ -199,22 +199,55 @@ static void
 PF_Configstring(int index, const char *val)
 {
 	int internal_index;
+	size_t len;
+	char *cs;
+
+	internal_index = P_ConvertConfigStringFrom(index, SV_GetRecomendedProtocol());
+	if ((internal_index < 0) || (internal_index >= MAX_CONFIGSTRINGS))
+	{
+		Com_Printf("%s: bad index %i\n", __func__, internal_index);
+		return;
+	}
 
 	if (!val)
 	{
 		val = "";
 	}
 
-	internal_index = P_ConvertConfigStringFrom(index, SV_GetRecomendedProtocol());
+	len = strlen(val);
+	cs = sv.configstrings[internal_index];
 
-	if ((internal_index < 0) || (internal_index >= MAX_CONFIGSTRINGS))
+	/* statusbar code covers several configstring indices */
+	if ((internal_index >= CS_STATUSBAR) && (internal_index < CS_STATUSBAR_END))
 	{
-		Com_Error(ERR_DROP, "configstring: bad index %i\n", internal_index);
-		return;
-	}
+		size_t space;
 
-	/* change the string in sv */
-	strcpy(sv.configstrings[internal_index], val);
+		space = CS_STATUSBAR_SPACE(internal_index);
+
+		if (len >= space)
+		{
+			Com_Printf("%s: statusbar code too big: " YQ2_COM_PRIdS " > " YQ2_COM_PRIdS "\n",
+				__func__, len, space - 1);
+			return;
+		}
+
+		memcpy(cs, val, len + 1);
+	}
+	else
+	{
+		size_t space;
+
+		space = sizeof(sv.configstrings[internal_index]);
+
+		if (len >= space)
+		{
+			Com_Printf("%s; value too big: " YQ2_COM_PRIdS " > " YQ2_COM_PRIdS "\n",
+				__func__, len, space - 1);
+			return;
+		}
+
+		strcpy(cs, val);
+	}
 
 	if (sv.state != ss_loading)
 	{
@@ -362,12 +395,13 @@ PF_inPVS(vec3_t p1, vec3_t p2)
 	int leafnum;
 	int cluster;
 	int area1, area2;
-	byte *mask;
+	const byte *mask;
+	size_t mask_size;
 
 	leafnum = CM_PointLeafnum(p1);
 	cluster = CM_LeafCluster(leafnum);
 	area1 = CM_LeafArea(leafnum);
-	mask = CM_ClusterPVS(cluster);
+	mask = CM_ClusterPVS(cluster, &mask_size);
 
 	leafnum = CM_PointLeafnum(p2);
 	cluster = CM_LeafCluster(leafnum);
@@ -376,7 +410,8 @@ PF_inPVS(vec3_t p1, vec3_t p2)
 	// cluster -1 means "not in a visible leaf" or something like that (void?)
 	// so p1 and p2 probably don't "see" each other.
 	// either way, we must avoid using a negative index into mask[]!
-	if (cluster < 0 || (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
+	if (cluster < 0 || (mask_size <= (cluster >> 3)) ||
+		(!(mask[cluster >> 3] & (1 << (cluster & 7)))))
 	{
 		return false;
 	}
@@ -398,12 +433,13 @@ PF_inPHS(vec3_t p1, vec3_t p2)
 	int leafnum;
 	int cluster;
 	int area1, area2;
-	byte *mask;
+	const byte *mask;
+	size_t mask_size;
 
 	leafnum = CM_PointLeafnum(p1);
 	cluster = CM_LeafCluster(leafnum);
 	area1 = CM_LeafArea(leafnum);
-	mask = CM_ClusterPHS(cluster);
+	mask = CM_ClusterPHS(cluster, &mask_size);
 
 	leafnum = CM_PointLeafnum(p2);
 	cluster = CM_LeafCluster(leafnum);
@@ -412,7 +448,8 @@ PF_inPHS(vec3_t p1, vec3_t p2)
 	// cluster -1 means "not in a visible leaf" or something like that (void?)
 	// so p1 and p2 probably don't "hear" each other.
 	// either way, we must avoid using a negative index into mask[]!
-	if (cluster < 0 || (!(mask[cluster >> 3] & (1 << (cluster & 7)))))
+	if (cluster < 0 || (mask_size <= (cluster >> 3)) ||
+		(!(mask[cluster >> 3] & (1 << (cluster & 7)))))
 	{
 		return false; /* more than one bounce away */
 	}
