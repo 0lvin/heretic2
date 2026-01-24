@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.61H13"
+#define YQ2VERSION "8.61H14"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -699,6 +699,7 @@ int CM_LoadFile(const char *path, void **buffer);
 
 /* Shared Model load code */
 int Mod_LoadFile(const char *path, void **buffer);
+void Mod_FreeFile(const char *path);
 void Mod_AliasesInit(void);
 void Mod_AliasesFreeAll(void);
 const dmdxframegroup_t *Mod_GetModelInfo(const char *name, int *num,
