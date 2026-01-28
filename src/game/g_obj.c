@@ -39,13 +39,26 @@ void SpawnFlame(edict_t *self, vec3_t origin);
 void
 destructible_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	// Play explosion or debris effect
-	gi.WriteByte(svc_temp_entity);
-	gi.WriteByte(TE_EXPLOSION1);
-	gi.WritePosition(self->s.origin);
-	gi.multicast(self->s.origin, MULTICAST_PVS);
+	vec3_t org;
 
-	G_FreeEdict(self); // Remove object
+	if (!self)
+	{
+		return;
+	}
+
+	org[0] = self->s.origin[0] + crandom() * self->size[0];
+	org[1] = self->s.origin[1] + crandom() * self->size[1];
+	org[2] = self->s.origin[2] + crandom() * self->size[2];
+	ThrowDebris(self, "models/objects/debris2/tris.md2", 5, org);
+
+	if (self->dmg > 0)
+	{
+		BecomeExplosion1(self);
+	}
+	else
+	{
+		G_FreeEdict(self); /* Remove object */
+	}
 }
 
 void
@@ -550,7 +563,7 @@ barrel_explode_think(edict_t *self)
 
 	T_DamageRadiusFromLoc(loc, self->owner, self->owner, NULL, BARREL_EXPLODE_RADIUS,
 					BARREL_EXPLODE_DMG_MAX, BARREL_EXPLODE_DMG_MIN,
-					DAMAGE_NORMAL|DAMAGE_FIRE|DAMAGE_EXTRA_KNOCKBACK,MOD_BARREL);
+					DAMAGE_NORMAL | DAMAGE_FIRE | DAMAGE_EXTRA_KNOCKBACK, MOD_BARREL);
 
 	// Start the explosion
 	gi.CreateEffect(NULL, FX_BARREL_EXPLODE, CEF_BROADCAST, loc, "");
@@ -635,8 +648,6 @@ SP_object_flame1(edict_t *self)
 void
 SP_obj_barrel(edict_t *self)
 {
-	SP_obj_material(self);
-
 	if (self->spawnflags & OBJ_EXPLODING)
 	{
 		self->dmg = 10;
@@ -646,6 +657,8 @@ SP_obj_barrel(edict_t *self)
 		self->die = barrel_die;
 		self->s.skinnum = 1;
 	}
+
+	SP_obj_material(self);
 }
 
 /*
