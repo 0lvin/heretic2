@@ -364,7 +364,6 @@
 {"barrel_delay", (byte *)barrel_delay},
 {"barrel_die", (byte *)barrel_die},
 {"barrel_explode", (byte *)barrel_explode},
-{"barrel_explode_think", (byte *)barrel_explode_think},
 {"barrel_start", (byte *)barrel_start},
 {"barrel_think", (byte *)barrel_think},
 {"barrel_touch", (byte *)barrel_touch},

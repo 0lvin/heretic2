@@ -546,35 +546,10 @@ SP_obj_banneronpole(edict_t *self)
 	DynamicObjectSpawn(self);
 }
 
-/*-----------------------------------------------
-	exploding barrel
------------------------------------------------*/
-void
-barrel_explode_think(edict_t *self)
-{
-	vec3_t loc;
-
-	VectorCopy(self->s.origin, loc);
-	AlertMonsters(self, self->owner, 3, false);
-
-	self->fire_damage_time = level.time + 1.0;
-	self->svflags |= SVF_ONFIRE;
-	BecomeDebris(self);
-
-	T_DamageRadiusFromLoc(loc, self->owner, self->owner, NULL, BARREL_EXPLODE_RADIUS,
-					BARREL_EXPLODE_DMG_MAX, BARREL_EXPLODE_DMG_MIN,
-					DAMAGE_NORMAL | DAMAGE_FIRE | DAMAGE_EXTRA_KNOCKBACK, MOD_BARREL);
-
-	// Start the explosion
-	gi.CreateEffect(NULL, FX_BARREL_EXPLODE, CEF_BROADCAST, loc, "");
-
-	G_SetToFree(self);
-}
-
 void
 barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	self->think = barrel_explode_think;
+	self->think = barrel_explode;
 	self->nextthink = level.time + FRAMETIME;
 	self->owner = attacker;					// The one to get credit for this should be the one destroying the barrel.
 

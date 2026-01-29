@@ -1614,6 +1614,7 @@ void ThrowHead(edict_t *self, const char *gibname, int damage, gibtype_t type);
 void ThrowClientHead(edict_t *self, int damage);
 void ThrowGib(edict_t *self, const char *gibname, int damage, gibtype_t type);
 void BecomeExplosion1(edict_t *self);
+void barrel_explode(edict_t *self);
 void ThrowHeadACID(edict_t *self, const char *gibname, int damage, gibtype_t type);
 void ThrowGibACID(edict_t *self, const char *gibname, int damage, gibtype_t type);
 void barrel_delay (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);

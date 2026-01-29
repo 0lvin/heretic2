@@ -418,7 +418,6 @@ extern void badarea_touch ( edict_t * ent , edict_t * other , cplane_t * plane ,
 extern void barrel_delay ( edict_t * self , edict_t * inflictor , edict_t * attacker , int damage , vec3_t point ) ;
 extern void barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point) ;
 extern void barrel_explode ( edict_t * self ) ;
-extern void barrel_explode_think(edict_t *self) ;
 extern void barrel_start ( edict_t * self ) ;
 extern void barrel_think ( edict_t * self ) ;
 extern void barrel_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;

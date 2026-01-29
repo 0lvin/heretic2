@@ -1885,91 +1885,23 @@ barrel_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurfa
 void
 barrel_explode(edict_t *self)
 {
-	vec3_t org, save;
-	float spd;
+	vec3_t loc;
 
-	if (!self)
-	{
-		return;
-	}
+	VectorCopy(self->s.origin, loc);
+	AlertMonsters(self, self->owner, 3, false);
 
-	T_RadiusDamage(self, self->activator, self->dmg, NULL,
-			self->dmg + 40, MOD_BARREL);
-	VectorCopy(self->s.origin, save);
-	VectorMA(self->absmin, 0.5, self->size, self->s.origin);
+	self->fire_damage_time = level.time + 1.0;
+	self->svflags |= SVF_ONFIRE;
+	BecomeDebris(self);
 
-	/* a few big chunks */
-	spd = 1.5 * (float)self->dmg / 200.0;
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris1/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris1/tris.md2", spd, org);
+	T_DamageRadiusFromLoc(loc, self->owner, self->owner, NULL, BARREL_EXPLODE_RADIUS,
+					BARREL_EXPLODE_DMG_MAX, BARREL_EXPLODE_DMG_MIN,
+					DAMAGE_NORMAL | DAMAGE_FIRE | DAMAGE_EXTRA_KNOCKBACK, MOD_BARREL);
 
-	/* bottom corners */
-	spd = 1.75 * (float)self->dmg / 200.0;
-	VectorCopy(self->absmin, org);
-	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
-	VectorCopy(self->absmin, org);
-	org[0] += self->size[0];
-	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
-	VectorCopy(self->absmin, org);
-	org[1] += self->size[1];
-	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
-	VectorCopy(self->absmin, org);
-	org[0] += self->size[0];
-	org[1] += self->size[1];
-	ThrowDebris(self, "models/objects/debris3/tris.md2", spd, org);
+	// Start the explosion
+	gi.CreateEffect(NULL, FX_BARREL_EXPLODE, CEF_BROADCAST, loc, "");
 
-	/* a bunch of little chunks */
-	spd = 2.0 * (float)self->dmg / 200.0;
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-	org[0] = self->s.origin[0] + crandom() * self->size[0];
-	org[1] = self->s.origin[1] + crandom() * self->size[1];
-	org[2] = self->s.origin[2] + crandom() * self->size[2];
-	ThrowDebris(self, "models/objects/debris2/tris.md2", spd, org);
-
-	VectorCopy(save, self->s.origin);
-
-	if (self->groundentity)
-	{
-		BecomeExplosion2(self);
-	}
-	else
-	{
-		BecomeExplosion1(self);
-	}
-}
+	G_SetToFree(self);}
 
 void
 barrel_delay(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
