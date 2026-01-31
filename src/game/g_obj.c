@@ -475,13 +475,9 @@ SP_obj_material(edict_t *self)
 	self->takedamage = DAMAGE_YES;
 	self->clipmask = MASK_MONSTERSOLID;
 
-	if (self->spawnflags & OBJ_INVULNERABLE)	// Invulnerable
+	if (self->takedamage == DAMAGE_NO)
 	{
-		self->takedamage = DAMAGE_NO;
-	}
-	else
-	{
-		self->takedamage = DAMAGE_YES;
+		self->spawnflags |= OBJ_INVULNERABLE;
 	}
 
 	BboxYawAndScale(self);
@@ -518,7 +514,7 @@ SP_obj_material(edict_t *self)
 void
 SP_obj_banner(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
@@ -540,7 +536,7 @@ void
 SP_obj_banneronpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
 	DynamicObjectSpawn(self);
@@ -633,6 +629,7 @@ SP_obj_barrel(edict_t *self)
 		self->s.skinnum = 1;
 	}
 
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -662,6 +659,7 @@ void
 SP_obj_broom(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -680,6 +678,7 @@ void
 SP_obj_chair2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -698,7 +697,8 @@ void
 SP_obj_chair3(edict_t *self)
 {
 	// can't be destroyed
-	self->spawnflags |= OBJ_NOPUSH | OBJ_INVULNERABLE;
+	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -738,6 +738,7 @@ void
 SP_obj_chest1(edict_t *self)
 {
 	SP_obj_material(self);
+	self->takedamage = DAMAGE_YES;
 	self->use = chest1_use;
 }
 
@@ -756,6 +757,7 @@ void
 SP_obj_chest2(edict_t *self)
 {
 	self->spawnflags &= ~OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -774,6 +776,7 @@ void
 SP_obj_chest3(edict_t *self)
 {
 	self->spawnflags &= ~OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -828,7 +831,7 @@ void
 SP_obj_cog1(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 
@@ -933,6 +936,7 @@ SP_obj_corpse(edict_t *self)
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
+	self->takedamage = DAMAGE_YES;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
@@ -1111,6 +1115,7 @@ SP_obj_dying_elf(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	self->movetype = MOVETYPE_STEP;
+	self->takedamage = DAMAGE_YES;
 
 	self->touch_debounce_time = -1;
 	self->touch = dying_elf_touch;
@@ -1156,6 +1161,7 @@ SP_obj_sign1(edict_t *self)
 		self->s.skinnum = self->style;
 	}
 
+	self->takedamage = DAMAGE_YES;
 	self->s.frame = 3;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	SP_obj_material(self);
@@ -1181,6 +1187,7 @@ void
 SP_obj_sign4(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 
 	if (!self->style)
 	{
@@ -1209,7 +1216,7 @@ void
 SP_obj_statue_corvus(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1229,10 +1236,15 @@ void
 SP_obj_statue_dolphin1(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	if (self->spawnflags & OBJ_INVULNERABLE)
-		self->spawnflags &= ~OBJ_INVULNERABLE; // can be destroyed
+	if (self->spawnflags & 1)
+	{
+		self->spawnflags &= ~1; // can be destroyed
+		self->takedamage = DAMAGE_YES;
+	}
 	else
-		self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	{
+		self->takedamage = DAMAGE_NO;
+	}
 
 	SP_obj_material(self);
 }
@@ -1254,7 +1266,7 @@ SP_obj_statue_dolphin2(edict_t *self)
 	self->s.frame = 1;
 
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1276,7 +1288,7 @@ SP_obj_statue_dolphin3(edict_t *self)
 	self->s.frame = 3;
 
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1298,7 +1310,7 @@ SP_obj_statue_dolphin4(edict_t *self)
 	self->s.frame = 2;
 
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1318,7 +1330,7 @@ void
 SP_obj_statue_guardian(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1338,6 +1350,7 @@ void
 SP_obj_table2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -1356,6 +1369,7 @@ void
 SP_obj_throne(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -1380,7 +1394,7 @@ SP_obj_cauldron(edict_t *self)
 	}
 
 	self->spawnflags |= OBJ_NOPUSH;
-
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -1403,7 +1417,7 @@ SP_obj_firepot(edict_t *self)
 	self->s.sound = gi.soundindex("ambient/fireplace.wav");
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Cant' be moved
 
 	SP_obj_material(self);
@@ -1433,7 +1447,7 @@ SP_obj_statue_duckbill1(edict_t *self)
 	self->s.frame = 0;
 
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1455,7 +1469,7 @@ SP_obj_statue_duckbill2(edict_t *self)
 	self->s.frame = 1;
 
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1626,7 +1640,7 @@ void
 SP_obj_fountain_fish(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -1645,6 +1659,7 @@ void
 SP_obj_statue_boulderfish(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -1689,6 +1704,7 @@ SP_obj_plant(edict_t *self)
 		self->s.skinnum = self->style;
 	}
 
+	self->takedamage = DAMAGE_YES;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	SP_obj_material(self);
 }
@@ -1708,7 +1724,7 @@ void
 SP_obj_treetop(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -1727,7 +1743,7 @@ void
 SP_obj_tree(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -1748,7 +1764,7 @@ SP_obj_tree2(edict_t *self)
 	edict_t *moss;
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 
@@ -1784,7 +1800,7 @@ SP_obj_tree3(edict_t *self)
 	edict_t *moss;
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 
@@ -1820,7 +1836,7 @@ SP_obj_treetall(edict_t *self)
 	edict_t *moss;
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 
@@ -1855,7 +1871,7 @@ SP_obj_treefallen(edict_t *self)
 	self->s.frame = 1;
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -1875,6 +1891,7 @@ void
 SP_obj_shovel(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -1893,6 +1910,7 @@ void
 SP_obj_woodpile(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't move
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -1911,6 +1929,7 @@ void
 SP_obj_bench(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -1929,6 +1948,7 @@ void
 SP_obj_bucket(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -1951,7 +1971,7 @@ void
 SP_obj_ropechain(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	if (self->s.skinnum == 0)
 	{
@@ -1981,6 +2001,7 @@ void
 SP_obj_wheelbarrowdamaged(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_NO;
 	self->s.frame = 1;
 	SP_obj_material(self);
 }
@@ -2002,7 +2023,7 @@ void
 SP_obj_bigcrystal(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 	self->avelocity[1] = self->speed;
 	self->movetype = MOVETYPE_FLY;
@@ -2090,6 +2111,7 @@ SP_obj_moss(edict_t *self)
 
 	self->s.renderfx |= RF_TRANSLUCENT;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -2107,8 +2129,7 @@ SP_obj_moss(edict_t *self)
 void
 SP_obj_floor_candelabrum(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
-
+	self->takedamage = DAMAGE_NO;
 	object_spawn(self);
 }
 
@@ -2126,7 +2147,8 @@ SP_obj_floor_candelabrum(edict_t *self)
 void
 SP_obj_statue_dragonhead(edict_t *self)
 {
-	self->spawnflags |= OBJ_NOPUSH | OBJ_INVULNERABLE; // can't be destroyed
+	self->spawnflags |= OBJ_NOPUSH; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -2149,7 +2171,7 @@ void
 SP_obj_statue_dragon(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	if (!self->style)
 	{
@@ -2178,7 +2200,7 @@ void
 SP_obj_flagonpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
 	object_spawn(self);
@@ -2244,7 +2266,7 @@ lever1_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_lever1(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	SP_obj_material(self);
 	self->use = lever1_use;
@@ -2309,7 +2331,7 @@ lever2_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_lever2(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	SP_obj_material(self);
 	self->use = lever2_use;
@@ -2374,7 +2396,7 @@ lever3_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_lever3(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 	SP_obj_material(self);
 	self->use = lever3_use;
@@ -2427,7 +2449,7 @@ void
 SP_obj_bush(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = bush_touch;
@@ -2463,6 +2485,7 @@ void
 SP_obj_cactus(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
@@ -2483,6 +2506,7 @@ void
 SP_obj_cactus3(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
@@ -2544,6 +2568,7 @@ void
 SP_obj_cactus4(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 	self->use = cactus4_use;
 	self->touch_debounce_time = level.time;
@@ -2565,6 +2590,7 @@ void
 SP_obj_gorgonbones(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2583,6 +2609,7 @@ void
 SP_obj_grass(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2601,7 +2628,7 @@ void
 SP_obj_swampflat_top(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -2621,7 +2648,7 @@ SP_obj_swampflat_bottom(edict_t *self)
 {
 	self->s.skinnum = 1;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -2641,7 +2668,7 @@ SP_obj_treestump(edict_t *self)
 {
 	self->s.skinnum = 1;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -2660,6 +2687,7 @@ void
 SP_obj_jawbone(edict_t *self)
 {
 	self->s.skinnum = 1;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2678,6 +2706,7 @@ void
 SP_obj_barrel_metal(edict_t *self)
 {
 	self->s.skinnum = 1;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2718,6 +2747,7 @@ void
 SP_obj_barrel_explosive(edict_t *self)
 {
 	self->s.skinnum = 1;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2736,6 +2766,7 @@ void
 SP_obj_gascan(edict_t *self)
 {
 	self->s.skinnum = 1;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2765,6 +2796,7 @@ void
 SP_obj_pipe(edict_t *self)
 {
 	self->s.skinnum = 1;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -2783,6 +2815,7 @@ void
 SP_obj_pipewheel(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	self->s.skinnum = 1;
 	SP_obj_material(self);
 }
@@ -2839,6 +2872,7 @@ SP_obj_minecart(edict_t *self)
 		self->s.frame = 0;
 	}
 
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2891,6 +2925,7 @@ SP_obj_metalchunk(edict_t *self)
 		self->s.frame = 0;
 	}
 
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2922,6 +2957,7 @@ void
 SP_obj_rocks(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -2948,7 +2984,7 @@ hivepriestesssymbol_use(edict_t *self, edict_t *other, edict_t *activator)
 	VectorSet(self->mins,   -4, -4, -13);
 	VectorSet(self->maxs,    4,  4,  13);
 
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	self->health = 75;
 	self->mass = 125;
 	self->gib = GIB_GREYSTONE;
@@ -2984,7 +3020,7 @@ SP_obj_hivepriestessssymbol(edict_t *self)
 	self->s.modelindex = 0;
 	self->use = hivepriestesssymbol_use;
 
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -3004,7 +3040,7 @@ void
 SP_obj_queenthrone(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -3025,6 +3061,7 @@ void
 SP_obj_queenchair(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -3072,7 +3109,7 @@ SP_obj_shrine(edict_t *self)
 		return;
 	}
 
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	SP_obj_material(self);
@@ -3111,6 +3148,7 @@ void
 SP_obj_larvaegg(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -3130,6 +3168,7 @@ void
 SP_obj_larvabrokenegg(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -3150,6 +3189,7 @@ SP_obj_cocoon(edict_t *self)
 {
 	// Always animate and can't be pushed
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -3169,6 +3209,7 @@ void
 SP_obj_cocoonopen(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	self->s.frame = 20;
 	SP_obj_material(self);
 }
@@ -3190,7 +3231,7 @@ SP_obj_venusflytrap(edict_t *self)
 	edict_t *leaves;
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 
 	leaves = G_Spawn();
@@ -3232,7 +3273,7 @@ tomb_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_statue_techeckriktomb(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	SP_obj_material(self);
@@ -3266,7 +3307,7 @@ tcheckrik_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_statue_techeckrikright(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->s.frame = 2;
@@ -3296,7 +3337,7 @@ SP_obj_statue_techeckrikright(edict_t *self)
 void
 SP_obj_statue_techeckrikleft(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->s.frame = 0;
@@ -3354,7 +3395,7 @@ SP_obj_spellbook(edict_t *self)
 {
 	edict_t *beam;
 
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->use = spellbook_use;
@@ -3390,7 +3431,7 @@ void
 SP_obj_skullpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -3409,6 +3450,7 @@ void
 SP_obj_pot1(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -3430,7 +3472,7 @@ void
 SP_obj_torture_table(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	if (self->style < 2)
 	{
@@ -3459,6 +3501,7 @@ void
 SP_obj_torture_wallring(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -3489,7 +3532,7 @@ void
 SP_obj_statue_tchecktrik_bust(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	if (!self->style)
 	{
@@ -3556,7 +3599,7 @@ statue_sithraguard_use(edict_t *self, edict_t *other, edict_t *activator)
 void
 SP_obj_statue_sithraguard(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->s.frame = 0;
@@ -3657,7 +3700,7 @@ ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 void
 SP_obj_torture_ironmaiden(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	self->s.frame = 0;
@@ -3681,7 +3724,7 @@ SP_obj_torture_ironmaiden(edict_t *self)
 void
 SP_obj_torture_rack(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	SP_obj_material(self);
@@ -3701,7 +3744,7 @@ SP_obj_torture_rack(edict_t *self)
 void
 SP_obj_torture_bed(edict_t *self)
 {
-	self->spawnflags |= OBJ_INVULNERABLE;
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
 
 	SP_obj_material(self);
@@ -3722,6 +3765,7 @@ void
 SP_obj_statue_saraphbust(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 }
@@ -3779,7 +3823,7 @@ SP_obj_biotank(edict_t *self)
 	vec3_t forward,right;
 
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 
 	SP_obj_material(self);
 
@@ -3796,7 +3840,7 @@ SP_obj_biotank(edict_t *self)
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
 	glass->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	glass->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	glass->takedamage = DAMAGE_NO;
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
@@ -3817,7 +3861,7 @@ SP_obj_biotank(edict_t *self)
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
 	glass->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	glass->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	glass->takedamage = DAMAGE_NO;
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
@@ -3838,7 +3882,7 @@ SP_obj_biotank(edict_t *self)
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
 	glass->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	glass->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	glass->takedamage = DAMAGE_NO;
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
@@ -3860,7 +3904,7 @@ SP_obj_biotank(edict_t *self)
 	glass->s.renderfx |= RF_TRANSLUCENT;
 	glass->s.modelindex = gi.modelindex("models/objects/labs/bioglass2/tris.fm");
 	glass->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	glass->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	glass->takedamage = DAMAGE_NO;
 	glass->solid = SOLID_NOT;
 	glass->health = 250;
 	glass->mass = 200;
@@ -3942,6 +3986,7 @@ void
 SP_obj_tapper(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -3960,7 +4005,7 @@ void
 SP_obj_wallringplaque(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -4018,6 +4063,7 @@ void
 SP_obj_frypan(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -4036,6 +4082,7 @@ void
 SP_obj_eggpan(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -4054,6 +4101,7 @@ void
 SP_obj_nest(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -4072,6 +4120,7 @@ void
 SP_obj_choppeddude(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -4090,6 +4139,7 @@ void
 SP_obj_eyeball_jar(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -4108,6 +4158,7 @@ void
 SP_obj_lab_tray(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -4147,6 +4198,7 @@ SP_obj_hanging_ogle(edict_t *self)
 	self->monsterinfo.action = "poly";
 
 	self->spawnflags |= OBJ_NOPUSH;
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 
 	ring = G_Spawn();
@@ -4187,7 +4239,7 @@ void
 SP_obj_ring_plaque2(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
-	self->spawnflags |= OBJ_INVULNERABLE; // can't be destroyed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -4206,6 +4258,7 @@ void
 SP_obj_statue_sariph(edict_t *self)
 {
 	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->takedamage = DAMAGE_NO;
 	SP_obj_material(self);
 }
 
@@ -4224,6 +4277,7 @@ void
 SP_obj_web(edict_t *self)
 {
 	self->s.renderfx |= RF_TRANSLUCENT;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 
@@ -4273,6 +4327,7 @@ larva_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 void
 SP_obj_larva(edict_t *self)
 {
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 
 	self->movetype = MOVETYPE_STEP;
@@ -4308,6 +4363,7 @@ void
 SP_obj_bloodsplat(edict_t *self)
 {
 	self->flags |= RF_FIXED | RF_ALPHA_TEXTURE;
+	self->takedamage = DAMAGE_YES;
 	SP_obj_material(self);
 }
 

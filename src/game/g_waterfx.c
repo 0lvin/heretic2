@@ -199,7 +199,7 @@ SP_obj_fishhead1(edict_t *self)
 		SpawnDripper(self, offset);
 	}
 
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
+	self->takedamage = DAMAGE_NO;
 	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
 
 	SP_obj_material(self);

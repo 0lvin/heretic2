@@ -189,6 +189,7 @@ void SP_obj_corpse_ogle(edict_t *self)
 		self->s.fmnodeinfo[MESH__PICK].flags |= FMNI_NO_DRAW;
 	}
 
+	self->takedamage = DAMAGE_YES;
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 	SP_obj_material(self);
 }

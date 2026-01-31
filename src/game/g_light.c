@@ -123,6 +123,7 @@ create_fire_touch(edict_t *owner, vec3_t origin)
 	flame->health = 2;
 	flame->mass = 2;
 	flame->gib = GIB_NONE;
+	flame->takedamage = DAMAGE_NO;
 	SP_obj_material(flame);
 
 	owner->enemy = flame;
