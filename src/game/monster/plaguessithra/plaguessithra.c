@@ -3189,11 +3189,15 @@ void SP_obj_corpse_ssithra(edict_t *self)
 
 	// Setting the skinnum correctly
 	if (!self->style)
+	{
 		self->s.skinnum = 1;
+	}
 	else
+	{
 		self->s.skinnum = 0;
+	}
 
-	self->spawnflags |= OBJ_NOPUSH;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
 	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
 
 	SP_obj_material(self);

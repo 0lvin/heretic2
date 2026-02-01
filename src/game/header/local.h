@@ -3182,10 +3182,8 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
 // ------
 // Flags for object entities
 // ************************************************************************************************
-#define OBJ_INVULNERABLE	1
-#define OBJ_ANIMATE			2
-#define OBJ_EXPLODING		4
-#define OBJ_NOPUSH			8
+
+#define OBJ_STOPMOVE			8
 
 // ************************************************************************************************
 // SIGHT_XXX

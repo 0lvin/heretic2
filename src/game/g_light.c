@@ -94,8 +94,6 @@ fire_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 			DAMAGE_AVOID_ARMOR|DAMAGE_FIRE|DAMAGE_FIRE_LINGER, MOD_BURNT);
 }
 
-#define OBJ_NOPUSH			8
-
 // This creates an entity that will burn the player if he's standing in the fire.
 void
 create_fire_touch(edict_t *owner, vec3_t origin)
@@ -114,7 +112,7 @@ create_fire_touch(edict_t *owner, vec3_t origin)
 	VectorSet(flame->mins, -8, -8, -2);
 	VectorSet(flame->maxs, 8, 8, 14);
 
-	flame->spawnflags |= OBJ_NOPUSH;
+	flame->spawnflags |= OBJ_STOPMOVE;
 
 	flame->movetype = MOVETYPE_NONE;
 	flame->touch = fire_touch;

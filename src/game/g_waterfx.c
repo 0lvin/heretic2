@@ -139,14 +139,6 @@ void SP_env_water_fountain(edict_t *self)
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 }
 
-void SpawnDripper(edict_t *self, vec3_t offset)
-{
-	vec3_t		origin;
-
-	VectorAdd(self->s.origin, offset, origin);
-	gi.CreatePersistantEffect(NULL, FX_DRIPPER, 0, origin, "bb", self->count, 2);
-}
-
 /*
  * QUAKED env_waterfall_base (1 1 0) (-8 -8 -8) (8 8 8)
 angles - this first field is the x radius
@@ -170,79 +162,6 @@ void SP_env_waterfall_base(edict_t *self)
 	gi.linkentity(self);
 	gi.CreatePersistantEffect(self, FX_WATERFALLBASE, CEF_BROADCAST, self->s.origin, "bbb", xrad, yrad, yaw);
 
-}
-
-/*
- * QUAKED obj_fishhead1 (1 .5 0) (0 -76 -86) (136 76 86)  NODRIP
- Large fish head fountain. No teeth in mouth and the fins on top are connected. Also spawns 4 drips frame 0
--------  FIELDS  ------------------
-NODRIP - won't drip
------------------------------------
-*/
-void
-SP_obj_fishhead1(edict_t *self)
-{
-	vec3_t		offset;
-
-	if (!(self->spawnflags & 1))
-	{
-		if (!self->count)
-			self->count = 20;
-
-		VectorSet(offset, -20, -60, -50);
-		SpawnDripper(self, offset);
-		VectorSet(offset, 55, 30, -70);
-		SpawnDripper(self, offset);
-		VectorSet(offset, 0, 60, -70);
-		SpawnDripper(self, offset);
-		VectorSet(offset, 65, -7, -60);
-		SpawnDripper(self, offset);
-	}
-
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
-	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
-
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_fishhead2 (1 .5 0) (0 -110 -118) (136 110 118) NODRIP
-Large fish head fountain. The mouth has teeth. The fins on top are not conntected. Also spawns 4 drips frame 0
--------  FIELDS  ------------------
-NODRIP - won't drip
------------------------------------
-*/
-void SP_obj_fishhead2 (edict_t *self)
-{
-	vec3_t		offset;
-
-	if (!(self->spawnflags & 1))
-	{
-		if (!self->count)
-			self->count = 20;
-
-		VectorSet(offset, -20, -60, -50);
-		SpawnDripper(self, offset);
-		VectorSet(offset, 55, 30, -70);
-		SpawnDripper(self, offset);
-		VectorSet(offset, 0, 60, -70);
-		SpawnDripper(self, offset);
-		VectorSet(offset, 65, -7, -60);
-		SpawnDripper(self, offset);
-	}
-
-	self->spawnflags |= OBJ_INVULNERABLE;	// Always indestructible
-	self->spawnflags |= OBJ_NOPUSH;	// Cant push it
-	self->takedamage = DAMAGE_NO;
-
-	self->movetype = MOVETYPE_NONE;
-	self->solid = SOLID_BBOX;
-	self->takedamage = DAMAGE_NO;
-	self->clipmask = MASK_MONSTERSOLID;
-
-	BboxYawAndScale(self);
-
-	gi.linkentity(self);
 }
 
 /*
