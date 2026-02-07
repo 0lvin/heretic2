@@ -3183,7 +3183,8 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
 // Flags for object entities
 // ************************************************************************************************
 
-#define OBJ_STOPMOVE			8
+#define OBJ_WITHEFFECT 2
+#define OBJ_STOPMOVE   8
 
 // ************************************************************************************************
 // SIGHT_XXX

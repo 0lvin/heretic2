@@ -235,8 +235,6 @@ extern void SP_CreateUnnamedSpawn ( edict_t * self ) ;
 extern void SP_FixCoopSpots ( edict_t * self ) ;
 extern void SetRespawn ( edict_t * ent , float delay ) ;
 extern void SetTriggeredSpawn ( edict_t * ent ) ;
-extern void SkyFlyCheck(edict_t *self);
-extern void SpawnFlame(edict_t *self,vec3_t origin);
 extern void SpawnItem ( edict_t * ent , gitem_t * item ) ;
 extern void Tag_DogTag ( edict_t * ent , edict_t * killer , char * * pic ) ;
 extern void Tag_DropToken ( edict_t * ent , gitem_t * item ) ;

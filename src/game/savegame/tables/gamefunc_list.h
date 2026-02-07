@@ -186,8 +186,6 @@
 {"SelectRandomDeathmatchSpawnPoint", (byte *)SelectRandomDeathmatchSpawnPoint},
 {"SetRespawn", (byte *)SetRespawn},
 {"SetTriggeredSpawn", (byte *)SetTriggeredSpawn},
-{"SkyFlyCheck", (byte *)SkyFlyCheck},
-{"SpawnFlame", (byte *)SpawnFlame},
 {"SpawnItem", (byte *)SpawnItem},
 {"Tag_ChangeDamage", (byte *)Tag_ChangeDamage},
 {"Tag_DogTag", (byte *)Tag_DogTag},

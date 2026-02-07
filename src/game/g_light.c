@@ -233,35 +233,29 @@ env_fire_think(edict_t *self)
 }
 
 /*
- * QUAKED light_chandelier1 (0.0 1.0 0.0) (-36.0 -36.0 -43.0) (36.0 36.0 43.0) INVULNERABLE ANIMATE EXPLODING STARTOFF
+ * QUAKED light_chandelier1 (0.0 1.0 0.0) (-36.0 -36.0 -43.0) (36.0 36.0 43.0) NODAMAGE STARTOFF
  *
  * Heretic 2: Chandelier (dirty gold) A tarnished gold chandelier hung from chains.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
- * ANIMATE - N/A
- * EXPLODING - N/A
  * STARTOFF - Light will start off if targeted (default is on)
  * -----------------------------------
  */
 /*
- * QUAKED light_chandelier2 (0.0 1.0 0.0) (-38.0 -38.0 -40.0) (18.0 18.0 40.0) INVULNERABLE ANIMATE EXPLODING  STARTOFF
+ * QUAKED light_chandelier2 (0.0 1.0 0.0) (-38.0 -38.0 -40.0) (18.0 18.0 40.0) NODAMAGE STARTOFF
  *
- * Heretic 2: Chandelier (dirty metal) A tarnished metal chandelier hung from chains.
+ * Heretic 2: Chandelier (dirty metal) A tarnished metal chandelier hung from chains. Animated.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
- * ANIMATE - The flame flickers
- * EXPLODING - N/A
  * STARTOFF - Light will start off if targeted (default is on)
  * -----------------------------------
  */
 /*
- * QUAKED light_chandelier3 (0.0 1.0 0.0) (-34.0 -34.0 -80.0) (34.0 34.0 0.0) INVULNERABLE ANIMATE EXPLODING STARTOFF
+ * QUAKED light_chandelier3 (0.0 1.0 0.0) (-34.0 -34.0 -80.0) (34.0 34.0 0.0) NODAMAGE STARTOFF
  *
  * Heretic 2: Chandelier (gold & large) A golden chandelier.
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
- * ANIMATE - N/A
- * EXPLODING - N/A
  * STARTOFF - Light will start off if targeted (default is on)
  * -----------------------------------
  */
@@ -278,15 +272,13 @@ SP_light_chandelier(edict_t *self)
 }
 
 /*
- * QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0)  INVULNERABLE ANIMATE EXPLODING  FIRE_OFF MOVEABLE LIGHT_ON
+ * QUAKED env_fire (1 .5 0) (0 -10 -24) (20 10 0) NODAMAGE FIRE_OFF MOVEABLE LIGHT_ON
  *
- * Heretic 2: Flame effect. Does not emit light.
+ * Heretic 2: Flame effect. Does not emit light. Animated
  * A fire about the size of a campfire. Triggerable.
  *
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
- * ANIMATE -  N/A
- * EXPLODING - N/A
  * FIRE_OFF - fire will start off
  * MOVEABLE - fire will move if given a velocity
  * LIGHT_ON - fire will have light attached to it - if moveable, not required
@@ -430,12 +422,11 @@ TorchStart(edict_t *self)
 
 
 /*
- * QUAKED light_walltorch (1 .5 0) (-16 -10 -12) (10 10 12)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+ * QUAKED light_walltorch (1 .5 0) (-16 -10 -12) (10 10 12) NODAMAGE OBJ_WITHEFFECT STARTOFF
  * A torch that sticks out of a wall
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
- * ANIMATE - Places a flame on it
- * EXPLODING - N/A
+ * OBJ_WITHEFFECT - Places a flame on it
  * STARTOFF - Light will start off if targeted (default is on)
  * -----------------------------------
  */
@@ -453,7 +444,7 @@ SP_light_walltorch(edict_t *self)
 
 	LightInit(self);
 
-	if (self->spawnflags & 2)	// Animate it
+	if (self->spawnflags & OBJ_WITHEFFECT)	// Animate it
 	{
 		VectorCopy(self->s.origin,holdorigin);
 		holdorigin[2] += 28;
@@ -464,12 +455,11 @@ SP_light_walltorch(edict_t *self)
 }
 
 /*
- * QUAKED light_floortorch (1 .5 0) (-14 -14 -17) (14 14 17)  INVULNERABLE ANIMATE EXPLODING STARTOFF
+ * QUAKED light_floortorch (1 .5 0) (-14 -14 -17) (14 14 17) NODAMAGE OBJ_WITHEFFECT STARTOFF
 A stand for a torch that sits on the floor.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - Places a flame on it
-EXPLODING - N/A
+OBJ_WITHEFFECT - Places a flame on it
 STARTOFF - Light will start off if targeted (default is on)
 -----------------------------------
 */
@@ -487,7 +477,7 @@ SP_light_floortorch(edict_t *self)
 
 	LightInit(self);
 
-	if (self->spawnflags & 2)	// Animate it
+	if (self->spawnflags & OBJ_WITHEFFECT)	// Animate it
 	{
 		VectorCopy(self->s.origin,holdorigin);
 		holdorigin[2] += 33;
@@ -499,12 +489,10 @@ SP_light_floortorch(edict_t *self)
 
 
 /*
- * QUAKED light_flame (1 .5 0) (-16 -16 0) (16 16 34)  INVULNERABLE ANIMATE EXPLODING  STARTOFF
+ * QUAKED light_flame (1 .5 0) (-16 -16 0) (16 16 34) NODAMAGE STARTOFF
 A 30 frame flame.
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 -----------------------------------
 */
@@ -522,12 +510,10 @@ SP_light_flame(edict_t *self)
 }
 
 /*
- * QUAKED light_torch1 (1 .5 0) (-4 -6 -5) (6 6 20)  INVULNERABLE  ANIMATE   EXPLODING  STARTOFF  NOHALO
-Wall torch that uses a blue gem
+ * QUAKED light_torch1 (1 .5 0) (-4 -6 -5) (6 6 20) NODAMAGE STARTOFF NOHALO
+Wall torch that uses a blue gem, animated
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -558,12 +544,10 @@ SP_light_torch1(edict_t *self)
 }
 
 /*
- * QUAKED light_gem2 (1 .5 0) (-1 -6 -8) (4 6 8)  INVULNERABLE  ANIMATE   EXPLODING  STARTOFF  NOHALO
+ * QUAKED light_gem2 (1 .5 0) (-1 -6 -8) (4 6 8) NODAMAGE STARTOFF NOHALO
 A yellow gem in an octogonal frame
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -596,12 +580,10 @@ SP_light_gem2(edict_t *self)
 }
 
 /*
- * QUAKED light_lantern1 (1 .5 0) (-28 -8 -22) (4 8 22)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+ * QUAKED light_lantern1 (1 .5 0) (-28 -8 -22) (4 8 22) NODAMAGE STARTOFF NOHALO
 lantern on a wooden arm
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -628,12 +610,10 @@ SP_light_lantern1(edict_t *self)
 }
 
 /*
- * QUAKED light_lantern2 (1 .5 0) (-6 -6 -24) (6 6 40)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+ * QUAKED light_lantern2 (1 .5 0) (-6 -6 -24) (6 6 40) NODAMAGE STARTOFF NOHALO
 Lanern on a chain
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -660,12 +640,10 @@ SP_light_lantern2(edict_t *self)
 }
 
 /*
- * QUAKED light_lantern3 (1 .5 0) (-6 -6 -12) (6 6 11)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+ * QUAKED light_lantern3 (1 .5 0) (-6 -6 -12) (6 6 11) NODAMAGE STARTOFF NOHALO
 Ceiling lantern
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -686,18 +664,18 @@ SP_light_lantern3(edict_t *self)
 	origin[2] -=2;
 
 	if (!(self->spawnflags & LIGHT_NOHALO))
+	{
 		self->PersistantCFX = gi.CreatePersistantEffect(NULL, FX_HALO, 0, origin, "");
+	}
 
 	TorchInit(self);
 }
 
 /*
- * QUAKED light_lantern4 (1 .5 0) (-18 -7 -7) (7 7 14)  INVULNERABLE ANIMATE EXPLODING STARTOFF  NOHALO
+ * QUAKED light_lantern4 (1 .5 0) (-18 -7 -7) (7 7 14) NODAMAGE STARTOFF NOHALO
 Wall lantern
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -723,12 +701,10 @@ SP_light_lantern4(edict_t *self)
 }
 
 /*
- * QUAKED light_lantern5 (1 .5 0) (-7 -7 -7) (7 7 14)  INVULNERABLE ANIMATE EXPLODING STARTOFF NOHALO
+ * QUAKED light_lantern5 (1 .5 0) (-7 -7 -7) (7 7 14) NODAMAGE STARTOFF NOHALO
 Lantern to place on a table
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -755,12 +731,10 @@ SP_light_lantern5(edict_t *self)
 }
 
 /*
- * QUAKED light_buglight (1 .5 0) (-7 -7 -7) (7 7 25)  INVULNERABLE ANIMATE EXPLODING STARTOFF NOHALO
+ * QUAKED light_buglight (1 .5 0) (-7 -7 -7) (7 7 25) NODAMAGE STARTOFF NOHALO
 A light shaped like a bug
 -------  FIELDS  ------------------
 INVULNERABLE - N/A
-ANIMATE - N/A
-EXPLODING - N/A
 STARTOFF - Light will start off if targeted (default is on)
 NOHALO - turns off halo effect
 -----------------------------------
@@ -787,7 +761,7 @@ SP_light_buglight(edict_t *self)
 }
 
 /*
- * QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) INVULNERABLE ANIMATE  EXPLODING
+ * QUAKED env_sun1 (1 .5 0) (-12 -12 0) (12 12 38) NODAMAGE
  *
  * Places two suns in the world and attaches a lens flare to them.
  * One sun is blue, the other is yellow

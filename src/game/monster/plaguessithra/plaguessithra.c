@@ -3167,20 +3167,22 @@ void SP_monster_ssithra (edict_t *self)
 }
 
 
-/*QUAKED obj_corpse_ssithra (1 .5 0) (-30 -12 -2) (30 12 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
-A dead plague ssithra
----------- KEYS -----------------
-style - skin of ssithra (default 0)
-0 - damage skin
-1 - some bad bad skin. (not used)
-2 - normal skin
--------  FIELDS  ------------------
-INVULNERABLE - it can't be hurt
-ANIMATE - N/A
-EXPLODING - N/A
-NOPUSH - N/A (corpse can't be pushed)
------------------------------------
-*/
+/*
+ * QUAKED obj_corpse_ssithra (1 .5 0) (-30 -12 -2) (30 12 2) NODAMAGE ANIMATE EXPLODING STOPMOVE
+ *
+ * A dead plague ssithra
+ * ---------- KEYS -----------------
+ * style - skin of ssithra (default 0)
+ * 0 - damage skin
+ * 1 - some bad bad skin. (not used)
+ * 2 - normal skin
+ * -------  FIELDS  ------------------
+ * INVULNERABLE - it can't be hurt
+ * ANIMATE - N/A
+ * EXPLODING - N/A
+ * STOPMOVE - N/A (corpse can't be pushed)
+ * -----------------------------------
+ */
 void SP_obj_corpse_ssithra(edict_t *self)
 {
 	self->s.origin[2] += 26.0;

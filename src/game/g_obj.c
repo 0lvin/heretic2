@@ -36,6 +36,11 @@
 
 void SpawnFlame(edict_t *self, vec3_t origin);
 
+/*
+ * NODAMAGE: can't be damaged
+ * EXPLODE: could explode
+ * STOPMOVE: can't be moved
+ */
 #define OBJ_NODAMAGE   1
 #define OBJ_WITHEFFECT 2
 #define OBJ_EXPLODE    4
@@ -237,15 +242,9 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
 }
 
 /*
- * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_andwallhanging (1 .5 0) ( 0 -19 -24) (4 19 24) NODAMAGE STOPMOVE
  *
  * Heretic 2: Circular Andorian wall hanging
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
  * QUAKED monster_bee (1 .5 0) (-2.0 -2.0 -25.0) (2.0 2.0 25.0)
@@ -253,224 +252,104 @@ void BboxYawAndScaleAndMoveUp(edict_t *self)
  * The bee
  */
 /*
- * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_basket (1 .5 0) (-13 -13 -21) (13 13 21) NODAMAGE STOPMOVE
  *
  * Heretic 2: A tall basket with a lid on it.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_bookclosed (1 .5 0) (-8 -8 -2) (8 8 2) NODAMAGE STOPMOVE
  *
  * Heretic 2: Closed book standing up
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
  */
 /*
- * QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_bookopen (1 .5 0) (-8 -16 -2) (8 16 2) NODAMAGE STOPMOVE
  *
  * Heretic 2: Open Book
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
  */
 /*
- * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_bottle1 (1 .5 0) ( -3 -3 -7) (3 3 7) NODAMAGE STOPMOVE
  *
  * Heretic 2: A bottle that looks like the one Jennie came out of in I Dream of Jennie
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_chair1 (1 .5 0) (-12 -8 -26) (12 8 26) NODAMAGE STOPMOVE
  *
  * Heretic 2: A highback wooden chair with a triangle at the top.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_claybowl (1 .5 0) (-6 -6 -2) (6 6 2) NODAMAGE STOPMOVE
  *
  * Heretic 2: Clay bowl
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_clayjar (1 .5 0) (-15 -15 -24) (15 15 24) NODAMAGE STOPMOVE
  *
  * Heretic 2: A big honking urn made of clay
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_fishtrap (1 .5 0) (-14 -28 -13) (14 28 13) NODAMAGE STOPMOVE
  *
  * Heretic 2: Fish trap
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_jug1 (1 .5 0) ( -6 -6 -6) (6 6 6) NODAMAGE STOPMOVE
  *
  * Heretic 2: A wine jug
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_kettle (1 .5 0) (-8 -8 0) (8 8 10) NODAMAGE STOPMOVE
  *
  * Heretic 2: Kettle
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_lab_parts_container (0.3 0.3 1.0) (-8.0 -8.0 -11.0) (8.0 8.0 11.0) NODAMAGE STOPMOVE
  *
  * Heretic 2: Body parts container
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A (thing always animates)
- * EXPLODING - N/A
- * NOPUSH - can't be pushed
- * -----------------------------------
  */
 /*
- * QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pick (1 .5 0) ( -12 -13 -2) (12 13 2) NODAMAGE STOPMOVE
  *
  * Heretic 2: A tool that is a pick.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pot2 (1 .5 0) ( -7 -7 -3) (7 7 3) NODAMAGE STOPMOVE
  *
  * Heretic 2: A cooking pot which lays flat on a table
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pottedplant (1 .5 0) (-20 -20 -30) (20 20 30) NODAMAGE STOPMOVE
  *
  * Heretic 2: A potted plant with ferns
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pushcart (1 .5 0) (-13 -16 -41) (13 16 41) NODAMAGE STOPMOVE
  *
  * Heretic 2: A push cart for the ogles to push around
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
- * -----------------------------------
  */
 /*
- * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_scroll (1 .5 0) (-2 -18 -3) (2 18 3) NODAMAGE STOPMOVE
  *
  * Heretic 2: A paper scroll
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_stein (1 .5 0) (-2 -2 -3) (2 2 3) NODAMAGE STOPMOVE
  *
  * Heretic 2: A beer stein.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_table1 (1 .5 0) (-28 -54 -18) (28 54 18) NODAMAGE STOPMOVE
  *
  * Heretic 2: A large wooden dining table with two legs.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_urn (1 .5 0) (-8 -8 -27) (8 8 30) NODAMAGE STOPMOVE
  *
  * Heretic 2: Urn (Andorian)
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 /*
- * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_wheelbarrow (1 .5 0) (-37 -20 -21) (37 20 21) NODAMAGE STOPMOVE
  *
  * Heretic 2: Wheelbarrow
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 void
 SP_obj_material(edict_t *self)
@@ -505,14 +384,9 @@ SP_obj_material(edict_t *self)
 }
 
 /*
- * QUAKED obj_banner (0.3 0.3 1.0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_banner (0.3 0.3 1.0) (-8.0 -44.0 -296.0) (8.0 44.0 0.0)
  *
- * Heretic 2: Banner
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (it can't ever be hurt)
- * ANIMATE - makes it flutter in the breeze, just like a...banner
- * EXPLODING - N/A
- * NOPUSH - N/A (banner can't be pushed)
+ * Heretic 2: Banner animated, can't be moved and damaged
  * -------  KEYS  ------------------
  * skinnum = 0 : blue
  *           1 : red
@@ -527,15 +401,9 @@ SP_obj_banner(edict_t *self)
 }
 
 /*
- * QUAKED obj_banneronpole (1 .5 0) (-8 -28 -30) (8 28 30) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_banneronpole (0.3 0.3 1.0) (-8.0 -28.0 -30.0) (8.0 28.0 30.0)
  *
- * Heretic 2: A banner on a pole sticking out of a wall.
- * -------  FIELDS  ------------------
- * INVULNERABLE - can it be hurt
- * ANIMATE - makes it flutter in the breeze
- * EXPLODING - N/A
- * NOPUSH - N/A (banner can't be pushed)
- * -----------------------------------
+ * Heretic 2: Banner on pole, animated, can't be moved and damaged
  */
 void
 SP_obj_banneronpole(edict_t *self)
@@ -609,15 +477,9 @@ SP_object_flame1(edict_t *self)
 }
 
 /*
- * QUAKED obj_barrel (1 .5 0) (-12 -12 -19) (12 12 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_barrel (0.3 0.3 1.0) (-12.0 -12.0 -19.0) (12.0 12.0 19.0) NODAMAGE EXPLODE STOPMOVE
  *
  * Heretic 2: Barrel
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - the barrel will explode and cause radius damage
- * NOPUSH - can't be moved by player
- * -----------------------------------
  */
 void
 SP_obj_barrel(edict_t *self)
@@ -647,54 +509,225 @@ SP_object_barrel(edict_t *self)
 }
 
 /*
- * QUAKED obj_broom (1 .5 0) (-2 -2 -25) (2 2 25) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_broom (0.3 0.3 1.0) (-2.0 -2.0 -25.0) (2.0 2.0 25.0) NODAMAGE
  *
- * Heretic 2: Broom
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: Broom, can't be moved
+ */
+/*
+ * QUAKED obj_chair2 (0.3 0.3 1.0) (-18.0 -29.0 -30.0) (18.0 29.0 30.0) NODAMAGE
+ *
+ * Heretic 2: Chair (wood, slanted), can't be moved
+ */
+/*
+ * QUAKED obj_table2 (0.3 0.3 1.0) (-28.0 -54.0 -18.0) (28.0 54.0 18.0) NODAMAGE
+ *
+ * Heretic 2: Table (stone), can't be moved
+ */
+/*
+ * QUAKED obj_throne (0.3 0.3 1.0) (-20.0 -22.0 -44.0) (20.0 22.0 44.0) NODAMAGE
+ *
+ * Heretic 2: Throne, can't be moved
+ */
+/*
+ * QUAKED obj_statue_boulderfish (0.3 0.3 1.0) (-26.0 -16.0 -27.0) (26.0 16.0 27.0) NODAMAGE
+ *
+ * Heretic 2: Fish statue, can't be moved
+ */
+/*
+ * QUAKED obj_shovel (0.3 0.3 1.0) (-8.0 -8.0 -20.0) (8.0 8.0 20.0) NODAMAGE
+ *
+ * Heretic 2: Shovel, can't be moved
+ */
+/*
+ * QUAKED obj_woodpile (0.3 0.3 1.0) (-12.0 -20.0 -7.0) (12.0 20.0 7.0) NODAMAGE
+ *
+ * Heretic 2: Wood Pile, can't be moved
+ */
+/*
+ * QUAKED obj_bench (0.3 0.3 1.0) (-10.0 -21.0 -10.0) (10.0 21.0 10.0) NODAMAGE
+ *
+ * Heretic 2: Bench, can't be moved
+ */
+/*
+ * QUAKED obj_bucket (0.3 0.3 1.0) (-8.0 -8.0 -9.0) (8.0 8.0 10.0) NODAMAGE
+ *
+ * Heretic 2: Bucket, can't be moved
+ */
+/*
+ * QUAKED obj_gorgonbones (0.3 0.3 1.0) (-18.0 -38.0 -9.0) (18.0 38.0 1.0) NODAMAGE
+ *
+ * Heretic 2: Gorgon bones, can't be moved
+ */
+/*
+ * QUAKED obj_grass (0.3 0.3 1.0) (-8.0 -8.0 -10.0) (8.0 8.0 10.0) NODAMAGE
+ *
+ * Heretic 2: Grass clump, can't be moved
+ */
+/*
+ * QUAKED obj_queenchair (0.3 0.3 1.0) (-30.0 -28.0 -31.0) (30.0 28.0 31.0) NODAMAGE
+ *
+ * Heretic 2: Hive queen chair, can't be moved
+ */
+/*
+ * QUAKED obj_larvaegg (0.3 0.3 1.0) (-6.0 -14.0 -6.0) (6.0 14.0 6.0) NODAMAGE
+ *
+ * Heretic 2: Hive egg, can't be moved
+ */
+/*
+ * QUAKED obj_larvabrokenegg (0.3 0.3 1.0) (-6.0 -7.0 -5.0) (6.0 7.0 5.0) NODAMAGE
+ *
+ * Heretic 2: Hive egg, can't be moved
+ */
+/*
+ * QUAKED obj_cocoon (0.3 0.3 1.0) (-8.0 -8.0 -8.0) (8.0 8.0 8.0) NODAMAGE
+ *
+ * Heretic 2: Hanging cocoon, can't be moved
+ */
+/*
+ * QUAKED obj_pot1 (0.3 0.3 1.0) (-3.0 -8.0 -8.0) (3.0 8.0 8.0) NODAMAGE
+ *
+ * Heretic 2: Hanging cooking pot, can't be moved
+ */
+/*
+ * QUAKED obj_torture_wallring (0.3 0.3 1.0) (-2.0 -4.0 -6.0) (2.0 4.0 6.0) NODAMAGE
+ *
+ * Heretic 2: Hanging ring, can't be moved
+ */
+/*
+ * QUAKED obj_statue_saraphbust (0.3 0.3 1.0) (-10.0 -20.0 -24.0) (10.0 20.0 24.0) NODAMAGE
+ *
+ * Heretic 2: Seraph bust, can't be moved
+ */
+/*
+ * QUAKED obj_tapper (0.3 0.3 1.0) (-2.0 -5.0 -2.0) (2.0 5.0 2.0) NODAMAGE
+ *
+ * Heretic 2: Keg tapper, can't be moved
+ */
+/*
+ * QUAKED obj_frypan (0.3 0.3 1.0) (-1.0 -3.0 -10.0) (1.0 3.0 10.0) NODAMAGE
+ *
+ * Heretic 2: Hanging pan, can't be moved
+ */
+/*
+ * QUAKED obj_eggpan (0.3 0.3 1.0) (-4.0 -10.0 -1.0) (4.0 10.0 1.0) NODAMAGE
+ *
+ * Heretic 2: Flat pan, can't be moved
+ */
+/*
+ * QUAKED obj_nest (0.3 0.3 1.0) (-25.0 -25.0 -4.0) (25.0 25.0 4.0) NODAMAGE
+ *
+ * Heretic 2: Nest, can't be moved
+ */
+/*
+ * QUAKED obj_choppeddude (0.3 0.3 1.0) (-15.0 -40.0 -8.0) (15.0 40.0 8.0) NODAMAGE
+ *
+ * Heretic 2: Lying chopped corpse, can't be moved
+ */
+/*
+ * QUAKED obj_eyeball_jar (0.3 0.3 1.0) (-13.0 -13.0 -18.0) (13.0 13.0 18.0) NODAMAGE
+ *
+ * Heretic 2: Jar of joy, can't be moved
+ */
+/*
+ * QUAKED obj_statue_sariph (0.3 0.3 1.0) (-13.0 -16.0 -41.0) (13.0 16.0 41.0) NODAMAGE
+ *
+ * Heretic 2: Seraph statue, can't be moved
+ */
+/*
+ * QUAKED obj_rocks1 (0.3 0.3 1.0) (-12.0 -13.0 -4.0) (12.0 13.0 4.0) NODAMAGE
+ *
+ * Heretic 2: Rock cluster, can't be moved
+ */
+/*
+ * QUAKED obj_rocks2 (0.3 0.3 1.0) (-9.0 -30.0 -4.0) (9.0 30.0 4.0) NODAMAGE
+ *
+ * Heretic 2: Big rock, can't be moved, can't be moved
+ */
+/*
+ * QUAKED obj_lab_tray (0.3 0.3 1.0) (-8.0 -8.0 -5.0) (8.0 8.0 5.0) NODAMAGE
+ *
+ * Heretic 2: Tray with heart and tools, can't be moved
  */
 void
-SP_obj_broom(edict_t *self)
+SP_obj_material_stopmove(edict_t *self)
 {
 	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_chair2 (1 .5 0) (-18 -29 -30) (18 29 30)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_chair3 (0.3 0.3 1.0) (-14.0 -21.0 -28.0) (14.0 21.0 28.0)
  *
- * Heretic 2: A thick chair with slanted sides
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: Chair (stone), can't be moved and damaged.
  */
-void
-SP_obj_chair2(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
 /*
- * QUAKED obj_chair3 (1 .5 0) (-14 -21 -28) (14 21 28)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_corvus (0.3 0.3 1.0) (-16.0 -16.0 0.0) (16.0 16.0 32.0)
  *
- * Heretic 2: A big stone throne.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: Corvus statue, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_statue_guardian (0.3 0.3 1.0) (-100.0 -64.0 0.0) (64.0 64.0 128.0)
+ *
+ * Heretic 2: Guardian statue, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_fountain_fish (0.3 0.3 1.0) (-52.0 -34.0 -48.0) (52.0 34.0 48.0)
+ *
+ * Heretic 2: Two-headed fish fountain. Water FX not included, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_treetop (0.3 0.3 1.0) (-176.0 -176.0 -125.0) (176.0 176.0 125.0)
+ *
+ * Heretic 2: Tree canopy, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_tree (0.3 0.3 1.0) (-100.0 -100.0 -120.0) (100.0 100.0 120.0)
+ *
+ * Heretic 2: Tree, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_statue_dragonhead (0.3 0.3 1.0) (-76.0 -28.0 -46.0) (76.0 28.0 46.0)
+ *
+ * Heretic 2: Dragon head statue, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_swampflat_top (0.3 0.3 1.0) (0.0 -100.0 -48.0) (2.0 100.0 48.0)
+ *
+ * Heretic 2: A flat poly to be used on the outer edge of swamp levels. Vegetation
+ * growing up, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_queenthrone (0.3 0.3 1.0) (-40.0 -56.0 -49.0) (40.0 56.0 49.0)
+ *
+ * Heretic 2: Hive queen throne, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_skullpole (0.3 0.3 1.0) (-10.0 -10.0 -47.0) (10.0 10.0 47.0)
+ *
+ * Heretic 2: Skull pole, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_torture_rack (0.3 0.3 1.0) (-22.0 -46.0 -19.0) (22.0 46.0 19.0)
+ *
+ * Heretic 2: Torture rack, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_torture_bed (0.3 0.3 1.0) (-21.0 -43.0 -94.0) (21.0 43.0 94.0)
+ *
+ * Heretic 2: Bed of spikes, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_wallringplaque (0.3 0.3 1.0) (-3.0 -20.0 -55.0) (3.0 20.0 55.0)
+ *
+ * Heretic 2: Wall ring plaque, can't be moved and damaged.
+ */
+/*
+ * QUAKED obj_ring_plaque2 (0.3 0.3 1.0) (-2.0 -24.0 -20.0) (2.0 24.0 20.0)
+ *
+ * Heretic 2: Rings mounted on wall plate, can't be moved and damaged.
  */
 void
-SP_obj_chair3(edict_t *self)
+SP_obj_material_nomoveanddamage(edict_t *self)
 {
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
 	SP_obj_material(self);
@@ -722,14 +755,12 @@ chest1_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_chest1 (1 .5 0) (-10 -18 -19) (10 18 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_chest1 (1 .5 0) (-10 -18 -19) (10 18 19) NODAMAGE STOPMOVE
  *
  * Heretic 2: A large chest with a snake carving on top. When used it opens its lid.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -740,14 +771,12 @@ SP_obj_chest1(edict_t *self)
 }
 
 /*
- * QUAKED obj_chest2 (1 .5 0) (-14 -17 -9) (14 17 9) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_chest2 (1 .5 0) (-14 -17 -9) (14 17 9) NODAMAGE STOPMOVE
  *
  * Heretic 2: A medium sized chest with the top open - for use in the mines
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -758,14 +787,12 @@ SP_obj_chest2(edict_t *self)
 }
 
 /*
- * QUAKED obj_chest3 (1 .5 0) (-10 -17 -6) (10 17 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_chest3 (1 .5 0) (-10 -17 -6) (10 17 6) NODAMAGE STOPMOVE
  *
  * Heretic 2: A medium sized chest with the top closed - for use in the mines
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -812,15 +839,9 @@ cog1_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_cog1 (1 .5 0) (-8 -4 0) (8 4 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_cog1 (1 .5 0) (-8 -4 0) (8 4 20)
  *
- * Heretic 2: A cog with spokes coming out the front of it.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (cog can't be pushed)
- * -----------------------------------
+ * Heretic 2: A cog with spokes coming out the front of it, can't be moved and damaged
  */
 void
 SP_obj_cog1(edict_t *self)
@@ -832,7 +853,7 @@ SP_obj_cog1(edict_t *self)
 }
 
 /*
- * QUAKED obj_corpse1 (1 .5 0) (-30 -12 -2) (30 12 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_corpse1 (1 .5 0) (-30 -12 -2) (30 12 2) NODAMAGE STOPMOVE
  *
  * Heretic 2: Plague Elf corpse
  * ---------- KEYS -----------------
@@ -843,14 +864,12 @@ SP_obj_cog1(edict_t *self)
  *    3 - arms out to side
  *    4 - skewered
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (corpse can't be pushed)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (corpse can't be pushed)
  * -----------------------------------
  */
 /*
- * QUAKED obj_corpse2 (1 .5 0) (-30 -12 -2) (30 12 2)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_corpse2 (1 .5 0) (-30 -12 -2) (30 12 2) NODAMAGE STOPMOVE
  *
  * Heretic 2: Plague Elf corpse (alternate skin)
  * ---------- KEYS -----------------
@@ -861,10 +880,8 @@ SP_obj_cog1(edict_t *self)
  *    3 - arms out to side
  *    4 - skewered
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (corpse can't be pushed)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (corpse can't be pushed)
  * -----------------------------------
  */
 void
@@ -929,8 +946,8 @@ SP_obj_corpse(edict_t *self)
 
 	self->rrs.mesh = GenNoDrawInfo(self->s.fmnodeinfo);
 
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
-	self->svflags |= SVF_DEADMONSTER;//doesn't block walking
+	self->spawnflags |= OBJ_STOPMOVE;
+	self->svflags |= SVF_DEADMONSTER;
 
 	SP_obj_material(self);
 }
@@ -1092,20 +1109,18 @@ dying_elf_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, 
 }
 
 /*
- * QUAKED obj_dying_elf (1 .5 0) (-30 -12 0) (30 12 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_dying_elf (1 .5 0) (-30 -12 0) (30 12 5) NODAMAGE STOPMOVE
  *
  * Heretic 2: Plague elf lying on the ground shaking.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (corpse can't be pushed)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (corpse can't be pushed)
  * -----------------------------------
  */
 void
 SP_obj_dying_elf(edict_t *self)
 {
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	self->movetype = MOVETYPE_STEP;
 
 	self->touch_debounce_time = -1;
@@ -1129,7 +1144,7 @@ SP_obj_dying_elf(edict_t *self)
 }
 
 /*
- * QUAKED obj_sign1 (1 .5 0) (-29 -4 -16) (29 4 16)   INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_sign1 (1 .5 0) (-29 -4 -16) (29 4 16) NODAMAGE STOPMOVE
  *
  * Heretic 2: A square sign coming out of a wall.
  * --------KEYS-------------------
@@ -1138,10 +1153,8 @@ SP_obj_dying_elf(edict_t *self)
  * 1 - sign with two steins
  * 2 - sign with a fish
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (sign1 can't be pushed)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (sign1 can't be pushed)
  * -----------------------------------
  */
 void
@@ -1158,7 +1171,7 @@ SP_obj_sign1(edict_t *self)
 }
 
 /*
- * QUAKED obj_sign4 (1 .5 0) (-8 -18 -29) (8 18 29)   INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_sign4 (1 .5 0) (-8 -18 -29) (8 18 29) NODAMAGE STOPMOVE
  *
  * Heretic 2: A square sign that is on top of a post. It is leaning badly.
  * For the MINE or DESERT areas.
@@ -1167,10 +1180,8 @@ SP_obj_sign1(edict_t *self)
  * 1 for the Tchecktrik skin
  *
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (sign4 can't be pushed)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (sign4 can't be pushed)
  * -----------------------------------
  */
 void
@@ -1191,32 +1202,12 @@ SP_obj_sign4(edict_t *self)
 }
 
 /*
- * QUAKED obj_statue_corvus (1 .5 0) (-16 -16 0) (16 16 32) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Corvus statue
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_statue_corvus(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_statue_dolphin1 (1 .5 0) (-68 -22 -30) (68 22 30) VULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_dolphin1 (1 .5 0) (-68 -22 -30) (68 22 30) VULNERABLE ANIMATE STOPMOVE
  *
  * Heretic 2: Dolphin statue on all fours
  * -------  FIELDS  ------------------
  * VULNERABLE - it can be hurt - default it can't be
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -1224,28 +1215,16 @@ SP_obj_statue_dolphin1(edict_t *self)
 {
 	self->spawnflags |= OBJ_STOPMOVE;
 
-	if (self->spawnflags & OBJ_NODAMAGE)
-	{
-		self->spawnflags &= ~OBJ_NODAMAGE; // can be destroyed
-	}
-	else
-	{
-		self->spawnflags |= OBJ_NODAMAGE; // can't be destroyed
-	}
+	/* Toggle destructibility */
+	self->spawnflags ^= OBJ_NODAMAGE;
 
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_statue_dolphin2 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_dolphin2 (1 .5 0) (-17 -20 -70) (17 20 70)
  *
- * Heretic 2: Dolphin statue on wall turned right
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: Dolphin statue on wall turned right, can't be moved and damaged
  */
 void
 SP_obj_statue_dolphin2(edict_t *self)
@@ -1256,15 +1235,9 @@ SP_obj_statue_dolphin2(edict_t *self)
 }
 
 /*
- * QUAKED obj_statue_dolphin3 (1 .5 0) (-17 -20 -70) (17 20 70) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_dolphin3 (1 .5 0) (-17 -20 -70) (17 20 70)
  *
- * Heretic 2: Dolphin statue on wall turned left
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: Dolphin statue on wall turned left, can't be moved and damaged
  */
 void
 SP_obj_statue_dolphin3(edict_t *self)
@@ -1275,15 +1248,9 @@ SP_obj_statue_dolphin3(edict_t *self)
 }
 
 /*
- * QUAKED obj_statue_dolphin4 (1 .5 0) (-63 -22 -37) (63 22 37) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_dolphin4 (1 .5 0) (-63 -22 -37) (63 22 37)
  *
- * Heretic 2: Dolphin statue on two legs
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: Dolphin statue on two legs, can't be moved and damaged
  */
 void
 SP_obj_statue_dolphin4(edict_t *self)
@@ -1294,74 +1261,19 @@ SP_obj_statue_dolphin4(edict_t *self)
 }
 
 /*
- * QUAKED obj_statue_guardian (1 .5 0) (-100 -64 0) (64 64 128) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_cauldron (1 .5 0) (-22 -22 -10) (22 22 10) NODAMAGE OBJ_WITHEFFECT STOPMOVE
  *
- * Heretic 2: A big statue of a fish guy on his haunches holding a spear.
+ * Heretic 2: Cauldron
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_statue_guardian(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_table2 (1 .5 0) (-28 -54 -17) (28 54 17) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A grey stone table.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_table2(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_throne (1 .5 0) (-20 -22 -44) (20 22 44) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A highbacked throne.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_throne(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_cauldron (1 .5 0) (-22 -22 -10) (22 22 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A metal cauldron filled with green liquid
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * OBJ_WITHEFFECT - has sound effect
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
 SP_obj_cauldron(edict_t *self)
 {
-	if (self->spawnflags & OBJ_WITHEFFECT)	// Animate it
+	if (self->spawnflags & OBJ_WITHEFFECT)
 	{
 		self->s.sound = gi.soundindex("ambient/cauldronbubble.wav");
 		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
@@ -1373,14 +1285,11 @@ SP_obj_cauldron(edict_t *self)
 }
 
 /*
- * QUAKED obj_firepot (1 .5 0) (-18 -18 -12) (18 18 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_firepot (1 .5 0) (-18 -18 -12) (18 18 12) OBJ_WITHEFFECT
  *
- * Heretic 2: A grey stone firepot
+ * Heretic 2: Firepot
  * -------  FIELDS  ------------------
- * INVULNERABLE - always invulnerable
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't ever be moved by player)
+ * OBJ_WITHEFFECT - with fire effect
  * -----------------------------------
  */
 void
@@ -1390,7 +1299,6 @@ SP_obj_firepot(edict_t *self)
 	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_STATIC;
 
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 
 	if (self->spawnflags & OBJ_WITHEFFECT)	// Animate it
@@ -1404,44 +1312,28 @@ SP_obj_firepot(edict_t *self)
 }
 
 /*
- * QUAKED obj_statue_duckbill1 (1 .5 0) (-67 -24 -51) (67 24 51) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_duckbill1 (1 .5 0) (-67 -24 -51) (67 24 51)
  *
- * Heretic 2: The duckbilled thing - tail to the right
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: The duckbilled thing - tail to the right, can't be moved and damaged
  */
 void
 SP_obj_statue_duckbill1(edict_t *self)
 {
 	self->s.frame = 0;
-
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_statue_duckbill2 (1 .5 0) (-67 -24 -50) (67 24 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_duckbill2 (1 .5 0) (-67 -24 -50) (67 24 50)
  *
- * Heretic 2: The duckbilled thing - tail to the left
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
+ * Heretic 2: The duckbilled thing - tail to the left, can't be moved and damaged
  */
 void
 SP_obj_statue_duckbill2(edict_t *self)
 {
 	self->s.frame = 1;
-
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 }
 
@@ -1545,14 +1437,12 @@ globebottom_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_seasonglobe (1 .5 0) (-80 -80 0) (80 80 100) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_seasonglobe (1 .5 0) (-80 -80 0) (80 80 100) NODAMAGE STOPMOVE
  *
  * Heretic 2: The globe thingy
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (globe can't be moved)
+ * STOPMOVE - N/A (globe can't be moved)
  * -----------------------------------
  */
 void
@@ -1560,7 +1450,7 @@ SP_obj_seasonglobe(edict_t *bottom)
 {
 	edict_t *top;
 
-	bottom->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	bottom->spawnflags |= OBJ_STOPMOVE;
 	bottom->movetype = MOVETYPE_NONE;
 	bottom->solid = SOLID_BBOX;
 	bottom->s.frame = 1;
@@ -1584,7 +1474,7 @@ SP_obj_seasonglobe(edict_t *bottom)
 	VectorSet(top->rrs.scale, 1.75, 1.75, 1.75);
 	BboxYawAndScale(top);
 
-	bottom->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	bottom->spawnflags |= OBJ_STOPMOVE;
 	top->targetname = "globetop";
 	top->use = globetop_use;
 	top->yaw_speed = 2.5;
@@ -1597,72 +1487,30 @@ SP_obj_seasonglobe(edict_t *bottom)
 }
 
 /*
- * QUAKED obj_fountain_fish (1 .5 0) (-52 -34 -48) (52 34 48) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Two-headed fish fountain. Water FX not included
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_fountain_fish(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_statue_boulderfish (1 .5 0) (-26 -16 -27) (26 16 27) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A statue of a fish. The one which raises up a boulder.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_statue_boulderfish(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_plant1 (1 .5 0) (-8 -8 -24) (8 8 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_plant1 (1 .5 0) (-8 -8 -24) (8 8 24) NODAMAGE STOPMOVE
  *
  * Heretic 2: A clump of tall, thin, plants
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (plant1 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (plant1 can't be moved)
  * -----------------------------------
  */
 /*
- * QUAKED obj_plant2 (1 .5 0) (-20 -20 -10) (20 20 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_plant2 (1 .5 0) (-20 -20 -10) (20 20 20) NODAMAGE STOPMOVE
  *
  * Heretic 2: A plant with broad leaves.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (plant2 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (plant2 can't be moved)
  * -----------------------------------
  */
 /*
- * QUAKED obj_plant3 (1 .5 0) (-8 -8 -12) (8 8 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_plant3 (1 .5 0) (-8 -8 -12) (8 8 12) NODAMAGE STOPMOVE
  *
- * Heretic 2: A group of ferns
+ * Heretic 2: Plant
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (plant3 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (plant3 can't be moved)
  * -----------------------------------
  */
 void
@@ -1673,56 +1521,14 @@ SP_obj_plant(edict_t *self)
 		self->s.skinnum = self->style;
 	}
 
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_treetop (1 .5 0) (-176 -176 -125) (176 176 125) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_tree2 (1 .5 0) (-50 -50 -286) (50 50 286)
  *
- * Heretic 2: Tree canopy
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (treetop can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_treetop(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_tree (1 .5 0) (-100 -100 -120) (100 100 120) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A tree for Matt's level
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (tree can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_tree(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_tree2 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A tall spikey tree for the swamps
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (tree2 can't be moved)
- * -----------------------------------
+ * Heretic 2: A tall spikey tree for the swamps, can't be moved and damaged
  */
 void
 SP_obj_tree2(edict_t *self)
@@ -1730,7 +1536,6 @@ SP_obj_tree2(edict_t *self)
 	edict_t *moss;
 
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 
 	moss = G_Spawn();
@@ -1749,15 +1554,9 @@ SP_obj_tree2(edict_t *self)
 }
 
 /*
- * QUAKED obj_tree3 (1 .5 0) (-50 -50 -286) (50 50 286) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_tree3 (1 .5 0) (-50 -50 -286) (50 50 286)
  *
- * Heretic 2: A tall spikey tree with big roots on the bottom.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (tree3 can't be moved)
- * -----------------------------------
+ * Heretic 2: Tree with roots, can't be moved and damaged
  */
 void
 SP_obj_tree3(edict_t *self)
@@ -1765,7 +1564,6 @@ SP_obj_tree3(edict_t *self)
 	edict_t *moss;
 
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 
 	moss = G_Spawn();
@@ -1784,15 +1582,9 @@ SP_obj_tree3(edict_t *self)
 }
 
 /*
- * QUAKED obj_treetall (1 .5 0) (-46 -46 -340) (46 46 340) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_treetall (1 .5 0) (-46 -46 -340) (46 46 340)
  *
- * Heretic 2: A very tall tree
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (tree3 can't be moved)
- * -----------------------------------
+ * Heretic 2: A very tall tree, can't be moved and damaged
  */
 void
 SP_obj_treetall(edict_t *self)
@@ -1800,7 +1592,6 @@ SP_obj_treetall(edict_t *self)
 	edict_t *moss;
 
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 
 	moss = G_Spawn();
@@ -1818,107 +1609,22 @@ SP_obj_treetall(edict_t *self)
 }
 
 /*
- * QUAKED obj_treefallen (1 .5 0) (-24 -62 -35) (24 62 35) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_treefallen (1 .5 0) (-24 -62 -35) (24 62 35)
  *
- * Heretic 2: A tree that is leaning as if it had over. Meant to be partially submerged in water or muck.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (treefallen can't be moved)
- * -----------------------------------
+ * Heretic 2: Fallen tree, can't be moved and damaged
  */
 void
 SP_obj_treefallen(edict_t *self)
 {
 	self->s.frame = 1;
-
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_shovel (1 .5 0) (-8 -8 -20) (8 8 20)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_ropechain (1 .5 0) (-20 -20 -14) (20 20 14)
  *
- * Heretic 2: Shovel
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_shovel(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_woodpile (1 .5 0) (-12 -20 -7) (12 20 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A pile of chopped  wood.
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_woodpile(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't move
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_bench (1 .5 0) (-10 -21 -10) (10 21 10)  INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A stone bench to sit on
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_bench(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_bucket (1 .5 0) (-8 -8 -9) (8 8 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Bucket
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_bucket(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_ropechain (1 .5 0) (-20 -20 -14) (20 20 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A pile of rope or chain
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (ropechain can't be moved)
+ * Heretic 2: Rope chain, can't be moved and damaged
  *
  * Variables:
  * skinnum = 0 : rope
@@ -1944,35 +1650,28 @@ SP_obj_ropechain(edict_t *self)
 }
 
 /*
- * QUAKED obj_wheelbarrowdamaged (1 .5 0) (-38 -26 -20) (38 26 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_wheelbarrowdamaged (1 .5 0) (-38 -26 -20) (38 26 20) NODAMAGE STOPMOVE
  *
  * Heretic 2: A wheelbarrow  on it's side missing a wheel
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (wheelbarrowdamaged can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (wheelbarrowdamaged can't be moved)
  * -----------------------------------
  */
 void
 SP_obj_wheelbarrowdamaged(edict_t *self)
 {
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	self->s.frame = 1;
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_bigcrystal (1 .5 0) (-35 -35 -50) (35 35 50) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_bigcrystal (1 .5 0) (-35 -35 -50) (35 35 50)
  *
- * Heretic 2: A big circular crystal which rotates.
+ * Heretic 2: A big circular crystal which rotates, can't be moved and damaged.
  * -------  KEYS  ------------------
  * speed - rate of rotation
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
  * -----------------------------------
  */
 void
@@ -1986,58 +1685,48 @@ SP_obj_bigcrystal(edict_t *self)
 }
 
 /*
- * QUAKED obj_moss1 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_moss1 (1 .5 0) (-4 -10 -40) (4 10 40) NODAMAGE STOPMOVE
  *
  * Heretic 2: Moss 1
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (moss1 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (moss1 can't be moved)
  * -----------------------------------
  */
 /*
- * QUAKED obj_moss2 (1 .5 0) (-4 -9 -40) (4 9 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_moss2 (1 .5 0) (-4 -9 -40) (4 9 40) NODAMAGE STOPMOVE
  *
  * Heretic 2: Moss 2
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (moss2 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (moss2 can't be moved)
  * -----------------------------------
  */
 /*
- * QUAKED obj_moss3 (1 .5 0) (-4 -15 -40) (4 15 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_moss3 (1 .5 0) (-4 -15 -40) (4 15 40) NODAMAGE STOPMOVE
  *
  * Heretic 2: Moss 3
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (moss3 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (moss3 can't be moved)
  * -----------------------------------
  */
 /*
- * QUAKED obj_moss4 (1 .5 0) (-4 -12 -40) (4 12 40)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_moss4 (1 .5 0) (-4 -12 -40) (4 12 40) NODAMAGE STOPMOVE
  *
  * Heretic 2: Moss 4
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (moss4 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (moss4 can't be moved)
  * -----------------------------------
  */
 /*
- * QUAKED obj_moss5 (1 .5 0) (-4 -10 -40) (4 10 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_moss5 (1 .5 0) (-4 -10 -40) (4 10 40) NODAMAGE STOPMOVE
  *
  * Heretic 2: Moss 5
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (moss5 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (moss5 can't be moved)
  * -----------------------------------
  */
 void
@@ -2065,60 +1754,34 @@ SP_obj_moss(edict_t *self)
 	}
 
 	self->s.renderfx |= RF_TRANSLUCENT;
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 }
 
 /*
- * QUAKED obj_floor_candelabrum (0.3 0.3 1.0) (-8.0 -8.0 -35.0) (8.0 8.0 35.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_floor_candelabrum (0.3 0.3 1.0) (-8.0 -8.0 -35.0) (8.0 8.0 35.0) NODAMAGE STOPMOVE
  *
- * Heretic 2: Floor candelbrum. Does not emit light
+ * Heretic 2: Floor candelbrum. Does not emit light, animated.
  * -------  FIELDS  ------------------
  * INVULNERABLE - it can't be destroyed
- * ANIMATE - makes flickering flames appear
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
 SP_obj_floor_candelabrum(edict_t *self)
 {
-	self->spawnflags |= OBJ_NODAMAGE; // can't be destroyed
-
+	self->spawnflags |= OBJ_NODAMAGE;
 	object_spawn(self);
 }
 
 /*
- * QUAKED obj_statue_dragonhead (1 .5 0) (-76 -28 -46) (76 28 46) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_dragon (1 .5 0) (-53 -33 -72) (53 33 72)
  *
- * Heretic 2: Dragon head statue
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
- * -----------------------------------
- */
-void
-SP_obj_statue_dragonhead(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE; // can't be destroyed
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_statue_dragon (1 .5 0) (-53 -33 -72) (53 33 72)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
- *
- * Heretic 2: Dragon statue
+ * Heretic 2: Dragon statue, can't be moved and damaged
  * ---------- KEYS -----------------
  * style - (default 0)
  *  0 - dragon looking left
  *  1 - dragon looking right
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
  * -----------------------------------
  */
 void
@@ -2139,21 +1802,14 @@ SP_obj_statue_dragon(edict_t *self)
 }
 
 /*
- * QUAKED obj_flagonpole (1 .5 0) (-8 -8 0) (8 8 60)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_flagonpole (1 .5 0) (-8 -8 0) (8 8 60)
  *
- * Heretic 2: Flag on pole
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (flagonpole can't be moved)
- * -----------------------------------
+ * Heretic 2: Flag on pole, can't be moved and damaged
  */
 void
 SP_obj_flagonpole(edict_t *self)
 {
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	self->s.sound = gi.soundindex("ambient/bannerflap.wav");
 	object_spawn(self);
 }
@@ -2205,15 +1861,9 @@ lever1_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_lever1 (1 .5 0) (-6 -14 -17) (6 14 17)  INVULNERABLE  ANIMATE   EXPLODING   NOPUSH
+ * QUAKED obj_lever1 (1 .5 0) (-6 -14 -17) (6 14 17)
  *
- * Heretic 2: A wooden floor lever that is triggerable.
- * -------  FIELDS  ------------------
- * INVULNERABLE - always invulnerable
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_lever1 can't be moved)
- * -----------------------------------
+ * Heretic 2: A wooden floor lever that is triggerable, can't be moved and damaged
  */
 void
 SP_obj_lever1(edict_t *self)
@@ -2269,15 +1919,9 @@ lever2_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_lever2 (1 .5 0) (-14 -14 -9) (14 14 9)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_lever2 (1 .5 0) (-14 -14 -9) (14 14 9)
  *
- * Heretic 2: A wooden wheel lever that is triggerable.
- * -------  FIELDS  ------------------
- * INVULNERABLE - always invulnerable
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_lever2 can't be moved)
- * -----------------------------------
+ * Heretic 2: A wooden wheel lever that is triggerable, can't be moved and damaged
  */
 void
 SP_obj_lever2(edict_t *self)
@@ -2333,15 +1977,9 @@ lever3_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_lever3 (1 .5 0) (-4 -6 -16) (4 6 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_lever3 (1 .5 0) (-4 -6 -16) (4 6 16)
  *
- * Heretic 2: A lever for the wall...and it's triggerable.
- * -------  FIELDS  ------------------
- * INVULNERABLE - always invulnerable
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_lever3 can't be moved)
- * -----------------------------------
+ * Heretic 2: A lever for the wall...and it's triggerable, can't be moved and damaged.
  */
 void
 SP_obj_lever3(edict_t *self)
@@ -2373,26 +2011,14 @@ bush_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 }
 
 /*
- * QUAKED obj_bush1 (1 .5 0) (-34 -34 -19) (34 34 19)  INVULNERABLE  ANIMATE  EXPLODING  NOPUSH
+ * QUAKED obj_bush1 (1 .5 0) (-34 -34 -19) (34 34 19)
  *
- * Heretic 2: A dome shaped bush
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_bush1 can't be moved)
- * -----------------------------------
+ * Heretic 2: A dome shaped bush, can't be moved and damaged
  */
 /*
- * QUAKED obj_bush2 (1 .5 0) (-56 -56 -40) (56 56 40)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_bush2 (1 .5 0) (-56 -56 -40) (56 56 40)
  *
- * Heretic 2: A larger dome shaped bush
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_bush2 can't be moved)
- * -----------------------------------
+ * Heretic 2: A larger dome shaped bush, can't be moved and damaged
  */
 void
 SP_obj_bush(edict_t *self)
@@ -2419,40 +2045,36 @@ cactus_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 }
 
 /*
- * QUAKED obj_cactus (1 .5 0) (-18 -18 -44) (18 18 44)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_cactus (1 .5 0) (-18 -18 -44) (18 18 44) NODAMAGE STOPMOVE
  *
  * Heretic 2: A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_cactus can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (obj_cactus can't be moved)
  * -----------------------------------
  */
 void
 SP_obj_cactus(edict_t *self)
 {
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
 }
 
 /*
- * QUAKED obj_cactus3 (1 .5 0) (-14 -14 -32) (14 14 32)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_cactus3 (1 .5 0) (-14 -14 -32) (14 14 32) NODAMAGE STOPMOVE
  *
  * Heretic 2: A cactus.  Hurts the player 1 pt every five seconds he is pushes against it.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_cactus3 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (obj_cactus3 can't be moved)
  * -----------------------------------
  */
 void
 SP_obj_cactus3(edict_t *self)
 {
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 	self->touch_debounce_time = level.time;
 	self->touch = cactus_touch;
@@ -2500,20 +2122,18 @@ cactus4_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_cactus4 (1 .5 0) (-11 -11 -11) (11 11 11)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_cactus4 (1 .5 0) (-11 -11 -11) (11 11 11) NODAMAGE STOPMOVE
  *
  * Heretic 2: A small cactus that open up or closes. Is triggerable.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_cactus4 can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - N/A (obj_cactus4 can't be moved)
  * -----------------------------------
  */
 void
 SP_obj_cactus4(edict_t *self)
 {
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 	self->use = cactus4_use;
 	self->touch_debounce_time = level.time;
@@ -2521,69 +2141,10 @@ SP_obj_cactus4(edict_t *self)
 }
 
 /*
- * QUAKED obj_gorgonbones (1 .5 0) (-18 -38 -9) (18 38 1)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_swampflat_bottom (1 .5 0) (0 -100 -48) (2 100 48)
  *
- * Heretic 2: The bones of a dead gorgon.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_gorgonbones can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_gorgonbones(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_grass (1 .5 0) (-8 -8 -10) (8 8 10)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
- *
- * Heretic 2: Grass clump
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (obj_grass can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_grass(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_swampflat_top (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A flat poly to be used on the outer edge of swamp levels. Vegetation growing up.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_swampflat_top(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_swampflat_bottom (1 .5 0) (0 -100 -48) (2 100 48)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
- *
- * Heretic 2: A flat poly to be used on the outer edge of swamp levels. Vegetation growing down.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
+ * Heretic 2: A flat poly to be used on the outer edge of swamp levels. Vegetation
+ * growing down, can't be moved and damaged.
  */
 void
 SP_obj_swampflat_bottom(edict_t *self)
@@ -2594,15 +2155,9 @@ SP_obj_swampflat_bottom(edict_t *self)
 }
 
 /*
- * QUAKED obj_treestump (1 .5 0) (-18 -18 -16) (18 18 16)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_treestump (1 .5 0) (-18 -18 -16) (18 18 16)
  *
- * Heretic 2: Short tree stump
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
+ * Heretic 2: Short tree stump, can't be moved and damaged.
  */
 void
 SP_obj_treestump(edict_t *self)
@@ -2613,14 +2168,12 @@ SP_obj_treestump(edict_t *self)
 }
 
 /*
- * QUAKED obj_jawbone (1 .5 0) (-11 -11 -12) (11 11 12)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_jawbone (1 .5 0) (-11 -11 -12) (11 11 12) NODAMAGE STOPMOVE
  *
  * Heretic 2: Fish jawbone
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2631,14 +2184,12 @@ SP_obj_jawbone(edict_t *self)
 }
 
 /*
- * QUAKED obj_barrel_metal (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_barrel_metal (1 .5 0) (-11 -12 -18) (11 12 18) NODAMAGE STOPMOVE
  *
  * Heretic 2: Metal barrel
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2671,14 +2222,12 @@ SP_obj_barrel_indestructible(edict_t *self)
 }
 
 /*
- * QUAKED obj_barrel_explosive (1 .5 0) (-11 -12 -18) (11 12 18)  INVULNERABLE  ANIMATE   EXPLODING  NOPUSH
+ * QUAKED obj_barrel_explosive (1 .5 0) (-11 -12 -18) (11 12 18) NODAMAGE STOPMOVE
  *
- * Heretic 2: A barrel that explodes and does damage.
+ * Heretic 2: Explosive barrel. Use barrel with spawnflags 4 instead
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2689,14 +2238,12 @@ SP_obj_barrel_explosive(edict_t *self)
 }
 
 /*
- * QUAKED obj_gascan (1 .5 0) (-8 -9 -13) (8 9 13)  INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_gascan (1 .5 0) (-8 -9 -13) (8 9 13) NODAMAGE STOPMOVE
  *
- * Heretic 2: A metal gas can.
+ * Heretic 2: Gas can
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2707,25 +2254,21 @@ SP_obj_gascan(edict_t *self)
 }
 
 /*
- * QUAKED obj_pipe1 (1 .5 0) (-11 -24 -7) (11 24 7)  INVULNERABLE  ANIMATE   EXPLODING NOPUSH
+ * QUAKED obj_pipe1 (1 .5 0) (-11 -24 -7) (11 24 7) NODAMAGE STOPMOVE
  *
  * Heretic 2: A section of pipe with 90 degree bend in it.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 /*
- * QUAKED obj_pipe2 (1 .5 0) (-6 -25 -4) (6 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pipe2 (1 .5 0) (-6 -25 -4) (6 25 4) NODAMAGE STOPMOVE
  *
  * Heretic 2: A straight section of pipe.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2736,14 +2279,12 @@ SP_obj_pipe(edict_t *self)
 }
 
 /*
- * QUAKED obj_pipewheel (1 .5 0) (-14 -14 -12) (14 14 12) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_pipewheel (1 .5 0) (-14 -14 -12) (14 14 12) NODAMAGE STOPMOVE
  *
  * Heretic 2: A shutoff valve for pipe.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2755,36 +2296,30 @@ SP_obj_pipewheel(edict_t *self)
 }
 
 /*
- * QUAKED obj_minecart (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_minecart (1 .5 0) (-18 -29 -20) (18 29 20) NODAMAGE STOPMOVE
  *
  * Heretic 2: A full mine cart used on the mine levels.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 /*
- * QUAKED obj_minecart2 (1 .5 0) (-18 -29 -20) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_minecart2 (1 .5 0) (-18 -29 -20) (18 29 20) NODAMAGE STOPMOVE
  *
  * Heretic 2: An empty mine cart used on the mine levels.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 /*
- * QUAKED obj_minecart3 (1 .5 0) (-18 -29 -15) (18 29 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_minecart3 (1 .5 0) (-18 -29 -15) (18 29 20) NODAMAGE STOPMOVE
  *
  * Heretic 2: A busted mine cart used on the mine levels.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2810,36 +2345,30 @@ SP_obj_minecart(edict_t *self)
 }
 
 /*
- * QUAKED obj_metalchunk1 (1 .5 0) ( -10 -26 -4) (10 26 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_metalchunk1 (1 .5 0) ( -10 -26 -4) (10 26 4) NODAMAGE STOPMOVE
  *
  * Heretic 2: A chunk of twisted metal.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 /*
- * QUAKED obj_metalchunk2 (1 .5 0) ( -10 -26 -7) (10 26 7) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_metalchunk2 (1 .5 0) ( -10 -26 -7) (10 26 7) NODAMAGE STOPMOVE
  *
  * Heretic 2: Another chunk of twisted metal.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 /*
- * QUAKED obj_metalchunk3 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_metalchunk3 (1 .5 0) ( -9 -30 -4) (9 30 4) NODAMAGE STOPMOVE
  *
  * Heretic 2: Another chunk of twisted metal.
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can't be moved by player
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2858,37 +2387,6 @@ SP_obj_metalchunk(edict_t *self)
 		self->s.frame = 0;
 	}
 
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_rocks1 (1 .5 0) ( -12 -13 -4) (12 13 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A bunch of rocks together
- * For the MINE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-/*
- * QUAKED obj_rocks2 (1 .5 0) ( -9 -30 -4) (9 30 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Big rock
- * For the MINE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_rocks(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
 	SP_obj_material(self);
 }
 
@@ -2931,7 +2429,7 @@ hivepriestesssymbol_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_hivepriestessssymbol (1 .5 0) ( -4 -4 -13) (4 4 13) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_hivepriestessssymbol (1 .5 0) ( -4 -4 -13) (4 4 13) NODAMAGE STOPMOVE
  *
  * Heretic 2: The Hive Priestess Symbol was created originally by T'jektaluck back in 14567 AH (After Hive).
  * It was stolen by Matt Pinkston in 20054.  He was promptly captured and fed Zots until he died from sugar
@@ -2940,9 +2438,7 @@ hivepriestesssymbol_use(edict_t *self, edict_t *other, edict_t *activator)
  * For the HIVE level
  * -------  FIELDS  ------------------
  * INVULNERABLE - N/A it can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -2956,53 +2452,10 @@ SP_obj_hivepriestessssymbol(edict_t *self)
 }
 
 /*
- * QUAKED obj_queenthrone (1 .5 0) ( -40 -56 -49) (40 56 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Hive queen throne
- * For the HIVE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_queenthrone(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_queenchair (1 .5 0) ( -30 -28 -31) (30 28 31) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A chair to go by the queen throne
- * For the HIVE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_queenchair(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_shrine (1 .5 0) ( -26 -38 -38) (26 38 38) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_shrine (0.3 0.3 1.0) (-26.0 -38.0 -38.0) (26.0 38.0 38.0)
  *
  * Heretic 2: Shrine model. Target with a matching shrine_(style) trigger brush.
- * For all levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
+ * For all levels, can't be moved and damaged
  * ---------- KEYS -----------------
  * style - (default 0) type of shrine
  *  0 - heal
@@ -3038,7 +2491,6 @@ SP_obj_shrine(edict_t *self)
 	}
 
 	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-
 	SP_obj_material(self);
 
 	if (deathmatch->value && ((int)dmflags->value & DF_SHRINE_CHAOS))
@@ -3060,72 +2512,13 @@ SP_obj_shrine(edict_t *self)
 }
 
 /*
- * QUAKED obj_larvaegg (1 .5 0) ( -6 -14 -6) (6 14 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: An egg for the larva
- * For the HIVE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_larvaegg(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_larvabrokenegg (1 .5 0) ( -6 -7 -5) (6 7 5) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A broken egg for the larva
- * For the HIVE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_larvabrokenegg(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_cocoon (1 .5 0) ( -20 -20 -36) (20 20 36) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A cocoon which hangs from the ceiling
- * For the HIVE levels
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A (always animates)
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_cocoon(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_cocoonopen (1 .5 0) ( -20 -20 -34) (20 20 34) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_cocoonopen (1 .5 0) ( -20 -20 -34) (20 20 34) NODAMAGE STOPMOVE
  *
  * Heretic 2: An open cocoon which hangs from the ceiling
  * For the HIVE levels
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -3137,14 +2530,12 @@ SP_obj_cocoonopen(edict_t *self)
 }
 
 /*
- * QUAKED obj_venusflytrap (1 .5 0) ( -20 -20 -24) (20 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_venusflytrap (1 .5 0) ( -20 -20 -24) (20 20 24) NODAMAGE STOPMOVE
  *
  * Heretic 2: The venus flytrap - a viscous beast of a plant
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - can't be moved
  * -----------------------------------
  */
 void
@@ -3181,15 +2572,9 @@ tomb_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_statue_techeckriktomb (1 .5 0) ( -41 -11 -14) (41 11 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_techeckriktomb (1 .5 0) ( -41 -11 -14) (41 11 14)
  *
- * Heretic 2: The statue of the techeckrik laying down.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
+ * Heretic 2: The statue of the techeckrik laying down, can't be moved and damaged
  */
 void
 SP_obj_statue_techeckriktomb(edict_t *self)
@@ -3210,14 +2595,10 @@ tcheckrik_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_statue_techeckrikright (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
+ * QUAKED obj_statue_techeckrikright (1 .5 0) ( -26 -40 -50) (26 40 50) NOGEM
  *
- * Heretic 2: The statue of the techeckrik with his arms raised up to the right.
+ * Heretic 2: Tcheckrik statue right (triggerable), can't be moved and damaged
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
  * NOGEM - No gem in the chest (puzzle)
  * -----------------------------------
  */
@@ -3238,14 +2619,10 @@ SP_obj_statue_techeckrikright(edict_t *self)
 }
 
 /*
- * QUAKED obj_statue_techeckrikleft (1 .5 0) ( -26 -40 -50) (26 40 50) INVULNERABLE ANIMATE EXPLODING NOPUSH NOGEM
+ * QUAKED obj_statue_techeckrikleft (1 .5 0) ( -26 -40 -50) (26 40 50) NOGEM
  *
- * Heretic 2: The statue of the techeckrik with his arms raised up to the left.
+ * Heretic 2: Tcheckrik statue left (triggerable), can't be moved and damaged
  * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
  * NOGEM - No gem in the chest (puzzle)
  * -----------------------------------
  */
@@ -3293,15 +2670,9 @@ spellbook_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_spellbook (1 .5 0) ( -14 -14 -35) (14 14 40) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_spellbook (1 .5 0) ( -14 -14 -35) (14 14 40)
  *
- * Heretic 2: Spell book that closes when triggered
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
+ * Heretic 2: Spell book that closes when triggered, can't be moved and damaged
  */
 void
 SP_obj_spellbook(edict_t *self)
@@ -3328,54 +2699,13 @@ SP_obj_spellbook(edict_t *self)
 }
 
 /*
- * QUAKED obj_skullpole (1 .5 0) ( -10 -10 -47) (10 10 47) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_torture_table (1 .5 0) ( -46 -14 -14) (46 14 14)
  *
- * Heretic 2: A pole with skulls on it
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_skullpole(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_pot1 (1 .5 0) ( -3 -8 -8) (3 8 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A cooking pot which hangs from a wall
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_pot1(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_torture_table (1 .5 0) ( -46 -14 -14) (46 14 14) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A table useful for wringing confessions from your broken and pitiful enemies.
+ * Heretic 2: A table useful for wringing confessions from your broken and
+ * pitiful enemies, can't be moved and damaged
  * style - the frame of animation for model
  *  0 -table is down
  *  1 - table is in upright position
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't ever be moved by player)
- * -----------------------------------
  */
 void
 SP_obj_torture_table(edict_t *self)
@@ -3393,24 +2723,6 @@ SP_obj_torture_table(edict_t *self)
 	SP_obj_material(self);
 }
 
-/*
- * QUAKED obj_torture_wallring (1 .5 0) ( -2 -4 -6) (2 4 6) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A ring that hangs from a wall
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't ever be moved by player)
- * -----------------------------------
- */
-void
-SP_obj_torture_wallring(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
 void
 statue_tchecktrik_bust_use(edict_t *self, edict_t *other, edict_t *activator)
 {
@@ -3421,17 +2733,13 @@ statue_tchecktrik_bust_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_statue_tchecktrik_bust (1 .5 0) (-8 -12 -15) (8 12 15) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_tchecktrik_bust (1 .5 0) (-8 -12 -15) (8 12 15)
  *
- * Heretic 2: A bust of a tchecktrik.  When used a necklace appears around it's neck.
+ * Heretic 2: A bust of a tchecktrik.  When used a necklace appears around it's neck,
+ * can be moded, can't be damaged
  * style -
  * 0 - no necklace until used then necklace appears
  * 1 - necklace until used then necklace disappears
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
  * -----------------------------------
  */
 void
@@ -3487,17 +2795,11 @@ statue_sithraguard_use(edict_t *self, edict_t *other, edict_t *activator)
 }
 
 /*
- * QUAKED obj_statue_sithraguard (1 .5 0) (-22 -20 -57) (22 20 57) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_statue_sithraguard (1 .5 0) (-22 -20 -57) (22 20 57)
  *
- * Heretic 2: A statue of a sithra guard with spear extended.
+ * Heretic 2: A statue of a sithra guard with spear extended, can't be moved and damaged
  * When used the guard pulls his arm back.
  * style - type of statue
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
  */
 void
 SP_obj_statue_sithraguard(edict_t *self)
@@ -3588,15 +2890,9 @@ ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *sur
 
 
 /*
- * QUAKED obj_torture_ironmaiden (1 .5 0) (-18 -18 -49) (18 18 49) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_torture_ironmaiden (0.3 0.3 1.0) (-18.0 -18.0 -49.0) (18.0 18.0 49.0)
  *
- * Heretic 2: Iron maiden (closes when used)
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
+ * Heretic 2: Iron maiden (closes when used), can't be moved and damaged.
  */
 void
 SP_obj_torture_ironmaiden(edict_t *self)
@@ -3606,60 +2902,6 @@ SP_obj_torture_ironmaiden(edict_t *self)
 	self->use = ironmaiden_use;
 	self->touch = ironmaiden_touch;
 
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_torture_rack (1 .5 0) (-22 -46 -19) (22 46 19) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Torture rack
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_torture_rack(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_torture_bed (1 .5 0) (-21 -43 -94) (21 43 94) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A bed of spikes that falls from the ceiling.
- * -------  FIELDS  ------------------
- * INVULNERABLE - N/A (can't be hurt)
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_torture_bed(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_statue_saraphbust (1 .5 0) (-10 -20 -24) (10 20 24) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Seraph bust
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_statue_saraphbust(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
 	SP_obj_material(self);
 }
 
@@ -3693,14 +2935,9 @@ biotank_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 }
 
 /*
- * QUAKED obj_biotank (1 .5 0) (-20 -33 -52) (20 33 52) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_biotank (0.3 0.3 1.0) (-20.0 -33.0 -52.0) (20.0 33.0 52.0)
  *
- * Heretic 2: Bio Tank
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
+ * Heretic 2: Bio Tank, can't be moved and damaged.
  * -------  KEYS  ------------------
  * style - what's in the biotank
  * 0 - empty
@@ -3860,51 +3097,9 @@ SP_obj_biotank(edict_t *self)
 }
 
 /*
- * QUAKED obj_tapper (1 .5 0) (-2 -5 -2) (2 5 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_hangingdude (0.3 0.3 1.0) (-3.0 -20.0 -55.0) (3.0 20.0 55.0)
  *
- * Heretic 2: Keg tapper
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_tapper(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_wallringplaque (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: An iron plaque with rings hanging from it. Great for hanging half corpses from
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_wallringplaque(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_hangingdude (1 .5 0) (-3 -20 -55) (3 20 55) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A half a dude hanging from a wall ring plaque
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
+ * Heretic 2: Hanging dude, can't be moved and damaged.
  */
 void
 SP_obj_hangingdude(edict_t *self)
@@ -3913,7 +3108,7 @@ SP_obj_hangingdude(edict_t *self)
 
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
-	self->spawnflags |= OBJ_STOPMOVE;	// Can't be pushed
+	self->spawnflags |= OBJ_STOPMOVE;
 	self->s.frame = 0;
 	BboxYawAndScale(self);
 	self->targetname = "guy1";
@@ -3933,114 +3128,6 @@ SP_obj_hangingdude(edict_t *self)
 	gi.linkentity(ring);
 }
 
-/*
- * QUAKED obj_frypan (1 .5 0) (-1 -3 -10) (1 3 10) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A pan which is hanging on a nail
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_frypan(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_eggpan (1 .5 0) (-4 -10 -1) (4 10 1) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A pan which is laying flat like it was on a stove
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_eggpan(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_nest (1 .5 0) (-25 -25 -4) (25 25 4) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A big bird nest
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_nest(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_choppeddude (1 .5 0) (-15 -40 -8) (15 40 8) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: A guy who's all chopped up and laying on a table
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A (can't be moved)
- * -----------------------------------
- */
-void
-SP_obj_choppeddude(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_eyeball_jar (0.3 0.3 1.0) (-13.0 -13.0 -18.0) (13.0 13.0 18.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Jar of joy
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A (thing always animates)
- * EXPLODING - N/A
- * NOPUSH - can't be moved
- * -----------------------------------
- */
-void
-SP_obj_eyeball_jar(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_lab_tray (0.3 0.3 1.0) (-8.0 -8.0 -5.0) (8.0 8.0 5.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Tray with heart and tools
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A (thing always animates)
- * EXPLODING - N/A
- * NOPUSH - N/A  (can't be pushed)
- * -----------------------------------
- */
-void
-SP_obj_lab_tray(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
 void
 ogle_moan(edict_t *self)
 {
@@ -4057,15 +3144,9 @@ ogle_moan(edict_t *self)
 }
 
 /*
- * QUAKED obj_hanging_ogle (0.3 0.3 1.0) (-8.0 -16.0 -34.0) (8.0 16.0 34.0) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_hanging_ogle (0.3 0.3 1.0) (-8.0 -16.0 -34.0) (8.0 16.0 34.0)
  *
- * Heretic 2: Hanging Ogle
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A (thing always animates)
- * EXPLODING - N/A
- * NOPUSH - N/A  (can't be pushed)
- * -----------------------------------
+ * Heretic 2: Hanging Ogle, animated, can't be moved and damaged.
  */
 void
 SP_obj_hanging_ogle(edict_t *self)
@@ -4102,50 +3183,12 @@ SP_obj_hanging_ogle(edict_t *self)
 }
 
 /*
- * QUAKED obj_ring_plaque2 (1 .5 0) (-2 -24 -20) (2 24 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Rings mounted on wall plate
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A  (can't be pushed)
- * -----------------------------------
- */
-void
-SP_obj_ring_plaque2(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_statue_sariph (1 .5 0) (-13 -16 -41) (13 16 41) INVULNERABLE ANIMATE EXPLODING NOPUSH
- *
- * Heretic 2: Big statue in armor carrying an axe
- * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - N/A  (can't be pushed)
- * -----------------------------------
- */
-void
-SP_obj_statue_sariph(edict_t *self)
-{
-	self->spawnflags |= OBJ_STOPMOVE;
-	SP_obj_material(self);
-}
-
-/*
- * QUAKED obj_web (1 .5 0) (-2 -18 -20) (2 18 20) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_web (0.3 0.3 1.0) (-2.0 -18.0 -20.0) (2.0 18.0 20.0)
  *
  * Heretic 2: Cobweb
  * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - could be moved
  * -----------------------------------
  */
 void
@@ -4188,14 +3231,12 @@ larva_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 }
 
 /*
- * QUAKED obj_larva (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_larva (0.3 0.3 1.0) (-8.0 -8.0 -2.0) (8.0 8.0 2.0) NODAMAGE STOPMOVE
  *
  * Heretic 2: Squirming larva
  * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - could be moved
  * -----------------------------------
  */
 void
@@ -4222,14 +3263,12 @@ SP_obj_larva(edict_t *self)
 }
 
 /*
- * QUAKED obj_bloodsplat (1 .5 0) (-8 -8 -2) (8 8 2) INVULNERABLE ANIMATE EXPLODING NOPUSH
+ * QUAKED obj_bloodsplat (0.3 0.3 1.0) (-8.0 -8.0 -2.0) (8.0 8.0 2.0) NODAMAGE STOPMOVE
  *
- * Heretic 2: A red blood splat
+ * Heretic 2: Blood splat
  * -------  FIELDS  ------------------
- * INVULNERABLE - can't be hurt
- * ANIMATE - N/A
- * EXPLODING - N/A
- * NOPUSH - can be pushed
+ * NODAMAGE - can't be damaged
+ * STOPMOVE - could be moved
  * -----------------------------------
  */
 void
@@ -4322,7 +3361,7 @@ SpawnDripper(edict_t *self, vec3_t offset)
 /*
  * QUAKED obj_fishhead1 (0.3 0.3 1.0) (0 -76 -86) (136 76 86) NODRIP
  *
- * Heretic2: Large fish head fountain. No teeth in mouth and the fins on top are connected. Also spawns 4 drips frame 0
+ * Heretic2: Fish head fountain, can't be moved and damaged.
  *
  * -------  FIELDS  ------------------
  * NODRIP - won't drip
@@ -4348,20 +3387,21 @@ SP_obj_fishhead1(edict_t *self)
 		SpawnDripper(self, offset);
 	}
 
-	self->spawnflags |= OBJ_NODAMAGE | OBJ_STOPMOVE;
+	self->spawnflags |= OBJ_STOPMOVE | OBJ_NODAMAGE;
 	SP_obj_material(self);
 }
 
 /*
  * QUAKED obj_fishhead2 (0.3 0.3 1.0) (0 -110 -118) (136 110 118) NODRIP
  *
- * Heretic2: Large fish head fountain. The mouth has teeth. The fins on top are not conntected. Also spawns 4 drips frame 0
+ * Heretic2: Fish head fountain 2
  *
  * -------  FIELDS  ------------------
  * NODRIP - won't drip
  * -----------------------------------
  */
-void SP_obj_fishhead2 (edict_t *self)
+void
+SP_obj_fishhead2(edict_t *self)
 {
 	vec3_t		offset;
 
@@ -4384,10 +3424,8 @@ void SP_obj_fishhead2 (edict_t *self)
 
 	self->spawnflags |= OBJ_STOPMOVE;
 	self->takedamage = DAMAGE_NO;
-
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
-	self->takedamage = DAMAGE_NO;
 	self->clipmask = MASK_MONSTERSOLID;
 
 	BboxYawAndScale(self);
