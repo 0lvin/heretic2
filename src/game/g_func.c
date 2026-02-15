@@ -3861,7 +3861,7 @@ func_train_find(edict_t *self)
 
 	if (!self->target)
 	{
-		gi.dprintf("train_find: no target\n");
+		gi.dprintf("%s: no target provided\n", __func__);
 		self->think = NULL;
 		return;
 	}
@@ -3870,7 +3870,7 @@ func_train_find(edict_t *self)
 
 	if (!ent)
 	{
-		gi.dprintf("train_find: target %s not found\n", self->target);
+		gi.dprintf("%s: target '%s' not found\n", __func__, self->target);
 		self->think = NULL;
 		return;
 	}

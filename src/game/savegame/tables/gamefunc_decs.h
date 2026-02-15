@@ -58,7 +58,6 @@ extern qboolean M_CheckBottom ( edict_t * ent ) ;
 extern qboolean M_walkmove ( edict_t * ent , float yaw , float dist ) ;
 extern qboolean Makron_CheckAttack ( edict_t * self ) ;
 extern qboolean MarkTeslaArea ( edict_t * self , edict_t * tesla ) ;
-extern qboolean OnSameTeam ( edict_t * ent1 , edict_t * ent2 ) ;
 extern qboolean Pickup_Adrenaline ( edict_t * ent , edict_t * other ) ;
 extern qboolean Pickup_Ammo ( edict_t * ent , edict_t * other ) ;
 extern qboolean Pickup_AncientHead ( edict_t * ent , edict_t * other ) ;
@@ -267,7 +266,6 @@ extern void ThrowHead ( edict_t * self , const char * gibname , int damage , gib
 extern void ThrowHeadACID ( edict_t * self , const char * gibname , int damage , gibtype_t type ) ;
 extern void ThrowWidowGib ( edict_t * self , char * gibname , int damage , gibtype_t type ) ;
 extern void ThrowWidowGibReal ( edict_t * self , char * gibname , int damage , gibtype_t type , vec3_t startpos , qboolean sized , int hitsound , qboolean fade ) ;
-extern void Throw_Generic ( edict_t * ent , int FRAME_FIRE_LAST , int FRAME_IDLE_LAST , int FRAME_THROW_SOUND , int FRAME_THROW_HOLD , int FRAME_THROW_FIRE , int * pause_frames , int EXPLODE , void ( * fire ) ( edict_t * ent , qboolean held ) ) ;
 extern void TorchStart (edict_t *self);
 extern void TorchUse (edict_t *self, edict_t *other, edict_t *activator);
 extern void TossClientWeapon ( edict_t * self ) ;

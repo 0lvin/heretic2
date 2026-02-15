@@ -89,7 +89,11 @@ static void
 P_DamageFeedback(edict_t *player)
 {
 	gclient_t *client;
-	int count;
+	float realcount, count, kick;
+	vec3_t v;
+	static vec3_t power_color = {0.0, 1.0, 0.0};
+	static vec3_t acolor = {1.0, 1.0, 1.0};
+	static vec3_t bcolor = {1.0, 0.0, 0.0};
 
 	if (!player)
 	{
@@ -147,7 +151,103 @@ P_DamageFeedback(edict_t *player)
 		(client->invincible_framenum <= level.framenum) &&
 		player->health > 0)
 	{
+#if 0
+		int r, l;
+
+		r = 1 + (randk() & 1);
+#endif
 		player->pain_debounce_time = level.time + 0.7;
+#if 0
+		if (player->health < 25)
+		{
+			l = 25;
+		}
+		else if (player->health < 50)
+		{
+			l = 50;
+		}
+		else if (player->health < 75)
+		{
+			l = 75;
+		}
+		else
+		{
+			l = 100;
+		}
+
+		gi.sound(player, CHAN_VOICE, gi.soundindex(va("*pain%i_%i.wav",
+								l, r)), 1, ATTN_NORM, 0);
+	}
+
+	/* the total alpha of the blend is always proportional to count */
+	if (client->damage_alpha < 0)
+	{
+		client->damage_alpha = 0;
+	}
+
+	client->damage_alpha += count * 0.01;
+
+	if (client->damage_alpha < 0.2)
+	{
+		client->damage_alpha = 0.2;
+	}
+
+	if (client->damage_alpha > 0.6)
+	{
+		client->damage_alpha = 0.6; /* don't go too saturated */
+	}
+
+	/* the color of the blend will vary based
+	   on how much was absorbed by different armors */
+	VectorClear(v);
+
+	if (client->damage_parmor)
+	{
+		VectorMA(v, (float)client->damage_parmor / realcount, power_color, v);
+	}
+
+	if (client->damage_armor)
+	{
+		VectorMA(v, (float)client->damage_armor / realcount, acolor, v);
+	}
+
+	if (client->damage_blood)
+	{
+		VectorMA(v, (float)client->damage_blood / realcount, bcolor, v);
+	}
+
+	VectorCopy(v, client->damage_blend);
+
+	/* calculate view angle kicks */
+	kick = abs(client->damage_knockback);
+
+	if (kick && (player->health > 0)) /* kick of 0 means no view adjust at all */
+	{
+		float side;
+
+		kick = kick * 100 / player->health;
+
+		if (kick < count * 0.5)
+		{
+			kick = count * 0.5;
+		}
+
+		if (kick > 50)
+		{
+			kick = 50;
+		}
+
+		VectorSubtract(client->damage_from, player->s.origin, v);
+		VectorNormalize(v);
+
+		side = DotProduct(v, right);
+		client->v_dmg_roll = kick * side * 0.3;
+
+		side = -DotProduct(v, forward);
+		client->v_dmg_pitch = kick * side * 0.3;
+
+		client->v_dmg_time = level.time + DAMAGE_TIME;
+#endif
 	}
 
 	/* clear totals */

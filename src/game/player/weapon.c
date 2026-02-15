@@ -84,7 +84,7 @@ void weapon_grenade_fire(edict_t *ent, qboolean held);
 void weapon_trap_fire(edict_t *ent, qboolean held);
 
 byte
-P_DamageModifier(edict_t *ent)
+P_DamageModifier(const edict_t *ent)
 {
 	is_quad = 0;
 	damage_multiplier = 1;
@@ -131,9 +131,9 @@ void
 P_ProjectSource(const edict_t *ent, const vec3_t distance,
 		vec3_t forward, const vec3_t right, vec3_t result)
 {
-	gclient_t *client = ent->client;
+	const gclient_t *client = ent->client;
 	const float *point  = ent->s.origin;
-	vec3_t     _distance;
+	vec3_t _distance;
 
 	if (!client)
 	{
@@ -173,8 +173,8 @@ static void
 P_ProjectSource2(const edict_t *ent, const vec3_t point, const vec3_t distance,
 		vec3_t forward, const vec3_t right, const vec3_t up, vec3_t result)
 {
-	gclient_t *client = ent->client;
-	vec3_t     _distance;
+	const gclient_t *client = ent->client;
+	vec3_t _distance;
 
 	if (!client)
 	{
@@ -552,8 +552,6 @@ Pickup_Weapon(edict_t *ent, edict_t *other)
 void
 ChangeWeapon(edict_t *ent)
 {
-	int i;
-
 	if (!ent)
 	{
 		return;
@@ -575,6 +573,8 @@ ChangeWeapon(edict_t *ent)
 	/* set visible model */
 	if (ent->s.modelindex == CUSTOM_PLAYER_MODEL)
 	{
+		int i;
+
 		if (ent->client->pers.weapon)
 		{
 			i = ((ent->client->pers.weapon->weapmodel & 0xff) << 8);
@@ -745,9 +745,6 @@ Think_Weapon(edict_t *ent)
 void
 Use_Weapon(edict_t *ent, gitem_t *item)
 {
-	int ammo_index;
-	gitem_t *ammo_item;
-
 	if (!ent || !item)
 	{
 		return;
@@ -761,6 +758,9 @@ Use_Weapon(edict_t *ent, gitem_t *item)
 
 	if (item->ammo && !g_select_empty->value && !(item->flags & IT_AMMO))
 	{
+		gitem_t *ammo_item;
+		int ammo_index;
+
 		ammo_item = FindItem(item->ammo);
 		ammo_index = ITEM_INDEX(ammo_item);
 
@@ -788,7 +788,7 @@ Use_Weapon2(edict_t *ent, gitem_t *item)
 {
 	int ammo_index;
 	gitem_t *ammo_item;
-	gitem_t *nextitem;
+	const gitem_t *nextitem;
 	int index;
 
 	if (!ent || !item)
@@ -1277,13 +1277,11 @@ weapon_grenade_fire(edict_t *ent, qboolean held)
 	}
 }
 
-void
+static void
 Throw_Generic(edict_t *ent, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_THROW_SOUND,
-		int FRAME_THROW_HOLD, int FRAME_THROW_FIRE, int *pause_frames, int EXPLODE,
+		int FRAME_THROW_HOLD, int FRAME_THROW_FIRE, const int *pause_frames, int EXPLODE,
 		void (*fire)(edict_t *ent, qboolean held))
 {
-	int n;
-
 	if (!ent || !pause_frames || !fire)
 	{
 		return;
@@ -1338,6 +1336,8 @@ Throw_Generic(edict_t *ent, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_
 
 		if (pause_frames)
 		{
+			int n;
+
 			for (n = 0; pause_frames[n]; n++)
 			{
 				if (ent->client->ps.gunframe == pause_frames[n])
@@ -1430,7 +1430,7 @@ Throw_Generic(edict_t *ent, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_
 void
 Weapon_Grenade(edict_t *ent)
 {
-	static int pause_frames[] = {29, 34, 39, 48, 0};
+	static const int pause_frames[] = {29, 34, 39, 48, 0};
 
 	if (!ent)
 	{
@@ -1444,7 +1444,7 @@ Weapon_Grenade(edict_t *ent)
 void
 Weapon_Tesla(edict_t *ent)
 {
-	static int pause_frames[] = {21, 0};
+	static const int pause_frames[] = {21, 0};
 
 	if (!ent)
 	{
@@ -1567,8 +1567,8 @@ weapon_grenadelauncher_fire(edict_t *ent)
 void
 Weapon_GrenadeLauncher(edict_t *ent)
 {
-	static int pause_frames[] = {34, 51, 59, 0};
-	static int fire_frames[] = {6, 0};
+	static const int pause_frames[] = {34, 51, 59, 0};
+	static const int fire_frames[] = {6, 0};
 
 	if (!ent)
 	{
@@ -1588,8 +1588,8 @@ Weapon_GrenadeLauncher(edict_t *ent)
 void
 Weapon_ProxLauncher(edict_t *ent)
 {
-	static int pause_frames[] = {34, 51, 59, 0};
-	static int fire_frames[] = {6, 0};
+	static const int pause_frames[] = {34, 51, 59, 0};
+	static const int fire_frames[] = {6, 0};
 
 	if (!ent)
 	{
@@ -1681,8 +1681,8 @@ Weapon_RocketLauncher_Fire(edict_t *ent)
 void
 Weapon_RocketLauncher(edict_t *ent)
 {
-	static int pause_frames[] = {25, 33, 42, 50, 0};
-	static int fire_frames[] = {5, 0};
+	static const int pause_frames[] = {25, 33, 42, 50, 0};
+	static const int fire_frames[] = {5, 0};
 
 	if (!ent)
 	{
@@ -1802,8 +1802,8 @@ Weapon_Blaster_Fire(edict_t *ent)
 void
 Weapon_Blaster(edict_t *ent)
 {
-	static int pause_frames[] = {19, 32, 0};
-	static int fire_frames[] = {5, 0};
+	static const int pause_frames[] = {19, 32, 0};
+	static const int fire_frames[] = {5, 0};
 
 	if (!ent)
 	{
@@ -1823,11 +1823,6 @@ Weapon_Blaster(edict_t *ent)
 void
 Weapon_HyperBlaster_Fire(edict_t *ent)
 {
-	float rotation;
-	vec3_t offset;
-	int effect;
-	int damage;
-
 	if (!ent)
 	{
 		return;
@@ -1854,6 +1849,10 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 		}
 		else
 		{
+			int effect, damage;
+			float rotation;
+			vec3_t offset;
+
 			rotation = (ent->client->ps.gunframe - 5) * 2 * M_PI / 6;
 			offset[0] = -4 * sin(rotation);
 			offset[1] = 0;
@@ -1905,8 +1904,8 @@ Weapon_HyperBlaster_Fire(edict_t *ent)
 void
 Weapon_HyperBlaster(edict_t *ent)
 {
-	static int pause_frames[] = {0};
-	static int fire_frames[] = {6, 7, 8, 9, 10, 11, 0};
+	static const int pause_frames[] = {0};
+	static const int fire_frames[] = {6, 7, 8, 9, 10, 11, 0};
 
 	if (!ent)
 	{
@@ -2054,8 +2053,8 @@ Machinegun_Fire(edict_t *ent)
 void
 Weapon_Machinegun(edict_t *ent)
 {
-	static int pause_frames[] = {23, 45, 0};
-	static int fire_frames[] = {4, 5, 0};
+	static const int pause_frames[] = {23, 45, 0};
+	static const int fire_frames[] = {4, 5, 0};
 
 	if (!ent)
 	{
@@ -2079,7 +2078,6 @@ Chaingun_Fire(edict_t *ent)
 	int shots;
 	vec3_t start;
 	vec3_t forward, right, up;
-	float r, u;
 	vec3_t offset;
 	int damage;
 	int kick = 2;
@@ -2188,6 +2186,8 @@ Chaingun_Fire(edict_t *ent)
 
 	for (i = 0; i < shots; i++)
 	{
+		float r, u;
+
 		/* get start / end positions */
 		if ((ent->client->use) && (ent->client->oldplayer))
 		{
@@ -2243,8 +2243,8 @@ Chaingun_Fire(edict_t *ent)
 void
 Weapon_Chaingun(edict_t *ent)
 {
-	static int pause_frames[] = {38, 43, 51, 61, 0};
-	static int fire_frames[] = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 0};
+	static const int pause_frames[] = {38, 43, 51, 61, 0};
+	static const int fire_frames[] = {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 0};
 
 	if (!ent)
 	{
@@ -2354,8 +2354,8 @@ weapon_shotgun_fire(edict_t *ent)
 void
 Weapon_Shotgun(edict_t *ent)
 {
-	static int pause_frames[] = {22, 28, 34, 0};
-	static int fire_frames[] = {8, 9, 0};
+	static const int pause_frames[] = {22, 28, 34, 0};
+	static const int fire_frames[] = {8, 9, 0};
 
 	if (!ent)
 	{
@@ -2496,8 +2496,8 @@ weapon_supershotgun_fire(edict_t *ent)
 void
 Weapon_SuperShotgun(edict_t *ent)
 {
-	static int pause_frames[] = {29, 42, 57, 0};
-	static int fire_frames[] = {7, 0};
+	static const int pause_frames[] = {29, 42, 57, 0};
+	static const int fire_frames[] = {7, 0};
 
 	if (!ent)
 	{
@@ -2602,8 +2602,8 @@ weapon_railgun_fire(edict_t *ent)
 void
 Weapon_Railgun(edict_t *ent)
 {
-	static int pause_frames[] = {56, 0};
-	static int fire_frames[] = {4, 0};
+	static const int pause_frames[] = {56, 0};
+	static const int fire_frames[] = {4, 0};
 
 	if (!ent)
 	{
@@ -2749,8 +2749,8 @@ weapon_bfg_fire(edict_t *ent)
 void
 Weapon_BFG(edict_t *ent)
 {
-	static int pause_frames[] = {39, 45, 50, 55, 0};
-	static int fire_frames[] = {9, 17, 0};
+	static const int pause_frames[] = {39, 45, 50, 55, 0};
+	static const int fire_frames[] = {9, 17, 0};
 
 	if (!ent)
 	{
@@ -2772,8 +2772,8 @@ Weapon_BFG(edict_t *ent)
 void
 Weapon_Beta_Disintegrator(edict_t *ent)
 {
-	static int pause_frames[] = { 30, 37, 45, 0 };
-	static int fire_frames[] = { 17, 0 };
+	static const int pause_frames[] = { 30, 37, 45, 0 };
+	static const int fire_frames[] = { 17, 0 };
 
 	Weapon_Generic(ent, 16, 23, 46, 50, pause_frames, fire_frames, weapon_bfg_fire);
 }
@@ -2851,11 +2851,10 @@ chainfist_smoke(edict_t *ent)
 void
 Weapon_ChainFist(edict_t *ent)
 {
-	static int pause_frames[] = {0};
-	static int fire_frames[] = {8, 9, 16, 17, 18, 30, 31, 0};
+	static const int pause_frames[] = {0};
+	static const int fire_frames[] = {8, 9, 16, 17, 18, 30, 31, 0};
 
 	/* these are caches for the sound index. there's probably a better way to do this. */
-	float chance;
 	int last_sequence;
 
 	last_sequence = 0;
@@ -2912,6 +2911,8 @@ Weapon_ChainFist(edict_t *ent)
 
 	if (ent->client->ps.gunframe == 6)
 	{
+		float chance;
+
 		chance = random();
 
 		if (last_sequence == 13) /* if we just did sequence 1, do 2 or 3. */
@@ -3031,8 +3032,8 @@ weapon_tracker_fire(edict_t *self)
 void
 Weapon_Disintegrator(edict_t *ent)
 {
-	static int pause_frames[] = {14, 19, 23, 0};
-	static int fire_frames[] = {5, 0};
+	static const int pause_frames[] = {14, 19, 23, 0};
+	static const int fire_frames[] = {5, 0};
 
 	Weapon_Generic(ent, 4, 9, 29, 34, pause_frames,
 			fire_frames, weapon_tracker_fire);
@@ -3123,8 +3124,8 @@ weapon_etf_rifle_fire(edict_t *ent)
 void
 Weapon_ETF_Rifle(edict_t *ent)
 {
-	static int pause_frames[] = {18, 28, 0};
-	static int fire_frames[] = {6, 7, 0};
+	static const int pause_frames[] = {18, 28, 0};
+	static const int fire_frames[] = {6, 7, 0};
 
 	if (!ent)
 	{
@@ -3214,8 +3215,8 @@ Heatbeam_Fire(edict_t *ent)
 void
 Weapon_Heatbeam(edict_t *ent)
 {
-	static int pause_frames[] = {35, 0};
-	static int fire_frames[] = {9, 10, 11, 12, 0};
+	static const int pause_frames[] = {35, 0};
+	static const int fire_frames[] = {9, 10, 11, 12, 0};
 
 	if (!ent)
 	{
@@ -3316,8 +3317,8 @@ weapon_ionripper_fire(edict_t *ent)
 void
 Weapon_Ionripper(edict_t *ent)
 {
-	static int pause_frames[] = {36, 0};
-	static int fire_frames[] = {5, 0};
+	static const int pause_frames[] = {36, 0};
+	static const int fire_frames[] = {5, 0};
 
 	if (!ent)
 	{
@@ -3415,8 +3416,8 @@ weapon_phalanx_fire(edict_t *ent)
 void
 Weapon_Phalanx(edict_t *ent)
 {
-	static int pause_frames[] = {29, 42, 55, 0};
-	static int fire_frames[] = {7, 8, 0};
+	static const int pause_frames[] = {29, 42, 55, 0};
+	static const int fire_frames[] = {7, 8, 0};
 
 	if (!ent)
 	{
@@ -3672,8 +3673,8 @@ Weapon_FlareGun(edict_t *ent)
 	 * idle   14..49
 	 * putway 50..53
 	 */
-	static int pause_frames[] = { 14, 23, 50, 0 };
-	static int fire_frames[] = { 9, 0 };
+	static const int pause_frames[] = { 14, 23, 50, 0 };
+	static const int fire_frames[] = { 9, 0 };
 
 	/* Check the top of p_weapon.c for definition of Weapon_Generic */
 	Weapon_Generic(ent, 8, 13, 49, 53, pause_frames,
