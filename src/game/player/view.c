@@ -995,8 +995,232 @@ P_WorldEffects(void)
 }
 
 void
+G_SetClientEffects(edict_t *ent)
+{
+	int remaining;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->s.effects = 0;
+	ent->rrs.effects = 0;
+
+	/* player is always ir visible, even dead. */
+	ent->s.renderfx = RF_IR_VISIBLE;
+
+	if ((ent->health <= 0) || level.intermissiontime)
+	{
+		return;
+	}
+
+	if (ent->flags & FL_FLASHLIGHT)
+	{
+		ent->rrs.effects |= EF_FLASHLIGHT;
+	}
+
+	if (ent->flags & FL_DISGUISED)
+	{
+		ent->s.renderfx |= RF_USE_DISGUISE;
+	}
+
+	if (gamerules && gamerules->value)
+	{
+		if (DMGame.PlayerEffects)
+		{
+			DMGame.PlayerEffects(ent);
+		}
+	}
+
+	if (ent->powerarmor_time > level.time)
+	{
+		int pa_type;
+
+		pa_type = PowerArmorType(ent);
+
+		if (pa_type == POWER_ARMOR_SCREEN)
+		{
+			ent->s.effects |= EF_POWERSCREEN;
+		}
+		else if (pa_type == POWER_ARMOR_SHIELD)
+		{
+			ent->s.effects |= EF_COLOR_SHELL;
+			ent->s.renderfx |= RF_SHELL_GREEN;
+		}
+	}
+
+	if (ctf->value)
+	{
+		CTFEffects(ent);
+	}
+
+	if (ent->client->quad_framenum > level.framenum)
+	{
+		remaining = ent->client->quad_framenum - level.framenum;
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			CTFSetPowerUpEffect(ent, EF_QUAD);
+		}
+	}
+
+	if (ent->client->double_framenum > level.framenum)
+	{
+		remaining = ent->client->double_framenum - level.framenum;
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			ent->s.effects |= EF_DOUBLE;
+		}
+	}
+
+	if (ent->client->quadfire_framenum > level.framenum)
+	{
+		remaining = ent->client->quadfire_framenum - level.framenum;
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			ent->s.effects |= EF_QUAD;
+		}
+	}
+
+	if ((ent->client->owned_sphere) &&
+		(ent->client->owned_sphere->spawnflags == 1))
+	{
+		ent->s.effects |= EF_HALF_DAMAGE;
+	}
+
+	if (ent->client->tracker_pain_framenum > level.framenum)
+	{
+		ent->s.effects |= EF_TRACKERTRAIL;
+	}
+
+	if (ent->client->invincible_framenum > level.framenum)
+	{
+		remaining = ent->client->invincible_framenum - level.framenum;
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			CTFSetPowerUpEffect(ent, EF_PENT);
+		}
+	}
+
+	/* show cheaters */
+	if (ent->flags & FL_GODMODE)
+	{
+		ent->s.effects |= EF_COLOR_SHELL;
+		ent->s.renderfx |= (RF_SHELL_RED | RF_SHELL_GREEN | RF_SHELL_BLUE);
+	}
+}
+
+void
+G_SetClientEvent(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->s.event)
+	{
+		return;
+	}
+
+	if (ent->health <= 0)
+	{
+		return;
+	}
+
+	if (g_footsteps->value == 1)
+	{
+		if (ent->groundentity && (xyspeed > 225))
+		{
+			if ((int)(current_client->bobtime + bobmove) != bobcycle)
+			{
+				ent->s.event = EV_FOOTSTEP;
+			}
+		}
+	}
+	else if (g_footsteps->value == 2)
+	{
+		if (ent->groundentity)
+		{
+			if ((int)(current_client->bobtime + bobmove) != bobcycle)
+			{
+				ent->s.event = EV_FOOTSTEP;
+			}
+		}
+	}
+	else if (g_footsteps->value >= 3)
+	{
+		if ((int)(current_client->bobtime + bobmove) != bobcycle)
+		{
+			ent->s.event = EV_FOOTSTEP;
+		}
+	}
+}
+
+void
 G_SetClientSound(edict_t *ent)
 {
+#if 0
+	const char *weap;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->client->pers.game_helpchanged != game.helpchanged)
+	{
+		ent->client->pers.game_helpchanged = game.helpchanged;
+		ent->client->pers.helpchanged = 1;
+	}
+
+	/* help beep (no more than three times) */
+	if (ent->client->pers.helpchanged &&
+		(ent->client->pers.helpchanged <= 3) && !(level.framenum & 63))
+	{
+		ent->client->pers.helpchanged++;
+		gi.sound(ent, CHAN_VOICE, gi.soundindex(
+						"misc/pc_up.wav"), 1, ATTN_STATIC, 0);
+	}
+
+	if (ent->client->pers.weapon)
+	{
+		weap = ent->client->pers.weapon->classname;
+	}
+	else
+	{
+		weap = "";
+	}
+
+	if (ent->waterlevel && (ent->watertype & (CONTENTS_LAVA | CONTENTS_SLIME)))
+	{
+		ent->s.sound = snd_fry;
+	}
+	else if (strcmp(weap, "weapon_railgun") == 0)
+	{
+		ent->s.sound = gi.soundindex("weapons/rg_hum.wav");
+	}
+	else if (strcmp(weap, "weapon_bfg") == 0)
+	{
+		ent->s.sound = gi.soundindex("weapons/bfg_hum.wav");
+	}
+	else if (strcmp(weap, "weapon_phalanx") == 0)
+	{
+		ent->s.sound = gi.soundindex("weapons/phaloop.wav");
+	}
+	else if (ent->client->weapon_sound)
+	{
+		ent->s.sound = ent->client->weapon_sound;
+	}
+	else
+	{
+		ent->s.sound = 0;
+	}
+#endif
 }
 
 void
@@ -1120,8 +1344,6 @@ newanim:
 		}
 		else
 		{
-			int firstframe, lastframe;
-
 			client->anim_priority = ANIM_JUMP;
 
 			firstframe = FRAME_jump1;

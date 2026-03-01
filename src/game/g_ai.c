@@ -774,7 +774,7 @@ categorize_range(edict_t *self, edict_t *other, float len)
  * 3	only triggered by damage
  */
 int
-range(edict_t *self, edict_t *other)
+ai_range(edict_t *self, edict_t *other)
 {
 	vec3_t v;
 	float len;
@@ -930,7 +930,7 @@ HuntTarget(edict_t *self)
 	{
 		int r;
 
-		r = range(self,self->enemy);
+		r = ai_range(self,self->enemy);
 		if ((self->monsterinfo.aiflags & AI_EATING) && (r == RANGE_MID))
 		{
 			G_QPostMessage(self, MSG_WATCH, PRI_DIRECTIVE, NULL);
@@ -1996,7 +1996,7 @@ ai_checkattack(edict_t *self, float dist)
 	}
 
 	enemy_infront = infront(self, self->enemy);
-	enemy_range = range(self, self->enemy);
+	enemy_range = ai_range(self, self->enemy);
 	VectorSubtract(self->enemy->s.origin, self->s.origin, temp);
 	enemy_yaw = vectoyaw(temp);
 
@@ -2503,12 +2503,6 @@ ai_flee(edict_t *self, float dist)
 			self->best_move_yaw = flrand(60, 300);
 		else
 			self->best_move_yaw = 180;
-
-		/*
-		VectorSubtract(self->s.origin, self->enemy->s.origin, vec);
-		self->ideal_yaw = vectoyaw(vec);
-		M_ChangeYaw(self);
-		M_MoveAwayFromGoal (self, dist);*/
 	}
 }
 

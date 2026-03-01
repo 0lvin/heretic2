@@ -350,7 +350,7 @@ Key_GetMenuKey(int key)
 static const char *
 Default_MenuKey(menuframework_s *m, int key)
 {
-	const char *sound = NULL;
+	const char *sound_name = NULL;
 	int menu_key = Key_GetMenuKey(key);
 
 	if (m)
@@ -384,7 +384,7 @@ Default_MenuKey(menuframework_s *m, int key)
 
 			m->cursor--;
 			Menu_AdjustCursor(m, -1);
-			sound = menu_move_sound;
+			sound_name = menu_move_sound;
 		}
 		break;
 
@@ -395,7 +395,7 @@ Default_MenuKey(menuframework_s *m, int key)
 
 			m->cursor++;
 			Menu_AdjustCursor(m, 1);
-			sound = menu_move_sound;
+			sound_name = menu_move_sound;
 		}
 		break;
 
@@ -403,7 +403,7 @@ Default_MenuKey(menuframework_s *m, int key)
 		if (m)
 		{
 			Menu_SlideItem(m, -1);
-			sound = menu_move_sound;
+			sound_name = menu_move_sound;
 		}
 		break;
 
@@ -411,7 +411,7 @@ Default_MenuKey(menuframework_s *m, int key)
 		if (m)
 		{
 			Menu_SlideItem(m, 1);
-			sound = menu_move_sound;
+			sound_name = menu_move_sound;
 		}
 		break;
 
@@ -420,11 +420,11 @@ Default_MenuKey(menuframework_s *m, int key)
 		{
 			Menu_SelectItem(m);
 		}
-		sound = menu_move_sound;
+		sound_name = menu_move_sound;
 		break;
 	}
 
-	return sound;
+	return sound_name;
 }
 
 /*
@@ -4774,12 +4774,13 @@ GetMapsInFolderList(int *nummaps)
 
 	for (i = 0; i < num - 1; i++)
 	{
-		char scratch[200], shortname[MAX_QPATH];
 		int len;
 
 		len = strlen(list[i]);
 		if (len > 9 && len < MAX_QPATH)
 		{
+			char scratch[200], shortname[MAX_QPATH];
+
 			/* maps/ + .bsp */
 			Q_strlcpy(shortname, list[i] + 5, sizeof(shortname));
 			shortname[len - 9]  = 0;
@@ -4857,7 +4858,7 @@ GetCombinedMapsList(int *nummaps)
 	for (currpos = 0; currpos < nummaps_folder; currpos ++)
 	{
 		qboolean found;
-		char *foldername;
+		const char *foldername;
 		size_t i;
 
 		foldername = strchr(mapnames_folder[currpos], '\n');
@@ -4871,7 +4872,7 @@ GetCombinedMapsList(int *nummaps)
 		found = false;
 		for (i = 0; i < *nummaps; i++)
 		{
-			char *currname;
+			const char *currname;
 
 			currname = strchr(mapnames[i], '\n');
 			if (!currname)
@@ -5778,8 +5779,6 @@ M_Menu_DownloadOptions_f(void)
 /*
  * ADDRESS BOOK MENU
  */
-
-#define NUM_ADDRESSBOOK_ENTRIES 9
 
 static menuframework_s s_addressbook_menu = {0};
 static menufield_s s_addressbook_fields[NUM_ADDRESSBOOK_ENTRIES] = {0};

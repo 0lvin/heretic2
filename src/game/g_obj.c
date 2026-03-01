@@ -370,11 +370,13 @@ SP_obj_material(edict_t *self)
 	if (!(self->spawnflags & OBJ_STOPMOVE))
 	{
 		self->movetype = MOVETYPE_STOP;
-		self->monsterinfo.aiflags = AI_NOSTEP;
-		self->touch = objpush_touch;
+		self->solid = SOLID_BBOX;
 
+		/* make it pushable like a barrel */
+		self->touch = objpush_touch;
+		self->monsterinfo.aiflags |= AI_NOSTEP;
 		self->think = M_droptofloor;
-		self->nextthink = level.time + (2 * FRAMETIME);
+		self->nextthink = level.time + FRAMETIME;
 	}
 	else
 	{

@@ -41,11 +41,11 @@ Com_Printf(const char *msg, ...)
 }
 
 void
-Com_DPrintf(const char *msg, ...)
+Com_DPrintf(const char *fmt, ...)
 {
 	va_list argptr;
-	va_start(argptr, msg);
-	vprintf(msg, argptr);
+	va_start(argptr, fmt);
+	vprintf(fmt, argptr);
 	va_end(argptr);
 }
 
@@ -61,11 +61,11 @@ Sys_Error(const char *error, ...)
 }
 
 void
-Com_Error(int error_code, const char *error, ...)
+Com_Error(int code, const char *fmt, ...)
 {
 	va_list argptr;
-	va_start(argptr, error);
-	vprintf(error, argptr);
+	va_start(argptr, fmt);
+	vprintf(fmt, argptr);
 	va_end(argptr);
 
 	exit (0);
@@ -177,7 +177,7 @@ mktree(const char *s)
 
 	for(i=1; i<sLen; ++i)
 	{
-		if(dir[i] == '/')
+		if (dir[i] == '/')
 		{
 			dir[i] = '\0'; // this ends the string at this point and allows creating the directory up to here
 
@@ -237,7 +237,7 @@ read_header(FILE *fd)
 		const char* curmode = PAK_MODE_NAMES[pak_mode];
 		const char* othermode = (pak_mode != PAK_MODE_DK) ? "Daikatana" : "Quake(2)";
 		fprintf(stderr, "Corrupt pak file - maybe it's not %s format but %s format?\n", curmode, othermode);
-		if(pak_mode != PAK_MODE_DK)
+		if (pak_mode != PAK_MODE_DK)
 			fprintf(stderr, "If this is a Daikatana .pak file, try adding '-dk' to command-line!\n");
 		else
 			fprintf(stderr, "Are you sure this is a Daikatana .pak file? Try removing '-dk' from command-line!\n");
@@ -251,14 +251,14 @@ read_header(FILE *fd)
 static int
 read_dir_entry(directory* entry, FILE* fd)
 {
-	if(fread(entry->file_name, DIR_FILENAME_LEN[pak_mode], 1, fd) != 1) return 0;
-	if(fread(&(entry->file_pos), 4, 1, fd) != 1) return 0;
-	if(fread(&(entry->file_length), 4, 1, fd) != 1) return 0;
+	if (fread(entry->file_name, DIR_FILENAME_LEN[pak_mode], 1, fd) != 1) return 0;
+	if (fread(&(entry->file_pos), 4, 1, fd) != 1) return 0;
+	if (fread(&(entry->file_length), 4, 1, fd) != 1) return 0;
 
-	if(pak_mode == PAK_MODE_DK)
+	if (pak_mode == PAK_MODE_DK)
 	{
-		if(fread(&(entry->compressed_length), 4, 1, fd) != 1) return 0;
-		if(fread(&(entry->is_compressed), 4, 1, fd) != 1) return 0;
+		if (fread(&(entry->compressed_length), 4, 1, fd) != 1) return 0;
+		if (fread(&(entry->is_compressed), 4, 1, fd) != 1) return 0;
 	}
 	else
 	{
@@ -287,14 +287,19 @@ read_directory(FILE *fd, int listOnly, int* num_entries)
 	int num_dir_entries = header.dir_length / direntry_len;
 	directory* dir = calloc(num_dir_entries, sizeof(directory));
 
-	if(dir == NULL)
+	if (dir == NULL)
 	{
 		perror("Couldn't allocate memory");
 		return NULL;
 	}
 
 	/* Navigate to the directory */
-	fseek(fd, header.dir_offset, SEEK_SET);
+	if (fseek(fd, header.dir_offset, SEEK_SET))
+	{
+		free(dir);
+		perror("Failed to seek inside input file");
+		return NULL;
+	}
 
 	for (i = 0; i < num_dir_entries; ++i)
 	{
@@ -308,11 +313,12 @@ read_directory(FILE *fd, int listOnly, int* num_entries)
 			return NULL;
 		}
 
-		if(listOnly)
+		if (listOnly)
 		{
+			cur->file_name[sizeof(cur->file_name) - 1] = 0;
 			printf("%s (%d bytes", cur->file_name, cur->file_length);
 
-			if((pak_mode == PAK_MODE_DK) && cur->is_compressed)
+			if ((pak_mode == PAK_MODE_DK) && cur->is_compressed)
 				printf(", %d compressed", cur->compressed_length);
 
 			printf(")\n");
@@ -326,6 +332,7 @@ read_directory(FILE *fd, int listOnly, int* num_entries)
 static void
 extract_compressed(FILE* in, const directory *d)
 {
+	byte *in_buf, *out_buf;
 	FILE *out;
 
 	if ((out = fopen(d->file_name, "w")) == NULL)
@@ -334,16 +341,12 @@ extract_compressed(FILE* in, const directory *d)
 		return;
 	}
 
-	unsigned char *in_buf;
-
 	if ((in_buf = malloc(d->compressed_length)) == NULL)
 	{
 		perror("Couldn't allocate memory");
 		fclose(out);
 		return;
 	}
-
-	unsigned char *out_buf;
 
 	if ((out_buf = calloc(1, d->file_length)) == NULL)
 	{
@@ -353,15 +356,30 @@ extract_compressed(FILE* in, const directory *d)
 		return;
 	}
 
-	fseek(in, d->file_pos, SEEK_SET);
-	fread(in_buf, d->compressed_length, 1, in);
+	if (fseek(in, d->file_pos, SEEK_SET))
+	{
+		free(out_buf);
+		free(in_buf);
+		fclose(out);
+		perror("failed to seek inside file");
+		return;
+	}
+
+	if (fread(in_buf, d->compressed_length, 1, in) != 1)
+	{
+		free(out_buf);
+		free(in_buf);
+		fclose(out);
+		perror("failed to read inside file");
+		return;
+	}
 
 	int read = 0;
 	int written = 0;
 
 	while (read < d->compressed_length)
 	{
-		unsigned char x = in_buf[read];
+		byte x = in_buf[read];
 		++read;
 
 		// x + 1 bytes of uncompressed data
@@ -402,7 +420,11 @@ extract_compressed(FILE* in, const directory *d)
 		}
 	}
 
-	fwrite(out_buf, d->file_length, 1, out);
+	if (fwrite(out_buf, d->file_length, 1, out) != 1)
+	{
+		perror("failed to write inside file");
+	}
+
 	fclose(out);
 
 	free(in_buf);
@@ -423,18 +445,47 @@ extract_raw(FILE* in, const directory *d)
 	int bytes_left = d->file_length;
 	char buf[2048];
 
-	fseek(in, d->file_pos, SEEK_SET);
+	if (fseek(in, d->file_pos, SEEK_SET))
+	{
+		fclose(out);
+		perror("failed to seek inside file");
+		return;
+	}
 
 	while(bytes_left >= sizeof(buf))
 	{
-		fread(buf, sizeof(buf), 1, in);
-		fwrite(buf, sizeof(buf), 1, out);
+		if (fread(buf, sizeof(buf), 1, in) != 1)
+		{
+			fclose(out);
+			perror("failed to read inside file");
+			return;
+		}
+
+		if (fwrite(buf, sizeof(buf), 1, out) != 1)
+		{
+			fclose(out);
+			perror("failed to write inside file");
+			return;
+		}
+
 		bytes_left -= sizeof(buf);
 	}
-	if(bytes_left > 0)
+
+	if (bytes_left > 0)
 	{
-		fread(buf, bytes_left, 1, in);
-		fwrite(buf, bytes_left, 1, out);
+		if (fread(buf, bytes_left, 1, in) != 1)
+		{
+			fclose(out);
+			perror("failed to read inside file");
+			return;
+		}
+
+		if (fwrite(buf, bytes_left, 1, out) != 1)
+		{
+			fclose(out);
+			perror("failed to write inside file");
+			return;
+		}
 	}
 
 	fclose(out);
@@ -459,7 +510,7 @@ extract_files(FILE *fd, directory *dirs, int num_entries)
 		const directory* d = &dirs[i];
 	    mktree(d->file_name);
 
-		if(d->is_compressed)
+		if (d->is_compressed)
 		{
 			assert((pak_mode == PAK_MODE_DK) && "Only Daikatana paks contain compressed files!");
 			extract_compressed(fd, d);
@@ -517,7 +568,7 @@ main(int argc, char *argv[])
 		else if (strcmp(arg, "-o") == 0)
 		{
 			++i; // go to next argument (should be out_dir)
-			if(i == argc || argv[i][0] == '-') // no further argument/next argument option?
+			if (i == argc || argv[i][0] == '-') // no further argument/next argument option?
 			{
 				fprintf(stderr, "!! -o must be followed by output dir !!\n");
 				printUsage(argv[0]);
@@ -527,7 +578,7 @@ main(int argc, char *argv[])
 		}
 		else
 		{
-			if(filename != NULL) // we already set a filename, wtf
+			if (filename != NULL) // we already set a filename, wtf
 			{
 				fprintf(stderr, "!! Illegal argument '%s' (or too many filenames) !!\n", arg);
 				printUsage(argv[0]);

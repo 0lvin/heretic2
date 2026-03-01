@@ -890,7 +890,7 @@ flyer_check_melee(edict_t *self)
 		return;
 	}
 
-	if (range(self, self->enemy) == RANGE_MELEE)
+	if (ai_range(self, self->enemy) == RANGE_MELEE)
 	{
 		if (random() <= 0.8)
 		{
@@ -978,8 +978,6 @@ flyer_die(edict_t *self, edict_t *inflictor /* unused */,
 int
 flyer_blocked(edict_t *self, float dist)
 {
-	vec3_t origin;
-
 	if (!self)
 	{
 		return 0;
@@ -993,6 +991,8 @@ flyer_blocked(edict_t *self, float dist)
 		/* if the above didn't blow us up (i.e. I got blocked by the player) */
 		if (self->inuse)
 		{
+			vec3_t origin;
+
 			if (self->monsterinfo.commander &&
 				self->monsterinfo.commander->inuse &&
 				!strcmp(self->monsterinfo.commander->classname, "monster_carrier"))

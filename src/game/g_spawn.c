@@ -1906,7 +1906,7 @@ static char *roarke_statusbar =
  *
  * NOBODIES - In DM, no bodies will be left behind by players- for maps with large amounts of visibility
  *
- * "sky"	environment map name
+ *  "sky"       environment map name
  *	andoria
  *	desert
  *	hive
@@ -1915,14 +1915,14 @@ static char *roarke_statusbar =
  *	swamp
  *	town
  *
- * "skyaxis"	vector axis for rotating sky
- * "skyrotate"	speed of rotation in degrees/second
- * "sounds"	music cd track number
- * "gravity"	800 is default gravity
- * "message"	text to print at user logon
- * "skinnum"		plague level for corvus: 0-2
- * "cooptimeout"	time to wait (in seconds) for all clients to have joined a map in coop (default is 0).
- * "scale"	EAX environment type for this map.
+ *  "skyaxis"	vector axis for rotating sky
+ *  "skyrotate"	speed of rotation in degrees/second
+ *  "sounds"	music cd track number
+ *  "gravity"	800 is default gravity
+ *  "message"	text to print at user logon
+ *  "skinnum"		plague level for corvus: 0-2
+ *  "cooptimeout"	time to wait (in seconds) for all clients to have joined a map in coop (default is 0).
+ *  "scale"	EAX environment type for this map.
  *	0 EAX_GENERIC,
  *	1 EAX_ALL_STONE,
  *	2 EAX_ARENA,

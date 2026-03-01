@@ -615,7 +615,6 @@ GL4_DrawBeam(entity_t *e)
 	vec3_t oldorigin, origin;
 
 	mvtx_t verts[NUM_BEAM_SEGS*4];
-	unsigned int pointb;
 
 	oldorigin[0] = e->oldorigin[0];
 	oldorigin[1] = e->oldorigin[1];
@@ -663,6 +662,8 @@ GL4_DrawBeam(entity_t *e)
 
 	for ( i = 0; i < NUM_BEAM_SEGS; i++ )
 	{
+		unsigned int pointb;
+
 		VectorCopy(start_points[i], verts[4*i+0].pos);
 		VectorCopy(end_points[i], verts[4*i+1].pos);
 
@@ -686,10 +687,10 @@ GL4_DrawSpriteModel(entity_t *e, const gl4model_t *currentmodel)
 {
 	float alpha = 1.0F;
 	mvtx_t verts[4];
-	dsprframe_t *frame;
+	const dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
-	gl4image_t *skin = NULL;
+	const gl4image_t *skin = NULL;
 	vec3_t scale;
 
 	VectorCopy(e->scale, scale);
@@ -812,7 +813,7 @@ GL4_DrawNullModel(entity_t *currententity)
 	{
 		R_LightPoint(gl4_worldmodel->grid, currententity,
 			gl4_worldmodel->surfaces, gl4_worldmodel->nodes, currententity->origin,
-			shadelight, r_modulate->value, lightspot);
+			shadelight, lightspot);
 	}
 
 	hmm_mat4 origModelMat = gl4state.uni3DData.transModelMat4;
@@ -1041,7 +1042,7 @@ GL4_DrawEntitiesOnList(void)
 static void
 SetupFrame(void)
 {
-	mleaf_t *leaf;
+	const mleaf_t *leaf;
 
 	gl4_framecount++;
 
@@ -1371,7 +1372,7 @@ extern int c_visible_lightmaps, c_visible_textures;
  * r_newrefdef must be set before the first call
  */
 static void
-GL4_RenderView(refdef_t *fd)
+GL4_RenderView(const refdef_t *fd)
 {
 #if 0 // TODO: keep stereo stuff?
 	if ((gl_state.stereo_mode != STEREO_MODE_NONE) && gl_state.camera_separation) {
@@ -1574,7 +1575,7 @@ GL4_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
 #endif // 0
 
 static void
-GL4_SetLightLevel(entity_t *currententity)
+GL4_SetLightLevel(const entity_t *currententity)
 {
 	vec3_t shadelight = {0};
 
@@ -1586,7 +1587,7 @@ GL4_SetLightLevel(entity_t *currententity)
 	/* save off light value for server to look at */
 	R_LightPoint(gl4_worldmodel->grid, currententity,
 		gl4_worldmodel->surfaces, gl4_worldmodel->nodes, r_newrefdef.vieworg,
-		shadelight, r_modulate->value, lightspot);
+		shadelight, lightspot);
 
 	/* pick the greatest component, which should be the
 	 * same as the mono value returned by software */

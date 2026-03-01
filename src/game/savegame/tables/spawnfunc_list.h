@@ -83,6 +83,7 @@
 {"func_water", SP_func_water},
 {"hint_path", SP_hint_path},
 {"info_buoy", SP_info_buoy},
+{"info_landmark", SP_info_landmark},
 {"info_notnull", SP_info_notnull},
 {"info_null", SP_info_null},
 {"info_player_coop", SP_info_player_coop},

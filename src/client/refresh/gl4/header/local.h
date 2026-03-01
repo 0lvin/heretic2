@@ -466,8 +466,6 @@ extern void GL4_AddSkySurface(msurface_t *fa);
 // gl4_surf.c
 extern void GL4_SurfInit(void);
 extern void GL4_SurfShutdown(void);
-extern void GL4_DrawGLPoly(msurface_t *fa);
-extern void GL4_DrawGLFlowingPoly(msurface_t *fa);
 extern void GL4_DrawTriangleOutlines(void);
 extern void GL4_DrawAlphaSurfaces(void);
 extern void GL4_DrawBrushModel(entity_t *e, gl4model_t *currentmodel);
@@ -475,7 +473,7 @@ extern void GL4_DrawWorld(void);
 extern void GL4_MarkLeaves(void);
 
 // gl4_mesh.c
-extern void GL4_DrawAliasModel(entity_t *e);
+extern void GL4_DrawAliasModel(entity_t *currententity);
 extern void GL4_ResetShadowAliasModels(void);
 extern void GL4_DrawAliasShadows(void);
 extern void GL4_ShutdownMeshes(void);

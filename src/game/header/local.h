@@ -54,7 +54,7 @@
 #define svc_layout 4
 #define svc_inventory 5
 #define svc_stufftext 11
-#define svc_fog 21
+#define svc_fog 27
 
 /* ================================================================== */
 
@@ -1619,6 +1619,8 @@ void ThrowHeadACID(edict_t *self, const char *gibname, int damage, gibtype_t typ
 void ThrowGibACID(edict_t *self, const char *gibname, int damage, gibtype_t type);
 void barrel_delay (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point);
 void SP_misc_teleporter_dest(edict_t *ent);
+void barrel_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
+	csurface_t *surf /*unused */);
 
 /* g_ai.c */
 void AI_SetSightClient(void);
@@ -1632,7 +1634,7 @@ void ai_charge(edict_t *self, float dist);
 void ai_eat(edict_t *self, float dist);
 void ai_generic(edict_t *self);
 void ai_flee(edict_t *self, float dist);
-int range(edict_t *self, edict_t *other);
+int ai_range(edict_t *self, edict_t *other);
 
 void FoundTarget(edict_t *self, qboolean setsightent);
 qboolean FindTarget(edict_t *self);

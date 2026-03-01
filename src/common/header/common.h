@@ -245,8 +245,23 @@ enum svc_ops_e
 	svc_packetentities,         /* [...] */
 	svc_deltapacketentities,    /* [...] */
 	svc_frame,
+
+	/* KEX messages */
+	svc_splitclient,
+	svc_configblast,            /* [Kex] A compressed version of svc_configstring */
+	svc_spawnbaselineblast,     /* [Kex] A compressed version of svc_spawnbaseline */
+	svc_level_restart,          /* [Paril-KEX] level was soft-rebooted */
+	svc_damage,                 /* [Paril-KEX] damage indicators */
+	svc_locprint,               /* [Kex] localized + libfmt version of print */
 	svc_fog,                    /* [Paril-KEX] change current fog values */
-	svc_client_effect,
+	svc_waitingforplayers,      /* [Kex-Edward] Inform clients that the server */
+	                            /*   is waiting for remaining players */
+	svc_bot_chat,               /* [Kex] bot specific chat */
+	svc_poi,                    /* [Paril-KEX] point of interest */
+	svc_help_path,              /* [Paril-KEX] help path */
+	svc_muzzleflash3,           /* [Paril-KEX] muzzleflashes, but ushort id */
+	svc_achievement,            /* [Paril-KEX] */
+	svc_client_effect,          /* Heretic 2 effects */
 };
 
 /* ============================================== */
@@ -698,7 +713,7 @@ void CM_WritePortalState(FILE *f);
 int CM_LoadFile(const char *path, void **buffer);
 
 /* Shared Model load code */
-int Mod_LoadFile(const char *path, void **buffer);
+int Mod_LoadFile(const char *name, void **buffer);
 void Mod_FreeFile(const char *path);
 void Mod_AliasesInit(void);
 void Mod_AliasesFreeAll(void);
@@ -856,13 +871,7 @@ extern int time_after_game;
 extern int time_before_ref;
 extern int time_after_ref;
 
-void Z_Init(void);
-void Z_Free(void *ptr);
-void *Z_Malloc(int size);           /* returns 0 filled memory */
-void *Z_TagMalloc(int size, int tag);
-void *Z_Realloc(void *ptr, int size);
-void *Z_TagRealloc(void *ptr, int size, int tag);
-void Z_FreeTags(int tag);
+#include "zone.h"
 
 void Qcommon_Init(int argc, char **argv);
 void Qcommon_ExecConfigs(qboolean addEarlyCmds);

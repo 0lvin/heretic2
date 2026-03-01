@@ -613,7 +613,7 @@ CL_CheckOrDownloadFile(const char *filename)
 	char *ptr;
 
 	/* fix backslashes - this is mostly für UNIX comaptiblity */
-	while ((ptr = strchr(filename, '\\')))
+	while ((ptr = (char *)strchr(filename, '\\')))
 	{
 		*ptr = '/';
 	}
@@ -760,7 +760,7 @@ void
 CL_ParseDownload(void)
 {
 	char name[MAX_OSPATH];
-	int r, percent, size;
+	int percent, size;
 	static qboolean second_try;
 
 	/* read the data */
@@ -835,6 +835,7 @@ CL_ParseDownload(void)
 	{
 		char oldn[MAX_OSPATH];
 		char newn[MAX_OSPATH];
+		int r;
 
 		fclose(cls.download);
 

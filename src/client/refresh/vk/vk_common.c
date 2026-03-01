@@ -1304,11 +1304,11 @@ CreatePipelines(void)
 	VkPipelineVertexInputStateCreateInfo vertInfoNull = VK_NULL_VERTEXINPUT_CINF;
 
 	// shared descriptor set layouts
-	VkDescriptorSetLayout samplerUboDsLayouts[] = {
+	const VkDescriptorSetLayout samplerUboDsLayouts[] = {
 		vk_samplerDescSetLayout,
 		vk_uboDescSetLayout
 	};
-	VkDescriptorSetLayout samplerUboLmapDsLayouts[] = {
+	const VkDescriptorSetLayout samplerUboLmapDsLayouts[] = {
 		vk_samplerDescSetLayout,
 		vk_uboDescSetLayout,
 		vk_samplerLightmapDescSetLayout
@@ -2041,7 +2041,7 @@ QVk_Init(void)
 	Com_Printf("...created synchronization objects\n");
 
 	// setup render passes
-	for (int i = 0; i < RP_COUNT; ++i)
+	for (i = 0; i < RP_COUNT; ++i)
 	{
 		vk_renderpasses[i].colorLoadOp = r_clear->value ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 	}
@@ -2061,7 +2061,7 @@ QVk_Init(void)
 	Com_Printf("...created %d Vulkan render passes\n", RP_COUNT);
 
 	// setup command pools
-	for (int i = 0; i < NUM_CMDBUFFERS; i++)
+	for (i = 0; i < NUM_CMDBUFFERS; i++)
 	{
 		res = QVk_CreateCommandPool(&vk_commandPool[i], vk_device.gfxFamilyIndex);
 		if (res != VK_SUCCESS)
@@ -2115,7 +2115,7 @@ QVk_Init(void)
 		return false;
 	}
 
-	for (int i = 0; i < NUM_CMDBUFFERS; i++)
+	for (i = 0; i < NUM_CMDBUFFERS; i++)
 	{
 		VkCommandBufferAllocateInfo cbInfo = {
 			.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,

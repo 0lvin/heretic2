@@ -330,8 +330,8 @@ extern float	d_sdivzstepu, d_tdivzstepu;
 extern float	d_sdivzstepv, d_tdivzstepv;
 extern float	d_sdivzorigin, d_tdivzorigin;
 
-void D_DrawSpansPow2(espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv);
-void D_DrawZSpans(espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv);
+void D_DrawSpansPow2(const espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv);
+void D_DrawZSpans(const espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv);
 void TurbulentPow2(espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv);
 void NonTurbulentPow2(espan_t *pspan, float d_ziorigin, float d_zistepu, float d_zistepv);
 
@@ -471,9 +471,12 @@ typedef struct {
 
 extern spanpackage_t	*triangle_spans, *triangles_max;
 
-void R_PolysetDrawSpans8_33(const entity_t *currententity, spanpackage_t *pspanpackage);
-void R_PolysetDrawSpans8_66(const entity_t *currententity, spanpackage_t *pspanpackage);
-void R_PolysetDrawSpans8_Opaque(const entity_t *currententity, spanpackage_t *pspanpackage);
+void R_PolysetDrawSpans8_33(const entity_t *currententity, const spanpackage_t *pspanpackage);
+void R_PolysetDrawSpans8_66(const entity_t *currententity, const spanpackage_t *pspanpackage);
+void R_PolysetDrawSpans8_Opaque(const entity_t *currententity, const spanpackage_t *pspanpackage);
+extern void (*d_pdrawspans)(const entity_t *currententity, const spanpackage_t *pspanpackage);
+void R_PolysetDrawSpansConstant8_33(const entity_t *currententity, const spanpackage_t *pspanpackage);
+void R_PolysetDrawSpansConstant8_66(const entity_t *currententity, const spanpackage_t *pspanpackage);
 
 extern byte	**warp_rowptr;
 extern int	*warp_column;

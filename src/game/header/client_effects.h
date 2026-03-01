@@ -60,7 +60,7 @@ typedef struct
 	void	(*Con_Printf) (int print_level, const char *str, ...);
 	void	(*Com_Printf) (const char *msg, ...);
 	void	(*V_AddLight) (vec3_t org, float intensity, float r, float g, float b);
-	void	(*V_AddEntity) (entity_t *ent);
+	void	(*V_AddEntity) (const entity_t *ent);
 	void	(*V_AddParticle) (vec3_t org, unsigned int color, float alpha);
 	//
 
@@ -83,9 +83,9 @@ typedef struct
 	struct sfx_s	*(*S_RegisterSound)(const char *name);
 	struct model_s *(*RegisterModel) (const char *name);
 
-	void	*(*TagMalloc)(int size, int tag);
+	void	*(*TagMalloc)(size_t size, unsigned short tag);
 	void	(*TagFree)(void *block);
-	void	(*FreeTags)(int tag);
+	void	(*FreeTags)(unsigned short tag);
 
 	int	(*MSG_ReadByte)(sizebuf_t *sb);
 	int	(*MSG_ReadShort)(sizebuf_t *sb);
