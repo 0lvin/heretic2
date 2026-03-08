@@ -47,8 +47,6 @@
 extern void SetupPlayerinfo(edict_t *ent);
 extern void WritePlayerinfo(edict_t *ent);
 extern void PlayerChickenDeath(edict_t *ent);
-extern qboolean AddWeaponToInventory(gitem_t *item,edict_t *player);
-extern qboolean AddDefenseToInventory(gitem_t *item,edict_t *player);
 extern void CheckContinuousAutomaticEffects(edict_t *self);
 extern void CalculatePIV(edict_t *player);
 extern void PlayerKillShrineFX(edict_t *self);

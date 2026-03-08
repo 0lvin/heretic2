@@ -3217,7 +3217,8 @@ typedef enum Box_BoundingForm_Sides_e
 	NUM_BOX_BOUNDINGFORM_SIDES
 } Box_BoundingForm_Sides_t;
 
-void SpawnItemEffect(edict_t *ent, gitem_t *item);
+qboolean AddWeaponToInventory(const gitem_t *it,edict_t *player);
+qboolean AddDefenseToInventory(const gitem_t *item, edict_t *player);
 
 edict_t *newfindradius(edict_t *from, vec3_t org, float rad);
 edict_t *findinblocking(edict_t *from, edict_t *checkent);

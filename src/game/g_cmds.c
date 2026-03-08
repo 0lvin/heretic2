@@ -38,9 +38,6 @@
 
 extern gitem_armor_t silver_armor_info;
 extern gitem_armor_t gold_armor_info;
-extern qboolean AddWeaponToInventory(gitem_t *it,edict_t *player);
-extern qboolean AddDefenseToInventory(gitem_t *it,edict_t *player);
-extern void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 qboolean CheckFlood(edict_t *ent);
 void ED_CallSpawn(edict_t *ent);

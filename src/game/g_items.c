@@ -34,6 +34,8 @@
 #include "common/h2rand.h"
 #include "common/cl_strings.h"
 
+static void SpawnItemEffect(edict_t *ent, const gitem_t *item);
+
 #define ITEM_COOP_ONLY		1
 #define ITEM_NO_DROP		2
 
@@ -1268,7 +1270,8 @@ Pickup_Puzzle(edict_t *ent, edict_t *other)
 // ---------------------
 // ************************************************************************************************
 
-qboolean AddDefenseToInventory(gitem_t *item,edict_t *player)
+qboolean
+AddDefenseToInventory(const gitem_t *item, edict_t *player)
 {
 	if (!player->client->pers.inventory[ITEM_INDEX(item)])
 	{
@@ -1320,7 +1323,7 @@ qboolean Pickup_Defense (edict_t *ent, edict_t *other)
 // -------------------
 // ************************************************************************************************
 
-qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
+qboolean Add_AmmoToInventory (edict_t *ent, const gitem_t *item, int count,int max)
 {
 	int			index;
 
@@ -2217,8 +2220,8 @@ droptofloor(edict_t *ent)
 // ---------
 // ************************************************************************************************
 
-qboolean
-ValidItem(gitem_t *item)
+static qboolean
+ValidItem(const gitem_t *item)
 {
 	// Some items will be prevented in deathmatch.
 
@@ -2269,8 +2272,8 @@ ValidItem(gitem_t *item)
 // ---------------
 // ************************************************************************************************
 
-void
-SpawnItemEffect(edict_t *ent, gitem_t *item)
+static void
+SpawnItemEffect(edict_t *ent, const gitem_t *item)
 {
 
 	if (!ValidItem(item))
