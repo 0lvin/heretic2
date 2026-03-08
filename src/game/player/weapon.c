@@ -416,7 +416,7 @@ G_RemoveAmmo(edict_t *ent)
 }
 
 qboolean
-AddWeaponToInventory(gitem_t *item, edict_t *player)
+AddWeaponToInventory(const gitem_t *item, edict_t *player)
 {
 	gitem_t	*newitem;
 	int		count;
@@ -545,6 +545,23 @@ Pickup_Weapon(edict_t *ent, edict_t *other)
 	}
 }
 
+int
+FirstPersonWeaponModel(const gitem_t *weapon)
+{
+	if (!weapon->view_model && weapon->world_model &&
+		!strncmp(weapon->world_model, "models/weapons/g_", 17))
+	{
+		char view_model[MAX_QPATH];
+
+		Q_strlcpy(view_model, weapon->world_model, sizeof(view_model));
+		/* replace models/weapons/g_ -> models/weapons/v_ */
+		view_model[15] = 'v';
+		return gi.modelindex(view_model);
+	}
+
+	return gi.modelindex(weapon->view_model);
+}
+
 /*
  * The old weapon has been dropped all
  * the way, so make the new one current
@@ -613,8 +630,7 @@ ChangeWeapon(edict_t *ent)
 	}
 	else
 	{
-		ent->client->ps.gunindex = gi.modelindex(
-				ent->client->pers.weapon->view_model);
+		ent->client->ps.gunindex = FirstPersonWeaponModel(ent->client->pers.weapon);
 	}
 
 	ent->client->anim_priority = ANIM_PAIN;
@@ -743,7 +759,7 @@ Think_Weapon(edict_t *ent)
  * Make the weapon ready if there is ammo
  */
 void
-Use_Weapon(edict_t *ent, gitem_t *item)
+Use_Weapon(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -784,7 +800,7 @@ Use_Weapon(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Weapon2(edict_t *ent, gitem_t *item)
+Use_Weapon2(edict_t *ent, const gitem_t *item)
 {
 	int ammo_index;
 	gitem_t *ammo_item;
@@ -4498,7 +4514,7 @@ Weapon_Ready(gclient_t *client, gitem_t *weapon)
 // ----------------------
 // ************************************************************************************************
 
-void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
+void Weapon_EquipSwordStaff(struct edict_s *ent, const gitem_t *Weapon)
 {
 	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	assert(playerinfo);
@@ -4528,7 +4544,7 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon)
 // ************************************************************************************************
 
 void
-Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
+Weapon_EquipSpell(struct edict_s *ent, const gitem_t *Weapon)
 {
 	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	assert(playerinfo);
@@ -4574,7 +4590,7 @@ Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon)
 // ---------------------
 // ************************************************************************************************
 
-void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
+void Weapon_EquipHellStaff(struct edict_s *ent, const gitem_t *Weapon)
 {
 	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	gitem_t	*AmmoItem;
@@ -4620,7 +4636,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon)
 // ---------------
 // ************************************************************************************************
 
-void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon)
+void Weapon_EquipBow(struct edict_s *ent, const gitem_t *Weapon)
 {
 	playerinfo_t *playerinfo = &ent->client->playerinfo;
 	gitem_t	*AmmoItem;
@@ -4702,7 +4718,7 @@ int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 
 int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent)
 {
-	gitem_t	*Defence,
+	const gitem_t	*Defence,
 			*ManaItem;
 	int		ManaIndex;
 	gclient_t *client;

@@ -145,7 +145,7 @@ void MSG_ReadPos(sizebuf_t *sb, vec3_t pos, int protocol);
 float MSG_ReadAngle(sizebuf_t *sb);
 float MSG_ReadAngle16(sizebuf_t *sb);
 void MSG_ReadDeltaUsercmd(sizebuf_t *sb,
-		struct usercmd_s *from,
+		const struct usercmd_s *from,
 		struct usercmd_s *cmd);
 
 void MSG_ReadDir(sizebuf_t *sb, vec3_t vector);
@@ -168,7 +168,7 @@ extern float LittleFloat(float l);
 int COM_Argc(void);
 char *COM_Argv(int arg);    /* range and null checked */
 void COM_ClearArgv(int arg);
-int COM_CheckParm(char *parm);
+int COM_CheckParm(const char *parm);
 void COM_AddParm(char *parm);
 
 void COM_Init(void);
@@ -178,7 +178,7 @@ char *CopyString(const char *in);
 
 /* ================================================================== */
 
-void Info_Print(char *s);
+void Info_Print(const char *s);
 
 /* PROTOCOL */
 
@@ -388,7 +388,7 @@ void Cbuf_AddText(const char *text);
 /* as new commands are generated from the console or keybindings, */
 /* the text is added to the end of the command buffer. */
 
-void Cbuf_InsertText(char *text);
+void Cbuf_InsertText(const char *text);
 
 /* when a command wants to issue other commands immediately, the text is */
 /* inserted at the beginning of the buffer, before any remaining unexecuted */
@@ -494,7 +494,7 @@ void Cmd_ForwardToServer(void);
 
 extern cvar_t *cvar_vars;
 
-cvar_t *Cvar_Get(const char *var_name, const char *value, int flags);
+cvar_t *Cvar_Get(const char *var_name, const char *var_value, int flags);
 
 /* creates the variable if it doesn't exist, or returns the existing one */
 /* if it exists, the value will not be changed, but flags will be ORed in */
@@ -707,7 +707,7 @@ void CM_SetAreaPortalState(int portalnum, qboolean open);
 qboolean CM_AreasConnected(int area1, int area2);
 
 int CM_WriteAreaBits(byte *buffer, int area);
-qboolean CM_HeadnodeVisible(int headnode, const byte *visbits);
+qboolean CM_HeadnodeVisible(int nodenum, const byte *visbits);
 
 void CM_WritePortalState(FILE *f);
 int CM_LoadFile(const char *path, void **buffer);

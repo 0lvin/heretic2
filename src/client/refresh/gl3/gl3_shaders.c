@@ -218,6 +218,42 @@ static const char* fragmentSrc2D = MULTILINE_STRING(
 		}
 );
 
+// like fragmentSrc2D, but also multiplies by color uniform for tinting (e.g. crosshair color)
+static const char* fragmentSrc2Dtinted = MULTILINE_STRING(
+
+		in vec2 passTexCoord;
+
+		// for UBO shared between all shaders (incl. 2D)
+		layout (std140) uniform uniCommon
+		{
+			float gamma;
+			float intensity;
+			float intensity2D; // for HUD, menu etc
+
+			vec4 color;
+		};
+
+		uniform sampler2D tex;
+
+		out vec4 outColor;
+
+		void main()
+		{
+			vec4 texel = texture(tex, passTexCoord);
+
+			if(texel.a <= 0.666)
+				discard;
+
+			// apply color tint
+			texel.rgb *= color.rgb;
+
+			// apply gamma correction and intensity
+			texel.rgb *= intensity2D;
+			outColor.rgb = pow(texel.rgb, vec3(gamma));
+			outColor.a = texel.a;
+		}
+);
+
 static const char* fragmentSrc2Dpostprocess = MULTILINE_STRING(
 		in vec2 passTexCoord;
 
@@ -276,12 +312,9 @@ static const char* fragmentSrc2DpostprocessWater = MULTILINE_STRING(
 		{
 			vec2 uv = passTexCoord;
 
-			// warping based on vkquake2
-			// here uv is always between 0 and 1 so ignore all that scrWidth and gl_FragCoord stuff
-			//float sx = pc.scale - abs(pc.scrWidth  / 2.0 - gl_FragCoord.x) * 2.0 / pc.scrWidth;
-			//float sy = pc.scale - abs(pc.scrHeight / 2.0 - gl_FragCoord.y) * 2.0 / pc.scrHeight;
-			float sx = 1.0 - abs(0.5-uv.x)*2.0;
-			float sy = 1.0 - abs(0.5-uv.y)*2.0;
+			// warping based on ref_vk
+			float sx = 1.0 - abs(0.5 - uv.x) * 2.0;
+			float sy = 1.0 - abs(0.5 - uv.y) * 2.0;
 			float xShift = 2.0 * time + uv.y * PI * 10.0;
 			float yShift = 2.0 * time + uv.x * PI * 10.0;
 			vec2 distortion = vec2(sin(xShift) * sx, sin(yShift) * sy) * 0.00666;
@@ -292,9 +325,9 @@ static const char* fragmentSrc2DpostprocessWater = MULTILINE_STRING(
 			// no gamma or intensity here, it has been applied before
 			// (this is just for postprocessing)
 			vec4 res = texture(tex, uv);
+
 			// apply the v_blend, usually blended as a colored quad with:
-			// glBlendEquation(GL_FUNC_ADD); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			res.rgb = v_blend.a * v_blend.rgb + (1.0 - v_blend.a)*res.rgb;
+			res.rgb = v_blend.a * v_blend.rgb + (1.0 - v_blend.a) * res.rgb;
 			outColor =  res;
 		}
 );
@@ -1191,6 +1224,13 @@ static qboolean createShaders(void)
 		Com_Printf("WARNING: Failed to create shader program for textured 2D rendering!\n");
 		return false;
 	}
+
+	if (!initShader2D(&gl3state.si2Dtinted, vertexSrc2D, fragmentSrc2Dtinted))
+	{
+		Com_Printf("WARNING: Failed to create shader program for tinted 2D rendering!\n");
+		return false;
+	}
+
 	if (!initShader2D(&gl3state.si2Dcolor, vertexSrc2Dcolor, fragmentSrc2Dcolor))
 	{
 		Com_Printf("WARNING: Failed to create shader program for color-only 2D rendering!\n");

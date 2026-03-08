@@ -1557,7 +1557,8 @@ static void
 CMod_LoadLeafBrushes(const char *name, unsigned int **map_leafbrushes,
 	int *numleafbrushes, const byte *cmod_base, const lump_t *l)
 {
-	unsigned int *out, *in;
+	const unsigned int *in;
+	unsigned int *out;
 	int count;
 
 	in = (void *)(cmod_base + l->fileofs);
@@ -1619,7 +1620,7 @@ CMod_LoadBrushSides(const char *name, cbrushside_t **map_brushsides, int *numbru
 		num = in->planenum;
 		j = in->texinfo;
 
-		if (j >= numtexinf || num > numplanes)
+		if (j >= numtexinf || num < 0 || num >= numplanes)
 		{
 			Com_Error(ERR_DROP, "%s: Bad brushside texinfo", __func__);
 			return;
@@ -1829,7 +1830,7 @@ CM_ModFreeAll(void)
 	if (ptsrow)
 	{
 		free(ptsrow);
-		phsrow = NULL;
+		ptsrow = NULL;
 	}
 
 	pxsrow_len = 0;

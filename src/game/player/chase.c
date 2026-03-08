@@ -108,7 +108,7 @@ ChasecamRemove(edict_t *ent)
 	//Don't turn back on during intermission!
 	if (!level.intermissiontime)
 	{
-		ent->client->ps.gunindex = gi.modelindex(ent->client->pers.weapon->view_model);
+		ent->client->ps.gunindex = FirstPersonWeaponModel(ent->client->pers.weapon);
 	}
 #endif
 

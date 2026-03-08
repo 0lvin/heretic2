@@ -17,7 +17,7 @@ void SpellCastMorph(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimD
 void SpellCastShield(edict_t *caster,vec3_t startpos,vec3_t aimangles,vec3_t aimdir,float Value);
 void SpellCastDropTornado(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,vec3_t AimDir,float Value);
 
-void Use_Defence(struct edict_s *ent, gitem_t *defence)
+void Use_Defence(struct edict_s *ent, const gitem_t *defence)
 {
 	playerinfo_t *playerinfo = &ent->client->playerinfo;
 

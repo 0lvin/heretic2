@@ -1431,7 +1431,7 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 void
 TossClientWeapon(edict_t *self)
 {
-	gitem_t *item;
+	const gitem_t *item;
 	edict_t *drop;
 	qboolean quad;
 	qboolean quadfire;

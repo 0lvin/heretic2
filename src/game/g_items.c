@@ -442,7 +442,7 @@ Pickup_AncientHead(edict_t *ent, edict_t *other)
 qboolean
 Pickup_Bandolier(edict_t *ent, edict_t *other)
 {
-	gitem_t *item;
+	const gitem_t *item;
 	int index;
 
 	if (!ent || !other)
@@ -529,7 +529,7 @@ Pickup_Bandolier(edict_t *ent, edict_t *other)
 qboolean
 Pickup_Pack(edict_t *ent, edict_t *other)
 {
-	gitem_t *item;
+	const gitem_t *item;
 	int index;
 
 	if (!ent || !other)
@@ -766,7 +766,7 @@ Pickup_Nuke(edict_t *ent, edict_t *other)
 }
 
 void
-Use_IR(edict_t *ent, gitem_t *item)
+Use_IR(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -789,7 +789,7 @@ Use_IR(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Double(edict_t *ent, gitem_t *item)
+Use_Double(edict_t *ent, const gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
 	ValidateSelectedItem(ent);
@@ -807,7 +807,7 @@ Use_Double(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Compass(edict_t *ent, gitem_t *item)
+Use_Compass(edict_t *ent, const gitem_t *item)
 {
 	int ang;
 
@@ -828,7 +828,7 @@ Use_Compass(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Ammo_Nuke(edict_t *ent, gitem_t *item)
+Use_Nuke(edict_t *ent, const gitem_t *item)
 {
 	vec3_t forward, right, start;
 	float speed;
@@ -849,7 +849,7 @@ Use_Ammo_Nuke(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Doppleganger(edict_t *ent, gitem_t *item)
+Use_Doppleganger(edict_t *ent, const gitem_t *item)
 {
 	vec3_t forward, right;
 	vec3_t createPt, spawnPt;
@@ -952,7 +952,7 @@ Pickup_Sphere(edict_t *ent, edict_t *other)
 }
 
 void
-Use_Defender(edict_t *ent, gitem_t *item)
+Use_Defender(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item || !ent->client)
 	{
@@ -972,7 +972,7 @@ Use_Defender(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Hunter(edict_t *ent, gitem_t *item)
+Use_Hunter(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item || !ent->client)
 	{
@@ -992,7 +992,7 @@ Use_Hunter(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Vengeance(edict_t *ent, gitem_t *item)
+Use_Vengeance(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item || !ent->client)
 	{
@@ -1014,7 +1014,7 @@ Use_Vengeance(edict_t *ent, gitem_t *item)
 /* ====================================================================== */
 
 void
-Use_Quad(edict_t *ent, gitem_t *item)
+Use_Quad(edict_t *ent, const gitem_t *item)
 {
 	int timeout;
 
@@ -1052,7 +1052,7 @@ Use_Quad(edict_t *ent, gitem_t *item)
 /* ===================================================================== */
 
 void
-Use_QuadFire(edict_t *ent, gitem_t *item)
+Use_QuadFire(edict_t *ent, const gitem_t *item)
 {
 	int timeout;
 
@@ -1089,7 +1089,7 @@ Use_QuadFire(edict_t *ent, gitem_t *item)
 /* ====================================================================== */
 
 void
-Use_Breather(edict_t *ent, gitem_t *item)
+Use_Breather(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item || !ent->client)
 	{
@@ -1112,7 +1112,7 @@ Use_Breather(edict_t *ent, gitem_t *item)
 /* ====================================================================== */
 
 void
-Use_Envirosuit(edict_t *ent, gitem_t *item)
+Use_Envirosuit(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item || !ent->client)
 	{
@@ -1135,7 +1135,7 @@ Use_Envirosuit(edict_t *ent, gitem_t *item)
 /* ====================================================================== */
 
 void
-Use_Invulnerability(edict_t *ent, gitem_t *item)
+Use_Invulnerability(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -1159,7 +1159,7 @@ Use_Invulnerability(edict_t *ent, gitem_t *item)
 }
 
 void
-Use_Invisibility(edict_t *ent, gitem_t *item)
+Use_Invisibility(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -1183,7 +1183,7 @@ Use_Invisibility(edict_t *ent, gitem_t *item)
 /* ====================================================================== */
 
 void
-Use_Silencer(edict_t *ent, gitem_t *item)
+Use_Silencer(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -1340,7 +1340,7 @@ qboolean Add_AmmoToInventory (edict_t *ent, gitem_t *item, int count,int max)
 /* ====================================================================== */
 
 qboolean
-Add_Ammo(edict_t *ent, gitem_t *item, int count)
+Add_Ammo(edict_t *ent, const gitem_t *item, int count)
 {
 	int index;
 	int max;
@@ -1613,7 +1613,7 @@ Pickup_Health(edict_t *ent, edict_t *other)
 /* ====================================================================== */
 
 int
-ArmorIndex(edict_t *ent)
+ArmorIndex(const edict_t *ent)
 {
 	if (!ent || !ent->client)
 	{
@@ -1641,9 +1641,8 @@ ArmorIndex(edict_t *ent)
 qboolean
 Pickup_Armor(edict_t *ent, edict_t *other)
 {
+	const gitem_armor_t *oldinfo, *newinfo;
 	int old_armor_index;
-	gitem_armor_t *oldinfo;
-	gitem_armor_t *newinfo;
 	int newcount;
 	float salvage;
 	int salvagecount;
@@ -1745,7 +1744,7 @@ Pickup_Armor(edict_t *ent, edict_t *other)
 /* ====================================================================== */
 
 int
-PowerArmorType(edict_t *ent)
+PowerArmorType(const edict_t *ent)
 {
 	if (!ent)
 	{
@@ -1776,10 +1775,8 @@ PowerArmorType(edict_t *ent)
 }
 
 void
-Use_PowerArmor(edict_t *ent, gitem_t *item)
+Use_PowerArmor(edict_t *ent, const gitem_t *item)
 {
-	int index;
-
 	if (!ent || !item)
 	{
 		return;
@@ -1793,6 +1790,8 @@ Use_PowerArmor(edict_t *ent, gitem_t *item)
 	}
 	else
 	{
+		int index;
+
 		index = ITEM_INDEX(FindItem("cells"));
 
 		if (!ent->client->pers.inventory[index])
@@ -1987,11 +1986,10 @@ drop_make_touchable(edict_t *ent)
 }
 
 edict_t *
-Drop_Item(edict_t *ent, gitem_t *item)
+Drop_Item(edict_t *ent, const gitem_t *item)
 {
 	edict_t *dropped;
 	vec3_t forward, right;
-	vec3_t offset;
 
 	if (!ent || !item)
 	{
@@ -2025,6 +2023,7 @@ Drop_Item(edict_t *ent, gitem_t *item)
 
 	if (ent->client)
 	{
+		vec3_t offset;
 		trace_t trace;
 
 		AngleVectors(ent->client->v_angle, forward, right, NULL);
@@ -2137,8 +2136,8 @@ droptofloor(edict_t *ent)
 {
 	vec3_t dest;
 	trace_t tr;
-	float *v;
-	int i;
+	const float *v;
+
 
 	if (!ent)
 	{
@@ -2154,6 +2153,7 @@ droptofloor(edict_t *ent)
 	{
 		/* key_power_cube is inside walls */
 		vec3_t mins, maxs;
+		int i;
 
 		/* set real size of item model except height to items fly hack */
 		VectorCopy(ent->mins, mins);
@@ -2321,12 +2321,10 @@ SpawnItemEffect(edict_t *ent, gitem_t *item)
  * and for each item in each client's inventory.
  */
 void
-PrecacheItem(gitem_t *it)
+PrecacheItem(const gitem_t *it)
 {
-	char *s, *start;
+	const char *s;
 	char data[MAX_QPATH];
-	int len;
-	gitem_t *ammo;
 
 	if (!it)
 	{
@@ -2356,6 +2354,8 @@ PrecacheItem(gitem_t *it)
 	/* parse everything for its ammo */
 	if (it->ammo && it->ammo[0])
 	{
+		const gitem_t *ammo;
+
 		ammo = FindItem(it->ammo);
 
 		if (ammo != it)
@@ -2374,6 +2374,9 @@ PrecacheItem(gitem_t *it)
 
 	while (*s)
 	{
+		const char *start;
+		int len;
+
 		start = s;
 
 		while (*s && *s != ' ')
@@ -2722,7 +2725,7 @@ P_ToggleFlashlight(edict_t *ent, qboolean state)
 }
 
 void
-Use_Flashlight(edict_t *ent, gitem_t *inv)
+Use_Flashlight(edict_t *ent, const gitem_t *inv)
 {
 	P_ToggleFlashlight(ent, !(ent->flags & FL_FLASHLIGHT));
 }
@@ -5161,7 +5164,7 @@ static const gitem_t gameitemlist[] = {
 	{
 		"ammo_nuke",
 		Pickup_Nuke,
-		Use_Ammo_Nuke,
+		Use_Nuke,
 		Drop_Ammo,
 		NULL,
 		"misc/am_pkup.wav",
@@ -6434,7 +6437,7 @@ InitItems(void)
 
 			for (i = 0; i < dyn_count; i ++)
 			{
-				gitem_t *it;
+				const gitem_t *it;
 
 				it = FindItemInList(dyn_items[i].classname, itemlist, num_items);
 				if (!it)
@@ -6446,6 +6449,7 @@ InitItems(void)
 						itemlist[num_items].pickup = Pickup_Weapon;
 						itemlist[num_items].use = Use_Weapon;
 						itemlist[num_items].drop = Drop_Weapon;
+						itemlist[num_items].weaponthink = Weapon_Blaster;
 						itemlist[num_items].world_model_flags = EF_ROTATE;
 						itemlist[num_items].flags = IT_WEAPON;
 					}
@@ -6506,10 +6510,11 @@ void
 SetItemNames(void)
 {
 	int i;
-	gitem_t *it;
 
 	for (i = 0; i < game.num_items; i++)
 	{
+		gitem_t *it;
+
 		it = &itemlist[i];
 		gi.configstring(CS_ITEMS + i, it->pickup_name);
 	}
@@ -6524,7 +6529,7 @@ SetItemNames(void)
 void
 SP_xatrix_item(edict_t *self)
 {
-	char *spawnClass = NULL;
+	const char *spawnClass = NULL;
 	gitem_t *item;
 
 	if (!self)

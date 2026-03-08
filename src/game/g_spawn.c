@@ -874,6 +874,12 @@ ED_CallSpawn(edict_t *ent)
 		ent->classname = (FindItem("Plasma Beam"))->classname;
 	}
 
+	/* Infinity mod fix */
+	if (!strcmp(ent->classname, "item_pistol"))
+	{
+		ent->classname = "weapon_pistol";
+	}
+
 	/* search dynamic definitions */
 	dyn_id = -1;
 	if (dynamicentities && ndynamicentities)
@@ -1003,7 +1009,7 @@ ED_NewString(const char *string, qboolean raw)
 
 		for (i = 0; i < l; i++)
 		{
-			if ((string[i] == '\\') && (i < l - 1))
+			if ((i < l - 1) && (string[i] == '\\'))
 			{
 				i++;
 
@@ -1425,7 +1431,6 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 {
 	edict_t *ent;
 	int inhibit;
-	const char *com_token;
 	int i;
 	float skill_level;
 
@@ -1481,6 +1486,8 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 	/* parse ents */
 	while (1)
 	{
+		const char *com_token;
+
 		/* parse the opening brace */
 		com_token = COM_Parse(&entities);
 
@@ -2181,7 +2188,7 @@ SP_worldspawn(edict_t *ent)
  */
 
 static edict_t *
-CreateMonster(vec3_t origin, vec3_t angles, char *classname)
+CreateMonster(vec3_t origin, vec3_t angles, const char *classname)
 {
 	edict_t *newEnt;
 
@@ -2205,7 +2212,7 @@ CreateMonster(vec3_t origin, vec3_t angles, char *classname)
 }
 
 static void
-DetermineBBox(char *classname, vec3_t mins, vec3_t maxs)
+DetermineBBox(const char *classname, vec3_t mins, vec3_t maxs)
 {
 	edict_t *newEnt;
 
@@ -2261,7 +2268,7 @@ CreateFlyMonster(vec3_t origin, vec3_t angles, vec3_t mins,
 
 edict_t *
 CreateGroundMonster(vec3_t origin, vec3_t angles, vec3_t entMins,
-		vec3_t entMaxs, char *classname, int height)
+		vec3_t entMaxs, const char *classname, int height)
 {
 	edict_t *newEnt;
 	vec3_t mins, maxs;
@@ -2304,13 +2311,14 @@ FindSpawnPoint(vec3_t startpoint, vec3_t mins, vec3_t maxs,
 		vec3_t spawnpoint, float maxMoveUp)
 {
 	trace_t tr;
-	vec3_t top;
 
 	tr = gi.trace(startpoint, mins, maxs, startpoint,
 			NULL, MASK_MONSTERSOLID | CONTENTS_PLAYERCLIP);
 
 	if ((tr.startsolid || tr.allsolid) || (tr.ent != world))
 	{
+		vec3_t top;
+
 		VectorCopy(startpoint, top);
 		top[2] += maxMoveUp;
 
@@ -2700,7 +2708,8 @@ Widowlegs_Spawn(vec3_t startpos, vec3_t angles)
 static char *
 DynamicStringParse(char *line, char *field, int size, char separator)
 {
-	char *next_section, *current_section;
+	const char *current_section;
+	char *next_section;
 
 	/* search line end */
 	current_section = line;
@@ -2740,7 +2749,8 @@ DynamicFloatParse(char *line, float *field, int size, char separator)
 
 	for (i = 0; i < size; i++)
 	{
-		char *next_section, *current_section;
+		const char *current_section;
+		char *next_section;
 
 		current_section = line;
 		next_section = strchr(line, separator);
@@ -2776,7 +2786,7 @@ DynamicSkipParse(char *line, int size, char separator)
 static int
 DynamicSort(const void *p1, const void *p2)
 {
-	dynamicentity_t *ent1, *ent2;
+	const dynamicentity_t *ent1, *ent2;
 
 	ent1 = (dynamicentity_t*)p1;
 	ent2 = (dynamicentity_t*)p2;
@@ -2803,17 +2813,19 @@ DynamicSpawnInit(void)
 	{
 		if (len_ai > 4 && !strncmp(raw, "CVSC", 4))
 		{
-			int i;
-
 			len_ai -= 4;
 			buf_ai = malloc(len_ai + 1);
 			if (buf_ai)
 			{
+				int i;
+
 				memcpy(buf_ai, raw + 4, len_ai);
+
 				for (i = 0; i < len_ai; i++)
 				{
 					buf_ai[i] = buf_ai[i] ^ 0x96;
 				}
+
 				buf_ai[len_ai] = 0;
 			}
 		}
@@ -2974,7 +2986,7 @@ DynamicSpawnInit(void)
 				line = DynamicSkipParse(line, 2, ',');
 				line = DynamicFloatParse(line, dynamicentities[curr_pos].damage_aim, 3, ',');
 				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage, ',');
-				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage_range, ',');
+				DynamicIntParse(line, &dynamicentities[curr_pos].damage_range, ',');
 				/*
 				 * Ignored fields:
 					* spread x
@@ -3080,7 +3092,7 @@ DynamicSpawnInit(void)
 				line = DynamicIntParse(line, &dynamicentities[curr_pos].damage_range, '|');
 				line = DynamicFloatParse(line, dynamicentities[curr_pos].damage_aim, 3, '|');
 				line = DynamicStringParse(line, gib_type, MAX_QPATH, '|');
-				line = DynamicIntParse(line, &dynamicentities[curr_pos].gib_health, '|');
+				DynamicIntParse(line, &dynamicentities[curr_pos].gib_health, '|');
 
 				dynamicentities[curr_pos].gib = DynamicSpawnGibFromName(gib_type);
 
@@ -3159,7 +3171,7 @@ GetDynamicItems(int *count)
 
 	for (i = 0; i < ndynamicentities; i++)
 	{
-		char* classname;
+		const char *classname;
 
 		if (strncmp(dynamicentities[i].classname, "item_", 5) &&
 			strncmp(dynamicentities[i].classname, "weapon_", 7) &&
@@ -3212,7 +3224,7 @@ GetDynamicItems(int *count)
 static int
 StaticSort(const void *p1, const void *p2)
 {
-	spawn_t *ent1, *ent2;
+	const spawn_t *ent1, *ent2;
 
 	ent1 = (spawn_t*)p1;
 	ent2 = (spawn_t*)p2;

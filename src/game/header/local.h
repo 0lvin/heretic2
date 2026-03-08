@@ -328,23 +328,23 @@ typedef enum
 
 typedef struct gitem_s
 {
-	char *classname; /* spawning name */
+	const char *classname; /* spawning name */
 	qboolean (*pickup)(struct edict_s *ent, struct edict_s *other);
-	void (*use)(struct edict_s *ent, struct gitem_s *item);
+	void (*use)(struct edict_s *ent, const struct gitem_s *item);
 	void (*drop)(struct edict_s *ent, struct gitem_s *item);
 	void (*weaponthink)(struct edict_s *ent);
-	char *pickup_sound;
-	char *world_model;
+	const char *pickup_sound;
+	const char *world_model;
 	int world_model_flags;
-	char *view_model;
+	const char *view_model;
 
 	/* client side info */
-	char *icon;
-	char *pickup_name;          /* for printing on pickup */
+	const char *icon;
+	const char *pickup_name;          /* for printing on pickup */
 	int count_width;            /* number of digits to display by icon */
 
 	int quantity;               /* for ammo how much, for weapons how much is used per shot */
-	char *ammo;                 /* for weapons */
+	const char *ammo;                 /* for weapons */
 	int flags;                  /* IT_* flags */
 
 	weapmodel_t weapmodel;      /* weapon model index (for weapons) */
@@ -352,7 +352,7 @@ typedef struct gitem_s
 	void *info;
 	int tag;
 
-	char *precaches;            /* string of all models, sounds, and images this item will use */
+	const char *precaches;            /* string of all models, sounds, and images this item will use */
 	short msg_pickup;           /* Pickup string id. */
 	short msg_nouse;            /* Can`t use. */
 	vec3_t mins;                /* Bounding box */
@@ -1421,7 +1421,7 @@ void Cmd_Use_f(edict_t *ent);
 /* g_items.c */
 void droptofloor(edict_t *ent);
 void FixEntityPosition(edict_t *ent);
-void PrecacheItem(gitem_t *it);
+void PrecacheItem(const gitem_t *it);
 void InitItems(void);
 qboolean ItemHasValidModel(gitem_t *item);
 void SetItemNames(void);
@@ -1430,19 +1430,20 @@ gitem_t *FindItemByClassname(const char *classname);
 
 #define ITEM_INDEX(x) ((x) - itemlist)
 
-edict_t *Drop_Item(edict_t *ent, gitem_t *item);
+edict_t *Drop_Item(edict_t *ent, const gitem_t *item);
 void SetRespawn(edict_t *ent, float delay);
 void ChangeWeapon(edict_t *ent);
+int FirstPersonWeaponModel(const gitem_t *weapon);
 void SpawnItem(edict_t *ent, gitem_t *item);
 void Think_Weapon(edict_t *ent);
-int ArmorIndex(edict_t *ent);
-int PowerArmorType(edict_t *ent);
+int ArmorIndex(const edict_t *ent);
+int PowerArmorType(const edict_t *ent);
 gitem_t *GetItemByIndex(int index);
-qboolean Add_Ammo(edict_t *ent, gitem_t *item, int count);
+qboolean Add_Ammo(edict_t *ent, const gitem_t *item, int count);
 void Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane,
 		csurface_t *surf);
-void Use_Quad(edict_t *ent, gitem_t *item);
-void Use_QuadFire(edict_t *ent, gitem_t *item);
+void Use_Quad(edict_t *ent, const gitem_t *item);
+void Use_QuadFire(edict_t *ent, const gitem_t *item);
 
 /* g_utils.c */
 qboolean KillBox(edict_t *ent);
@@ -1734,8 +1735,8 @@ void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, const int *pause_frames,
 		const int *fire_frames, void (*fire)(edict_t *ent));
 qboolean Pickup_Weapon(edict_t *ent, edict_t *other);
-void Use_Weapon(edict_t *ent, gitem_t *item);
-void Use_Weapon2(edict_t *ent, gitem_t *item);
+void Use_Weapon(edict_t *ent, const gitem_t *item);
+void Use_Weapon2(edict_t *ent, const gitem_t *item);
 void Drop_Weapon(edict_t *ent, gitem_t *item);
 void Weapon_Blaster(edict_t *ent);
 void Weapon_Shotgun(edict_t *ent);
@@ -1880,8 +1881,8 @@ void P_SetAnimGroup(edict_t *ent, const char *animname,
 	int firstframe, int lastframe, int select);
 edict_t *CreateFlyMonster(vec3_t origin, vec3_t angles, vec3_t mins,
 		vec3_t maxs, char *classname);
-edict_t *CreateGroundMonster(vec3_t origin, vec3_t angles, vec3_t mins,
-		vec3_t maxs, char *classname, int height);
+edict_t *CreateGroundMonster(vec3_t origin, vec3_t angles, vec3_t entMins,
+		vec3_t entMaxs, const char *classname, int height);
 qboolean FindSpawnPoint(vec3_t startpoint, vec3_t mins, vec3_t maxs,
 		vec3_t spawnpoint, float maxMoveUp);
 qboolean CheckSpawnPoint(vec3_t origin, vec3_t mins, vec3_t maxs);
@@ -1950,8 +1951,8 @@ typedef struct
 	int max_magslug;
 	int max_trap;
 
-	gitem_t *weapon;
-	gitem_t *lastweapon;
+	const gitem_t *weapon;
+	const gitem_t *lastweapon;
 
 	int power_cubes;            /* used for tracking the cubes in coop games */
 	int score;                  /* for calculating total unit score in coop games */
@@ -1995,7 +1996,8 @@ typedef struct
 	int max_hellstaff;
 
 	/* Offenses and defenses. */
-	gitem_t *defence, *lastdefence;
+	const gitem_t *defence;
+	const gitem_t *lastdefence;
 } client_persistant_t;
 
 /* client data that stays across multiple level loads */
@@ -2217,7 +2219,7 @@ typedef struct
 {
 	void (*dprintf)(const char *fmt, ...);
 	gitem_t *(*FindItem)(const char *pickup_name);
-	void (*Weapon_EquipSpell)(struct edict_s *ent, gitem_t *Weapon);
+	void (*Weapon_EquipSpell)(struct edict_s *ent, const gitem_t *Weapon);
 	void (*Weapon_Ready)(gclient_t *client, gitem_t *Weapon);
 	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
 	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
@@ -2344,7 +2346,7 @@ struct gclient_s
 
 	qboolean weapon_thunk;
 
-	gitem_t *newweapon;
+	const gitem_t *newweapon;
 
 	/* sum up damage over an entire frame, so
 	   shotgun blasts give a single big kick */
@@ -2581,7 +2583,7 @@ struct edict_s
 
 	/* only used locally in game, not by server */
 	char *message;
-	char *classname;
+	const char *classname;
 	int spawnflags;
 
 	float timestamp;
@@ -2689,7 +2691,7 @@ struct edict_s
 
 	int style;                  /* also used as areaportal number */
 
-	gitem_t *item;              /* for bonus items */
+	const gitem_t *item;              /* for bonus items */
 
 	/* common data blocks */
 	moveinfo_t moveinfo;
@@ -3163,7 +3165,7 @@ void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
  * implementation. (-Wmissing-prototypes )
  *
  */
-#if 0
+#if DEBUG
 #include "../savegame/savegame.h"
 #include "../savegame/tables/gamefunc_decs.h"
 #endif
@@ -3317,13 +3319,13 @@ void G_ClearPersistantEffects(void);
 int Defence_CurrentShotsLeft(playerinfo_t *playerinfo, int intent);
 int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo);
 void Weapon_Ready(gclient_t *client, gitem_t *Weapon);
-void Weapon_EquipSpell(struct edict_s *ent, gitem_t *Weapon);
-void Weapon_EquipSwordStaff(struct edict_s *ent, gitem_t *Weapon);
-void Weapon_EquipHellStaff(struct edict_s *ent, gitem_t *Weapon);
-void Weapon_EquipBow(struct edict_s *ent, gitem_t *Weapon);
+void Weapon_EquipSpell(struct edict_s *ent, const gitem_t *Weapon);
+void Weapon_EquipSwordStaff(struct edict_s *ent, const gitem_t *Weapon);
+void Weapon_EquipHellStaff(struct edict_s *ent, const gitem_t *Weapon);
+void Weapon_EquipBow(struct edict_s *ent, const gitem_t *Weapon);
 qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurface_t *surface,cplane_t *plane, vec3_t planeDir);
 
-void Use_Defence(struct edict_s *ent, gitem_t *defence);
+void Use_Defence(struct edict_s *ent, const gitem_t *defence);
 void DefenceThink_Powerup(edict_t *Caster);
 void DefenceThink_RingOfRepulsion(edict_t *Caster);
 void DefenceThink_MeteorBarrier(edict_t *Caster);

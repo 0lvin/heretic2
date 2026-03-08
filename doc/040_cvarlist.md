@@ -328,8 +328,6 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 
 * **game**: current game value, mod name and directory.
 
-* **gametype**: replace menu to different mod type without change mod name in game variable.
-
 * **maptype**: convert surface map flags from different game on load:
   * 0: Quake2,
   * 1: Heretic2,
@@ -448,6 +446,12 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
   smaller. The special value `-1` (default) sets the optimal scaling
   factor for the current resolution. All cvars are set through the
   scaling slider in the video menu.
+
+* **crosshair_color_r** / **crosshair_color_g** / **crosshair_color_b**:
+  Set the red, green and blue color components of the crosshair. Each
+  value is a float between `0` and `1`. Defaults to `1` for all three
+  components (white / no tint). Can also be set through the crosshair
+  color option in the options menu.
 
 * **r_customheight** / **r_customwidth**: Specifies a custom resolution,
   the windows will be *r_customheight* pixels high and *r_customwidth*
@@ -698,12 +702,6 @@ it's `+set busywait 0` (setting the `busywait` cvar) and `-portable`
 * **in_initjoy**: Chooses the preferred gamepad to initialize, starting
   with `1` (default); `0` disables gamepad usage. Can only be set from
   command line.
-
-* **joy_escbutton**: Defines which button is used in the gamepad as
-  the `Esc` key, to pull the main menu and 'cancel' / 'go back' on its
-  options. Valid values are `0` = Start / Menu / Plus (default), `1` =
-  Back / Select / Minus, or `2` = Guide / Home / PS. Requires a game
-  restart, or gamepad replug, when changed.
 
 * **joy_labels**: Defines style of button labels in binding menus. Note
   that binding through console only uses the SDL nomenclature (`0`).

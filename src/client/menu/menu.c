@@ -87,26 +87,10 @@ static int m_menudepth;
 static qboolean
 M_IsGame(const char *gamename)
 {
-	const cvar_t *game, *gametype;
-	const char* current_game;
+	const cvar_t *game = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
 
-	game = Cvar_Get("game", "", CVAR_LATCH | CVAR_SERVERINFO);
-	gametype = Cvar_Get("gametype", "", CVAR_LATCH | CVAR_SERVERINFO);
-
-	current_game = gametype->string;
-
-	/* copy game to gametype */
-	if (strcmp(game->string, gametype->string) && (
-			!strcmp(game->string, "ctf") ||
-			!strcmp(game->string, "rogue")
-	))
-	{
-		Cvar_Set("gametype", game->string);
-		current_game = game->string;
-	}
-
-	if (strcmp(current_game, gamename) == 0
-		|| (strcmp(gamename, BASEDIRNAME) == 0 && strcmp(current_game, "") == 0))
+	if (strcmp(game->string, gamename) == 0
+		|| (strcmp(gamename, BASEDIRNAME) == 0 && strcmp(game->string, "") == 0))
 	{
 		return true;
 	}
@@ -973,7 +957,7 @@ static menuframework_s s_joy_menu = {0};
 static menuaction_s s_keys_actions[ARRLEN(bindnames)] = {0};
 
 static void
-M_UnbindCommand(char *command, int scope)
+M_UnbindCommand(const char *command, int scope)
 {
 	int j;
 	int begin = 0, end = K_LAST;
@@ -1008,7 +992,7 @@ M_UnbindCommand(char *command, int scope)
 }
 
 static void
-M_FindKeysForCommand(char *command, int *twokeys, int scope)
+M_FindKeysForCommand(const char *command, int *twokeys, int scope)
 {
 	int count;
 	int j;
@@ -2496,6 +2480,7 @@ static menulist_s s_options_alwaysrun_box = {0};
 static menulist_s s_options_invertmouse_box = {0};
 static menulist_s s_options_lookstrafe_box = {0};
 static menulist_s s_options_crosshair_box = {0};
+static menulist_s s_options_crosshair_color_box = {0};
 static menuslider_s s_options_sfxvolume_slider = {0};
 static menulist_s s_options_oggshuffle_box = {0};
 static menuslider_s s_options_oggvolume_slider = {0};
@@ -2508,6 +2493,33 @@ static void
 CrosshairFunc(void *unused)
 {
 	Cvar_SetValue("crosshair", (float)s_options_crosshair_box.curvalue);
+}
+
+static void
+CrosshairColorFunc(void *unused)
+{
+	static const float color_values[][3] =
+	{
+		{1.0f, 1.0f, 1.0f},  /* white */
+		{1.0f, 0.0f, 0.0f},  /* red */
+		{0.0f, 1.0f, 0.0f},  /* green */
+		{0.0f, 0.0f, 1.0f},  /* blue */
+		{1.0f, 1.0f, 0.0f},  /* yellow */
+		{0.0f, 1.0f, 1.0f},  /* cyan */
+		{1.0f, 0.0f, 1.0f},  /* magenta */
+		{1.0f, 0.5f, 0.0f},  /* orange */
+	};
+
+	int idx = s_options_crosshair_color_box.curvalue;
+
+	if (idx < 0 || idx >= (int)ARRLEN(color_values))
+	{
+		idx = 0;
+	}
+
+	Cvar_SetValue("crosshair_color_r", color_values[idx][0]);
+	Cvar_SetValue("crosshair_color_g", color_values[idx][1]);
+	Cvar_SetValue("crosshair_color_b", color_values[idx][2]);
 }
 
 static void
@@ -2551,6 +2563,43 @@ ControlsSetMenuItemValues(void)
 	s_options_lookstrafe_box.curvalue = (lookstrafe->value != 0);
 	s_options_freelook_box.curvalue = (freelook->value != 0);
 	s_options_crosshair_box.curvalue = ClampCvar(0, 3, crosshair->value);
+
+	/* Match crosshair color cvars to a preset index */
+	{
+		static const float color_values[][3] =
+		{
+			{1.0f, 1.0f, 1.0f},  /* white */
+			{1.0f, 0.0f, 0.0f},  /* red */
+			{0.0f, 1.0f, 0.0f},  /* green */
+			{0.0f, 0.0f, 1.0f},  /* blue */
+			{1.0f, 1.0f, 0.0f},  /* yellow */
+			{0.0f, 1.0f, 1.0f},  /* cyan */
+			{1.0f, 0.0f, 1.0f},  /* magenta */
+			{1.0f, 0.5f, 0.0f},  /* orange */
+		};
+		float r = Cvar_VariableValue("crosshair_color_r");
+		float g = Cvar_VariableValue("crosshair_color_g");
+		float b = Cvar_VariableValue("crosshair_color_b");
+		int i, best = 0;
+		float best_dist = 999.0f;
+
+		for (i = 0; i < 8; i++)
+		{
+			float dr = r - color_values[i][0];
+			float dg = g - color_values[i][1];
+			float db = b - color_values[i][2];
+			float dist = dr * dr + dg * dg + db * db;
+
+			if (dist < best_dist)
+			{
+				best_dist = dist;
+				best = i;
+			}
+		}
+
+		s_options_crosshair_color_box.curvalue = best;
+	}
+
 	s_options_pauseonfocus_box.curvalue = ClampCvar(0, 2, Cvar_VariableValue("vid_pauseonfocuslost"));
 }
 
@@ -2697,6 +2746,19 @@ Options_MenuInit(void)
 		NULL
 	};
 
+	static const char *crosshair_color_names[] =
+	{
+		"white",
+		"red",
+		"green",
+		"blue",
+		"yellow",
+		"cyan",
+		"magenta",
+		"orange",
+		0
+	};
+
 	float scale = SCR_GetMenuScale();
 	unsigned short int y = 0;
 
@@ -2792,6 +2854,16 @@ Options_MenuInit(void)
 	s_options_crosshair_box.generic.callback = CrosshairFunc;
 	s_options_crosshair_box.itemnames = crosshair_names;
 
+	if (viddef.height > (240 + 20 * scale))
+	{
+		s_options_crosshair_color_box.generic.type = MTYPE_SPINCONTROL;
+		s_options_crosshair_color_box.generic.x = 0;
+		s_options_crosshair_color_box.generic.y = (y += 10);
+		s_options_crosshair_color_box.generic.name = "crosshair color";
+		s_options_crosshair_color_box.generic.callback = CrosshairColorFunc;
+		s_options_crosshair_color_box.itemnames = crosshair_color_names;
+	}
+
 	s_options_pauseonfocus_box.generic.type = MTYPE_SPINCONTROL;
 	s_options_pauseonfocus_box.generic.x = 0;
 	s_options_pauseonfocus_box.generic.y = (y += 10);
@@ -2800,7 +2872,7 @@ Options_MenuInit(void)
 	s_options_pauseonfocus_box.itemnames = pause_names;
 
 	y += 10;
-	if (show_gamepad)
+	if (show_gamepad && (viddef.height > (240 + 20 * scale)))
 	{
 		s_options_customize_joy_action.generic.type = MTYPE_ACTION;
 		s_options_customize_joy_action.generic.x = 0;
@@ -2842,9 +2914,15 @@ Options_MenuInit(void)
 	Menu_AddItem(&s_options_menu, (void *)&s_options_lookstrafe_box);
 	Menu_AddItem(&s_options_menu, (void *)&s_options_freelook_box);
 	Menu_AddItem(&s_options_menu, (void *)&s_options_crosshair_box);
+
+	if (viddef.height > (240 + 20 * scale))
+	{
+		Menu_AddItem(&s_options_menu, (void *)&s_options_crosshair_color_box);
+	}
+
 	Menu_AddItem(&s_options_menu, (void*)&s_options_pauseonfocus_box);
 
-	if (show_gamepad)
+	if (show_gamepad && (viddef.height > (240 + 20 * scale)))
 	{
 		Menu_AddItem(&s_options_menu, (void *)&s_options_customize_joy_action);
 	}
@@ -3479,13 +3557,6 @@ ModsApplyActionFunc(void *unused)
 
 		// called via command buffer so that any running server has time to shutdown
 		Cbuf_AddText(va("game %s\n", modnames[s_mods_list.curvalue]));
-
-		/* replace game type only if game changed to ctf/rogue */
-		if (!strcmp("ctf", modnames[s_mods_list.curvalue]) ||
-			!strcmp("rogue", modnames[s_mods_list.curvalue]))
-		{
-			Cbuf_AddText(va("gametype %s\n", modnames[s_mods_list.curvalue]));
-		}
 
 		// start the demo cycle in the new game directory
 		menu_startdemoloop = true;
@@ -4317,7 +4388,7 @@ static char local_server_names[MAX_LOCAL_SERVERS][80];
 static char local_server_netadr_strings[MAX_LOCAL_SERVERS][80];
 
 void
-M_AddToServerList(netadr_t adr, char *info)
+M_AddToServerList(netadr_t adr, const char *info)
 {
 	const char *s;
 	int i;
