@@ -1434,6 +1434,7 @@ edict_t *Drop_Item(edict_t *ent, const gitem_t *item);
 void SetRespawn(edict_t *ent, float delay);
 void ChangeWeapon(edict_t *ent);
 int FirstPersonWeaponModel(const gitem_t *weapon);
+int FirstPersonWeaponIcon(const gitem_t *weapon);
 void SpawnItem(edict_t *ent, gitem_t *item);
 void Think_Weapon(edict_t *ent);
 int ArmorIndex(const edict_t *ent);

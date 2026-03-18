@@ -1888,10 +1888,112 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 
 	if (!ent->item->pickup)
 	{
-		// Not a grabbable item.
+		return; /* not a grabbable item? */
+	}
 
+#if 0
+	if (CTFMatchSetup())
+	{
+		return; /* can't pick stuff up right now */
+	}
+
+	taken = ent->item->pickup(ent, other);
+
+	if (taken)
+	{
+		/* flash the screen */
+		other->client->bonus_alpha = 0.25;
+
+		/* show icon and name on status bar */
+		other->client->ps.stats[STAT_PICKUP_ICON] =
+			FirstPersonWeaponIcon(ent->item);
+		other->client->ps.stats[STAT_PICKUP_STRING] =
+			CS_ITEMS + ITEM_INDEX(ent->item);
+		other->client->pickup_msg_time = level.time + 3.0;
+
+		/* change selected item */
+		if (ent->item->use)
+		{
+			other->client->pers.selected_item =
+				other->client->ps.stats[STAT_SELECTED_ITEM] =
+				ITEM_INDEX(ent->item);
+		}
+
+		if (ent->item->pickup == Pickup_Health)
+		{
+			if (ent->count == 2)
+			{
+				gi.sound(other, CHAN_ITEM, gi.soundindex(
+								"items/s_health.wav"), 1, ATTN_NORM, 0);
+			}
+			else if (ent->count == 10)
+			{
+				gi.sound(other, CHAN_ITEM, gi.soundindex(
+								"items/n_health.wav"), 1, ATTN_NORM, 0);
+			}
+			else if (ent->count == 25)
+			{
+				gi.sound(other, CHAN_ITEM, gi.soundindex(
+								"items/l_health.wav"), 1, ATTN_NORM, 0);
+			}
+			else /* (ent->count == 100) */
+			{
+				gi.sound(other, CHAN_ITEM, gi.soundindex(
+								"items/m_health.wav"), 1, ATTN_NORM, 0);
+			}
+		}
+		else if (ent->item->pickup_sound)
+		{
+			gi.sound(other, CHAN_ITEM, gi.soundindex(
+							ent->item->pickup_sound), 1, ATTN_NORM, 0);
+		}
+
+		/* activate item instantly if appropriate */
+		/* moved down here so activation sounds override the pickup sound */
+		if (deathmatch->value)
+		{
+			if ((((int)dmflags->value & DF_INSTANT_ITEMS) &&
+				 (ent->item->flags & IT_INSTANT_USE)) ||
+				(((ent->item->use == Use_Quad) || (ent->item->use == Use_QuadFire)) &&
+				 (ent->spawnflags & DROPPED_PLAYER_ITEM)))
+			{
+				if (ent->spawnflags & DROPPED_PLAYER_ITEM)
+				{
+					if (ent->item->use == Use_Quad)
+					{
+						quad_drop_timeout_hack =
+							(ent->nextthink - level.time) / FRAMETIME;
+					}
+					else if (ent->item->use == Use_QuadFire)
+					{
+						quad_fire_drop_timeout_hack =
+							(ent->nextthink - level.time) / FRAMETIME;
+					}
+				}
+
+				if (ent->item->use)
+				{
+					ent->item->use(other, ent->item);
+				}
+				else
+				{
+					gi.dprintf("Powerup has no use function!\n");
+				}
+			}
+		}
+	}
+
+	if (!(ent->spawnflags & ITEM_TARGETS_USED))
+	{
+		G_UseTargets(ent, other);
+		ent->spawnflags |= ITEM_TARGETS_USED;
+	}
+
+	if (!taken)
+	{
 		return;
 	}
+#endif
 
 	assert(ent->item->pickup);
 
