@@ -363,16 +363,16 @@ SpawnReward(edict_t *self, edict_t *attacker)
 	gi.CreateEffect(NULL, FX_PICKUP, 0, holdorigin, "");
 }
 
-/*
-============
-Killed
-============
-*/
-
 void
-Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point, int mod)
+Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker,
+		int damage, vec3_t point, int mod)
 {
 	vec3_t hitdir;
+
+	if (!targ || !inflictor || !attacker)
+	{
+		return;
+	}
 
 	if (targ->classID == CID_MORK)
 	{
@@ -473,11 +473,244 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t 
 	}
 }
 
+static void
+SpawnDamage(int type, const vec3_t origin, const vec3_t normal)
+{
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(type);
+	gi.WritePosition(origin);
+	gi.WriteDir(normal);
+	gi.multicast(origin, MULTICAST_PVS);
+}
+
 /*
-============
-M_ReactToDamage
-============
-*/
+ * targ			entity that is being damaged
+ * inflictor	entity that is causing the damage
+ * attacker		entity that caused the inflictor to damage targ
+ *  example: targ=monster, inflictor=rocket, attacker=player
+ *
+ * dir			direction of the attack
+ * point		point at which the damage is being inflicted
+ * normal		normal vector from that point
+ * damage		amount of damage being inflicted
+ * knockback	force to be applied against targ as a result of the damage
+ *
+ * dflags -> these flags are used to control how T_Damage works
+ *      DAMAGE_RADIUS			damage was indirect (from a nearby explosion)
+ *      DAMAGE_NO_ARMOR			armor does not protect from this damage
+ *      DAMAGE_ENERGY			damage is from an energy based weapon
+ *      DAMAGE_NO_KNOCKBACK		do not affect velocity, just view angles
+ *      DAMAGE_BULLET			damage is from a bullet (used for ricochets)
+ *      DAMAGE_NO_PROTECTION	kills godmode, armor, everything
+ */
+static int
+CheckPowerArmor(edict_t *ent, const vec3_t point, const vec3_t normal,
+		int damage, int dflags)
+{
+	gclient_t *client;
+	int save;
+	int power_armor_type;
+	int index = 0;
+	int damagePerCell;
+	int pa_te_type;
+	int power = 0;
+	int power_used;
+
+	if (!ent)
+	{
+		return 0;
+	}
+
+	if (!damage)
+	{
+		return 0;
+	}
+
+	index = 0;
+
+	client = ent->client;
+
+	if (dflags & (DAMAGE_NO_ARMOR | DAMAGE_NO_POWER_ARMOR))
+	{
+		return 0;
+	}
+
+	if (client)
+	{
+		power_armor_type = PowerArmorType(ent);
+
+		if (power_armor_type != POWER_ARMOR_NONE)
+		{
+			index = ITEM_INDEX(FindItem("Cells"));
+			power = client->pers.inventory[index];
+		}
+	}
+	else if (ent->svflags & SVF_MONSTER)
+	{
+		power_armor_type = ent->monsterinfo.power_armor_type;
+		power = ent->monsterinfo.power_armor_power;
+		index = 0;
+	}
+	else
+	{
+		return 0;
+	}
+
+	if (power_armor_type == POWER_ARMOR_NONE)
+	{
+		return 0;
+	}
+
+	if (!power)
+	{
+		return 0;
+	}
+
+	if (power_armor_type == POWER_ARMOR_SCREEN)
+	{
+		vec3_t vec;
+		float dot;
+		vec3_t forward;
+
+		/* only works if damage point is in front */
+		AngleVectors(ent->s.angles, forward, NULL, NULL);
+		VectorSubtract(point, ent->s.origin, vec);
+		VectorNormalize(vec);
+		dot = DotProduct(vec, forward);
+
+		if (dot <= 0.3)
+		{
+			return 0;
+		}
+
+		damagePerCell = 1;
+		pa_te_type = TE_SCREEN_SPARKS;
+		damage = damage / 3;
+	}
+	else
+	{
+		if (ctf->value)
+		{
+			/* power armor is weaker in CTF */
+			damagePerCell = 1;
+		}
+		else
+		{
+			damagePerCell = 2;
+		}
+		pa_te_type = TE_SHIELD_SPARKS;
+		damage = (2 * damage) / 3;
+	}
+
+	/* etf rifle */
+	if (dflags & DAMAGE_NO_REG_ARMOR)
+	{
+		save = (power * damagePerCell) / 2;
+	}
+	else
+	{
+		save = power * damagePerCell;
+	}
+
+	if (!save)
+	{
+		return 0;
+	}
+
+	if (save > damage)
+	{
+		save = damage;
+	}
+
+	SpawnDamage(pa_te_type, point, normal);
+	ent->powerarmor_time = level.time + 0.2;
+
+	if (dflags & DAMAGE_NO_REG_ARMOR)
+	{
+		power_used = (save / damagePerCell) * 2;
+	}
+	else
+	{
+		power_used = save / damagePerCell;
+	}
+
+	if (client)
+	{
+		client->pers.inventory[index] -= power_used;
+	}
+	else
+	{
+		ent->monsterinfo.power_armor_power -= power_used;
+	}
+
+	return save;
+}
+
+static int
+CheckArmor(edict_t *ent, vec3_t point, const vec3_t normal, int damage,
+		int te_sparks, int dflags)
+{
+	gclient_t *client;
+	int save;
+	int index;
+	const gitem_t *armor;
+
+	if (!ent)
+	{
+		return 0;
+	}
+
+	if (!damage)
+	{
+		return 0;
+	}
+
+	client = ent->client;
+
+	if (!client)
+	{
+		return 0;
+	}
+
+	if (dflags & (DAMAGE_NO_ARMOR | DAMAGE_NO_REG_ARMOR))
+	{
+		return 0;
+	}
+
+	index = ArmorIndex(ent);
+
+	if (!index)
+	{
+		return 0;
+	}
+
+	armor = GetItemByIndex(index);
+
+	if (dflags & DAMAGE_ENERGY)
+	{
+		save = ceil(((gitem_armor_t *)armor->info)->energy_protection * damage);
+	}
+	else
+	{
+		save = ceil(((gitem_armor_t *)armor->info)->normal_protection * damage);
+	}
+
+	if (save >= client->pers.inventory[index])
+	{
+		save = client->pers.inventory[index];
+	}
+
+	if (!save)
+	{
+		return 0;
+	}
+
+	client->pers.inventory[index] -= save;
+	SpawnDamage(te_sparks, point, normal);
+
+	return save;
+}
+
 void
 M_ReactToDamage(edict_t *targ, edict_t *attacker)
 {
@@ -515,7 +748,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 		if (targ->enemy && targ->enemy->client)
 			targ->oldenemy = targ->enemy;
 		targ->enemy = attacker;
-		FoundTarget (targ, true);
+		FoundTarget(targ, true);
 		return;
 	}
 
@@ -536,12 +769,17 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 		 (targ->classID != attacker->classID)&&
 		 (targ->enemy))//targ has an enemy, otherwise always get mad
 	{
-		if (targ->enemy->client)
+		if (targ->enemy && targ->enemy->client)
+		{
 			targ->oldenemy = targ->enemy;
+		}
+
 		targ->enemy = attacker;
-		FoundTarget (targ, true);
+		FoundTarget(targ, true);
 	}
-	else// otherwise get mad at whoever they are mad at (help our buddy)
+	/* otherwise get mad at whoever they are mad
+	   at (help our buddy) unless it is us! */
+	else
 	{
 		if (attacker->enemy)		// This really should be an assert, but there are problems with this.
 		{
@@ -586,21 +824,24 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 		else
 		{//attacker's on crack, kill him
 			targ->enemy = attacker;
-			FoundTarget (targ, true);
+			FoundTarget(targ, true);
 		}
 	}
 }
 
-// ************************************************************************************************
-// CheckTeamDamage
-// ---------------
-// ************************************************************************************************
-
-qboolean CheckTeamDamage (const edict_t *targ, const edict_t *attacker)
+qboolean
+CheckTeamDamage(const edict_t *targ, const edict_t *attacker)
 {
-	//FIXME: Make the next line real and uncomment this block.
-	//if ((ability to damage a teammate == OFF) && (targ's team == attacker's team))
-		return false;
+	if (ctf->value && targ->client && attacker->client)
+	{
+		if ((targ->client->resp.ctf_team == attacker->client->resp.ctf_team) &&
+			(targ != attacker))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 qboolean flammable (edict_t *targ)
@@ -651,21 +892,42 @@ DAMAGE_NO_PROTECTION	kills godmode, armor, everything
 DAMAGE_DISMEMBER		to force MSG_DISMEMBER to be used
 ============
 */
-void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir, vec3_t ppoint, const vec3_t pnormal,
-			  int damage, int knockback, int dflags, int MeansOfDeath)
+static void
+apply_knockback(edict_t *targ, vec3_t dir, float knockback, float scale)
 {
-	vec3_t			hit_spot;
-	gclient_t		*client;
-	int				take, dsm_dmg;
-	HitLocation_t	hl;
-	gitem_armor_t	*info;
-	int				force_pain = 0;
-	qboolean		was_dead = false;
-	vec3_t			dir, normal, point;
-	float			knockbacktime;
-	char			armor_sound[50];
-	int				armorabsorb, orig_dmg;
-	int				violence=VIOLENCE_DEFAULT;
+	vec3_t kvel;
+	float mass;
+
+	if (!knockback)
+	{
+		return;
+	}
+
+	mass = (targ->mass < 50) ? 50.0f : (float)targ->mass;
+
+	VectorNormalize2(dir, kvel);
+	VectorScale(kvel, scale * (knockback / mass), kvel);
+	VectorAdd(targ->velocity, kvel, targ->velocity);
+}
+
+void
+T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
+		vec3_t ppoint, const vec3_t pnormal, int damage, int knockback, int dflags,
+		int mod)
+{
+	gclient_t *client;
+	int take;
+	vec3_t hit_spot;
+	int dsm_dmg;
+	HitLocation_t hl;
+	gitem_armor_t *info;
+	int force_pain = 0;
+	qboolean was_dead = false;
+	vec3_t dir, normal, point;
+	float knockbacktime;
+	char armor_sound[50];
+	int armorabsorb, orig_dmg;
+	int violence = VIOLENCE_DEFAULT;
 
 	hl = hl_NoneSpecific;
 
@@ -675,21 +937,25 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 	{	// Both different players, let's check if this will do damage!
 		if (coop->value)
 		{
-			if (!((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
+			if (!((int)(dmflags->value) & DF_HURT_FRIENDS) && (!(dflags & DAMAGE_HURT_FRIENDLY)))
+			{
 				damage = 0;
+			}
 			else
-				MeansOfDeath |= MOD_FRIENDLY_FIRE;
+			{
+				mod |= MOD_FRIENDLY_FIRE;
+			}
 		}
 		else if (deathmatch->value)
 		{
 			if ((int)(dmflags->value) & (DF_MODELTEAMS|DF_SKINTEAMS))
 			{
-				if (OnSameTeam (targ, attacker))
+				if (OnSameTeam(targ, attacker))
 				{
 					if (!((int)(dmflags->value) & DF_HURT_FRIENDS)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
 						damage = 0;
 					else
-						MeansOfDeath |= MOD_FRIENDLY_FIRE;
+						mod |= MOD_FRIENDLY_FIRE;
 				}
 			}
 		}
@@ -702,9 +968,6 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 	// Prevent players harming fellow players in non-deathmatch games. The attacking player can
 	// still harm himself of course.
-
-//	if ((!deathmatch->value)&&(targ!=attacker)&&(targ->client)&&(attacker->client)&&(!(dflags&DAMAGE_HURT_FRIENDLY)))
-//		return;
 
 	if (!targ->takedamage)
 		return;
@@ -879,8 +1142,6 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 	// The player does bonus damage for suprising a monster.
 	// Bad idea for us.
-//	if (!(dflags & DAMAGE_RADIUS) && (targ->svflags & SVF_MONSTER) && (attacker->client) && (!targ->enemy) && (targ->health > 0))
-//		damage *= 2;
 
 	if (targ->flags & FL_NO_KNOCKBACK || targ->svflags & SVF_BOSS ||
 			(targ->svflags & SVF_MONSTER && sv_freezemonsters->value == 2.0))	// Freezemonster = 2 means no knockback
@@ -908,16 +1169,8 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			}
 
 			mass = VectorLength(targ->size) * 3;
-			/*
-			if (targ->mass < 50)
-				mass = 50;
-			else
-				mass = targ->mass;*/
 
-//			if (targ->client  && attacker == targ)
-//				force = 900.0 * (float)knockback / mass; //rocketjump hack...  More knockback to source.
-//			else
-				force = 600.0 * (float)knockback / mass;
+			force = 600.0 * (float)knockback / mass;
 
 			// Players are not as affected by velocities when they are on the ground, so increase what players experience.
 			if (targ->client && targ->groundentity)
@@ -958,7 +1211,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				if (knockbacktime > targ->client->playerinfo.knockbacktime)
 				{
 					targ->client->playerinfo.knockbacktime = knockbacktime;
-					if (MeansOfDeath == MOD_TORN)
+					if (mod == MOD_TORN)
 					{
 						// since we are bing knocked back, let our top speed be higher
 						targ->client->playerinfo.effects |= EF_HIGH_MAX;
@@ -982,16 +1235,19 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 	take = damage;
 
-	// If the target has godmode in effect, they take no damage.
-	if (targ->flags & FL_GODMODE && !(dflags & DAMAGE_NO_PROTECTION))
+	/* check for godmode */
+	if ((targ->flags & FL_GODMODE) && !(dflags & DAMAGE_NO_PROTECTION))
+	{
 		take = 0;
+	}
 
-	// If the player is invincible, or on a shrine, they take no damage.
-	if ( (client && client->invincible_framenum > level.framenum ) && !(dflags & DAMAGE_NO_PROTECTION))
+	/* check for invincibility */
+	if ((client &&
+		 (client->invincible_framenum > level.framenum)) &&
+		!(dflags & DAMAGE_NO_PROTECTION))
 	{
 		if (targ->pain_debounce_time < level.time)
 		{
-//			gi.sound(targ, CHAN_ITEM, gi.soundindex("items/protect4.wav"), 1, ATTN_NORM, 0);
 			targ->pain_debounce_time = level.time + 2;
 		}
 
@@ -1150,9 +1406,6 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 
 		if (targ->health <= 0)
 		{
-//			if ((targ->svflags & SVF_MONSTER) || (client))
-//				targ->flags |= FL_NO_KNOCKBACK;
-
 			// Target has died, so kill it good and dead.
 			if (was_dead)
 			{//FIXME: if on fire, Become a charred husk, no gib.
@@ -1198,7 +1451,7 @@ void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			if (!targ->takedamage)//already killed by decapitation or some other killing dismemberment
 				return;
 
-			Killed(targ, inflictor, attacker, take, point, MeansOfDeath);
+			Killed(targ, inflictor, attacker, take, point, mod);
 
 			return;
 		}
