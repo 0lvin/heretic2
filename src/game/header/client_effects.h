@@ -55,8 +55,8 @@ typedef struct
 	float			*leveltime;
 	//
 
-	void	(*Sys_Error) (int err_level, const char *str, ...);
-	void	(*Com_Error) (int code, const char *fmt, ...);
+	YQ2_ATTR_NORETURN_FUNCPTR void (IMPORT *Sys_Error) (int err_level, const char *str, ...) PRINTF_ATTR(2, 3);
+	YQ2_ATTR_NORETURN_FUNCPTR void (IMPORT *Com_Error) (int code, const char *fmt, ...) PRINTF_ATTR(2, 3);
 	void	(*Con_Printf) (int print_level, const char *str, ...);
 	void	(*Com_Printf) (const char *msg, ...);
 	void	(*V_AddLight) (vec3_t org, float intensity, float r, float g, float b);

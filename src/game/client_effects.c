@@ -79,7 +79,7 @@ CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, i
 	return CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
 }
 
-static void
+YQ2_ATTR_NORETURN static void
 CL_Sys_Error(int errLevel, const char* fmt, ...)
 {
 	va_list		argptr;

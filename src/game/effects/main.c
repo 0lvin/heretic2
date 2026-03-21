@@ -815,7 +815,7 @@ GetFXAPI(client_fx_import_t import)
  * this is only here so the functions
  * in shared source files can link
  */
-void
+YQ2_ATTR_NORETURN void
 Sys_Error(const char *error, ...)
 {
 	va_list argptr;

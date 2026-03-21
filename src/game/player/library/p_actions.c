@@ -744,10 +744,11 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 	PlayerActionArrowChange
 -----------------------------------------------*/
 
-void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
+void
+PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 {
 	vec3_t forward, right, spawnpoint;
-	gitem_t *weapon;
+	const gitem_t *weapon;
 	int color=0;
 	gclient_t *client;
 
@@ -815,7 +816,7 @@ void PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 {
-	gitem_t *weapon;
+	const gitem_t *weapon;
 	vec3_t	spawnpoint, forward, right;
 	int		holdweapon;
 	gclient_t *client;
