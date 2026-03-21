@@ -596,7 +596,7 @@ M_ReactToDamage(edict_t *targ, edict_t *attacker)
 // ---------------
 // ************************************************************************************************
 
-qboolean CheckTeamDamage (edict_t *targ, edict_t *attacker)
+qboolean CheckTeamDamage (const edict_t *targ, const edict_t *attacker)
 {
 	//FIXME: Make the next line real and uncomment this block.
 	//if ((ability to damage a teammate == OFF) && (targ's team == attacker's team))
@@ -651,8 +651,8 @@ DAMAGE_NO_PROTECTION	kills godmode, armor, everything
 DAMAGE_DISMEMBER		to force MSG_DISMEMBER to be used
 ============
 */
-void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir, vec3_t ppoint, vec3_t pnormal,
-			  int damage, int knockback, int dflags,int MeansOfDeath)
+void T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir, vec3_t ppoint, const vec3_t pnormal,
+			  int damage, int knockback, int dflags, int MeansOfDeath)
 {
 	vec3_t			hit_spot;
 	gclient_t		*client;
@@ -1425,7 +1425,7 @@ T_DamageRadiusFromLoc(vec3_t origin, edict_t *inflictor, edict_t *attacker, edic
 
 void
 T_RadiusDamage(edict_t *inflictor, edict_t *attacker, float damage,
-		edict_t *ignore, float radius, int mod)
+		const edict_t *ignore, float radius, int mod)
 {
 	float points;
 	edict_t *ent = NULL;
@@ -1482,8 +1482,6 @@ T_RadiusNukeDamage(edict_t *inflictor, edict_t *attacker, float damage,
 	vec3_t dir;
 	float len;
 	float killzone, killzone2;
-	trace_t tr;
-	float dist;
 
 	killzone = radius;
 	killzone2 = radius * 2.0;
@@ -1563,6 +1561,8 @@ T_RadiusNukeDamage(edict_t *inflictor, edict_t *attacker, float damage,
 		if ((ent->client) &&
 			(ent->client->nuke_framenum != level.framenum + 20) && (ent->inuse))
 		{
+			trace_t tr;
+
 			tr = gi.trace(inflictor->s.origin, NULL, NULL, ent->s.origin,
 					inflictor, MASK_SOLID);
 
@@ -1572,6 +1572,8 @@ T_RadiusNukeDamage(edict_t *inflictor, edict_t *attacker, float damage,
 			}
 			else
 			{
+				float dist;
+
 				dist = realrange(ent, inflictor);
 
 				if (dist < 2048)

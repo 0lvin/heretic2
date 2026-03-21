@@ -108,22 +108,14 @@ shalrath_pod_home(edict_t *self)
 {
 	static qboolean think = false;
 	vec3_t			end;
-	vec3_t			dir;
 
 	// decino: Only home every 0.2 frames
 	if (think)
 	{
-		if (self->enemy && self->enemy->health < 1 && self->owner->health > 0)
-		{
-			// decino: Not a big fan of this, just wait until it hits something
-			/*if (!self->owner->enemy || (self->owner->enemy == self->owner))
-			{
-				G_FreeEdict(self);
-				return;
-			}*/
-		}
 		if (self->owner->enemy)
 		{
+			vec3_t dir;
+
 			self->enemy = self->owner->enemy;
 			VectorCopy(self->enemy->s.origin, end);
 			end[2] += self->enemy->viewheight;
@@ -297,10 +289,10 @@ mmove_t shalrath_move_death =
 void
 shalrath_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
-	int		n;
-
 	if (self->health <= self->gib_health)
 	{
+		int n;
+
 		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
 
 		for (n = 0; n < 2; n++)

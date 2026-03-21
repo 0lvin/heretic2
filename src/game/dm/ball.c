@@ -78,8 +78,8 @@ void
 DBall_ClientBegin(edict_t *ent)
 {
 	int team1, team2, unassigned;
-	edict_t *other;
-	char *p;
+	const edict_t *other;
+	const char *p;
 	static char value[512];
 	int j;
 
@@ -158,9 +158,9 @@ void
 DBall_SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 {
 	edict_t *bestspot;
-	float bestdistance, bestplayerdistance;
+	float bestdistance;
 	edict_t *spot;
-	char *spottype;
+	const char *spottype;
 	char skin[512];
 
 	if (!ent)
@@ -189,6 +189,8 @@ DBall_SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
 
 	while ((spot = G_Find(spot, FOFS(classname), spottype)) != NULL)
 	{
+		float bestplayerdistance;
+
 		bestplayerdistance = PlayersRangeFromSpot(spot);
 
 		if (bestplayerdistance > bestdistance)
@@ -256,7 +258,7 @@ DBall_PostInitSetup(void)
 }
 
 int
-DBall_ChangeDamage(edict_t *targ, edict_t *attacker, int damage, int mod)
+DBall_ChangeDamage(const edict_t *targ, const edict_t *attacker, int damage, int mod)
 {
 	if (!targ || !attacker)
 	{
@@ -279,7 +281,7 @@ DBall_ChangeDamage(edict_t *targ, edict_t *attacker, int damage, int mod)
 }
 
 int
-DBall_ChangeKnockback(edict_t *targ, edict_t *attacker, int knockback, int mod)
+DBall_ChangeKnockback(const edict_t *targ, const edict_t *attacker, int knockback, int mod)
 {
 	if (!targ || !attacker)
 	{
@@ -354,7 +356,7 @@ DBall_GoalTouch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 	int scorechange;
 	int j;
 	char value[512];
-	char *p;
+	const char *p;
 	edict_t *ent;
 
 	if (!self || !other)
@@ -452,8 +454,8 @@ DBall_GoalTouch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 	G_UseTargets(self, other);
 }
 
-edict_t *
-PickBallStart(edict_t *ent)
+static edict_t *
+PickBallStart(const edict_t *ent)
 {
 	int which, current;
 	edict_t *e;
@@ -489,8 +491,6 @@ void
 DBall_BallTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t dir;
-	float dot;
-	float speed;
 
 	if (!ent || !other)
 	{
@@ -507,6 +507,8 @@ DBall_BallTouch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 	{
 		if (ent->velocity[0] || ent->velocity[1] || ent->velocity[2])
 		{
+			float speed, dot;
+
 			speed = VectorLength(ent->velocity);
 
 			VectorSubtract(ent->s.origin, other->s.origin, dir);
@@ -603,7 +605,6 @@ void
 DBall_SpeedTouch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 		csurface_t *surf /* unused */)
 {
-	float dot;
 	vec3_t vel;
 
 	if (!self || !other)
@@ -628,6 +629,8 @@ DBall_SpeedTouch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 
 	if (self->spawnflags & DBALL_SPEED_ONEWAY)
 	{
+		float dot;
+
 		VectorCopy(other->velocity, vel);
 		VectorNormalize(vel);
 		dot = DotProduct(vel, self->movedir);

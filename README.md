@@ -309,6 +309,7 @@ Note:
 
 * 8.61RR14+:
 
+[![Check dynamic animation for weapons](https://img.youtube.com/vi/R8crz-ISkeA/hqdefault.jpg)](https://www.youtube.com/watch?v=R8crz-ISkeA)
 [![Check infinity mod](https://img.youtube.com/vi/JYw_FEjaPJ4/hqdefault.jpg)](https://www.youtube.com/watch?v=JYw_FEjaPJ4)
 
 * 8.61RR13+:
@@ -439,11 +440,6 @@ Checked with:
 * [ ] Support obj waveform model format for debug other formats.
 
 ### Fixed:
-
-* [x] Anachronox: `rowdys` map models disappear on dance space,
-* [x] ReRelease: fix invisiable entities in `basicsjam1_ziutek`,
-* [x] ReRelease: incorrect light apply to models (wall looks fine),
-* [x] ReRelease: implement `info_landmark`.
 
 ### Not a goal:
 

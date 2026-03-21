@@ -471,7 +471,7 @@ BOT_DMclass_FindEnemy(edict_t *self)
 // BOT_DMClass_ChangeWeapon
 //==========================================
 static qboolean
-BOT_DMClass_ChangeWeapon(edict_t *ent, gitem_t *item)
+BOT_DMClass_ChangeWeapon(edict_t *ent, const gitem_t *item)
 {
 	// see if we're already using it
 	if (!item || item == ent->client->pers.weapon)
@@ -518,7 +518,7 @@ BOT_DMclass_ChooseWeapon(edict_t *self)
 	vec3_t	v;
 	int		i;
 	float	best_weight = 0.0;
-	gitem_t	*best_weapon = NULL;
+	const gitem_t	*best_weapon = NULL;
 	int		weapon_range = 0;
 
 	// if no enemy, then what are we doing here?

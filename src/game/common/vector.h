@@ -23,8 +23,8 @@ void VectorDegreesToRadians(vec3_t in, vec3_t out);
 void Vec3SubtractAssign(vec3_t value, vec3_t subFrom);
 void Vec3AddAssign(vec3_t value, vec3_t addTo);
 void Vec3ScaleAssign(vec_t value, vec3_t scaleBy);
-qboolean Vec3IsZero(vec3_t vec);
-qboolean Vec3NotZero(vec3_t vec);
+qboolean Vec3IsZero(const vec3_t vec);
+qboolean Vec3NotZero(const vec3_t vec);
 float NormalizeAngle(float angle);
 
 #endif

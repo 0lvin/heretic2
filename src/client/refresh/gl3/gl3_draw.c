@@ -239,7 +239,7 @@ GL3_Draw_FindPic(const char *name)
 void
 GL3_Draw_GetPicSize(int *w, int *h, const char *pic)
 {
-	gl3image_t *gl;
+	const gl3image_t *gl;
 
 	gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
 
@@ -256,7 +256,7 @@ GL3_Draw_GetPicSize(int *w, int *h, const char *pic)
 void
 GL3_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 {
-	gl3image_t *gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
+	const gl3image_t *gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
 
 	if (!gl)
 	{
@@ -273,7 +273,7 @@ GL3_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 void
 GL3_Draw_PicScaled(int x, int y, const char *pic, float factor, const char *alttext)
 {
-	gl3image_t *gl;
+	const gl3image_t *gl;
 
 	gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
 	if (!gl)
@@ -299,7 +299,7 @@ void
 GL3_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t color,
 	const char *alttext)
 {
-	gl3image_t *gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
+	const gl3image_t *gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
 	if (!gl)
 	{
 		if (alttext && alttext[0])
@@ -333,7 +333,7 @@ GL3_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t 
 void
 GL3_Draw_TileClear(int x, int y, int w, int h, const char *pic)
 {
-	gl3image_t *image = R_FindPic(pic, (findimage_t)GL3_FindImage);
+	const gl3image_t *image = R_FindPic(pic, (findimage_t)GL3_FindImage);
 	if (!image)
 	{
 		Com_Printf("Can't find pic: %s\n", pic);
@@ -462,8 +462,6 @@ GL3_Draw_FadeScreen(void)
 void
 GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
 {
-	int i, j;
-
 	GL3_Bind(0);
 
 	unsigned image32[320*240]; /* was 256 * 256, but we want a bit more space */
@@ -476,6 +474,8 @@ GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *
 	}
 	else
 	{
+		size_t i;
+
 		if (cols*rows > 320*240)
 		{
 			/* in case there is a bigger video after all,
@@ -483,10 +483,13 @@ GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *
 			img = (unsigned*)malloc(cols*rows*4);
 		}
 
-		for (i=0; i<rows; ++i)
+		for (i = 0; i < rows; ++i)
 		{
-			int rowOffset = i*cols;
-			for (j=0; j<cols; ++j)
+			size_t j, rowOffset;
+
+			rowOffset = i * cols;
+
+			for (j = 0; j < cols; ++j)
 			{
 				byte palIdx = data[rowOffset+j];
 				img[rowOffset+j] = gl3_rawpalette[palIdx];

@@ -378,9 +378,6 @@ ai_eat(edict_t *self, float dist)
 void
 ai_stand(edict_t *self, float dist)
 {
-	vec3_t v;
-	qboolean retval;
-
 	if (!self)
 	{
 		return;
@@ -398,6 +395,9 @@ ai_stand(edict_t *self, float dist)
 	{
 		if (self->enemy)
 		{
+			qboolean retval;
+			vec3_t v;
+
 			VectorSubtract(self->enemy->s.origin, self->s.origin, v);
 			self->ideal_yaw = vectoyaw(v);
 
@@ -534,8 +534,6 @@ ai_walk(edict_t *self, float dist)
 void
 ai_charge(edict_t *self, float dist)
 {
-	vec3_t v;
-
 	if (!self)
 	{
 		return;
@@ -556,6 +554,8 @@ ai_charge(edict_t *self, float dist)
 
 	if (!(self->monsterinfo.aiflags & AI_MANUAL_STEERING))
 	{
+		vec3_t v;
+
 		VectorSubtract(self->enemy->s.origin, self->s.origin, v);
 		self->ideal_yaw = vectoyaw(v);
 	}
@@ -795,7 +795,7 @@ ai_range(edict_t *self, edict_t *other)
  * to self, even if not infront
  */
 qboolean
-visible(edict_t *self, edict_t *other)
+visible(const edict_t *self, const edict_t *other)
 {
 	vec3_t spot1;
 	vec3_t spot2;
@@ -1636,7 +1636,7 @@ nextcheck:
 /* ============================================================================= */
 
 qboolean
-FacingIdeal(edict_t *self)
+FacingIdeal(const edict_t *self)
 {
 	float delta;
 
@@ -1660,9 +1660,7 @@ FacingIdeal(edict_t *self)
 qboolean
 M_CheckAttack(edict_t *self)
 {
-	vec3_t spot1, spot2;
 	float chance;
-	trace_t tr;
 
 	if (!self || !self->enemy || !self->enemy->inuse)
 	{
@@ -1671,6 +1669,9 @@ M_CheckAttack(edict_t *self)
 
 	if (self->enemy->health > 0)
 	{
+		vec3_t spot1, spot2;
+		trace_t tr;
+
 		if (self->enemy->client)
 		{
 			if (self->enemy->client->invisible_framenum > level.framenum)
@@ -2491,10 +2492,10 @@ The monster has an enemy it is trying to get away from
 void
 ai_flee(edict_t *self, float dist)
 {
-	vec3_t	vec;
-
 	if (self->enemy)
 	{
+		vec3_t	vec;
+
 		VectorSubtract(self->enemy->s.origin, self->s.origin, vec);
 		self->ideal_yaw = vectoyaw(vec);
 		self->ideal_yaw = anglemod(self->ideal_yaw + self->best_move_yaw);
@@ -2836,15 +2837,10 @@ ai_run(edict_t *self, float dist)
 	edict_t *save;
 	qboolean new;
 	edict_t *marker;
-	float d1, d2;
-	trace_t tr;
-	vec3_t v_forward, v_right;
-	float left, center, right;
+	float d1;
 	vec3_t left_target, right_target;
 	qboolean retval;
 	qboolean alreadyMoved = false;
-	qboolean gotcha = false;
-	edict_t *realEnemy;
 
 	if (!self)
 	{
@@ -2871,6 +2867,9 @@ ai_run(edict_t *self, float dist)
 	/* if we're currently looking for a hint path */
 	if (self->monsterinfo.aiflags & AI_HINT_PATH)
 	{
+		const edict_t *realEnemy = NULL;
+		qboolean gotcha = false;
+
 		M_MoveToGoal(self, dist);
 
 		if (!self->inuse)
@@ -3150,12 +3149,17 @@ ai_run(edict_t *self, float dist)
 
 	if (new)
 	{
+		trace_t tr;
+
 		tr = gi.trace(self->s.origin, self->mins, self->maxs,
 				self->monsterinfo.last_sighting, self,
 				MASK_PLAYERSOLID);
 
 		if (tr.fraction < 1)
 		{
+			float left, center, right, d2;
+			vec3_t v_forward, v_right;
+
 			VectorSubtract(self->goalentity->s.origin, self->s.origin, v);
 			d1 = VectorLength(v);
 			center = tr.fraction;

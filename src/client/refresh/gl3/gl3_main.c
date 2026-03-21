@@ -657,7 +657,6 @@ GL3_DrawBeam(entity_t *e)
 	vec3_t oldorigin, origin;
 
 	mvtx_t verts[NUM_BEAM_SEGS*4];
-	unsigned int pointb;
 
 	oldorigin[0] = e->oldorigin[0];
 	oldorigin[1] = e->oldorigin[1];
@@ -705,6 +704,8 @@ GL3_DrawBeam(entity_t *e)
 
 	for ( i = 0; i < NUM_BEAM_SEGS; i++ )
 	{
+		unsigned int pointb;
+
 		VectorCopy(start_points[i], verts[4*i+0].pos);
 		VectorCopy(end_points[i], verts[4*i+1].pos);
 
@@ -728,10 +729,10 @@ GL3_DrawSpriteModel(entity_t *e, const gl3model_t *currentmodel)
 {
 	float alpha = 1.0F;
 	mvtx_t verts[4];
-	dsprframe_t *frame;
+	const dsprframe_t *frame;
 	float *up, *right;
 	dsprite_t *psprite;
-	gl3image_t *skin = NULL;
+	const gl3image_t *skin = NULL;
 	vec3_t scale;
 
 	VectorCopy(e->scale, scale);
@@ -1090,7 +1091,7 @@ GL3_DrawEntitiesOnList(void)
 static void
 SetupFrame(void)
 {
-	mleaf_t *leaf;
+	const mleaf_t *leaf;
 
 	gl3_framecount++;
 
@@ -1420,7 +1421,7 @@ extern int c_visible_lightmaps, c_visible_textures;
  * r_newrefdef must be set before the first call
  */
 static void
-GL3_RenderView(refdef_t *fd)
+GL3_RenderView(const refdef_t *fd)
 {
 #if 0 // TODO: keep stereo stuff?
 	if ((gl_state.stereo_mode != STEREO_MODE_NONE) && gl_state.camera_separation) {
@@ -1626,7 +1627,7 @@ GL3_GetSpecialBufferModeForStereoMode(enum stereo_modes stereo_mode) {
 #endif // 0
 
 static void
-GL3_SetLightLevel(entity_t *currententity)
+GL3_SetLightLevel(const entity_t *currententity)
 {
 	vec3_t shadelight = {0};
 
@@ -1667,7 +1668,7 @@ GL3_SetLightLevel(entity_t *currententity)
 }
 
 static void
-GL3_RenderFrame(refdef_t *fd)
+GL3_RenderFrame(const refdef_t *fd)
 {
 	GL3_RenderView(fd);
 	GL3_SetLightLevel(NULL);

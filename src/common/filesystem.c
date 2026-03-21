@@ -252,7 +252,7 @@ void
 FS_CreatePath(const char *path)
 {
 	char *cur; /* Current '/'. */
-	char *old; /* Old '/'. */
+	const char *old; /* Old '/'. */
 	char dir_path[MAX_OSPATH];
 
 	FS_DPrintf("%s(%s)\n", __func__, path);
@@ -265,7 +265,7 @@ FS_CreatePath(const char *path)
 
 	Q_strlcpy(dir_path, path, sizeof(dir_path));
 
-	cur = old = dir_path;
+	old = cur = dir_path;
 
 	while (cur != NULL)
 	{
@@ -378,7 +378,7 @@ FS_FCloseFile(fileHandle_t f)
 static int
 FS_SortPackCompare(const void *p1, const void *p2)
 {
-	fsPackFile_t *file1, *file2;
+	const fsPackFile_t *file1, *file2;
 
 	file1 = (fsPackFile_t*)p1;
 	file2 = (fsPackFile_t*)p2;
@@ -1047,7 +1047,7 @@ FS_FreeFile(void *buffer)
 }
 
 static fsRawPath_t *
-FS_FreeRawPaths(fsRawPath_t *start, fsRawPath_t *end)
+FS_FreeRawPaths(fsRawPath_t *start, const fsRawPath_t *end)
 {
 	fsRawPath_t *cur = start;
 	fsRawPath_t *next;
@@ -1063,7 +1063,7 @@ FS_FreeRawPaths(fsRawPath_t *start, fsRawPath_t *end)
 }
 
 static fsSearchPath_t *
-FS_FreeSearchPaths(fsSearchPath_t *start, fsSearchPath_t *end)
+FS_FreeSearchPaths(fsSearchPath_t *start, const fsSearchPath_t *end)
 {
 	fsSearchPath_t *cur = start;
 	fsSearchPath_t *next;
@@ -1889,8 +1889,8 @@ FS_LoadPK3(const char *packPath)
 const char *
 FS_NextPath(const char *prevPath)
 {
-	char *prev;
-	fsSearchPath_t *search;
+	const fsSearchPath_t *search;
+	const char *prev;
 
 	if (prevPath == NULL)
 	{
@@ -2026,7 +2026,7 @@ FS_ListFiles(const char *findname, int *numfiles,
 		unsigned musthave, unsigned canthave)
 {
 	char **list; /* List of files. */
-	char *s; /* Next file in list. */
+	const char *s; /* Next file in list. */
 	int nfiles; /* Number of files in list. */
 
 	/* Initialize variables. */
@@ -2387,7 +2387,6 @@ char**
 FS_ListMods(int *nummods)
 {
 	int nmods = 0, numdirchildren, numpacksinchilddir;
-	size_t searchpathlength;
 	char findnamepattern[MAX_OSPATH], modname[MAX_QPATH], searchpath[MAX_OSPATH];
 	char **dirchildren, **packsinchilddir, **modnames;
 
@@ -2403,6 +2402,8 @@ FS_ListMods(int *nummods)
 	// iterate over all Raw paths
 	for (fsRawPath_t *search = fs_rawPath; search; search = search->next)
 	{
+		size_t searchpathlength;
+
 		searchpathlength = strlen(search->path);
 		if (!searchpathlength)
 		{
@@ -2501,7 +2502,6 @@ FS_Dir_f(void)
 	char **dirnames; /* File list. */
 	char findname[1024]; /* File search path and pattern. */
 	const char *path = NULL; /* Search path. */
-	char *lastsep;
 	char wildcard[1024] = "*.*"; /* File pattern. */
 	int i; /* Loop counter. */
 	int ndirs; /* Number of files in list. */
@@ -2523,6 +2523,8 @@ FS_Dir_f(void)
 		{
 			for (i = 0; i < ndirs - 1; i++)
 			{
+				const char *lastsep;
+
 				lastsep = strrchr(dirnames[i], '/');
 				if (lastsep)
 				{
@@ -2722,7 +2724,7 @@ FS_AddKPFpack(void)
 
 static void
 FS_AddDirToSearchPath(char *dir, qboolean create) {
-	char *file;
+	const char *file;
 	char **list;
 	char path[MAX_OSPATH];
 	char *tmp;
@@ -3073,13 +3075,16 @@ FS_BuildGameSpecificSearchPath(const char *dir)
 
 // returns the filename used to open f, but (if opened from pack) in correct case
 // returns NULL if f is no valid handle
-const char* FS_GetFilenameForHandle(fileHandle_t f)
+const char*
+FS_GetFilenameForHandle(fileHandle_t f)
 {
-	fsHandle_t* fsh = FS_GetFileByHandle(f);
+	const fsHandle_t* fsh = FS_GetFileByHandle(f);
+
 	if (fsh)
 	{
 		return fsh->name;
 	}
+
 	return NULL;
 }
 
@@ -3116,7 +3121,7 @@ static void FS_AddDirToRawPath (const char *rawdir, qboolean create, qboolean re
 	}
 
 	// Bail out if the dir was already added.
-	for (fsRawPath_t *search = fs_rawPath; search; search = search->next)
+	for (const fsRawPath_t *search = fs_rawPath; search; search = search->next)
 	{
 		if (strcmp(search->path, dir) == 0)
 		{

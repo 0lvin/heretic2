@@ -2438,9 +2438,8 @@ Variable *CScript::HandleSpawn(void)
 	edict_t		*ent;
 	Variable	*Name;
 	Variable	*Value;
-	field_t		*f;
+	const field_t		*f;
 	const char	*NameValue;
-	byte		*b;
 
 	ent = G_Spawn();
 
@@ -2455,44 +2454,44 @@ Variable *CScript::HandleSpawn(void)
 
 		NameValue = Name->GetStringValue();
 
-		for (f=fields ; f->name ; f++)
+		f = FindSpawnfield(NameValue);
+		if (f)
 		{
-			if (!Q_stricmp(f->name, (char *)NameValue) )
-			{
-				if (f->flags & FFL_SPAWNTEMP)
-				{
-					b = (byte *)&st;
-				}
-				else
-				{
-					b = (byte *)ent;
-				}
+			byte *b;
 
-				switch (f->type)
-				{
-					case F_LRAWSTRING:
-						*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), true);
-						break;
-					case F_LSTRING:
-						*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), false);
-						break;
-					case F_VECTOR:
-						Value->GetVectorValue(*(vec3_t *)(b+f->ofs));
-						break;
-					case F_INT:
-						*(int *)(b+f->ofs) = Value->GetIntValue();
-						break;
-					case F_FLOAT:
-						*(float *)(b+f->ofs) = Value->GetFloatValue();
-						break;
-					case F_ANGLEHACK:
-						((float *)(b+f->ofs))[0] = 0;
-						((float *)(b+f->ofs))[1] = Value->GetFloatValue();
-						((float *)(b+f->ofs))[2] = 0;
-						break;
-					default:
-						break;
-				}
+			if (f->flags & FFL_SPAWNTEMP)
+			{
+				b = (byte *)&st;
+			}
+			else
+			{
+				b = (byte *)ent;
+			}
+
+			switch (f->type)
+			{
+				case F_LRAWSTRING:
+					*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), true);
+					break;
+				case F_LSTRING:
+					*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), false);
+					break;
+				case F_VECTOR:
+					Value->GetVectorValue(*(vec3_t *)(b+f->ofs));
+					break;
+				case F_INT:
+					*(int *)(b+f->ofs) = Value->GetIntValue();
+					break;
+				case F_FLOAT:
+					*(float *)(b+f->ofs) = Value->GetFloatValue();
+					break;
+				case F_ANGLEHACK:
+					((float *)(b+f->ofs))[0] = 0;
+					((float *)(b+f->ofs))[1] = Value->GetFloatValue();
+					((float *)(b+f->ofs))[2] = 0;
+					break;
+				default:
+					break;
 			}
 		}
 	}

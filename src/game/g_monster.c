@@ -169,7 +169,7 @@ void monster_start_go(edict_t *self);
 /* Monster weapons */
 
 static void
-monster_muzzleflash2(edict_t *self, vec3_t start, int flashtype)
+monster_muzzleflash2(const edict_t *self, vec3_t start, int flashtype)
 {
 	gi.WriteByte(svc_muzzleflash2);
 	gi.WriteShort(self - g_edicts);
@@ -390,7 +390,6 @@ dabeam_hit(edict_t *self)
 void
 monster_dabeam(edict_t *self)
 {
-	vec3_t last_movedir;
 	vec3_t point;
 
 	if (!self)
@@ -416,6 +415,8 @@ monster_dabeam(edict_t *self)
 
 	if (self->enemy)
 	{
+		vec3_t last_movedir;
+
 		VectorCopy(self->movedir, last_movedir);
 		VectorMA(self->enemy->absmin, 0.5, self->enemy->size, point);
 
@@ -673,8 +674,6 @@ M_CatagorizePosition(edict_t *ent)
 void
 M_WorldEffects(edict_t *ent)
 {
-	int dmg;
-
 	if (!ent)
 	{
 		return;
@@ -693,6 +692,8 @@ M_WorldEffects(edict_t *ent)
 				/* drown! */
 				if (ent->pain_debounce_time < level.time)
 				{
+					int dmg;
+
 					dmg = 2 + 2 * floor(level.time - ent->air_finished);
 
 					if (dmg > 15)
@@ -717,6 +718,8 @@ M_WorldEffects(edict_t *ent)
 				/* suffocate! */
 				if (ent->pain_debounce_time < level.time)
 				{
+					int dmg;
+
 					dmg = 2 + 2 * floor(level.time - ent->air_finished);
 
 					if (dmg > 15)
@@ -2380,7 +2383,8 @@ monster_start_go(edict_t *self)
 	self->monsterinfo.coop_check_debounce_time = 0;
 	self->monsterinfo.pausetime = -1;
 	if (self->enemy)
-	{//spawned mad
+	{
+		/* spawned mad */
 		FoundTarget(self, false);
 	}
 	else

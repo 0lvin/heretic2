@@ -149,8 +149,6 @@ gib_think(edict_t *self)
 void
 gib_touch(edict_t *self, edict_t *other /* unused */, cplane_t *plane, csurface_t *surf /* unused */)
 {
-	vec3_t normal_angles, right;
-
 	if (!self)
 	{
 		return;
@@ -165,6 +163,8 @@ gib_touch(edict_t *self, edict_t *other /* unused */, cplane_t *plane, csurface_
 
 	if (plane)
 	{
+		vec3_t normal_angles, right;
+
 		gi.sound(self, CHAN_VOICE, gi.soundindex(
 						"misc/fhit3.wav"), 1, ATTN_NORM, 0);
 
@@ -897,7 +897,6 @@ point_combat_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 		csurface_t *surf /* unused */)
 {
 	edict_t *activator;
-	vec3_t v;
 
 	if (!self || !other)
 	{
@@ -916,6 +915,8 @@ point_combat_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 
 		if (other->goalentity)
 		{
+			vec3_t v;
+
 			VectorSubtract(other->goalentity->s.origin, other->s.origin, v);
 			other->ideal_yaw = vectoyaw(v);
 		}
@@ -1250,7 +1251,7 @@ setup_shadow_lights(void)
 
 		if (self->itemtarget)
 		{
-			edict_t *target = G_Find(NULL, FOFS(targetname), self->itemtarget);
+			const edict_t *target = G_Find(NULL, FOFS(targetname), self->itemtarget);
 			if (target)
 			{
 				shadowlightinfo[i].shadowlight.lightstyle = target->style;
@@ -2263,8 +2264,6 @@ void
 commander_body_die(edict_t *self, edict_t *inflictor /* unused */,
 		edict_t *attacker /* unused */, int damage, vec3_t point /* unused */)
 {
-	int n;
-
 	if (!self)
 	{
 		return;
@@ -2273,6 +2272,8 @@ commander_body_die(edict_t *self, edict_t *inflictor /* unused */,
 	/* check for gib */
 	if (self->health <= self->gib_health)
 	{
+		int n;
+
 		gi.sound(self, CHAN_BODY, gi.soundindex("tank/pain.wav"), 1, ATTN_NORM, 0);
 
 		ThrowGib(self, NULL, damage, GIB_ORGANIC);
@@ -3086,7 +3087,7 @@ static void
 _target_string_apply(edict_t *tm, const char *str)
 {
 	edict_t *e;
-	size_t l, n;
+	size_t l;
 
 	l = str ? strlen(str) : 0;
 
@@ -3094,6 +3095,8 @@ _target_string_apply(edict_t *tm, const char *str)
 	{
 		if (e->count > 0)
 		{
+			size_t n;
+
 			n = e->count - 1;
 			e->s.frame = _target_character_getframe((n < l) ? str[n] : ' ');
 		}

@@ -64,22 +64,25 @@ static float sky_min, sky_max;
 void
 R_EmitWaterPolys(msurface_t *fa)
 {
-	mpoly_t *p, *bp;
-	mvtx_t *v;
-	int i, nv;
-	float s, t, os, ot;
+	mpoly_t *bp;
 	float sscroll, tscroll;
 
 	R_FlowingScroll(&r_newrefdef, fa->texinfo->flags, &sscroll, &tscroll);
 
 	for (bp = fa->polys; bp; bp = bp->next)
 	{
+		mpoly_t *p;
+		mvtx_t *v;
+		int i, nv;
+
 		p = bp;
 		nv = p->numverts;
 		R_SetBufferIndices(GL_TRIANGLE_FAN, nv);
 
 		for ( i = 0, v = p->verts; i < p->numverts; i++, v++)
 		{
+			float s, t, os, ot;
+
 			os = v->texCoord[0];
 			ot = v->texCoord[1];
 

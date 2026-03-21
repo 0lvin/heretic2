@@ -234,7 +234,7 @@ WidowTorso(edict_t *self)
 void
 WidowBlaster(edict_t *self)
 {
-	vec3_t forward, right, target, vec, targ_angles;
+	vec3_t forward, right, target;
 	vec3_t start;
 	int flashnum;
 	int effect;
@@ -264,6 +264,8 @@ WidowBlaster(edict_t *self)
 
 	if ((self->s.frame >= FRAME_spawn05) && (self->s.frame <= FRAME_spawn13))
 	{
+		vec3_t vec, targ_angles;
+
 		/* sweep */
 		flashnum = MZ2_WIDOW_BLASTER_SWEEP1 + self->s.frame - FRAME_spawn05;
 		G_ProjectSource(self->s.origin, monster_flash_offset[flashnum], forward,
@@ -362,7 +364,7 @@ void
 WidowSpawn(edict_t *self)
 {
 	vec3_t f, r, u, offset, startpoint, spawnpoint;
-	edict_t *ent, *designated_enemy;
+	edict_t *designated_enemy;
 	int i;
 
 	if (!self)
@@ -381,6 +383,8 @@ WidowSpawn(edict_t *self)
 		if (FindSpawnPoint(startpoint, stalker_mins, stalker_maxs, spawnpoint,
 					64))
 		{
+			edict_t *ent;
+
 			ent = CreateGroundMonster(spawnpoint, self->s.angles, stalker_mins, stalker_maxs,
 					"monster_stalker", 256);
 
@@ -1451,8 +1455,8 @@ WidowPowerArmor(edict_t *self)
 	}
 }
 
-void
-WidowRespondPowerup(edict_t *self, edict_t *other)
+static void
+WidowRespondPowerup(edict_t *self, const edict_t *other)
 {
 	if (!self || !other)
 	{
@@ -1513,9 +1517,6 @@ WidowRespondPowerup(edict_t *self, edict_t *other)
 void
 WidowPowerups(edict_t *self)
 {
-	int player;
-	edict_t *ent;
-
 	if (!self)
 	{
 		return;
@@ -1527,9 +1528,13 @@ WidowPowerups(edict_t *self)
 	}
 	else
 	{
+		size_t player;
+
 		/* in coop, check for pents, then quads, then doubles */
 		for (player = 1; player <= game.maxclients; player++)
 		{
+			const edict_t *ent;
+
 			ent = &g_edicts[player];
 
 			if (!ent->inuse)
@@ -1551,6 +1556,8 @@ WidowPowerups(edict_t *self)
 
 		for (player = 1; player <= game.maxclients; player++)
 		{
+			const edict_t *ent;
+
 			ent = &g_edicts[player];
 
 			if (!ent->inuse)
@@ -1572,6 +1579,8 @@ WidowPowerups(edict_t *self)
 
 		for (player = 1; player <= game.maxclients; player++)
 		{
+			const edict_t *ent;
+
 			ent = &g_edicts[player];
 
 			if (!ent->inuse)
@@ -1596,10 +1605,8 @@ WidowPowerups(edict_t *self)
 qboolean
 Widow_CheckAttack(edict_t *self)
 {
-	vec3_t spot1, spot2;
 	vec3_t temp;
 	float chance = 0;
-	trace_t tr;
 	int enemy_range;
 	float enemy_yaw;
 	float real_enemy_range;
@@ -1647,6 +1654,9 @@ Widow_CheckAttack(edict_t *self)
 
 	if (self->enemy->health > 0)
 	{
+		vec3_t spot1, spot2;
+		trace_t tr;
+
 		/* see if any entities are in the way of the shot */
 		VectorCopy(self->s.origin, spot1);
 		spot1[2] += self->viewheight;

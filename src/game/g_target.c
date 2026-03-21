@@ -88,8 +88,6 @@ SP_target_temp_entity(edict_t *ent)
 void
 Use_Target_Speaker(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused */)
 {
-	int chan;
-
 	if (!ent)
 	{
 		return;
@@ -109,6 +107,8 @@ Use_Target_Speaker(edict_t *ent, edict_t *other /* unused */, edict_t *activator
 	}
 	else
 	{
+		int chan;
+
 		/* normal sound */
 		if (ent->spawnflags & 4)
 		{
@@ -652,7 +652,6 @@ use_target_spawner(edict_t *self, edict_t *other /* unused */, edict_t *activato
 void
 SP_target_spawner(edict_t *self)
 {
-	vec3_t	forward;
 	vec3_t	fact2spawnpoint1 = {-1504, 512, 72};
 
 	if (!self)
@@ -668,6 +667,8 @@ SP_target_spawner(edict_t *self)
 	if (!Q_stricmp(level.mapname, "fact2")
 		&& VectorCompare(self->s.origin, fact2spawnpoint1) )
 	{
+		vec3_t	forward;
+
 		VectorSet(forward, 0, 0, 1);
 		VectorMA (self->s.origin, -8, forward, self->s.origin);
 	}
@@ -824,7 +825,6 @@ target_laser_think(edict_t *self)
 	vec3_t end;
 	trace_t tr;
 	vec3_t point;
-	vec3_t last_movedir;
 	int count;
 
 	if (!self)
@@ -843,6 +843,8 @@ target_laser_think(edict_t *self)
 
 	if (self->enemy)
 	{
+		vec3_t last_movedir;
+
 		VectorCopy(self->movedir, last_movedir);
 		VectorMA(self->enemy->absmin, 0.5, self->enemy->size, point);
 		VectorSubtract(point, self->s.origin, self->movedir);
@@ -1459,7 +1461,7 @@ SP_target_earthquake(edict_t *self)
  * ReRelease: Creates a camera path as seen in the N64 version.
  */
 static void
-camera_lookat_pathtarget(edict_t* self, vec3_t origin, vec3_t* dest)
+camera_lookat_pathtarget(const edict_t* self, vec3_t origin, vec3_t* dest)
 {
 	if (self->pathtarget)
 	{

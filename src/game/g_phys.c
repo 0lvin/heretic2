@@ -159,16 +159,12 @@ SV_RunThink(edict_t *ent)
 
 	ent->nextthink = 0;
 
-	if (!ent->think)
+	if (ent->think)
 	{
-		gi.error("NULL ent->think");
-		return false;
+		ent->think(ent);
 	}
 
-	ent->think(ent);
-
-	// NOTENOTE Is this what we want to return if it gets this far?
-	return true;
+	return false;
 }
 
 /*
@@ -208,7 +204,6 @@ static int
 ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce)
 {
 	float backoff;
-	float change;
 	int i, blocked;
 
 	blocked = 0;
@@ -227,6 +222,8 @@ ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce)
 
 	for (i = 0; i < 3; i++)
 	{
+		float change;
+
 		change = normal[i] * backoff;
 		out[i] = in[i] - change;
 
@@ -255,7 +252,6 @@ SV_FlyMove(edict_t *ent, float time, int mask)
 	edict_t *hit;
 	int bumpcount, numbumps;
 	vec3_t dir;
-	float d;
 	int numplanes;
 	vec3_t planes[MAX_CLIP_PLANES];
 	vec3_t primal_velocity, original_velocity, new_velocity;
@@ -379,6 +375,8 @@ SV_FlyMove(edict_t *ent, float time, int mask)
 		}
 		else
 		{
+			float d;
+
 			/* go along the crease */
 			if (numplanes != 2)
 			{
@@ -438,7 +436,7 @@ RealBoundingBox(edict_t *ent, vec3_t mins, vec3_t maxs)
 {
 	vec3_t forward, left, up, f1, l1, u1;
 	vec3_t p[8];
-	int i, j, k, j2, k4;
+	int i, j, k;
 
 	if (!ent)
 	{
@@ -447,6 +445,8 @@ RealBoundingBox(edict_t *ent, vec3_t mins, vec3_t maxs)
 
 	for (k = 0; k < 2; k++)
 	{
+		int k4;
+
 		k4 = k * 4;
 
 		if (k)
@@ -464,6 +464,8 @@ RealBoundingBox(edict_t *ent, vec3_t mins, vec3_t maxs)
 
 		for (j = 0; j < 2; j++)
 		{
+			int j2;
+
 			j2 = j * 2;
 
 			if (j)
@@ -642,7 +644,8 @@ static qboolean
 SV_Push(edict_t *pusher, vec3_t move, vec3_t amove)
 {
 	int i, e;
-	edict_t *check, *block;
+	const edict_t *block;
+	edict_t *check;
 	pushed_t *p;
 	vec3_t org, org2, move2, forward, right, up;
 	vec3_t realmins, realmaxs;
@@ -984,11 +987,7 @@ SV_Physics_Toss(edict_t *ent)
 {
 	trace_t trace;
 	vec3_t move;
-	float backoff;
 	edict_t *slave;
-//	qboolean wasinwater;
-//	qboolean isinwater;
-	vec3_t old_origin;
 
 	if (!ent)
 	{
@@ -1031,8 +1030,6 @@ SV_Physics_Toss(edict_t *ent)
 		return;
 	}
 
-	VectorCopy(ent->s.origin, old_origin);
-
 	SV_CheckVelocity(ent);
 
 	/* add gravity */
@@ -1056,6 +1053,8 @@ SV_Physics_Toss(edict_t *ent)
 
 	if (trace.fraction < 1)
 	{
+		float backoff;
+
 		if (ent->movetype == MOVETYPE_WALLBOUNCE)
 		{
 			backoff = 2.0;
@@ -1190,15 +1189,12 @@ SV_Physics_Step(edict_t *ent)
 {
 	qboolean wasonground;
 	qboolean hitsound = false;
-	float *vel;
 	float speed, newspeed, control;
 	float friction;
-	edict_t *groundentity;
-	int mask;
+	const edict_t *groundentity;
 	vec3_t origvel;
 
 	int i, threshhit=0;
-
 
 	if (!ent)
 	{
@@ -1286,12 +1282,16 @@ SV_Physics_Step(edict_t *ent)
 
 	if (ent->velocity[2] || ent->velocity[1] || ent->velocity[0] || ent->knockbackvel[0] || ent->knockbackvel[1] || ent->knockbackvel[2])
 	{
+		int mask;
+
 		/* apply friction: let dead monsters who
 		   aren't completely onground slide */
 		if ((wasonground) || (ent->flags & (FL_SWIM | FL_FLY)))
 		{
 			if (!((ent->health <= 0.0) && !M_CheckBottom(ent)))
 			{
+				float *vel;
+
 				vel = ent->velocity;
 				speed = sqrt(vel[0] * vel[0] + vel[1] * vel[1]);
 
@@ -1495,7 +1495,6 @@ G_RunBmodelAnimation(edict_t *ent)
 void
 G_RunEntity(edict_t *ent)
 {
-	trace_t trace;
 	vec3_t previous_origin;
 	qboolean saved_origin;
 
@@ -1567,6 +1566,8 @@ G_RunEntity(edict_t *ent)
 	/* also check inuse since entities are very often freed while thinking */
 	if (saved_origin && ent->inuse && !VectorCompare(ent->s.origin, previous_origin))
 	{
+		trace_t trace;
+
 		trace = gi.trace(ent->s.origin, ent->mins, ent->maxs,
 				previous_origin, ent, MASK_MONSTERSOLID);
 

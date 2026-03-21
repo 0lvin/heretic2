@@ -1141,7 +1141,7 @@ Q_stricmp(const char *s1, const char *s2)
 }
 
 int
-Q_strncasecmp(const char *s1, const char *s2, int n)
+Q_strncasecmp(const char *s1, const char *s2, size_t n)
 {
 	int c1;
 
@@ -1244,7 +1244,7 @@ Q_strlwr ( char *s )
 }
 
 int
-Q_strlcpy(char *dst, const char *src, int size)
+Q_strlcpy(char *dst, const char *src, size_t size)
 {
 	const char *s = src;
 
@@ -1269,7 +1269,6 @@ size_t
 Q_strlcpy_ascii(char *d, const char *s, size_t n)
 {
 	size_t ns = 0;
-	char c;
 	int dzero = n == 0;
 
 	if (!dzero)
@@ -1279,6 +1278,8 @@ Q_strlcpy_ascii(char *d, const char *s, size_t n)
 
 	for (; *s != '\0'; s++)
 	{
+		char c;
+
 		c = *s;
 		c &= 127;
 
@@ -1304,7 +1305,7 @@ Q_strlcpy_ascii(char *d, const char *s, size_t n)
 }
 
 int
-Q_strlcat(char *dst, const char *src, int size)
+Q_strlcat(char *dst, const char *src, size_t size)
 {
 	char *d = dst;
 
@@ -1380,10 +1381,10 @@ Q_strisnum(const char *s)
 const char *
 Q_strchrs(const char *s, const char *chrs)
 {
-	const char *hit;
-
 	for (; *chrs != '\0'; chrs++)
 	{
+		const char *hit;
+
 		hit = strchr(s, *chrs);
 		if (hit)
 		{
@@ -1416,12 +1417,13 @@ Q_strchr0(const char *s, char c)
 FILE *Q_fopen(const char *file, const char *mode)
 {
 	WCHAR wfile[MAX_OSPATH];
-	WCHAR wmode[16];
 
 	int len = MultiByteToWideChar(CP_UTF8, 0, file, -1, wfile, MAX_OSPATH);
 
 	if (len > 0)
 	{
+		WCHAR wmode[16];
+
 		if (MultiByteToWideChar(CP_UTF8, 0, mode, -1, wmode, 16) > 0)
 		{
 			// make sure it's a regular file and not a directory or sth, see #394
@@ -1487,9 +1489,9 @@ Info_ValueForKey(const char *s, const char *key)
 	static char value[2][MAX_INFO_VALUE];
 	static int valueindex = 0;
 
-	const char *kstart, *vstart;
+	const char *vstart;
 	char *v;
-	size_t klen, vlen;
+	size_t klen;
 
 	valueindex ^= 1;
 	v = value[valueindex];
@@ -1499,6 +1501,8 @@ Info_ValueForKey(const char *s, const char *key)
 
 	while (*s != '\0')
 	{
+		const char *kstart;
+
 		if (*s == '\\')
 		{
 			s++;
@@ -1518,6 +1522,8 @@ Info_ValueForKey(const char *s, const char *key)
 		if (!strncmp(kstart, key, klen) &&
 			kstart[klen] == '\\')
 		{
+			size_t vlen;
+
 			vlen = s - vstart;
 
 			if (vlen > 0)

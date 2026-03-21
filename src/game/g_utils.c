@@ -71,7 +71,7 @@ G_ProjectSource2(const vec3_t point, const vec3_t distance, const vec3_t forward
 edict_t *
 G_Find(edict_t *from, int fieldofs, const char *match)
 {
-	char *s;
+	const char *s;
 
 	if (!match)
 	{
@@ -526,16 +526,15 @@ vectoyaw2(vec3_t vec)
 }
 
 void
-vectoangles(vec3_t value1, vec3_t angles)
+vectoangles(vec3_t value, vec3_t angles)
 {
-	float forward;
 	float yaw, pitch;
 
-	if ((value1[1] == 0) && (value1[0] == 0))
+	if ((value[1] == 0) && (value[0] == 0))
 	{
 		yaw = 0;
 
-		if (value1[2] > 0)
+		if (value[2] > 0)
 		{
 			pitch = 90;
 		}
@@ -546,11 +545,13 @@ vectoangles(vec3_t value1, vec3_t angles)
 	}
 	else
 	{
-		if (value1[0])
+		float forward;
+
+		if (value[0])
 		{
-			yaw = (int)(atan2(value1[1], value1[0]) * 180 / M_PI);
+			yaw = (int)(atan2(value[1], value[0]) * 180 / M_PI);
 		}
-		else if (value1[1] > 0)
+		else if (value[1] > 0)
 		{
 			yaw = 90;
 		}
@@ -564,8 +565,8 @@ vectoangles(vec3_t value1, vec3_t angles)
 			yaw += 360;
 		}
 
-		forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
-		pitch = (int)(atan2(value1[2], forward) * 180 / M_PI);
+		forward = sqrt(value[0] * value[0] + value[1] * value[1]);
+		pitch = (int)(atan2(value[2], forward) * 180 / M_PI);
 
 		if (pitch < 0)
 		{
@@ -579,16 +580,15 @@ vectoangles(vec3_t value1, vec3_t angles)
 }
 
 void
-vectoangles2(vec3_t value1, vec3_t angles)
+vectoangles2(vec3_t value, vec3_t angles)
 {
-	float forward;
 	float yaw, pitch;
 
-	if ((value1[1] == 0) && (value1[0] == 0))
+	if ((value[1] == 0) && (value[0] == 0))
 	{
 		yaw = 0;
 
-		if (value1[2] > 0)
+		if (value[2] > 0)
 		{
 			pitch = 90;
 		}
@@ -599,11 +599,13 @@ vectoangles2(vec3_t value1, vec3_t angles)
 	}
 	else
 	{
-		if (value1[0])
+		float forward;
+
+		if (value[0])
 		{
-			yaw = (atan2(value1[1], value1[0]) * 180 / M_PI);
+			yaw = (atan2(value[1], value[0]) * 180 / M_PI);
 		}
-		else if (value1[1] > 0)
+		else if (value[1] > 0)
 		{
 			yaw = 90;
 		}
@@ -617,8 +619,8 @@ vectoangles2(vec3_t value1, vec3_t angles)
 			yaw += 360;
 		}
 
-		forward = sqrt(value1[0] * value1[0] + value1[1] * value1[1]);
-		pitch = (atan2(value1[2], forward) * 180 / M_PI);
+		forward = sqrt(value[0] * value[0] + value[1] * value[1]);
+		pitch = (atan2(value[2], forward) * 180 / M_PI);
 
 		if (pitch < 0)
 		{
@@ -632,7 +634,7 @@ vectoangles2(vec3_t value1, vec3_t angles)
 }
 
 char *
-G_CopyString(char *in)
+G_CopyString(const char *in)
 {
 	char *out;
 
@@ -843,7 +845,7 @@ void
 G_TouchTriggers(edict_t *ent)
 {
 	int i, num;
-	edict_t *touch[MAX_EDICTS], *hit;
+	edict_t *touch[MAX_EDICTS];
 
 	if (!ent)
 	{
@@ -863,6 +865,8 @@ G_TouchTriggers(edict_t *ent)
 	   list removed before we get to it (killtriggered) */
 	for (i = 0; i < num; i++)
 	{
+		edict_t *hit;
+
 		hit = touch[i];
 
 		if (!hit->inuse)
@@ -889,7 +893,7 @@ void
 G_TouchSolids(edict_t *ent)
 {
 	int i, num;
-	edict_t *touch[MAX_EDICTS], *hit;
+	edict_t *touch[MAX_EDICTS];
 
 	if (!ent)
 	{
@@ -903,6 +907,8 @@ G_TouchSolids(edict_t *ent)
 	   list removed before we get to it (killtriggered) */
 	for (i = 0; i < num; i++)
 	{
+		edict_t *hit;
+
 		hit = touch[i];
 
 		if (!hit->inuse)

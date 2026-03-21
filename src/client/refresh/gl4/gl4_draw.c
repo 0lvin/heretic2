@@ -239,7 +239,7 @@ GL4_Draw_FindPic(const char *name)
 void
 GL4_Draw_GetPicSize(int *w, int *h, const char *pic)
 {
-	gl4image_t *gl;
+	const gl4image_t *gl;
 
 	gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
 
@@ -256,7 +256,7 @@ GL4_Draw_GetPicSize(int *w, int *h, const char *pic)
 void
 GL4_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 {
-	gl4image_t *gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
+	const gl4image_t *gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
 
 	if (!gl)
 	{
@@ -273,7 +273,7 @@ GL4_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 void
 GL4_Draw_PicScaled(int x, int y, const char *pic, float factor, const char *alttext)
 {
-	gl4image_t *gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
+	const gl4image_t *gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
 	if (!gl)
 	{
 		if (alttext && alttext[0])
@@ -297,7 +297,7 @@ void
 GL4_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t color,
 	const char *alttext)
 {
-	gl4image_t *gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
+	const gl4image_t *gl = R_FindPic(pic, (findimage_t)GL4_FindImage);
 	if (!gl)
 	{
 		if (alttext && alttext[0])
@@ -460,8 +460,6 @@ GL4_Draw_FadeScreen(void)
 void
 GL4_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
 {
-	int i, j;
-
 	GL4_Bind(0);
 
 	unsigned image32[320*240]; /* was 256 * 256, but we want a bit more space */
@@ -474,17 +472,22 @@ GL4_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *
 	}
 	else
 	{
-		if (cols*rows > 320*240)
+		size_t i;
+
+		if (cols * rows > 320 * 240)
 		{
 			/* in case there is a bigger video after all,
 			 * malloc enough space to hold the frame */
 			img = (unsigned*)malloc(cols*rows*4);
 		}
 
-		for (i=0; i<rows; ++i)
+		for (i = 0; i < rows; ++i)
 		{
-			int rowOffset = i*cols;
-			for (j=0; j<cols; ++j)
+			size_t j, rowOffset;
+
+			rowOffset = i * cols;
+
+			for (j = 0; j < cols; ++j)
 			{
 				byte palIdx = data[rowOffset+j];
 				img[rowOffset+j] = gl4_rawpalette[palIdx];

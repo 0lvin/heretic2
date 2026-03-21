@@ -223,4 +223,3 @@
 {"parm8", STOFS(parms[7]), F_LSTRING, FFL_SPAWNTEMP},
 {"parm9", STOFS(parms[8]), F_LSTRING, FFL_SPAWNTEMP},
 {"parm10", STOFS(parms[9]), F_LSTRING, FFL_SPAWNTEMP},
-{0, 0, 0, 0}

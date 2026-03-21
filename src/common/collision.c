@@ -471,7 +471,7 @@ CM_HeadnodeForBox(vec3_t mins, vec3_t maxs)
 }
 
 static int
-CM_PointLeafnum_r(vec3_t p, int num)
+CM_PointLeafnum_r(const vec3_t p, int num)
 {
 	float d;
 	cnode_t *node;
@@ -516,7 +516,7 @@ CM_PointLeafnum_r(vec3_t p, int num)
 }
 
 int
-CM_PointLeafnum(vec3_t p)
+CM_PointLeafnum(const vec3_t p)
 {
 	if (!cmod->numplanes || !cmod->numnodes || !cmod->map_nodes)
 	{
@@ -1414,7 +1414,6 @@ CMod_LoadNodes(const char *name, cnode_t **map_nodes, int *numnodes,
 	cplane_t *map_planes, const byte *cmod_base, const lump_t *l)
 {
 	dqnode_t *in;
-	int child;
 	cnode_t *out;
 	int i, j, count;
 
@@ -1445,6 +1444,8 @@ CMod_LoadNodes(const char *name, cnode_t **map_nodes, int *numnodes,
 
 		for (j = 0; j < 2; j++)
 		{
+			int child;
+
 			child = in->children[j];
 			out->children[j] = child;
 		}

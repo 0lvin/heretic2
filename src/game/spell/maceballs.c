@@ -142,7 +142,7 @@ void MaceballBounce(edict_t *self, trace_t *trace)
 		else
 		{
 			int no_teleport = 1;
-			gitem_t	*Defence,
+			const gitem_t	*Defence,
 						*ManaItem;
 			int		ManaIndex;
 			int		Quantity;

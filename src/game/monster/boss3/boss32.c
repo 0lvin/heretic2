@@ -51,7 +51,7 @@ static int sound_taunt2;
 static int sound_taunt3;
 static int sound_hit;
 
-void
+static void
 makron_taunt(edict_t *self)
 {
 	float r;
@@ -892,7 +892,7 @@ makron_torso_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attack
 	G_FreeEdict(self);
 }
 
-void
+static void
 makron_torso(edict_t *self)
 {
 	edict_t *torso;
@@ -951,8 +951,6 @@ void
 makron_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
 		int damage /* unused */, vec3_t point /* unused */)
 {
-	int n;
-
 	if (!self)
 	{
 		return;
@@ -963,6 +961,8 @@ makron_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* 
 	/* check for gib */
 	if (self->health <= self->gib_health)
 	{
+		int n;
+
 		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
 
 		for (n = 0; n < 1 /*4*/; n++)
@@ -1002,10 +1002,8 @@ makron_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* 
 qboolean
 Makron_CheckAttack(edict_t *self)
 {
-	vec3_t spot1, spot2;
 	vec3_t temp;
 	float chance;
-	trace_t tr;
 	int enemy_range;
 	float enemy_yaw;
 
@@ -1016,6 +1014,9 @@ Makron_CheckAttack(edict_t *self)
 
 	if (self->enemy->health > 0)
 	{
+		vec3_t spot1, spot2;
+		trace_t tr;
+
 		/* see if any entities are in the way of the shot */
 		VectorCopy(self->s.origin, spot1);
 		spot1[2] += self->viewheight;

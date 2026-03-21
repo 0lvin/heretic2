@@ -52,9 +52,8 @@ void stalker_false_death_start(edict_t *self);
 
 #define STALKER_ON_CEILING(ent) (ent->gravityVector[2] > 0 ? 1 : 0)
 
-#define PI 3.14159
-#define RAD2DEG(x) (x * (float)180.0 / (float)PI)
-#define DEG2RAD(x) (x * (float)PI / (float)180.0)
+#define RAD2DEG(x) (x * 180.0 / M_PI)
+#define DEG2RAD(x) (x * M_PI / 180.0)
 #define FAUX_GRAVITY 800.0
 
 extern qboolean SV_PointCloseEnough(edict_t *ent, vec3_t goal, float dist);
@@ -628,7 +627,7 @@ stalker_shoot_attack(edict_t *self)
 {
 	vec3_t offset, start, f, r, dir;
 	vec3_t end;
-	float time, dist;
+	float dist;
 	trace_t trace;
 
 	if (!self)
@@ -664,6 +663,8 @@ stalker_shoot_attack(edict_t *self)
 
 	if (random() < (0.20 + 0.1 * skill->value))
 	{
+		float time;
+
 		dist = VectorLength(dir);
 		time = dist / 1000;
 		VectorMA(self->enemy->s.origin, time, self->enemy->velocity, end);
@@ -826,8 +827,7 @@ static void
 calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 {
 	float distV, distH;
-	float one, cosU;
-	float l, U;
+	float one;
 	vec3_t dist;
 
 	VectorSubtract(end, start, dist);
@@ -841,6 +841,8 @@ calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 
 	if (distV)
 	{
+		float U, cosU, l;
+
 		l = (float)sqrt(distH * distH + distV * distV);
 		U = (float)atan(distV / distH);
 
@@ -862,7 +864,7 @@ calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 			angles[2] = 1.0;
 		}
 
-		angles[1] = (float)PI - angles[0];
+		angles[1] = M_PI - angles[0];
 
 		if (isnan(angles[1]))
 		{
@@ -874,6 +876,8 @@ calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 	}
 	else
 	{
+		float l;
+
 		l = (float)sqrt(distH * distH + distV * distV);
 
 		angles[2] = 0.0;
@@ -887,7 +891,7 @@ calcJumpAngle(vec3_t start, vec3_t end, float velocity, vec3_t angles)
 			angles[2] = 1.0;
 		}
 
-		angles[1] = (float)PI - angles[0];
+		angles[1] = M_PI - angles[0];
 
 		if (isnan(angles[1]))
 		{
@@ -1383,8 +1387,6 @@ void
 stalker_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
 		int damage, vec3_t point /* unused */)
 {
-	int n;
-
 	if (!self)
 	{
 		return;
@@ -1398,6 +1400,8 @@ stalker_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /*
 	/* check for gib */
 	if (self->health <= self->gib_health)
 	{
+		int n;
+
 		gi.sound(self, CHAN_VOICE, gi.soundindex("misc/udeath.wav"), 1, ATTN_NORM, 0);
 
 		for (n = 0; n < 2; n++)

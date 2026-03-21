@@ -629,15 +629,7 @@ ChangeWeapon(edict_t *ent)
 		ent->s.skinnum = (ent - g_edicts - 1) | i;
 	}
 
-	if (ent->client->pers.weapon && ent->client->pers.weapon->ammo)
-	{
-		ent->client->ammo_index =
-			ITEM_INDEX(FindItem(ent->client->pers.weapon->ammo));
-	}
-	else
-	{
-		ent->client->ammo_index = 0;
-	}
+	ent->client->ammo_index = GetWeaponAmmoIndex(ent->client->pers.weapon);
 
 	if (!ent->client->pers.weapon)
 	{
@@ -778,6 +770,11 @@ Think_Weapon(edict_t *ent)
 
 		ent->client->pers.weapon->weaponthink(ent);
 	}
+	else if (ent->client->pers.weapon)
+	{
+		gi.dprintf("No weapon think %s\n",
+			ent->client->pers.weapon ? ent->client->pers.weapon->classname : "<unknown>");
+	}
 }
 
 /*
@@ -909,7 +906,7 @@ Use_Weapon2(edict_t *ent, const gitem_t *item)
 }
 
 void
-Drop_Weapon(edict_t *ent, gitem_t *item)
+Drop_Weapon(edict_t *ent, const gitem_t *item)
 {
 	int index;
 
@@ -1187,6 +1184,47 @@ Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 				FRAME_IDLE_LAST, FRAME_DEACTIVATE_LAST, pause_frames,
 				fire_frames, fire);
 	}
+}
+
+static void
+Weapon_PredictFramesGeneric(edict_t *ent, const dmdxframegroup_t *frames,
+	int num, void (*fire)(edict_t *ent))
+{
+	int last_active = 4, last_pow = 8, last_idle = 52, last_putway = 55;
+	int pause_frames[] = {19, 0};
+	int fire_frames[] = {5, 0};
+	size_t i;
+
+	for (i = 0; i < num; i++)
+	{
+		if (!strcmp(frames[i].name, "active") ||
+			!strcmp(frames[i].name, "pullout") || /* DoD */
+			!strcmp(frames[i].name, "raise")) /* Infinity */
+		{
+			last_active = frames[i].ofs + frames[i].num - 1;
+		}
+		else if (!strcmp(frames[i].name, "pow") ||
+				 !strcmp(frames[i].name, "shoot") || /* Infinity */
+				 !strcmp(frames[i].name, "attack") || /* DoD */
+				 !strcmp(frames[i].name, "fire")) /* Infinity */
+		{
+			last_pow = frames[i].ofs + frames[i].num - 1;
+			fire_frames[0] = frames[i].ofs;
+		}
+		else if (!strcmp(frames[i].name, "idle"))
+		{
+			last_idle = frames[i].ofs + frames[i].num - 1;
+			pause_frames[0] = frames[i].ofs;
+		}
+		else if (!strcmp(frames[i].name, "putway") ||
+				 !strcmp(frames[i].name, "lower")) /* Infinity */
+		{
+			last_putway = frames[i].ofs + frames[i].num - 1;
+		}
+	}
+
+	Weapon_Generic(ent, last_active, last_pow, last_idle, last_putway,
+			pause_frames, fire_frames, fire);
 }
 
 /*
@@ -1843,21 +1881,62 @@ Weapon_Blaster_Fire(edict_t *ent)
 void
 Weapon_Blaster(edict_t *ent)
 {
-	static const int pause_frames[] = {19, 32, 0};
-	static const int fire_frames[] = {5, 0};
+	const dmdxframegroup_t *frames;
+	int modelindex, num;
 
 	if (!ent)
 	{
 		return;
 	}
 
-	Weapon_Generic(ent, 4, 8, 52, 55, pause_frames,
-			fire_frames, Weapon_Blaster_Fire);
-
-	if (is_quadfire)
+	modelindex = FirstPersonWeaponModel(ent->client->pers.weapon);
+	frames = gi.GetModelInfo(modelindex, &num, NULL, NULL);
+	if (!frames || !num ||
+		(frames[num - 1].ofs + frames[num - 1].num) == 56)
 	{
+		/*
+		 * Used classic blaster animation with 56 frames:
+		 * #0: 'active' 0:5
+		 * #1: 'pow' 5:4
+		 * #2: 'idle' 9:24
+		 * #3: 'idle' 33:20
+		 * #4: 'putway' 53:3
+		 */
+		static const int pause_frames[] = {19, 32, 0};
+		static const int fire_frames[] = {5, 0};
+
 		Weapon_Generic(ent, 4, 8, 52, 55, pause_frames,
 				fire_frames, Weapon_Blaster_Fire);
+
+		if (is_quadfire)
+		{
+			Weapon_Generic(ent, 4, 8, 52, 55, pause_frames,
+					fire_frames, Weapon_Blaster_Fire);
+		}
+	}
+	else
+	{
+		Weapon_PredictFramesGeneric(ent, frames, num, Weapon_Blaster_Fire);
+	}
+}
+
+void
+Weapon_DynamicWeapon(edict_t *ent)
+{
+	const dmdxframegroup_t *frames;
+	int modelindex, num;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	modelindex = FirstPersonWeaponModel(ent->client->pers.weapon);
+	frames = gi.GetModelInfo(modelindex, &num, NULL, NULL);
+
+	if (frames && num)
+	{
+		Weapon_PredictFramesGeneric(ent, frames, num, Weapon_Blaster_Fire);
 	}
 }
 
@@ -4508,7 +4587,7 @@ WeaponThink_Blast(edict_t *caster)
 // ************************************************************************************************
 
 void
-Weapon_Ready(gclient_t *client, gitem_t *weapon)
+Weapon_Ready(gclient_t *client, const gitem_t *weapon)
 {
 	playerinfo_t *playerinfo;
 
@@ -4708,9 +4787,10 @@ void Weapon_EquipBow(struct edict_s *ent, const gitem_t *Weapon)
 // in respect to the amount of ammo for that weapon that the player has in their inventory.
 // ************************************************************************************************
 
-int Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
+int
+Weapon_CurrentShotsLeft(playerinfo_t *playerinfo)
 {
-	gitem_t	*Weapon, *AmmoItem;
+	const gitem_t	*Weapon, *AmmoItem;
 	int		AmmoIndex;
 	gclient_t *client;
 

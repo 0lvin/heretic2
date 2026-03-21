@@ -26,9 +26,7 @@ qboolean
 blocked_checkplat(edict_t *self, float dist)
 {
 	int playerPosition;
-	trace_t trace;
-	vec3_t pt1, pt2;
-	vec3_t forward;
+	vec3_t pt1;
 	edict_t *plat;
 
 	if (!self)
@@ -75,6 +73,9 @@ blocked_checkplat(edict_t *self, float dist)
 	/* if we're not, check to see if we'll step onto one with this move */
 	if (!plat)
 	{
+		vec3_t forward, pt2;
+		trace_t trace;
+
 		AngleVectors(self->s.angles, forward, NULL, NULL);
 		VectorMA(self->s.origin, dist, forward, pt1);
 		VectorCopy(pt1, pt2);
@@ -212,12 +213,6 @@ blocked_checkjump(edict_t *self, float dist, float maxDown, float maxUp)
 		}
 	}
 
-	return false;
-}
-
-qboolean
-blocked_checknewenemy(edict_t *self)
-{
 	return false;
 }
 
@@ -661,9 +656,8 @@ void
 hint_path_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 		csurface_t *surf /* unused */)
 {
-	edict_t *e, *goal;
+	edict_t *e;
 	edict_t *next = NULL;
-	qboolean goalFound = false;
 
 	if (!self || !other)
 	{
@@ -673,6 +667,8 @@ hint_path_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 	/* make sure we're the target of it's obsession */
 	if (other->movetarget == self)
 	{
+		const edict_t *goal;
+
 		goal = other->monsterinfo.goal_hint;
 
 		/* if the monster is where he wants to be */
@@ -683,6 +679,8 @@ hint_path_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
 		}
 		else
 		{
+			qboolean goalFound = false;
+
 			/* if we aren't, figure out which way we want to go */
 			e = hint_path_start[self->hint_chain_id];
 
@@ -991,7 +989,7 @@ edict_t *
 CheckForBadArea(edict_t *ent)
 {
 	int i, num;
-	edict_t *touch[MAX_EDICTS], *hit;
+	edict_t *touch[MAX_EDICTS];
 	vec3_t mins, maxs;
 
 	if (!ent)
@@ -1008,6 +1006,8 @@ CheckForBadArea(edict_t *ent)
 	   list removed before we get to it (killtriggered) */
 	for (i = 0; i < num; i++)
 	{
+		edict_t *hit;
+
 		hit = touch[i];
 
 		if (!hit->inuse)
@@ -1025,12 +1025,11 @@ CheckForBadArea(edict_t *ent)
 }
 
 qboolean
-MarkTeslaArea(edict_t *self, edict_t *tesla)
+MarkTeslaArea(const edict_t *self, edict_t *tesla)
 {
 	vec3_t mins, maxs;
-	edict_t *e;
-	edict_t *tail;
-	edict_t *area;
+	const edict_t *e;
+	edict_t *tail, *area;
 
 	if (!tesla || !self)
 	{
@@ -1415,7 +1414,7 @@ monster_duck_up(edict_t *self)
 }
 
 qboolean
-has_valid_enemy(edict_t *self)
+has_valid_enemy(const edict_t *self)
 {
 	if (!self)
 	{
@@ -1487,7 +1486,7 @@ TargetTesla(edict_t *self, edict_t *tesla)
 }
 
 edict_t *
-PickCoopTarget(edict_t *self)
+PickCoopTarget(const edict_t *self)
 {
 	if (!self)
 	{
@@ -1548,7 +1547,6 @@ PickCoopTarget(edict_t *self)
 int
 CountPlayers(void)
 {
-	edict_t *ent;
 	int count = 0;
 	int player;
 
@@ -1560,6 +1558,8 @@ CountPlayers(void)
 
 	for (player = 1; player <= game.maxclients; player++)
 	{
+		const edict_t *ent;
+
 		ent = &g_edicts[player];
 
 		if (!ent->inuse)
@@ -1590,7 +1590,7 @@ monster_jump_start(edict_t *self)
 }
 
 qboolean
-monster_jump_finished(edict_t *self)
+monster_jump_finished(const edict_t *self)
 {
 	if (!self)
 	{

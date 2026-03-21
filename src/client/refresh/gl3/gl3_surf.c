@@ -285,10 +285,10 @@ UpdateLMscales(const hmm_vec4 lmScales[MAX_LIGHTMAPS_PER_SURFACE], gl3ShaderInfo
 }
 
 static void
-RenderBrushPoly(entity_t *currententity, msurface_t *fa)
+RenderBrushPoly(const entity_t *currententity, msurface_t *fa)
 {
 	int map;
-	gl3image_t *image;
+	const gl3image_t *image;
 
 	c_brush_polys++;
 
@@ -398,7 +398,7 @@ GL3_DrawAlphaSurfaces(void)
 }
 
 static void
-DrawTextureChains(entity_t *currententity)
+DrawTextureChains(const entity_t *currententity)
 {
 	int i;
 	msurface_t *s;
@@ -435,10 +435,10 @@ DrawTextureChains(entity_t *currententity)
 }
 
 static void
-RenderLightmappedPoly(entity_t *currententity, msurface_t *surf)
+RenderLightmappedPoly(const entity_t *currententity, msurface_t *surf)
 {
 	int map;
-	gl3image_t *image = R_TextureAnimation(currententity, surf->texinfo);
+	const gl3image_t *image = R_TextureAnimation(currententity, surf->texinfo);
 
 	hmm_vec4 lmScales[MAX_LIGHTMAPS_PER_SURFACE] = {0};
 	lmScales[0] = HMM_Vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -475,12 +475,10 @@ RenderLightmappedPoly(entity_t *currententity, msurface_t *surf)
 }
 
 static void
-DrawInlineBModel(entity_t *currententity, gl3model_t *currentmodel)
+DrawInlineBModel(const entity_t *currententity, gl3model_t *currentmodel)
 {
-	int i;
-	cplane_t *pplane;
-	float dot;
 	msurface_t *psurf;
+	int i;
 
 	/* calculate dynamic lighting for bmodel */
 	R_PushDlights(&r_newrefdef, currentmodel->nodes + currentmodel->firstnode,
@@ -500,6 +498,9 @@ DrawInlineBModel(entity_t *currententity, gl3model_t *currentmodel)
 	/* draw texture */
 	for (i = 0; i < currentmodel->nummodelsurfaces; i++, psurf++)
 	{
+		cplane_t *pplane;
+		float dot;
+
 		/* find which side of the node we are on */
 		pplane = psurf->plane;
 
@@ -537,7 +538,6 @@ void
 GL3_DrawBrushModel(entity_t *e, gl3model_t *currentmodel)
 {
 	vec3_t mins, maxs;
-	int i;
 	qboolean rotated;
 
 	if (currentmodel->nummodelsurfaces == 0)
@@ -549,6 +549,8 @@ GL3_DrawBrushModel(entity_t *e, gl3model_t *currentmodel)
 
 	if (e->angles[0] || e->angles[1] || e->angles[2])
 	{
+		int i;
+
 		rotated = true;
 
 		for (i = 0; i < 3; i++)
@@ -587,8 +589,6 @@ GL3_DrawBrushModel(entity_t *e, gl3model_t *currentmodel)
 		modelorg[1] = -DotProduct(temp, right);
 		modelorg[2] = DotProduct(temp, up);
 	}
-
-
 
 	//glPushMatrix();
 	hmm_mat4 oldMat = gl3state.uni3DData.transModelMat4;

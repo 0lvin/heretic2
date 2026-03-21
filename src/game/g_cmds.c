@@ -45,8 +45,6 @@ void MorphPlayerToChicken(edict_t *self, edict_t *caster);
 
 int self_spawn = false;
 
-gitem_t *CTFWhat_Tech(edict_t *ent);
-
 static char *
 ClientTeam(const edict_t *ent, char* value, size_t val_len)
 {
@@ -108,42 +106,83 @@ OnSameTeam(const edict_t *ent1, const edict_t *ent2)
 	return false;
 }
 
-static void
-SelectNextItem(edict_t *ent, int itflags)
+static int
+SelectNextItem(const gclient_t *cl, int itflags)
 {
-	gclient_t *cl;
-	int i;
+	int i, si;
 
-	if (!ent)
+	si = cl->pers.selected_item;
+
+	for (i = 1; i <= itemlist_len; i++)
+	{
+		const gitem_t *it;
+		int index;
+
+		index = (si + i) % itemlist_len;
+
+		if (!cl->pers.inventory[index])
+		{
+			continue;
+		}
+
+		it = &itemlist[index];
+
+		if (!it->use)
+		{
+			continue;
+		}
+
+		if (!(it->flags & itflags))
+		{
+			continue;
+		}
+
+		return index;
+	}
+
+	return -1;
+}
+
+static void
+SelectNext(edict_t *ent, int itflags)
+{
+	if (!ent || !ent->client)
 	{
 		return;
 	}
-
-	cl = ent->client;
 
 	if (sv_cinematicfreeze->value)
 	{
 		return;
 	}
 
-	if (cl->menu)
+	if (ent->client->menu)
 	{
 		PMenu_Next(ent);
 		return;
 	}
-	else if (cl->chase_target)
+	else if (ent->client->chase_target)
 	{
 		ChaseNext(ent);
 		return;
 	}
 
-	/* scan  for the next valid one */
-	for (i = 1; i <= MAX_ITEMS; i++)
+	ent->client->pers.selected_item = SelectNextItem(ent->client, itflags);
+}
+
+static int
+SelectPrevItem(const gclient_t *cl, int itflags)
+{
+	int i, si;
+
+	si = cl->pers.selected_item;
+
+	for (i = 1; i <= itemlist_len; i++)
 	{
 		const gitem_t *it;
 		int index;
 
-		index = (cl->pers.selected_item + i) % MAX_ITEMS;
+		index = (si + itemlist_len - i) % itemlist_len;
 
 		if (!cl->pers.inventory[index])
 		{
@@ -162,93 +201,58 @@ SelectNextItem(edict_t *ent, int itflags)
 			continue;
 		}
 
-		cl->pers.selected_item = index;
-		return;
+		return index;
 	}
 
-	cl->pers.selected_item = -1;
+	return -1;
 }
 
 static void
-SelectPrevItem(edict_t *ent, int itflags)
+SelectPrev(edict_t *ent, int itflags)
 {
-	gclient_t *cl;
-	int i;
-
-	if (!ent)
+	if (!ent || !ent->client)
 	{
 		return;
 	}
-
-	cl = ent->client;
 
 	if (sv_cinematicfreeze->value)
 	{
 		return;
 	}
 
-	if (cl->menu)
+	if (ent->client->menu)
 	{
 		PMenu_Prev(ent);
 		return;
 	}
-	else if (cl->chase_target)
+	else if (ent->client->chase_target)
 	{
 		ChasePrev(ent);
 		return;
 	}
 
-	/* scan for the next valid one */
-	for (i = 1; i <= MAX_ITEMS; i++)
-	{
-		const gitem_t *it;
-		int index;
-
-		index = (cl->pers.selected_item + MAX_ITEMS - i) % MAX_ITEMS;
-
-		if (!cl->pers.inventory[index])
-		{
-			continue;
-		}
-
-		it = &itemlist[index];
-
-		if (!it->use)
-		{
-			continue;
-		}
-
-		if (!(it->flags & itflags))
-		{
-			continue;
-		}
-
-		cl->pers.selected_item = index;
-		cl->pers.defence = it;
-		return;
-	}
-
-	cl->pers.selected_item = -1;
+	ent->client->pers.selected_item = SelectPrevItem(ent->client, -1);
 }
 
 void
-ValidateSelectedItem(edict_t *ent)
+ValidateSelectedItem(gclient_t *cl)
 {
-	const gclient_t *cl;
+	const gitem_t *it;
+	int si;
 
-	if (!ent)
+	if (!cl)
 	{
 		return;
 	}
 
-	cl = ent->client;
+	si = cl->pers.selected_item;
+	it = GetItemByIndex(si);
 
-	if (cl->pers.inventory[cl->pers.selected_item])
+	if (!it || !it->use ||
+		!cl->pers.inventory[si])
 	{
-		return; /* valid */
+		cl->pers.selected_item = SelectNextItem(cl, -1);
 	}
-
-	SelectNextItem(ent, -1);
 }
 
 /* ================================================================================= */
@@ -393,7 +397,7 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all || (Q_stricmp(name, "weapons") == 0))
 	{
-		for (i = 0; i < game.num_items; i++)
+		for (i = 0; i < itemlist_len; i++)
 		{
 			it = itemlist + i;
 
@@ -438,7 +442,7 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all || Q_stricmp(name, "defences") == 0)
 	{
-		for (i = 0; i < game.num_items; i++)
+		for (i = 0; i < itemlist_len; i++)
 		{
 			it = itemlist + i;
 
@@ -467,7 +471,7 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all || Q_stricmp(name, "mana") == 0)
 	{
-		for (i=0 ; i<game.num_items ; i++)
+		for (i = 0; i < itemlist_len; i++)
 		{
 			it = itemlist + i;
 			if (!it->pickup)
@@ -491,7 +495,7 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all || (Q_stricmp(name, "ammo") == 0))
 	{
-		for (i = 0; i < game.num_items; i++)
+		for (i = 0; i < itemlist_len; i++)
 		{
 			it = itemlist + i;
 
@@ -686,7 +690,7 @@ Cmd_Give_f(edict_t *ent)
 
 	if (give_all)
 	{
-		for (i = 0; i < game.num_items; i++)
+		for (i = 0; i < itemlist_len; i++)
 		{
 			it = itemlist + i;
 
@@ -786,7 +790,7 @@ Cmd_ListItems_f(edict_t *ent)
 		return;
 	}
 
-	for (i = 0; i < game.num_items; i++)
+	for (i = 0; i < itemlist_len; i++)
 	{
 		const char *item_type = "<unknow>";
 		const gitem_t *it;
@@ -1074,7 +1078,7 @@ static void
 Cmd_Drop_f(edict_t *ent)
 {
 	int index;
-	gitem_t *it;
+	const gitem_t *it;
 	char *s;
 
 	if (!ent)
@@ -1270,7 +1274,7 @@ Cmd_InvUse_f(edict_t *ent)
 		return;
 	}
 
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->pers.selected_item == -1)
 	{
@@ -1321,11 +1325,11 @@ Cmd_WeapPrev_f(edict_t *ent)
 	selected_weapon = ITEM_INDEX(it);
 
 	/* scan for the next valid one */
-	for (i = 1; i <= MAX_ITEMS; i++)
+	for (i = 1; i <= itemlist_len; i++)
 	{
 		int index;
 
-		index = (selected_weapon + MAX_ITEMS - i) % MAX_ITEMS;
+		index = (selected_weapon + itemlist_len - i) % itemlist_len;
 
 		if (!cl->pers.inventory[index])
 		{
@@ -1384,11 +1388,11 @@ Cmd_WeapNext_f(edict_t *ent)
 	selected_weapon = ITEM_INDEX(cl->playerinfo.pers.weapon);
 
 	/* scan for the next valid one */
-	for (i = 1; i <= MAX_ITEMS; i++)
+	for (i = 1; i <= itemlist_len; i++)
 	{
 		int index;
 
-		index = (selected_weapon + i) % MAX_ITEMS;
+		index = (selected_weapon + i) % itemlist_len;
 
 		if (!cl->pers.inventory[index])
 		{
@@ -1593,7 +1597,7 @@ Cmd_InvDrop_f(edict_t *ent)
 		return;
 	}
 
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->pers.selected_item == -1)
 	{
@@ -1852,8 +1856,6 @@ Cmd_ToggleInventory_f(edict_t *ent)
 Kill all monsters on a level
 ===================
 */
-
-extern void Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point, int mod);
 
 void
 Cmd_KillMonsters_f(edict_t *ent)
@@ -2123,7 +2125,6 @@ static void
 Cmd_PlayerList_f(edict_t *ent)
 {
 	int i;
-	char st[80];
 	char text[1400];
 	edict_t *e2;
 
@@ -2138,13 +2139,14 @@ Cmd_PlayerList_f(edict_t *ent)
 	for (i = 0, e2 = g_edicts + 1; i < maxclients->value; i++, e2++)
 	{
 		size_t text_len;
+		char st_text[80];
 
 		if (!e2->inuse)
 		{
 			continue;
 		}
 
-		Com_sprintf(st, sizeof(st), "%02d:%02d %4d %3d %s%s\n",
+		Com_sprintf(st_text, sizeof(st_text), "%02d:%02d %4d %3d %s%s\n",
 				(level.framenum - e2->client->resp.enterframe) / 600,
 				((level.framenum - e2->client->resp.enterframe) % 600) / 10,
 				e2->client->ping,
@@ -2154,14 +2156,14 @@ Cmd_PlayerList_f(edict_t *ent)
 
 		text_len = strlen(text);
 
-		if ((text_len + strlen(st)) > (sizeof(text) - 50))
+		if ((text_len + strlen(st_text)) > (sizeof(text) - 50))
 		{
 			snprintf(text + text_len, sizeof(text) - text_len, "And more...\n");
 			gi.cprintf(ent, PRINT_HIGH, "%s", text);
 			return;
 		}
 
-		Q_strlcat(text, st, sizeof(text));
+		Q_strlcat(text, st_text, sizeof(text));
 	}
 
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
@@ -2264,7 +2266,7 @@ Cmd_SpawnEntity_f(edict_t *ent)
 }
 
 static void
-Cmd_SpawnOnStartByClass(char *classname, const vec3_t origin)
+Cmd_SpawnOnStartByClass(const char *classname, const vec3_t origin)
 {
 	edict_t *opponent = G_Spawn();
 
@@ -2848,27 +2850,27 @@ ClientCommand(edict_t *ent)
 	}
 	else if (Q_stricmp(cmd, "invnext") == 0)
 	{
-		SelectNextItem(ent, -1);
+		SelectNext(ent, -1);
 	}
 	else if (Q_stricmp(cmd, "invprev") == 0)
 	{
-		SelectPrevItem(ent, -1);
+		SelectPrev(ent, -1);
 	}
 	else if (Q_stricmp(cmd, "invnextw") == 0)
 	{
-		SelectNextItem(ent, IT_WEAPON);
+		SelectNext(ent, IT_WEAPON);
 	}
 	else if (Q_stricmp(cmd, "invprevw") == 0)
 	{
-		SelectPrevItem(ent, IT_WEAPON);
+		SelectPrev(ent, IT_WEAPON);
 	}
 	else if (Q_stricmp(cmd, "invnextp") == 0)
 	{
-		SelectNextItem(ent, IT_DEFENSE);
+		SelectNext(ent, IT_DEFENSE);
 	}
 	else if (Q_stricmp(cmd, "invprevp") == 0)
 	{
-		SelectPrevItem(ent, IT_DEFENSE);
+		SelectPrev(ent, IT_DEFENSE);
 	}
 	else if (Q_stricmp(cmd, "invuse") == 0)
 	{

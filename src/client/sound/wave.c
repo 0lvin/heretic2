@@ -90,7 +90,7 @@ FindNextChunk(const char *name)
 }
 
 static void
-FindChunk(char *name)
+FindChunk(const char *name)
 {
 	last_chunk = iff_data;
 	FindNextChunk(name);
@@ -146,6 +146,13 @@ GetWavinfo(char *name, byte *wav, int wavlength)
 	info.rate = GetLittleLong();
 	data_p += 4 + 2;
 	info.width = GetLittleShort() / 8;
+
+	/* wBitPerSample assumes it's not an uncommon value such as < 8 bits */
+	if (info.width <= 0)
+	{
+		Com_Printf("Invalid bits per sample");
+		return info;
+	}
 
 	/* get cue chunk */
 	FindChunk("cue ");

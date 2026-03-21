@@ -60,7 +60,7 @@ static int quad_fire_drop_timeout_hack;
 gitem_t *
 GetItemByIndex(int index)
 {
-	if ((index == 0) || (index >= game.num_items))
+	if ((index <= 0) || (index >= itemlist_len))
 	{
 		return NULL;
 	}
@@ -68,8 +68,24 @@ GetItemByIndex(int index)
 	return &itemlist[index];
 }
 
+int
+GetWeaponAmmoIndex(const gitem_t *weap)
+{
+	if (weap && weap->ammo)
+	{
+		const gitem_t *ammo = FindItem(weap->ammo);
+
+		if (ammo)
+		{
+			return ITEM_INDEX(ammo);
+		}
+	}
+
+	return 0;
+}
+
 static gitem_t *
-FindItemInList(const char *classname, gitem_t *list, int count)
+FindItemInList(const char *classname, gitem_t *list, size_t count)
 {
 	int i;
 	gitem_t *it;
@@ -100,7 +116,7 @@ FindItemInList(const char *classname, gitem_t *list, int count)
 gitem_t *
 FindItemByClassname(const char *classname)
 {
-	return FindItemInList(classname, itemlist, game.num_items);
+	return FindItemInList(classname, itemlist, itemlist_len);
 }
 
 gitem_t *
@@ -116,7 +132,7 @@ FindItem(const char *pickup_name)
 
 	it = itemlist;
 
-	for (i = 0; i < game.num_items; i++, it++)
+	for (i = 0; i < itemlist_len; i++, it++)
 	{
 		if (!it->pickup_name)
 		{
@@ -383,7 +399,7 @@ Pickup_General(edict_t *ent, edict_t *other)
 }
 
 void
-Drop_General(edict_t *ent, gitem_t *item)
+Drop_General(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -392,7 +408,7 @@ Drop_General(edict_t *ent, gitem_t *item)
 
 	Drop_Item(ent, item);
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 }
 
 /* ====================================================================== */
@@ -776,7 +792,7 @@ Use_IR(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->ir_framenum > level.framenum)
 	{
@@ -794,7 +810,7 @@ void
 Use_Double(edict_t *ent, const gitem_t *item)
 {
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->double_framenum > level.framenum)
 	{
@@ -841,7 +857,7 @@ Use_Nuke(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	AngleVectors(ent->client->v_angle, forward, right, NULL);
 
@@ -879,7 +895,7 @@ Use_Doppleganger(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	SpawnGrow_Spawn(spawnPt, 0);
 	fire_doppleganger(ent, spawnPt, forward);
@@ -968,7 +984,7 @@ Use_Defender(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	Defender_Launch(ent);
 }
@@ -988,7 +1004,7 @@ Use_Hunter(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	Hunter_Launch(ent);
 }
@@ -1008,7 +1024,7 @@ Use_Vengeance(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	Vengeance_Launch(ent);
 }
@@ -1026,7 +1042,7 @@ Use_Quad(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (quad_drop_timeout_hack)
 	{
@@ -1064,7 +1080,7 @@ Use_QuadFire(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (quad_fire_drop_timeout_hack)
 	{
@@ -1099,7 +1115,7 @@ Use_Breather(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->breather_framenum > level.framenum)
 	{
@@ -1122,7 +1138,7 @@ Use_Envirosuit(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->enviro_framenum > level.framenum)
 	{
@@ -1145,7 +1161,7 @@ Use_Invulnerability(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 
 	if (ent->client->invincible_framenum > level.framenum)
 	{
@@ -1193,7 +1209,7 @@ Use_Silencer(edict_t *ent, const gitem_t *item)
 	}
 
 	ent->client->pers.inventory[ITEM_INDEX(item)]--;
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 	ent->client->silencer_shots += 30;
 }
 
@@ -1508,7 +1524,7 @@ Pickup_Ammo(edict_t *ent, edict_t *other)
 }
 
 void
-Drop_Ammo(edict_t *ent, gitem_t *item)
+Drop_Ammo(edict_t *ent, const gitem_t *item)
 {
 	edict_t *dropped;
 	int index;
@@ -1531,8 +1547,7 @@ Drop_Ammo(edict_t *ent, gitem_t *item)
 	}
 
 	ent->client->pers.inventory[index] -= dropped->count;
-
-	ValidateSelectedItem(ent);
+	ValidateSelectedItem(ent->client);
 }
 
 /* ====================================================================== */
@@ -1545,7 +1560,7 @@ MegaHealth_think(edict_t *self)
 		return;
 	}
 
-	if ((self->owner->health > self->owner->max_health)
+	if (self->owner && (self->owner->health > self->owner->max_health)
 		&& !CTFHasRegeneration(self->owner))
 	{
 		self->nextthink = level.time + 1;
@@ -1646,9 +1661,6 @@ Pickup_Armor(edict_t *ent, edict_t *other)
 {
 	const gitem_armor_t *oldinfo, *newinfo;
 	int old_armor_index;
-	int newcount;
-	float salvage;
-	int salvagecount;
 
 	if (!ent || !other)
 	{
@@ -1695,6 +1707,9 @@ Pickup_Armor(edict_t *ent, edict_t *other)
 
 		if (newinfo->normal_protection > oldinfo->normal_protection)
 		{
+			int salvagecount, newcount;
+			float salvage;
+
 			/* calc new armor values */
 			salvage = oldinfo->normal_protection / newinfo->normal_protection;
 			salvagecount = salvage *
@@ -1714,6 +1729,9 @@ Pickup_Armor(edict_t *ent, edict_t *other)
 		}
 		else
 		{
+			int salvagecount, newcount;
+			float salvage;
+
 			/* calc new armor values */
 			salvage = newinfo->normal_protection / oldinfo->normal_protection;
 			salvagecount = salvage * newinfo->base_count;
@@ -1841,7 +1859,7 @@ Pickup_PowerArmor(edict_t *ent, edict_t *other)
 }
 
 void
-Drop_PowerArmor(edict_t *ent, gitem_t *item)
+Drop_PowerArmor(edict_t *ent, const gitem_t *item)
 {
 	if (!ent || !item)
 	{
@@ -2830,7 +2848,7 @@ P_ToggleFlashlight(edict_t *ent, qboolean state)
 }
 
 void
-Use_Flashlight(edict_t *ent, const gitem_t *inv)
+Use_Flashlight(edict_t *ent, const gitem_t *item)
 {
 	P_ToggleFlashlight(ent, !(ent->flags & FL_FLASHLIGHT));
 }
@@ -6351,6 +6369,8 @@ static const gitem_t gameitemlist[] = {
 
 gitem_t itemlist[MAX_ITEMS];
 
+size_t itemlist_len = ARRLEN(gameitemlist) - 1;
+
 /*
  * QUAKED item_health (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
  */
@@ -6554,7 +6574,7 @@ InitItems(void)
 						itemlist[num_items].pickup = Pickup_Weapon;
 						itemlist[num_items].use = Use_Weapon;
 						itemlist[num_items].drop = Drop_Weapon;
-						itemlist[num_items].weaponthink = Weapon_Blaster;
+						itemlist[num_items].weaponthink = Weapon_DynamicWeapon;
 						itemlist[num_items].world_model_flags = EF_ROTATE;
 						itemlist[num_items].flags = IT_WEAPON;
 					}
@@ -6593,7 +6613,7 @@ InitItems(void)
 		free(dyn_items);
 	}
 
-	game.num_items = num_items;
+	itemlist_len = num_items;
 }
 
 qboolean
@@ -6616,7 +6636,7 @@ SetItemNames(void)
 {
 	int i;
 
-	for (i = 0; i < game.num_items; i++)
+	for (i = 0; i < itemlist_len; i++)
 	{
 		gitem_t *it;
 
@@ -6683,7 +6703,7 @@ SP_xatrix_item(edict_t *self)
 		spawnClass = "weapon_plasmabeam";
 	}
 
-	item = FindItemInList(spawnClass, itemlist, game.num_items);
+	item = FindItemInList(spawnClass, itemlist, itemlist_len);
 	if (item)
 	{
 		/* found it */

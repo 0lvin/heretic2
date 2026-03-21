@@ -89,11 +89,7 @@ static void
 P_DamageFeedback(edict_t *player)
 {
 	gclient_t *client;
-	float realcount, count, kick;
-	vec3_t v;
-	static vec3_t power_color = {0.0, 1.0, 0.0};
-	static vec3_t acolor = {1.0, 1.0, 1.0};
-	static vec3_t bcolor = {1.0, 0.0, 0.0};
+	float count;
 
 	if (!player)
 	{
@@ -203,16 +199,22 @@ P_DamageFeedback(edict_t *player)
 
 	if (client->damage_parmor)
 	{
+		static vec3_t power_color = {0.0, 1.0, 0.0};
+
 		VectorMA(v, (float)client->damage_parmor / realcount, power_color, v);
 	}
 
 	if (client->damage_armor)
 	{
+		static vec3_t acolor = {1.0, 1.0, 1.0};
+
 		VectorMA(v, (float)client->damage_armor / realcount, acolor, v);
 	}
 
 	if (client->damage_blood)
 	{
+		static vec3_t bcolor = {1.0, 0.0, 0.0};
+
 		VectorMA(v, (float)client->damage_blood / realcount, bcolor, v);
 	}
 
@@ -274,7 +276,6 @@ SV_CalcViewOffset(edict_t *ent)
 	float *angles;
 	float bob;
 	float ratio;
-	float delta;
 	vec3_t v;
 
 	if (!ent)
@@ -305,6 +306,8 @@ SV_CalcViewOffset(edict_t *ent)
 	}
 	else
 	{
+		float delta;
+
 		/* add angles based on weapon kick */
 		VectorCopy(ent->client->kick_angles, angles);
 
@@ -455,6 +458,453 @@ SV_CalcViewOffset(edict_t *ent)
 	}
 
 	VectorCopy(v, ent->client->ps.viewoffset);
+}
+
+static void
+SV_CalcGunOffset(edict_t *ent)
+{
+	int i;
+	const gitem_t *heatbeam;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	heatbeam = FindItemByClassname("weapon_plasmabeam");
+
+	/* heatbeam shouldn't bob so the beam looks right */
+	if (ent->client->pers.weapon != heatbeam)
+	{
+		/* gun angles from bobbing */
+		ent->client->ps.gunangles[ROLL] = xyspeed * bobfracsin * 0.005;
+		ent->client->ps.gunangles[YAW] = xyspeed * bobfracsin * 0.01;
+
+		if (bobcycle & 1)
+		{
+			ent->client->ps.gunangles[ROLL] = -ent->client->ps.gunangles[ROLL];
+			ent->client->ps.gunangles[YAW] = -ent->client->ps.gunangles[YAW];
+		}
+
+		ent->client->ps.gunangles[PITCH] = xyspeed * bobfracsin * 0.005;
+
+		/* gun angles from delta movement */
+		for (i = 0; i < 3; i++)
+		{
+			float delta;
+
+			delta = ent->client->oldviewangles[i] -
+					ent->client->ps.viewangles[i];
+
+			if (delta > 180)
+			{
+				delta -= 360;
+			}
+
+			if (delta < -180)
+			{
+				delta += 360;
+			}
+
+			if (delta > 45)
+			{
+				delta = 45;
+			}
+
+			if (delta < -45)
+			{
+				delta = -45;
+			}
+
+			if (i == YAW)
+			{
+				ent->client->ps.gunangles[ROLL] += 0.1 * delta;
+			}
+
+			ent->client->ps.gunangles[i] += 0.2 * delta;
+		}
+	}
+	else
+	{
+		for (i = 0; i < 3; i++)
+		{
+			ent->client->ps.gunangles[i] = 0;
+		}
+	}
+
+	/* gun height */
+	VectorClear(ent->client->ps.gunoffset);
+
+	/* gun_x / gun_y / gun_z are development tools */
+	for (i = 0; i < 3; i++)
+	{
+		ent->client->ps.gunoffset[i] += forward[i] * (gun_y->value);
+		ent->client->ps.gunoffset[i] += right[i] * gun_x->value;
+		ent->client->ps.gunoffset[i] += up[i] * (-gun_z->value);
+	}
+}
+
+static void
+SV_AddBlend(float r, float g, float b, float a, float *v_blend)
+{
+	float a2, a3;
+
+	if (!v_blend)
+	{
+		return;
+	}
+
+	if (a <= 0)
+	{
+		return;
+	}
+
+	a2 = v_blend[3] + (1 - v_blend[3]) * a; /* new total alpha */
+	a3 = v_blend[3] / a2; /* fraction of color from old */
+
+	v_blend[0] = v_blend[0] * a3 + r * (1 - a3);
+	v_blend[1] = v_blend[1] * a3 + g * (1 - a3);
+	v_blend[2] = v_blend[2] * a3 + b * (1 - a3);
+	v_blend[3] = a2;
+}
+
+static void
+SV_CalcBlend(edict_t *ent)
+{
+	int contents;
+	vec3_t vieworg;
+	int remaining;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	ent->client->ps.blend[0] = ent->client->ps.blend[1] =
+		ent->client->ps.blend[2] = ent->client->ps.blend[3] = 0;
+
+	/* add for contents */
+	if (ent->client->chasetoggle)
+	{
+		/* if always on then do shading to camera not player */
+		VectorCopy(ent->client->chasecam->s.origin, vieworg);
+	}
+	else
+	{
+		VectorAdd(ent->s.origin, ent->client->ps.viewoffset, vieworg);
+	}
+
+	contents = gi.pointcontents(vieworg);
+
+	if (contents & (CONTENTS_LAVA | CONTENTS_SLIME | CONTENTS_WATER))
+	{
+		ent->client->ps.rdflags |= RDF_UNDERWATER;
+	}
+	else
+	{
+		ent->client->ps.rdflags &= ~RDF_UNDERWATER;
+	}
+
+	if (contents & (CONTENTS_SOLID | CONTENTS_LAVA))
+	{
+		SV_AddBlend(1.0, 0.3, 0.0, 0.6, ent->client->ps.blend);
+	}
+	else if (contents & CONTENTS_SLIME)
+	{
+		SV_AddBlend(0.0, 0.1, 0.05, 0.6, ent->client->ps.blend);
+	}
+	else if (contents & CONTENTS_WATER)
+	{
+		SV_AddBlend(0.5, 0.3, 0.2, 0.4, ent->client->ps.blend);
+	}
+
+	/* add for powerups */
+	if (ent->client->quad_framenum > level.framenum)
+	{
+		remaining = ent->client->quad_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex(
+							"items/damage2.wav"), 1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(0, 0, 1, 0.08, ent->client->ps.blend);
+		}
+	}
+	else if (ent->client->double_framenum > level.framenum)
+	{
+		remaining = ent->client->double_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/ddamage2.wav"),
+					1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(0.9, 0.7, 0, 0.08, ent->client->ps.blend);
+		}
+	}
+	else if (ent->client->quadfire_framenum > level.framenum)
+	{
+		remaining = ent->client->quadfire_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex("items/quadfire2.wav"),
+					1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(1, 0.2, 0.5, 0.08, ent->client->ps.blend);
+		}
+	}
+	else if (ent->client->invincible_framenum > level.framenum)
+	{
+		remaining = ent->client->invincible_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex(
+							"items/protect2.wav"), 1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(1, 1, 0, 0.08, ent->client->ps.blend);
+		}
+	}
+	else if (ent->client->invisible_framenum > level.framenum)
+	{
+		remaining = ent->client->invisible_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex(
+							"items/protect2.wav"), 1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(0.8f, 0.8f, 0.8f, 0.08f, ent->client->ps.blend);
+		}
+	}
+	else if (ent->client->enviro_framenum > level.framenum)
+	{
+		remaining = ent->client->enviro_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex(
+							"items/airout.wav"), 1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(0, 1, 0, 0.08, ent->client->ps.blend);
+		}
+	}
+	else if (ent->client->breather_framenum > level.framenum)
+	{
+		remaining = ent->client->breather_framenum - level.framenum;
+
+		if (remaining == 30) /* beginning to fade */
+		{
+			gi.sound(ent, CHAN_ITEM, gi.soundindex(
+							"items/airout.wav"), 1, ATTN_NORM, 0);
+		}
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			SV_AddBlend(0.4, 1, 0.4, 0.04, ent->client->ps.blend);
+		}
+	}
+
+	if (ent->client->nuke_framenum > level.framenum)
+	{
+		float brightness;
+		brightness = (ent->client->nuke_framenum - level.framenum) / 20.0;
+		SV_AddBlend(1, 1, 1, brightness, ent->client->ps.blend);
+	}
+
+	if (ent->client->ir_framenum > level.framenum)
+	{
+		remaining = ent->client->ir_framenum - level.framenum;
+
+		if ((remaining > 30) || (remaining & 4))
+		{
+			ent->client->ps.rdflags |= RDF_IRGOGGLES;
+			SV_AddBlend(1, 0, 0, 0.2, ent->client->ps.blend);
+		}
+		else
+		{
+			ent->client->ps.rdflags &= ~RDF_IRGOGGLES;
+		}
+	}
+	else
+	{
+		ent->client->ps.rdflags &= ~RDF_IRGOGGLES;
+	}
+
+	/* add for damage */
+	if (ent->client->damage_alpha > 0)
+	{
+		SV_AddBlend(ent->client->damage_blend[0],
+				ent->client->damage_blend[1],
+				ent->client->damage_blend[2],
+				ent->client->damage_alpha,
+				ent->client->ps.blend);
+	}
+
+	if (ent->client->bonus_alpha > 0)
+	{
+		SV_AddBlend(0.85, 0.7, 0.3, ent->client->bonus_alpha,
+				ent->client->ps.blend);
+	}
+
+	/* drop the damage value */
+	ent->client->damage_alpha -= 0.06;
+
+	if (ent->client->damage_alpha < 0)
+	{
+		ent->client->damage_alpha = 0;
+	}
+
+	/* drop the bonus value */
+	ent->client->bonus_alpha -= 0.1;
+
+	if (ent->client->bonus_alpha < 0)
+	{
+		ent->client->bonus_alpha = 0;
+	}
+}
+
+static void
+P_FallingDamage(edict_t *ent)
+{
+	float delta;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	if (ent->s.modelindex != CUSTOM_PLAYER_MODEL)
+	{
+		return; /* not in the player model */
+	}
+
+	if (ent->movetype == MOVETYPE_NOCLIP)
+	{
+		return;
+	}
+
+	if ((ent->client->oldvelocity[2] < 0) &&
+		(ent->velocity[2] > ent->client->oldvelocity[2]) && (!ent->groundentity))
+	{
+		delta = ent->client->oldvelocity[2];
+	}
+	else
+	{
+		if (!ent->groundentity)
+		{
+			return;
+		}
+
+		delta = ent->velocity[2] - ent->client->oldvelocity[2];
+	}
+
+	delta = delta * delta * 0.0001;
+
+	/* never take damage if just release grapple or on grapple */
+	if (ctf->value && (
+		(level.time - ent->client->ctf_grapplereleasetime <= FRAMETIME * 2) ||
+		(ent->client->ctf_grapple &&
+		 (ent->client->ctf_grapplestate > CTF_GRAPPLE_STATE_FLY))
+	))
+	{
+		return;
+	}
+
+	/* never take falling damage if completely underwater */
+	if (ent->waterlevel == 3)
+	{
+		return;
+	}
+
+	if (ent->waterlevel == 2)
+	{
+		delta *= 0.25;
+	}
+
+	if (ent->waterlevel == 1)
+	{
+		delta *= 0.5;
+	}
+
+	if (delta < 1)
+	{
+		return;
+	}
+
+	if (delta < 15)
+	{
+		ent->s.event = EV_FOOTSTEP;
+		return;
+	}
+
+	ent->client->fall_value = delta * 0.5;
+
+	if (ent->client->fall_value > 40)
+	{
+		ent->client->fall_value = 40;
+	}
+
+	ent->client->fall_time = level.time + FALL_TIME;
+
+	if (delta > 30)
+	{
+		int damage;
+		vec3_t dir;
+
+		if (ent->health > 0)
+		{
+			if (delta >= 55)
+			{
+				ent->s.event = EV_FALLFAR;
+			}
+			else
+			{
+				ent->s.event = EV_FALL;
+			}
+		}
+
+		ent->pain_debounce_time = level.time; /* no normal pain sound */
+		damage = (delta - 30) / 2;
+
+		if (damage < 1)
+		{
+			damage = 1;
+		}
+
+		VectorSet(dir, 0, 0, 1);
+
+		if (!deathmatch->value || !((int)dmflags->value & DF_NO_FALLING))
+		{
+			T_Damage(ent, world, world, dir, ent->s.origin,
+					vec3_origin, damage, 0, 0, MOD_FALLING);
+		}
+	}
+	else
+	{
+		ent->s.event = EV_FALLSHORT;
+		return;
+	}
 }
 
 void
@@ -1304,8 +1754,6 @@ G_SetClientFrame(edict_t *ent, float speed)
 
 	if (client->anim_priority == ANIM_JUMP)
 	{
-		int firstframe, lastframe;
-
 		if (!ent->groundentity)
 		{
 			return; /* stay there */
@@ -1414,7 +1862,7 @@ void
 ClientEndServerFrame(edict_t *ent)
 {
 	float bobtime;
-	int i, index;
+	int i;
 
 	if (!ent)
 	{

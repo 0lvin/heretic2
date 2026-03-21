@@ -599,6 +599,25 @@ static char *healthicons[2] =
 
 /* ======================================================================= */
 
+static void
+G_SetStats_SelectedItem(gclient_t *cl)
+{
+	const gitem_t *it;
+	int si;
+
+	si = cl->pers.selected_item;
+	it = GetItemByIndex(si);
+
+	if ((si <= 0) || (si >= itemlist_len))
+	{
+		si = -1;
+	}
+
+	cl->ps.stats[STAT_SELECTED_ITEM] = si;
+	cl->ps.stats[STAT_SELECTED_ICON] = (it && it->icon) ?
+		gi.imageindex(it->icon) : 0;
+}
+
 void
 G_SetStats(edict_t *ent)
 {
@@ -753,7 +772,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_PUZZLE_COUNT] = 0;
 	for(i = 0; i < MAX_ITEMS; i++, item++)
 	{
-		if (i >= game.num_items)
+		if (i >= itemlist_len)
 		{
 			break;
 		}

@@ -221,7 +221,8 @@ Qcommon_Mainloop(void)
 	}
 }
 
-void Qcommon_ExecConfigs(qboolean gameStartUp)
+void
+Qcommon_ExecConfigs(qboolean gameStartUp)
 {
 	Cbuf_AddText("exec default.cfg\n");
 	Cbuf_AddText("exec yq2.cfg\n");
@@ -377,7 +378,7 @@ Qcommon_Init(int argc, char **argv)
 	modder = Cvar_Get("modder", "0", 0);
 	timescale = Cvar_Get("timescale", "1", 0);
 
-	char *s;
+	const char *s;
 	s = va("%s %s %s %s", YQ2VERSION, YQ2ARCH, BUILD_DATE, YQ2OSTYPE);
 	Cvar_Get("version", s, CVAR_SERVERINFO | CVAR_NOSET);
 
@@ -452,7 +453,6 @@ Qcommon_Frame(int usec)
 	// Statistics.
 	int time_before = 0;
 	int time_between = 0;
-	int time_after;
 
 	// Target packetframerate.
 	float pfps;
@@ -542,7 +542,6 @@ Qcommon_Frame(int usec)
 	{
 		usec *= timescale->value;
 	}
-
 
 	if (showtrace->value)
 	{
@@ -715,6 +714,7 @@ Qcommon_Frame(int usec)
 	if (host_speeds->value)
 	{
 		int all, sv, gm, cl, rf;
+		int time_after;
 
 		time_after = Sys_Milliseconds();
 		all = time_after - time_before;

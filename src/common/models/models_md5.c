@@ -245,7 +245,6 @@ BuildFrameSkeleton(const md5_joint_info_t *jointInfos,
 		if (jointInfos[i].flags & 32) /* Qz */
 		{
 			animatedOrient[2] = animFrameData[jointInfos[i].startIndex + j];
-			j++;
 		}
 
 		/* Compute orient quaternion's w value */
@@ -894,21 +893,20 @@ ReadMD5Model(const char *buffer, size_t size)
 
 			if (mdl->num_framenames > 0)
 			{
-				size_t size;
+				size_t framenames_size;
 
-				size = mdl->num_framenames * 16;
-				mdl->framenames = malloc(size);
+				framenames_size = mdl->num_framenames * 16;
+				mdl->framenames = malloc(framenames_size);
 				if (!mdl->framenames)
 				{
-					/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
 					FreeModelMd5(mdl);
 					free(safe_buffer);
 					Com_Error(ERR_FATAL, "%s: can't allocate " YQ2_COM_PRIdS " bytes\n",
-						__func__, size);
+						__func__, framenames_size);
 					return NULL;
 				}
 
-				memset(mdl->framenames, 0, mdl->num_framenames * 16);
+				memset(mdl->framenames, 0, framenames_size);
 			}
 		}
 		else if (!strcmp(token, "numJoints"))
@@ -1209,12 +1207,12 @@ ReadMD5Model(const char *buffer, size_t size)
 				}
 				else if (!strcmp(token, "weight"))
 				{
-					int index;
+					int index, joint;
 
 					token = COM_Parse(&curr_buff);
 					index = (int)strtol(token, (char **)NULL, 10);
 
-					if (index >= mesh->num_weights)
+					if (index < 0 || index >= mesh->num_weights)
 					{
 						Com_Printf("%s: incorrect weight index\n",
 							__func__);
@@ -1225,7 +1223,19 @@ ReadMD5Model(const char *buffer, size_t size)
 					}
 
 					token = COM_Parse(&curr_buff);
-					mesh->weights[index].joint = (int)strtol(token, (char **)NULL, 10);
+					joint = (int)strtol(token, (char **)NULL, 10);
+
+					if (joint < 0 || joint >= mdl->num_joints)
+					{
+						Com_Printf("%s: incorrect weight joint\n",
+							__func__);
+						FreeModelMd5(mdl);
+						free(safe_buffer);
+
+						return NULL;
+					}
+
+					mesh->weights[index].joint = joint;
 
 					token = COM_Parse(&curr_buff);
 					mesh->weights[index].bias = (float)strtod(token, (char **)NULL);

@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.61H14"
+#define YQ2VERSION "8.61H15"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -649,13 +649,13 @@ extern byte net_message_buffer[MAX_MSGLEN];
 void Netchan_Init(void);
 void Netchan_Setup(netsrc_t sock, netchan_t *chan, netadr_t adr, int qport);
 
-qboolean Netchan_NeedReliable(netchan_t *chan);
-void Netchan_Transmit(netchan_t *chan, int length, byte *data);
-void Netchan_OutOfBand(int net_socket, netadr_t adr, int length, byte *data);
+qboolean Netchan_NeedReliable(const netchan_t *chan);
+void Netchan_Transmit(netchan_t *chan, int length, const byte *data);
+void Netchan_OutOfBand(int net_socket, netadr_t adr, int length, const byte *data);
 void Netchan_OutOfBandPrint(int net_socket, netadr_t adr, char *format, ...);
 qboolean Netchan_Process(netchan_t *chan, sizebuf_t *msg);
 
-qboolean Netchan_CanReliable(netchan_t *chan);
+qboolean Netchan_CanReliable(const netchan_t *chan);
 
 /* CMODEL */
 
@@ -692,7 +692,7 @@ const byte *CM_ClusterPVS(int cluster, size_t *size);
 const byte *CM_ClusterPHS(int cluster, size_t *size);
 byte *CM_ClusterPTS(size_t *size);
 
-int CM_PointLeafnum(vec3_t p);
+int CM_PointLeafnum(const vec3_t p);
 
 /* call with topnode set to the headnode, returns with topnode */
 /* set to the first node that splits the box */
@@ -759,7 +759,7 @@ typedef enum
 } fsSearchType_t;
 
 void FS_DPrintf(const char *format, ...);
-int FS_FOpenFile(const char *name, fileHandle_t *f, qboolean gamedir_only);
+int FS_FOpenFile(const char *rawname, fileHandle_t *f, qboolean gamedir_only);
 void FS_FCloseFile(fileHandle_t f);
 int FS_Read(void *buffer, int size, fileHandle_t f);
 int FS_FRead(void *buffer, int size, int count, fileHandle_t f);
@@ -780,7 +780,7 @@ void FS_InitFilesystem(void);
 void FS_ShutdownFilesystem(void);
 void FS_BuildGameSpecificSearchPath(const char *dir);
 const char *FS_Gamedir(void);
-const char *FS_NextPath(const char *prevpath);
+const char *FS_NextPath(const char *prevPath);
 int FS_LoadFile(const char *path, void **buffer);
 qboolean FS_FileInGamedir(const char *file);
 qboolean FS_AddPAKFromGamedir(const char *pak);
@@ -874,7 +874,7 @@ extern int time_after_ref;
 #include "zone.h"
 
 void Qcommon_Init(int argc, char **argv);
-void Qcommon_ExecConfigs(qboolean addEarlyCmds);
+void Qcommon_ExecConfigs(qboolean gameStartUp);
 const char* Qcommon_GetInitialGame(void);
 void Qcommon_Shutdown(void);
 

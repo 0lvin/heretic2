@@ -264,12 +264,12 @@ void Vec3ScaleAssign(vec_t value, vec3_t scaleBy)
 	scaleBy[2] *= value;
 }
 
-qboolean Vec3IsZero(vec3_t vec)
+qboolean Vec3IsZero(const vec3_t vec)
 {
 	return !( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
 }
 
-qboolean Vec3NotZero(vec3_t vec)
+qboolean Vec3NotZero(const vec3_t vec)
 {
 	return ( vec[0] != 0.0 || vec[1] != 0.0 || vec[2] != 0.0 );
 }

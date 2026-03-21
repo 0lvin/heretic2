@@ -51,12 +51,9 @@ struct buoy_s
 	float	jump_uspeed;
 	int		jump_target_id;					//This buoy's id number
 	char	*target;						//saving these two to make debugging info
-	char	*targetname;					//useful to the designer
+	const char	*targetname;					//useful to the designer
 	char	*jump_target;					//keep around for debug
 	float	print_debounce_time;			//wait between +action print info
-
-//	Gil suggestion: unimplemented
-//	int		failed_depth;					//depth at which this buoy failed
 };
 
 void info_buoy_link(edict_t *self);

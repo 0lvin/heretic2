@@ -121,10 +121,10 @@ Mod_LoadBKImage(const char *mod_name, int texture_index, byte *buffer, int modfi
 	int i, size;
 	byte *pic;
 
-	if (modfilelen < sizeof(sprin))
+	if (modfilelen < (int)sizeof(*sprin))
 	{
 		Com_Printf("%s: %s has incorrect header size (%i should be " YQ2_COM_PRIdS ")\n",
-				__func__, mod_name, modfilelen, sizeof(sprin));
+				__func__, mod_name, modfilelen, sizeof(*sprin));
 		return NULL;
 	}
 
@@ -205,7 +205,6 @@ Mod_LoadSPRImage(const char *mod_name, int texture_index, byte *buffer, int modf
 {
 	const dq1sprite_t pinsprite;
 	const byte *curr_pos;
-	byte *pic;
 	int i;
 
 	if (modfilelen < sizeof(pinsprite))
@@ -255,6 +254,8 @@ Mod_LoadSPRImage(const char *mod_name, int texture_index, byte *buffer, int modf
 
 		if (i == texture_index)
 		{
+			byte *pic;
+
 			curr_pos += sizeof(int) * 5;
 
 			pic = malloc(size);

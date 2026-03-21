@@ -80,7 +80,7 @@ void door_go_down(edict_t *self);
 void plat2_go_down(edict_t *ent);
 void plat2_go_up(edict_t *ent);
 void plat2_spawn_danger_area(edict_t *ent);
-void plat2_kill_danger_area(edict_t *ent);
+static void plat2_kill_danger_area(const edict_t *ent);
 void Think_AccelMove(edict_t *ent);
 void plat_go_down(edict_t *ent);
 
@@ -862,7 +862,11 @@ wait_and_change_think(edict_t* ent)
 {
 	void (*afterwaitfunc)(edict_t *) = ent->moveinfo.endfunc;
 	ent->moveinfo.endfunc = NULL;
-	afterwaitfunc(ent);
+
+	if (afterwaitfunc)
+	{
+		afterwaitfunc(ent);
+	}
 }
 
 /*
@@ -874,6 +878,7 @@ static void
 wait_and_change(edict_t* ent, void (*afterwaitfunc)(edict_t *))
 {
 	float waittime = coop_elevator_delay->value;
+
 	if (coop->value && waittime > 0.0f)
 	{
 		if (ent->nextthink == 0)
@@ -883,7 +888,7 @@ wait_and_change(edict_t* ent, void (*afterwaitfunc)(edict_t *))
 			ent->nextthink = level.time + waittime;
 		}
 	}
-	else
+	else if (afterwaitfunc)
 	{
 		afterwaitfunc(ent);
 	}
@@ -941,7 +946,6 @@ plat_spawn_inside_trigger(edict_t *ent)
 
 	tmin[0] = ent->mins[0] + 25;
 	tmin[1] = ent->mins[1] + 25;
-	tmin[2] = ent->mins[2];
 
 	tmax[0] = ent->maxs[0] - 25;
 	tmax[1] = ent->maxs[1] - 25;
@@ -1137,8 +1141,8 @@ plat2_spawn_danger_area(edict_t *ent)
 	SpawnBadArea(mins, maxs, 0, ent);
 }
 
-void
-plat2_kill_danger_area(edict_t *ent)
+static void
+plat2_kill_danger_area(const edict_t *ent)
 {
 	edict_t *t;
 
@@ -1327,8 +1331,8 @@ plat2_go_up(edict_t *ent)
 	Move_Calc(ent, ent->moveinfo.start_origin, plat2_hit_top);
 }
 
-void
-plat2_operate(edict_t *ent, edict_t *other)
+static void
+plat2_operate(edict_t *ent, const edict_t *other)
 {
 	int otherState;
 	float pauseTime;
@@ -1575,8 +1579,6 @@ plat2_activate(edict_t *ent, edict_t *other /* unused */,
 void
 SP_func_plat2(edict_t *ent)
 {
-	edict_t *trigger;
-
 	if (!ent)
 	{
 		return;
@@ -1651,6 +1653,8 @@ SP_func_plat2(edict_t *ent)
 	}
 	else
 	{
+		edict_t *trigger;
+
 		ent->use = Use_Plat2;
 
 		trigger = plat_spawn_inside_trigger(ent); /* the "start moving" trigger */
@@ -2347,8 +2351,8 @@ SP_func_button(edict_t *ent)
  * 21) the bam sound
  */
 
-void
-door_use_areaportals(edict_t *self, qboolean open)
+static void
+door_use_areaportals(const edict_t *self, qboolean open)
 {
 	edict_t *t = NULL;
 
@@ -2783,9 +2787,6 @@ Think_CalcMoveSpeed(edict_t *self)
 	edict_t *ent;
 	float min;
 	float time;
-	float newspeed;
-	float ratio;
-	float dist;
 
 	if (!self)
 	{
@@ -2803,6 +2804,8 @@ Think_CalcMoveSpeed(edict_t *self)
 
 	for (ent = self->teamchain; ent; ent = ent->teamchain)
 	{
+		float dist;
+
 		dist = fabs(ent->moveinfo.distance);
 
 		if (dist < min)
@@ -2816,6 +2819,9 @@ Think_CalcMoveSpeed(edict_t *self)
 	/* adjust speeds so they will all complete at the same time */
 	for (ent = self; ent; ent = ent->teamchain)
 	{
+		float newspeed;
+		float ratio;
+
 		newspeed = fabs(ent->moveinfo.distance) / time;
 		ratio = newspeed / ent->moveinfo.speed;
 
@@ -3725,11 +3731,6 @@ train_wait(edict_t *self)
 	{
 		train_next(self);
 	}
-}
-
-void
-train_piece_wait(edict_t *self)
-{
 }
 
 void

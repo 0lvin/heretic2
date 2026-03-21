@@ -2163,7 +2163,6 @@ misc_update_spawner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unus
 		csurface_t *surf /* unused */)
 {
 	edict_t	*spot = NULL;
-	int i;
 
 	if (!self || !other || !other->client)
 	{
@@ -2174,6 +2173,8 @@ misc_update_spawner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unus
 
 	if (spot)
 	{
+		int i;
+
 		/* copy trigger position and angles to spawn point */
 		for (i = 0; i < 3; i++)
 		{
