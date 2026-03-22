@@ -79,19 +79,6 @@ CL_NewTrace(vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int brushmask, i
 	return CL_PMTrace(start, mins, maxs, end); // jmarshall: incomplete
 }
 
-YQ2_ATTR_NORETURN static void
-CL_Sys_Error(int errLevel, const char* fmt, ...)
-{
-	va_list		argptr;
-	char		msg[4096];
-
-	va_start(argptr, fmt);
-	vsprintf(msg, fmt, argptr);
-	va_end(argptr);
-
-	Sys_Error(msg); // TODO vargs
-}
-
 static void
 CL_Printf(int errLevel, const char* fmt, ...) {
 	va_list		argptr;
@@ -267,7 +254,6 @@ E_Load(void)
 	cl_game_import.parse_entities = cl_parse_entities;
 	cl_game_import.leveltime = (float*)&cl.time;
 	cl_game_import.net_message = &net_message;
-	cl_game_import.Sys_Error = CL_Sys_Error;
 	cl_game_import.Com_Error = Com_Error;
 	cl_game_import.Con_Printf = CL_Printf;
 	cl_game_import.Com_Printf = Com_Printf;
