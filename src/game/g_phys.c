@@ -2363,7 +2363,6 @@ void MoveEntity_Slide(edict_t *self)
 	vec3_t		dir, gdir;
 	int			numplanes = 0;
 	vec3_t		original_velocity, new_velocity;
-	int			i, j;
 	vec3_t		end, delta;
 	float		timeRemaining = FRAMETIME, timeRemaining2, timeMoved;
 	static vec3_t planes[MAX_CLIP_PLANES];
@@ -2398,6 +2397,8 @@ void MoveEntity_Slide(edict_t *self)
 
 	for(bumpcount = 0; bumpcount < MAX_BUMPS; ++bumpcount)
 	{
+		int i = 0;
+
 		friction = base_friction;
 
 		VectorScale(self->velocity, timeRemaining, delta);
@@ -2656,6 +2657,7 @@ void MoveEntity_Slide(edict_t *self)
 		for(i = 0; i < numplanes; ++i)
 		{
 			float dirMag;
+			int j;
 
 			assert(Vec3NotZero(planes[i]));
 

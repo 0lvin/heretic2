@@ -107,7 +107,7 @@
 typedef enum
 {
 	DAMAGE_NO,
-	DAMAGE_YES, /* will take damage if hit */
+	DAMAGE_YES,         /* will take damage if hit */
 	DAMAGE_AIM          /* auto targeting recognizes this */
 } damage_t;
 
@@ -253,20 +253,20 @@ typedef enum
 /* edict->movetype values */
 typedef enum
 {
-	MOVETYPE_NONE, /* never moves */
+	MOVETYPE_NONE,      /* never moves */
 	MOVETYPE_STATIC,
-	MOVETYPE_NOCLIP, /* origin and angles change with no interaction */
-	MOVETYPE_STEP, /* gravity, special edge handling */
+	MOVETYPE_NOCLIP,    /* origin and angles change with no interaction */
+	MOVETYPE_STEP,      /* gravity, special edge handling */
 	MOVETYPE_FLY,
-	MOVETYPE_PUSH, /* no clip to world, push on box contact */
-	MOVETYPE_STOP, /* no clip to world, stops on box contact */
+	MOVETYPE_PUSH,      /* no clip to world, push on box contact */
+	MOVETYPE_STOP,      /* no clip to world, stops on box contact */
 
-	MOVETYPE_WALK, /* gravity */
-	MOVETYPE_TOSS, /* gravity */
+	MOVETYPE_WALK,      /* gravity */
+	MOVETYPE_TOSS,      /* gravity */
 	MOVETYPE_FLYMISSILE, /* extra size to monsters */
 	MOVETYPE_BOUNCE, /* added this (the comma at the end of line) */
 	MOVETYPE_WALLBOUNCE,
-	MOVETYPE_NEWTOSS, /* for deathball */
+	MOVETYPE_NEWTOSS,   /* for deathball */
 	MOVETYPE_SCRIPT_ANGULAR, // moves with the rotation of another entity
 } movetype_t;
 
@@ -1374,18 +1374,19 @@ typedef enum
 {
 	F_INT,
 	F_FLOAT,
-	F_LSTRING, /* string on disk, pointer in memory, TAG_LEVEL */
-	F_GSTRING, /* string on disk, pointer in memory, TAG_GAME */
+	F_LSTRING,          /* string on disk, pointer in memory, TAG_LEVEL */
+	F_GSTRING,          /* string on disk, pointer in memory, TAG_GAME */
 	F_VECTOR,
 	F_ANGLEHACK,
-	F_EDICT, /* index on disk, pointer in memory */
-	F_ITEM, /* index on disk, pointer in memory */
-	F_CLIENT, /* index on disk, pointer in memory */
+	F_EDICT,            /* index on disk, pointer in memory */
+	F_ITEM,             /* index on disk, pointer in memory */
+	F_CLIENT,           /* index on disk, pointer in memory */
 	F_FUNCTION,
 	F_MMOVE,
 	F_IGNORE,
 	F_RGBA,
-	F_LRAWSTRING, /* raw string on disk, pointer in memory, TAG_LEVEL */
+	F_LRAWSTRING,       /* raw string on disk, pointer in memory, TAG_LEVEL */
+	F_SCALE,
 } fieldtype_t;
 
 typedef struct
@@ -1480,6 +1481,8 @@ void vectoangles2(vec3_t value, vec3_t angles);
 edict_t *findradius2(edict_t *from, vec3_t org, float rad);
 
 /* g_combat.c */
+void Killed(edict_t * targ, edict_t * inflictor, edict_t * attacker, int damage,
+	vec3_t point, int mod);
 qboolean OnSameTeam(const edict_t *ent1, const edict_t *ent2);
 qboolean CanDamage(edict_t *targ, edict_t *inflictor);
 qboolean CheckTeamDamage(const edict_t *targ, const edict_t *attacker);

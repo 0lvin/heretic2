@@ -3380,7 +3380,7 @@ qboolean MG_CheckBottom (edict_t *ent)
 	vec3_t	mins, maxs, start, stop;
 	trace_t	trace;
 	int		x, y, corner;
-	float	stepsize;
+	float	stepsize = 0;
 
 	qboolean	corner_ok[4];
 	qboolean	easy_ok[2][2];
@@ -4689,7 +4689,7 @@ qboolean MG_TestMove (edict_t *self, float yaw, float dist)
 
 void MG_CheckEvade (edict_t *self)
 {//FIXME: only check my enemy?  See if he's fired (last_attack) recently?
-	int hl;
+	int hl = 0;
 	float ent_dist, proj_offset;
 	vec3_t proj_dir, endpos, bad_dir;
 	trace_t trace;

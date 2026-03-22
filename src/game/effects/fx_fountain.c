@@ -107,7 +107,7 @@ FXFountainParticleSpawner(client_entity_t *spawner, centity_t *owner)
 	vec3_t				origin;
 	vec3_t				velocity;
 	vec_t				accel;
-	int					i, time, count;
+	int					i, time = 0, count;
 	float				s;
 
 	count = GetScaledCount(NUM_FOUNT_PARTS, 0.9);
