@@ -12,7 +12,7 @@
 
 
 static void InsectStaffThink(edict_t *self);
-static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
+static void InsectStaffTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 
 void create_insect_staff_bolt(edict_t *InsectStaff);
 
@@ -62,7 +62,7 @@ static void InsectStaffThink(edict_t *self)
 // InsectStaffTouch
 // ************************************************************************************************
 
-static void InsectStaffTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface)
+static void InsectStaffTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface)
 {
 	vec3_t		Origin;
 	byte		makescorch;
@@ -358,7 +358,7 @@ void SpellCastGlobeOfOuchiness(edict_t *Caster,vec3_t StartPos,vec3_t AimAngles,
 }
 
 //Spear Projectiles
-static void SpearProjTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
+static void SpearProjTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 
 // Radius of zero seems to prevent collision between bolts
 
@@ -450,7 +450,7 @@ edict_t *SpearProjReflect(edict_t *self, edict_t *other, vec3_t vel)
 // SpearProjTouch
 // ****************************************************************************
 
-static void SpearProjTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+static void SpearProjTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	byte	makeScorch = 0;
 

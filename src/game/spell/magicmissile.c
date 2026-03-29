@@ -15,7 +15,7 @@
 void create_magic(edict_t *MagicMissile);
 
 static void MagicMissileThink2(edict_t *self);
-static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
+static void MagicMissileTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 // static void MagicMissileThink1(edict_t *self);
 
 
@@ -84,7 +84,7 @@ edict_t *MagicMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 // ****************************************************************************
 
 
-static void MagicMissileTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface)
+static void MagicMissileTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface)
 {
 	vec3_t		Origin;
 	int			makeScorch;

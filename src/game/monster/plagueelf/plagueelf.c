@@ -557,7 +557,7 @@ void make_pe_spell_reflect(edict_t *self, edict_t *spell)
 	G_LinkMissile(spell);
 }
 
-void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurface_t *Surface)
+void plagueElfSpellTouch (edict_t *self, edict_t *Other, const cplane_t *Plane, const csurface_t *Surface)
 {
 	vec3_t	normal;
 	edict_t	*Spell;

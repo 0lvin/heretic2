@@ -83,7 +83,7 @@ extern mmove_t rat_move_death1;
 extern mmove_t rat_move_death2;
 
 void rat_use(edict_t *self, edict_t *other, edict_t *activator);
-void rat_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf);
+void rat_touch(edict_t *ent, edict_t *other, const cplane_t *plane, const csurface_t *surf);
 
 void ratdeathsqueal (edict_t *self);
 void ratsqueal (edict_t *self);

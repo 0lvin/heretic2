@@ -815,7 +815,8 @@ typedef struct
 
 /* entity_state_t->rr_effects
  * ReRelease flags, values are different to quake 2 RR code */
-#define EF_FLASHLIGHT 0x00000001         /* project flashlight, only for players */
+#define EF_HOLOGRAM 0x00000001           /* N64 hologram */
+#define EF_FLASHLIGHT 0x00000002         /* project flashlight, only for players */
 
 /* entity_state_t->renderfx flags */
 #define RF_MINLIGHT 1               /* allways have some light (viewmodel) */
@@ -1534,6 +1535,7 @@ typedef struct entity_rrstate_s
 	vec3_t scale; /* model scale */
 	unsigned int effects;
 	unsigned int mesh;
+	float alpha; /* model alpha */
 } entity_rrstate_t;
 
 typedef struct entity_xstate_s
@@ -1592,6 +1594,7 @@ typedef struct entity_xstate_s
 	vec3_t scale; /* model scale */
 	unsigned int rr_effects;
 	unsigned int rr_mesh;
+	float rr_alpha; /* model alpha */
 } entity_xstate_t;
 
 typedef struct

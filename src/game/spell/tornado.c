@@ -18,7 +18,7 @@
 #define TORN_KNOCKBACK_BASE		250.0
 #define TORN_MASS_FACTOR		200.0
 
-static void tornboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface);
+static void tornboltTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface);
 extern edict_t *findringradius (edict_t *from, vec3_t org, float rad, edict_t *ringent);
 void SpellCasttornbolt(edict_t *caster, vec3_t startpos, vec3_t aimangles, vec3_t aimdir, float value);
 
@@ -252,7 +252,7 @@ edict_t *tornboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 // tornboltTouch
 // ************************************************************************************************
 
-static void tornboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+static void tornboltTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	int			damage;
 	vec3_t		planedir;

@@ -210,7 +210,7 @@ void SP_monster_plagueElf (edict_t *self);
 void MG_InitMoods(edict_t *self);
 qboolean ok_to_wake (edict_t *monster, qboolean gorgon_roar, qboolean ignore_ambush);
 
-void plagueElfSpellTouch (edict_t *self, edict_t *Other, cplane_t *Plane, csurface_t *Surface);
+void plagueElfSpellTouch (edict_t *self, edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 
 //Voice support
 void pelf_SightSound   ( edict_t *self, G_Message_t *msg );

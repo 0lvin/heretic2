@@ -1697,14 +1697,14 @@ monster_dynamic_dead(edict_t *self)
 
 void
 monster_dynamic_die_noanim(edict_t *self, edict_t *inflictor, edict_t *attacker,
-	int damage, vec3_t point)
+	int damage, const vec3_t point)
 {
 	monster_dynamic_dead(self);
 }
 
 void
 monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
-	int damage, vec3_t point)
+	int damage, const vec3_t point)
 {
 	if (!self)
 	{
@@ -2162,11 +2162,34 @@ MG_CheckInGround(edict_t *self)
 	}
 }
 
+static float
+monster_get_scale(edict_t *self)
+{
+	float scale;
+	int i;
+
+	scale = 0.0;
+
+	for (i = 0; i < 3; i++)
+	{
+		if (!self->rrs.scale[i])
+		{
+			/* fix empty scale */
+			self->rrs.scale[i] = 1.0f;
+		}
+
+		scale += self->rrs.scale[i];
+	}
+
+	scale /= 3.0;
+
+	return scale;
+}
+
 qboolean
 monster_start(edict_t *self)
 {
 	float scale;
-	int i;
 
 	if (!self)
 	{
@@ -2229,20 +2252,7 @@ monster_start(edict_t *self)
 		VectorSet(self->rrs.scale, scale, scale, scale);
 	}
 
-	scale = 0;
-
-	for (i = 0; i < 3; i++)
-	{
-		if (!self->rrs.scale[i])
-		{
-			/* fix empty scale */
-			self->rrs.scale[i] = 1.0f;
-		}
-
-		scale += self->rrs.scale[i];
-	}
-
-	scale /= 3;
+	scale = monster_get_scale(self);
 
 	/* non default scale */
 	if (scale != 1.0)
@@ -2841,7 +2851,7 @@ void pitch_roll_for_slope (edict_t *forwhom, vec3_t *pass_slope)
 
 ======================================================================================================================*/
 
-void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void M_Touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	vec3_t	pos1, pos2, dir;
 	float	zdiff;

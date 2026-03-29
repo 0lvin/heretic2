@@ -220,7 +220,7 @@ edict_t *RedRainMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 // RedRainMissile touch
 // ****************************************************************************
 
-void RedRainMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void RedRainMissileTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	vec3_t				org, end;
 	edict_t				*damagearea;

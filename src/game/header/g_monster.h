@@ -41,7 +41,7 @@ edict_t	*M_CheckMeleeHit( edict_t *attacker, float max_dist, trace_t *trace );
 
 float M_DistanceToTarget ( edict_t *self, edict_t *target );
 
-void M_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void M_Touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf) ;
 void M_StartDeath( edict_t *self, int animID);
 void M_EndDeath( edict_t *self);
 void M_PredictTargetPosition( edict_t *target, vec3_t evade_vel, float pred_frames, vec3_t	pTargetPos);

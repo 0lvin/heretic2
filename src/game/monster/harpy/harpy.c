@@ -138,7 +138,7 @@ void harpy_throw_wings(edict_t *self)
 }
 
 void
-head_die(edict_t *self, edict_t *inflictor, edict_t *attacker,int damage,vec3_t point)
+head_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, const vec3_t point)
 {
 	BecomeDebris(self);
 }

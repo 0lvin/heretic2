@@ -73,7 +73,7 @@ void CleanUpTeleport(edict_t *self)
 
 // Setup the teleporter - from the player hitting a teleport pad
 // We could send the teleport type over the flags instead of as a parameter byte
-void teleporter_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void teleporter_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	vec3_t	dest_v, dest_v_angles;
 	int	rand_targ, i;

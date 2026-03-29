@@ -112,7 +112,7 @@ void create_gkrokon_spoo(edict_t *Spoo);
 void BecomeDebris(edict_t *self);
 
 void GkrokonSpooThink(edict_t *self);
-void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
+void GkrokonSpooTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 
 trace_t trace_dir(edict_t *self, vec3_t source, vec3_t angles, float dist);
 

@@ -460,7 +460,7 @@ void rope_sway(edict_t *self)
 	self->nextthink = level.time + FRAMETIME;
 }
 
-void rope_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void rope_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if ( !Q_stricmp(other->classname, "player") )
 	{

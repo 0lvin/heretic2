@@ -2078,7 +2078,7 @@ void make_arrow_reflect(edict_t *self, edict_t *arrow)
 	G_LinkMissile(arrow);
 }
 
-void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	float damage;
 	vec3_t	normal;
@@ -2137,7 +2137,7 @@ void ssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csur
 	G_FreeEdict(self);
 }
 
-void ssithraArrowTouch (edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface)
+void ssithraArrowTouch (edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface)
 {
 	float damage;
 	vec3_t	normal;
@@ -2212,7 +2212,8 @@ void ssithraArrowExplode(edict_t *self)
 	G_FreeEdict(self);
 }
 
-void ssithraDuckArrowTouch (edict_t *self,edict_t *other,cplane_t *plane,csurface_t *surface)
+void
+ssithraDuckArrowTouch (edict_t *self,edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	if (surface&&(surface->flags&SURF_SKY))
 	{

@@ -15,7 +15,7 @@
 #define FLAMETHROWER_MONSTERTOUCH 2
 
 void flamethrower_use( edict_t *self, edict_t *other, edict_t *activator );
-void flamethrower_touch( edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf );
+void flamethrower_touch( edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
 
 void FlameThrower_Deactivate(edict_t *self, G_Message_t *msg)
 {
@@ -91,7 +91,8 @@ void flamethrower_use( edict_t *self, edict_t *other, edict_t *activator )
 	}
 }
 
-void flamethrower_touch( edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf )
+void
+flamethrower_touch( edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	vec3_t	dir;
 	int flags = 0;

@@ -11,7 +11,7 @@
 #include "../monster/beast/beast.h"
 
 static void HellboltThink(edict_t *Self);
-static void HellboltTouch(edict_t *Self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
+static void HellboltTouch(edict_t *Self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 
 // Radius of zero seems to prevent collision between bolts
 
@@ -69,7 +69,7 @@ edict_t *HellboltReflect(edict_t *self, edict_t *other, vec3_t vel)
 // HellboltTouch
 // ****************************************************************************
 
-static void HellboltTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+static void HellboltTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	byte	makeScorch = 0;
 

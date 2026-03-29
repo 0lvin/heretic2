@@ -124,7 +124,7 @@ void GkrokonSpooTouch2(edict_t *self,trace_t *trace)
 	GkrokonSpooTouch
 -----------------------------------------------*/
 
-void GkrokonSpooTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface)
+void GkrokonSpooTouch(edict_t *self, edict_t *Other, const cplane_t *Plane, const csurface_t *Surface)
 {
 	vec3_t	Origin, ScorchOrigin, planeDir;
 

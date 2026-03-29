@@ -13,7 +13,8 @@
 
 // planeDir parameter will become redundant when all scorchmarks are spawned on the client
 
-qboolean IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, csurface_t *surface,cplane_t *plane, vec3_t planeDir)
+qboolean
+IsDecalApplicable(edict_t *owner, edict_t *target, vec3_t origin, const csurface_t *surface, const cplane_t *plane, vec3_t planeDir)
 {
 	int		contents;
 

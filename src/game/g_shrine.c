@@ -45,9 +45,9 @@ void player_shrine_reflect_effect(edict_t *self);
 void player_shrine_powerup_effect(edict_t *self);
 void player_shrine_speed_effect(edict_t *self);
 
-void shrine_armor_silver_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
-void shrine_armor_gold_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
-void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void shrine_armor_silver_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
+void shrine_armor_gold_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
+void shrine_random_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
 
 extern gitem_armor_t silver_armor_info;
 extern gitem_armor_t gold_armor_info;
@@ -535,7 +535,7 @@ void shrine_heal_core(edict_t *self,edict_t *other)
 // Fire off a heal effect and give us some health.
 // ************************************************************************************************
 
-void shrine_heal_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_heal_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -646,7 +646,7 @@ void shrine_armor_silver_core(edict_t *self,edict_t *other)
 
 // Fire off an effect and give us some armor.
 
-void shrine_armor_silver_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_armor_silver_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -756,7 +756,7 @@ void shrine_armor_gold_core(edict_t *self,edict_t *other)
 
 // Fire off an effect and give us some armor.
 
-void shrine_armor_gold_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_armor_gold_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	//  If we aren't a player, forget it.
 
@@ -874,7 +874,7 @@ void shrine_staff_core(edict_t *self,edict_t *other)
 
 // Fire off an effect and give us a staff powerup.
 
-void shrine_staff_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_staff_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -976,7 +976,7 @@ void shrine_lung_core(edict_t *self, edict_t *other)
 
 // Fire off an effect and give us lung power.
 
-void shrine_lung_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_lung_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1092,7 +1092,7 @@ void shrine_light_core(edict_t *self, edict_t *other)
 
 // Fire off an effect and give us some light.
 
-void shrine_light_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_light_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1195,7 +1195,7 @@ void shrine_mana_core(edict_t *self, edict_t *other)
 
 // We hit the mana shrine pad, give us some manna, do the animation.
 
-void shrine_mana_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_mana_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1305,7 +1305,7 @@ void shrine_ghost_core(edict_t *self,edict_t *other)
 
 // Fire off an effect and give us a ghosting for a while powerup.
 
-void shrine_ghost_touch	(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_ghost_touch	(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1418,7 +1418,7 @@ void shrine_reflect_core(edict_t *self, edict_t *other)
 
 // Fire off an effect and give us a reflecting for a while powerup.
 
-void shrine_reflect_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_reflect_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1534,7 +1534,7 @@ void shrine_powerup_core (edict_t *self, edict_t *other)
 
 }
 
-void shrine_powerup_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_powerup_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1649,7 +1649,7 @@ void shrine_speed_core (edict_t *self, edict_t *other)
 
 }
 
-void shrine_speed_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_speed_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	// If we aren't a player, forget it.
 
@@ -1728,7 +1728,7 @@ int	possible_shrines[POSSIBLE_RANDOM_SHRINES] =
 };
 
 // Fire off an effect and give us a powerup for a while powerup.
-void shrine_random_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void shrine_random_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	int		random_shrine_num;
 	int		total_rand_count = 0;

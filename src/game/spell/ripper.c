@@ -92,7 +92,7 @@ static void RipperExplodeBallThink(edict_t *self)
 }
 
 
-static void RipperExplodeBallTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+static void RipperExplodeBallTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	G_SetToFree(self);
 }

@@ -517,7 +517,7 @@ edict_t *MorphReflect(edict_t *self, edict_t *other, vec3_t vel)
 
 // This called when missile touches anything (world or edict)
 
-void MorphMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void MorphMissileTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 
 	// has the target got reflection turned on ?

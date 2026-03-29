@@ -10,7 +10,7 @@
 
 #define FIST_RADIUS				2.0
 
-static void FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface);
+static void FlyingFistTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface);
 
 
 // ************************************************************************************************
@@ -101,7 +101,7 @@ edict_t *FlyingFistReflect(edict_t *self, edict_t *other, vec3_t vel)
 // ************************************************************************************************
 
 static void
-FlyingFistTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+FlyingFistTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	int			damage;
 	vec3_t		planedir;

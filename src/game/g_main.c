@@ -428,7 +428,7 @@ ClientEndServerFrames(void)
 /*
  * Returns the created target changelevel
  */
-static edict_t *
+static const edict_t *
 CreateTargetChangeLevel(char *map)
 {
 	edict_t *ent;
@@ -518,7 +518,7 @@ EndDMLevel(void)
 	}
 	else    /* search for a changelevel */
 	{
-		edict_t *ent;
+		const edict_t *ent;
 
 		ent = G_Find(NULL, FOFS(classname), "target_changelevel");
 

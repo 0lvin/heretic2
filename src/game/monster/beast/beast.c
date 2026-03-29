@@ -2364,7 +2364,7 @@ finish:
 
 }
 
-void tbeast_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void tbeast_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	tbeast_fake_touch(self);
 }

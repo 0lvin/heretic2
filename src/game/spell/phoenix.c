@@ -53,7 +53,7 @@ edict_t *PhoenixMissileReflect(edict_t *self, edict_t *other, vec3_t vel)
 // ****************************************************************************
 // PhoenixMissile touch
 // ****************************************************************************
-void PhoenixMissileTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void PhoenixMissileTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	int			makeScorch;
 	vec3_t		planedir;

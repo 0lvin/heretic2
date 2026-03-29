@@ -41,8 +41,8 @@
 #define PUSH_SILENT 0x04
 
 void trigger_push_active(edict_t *self);
-void hurt_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */);
+void hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */);
 
 #define PUZZLE_SHOWNO_INVENTORY 16
 #define PUZZLE_DONT_REMOVE		32
@@ -52,8 +52,8 @@ void Trigger_Activate(edict_t *self, G_Message_t *msg);
 
 void trigger_enable(edict_t *self, edict_t *other, edict_t *activator);
 void Use_Multi(edict_t *self, edict_t *other, edict_t *activator);
-void Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */);
+void Touch_Multi(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */);
 void InitField(edict_t *self);
 
 void TriggerStaticsInit()
@@ -176,8 +176,8 @@ Use_Multi(edict_t *ent, edict_t *other /* unused */, edict_t *activator)
 }
 
 void
-Touch_Multi(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+Touch_Multi(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!self || !other)
 	{
@@ -631,8 +631,8 @@ SP_trigger_always(edict_t *ent)
 #define FIELD_FORCE_ONCE		1
 
 void
-trigger_push_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+trigger_push_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	vec3_t forward,up;
 
@@ -711,7 +711,7 @@ void SP_trigger_PlayerUsePuzzle(edict_t *self)
 // Player Push Button Trigger
 //----------------------------------------------------------------------
 
-void trigger_playerpushbutton(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void trigger_playerpushbutton(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	if (!strcmp(other->classname, "player"))
 	{
@@ -824,7 +824,7 @@ void ActivateTrigger_Activated(edict_t *self, edict_t *activator)
 }
 
 void
-trigger_quit_to_menu_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+trigger_quit_to_menu_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (!other->client)
 		return;
@@ -1049,7 +1049,7 @@ void SP_trigger_quake (edict_t *self)
 }
 
 void
-ClipDistance_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+ClipDistance_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	char temp[10];
 	cvar_t *r_farclipdist;
@@ -1101,7 +1101,7 @@ void trigger_endgame_think(edict_t *self)
 }
 
 void
-Touch_endgame(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+Touch_endgame(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	cvar_t *sv_loopcoop;
 
@@ -1205,7 +1205,7 @@ SP_trigger_endgame(edict_t *self)
 // Player Push Lever Trigger
 //----------------------------------------------------------------------
 
-//void trigger_playerpushlever(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+//void trigger_playerpushlever(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 void trigger_playerpushlever(edict_t *self, edict_t *other)
 {
 	if (!strcmp(other->classname, "player"))
@@ -1356,8 +1356,8 @@ hurt_use(edict_t *self, edict_t *other /* unused */,
 }
 
 void
-hurt_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	int dflags;
 
@@ -1476,8 +1476,8 @@ trigger_gravity_use(edict_t *self, edict_t *other /* unused */, edict_t *activat
  * gravity for the level.
  */
 void
-trigger_gravity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+trigger_gravity_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!self || !other)
 	{
@@ -1536,8 +1536,8 @@ SP_trigger_gravity(edict_t *self)
  */
 
 void
-trigger_monsterjump_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+trigger_monsterjump_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!self || !other)
 	{
@@ -1603,8 +1603,8 @@ SP_trigger_monsterjump(edict_t *self)
 #define SPAWNFLAG_FLASHLIGHT_CLIPPED 1
 
 void
-trigger_flashlight_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+trigger_flashlight_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!other->client)
 	{
@@ -1685,7 +1685,7 @@ SP_trigger_flashlight(edict_t *self)
 #define SPAWNFLAG_FOG_BLEND 16
 
 void
-trigger_fog_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */)
+trigger_fog_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */, const csurface_t *surf /* unused */)
 {
 	edict_t *fog_value_storage;
 
@@ -1935,8 +1935,8 @@ SP_trigger_fog(edict_t *self)
  * target: Fog density (.01 - .0001)
  */
 void
-trigger_fogdensity_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+trigger_fogdensity_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	float density;
 	int i;
@@ -1977,8 +1977,8 @@ SP_trigger_fogdensity(edict_t *self)
  * NO_LOOP - allows you to set the track to play not to loop
  */
 void
-choose_cdtrack_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+choose_cdtrack_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!self)
 	{
@@ -2159,8 +2159,8 @@ SP_trigger_mission_take(edict_t *self)
  * Replaced spawn points to map submodel position.
  */
 void
-misc_update_spawner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+misc_update_spawner_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	edict_t	*spot = NULL;
 

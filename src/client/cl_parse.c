@@ -290,6 +290,8 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 			{
 				to->scale[i] = MSG_ReadFloat(&net_message);
 			}
+
+			to->rr_alpha = MSG_ReadFloat(&net_message);
 		}
 	}
 	else if (bits & U_SKIN8)
@@ -1647,6 +1649,14 @@ CL_ParseStartSoundPacket(void)
 		/* entity reletive */
 		channel = MSG_ReadShort(&net_message);
 		ent = channel >> 3;
+
+		if (ent < 0)
+		{
+			Com_Printf("%s: incorrect channel %d\n",
+					__func__, channel);
+			return;
+		}
+
 		channel &= 7;
 	}
 	else

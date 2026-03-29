@@ -29,9 +29,9 @@
 #define SPHERE_RADIUS					2.0
 
 static void SphereOfAnnihilationGrowThink(edict_t *self);
-static void SphereOfAnnihilationTouch(edict_t *self,edict_t *Other,cplane_t *Plane,csurface_t *Surface);
+static void SphereOfAnnihilationTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface);
 static void SphereWatcherGrowThink(edict_t *self);
-static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, csurface_t *surface);
+static void SphereWatcherTouch(edict_t *self, edict_t *Other, const cplane_t *Plane, const csurface_t *surface);
 
 void create_sphere(edict_t *Sphere);
 
@@ -244,7 +244,7 @@ static void SpherePowerLaserThink(edict_t *self)
 }
 
 
-static void SpherePowerLaserTouch(edict_t *self,edict_t *Other,cplane_t *Plane, csurface_t *Surface)
+static void SpherePowerLaserTouch(edict_t *self,edict_t *Other, const cplane_t *Plane, const csurface_t *Surface)
 {
 	G_SetToFree(self);
 }
@@ -416,7 +416,7 @@ void SphereExplodeThink(edict_t *self)
 // SphereOfAnnihilationTouch
 // ****************************************************************************
 
-static void SphereOfAnnihilationTouch(edict_t *self, edict_t *other, cplane_t *Plane, csurface_t *surface)
+static void SphereOfAnnihilationTouch(edict_t *self, edict_t *other, const cplane_t *Plane, const csurface_t *surface)
 {
 	edict_t		*explosion;
 
@@ -747,7 +747,7 @@ edict_t *SphereWatcherReflect(edict_t *self, edict_t *other, vec3_t vel)
 }
 
 
-static void SphereWatcherTouch(edict_t *self, edict_t *Other, cplane_t *Plane, csurface_t *surface)
+static void SphereWatcherTouch(edict_t *self, edict_t *Other, const cplane_t *Plane, const csurface_t *surface)
 {
 	int			makeScorch;
 

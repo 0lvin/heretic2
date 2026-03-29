@@ -516,7 +516,7 @@ void rat_use(edict_t *self, edict_t *other, edict_t *activator)
 	FoundTarget(self, 1);
 }
 
-void rat_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+void rat_touch(edict_t *ent, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	//M_Touch is overridden because the player can just step over rats
 

@@ -558,7 +558,7 @@ ClientObituary(edict_t *self, const edict_t *inflictor /* unused */,
 		return;
 	}
 
-	if (coop->value && attacker && attacker->client)
+	if (coop->value && attacker->client)
 	{
 		meansOfDeath |= MOD_FRIENDLY_FIRE;
 	}
@@ -1581,7 +1581,7 @@ LookAtKiller(edict_t *self, edict_t *inflictor, edict_t *attacker)
 
 void
 player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
-		int damage, vec3_t point /* unused */)
+		int damage, const vec3_t point /* unused */)
 {
 	//FIXME: Make sure you can still dismember and gib player while dying
 	int n;
@@ -2596,7 +2596,7 @@ InitBodyQue(void)
 void
 body_die(edict_t *self, edict_t *inflictor /* unused */,
 		edict_t *attacker /* unused */, int damage,
-		vec3_t point /* unused */)
+		const vec3_t point /* unused */)
 {
 	BecomeDebris(self);
 #if 0
@@ -3664,7 +3664,6 @@ PutClientInServer(edict_t *ent)
 
 	gi.linkentity(ent);
 
-	ent->client->chasetoggle = 0;
 	/* If chasetoggle set then turn on (delayed start of 5 frames - 0.5s) */
 	if (ent->client->pers.chasetoggle && !ent->client->chasetoggle)
 	{

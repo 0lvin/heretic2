@@ -38,7 +38,7 @@ InitField(edict_t *self)
 //----------------------------------------------------------------------
 
 void DamageField_Use(edict_t *self, edict_t *other, edict_t *activator);
-void DamageField_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void DamageField_Touch(edict_t *self, edict_t *other, const cplane_t * plane , const csurface_t * surf ) ;
 
 void TrigDamage_Deactivate(edict_t *self, G_Message_t *msg)
 {
@@ -117,8 +117,8 @@ void DamageField_Use(edict_t *self, edict_t *other, edict_t *activator)
 
 }
 
-
-void DamageField_Touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+DamageField_Touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	int		dflags;
 
@@ -250,7 +250,8 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 
 }
 
-void trigger_goto_buoy_touch_go (edict_t *self)
+void
+trigger_goto_buoy_touch_go (edict_t *self)
 {
 	if (!self->enemy)
 		return;
@@ -267,7 +268,8 @@ void trigger_goto_buoy_touch_go (edict_t *self)
 	trigger_goto_buoy_execute(self, self->enemy, self->activator);
 }
 
-void trigger_goto_buoy_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void
+trigger_goto_buoy_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (level.time < self->air_finished)
 		return;

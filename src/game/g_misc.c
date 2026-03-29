@@ -147,7 +147,8 @@ gib_think(edict_t *self)
 }
 
 void
-gib_touch(edict_t *self, edict_t *other /* unused */, cplane_t *plane, csurface_t *surf /* unused */)
+gib_touch(edict_t *self, edict_t *other /* unused */, const cplane_t *plane,
+		const csurface_t *surf /* unused */)
 {
 	if (!self)
 	{
@@ -183,7 +184,7 @@ gib_touch(edict_t *self, edict_t *other /* unused */, cplane_t *plane, csurface_
 
 void
 gib_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
-		int damage /* unused */, vec3_t point /* unused */)
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	if (!self)
 	{
@@ -675,7 +676,7 @@ ThrowClientHead(edict_t *self, int damage)
 
 void
 debris_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
-		int damage /* unused */, vec3_t point /* unused */)
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	if (!self)
 	{
@@ -785,8 +786,8 @@ BecomeExplosion2(edict_t *self)
  *  this path_corner targeted touches it
  */
 void
-path_corner_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+path_corner_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	vec3_t v;
 	edict_t *next;
@@ -893,8 +894,8 @@ SP_path_corner(edict_t *self)
  * hold is selected, it will stay here.
  */
 void
-point_combat_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+point_combat_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	edict_t *activator;
 
@@ -1515,8 +1516,8 @@ SP_func_animation(edict_t *self)
  */
 
 void
-func_object_touch(edict_t *self, edict_t *other, cplane_t *plane,
-		csurface_t *surf /* unused */)
+func_object_touch(edict_t *self, edict_t *other, const cplane_t *plane,
+		const csurface_t *surf /* unused */)
 {
 	/* only squash thing we fall on top of */
 
@@ -1526,7 +1527,7 @@ func_object_touch(edict_t *self, edict_t *other, cplane_t *plane,
 	}
 
 	/* only squash thing we fall on top of */
-	if (plane && plane->normal[2] < 1.0)
+	if (plane->normal[2] < 1.0)
 	{
 		return;
 	}
@@ -1641,7 +1642,7 @@ SP_func_object(edict_t *self)
  */
 void
 func_explosive_explode(edict_t *self, edict_t *inflictor, edict_t *attacker,
-		int damage /* unused */, vec3_t point /* unused */)
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	vec3_t origin;
 	vec3_t chunkorigin;
@@ -1873,7 +1874,7 @@ SP_func_explosive(edict_t *self)
  */
 
 void
-barrel_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /*unused */)
+barrel_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */, const csurface_t *surf /*unused */)
 {
 	float ratio;
 	vec3_t v;
@@ -1916,7 +1917,7 @@ barrel_explode(edict_t *self)
 
 void
 barrel_delay(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
-		int damage /* unused */, vec3_t point /* unused */)
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	if (!self || !attacker)
 	{
@@ -2262,7 +2263,7 @@ commander_body_drop(edict_t *self)
 
 void
 commander_body_die(edict_t *self, edict_t *inflictor /* unused */,
-		edict_t *attacker /* unused */, int damage, vec3_t point /* unused */)
+		edict_t *attacker /* unused */, int damage, const vec3_t point /* unused */)
 {
 	if (!self)
 	{
@@ -2376,7 +2377,7 @@ SP_misc_banner(edict_t *ent)
  */
 void
 misc_deadsoldier_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unused */,
-		int damage, vec3_t point /* unused */)
+		int damage, const vec3_t point /* unused */)
 {
 	int n;
 
@@ -2591,8 +2592,8 @@ SP_misc_bigviper(edict_t *ent)
  * "dmg"	how much boom should the bomb make?
  */
 void
-misc_viper_bomb_touch(edict_t *self, edict_t *other /* unused */, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+misc_viper_bomb_touch(edict_t *self, edict_t *other /* unused */, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!self)
 	{
@@ -3994,7 +3995,7 @@ SP_misc_teleporter_dest(edict_t *ent)
 
 extern void use_target_changelevel (edict_t *self, edict_t *other, edict_t *activator);
 void
-misc_magic_portal_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+misc_magic_portal_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	edict_t *ent=NULL;
 
@@ -4096,7 +4097,7 @@ SP_misc_magic_portal(edict_t *self)
 	gi.linkentity(self);
 }
 
-void flame_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void flame_touch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (other->damage_debounce_time < level.time)
 	{
@@ -5113,10 +5114,10 @@ SP_misc_nuke_core(edict_t *ent)
 #define SPAWNFLAG_FLARE_LOCK_ANGLE 8
 
 void
-misc_flare_use(edict_t *ent, edict_t *other, edict_t *activator)
+misc_flare_use(edict_t *self, edict_t *other, edict_t *activator)
 {
-	ent->svflags ^= SVF_NOCLIENT;
-	gi.linkentity(ent);
+	self->svflags ^= SVF_NOCLIENT;
+	gi.linkentity(self);
 }
 
 void
@@ -5178,6 +5179,101 @@ SP_misc_flare(edict_t* ent)
 	}
 
 	gi.linkentity(ent);
+}
+
+void
+misc_hologram_think(edict_t *ent)
+{
+	ent->s.angles[1] += 100 * FRAMETIME;
+	ent->nextthink = level.time + FRAMETIME;
+	ent->rrs.alpha = 0.2f + 0.4f * random(); /* 0.2..0.6 */
+}
+
+/*
+ * QUAKED misc_hologram (1.0 1.0 0.0) (-16 -16 0) (16 16 32)
+ *
+ * Ship hologram seen in the N64 version.
+ */
+void
+SP_misc_hologram(edict_t *ent)
+{
+	ent->solid = SOLID_NOT;
+	ent->rrs.effects = EF_HOLOGRAM;
+	ent->think = misc_hologram_think;
+	ent->nextthink = level.time + FRAMETIME;
+	ent->rrs.alpha = 0.2f + 0.4f * random(); /* 0.2..0.6 */
+	VectorSet(ent->rrs.scale, 0.75f, 0.75f, 0.75f);
+	gi.linkentity(ent);
+}
+
+/*
+ * QUAKED misc_lavaball (0 .5 .8) (-8 -8 -8) (8 8 8) NO_EXPLODE
+ *
+ * Lava Balls. Shamelessly copied from Quake 1, like N64 guys
+ * probably did too.
+ */
+#define SPAWNFLAG_LAVABALL_NO_EXPLODE 1
+
+void
+fire_fly_touch(edict_t *self, edict_t *other /* unused */, const cplane_t *plane,
+		const csurface_t *surf /* unused */)
+{
+	if (self->spawnflags & SPAWNFLAG_LAVABALL_NO_EXPLODE)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	if (other->takedamage)
+	{
+		T_Damage(other, self, self, vec3_origin, self->s.origin, vec3_origin,
+			20, 0, DAMAGE_NO, MOD_EXPLOSIVE);
+	}
+
+	if (gi.pointcontents(self->s.origin) & CONTENTS_LAVA)
+	{
+		G_FreeEdict(self);
+	}
+	else
+	{
+		BecomeExplosion1(self);
+	}
+}
+
+void
+fire_fly_think(edict_t *self)
+{
+	edict_t *fireball = G_Spawn();
+	fireball->s.effects = EF_ROCKET | EF_GIB; /* ReRelease EF_FIREBALL */
+	fireball->s.renderfx = RF_MINLIGHT;
+	fireball->solid = SOLID_BBOX;
+	fireball->movetype = MOVETYPE_TOSS;
+	fireball->clipmask = MASK_SHOT;
+	fireball->velocity[0] = crandom() * 50;
+	fireball->velocity[1] = crandom() * 50;
+	VectorSet(fireball->avelocity, crandom() * 360, crandom() * 360, crandom() * 360);
+	fireball->velocity[2] = (self->speed * 1.75f) + (random() * 200);
+	fireball->classname = "fireball";
+	gi.setmodel(fireball, "models/objects/gibs/sm_meat/tris.md2");
+	VectorCopy(self->s.origin, fireball->s.origin);
+	fireball->nextthink = level.time + 5;
+	fireball->think = G_FreeEdict;
+	fireball->touch = fire_fly_touch;
+	fireball->spawnflags = self->spawnflags;
+	gi.linkentity(fireball);
+	self->nextthink = level.time + 5.0 * random(); /* 5 seconds */
+}
+
+void
+SP_misc_lavaball(edict_t *self)
+{
+	self->classname = "fireball";
+	self->nextthink = level.time + 5.0 * random(); /* 5 seconds */
+	self->think = fire_fly_think;
+	if (!self->speed)
+	{
+		self->speed = 185;
+	}
 }
 
 void
@@ -5434,8 +5530,8 @@ void SP_misc_model(edict_t *ent)
  * Anachronox: Save menu open.
  */
 void
-touch_npc_timeminder(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+touch_npc_timeminder(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	gi.AddCommandString("menu_savegame\n");
 }

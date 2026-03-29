@@ -76,7 +76,7 @@ TorchInit(edict_t *self)
 }
 
 void
-fire_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+fire_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (!other->client)
 	{

@@ -1763,7 +1763,7 @@ void morcalavin_postthink(edict_t *self)
 }
 
 void
-morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+morcalavin_resist_death (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, const vec3_t point)
 {
 	vec3_t	vf, vr, temp;
 
@@ -1926,7 +1926,7 @@ void morcalavin_barrier_think(edict_t *self)
 	self->nextthink = level.time + 0.1;
 }
 
-void morcalavin_barrier_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+void morcalavin_barrier_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	vec3_t	vel;
 

@@ -47,7 +47,8 @@ void SpawnFlame(edict_t *self, vec3_t origin);
 #define OBJ_STOPMOVE   8
 
 void
-destructible_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+destructible_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
+	const vec3_t point)
 {
 	vec3_t org;
 
@@ -89,7 +90,7 @@ ObjectStaticsInit(void)
 }
 
 void
-objpush_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+objpush_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	//FIXME: make player push?
 	float	ratio;
@@ -416,7 +417,7 @@ SP_obj_banneronpole(edict_t *self)
 }
 
 void
-barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+barrel_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, const vec3_t point)
 {
 	self->think = barrel_explode;
 	self->nextthink = level.time + FRAMETIME;
@@ -1056,7 +1057,7 @@ dying_elf_reach_anim(edict_t *self)
 }
 
 void
-dying_elf_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+dying_elf_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (self->touch_debounce_time < level.time)	// First time through reach anim
 	{
@@ -1087,7 +1088,7 @@ dying_elf_pain(edict_t *self, edict_t *other, float kick, int damage)
 }
 
 void
-dying_elf_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+dying_elf_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, const vec3_t point)
 {
 	int		chance;
 
@@ -2004,7 +2005,7 @@ LeverStaticsInit(void)
 }
 
 void
-bush_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+bush_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (self->touch_debounce_time > level.time)
 		return;
@@ -2033,7 +2034,7 @@ SP_obj_bush(edict_t *self)
 
 // Cactus will hurt player
 void
-cactus_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+cactus_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (!other->client)
 		return;
@@ -2814,7 +2815,7 @@ SP_obj_statue_sithraguard(edict_t *self)
 	SP_obj_material(self);
 }
 
-void ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
+void ironmaiden_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
 
 void
 ironmaiden_open(edict_t *self)
@@ -2866,7 +2867,7 @@ ironmaiden_use(edict_t *self, edict_t *other, edict_t *activator)
 
 // Cactus will hurt player
 void
-ironmaiden_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+ironmaiden_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	vec3_t		source, vf;
 	trace_t			trace;
@@ -2931,7 +2932,7 @@ fish_anim(edict_t *self)
 }
 
 void
-biotank_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+biotank_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	self->target_ent->ideal_yaw = anglemod(other->s.angles[YAW] + 180);
 }
@@ -3223,7 +3224,7 @@ larva_anim(edict_t *self)
 }
 
 void
-larva_touch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+larva_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (!other->client)
 		return;

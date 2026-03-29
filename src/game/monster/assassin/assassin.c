@@ -210,7 +210,7 @@ edict_t *AssassinArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 	return (arrow);
 }
 
-void assassinDaggerTouch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void assassinDaggerTouch (edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	float damage;
 	vec3_t	hitangles, normal;

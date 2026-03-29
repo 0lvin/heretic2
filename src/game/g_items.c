@@ -1878,7 +1878,8 @@ Drop_PowerArmor(edict_t *ent, const gitem_t *item)
 /* ====================================================================== */
 
 void
-Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_t *surf /* unused */)
+Touch_Item(edict_t *ent, edict_t *other, const cplane_t *plane /* unused */,
+	const csurface_t *surf /* unused */)
 {
 	if (!ent || !other)
 	{
@@ -2072,7 +2073,7 @@ Touch_Item(edict_t *ent, edict_t *other, cplane_t *plane /* unused */, csurface_
 /* ====================================================================== */
 
 void
-drop_temp_touch(edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
+drop_temp_touch(edict_t *ent, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	if (!ent || !other)
 	{
@@ -6562,7 +6563,7 @@ InitItems(void)
 
 			for (i = 0; i < dyn_count; i ++)
 			{
-				const gitem_t *it;
+				gitem_t *it;
 
 				it = FindItemInList(dyn_items[i].classname, itemlist, num_items);
 				if (!it)
@@ -6605,6 +6606,13 @@ InitItems(void)
 					{
 						gi.dprintf("No space for additional items\n");
 						break;
+					}
+				}
+				else
+				{
+					if (!it->world_model)
+					{
+						it->world_model = dyn_items[i].world_model;
 					}
 				}
 			}

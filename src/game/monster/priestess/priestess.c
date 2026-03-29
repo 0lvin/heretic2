@@ -379,7 +379,7 @@ void priestess_proj1_think( edict_t *self )
 -----------------------------------------------*/
 
 void
-priestess_proj2_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+priestess_proj2_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, const vec3_t point)
 {
 	gi.sound(self, CHAN_AUTO, sounds[SND_BUGHIT], 1, ATTN_NORM, 0);
 

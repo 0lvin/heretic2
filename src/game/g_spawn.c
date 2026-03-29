@@ -277,6 +277,8 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 		VectorCopy(data->scale, self->rrs.scale);
 	}
 
+	self->rrs.alpha = 1.0;
+
 	self->monsterinfo.scale = (
 		data->scale[0] +
 		data->scale[1] +
@@ -319,8 +321,8 @@ DynamicSpawnUpdate(edict_t *self, dynamicentity_t *data)
 }
 
 void
-dynamicspawn_touch(edict_t *self, edict_t *other, cplane_t *plane /* unused */,
-		csurface_t *surf /* unused */)
+dynamicspawn_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
 	if (!self || !other)
 	{
@@ -2360,7 +2362,7 @@ FindSpawnPoint(vec3_t startpoint, vec3_t mins, vec3_t maxs,
 }
 
 qboolean
-CheckSpawnPoint(vec3_t origin, vec3_t mins, vec3_t maxs)
+CheckSpawnPoint(const vec3_t origin, const vec3_t mins, const vec3_t maxs)
 {
 	trace_t tr;
 
@@ -2386,7 +2388,7 @@ CheckSpawnPoint(vec3_t origin, vec3_t mins, vec3_t maxs)
 }
 
 qboolean
-CheckGroundSpawnPoint(vec3_t origin, vec3_t entMins, vec3_t entMaxs,
+CheckGroundSpawnPoint(const vec3_t origin, const vec3_t entMins, const vec3_t entMaxs,
 		float height, float gravity)
 {
 	trace_t tr;
@@ -2556,7 +2558,7 @@ spawngrow_think(edict_t *self)
 }
 
 void
-SpawnGrow_Spawn(vec3_t startpos, int size)
+SpawnGrow_Spawn(const vec3_t startpos, int size)
 {
 	edict_t *ent;
 	int i;
@@ -2704,7 +2706,7 @@ widowlegs_think(edict_t *self)
 }
 
 void
-Widowlegs_Spawn(vec3_t startpos, vec3_t angles)
+Widowlegs_Spawn(const vec3_t startpos, vec3_t angles)
 {
 	edict_t *ent;
 
@@ -2880,7 +2882,7 @@ DynamicSpawnInit(void)
 			size_t linesize = 0;
 
 			linesize = strcspn(curr, "\n\r");
-			if (*curr &&  *curr != '\n' && *curr != '\r' && *curr != ',')
+			if (*curr != '\n' && *curr != '\r' && *curr != ',')
 			{
 				ndynamicentities ++;
 			}
@@ -2907,7 +2909,7 @@ DynamicSpawnInit(void)
 			size_t linesize = 0;
 
 			linesize = strcspn(curr, "\n\r");
-			if (*curr && strncmp(curr, "//", 2) &&
+			if (strncmp(curr, "//", 2) &&
 				*curr != '\n' && *curr != '\r' && *curr != ';')
 			{
 				ndynamicentities ++;

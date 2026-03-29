@@ -324,7 +324,7 @@ edict_t *MssithraAlphaArrowReflect(edict_t *self, edict_t *other, vec3_t vel)
 }
 
 
-void mssithraAlphaArrowTouch(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surface)
+void mssithraAlphaArrowTouch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surface)
 {
 	// are we reflecting ?
 	if (self->reflect_debounce_time)
