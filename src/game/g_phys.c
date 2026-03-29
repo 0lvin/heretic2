@@ -2244,14 +2244,21 @@ void HandleCollision(edict_t *self, trace_t *trace, vec3_t move, int forceful, i
 		self->bounced(self, trace);
 	}
 
-	if (flags&CH_ISBLOCKING && other->isBlocking)
+	if (flags & CH_ISBLOCKING)
 	{
 		trace_t temp = *trace;
 
 		temp.ent = self;
 		VectorInverse(temp.plane.normal);
 
-		other->isBlocking(other, &temp);
+		if (other->isBlocking)
+		{
+			other->isBlocking(other, &temp);
+		}
+		else if (other->touch)
+		{
+			other->touch(other, temp.ent, NULL, NULL);
+		}
 	}
 }
 

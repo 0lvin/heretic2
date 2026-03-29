@@ -2124,11 +2124,13 @@ button_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 }
 
 void
-button_touch(edict_t *self, trace_t *trace)
+button_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
-	edict_t *other;
-
-	other = trace->ent;
+	if (!self || !other)
+	{
+		return;
+	}
 
 	if (!other->client)
 	{
@@ -2282,7 +2284,7 @@ SP_func_button(edict_t *ent)
 
 	if ((! ent->targetname) || (ent->spawnflags & 1))
 	{
-		ent->isBlocking = button_touch;
+		ent->touch = button_touch;
 	}
 
 	ent->moveinfo.state = STATE_BOTTOM;
@@ -2729,7 +2731,7 @@ door_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 			for (ent = self; ent; ent = ent->teamchain)
 			{
 				ent->message = NULL;
-				ent->isBlocking = NULL;
+				ent->touch = NULL;
 				door_go_down(ent);
 			}
 
@@ -2741,7 +2743,7 @@ door_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 	for (ent = self; ent; ent = ent->teamchain)
 	{
 		ent->message = NULL;
-		ent->isBlocking = NULL;
+		ent->touch = NULL;
 		door_go_up(ent, activator);
 	}
 }
@@ -2977,12 +2979,10 @@ door_killed(edict_t *self, edict_t *inflictor /* unused */,
 }
 
 void
-door_touch(edict_t *self, trace_t *trace)
+door_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
+		const csurface_t *surf /* unused */)
 {
-	edict_t		*other;
 	int sound_index;
-
-	other = trace->ent;
 
 	if (!self || !other)
 	{
@@ -3201,7 +3201,7 @@ SP_func_door(edict_t *ent)
 	else if (ent->targetname && ent->message)
 	{
 		gi.soundindex("misc/talk.wav");
-		ent->isBlocking = door_touch;
+		ent->touch = door_touch;
 	}
 
 	ent->moveinfo.speed = ent->speed;
@@ -3424,7 +3424,7 @@ SP_func_door_rotating(edict_t *ent)
 	if (ent->targetname && ent->message)
 	{
 		gi.soundindex("misc/talk.wav");
-		ent->isBlocking = door_touch;
+		ent->touch = door_touch;
 	}
 
 	ent->moveinfo.state = STATE_BOTTOM;
@@ -4593,7 +4593,7 @@ SP_func_door_secret(edict_t *ent)
 	else if (ent->targetname && ent->message)
 	{
 		gi.soundindex("misc/talk.wav");
-		ent->isBlocking = door_touch;
+		ent->touch = door_touch;
 	}
 
 	ent->classname = "func_door";
