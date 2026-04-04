@@ -299,9 +299,6 @@ typedef struct image_s
 
 } gl4image_t;
 
-// include this down here so it can use gl4image_t
-#include "model.h"
-
 typedef struct
 {
 	int current_lightmap_texture; // index into gl4state.lightmap_textureIDs[]
@@ -315,7 +312,14 @@ typedef struct
 	byte lightmap_buffers[MAX_LIGHTMAPS_PER_SURFACE][4 * BLOCK_WIDTH * BLOCK_HEIGHT];
 } gl4lightmapstate_t;
 
-extern gl4model_t *gl4_worldmodel;
+// used for vertex array elements when drawing models
+typedef struct gl4_alias_vtx_s {
+	GLfloat pos[3];
+	GLfloat texCoord[2];
+	GLfloat color[4];
+} gl4_alias_vtx_t;
+
+extern model_t *gl4_worldmodel;
 
 extern float gl4depthmin, gl4depthmax;
 
@@ -396,7 +400,6 @@ extern void GL4_BeginRegistration(const char *model);
 extern struct model_s * GL4_RegisterModel(const char *name);
 extern void GL4_EndRegistration(void);
 extern void GL4_Mod_Modellist_f(void);
-extern const byte* GL4_Mod_ClusterPVS(int cluster, const gl4model_t *model);
 
 // gl4_draw.c
 extern void GL4_Draw_InitLocal(void);
@@ -453,8 +456,8 @@ extern void GL4_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 extern void LM_InitBlock(void);
 extern void LM_UploadBlock(void);
 extern qboolean LM_AllocBlock(int w, int h, int *x, int *y);
-extern void LM_CreateLightmapsPoligon(gl4model_t *currentmodel, msurface_t *fa);
-extern void LM_BeginBuildingLightmaps(gl4model_t *m);
+extern void LM_CreateLightmapsPoligon(model_t *currentmodel, msurface_t *fa);
+extern void LM_BeginBuildingLightmaps(model_t *m);
 extern void LM_EndBuildingLightmaps(void);
 
 // gl4_warp.c
@@ -471,7 +474,7 @@ extern void GL4_SurfInit(void);
 extern void GL4_SurfShutdown(void);
 extern void GL4_DrawTriangleOutlines(void);
 extern void GL4_DrawAlphaSurfaces(void);
-extern void GL4_DrawBrushModel(entity_t *e, gl4model_t *currentmodel);
+extern void GL4_DrawBrushModel(entity_t *e, model_t *currentmodel);
 extern void GL4_DrawWorld(void);
 extern void GL4_MarkLeaves(void);
 

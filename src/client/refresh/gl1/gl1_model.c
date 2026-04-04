@@ -26,9 +26,6 @@
 
 #include "header/local.h"
 
-static byte *mod_novis = NULL;
-static size_t mod_novis_len = 0;
-
 static model_t mod_known[MAX_MOD_KNOWN];
 static int mod_numknown = 0;
 static int mod_max = 0;
@@ -61,41 +58,6 @@ Mod_HasFreeSpace(void)
 
 	// should same size of free slots as currently used
 	return (mod_numknown + mod_max) < MAX_MOD_KNOWN;
-}
-
-const byte *
-Mod_ClusterPVS(int cluster, const model_t *model)
-{
-	if (!mod_novis)
-	{
-		Com_Error(ERR_DROP, "%s: incrorrect init of PVS/PHS", __func__);
-		return mod_novis;
-	}
-
-	if (!model->vis)
-	{
-		Mod_DecompressVis(NULL, mod_novis, NULL,
-			(model->numclusters + 7) >> 3);
-		return mod_novis;
-	}
-
-	if (cluster == -1)
-	{
-		memset(mod_novis, 0, (model->numclusters + 7) >> 3);
-		return mod_novis;
-	}
-
-	if (cluster < 0 || cluster >= model->numvisibility)
-	{
-		Com_Error(ERR_DROP, "%s: bad cluster", __func__);
-		return mod_novis;
-	}
-
-	Mod_DecompressVis((byte *)model->vis +
-			model->vis->bitofs[cluster][DVIS_PVS], mod_novis,
-			(byte *)model->vis + model->numvisibility,
-			(model->numclusters + 7) >> 3);
-	return mod_novis;
 }
 
 void
@@ -139,69 +101,7 @@ void
 Mod_Init(void)
 {
 	mod_max = 0;
-	mod_novis = NULL;
-	mod_novis_len = 0;
-}
-
-static void
-Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
-{
-	dmodel_t *in;
-	model_t *out;
-	int i, j, count;
-
-	in = (void *)(mod_base + l->fileofs);
-
-	if (l->filelen % sizeof(*in))
-	{
-		Com_Error(ERR_DROP, "%s: funny lump size in %s",
-				__func__, loadmodel->name);
-		return;
-	}
-
-	count = l->filelen / sizeof(*in);
-	out = Hunk_Alloc(count * sizeof(*out));
-
-	loadmodel->submodels = out;
-	loadmodel->numsubmodels = count;
-
-	for (i = 0; i < count; i++, in++, out++)
-	{
-		if (i == 0)
-		{
-			/* copy parent as template for first model */
-			memcpy(out, loadmodel, sizeof(*out));
-		}
-		else
-		{
-			/* copy first as template for model */
-			memmove(out, loadmodel->submodels, sizeof(*out));
-		}
-
-		Com_sprintf (out->name, sizeof(out->name), "*%d", i);
-
-		for (j = 0; j < 3; j++)
-		{
-			/* spread the mins / maxs by a pixel */
-			out->mins[j] = in->mins[j] - 1;
-			out->maxs[j] = in->maxs[j] + 1;
-			out->origin[j] = in->origin[j];
-		}
-
-		out->radius = Mod_RadiusFromBounds(out->mins, out->maxs);
-		out->firstnode = in->headnode;
-		out->firstmodelsurface = in->firstface;
-		out->nummodelsurfaces = in->numfaces;
-		/* visleafs */
-		out->numleafs = 0;
-		/* check limits */
-		if (out->firstnode >= loadmodel->numnodes)
-		{
-			Com_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
-					__func__, i);
-			return;
-		}
-	}
+	Mod_VisInit();
 }
 
 static void
@@ -269,6 +169,7 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 					__func__, planenum);
 			return;
 		}
+
 		out->plane = loadmodel->planes + planenum;
 
 		ti = in->texinfo;
@@ -328,7 +229,6 @@ Mod_LoadQFaces(model_t *loadmodel, const byte *mod_base, const lump_t *l,
 static void
 Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 {
-	int lightgridsize = 0, hunkSize;
 	const bspx_header_t *bspx_header;
 	dheader_t *header;
 	byte *mod_base;
@@ -342,91 +242,15 @@ Mod_LoadBrushModel(model_t *mod, const void *buffer, int modfilelen)
 	mod_base = (byte *)buffer;
 	header = (dheader_t *)mod_base;
 
-	/* check for BSPX extensions */
-	bspx_header = Mod_LoadBSPX(modfilelen, (byte*)mod_base);
-
-	// calculate the needed hunksize from the lumps
-	hunkSize = Mod_CalcNonModelLumpHunkSize(mod_base, header);
-
-	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_MODELS],
-		sizeof(dmodel_t), sizeof(model_t), 0);
-
-	/* Get size of octree on disk, need to recheck real size */
-	if (Mod_LoadBSPXFindLump(bspx_header, "LIGHTGRID_OCTREE", &lightgridsize, mod_base))
-	{
-		hunkSize += lightgridsize * 4;
-	}
-
-	mod->extradata = Hunk_Begin(hunkSize);
-	mod->type = mod_brush;
-
-	if (bspx_header)
-	{
-		mod->grid = Mod_LoadBSPXLightGrid(bspx_header, mod_base);
-	}
-	else
-	{
-		mod->grid = NULL;
-	}
-
 	/* load into heap */
-	Mod_LoadVertexes(mod->name, &mod->vertexes, &mod->numvertexes, mod_base,
-		&header->lumps[LUMP_VERTEXES]);
-	Mod_LoadQBSPEdges(mod->name, &mod->edges, &mod->numedges,
-		mod_base, &header->lumps[LUMP_EDGES]);
-	Mod_LoadSurfedges(mod->name, &mod->surfedges, &mod->numsurfedges,
-		mod_base, &header->lumps[LUMP_SURFEDGES]);
-	Mod_LoadLighting(&mod->lightdata, &mod->numlightdata, mod_base,
-		&header->lumps[LUMP_LIGHTING]);
-	Mod_LoadPlanes(mod->name, &mod->planes, &mod->numplanes,
-		mod_base, &header->lumps[LUMP_PLANES]);
-	Mod_LoadTexinfo(mod->name, &mod->texinfo, &mod->numtexinfo,
-		mod_base, &header->lumps[LUMP_TEXINFO], (findimage_t)R_FindImage,
-		r_notexture);
+	bspx_header = Mod_LoadSectionsBeforeFaces(mod_base, modfilelen, mod,
+		(findimage_t)R_FindImage, r_notexture);
 
 	LM_BeginBuildingLightmaps(mod);
 	Mod_LoadQFaces(mod, mod_base, &header->lumps[LUMP_FACES], bspx_header);
 	LM_EndBuildingLightmaps();
 
-	Mod_LoadQBSPMarksurfaces(mod->name, &mod->marksurfaces, &mod->nummarksurfaces,
-		mod->surfaces, mod->numsurfaces, mod_base, &header->lumps[LUMP_LEAFFACES]);
-	Mod_LoadVisibility(mod->name, &mod->vis, &mod->numvisibility, mod_base,
-		&header->lumps[LUMP_VISIBILITY]);
-	Mod_LoadQBSPLeafs(mod->name, &mod->leafs, &mod->numleafs,
-		mod->marksurfaces, mod->nummarksurfaces, &mod->numclusters,
-		mod_base, &header->lumps[LUMP_LEAFS]);
-	Mod_LoadQBSPNodes(mod->name, mod->planes, mod->numplanes, mod->leafs,
-		mod->numleafs, &mod->nodes, &mod->numnodes, mod->mins, mod->maxs,
-		mod_base, &header->lumps[LUMP_NODES], header->ident);
-	Mod_LoadSubmodels(mod, mod_base, &header->lumps[LUMP_MODELS]);
-	mod->numframes = 2; /* regular and alternate animation */
-
-	if (mod->vis && mod->numclusters != mod->vis->numclusters)
-	{
-		Com_Error(ERR_DROP, "%s: Map %s has incorrect number of clusters %d != %d",
-			__func__, mod->name, mod->numclusters, mod->vis->numclusters);
-		return;
-	}
-
-	if ((mod->numleafs > mod_novis_len) || !mod_novis)
-	{
-		byte *tmp;
-
-		/* reallocate buffers for PVS/PHS buffers*/
-		mod_novis_len = (mod->numleafs + 63) & ~63;
-		tmp = realloc(mod_novis, mod_novis_len / 8);
-		YQ2_COM_CHECK_OOM(tmp, "realloc()", mod_novis_len / 8)
-		if (!tmp)
-		{
-			mod_novis_len = 0;
-			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-			return;
-		}
-
-		mod_novis = tmp;
-		Com_Printf("Allocated " YQ2_COM_PRIdS " bit leafs of PVS/PHS buffer\n",
-			mod_novis_len);
-	}
+	Mod_LoadSectionsAfterFaces(mod_base, mod);
 }
 
 /*
@@ -613,13 +437,7 @@ Mod_FreeAll(void)
 		}
 	}
 
-	/* Free PVS buffer */
-	if (mod_novis)
-	{
-		free(mod_novis);
-		mod_novis = NULL;
-	}
-	mod_novis_len = 0;
+	Mod_VisFree();
 }
 
 /*

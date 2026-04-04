@@ -43,7 +43,7 @@ gl4state_t gl4state;
 
 unsigned gl4_rawpalette[256];
 
-gl4model_t *gl4_worldmodel;
+model_t *gl4_worldmodel;
 
 float gl4depthmin=0.0f, gl4depthmax=1.0f;
 
@@ -683,7 +683,7 @@ GL4_DrawBeam(entity_t *e)
 }
 
 static void
-GL4_DrawSpriteModel(entity_t *e, const gl4model_t *currentmodel)
+GL4_DrawSpriteModel(entity_t *e, const model_t *currentmodel)
 {
 	float alpha = 1.0F;
 	mvtx_t verts[4];
@@ -811,9 +811,8 @@ GL4_DrawNullModel(entity_t *currententity)
 	}
 	else
 	{
-		R_LightPoint(gl4_worldmodel->grid, currententity,
-			gl4_worldmodel->surfaces, gl4_worldmodel->nodes, currententity->origin,
-			shadelight, lightspot);
+		R_LightPoint(gl4_worldmodel, currententity,
+			currententity->origin, shadelight, lightspot);
 	}
 
 	hmm_mat4 origModelMat = gl4state.uni3DData.transModelMat4;
@@ -955,7 +954,7 @@ GL4_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl4model_t *currentmodel = currententity->model;
+			model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
@@ -1007,7 +1006,7 @@ GL4_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl4model_t *currentmodel = currententity->model;
+			model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
@@ -1585,9 +1584,8 @@ GL4_SetLightLevel(const entity_t *currententity)
 	}
 
 	/* save off light value for server to look at */
-	R_LightPoint(gl4_worldmodel->grid, currententity,
-		gl4_worldmodel->surfaces, gl4_worldmodel->nodes, r_newrefdef.vieworg,
-		shadelight, lightspot);
+	R_LightPoint(gl4_worldmodel, currententity,
+		r_newrefdef.vieworg, shadelight, lightspot);
 
 	/* pick the greatest component, which should be the
 	 * same as the mono value returned by software */

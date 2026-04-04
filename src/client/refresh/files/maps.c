@@ -225,7 +225,7 @@ Mod_LoadVertexes
 extra for skybox
 =================
 */
-void
+static void
 Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
 	const byte *mod_base, const lump_t *l)
 {
@@ -268,7 +268,7 @@ Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
 Mod_LoadLighting
 =================
 */
-void
+static void
 Mod_LoadLighting(byte **lightdata, int *size, const byte *mod_base, const lump_t *l)
 {
 	if (!l->filelen)
@@ -382,7 +382,7 @@ Mod_CalcSurfaceExtents(const int *surfedges, int numsurfedges, mvertex_t *vertex
 	}
 }
 
-void
+static void
 Mod_LoadTexinfoQ2(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 	const byte *mod_base, const lump_t *l, findimage_t find_image,
 	struct image_s *notexture)
@@ -457,7 +457,7 @@ Mod_LoadTexinfo
 extra for skybox in soft render
 =================
 */
-void
+static void
 Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
 	const byte *mod_base, const lump_t *l, findimage_t find_image,
 	struct image_s *notexture)
@@ -490,7 +490,7 @@ Mod_LoadQEdges
 extra is used for skybox, which adds 6 surfaces
 =================
 */
-void
+static void
 Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
 	const byte *mod_base, const lump_t *l)
 {
@@ -524,7 +524,7 @@ Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
 Mod_LoadSurfedges
 =================
 */
-void
+static void
 Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
 	const byte *mod_base, const lump_t *l)
 {
@@ -724,7 +724,7 @@ Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out)
 	return LittleLong(lminfo->lightofs);
 }
 
-void
+static void
 Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces, unsigned int *nummarksurfaces,
 	msurface_t *surfaces, int numsurfaces, const byte *mod_base, const lump_t *l)
 {
@@ -857,7 +857,7 @@ Mod_LoadBSPXReadFloat(struct rctx_s *ctx)
 	return u.f;
 }
 
-bspxlightgrid_t*
+static bspxlightgrid_t *
 Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, const byte *mod_base)
 {
 	vec3_t step, mins;
@@ -1009,6 +1009,151 @@ Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, const byte *mod_base)
 	}
 
 	return grid;
+}
+
+const bspx_header_t *
+Mod_LoadSectionsBeforeFaces(const byte *mod_base, size_t modfilelen,
+	model_t *mod, findimage_t find_image, struct image_s *notexture)
+{
+	int lightgridsize = 0, hunkSize;
+	const bspx_header_t *bspx_header;
+	const dheader_t *header;
+
+	header = (dheader_t *)mod_base;
+
+	/* check for BSPX extensions */
+	bspx_header = Mod_LoadBSPX(modfilelen, mod_base);
+
+	// calculate the needed hunksize from the lumps
+	hunkSize = Mod_CalcNonModelLumpHunkSize(mod_base, header);
+
+	hunkSize += Mod_CalcLumpHunkSize(&header->lumps[LUMP_MODELS],
+		sizeof(dmodel_t), sizeof(model_t), 0);
+
+	/* Get size of octree on disk, need to recheck real size */
+	if (Mod_LoadBSPXFindLump(bspx_header, "LIGHTGRID_OCTREE", &lightgridsize, mod_base))
+	{
+		hunkSize += lightgridsize * 4;
+	}
+
+	mod->extradata = Hunk_Begin(hunkSize);
+
+	if (bspx_header)
+	{
+		mod->grid = Mod_LoadBSPXLightGrid(bspx_header, mod_base);
+	}
+	else
+	{
+		mod->grid = NULL;
+	}
+
+	mod->type = mod_brush;
+
+	Mod_LoadVertexes(mod->name, &mod->vertexes, &mod->numvertexes, mod_base,
+		&header->lumps[LUMP_VERTEXES]);
+	Mod_LoadQBSPEdges(mod->name, &mod->edges, &mod->numedges,
+		mod_base, &header->lumps[LUMP_EDGES]);
+	Mod_LoadSurfedges(mod->name, &mod->surfedges, &mod->numsurfedges,
+		mod_base, &header->lumps[LUMP_SURFEDGES]);
+	Mod_LoadLighting(&mod->lightdata, &mod->numlightdata, mod_base,
+		&header->lumps[LUMP_LIGHTING]);
+	Mod_LoadPlanes(mod->name, &mod->planes, &mod->numplanes,
+		mod_base, &header->lumps[LUMP_PLANES]);
+	Mod_LoadTexinfo(mod->name, &mod->texinfo, &mod->numtexinfo,
+		mod_base, &header->lumps[LUMP_TEXINFO], find_image, notexture);
+
+	return bspx_header;
+}
+
+static void
+Mod_LoadSubmodels(model_t *loadmodel, const byte *mod_base, const lump_t *l)
+{
+	dmodel_t *in;
+	model_t *out;
+	int i, j, count;
+
+	in = (void *)(mod_base + l->fileofs);
+
+	if (l->filelen % sizeof(*in))
+	{
+		Com_Error(ERR_DROP, "%s: funny lump size in %s",
+				__func__, loadmodel->name);
+		return;
+	}
+
+	count = l->filelen / sizeof(*in);
+	out = Hunk_Alloc(count * sizeof(*out));
+
+	loadmodel->submodels = out;
+	loadmodel->numsubmodels = count;
+
+	for (i = 0; i < count; i++, in++, out++)
+	{
+		if (i == 0)
+		{
+			/* copy parent as template for first model */
+			memcpy(out, loadmodel, sizeof(*out));
+		}
+		else
+		{
+			/* copy first as template for model */
+			memmove(out, loadmodel->submodels, sizeof(*out));
+		}
+
+		Com_sprintf (out->name, sizeof(out->name), "*%d", i);
+
+		for (j = 0; j < 3; j++)
+		{
+			/* spread the mins / maxs by a pixel */
+			out->mins[j] = in->mins[j] - 1;
+			out->maxs[j] = in->maxs[j] + 1;
+			out->origin[j] = in->origin[j];
+		}
+
+		out->radius = Mod_RadiusFromBounds(out->mins, out->maxs);
+		out->firstnode = in->headnode;
+		out->firstmodelsurface = in->firstface;
+		out->nummodelsurfaces = in->numfaces;
+		/* visleafs */
+		out->numleafs = 0;
+		/* check limits */
+		if (out->firstnode >= loadmodel->numnodes)
+		{
+			Com_Error(ERR_DROP, "%s: Inline model %i has bad firstnode",
+					__func__, i);
+			return;
+		}
+	}
+}
+
+void
+Mod_LoadSectionsAfterFaces(const byte *mod_base, model_t *mod)
+{
+	const dheader_t *header;
+
+	header = (dheader_t *)mod_base;
+
+	Mod_LoadQBSPMarksurfaces(mod->name, &mod->marksurfaces, &mod->nummarksurfaces,
+		mod->surfaces, mod->numsurfaces, mod_base, &header->lumps[LUMP_LEAFFACES]);
+	Mod_LoadVisibility(mod->name, &mod->vis, &mod->numvisibility, mod_base,
+		&header->lumps[LUMP_VISIBILITY]);
+	Mod_LoadQBSPLeafs(mod->name, &mod->leafs, &mod->numleafs,
+		mod->marksurfaces, mod->nummarksurfaces, &mod->numclusters,
+		mod_base, &header->lumps[LUMP_LEAFS]);
+	Mod_LoadQBSPNodes(mod->name, mod->planes, mod->numplanes, mod->leafs,
+		mod->numleafs, &mod->nodes, &mod->numnodes, mod->mins, mod->maxs,
+		mod_base, &header->lumps[LUMP_NODES], header->ident);
+	Mod_LoadSubmodels(mod, mod_base, &header->lumps[LUMP_MODELS]);
+	mod->numframes = 2; /* regular and alternate animation */
+
+	if (mod->vis && mod->numclusters != mod->vis->numclusters)
+	{
+		Com_Error(ERR_DROP, "%s: Map %s has incorrect number of clusters %d != %d",
+			__func__, mod->name, mod->numclusters, mod->vis->numclusters);
+		return;
+	}
+
+	Mod_VisRealloc(mod);
 }
 
 static int

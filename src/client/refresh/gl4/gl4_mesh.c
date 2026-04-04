@@ -446,7 +446,7 @@ CullAliasModel(vec3_t bbox[8], entity_t *e)
 {
 	dmdx_t *paliashdr;
 
-	gl4model_t* model = e->model;
+	model_t* model = e->model;
 
 	paliashdr = (dmdx_t *)model->extradata;
 
@@ -499,7 +499,7 @@ GL4_DrawAliasModel(entity_t *currententity)
 		}
 	}
 
-	gl4model_t* model = currententity->model;
+	model_t* model = currententity->model;
 	paliashdr = (dmdx_t *)model->extradata;
 
 	for (i = 0; i < 3; i++)
@@ -513,12 +513,12 @@ GL4_DrawAliasModel(entity_t *currententity)
 
 	if (gl4_worldmodel)
 	{
-		R_ApplyModelLight(gl4_worldmodel->grid, currententity, gl4_worldmodel->surfaces,
-			gl4_worldmodel->nodes, shadelight, lightspot, gl4_worldmodel->lightdata);
+		R_ApplyModelLight(gl4_worldmodel, currententity, shadelight,
+			lightspot, gl4_worldmodel->lightdata);
 	}
 	else
 	{
-		R_ApplyModelLight(NULL, currententity, NULL, NULL, shadelight,
+		R_ApplyModelLight(NULL, currententity, shadelight,
 			lightspot, NULL);
 	}
 

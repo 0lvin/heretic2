@@ -475,7 +475,7 @@ RenderLightmappedPoly(const entity_t *currententity, msurface_t *surf)
 }
 
 static void
-DrawInlineBModel(const entity_t *currententity, gl3model_t *currentmodel)
+DrawInlineBModel(const entity_t *currententity, model_t *currentmodel)
 {
 	msurface_t *psurf;
 	int i;
@@ -535,7 +535,7 @@ DrawInlineBModel(const entity_t *currententity, gl3model_t *currentmodel)
 }
 
 void
-GL3_DrawBrushModel(entity_t *e, gl3model_t *currentmodel)
+GL3_DrawBrushModel(entity_t *e, model_t *currentmodel)
 {
 	vec3_t mins, maxs;
 	qboolean rotated;
@@ -837,7 +837,7 @@ GL3_MarkLeaves(void)
 		return;
 	}
 
-	vis = GL3_Mod_ClusterPVS(gl3_viewcluster, gl3_worldmodel);
+	vis = Mod_ClusterPVS(gl3_viewcluster, gl3_worldmodel);
 
 	/* may have to combine two clusters because of solid water boundaries */
 	if (gl3_viewcluster2 != gl3_viewcluster)
@@ -846,7 +846,7 @@ GL3_MarkLeaves(void)
 
 		fatvis = malloc(((gl3_worldmodel->numleafs + 31) / 32) * sizeof(int));
 		memcpy(fatvis, vis, (gl3_worldmodel->numleafs + 7) / 8);
-		vis = GL3_Mod_ClusterPVS(gl3_viewcluster2, gl3_worldmodel);
+		vis = Mod_ClusterPVS(gl3_viewcluster2, gl3_worldmodel);
 		c = (gl3_worldmodel->numleafs + 31) / 32;
 
 		for (i = 0; i < c; i++)

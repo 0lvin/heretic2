@@ -718,7 +718,7 @@ R_MarkLeaves (void)
 		return;
 	}
 
-	vis = Mod_ClusterPVS (r_viewcluster, r_worldmodel);
+	vis = Mod_ClusterPVS(r_viewcluster, r_worldmodel);
 
 	for (i=0,leaf=r_worldmodel->leafs ; i<r_worldmodel->numleafs ; i++, leaf++)
 	{
@@ -1232,9 +1232,8 @@ R_SetLightLevel(const entity_t *currententity)
 	}
 
 	/* save off light value for server to look at (BIG HACK!) */
-	R_LightPoint(r_worldmodel->grid, currententity,
-		r_worldmodel->surfaces, r_worldmodel->nodes, r_newrefdef.vieworg,
-		shadelight, lightspot);
+	R_LightPoint(r_worldmodel, currententity,
+		r_newrefdef.vieworg, shadelight, lightspot);
 
 	/* pick the greatest component, which should be the
 	 * same as the mono value returned by before color light apply */

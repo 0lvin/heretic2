@@ -315,6 +315,77 @@ typedef struct
 	bspxlgleaf_t *leafs;
 } bspxlightgrid_t;
 
+typedef struct model_s
+{
+	char name[MAX_QPATH];
+
+	int registration_sequence;
+
+	modtype_t type;
+	int numframes;
+
+	int flags;
+
+	/* volume occupied by the model graphics */
+	vec3_t mins, maxs;
+	float radius;
+
+	/* brush model */
+	int firstmodelsurface, nummodelsurfaces;
+	int lightmap; /* only for submodels */
+
+	int numsubmodels;
+	struct model_s *submodels;
+
+	int numplanes;
+	cplane_t *planes;
+
+	int numleafs; /* number of visible leafs, not counting 0 */
+	mleaf_t *leafs;
+
+	int numvertexes;
+	mvertex_t *vertexes;
+
+	int numedges;
+	medge_t *edges;
+
+	int numnodes;
+	int firstnode;
+	mnode_t *nodes;
+
+	int numtexinfo;
+	mtexinfo_t *texinfo;
+
+	int numsurfaces;
+	msurface_t *surfaces;
+
+	int numsurfedges;
+	int *surfedges;
+
+	unsigned int nummarksurfaces;
+	msurface_t **marksurfaces;
+
+	int numvisibility;
+	int numclusters;
+	dvis_t *vis;
+
+	byte *lightdata;
+	int numlightdata;
+
+	/* for alias models and skins */
+	struct image_s **skins;
+	int numskins;
+
+	int extradatasize;
+	void *extradata;
+
+	/* submodules */
+	vec3_t origin;	/* for sounds or lights */
+
+	/* octree  */
+	bspxlightgrid_t *grid;
+} model_t;
+
 /* screen size info */
 extern refdef_t r_newrefdef;
 extern viddef_t vid;
@@ -334,35 +405,26 @@ extern struct image_s *R_LoadConsoleChars(findimage_t find_image);
 extern unsigned R_NextUTF8Code(const char **curr);
 extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
 	imagetype_t type, loadimage_t load_image);
-extern void Mod_LoadQBSPMarksurfaces(const char *name, msurface_t ***marksurfaces,
-	unsigned int *nummarksurfaces, msurface_t *surfaces, int numsurfaces,
-	const byte *mod_base, const lump_t *l);
 extern void Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes,
 	mleaf_t *leafs, int numleafs, mnode_t **nodes, int *numnodes, vec3_t mins, vec3_t maxs,
 	const byte *mod_base, const lump_t *l, int ident);
 extern void Mod_LoadQBSPLeafs(const char *name, mleaf_t **leafs, int *numleafs,
 	msurface_t **marksurfaces, unsigned int nummarksurfaces,
 	int *numclusters, const byte *mod_base, const lump_t *l);
-extern void Mod_LoadQBSPEdges(const char *name, medge_t **edges, int *numedges,
-	const byte *mod_base, const lump_t *l);
-extern void Mod_LoadVertexes(const char *name, mvertex_t **vertexes, int *numvertexes,
-	const byte *mod_base, const lump_t *l);
-extern void Mod_LoadLighting(byte **lightdata, int *size, const byte *mod_base, const lump_t *l);
 extern void Mod_LoadSetSurfaceLighting(byte *lightdata, int size, msurface_t *out,
 	const byte *styles, int lightofs);
 extern void Mod_CalcSurfaceExtents(const int *surfedges, int numsurfedges, mvertex_t *vertexes,
 	medge_t *edges, msurface_t *s);
-extern void Mod_LoadTexinfo(const char *name, mtexinfo_t **texinfo, int *numtexinfo,
-	const byte *mod_base, const lump_t *l, findimage_t find_image,
-	struct image_s *notexture);
-extern void Mod_LoadSurfedges(const char *name, int **surfedges, int *numsurfedges,
-	const byte *mod_base, const lump_t *l);
 extern mleaf_t *Mod_PointInLeaf(const vec3_t p, mnode_t *node);
 extern const void *Mod_LoadBSPXFindLump(const bspx_header_t *bspx_header,
 	const char *lumpname, int *plumpsize, const byte *mod_base);
 extern const bspx_header_t *Mod_LoadBSPX(int filesize, const byte *mod_base);
 extern int Mod_LoadBSPXDecoupledLM(const dlminfo_t* lminfos, int surfnum, msurface_t *out);
 extern int Mod_CalcNonModelLumpHunkSize(const byte *mod_base, const dheader_t *header);
+extern void Mod_VisInit(void);
+extern const byte *Mod_ClusterPVS(int cluster, const model_t *model);
+extern void Mod_VisRealloc(const model_t *model);
+extern void Mod_VisFree(void);
 
 /* Surface logic */
 extern void R_PushDlights(refdef_t *r_newrefdef, mnode_t *nodes, int lightframecount,
@@ -391,13 +453,13 @@ extern void R_GenFanIndexes(unsigned short *data, unsigned from, unsigned to);
 extern void R_GenStripIndexes(unsigned short *data, unsigned from, unsigned to);
 
 /* Lights logic */
-extern bspxlightgrid_t *Mod_LoadBSPXLightGrid(const bspx_header_t *bspx_header, const byte *mod_base);
-extern void R_LightPoint(const bspxlightgrid_t *grid, const entity_t *currententity,
-	const msurface_t *surfaces, const mnode_t *nodes, const vec3_t p, vec3_t color,
-	vec3_t lightspot);
-extern void R_ApplyModelLight(const bspxlightgrid_t *grid, const entity_t *currententity,
-	const msurface_t *surfaces, const mnode_t *nodes, vec3_t shadelight,
-	vec3_t lightspot, const byte *lightdata);
+extern const bspx_header_t *Mod_LoadSectionsBeforeFaces(const byte *mod_base,
+	size_t modfilelen, model_t *model, findimage_t find_image, struct image_s *notexture);
+extern void Mod_LoadSectionsAfterFaces(const byte *mod_base, model_t *mod);
+extern void R_LightPoint(const model_t *model, const entity_t *currententity,
+	const vec3_t p, vec3_t color, vec3_t lightspot);
+extern void R_ApplyModelLight(const model_t *model, const entity_t *currententity,
+	vec3_t shadelight, vec3_t lightspot, const byte *lightdata);
 extern void R_SetCacheState(msurface_t *surf, const refdef_t *refdef);
 extern void R_BuildLightMap(const msurface_t *surf, byte *dest, int stride,
 	const refdef_t *r_newrefdef, float modulate, int r_framecount,

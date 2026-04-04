@@ -557,12 +557,12 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 	if (r_worldmodel)
 	{
-		R_ApplyModelLight(r_worldmodel->grid, currententity, r_worldmodel->surfaces,
-			r_worldmodel->nodes, shadelight, lightspot, r_worldmodel->lightdata);
+		R_ApplyModelLight(r_worldmodel, currententity, shadelight,
+			lightspot, r_worldmodel->lightdata);
 	}
 	else
 	{
-		R_ApplyModelLight(NULL, currententity, NULL, NULL, shadelight,
+		R_ApplyModelLight(NULL, currententity, shadelight,
 			lightspot, NULL);
 	}
 

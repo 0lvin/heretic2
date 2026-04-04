@@ -47,7 +47,7 @@ gl3state_t gl3state;
 
 unsigned gl3_rawpalette[256];
 
-gl3model_t *gl3_worldmodel;
+model_t *gl3_worldmodel;
 
 float gl3depthmin=0.0f, gl3depthmax=1.0f;
 
@@ -725,7 +725,7 @@ GL3_DrawBeam(entity_t *e)
 }
 
 static void
-GL3_DrawSpriteModel(entity_t *e, const gl3model_t *currentmodel)
+GL3_DrawSpriteModel(entity_t *e, const model_t *currentmodel)
 {
 	float alpha = 1.0F;
 	mvtx_t verts[4];
@@ -848,9 +848,8 @@ GL3_DrawNullModel(entity_t *currententity)
 	}
 	else
 	{
-		R_LightPoint(gl3_worldmodel->grid, currententity,
-			gl3_worldmodel->surfaces, gl3_worldmodel->nodes, currententity->origin,
-			shadelight, lightspot);
+		R_LightPoint(gl3_worldmodel, currententity,
+			currententity->origin, shadelight, lightspot);
 	}
 
 	hmm_mat4 origModelMat = gl3state.uni3DData.transModelMat4;
@@ -1004,7 +1003,7 @@ GL3_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl3model_t *currentmodel = currententity->model;
+			model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
@@ -1056,7 +1055,7 @@ GL3_DrawEntitiesOnList(void)
 		}
 		else
 		{
-			gl3model_t *currentmodel = currententity->model;
+			model_t *currentmodel = currententity->model;
 
 			if (!currentmodel)
 			{
@@ -1637,9 +1636,8 @@ GL3_SetLightLevel(const entity_t *currententity)
 	}
 
 	/* save off light value for server to look at */
-	R_LightPoint(gl3_worldmodel->grid, currententity,
-		gl3_worldmodel->surfaces, gl3_worldmodel->nodes, r_newrefdef.vieworg,
-		shadelight, lightspot);
+	R_LightPoint(gl3_worldmodel, currententity,
+		r_newrefdef.vieworg, shadelight, lightspot);
 
 	/* pick the greatest component, which should be the
 	 * same as the mono value returned by software */

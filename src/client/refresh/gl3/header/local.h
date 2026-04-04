@@ -307,9 +307,6 @@ typedef struct image_s
 
 } gl3image_t;
 
-// include this down here so it can use gl3image_t
-#include "model.h"
-
 typedef struct
 {
 	int current_lightmap_texture; // index into gl3state.lightmap_textureIDs[]
@@ -323,7 +320,14 @@ typedef struct
 	byte lightmap_buffers[MAX_LIGHTMAPS_PER_SURFACE][4 * BLOCK_WIDTH * BLOCK_HEIGHT];
 } gl3lightmapstate_t;
 
-extern gl3model_t *gl3_worldmodel;
+// used for vertex array elements when drawing models
+typedef struct gl3_alias_vtx_s {
+	GLfloat pos[3];
+	GLfloat texCoord[2];
+	GLfloat color[4];
+} gl3_alias_vtx_t;
+
+extern model_t *gl3_worldmodel;
 
 extern float gl3depthmin, gl3depthmax;
 
@@ -406,7 +410,6 @@ extern void GL3_BeginRegistration(const char *model);
 extern struct model_s * GL3_RegisterModel(const char *name);
 extern void GL3_EndRegistration(void);
 extern void GL3_Mod_Modellist_f(void);
-extern const byte* GL3_Mod_ClusterPVS(int cluster, const gl3model_t *model);
 
 // gl3_draw.c
 extern void GL3_Draw_InitLocal(void);
@@ -464,8 +467,8 @@ extern void GL3_BuildLightMap(msurface_t *surf, int offsetInLMbuf, int stride);
 extern void LM_InitBlock(void);
 extern void LM_UploadBlock(void);
 extern qboolean LM_AllocBlock(int w, int h, int *x, int *y);
-extern void LM_CreateLightmapsPoligon(gl3model_t *currentmodel, msurface_t *fa);
-extern void LM_BeginBuildingLightmaps(gl3model_t *m);
+extern void LM_CreateLightmapsPoligon(model_t *currentmodel, msurface_t *fa);
+extern void LM_BeginBuildingLightmaps(model_t *m);
 extern void LM_EndBuildingLightmaps(void);
 
 // gl3_warp.c
@@ -482,7 +485,7 @@ extern void GL3_SurfInit(void);
 extern void GL3_SurfShutdown(void);
 extern void GL3_DrawTriangleOutlines(void);
 extern void GL3_DrawAlphaSurfaces(void);
-extern void GL3_DrawBrushModel(entity_t *e, gl3model_t *currentmodel);
+extern void GL3_DrawBrushModel(entity_t *e, model_t *currentmodel);
 extern void GL3_DrawWorld(void);
 extern void GL3_MarkLeaves(void);
 

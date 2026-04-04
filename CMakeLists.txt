@@ -1058,7 +1058,6 @@ set(GL1-Header
 	${REF_SRC_DIR}/files/stb_image.h
 	${REF_SRC_DIR}/files/surf.c
 	${REF_SRC_DIR}/gl1/header/local.h
-	${REF_SRC_DIR}/gl1/header/model.h
 	${REF_SRC_DIR}/gl1/header/qgl.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
@@ -1108,7 +1107,6 @@ set(GL3-Header
 	${REF_SRC_DIR}/files/DG_dynarr.h
 	${REF_SRC_DIR}/files/HandmadeMath.h
 	${REF_SRC_DIR}/gl3/header/local.h
-	${REF_SRC_DIR}/gl3/header/model.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
@@ -1161,7 +1159,6 @@ set(GL4-Header
 	${REF_SRC_DIR}/files/DG_dynarr.h
 	${REF_SRC_DIR}/files/HandmadeMath.h
 	${REF_SRC_DIR}/gl4/header/local.h
-	${REF_SRC_DIR}/gl4/header/model.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
@@ -1209,7 +1206,6 @@ set(SOFT-Header
 	${REF_SRC_DIR}/files/stb_image.h
 	${REF_SRC_DIR}/files/stb_image_resize.h
 	${REF_SRC_DIR}/soft/header/local.h
-	${REF_SRC_DIR}/soft/header/model.h
 	${COMMON_SRC_DIR}/header/shared.h
 	)
 
@@ -1254,7 +1250,6 @@ set(VK-Header
 	${REF_SRC_DIR}/files/stb_image.h
 	${REF_SRC_DIR}/files/stb_image_resize.h
 	${REF_SRC_DIR}/vk/header/local.h
-	${REF_SRC_DIR}/vk/header/model.h
 	${REF_SRC_DIR}/vk/header/qvk.h
 	${REF_SRC_DIR}/vk/header/shaders.h
 	${REF_SRC_DIR}/vk/header/util.h
