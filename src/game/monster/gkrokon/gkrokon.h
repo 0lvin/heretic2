@@ -46,32 +46,6 @@ typedef enum AnimID_e
 	GKROKON_NUM_ANIMS
 } AnimID_t;
 
-// ****************************************************************************
-// The Gkrokon's sounds.
-// ****************************************************************************
-
-typedef enum SoundID_e
-{
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_DIE,
-	SND_GIB,
-	SND_SPOO,
-	SND_IDLE1,
-	SND_IDLE2,
-	SND_SIGHT,
-	SND_WALK1,
-	SND_WALK2,
-	SND_FLEE,
-	SND_ANGRY,
-	SND_EATING,
-	SND_BITEHIT1,
-	SND_BITEHIT2,
-	SND_BITEMISS1,
-	SND_BITEMISS2,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t GkrokonMoveStand1;
 extern mmove_t GkrokonMoveStand2;
 extern mmove_t GkrokonMoveStand3;

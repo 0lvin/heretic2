@@ -57,39 +57,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_PAIN1,//
-	SND_PAIN2,//
-	SND_DIE,//
-	SND_GIB,//
-	SND_SWIPE,//
-	SND_SWIPEHIT,//
-	SND_ARROW1,//
-	SND_ARROW2,//
-	SND_GROWL1,//hiss
-	SND_GROWL2,//shriek
-	SND_GROWL3,//grunt
-	SND_INWATER,//
-	SND_NAMOR,//
-	SND_LAND,//???
-	SND_SWIM,//
-	SND_SWIM2,
-
-	//Voices
-	SND_SIGHT1,
-	SND_SIGHT2,
-	SND_SIGHT3,
-	SND_SIGHT4,
-	SND_SIGHT5,
-	SND_SIGHT6,
-
-	SND_ARROW_CHARGE,
-	SND_ARROW_FIRE,
-
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t ssithra_move_idle1;
 extern mmove_t ssithra_move_walk1;
 extern mmove_t ssithra_move_backpedal1;

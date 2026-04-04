@@ -42,19 +42,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_SPRAYSTART,
-	SND_SPRAYLOOP,
-	SND_PAIN,
-	SND_VOICE1,
-	SND_VOICE2,
-	SND_THROW,
-	SND_DEATH,
-	SND_BOMB,
-	NUM_SOUNDS
-} SoundID_t;
-
 #define BIT_PARENT		0
 #define BIT_CHILD		1
 #define BIT_BODY		2

@@ -1473,6 +1473,7 @@ extern void trigger_goto_buoy_use_go (edict_t *self);
 extern void trigger_gravity_touch ( edict_t * self , edict_t * other , const cplane_t * plane , const csurface_t * surf ) ;
 extern void trigger_gravity_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void trigger_key_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
+extern void trigger_puzzle_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void trigger_mission_give_touch(edict_t *self, edict_t *other);
 extern void trigger_mission_take_touch(edict_t *self, edict_t *other);
 extern void trigger_monsterjump_touch ( edict_t * self , edict_t * other , const cplane_t * plane , const csurface_t * surf ) ;

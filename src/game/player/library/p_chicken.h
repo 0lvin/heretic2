@@ -7,34 +7,6 @@
 
 #include "../../header/local.h"
 
-typedef enum SoundID_e
-{
-	SND_BITEHIT1,
-	SND_BITEMISS1,
-	SND_BITEMISS2,
-
-	SND_SCRATCH,
-
-	SND_HISS,
-
-	SND_PAIN1,
-	SND_PAIN2,
-
-	SND_CHATTER1,
-	SND_CHATTER2,
-	SND_CHATTER3,
-
-	SND_CHEW1,
-	SND_CHEW2,
-	SND_CHEW3,
-
-	SND_SWALLOW,
-
-	SND_DIE,
-	SND_GIB,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern panimmove_t chicken_move_stand1;
 extern panimmove_t chicken_move_walk;
 extern panimmove_t chicken_move_run;

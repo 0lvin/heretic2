@@ -28,56 +28,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-//quake attack
-	SND_QUAKE,
-//straightt-fire beam
-	SND_BEAM,
-	SND_BEAMHIT,
-//homing balls
-	SND_HOMING,
-	SND_HOMEHIT,
-//power Puff
-	SND_PPCHARGE,
-	SND_PPFIRE,
-	SND_PPEXPLODE,
-//Lightning from eyes
-	SND_LIGHTNING,
-	SND_LGHTNGHIT,
-//Shove
-	SND_FORCEWALL,
-//Shield
-	SND_MAKESHIELD,
-	SND_SHIELDHIT,
-	SND_SHIELDPULSE,
-	SND_SHIELDGONE,
-	SND_SHIELDBREAK,
-//Fly forward
-	SND_RUSH,
-//hurt and get up
-	SND_FALL,
-	SND_REVIVE,
-//strafing beams attack
-	SND_STRAFEON,
-	SND_STRFSWNG,
-	SND_STRAFEOFF,
-//hurt/kill player laugh
-	SND_LAUGH,
-
-//Taunt sounds
-	TAUNT_LAUGH1,
-	TAUNT_LAUGH2,
-	TAUNT_LAUGH3,
-	TAUNT_LAUGH4,
-
-	TAUNT_BELLY1,
-	TAUNT_BELLY2,
-	TAUNT_BELLY3,
-
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t morcalavin_move_float,
 					morcalavin_move_hurtidle,
 					morcalavin_move_attack1,

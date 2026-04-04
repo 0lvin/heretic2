@@ -46,28 +46,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_PAINM,
-	SND_PAINF,
-	SND_DIEM,
-	SND_DIEF,
-	SND_GIB,
-	SND_SWIPE,
-	SND_SWIPEHITF,
-	SND_SWIPEHITW,
-	SND_SPELLM,
-	SND_SPELLM2,
-	SND_SPLPWRUPF,
-	SND_SPELLF,
-	SND_GROWLM1,
-	SND_GROWLM2,
-	SND_GROWLF1,
-	SND_GROWLF2,
-	SND_THUD,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t insect_move_back;// = {10, insect_frames_back, insect_pause};
 extern mmove_t insect_move_deathfr;// = {23, insect_frames_deathfr, insect_dead};
 extern mmove_t insect_move_idle;// = { 50, insect_frames_idle, NULL};

@@ -18,28 +18,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_DIE,
-	SND_GIB,
-	SND_BITEHIT1,
-	SND_BITEHIT2,
-	SND_BITEMISS1,
-	SND_BITEMISS2,
-	SND_GROWL1,
-	SND_GROWL2,
-	SND_GROWL3,
-	SND_SPLASH,
-	SND_SLOW_SWIM1,
-	SND_SLOW_SWIM2,
-	SND_FAST_SWIM1,
-	SND_FAST_SWIM2,
-	NUM_SOUNDS
-} SoundID_t;
-
-
 extern mmove_t fish_move_bite;
 extern mmove_t fish_move_melee;
 extern mmove_t fish_move_run1;

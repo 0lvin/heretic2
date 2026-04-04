@@ -2218,12 +2218,9 @@ void HandleCollision(edict_t *self, trace_t *trace, vec3_t move, int forceful, i
 {
 	edict_t *other = trace->ent;
 
-//	assert(self->solid != SOLID_NOT);
-//	assert(other->solid != SOLID_NOT);
-
 	if (impact_damage->value)
 	{
-		if (flags&CH_ISBLOCKED || flags&CH_BOUNCED)
+		if (flags & CH_ISBLOCKED || flags & CH_BOUNCED)
 		{
 			DoImpactDamage(self, trace);
 		}
@@ -2234,12 +2231,12 @@ void HandleCollision(edict_t *self, trace_t *trace, vec3_t move, int forceful, i
 		HandleForcefulCollision(self, other, move, forceful);
 	}
 
-	if (flags&CH_ISBLOCKED && self->isBlocked)
+	if (flags & CH_ISBLOCKED && self->isBlocked)
 	{
 		self->isBlocked(self, trace);
 	}
 
-	if (flags&CH_BOUNCED && self->bounced)
+	if (flags & CH_BOUNCED && self->bounced)
 	{
 		self->bounced(self, trace);
 	}
@@ -2257,7 +2254,7 @@ void HandleCollision(edict_t *self, trace_t *trace, vec3_t move, int forceful, i
 		}
 		else if (other->touch)
 		{
-			other->touch(other, temp.ent, NULL, NULL);
+			other->touch(other, temp.ent, &trace->plane, trace->surface);
 		}
 	}
 }

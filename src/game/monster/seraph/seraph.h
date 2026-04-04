@@ -37,29 +37,6 @@ typedef enum AnimID_e
 	SERAPH_NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_ATTACK,
-	SND_SCOLD1,
-	SND_SCOLD2,
-	SND_SCOLD3,
-	SND_STARTLE,
-	SND_SLAP,
-	SND_DEATH1,
-	SND_DEATH2,
-	SND_DEATH3,
-	SND_DEATH4,
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_PAIN3,
-	SND_PAIN4,
-	SND_SCARE,
-	SND_SIGHT1,
-	SND_SIGHT2,
-	SND_SIGHT3,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t	seraph_move_walk1,
 					seraph_move_walk2,
 					seraph_move_whip1,

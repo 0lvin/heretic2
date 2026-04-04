@@ -14,39 +14,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	//for the cluck animation
-	SND_CLUCK1,
-	SND_CLUCK2,
-
-	//for the foot falls
-	SND_CLAW,
-
-	//for getting hit - even though right now, it dies immediately - they want this changed
-	SND_PAIN1,
-	SND_PAIN2,
-
-	//for dying - we only ever get gibbed, so no other sound is required
-	SND_DIE,
-
-	//for biting the player
-	SND_BITE1,
-	SND_BITE2,
-	SND_BITE3,
-
-	//for pecking the ground
-	SND_PECK1,
-	SND_PECK2,
-
-	//and lastly, I thought it might be cool to have some cries for when the chicken jumps
-	SND_JUMP1,
-	SND_JUMP2,
-	SND_JUMP3,
-
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t chicken_move_stand1;
 extern mmove_t chicken_move_walk;
 extern mmove_t chicken_move_run;

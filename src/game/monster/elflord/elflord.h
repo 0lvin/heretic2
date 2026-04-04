@@ -28,23 +28,6 @@ typedef enum AnimID_e
 	ELFLORD_NUM_ANIMS
 } AnimID_t;
 
-
-typedef enum SoundID_e
-{
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_DIE,
-
-	SND_SACHARGE,
-	SND_SAFIRE,
-	SND_SAHIT,
-
-	SND_PROJ1,
-	SND_BEAM,
-
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t elflord_move_idle;
 extern mmove_t elflord_move_run;
 extern mmove_t elflord_move_charge;

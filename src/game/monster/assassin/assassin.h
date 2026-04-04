@@ -63,32 +63,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-
-typedef enum SoundID_e
-{
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_DIE1,
-	SND_GIB,
-	SND_THROW1,
-	SND_THROW2,
-	SND_DAGHITF,
-	SND_DAGHITW,
-	SND_JUMP,
-	SND_FLIP,
-	SND_LAND,
-	SND_LANDF,
-	SND_SLIDE,
-	SND_SLASH1,
-	SND_SLASH2,
-	SND_GROWL1,
-	SND_GROWL2,
-	SND_GROWL3,
-	SND_CLOAK,
-	SND_DECLOAK,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t assassin_move_daggerl;// = {14, assassin_frames_daggerl, assassin_pause};
 extern mmove_t assassin_move_daggerr;//= {15, assassin_frames_daggerr, assassin_pause};
 extern mmove_t assassin_move_daggerb;// = {15, assassin_frames_daggerb, assassin_pause};

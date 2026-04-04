@@ -65,28 +65,6 @@ typedef enum AnimID_e
 	GORGON_NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_GURGLE,
-	SND_DIE,
-	SND_GIB,
-	SND_MELEEHIT1,
-	SND_MELEEHIT2,
-	SND_MELEEMISS1,
-	SND_MELEEMISS2,
-	SND_STEP1,
-	SND_STEP2,
-	SND_STEP3,
-	SND_STEP4,
-	SND_GROWL1,
-	SND_GROWL2,
-	SND_GROWL3,
-	SND_LAND,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t gorgon_move_stand1;
 extern mmove_t gorgon_move_stand2;
 extern mmove_t gorgon_move_stand3;

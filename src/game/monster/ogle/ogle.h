@@ -90,34 +90,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_PICK1,
-	SND_PICK2,
-	SND_SPIKE1,
-	SND_SPIKE2,
-	SND_HAMMER1,
-	SND_HAMMER2,
-	SND_PICK_FLESH,
-	SND_HAMMER_FLESH,
-	SND_WIPE_BROW,
-	SND_ENRAGE1,
-	SND_ENRAGE2,
-	SND_DEATH,
-	SND_CHEER1,
-	SND_CHEER2,
-	SND_CHEER3,
-	//SINGING
-	SND_CHORUS1,
-	SND_CHORUS2,
-	SND_CHORUS3,
-	SND_SOLO1,
-	SND_SOLO2,
-	SND_PAIN1,
-	SND_PAIN2,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t	ogle_move_walk1,
 					ogle_move_push1,
 					ogle_move_push2,

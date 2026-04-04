@@ -35,39 +35,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{	//shield being used at all?
-	//reuse staff swing, hit, and landing sounds
-//she takes pain
-	SND_PAIN1,
-	SND_PAIN2,
-//you win
-	SND_FALL,
-//attack 1 - 3 balls spell
-	SND_3BALLATK,
-	SND_BALLHIT,
-//attack 2 - whirling staff
-	SND_WHIRL,
-	SND_SWIPE,
-	SND_SWIPEHIT,
-	SND_SWIPEMISS,
-	SND_SWIPEWALL,
-//bug minefield
-	SND_BUGS,//fire a bug out
-	SND_BUGBUZZ,//bug buzzes in place
-	SND_BUGHIT,//bug explodes
-//ray of light
-	SND_ZAP,//earthquake, lightning, rays of light
-	SND_ZAPHIT,//earthquake, lightning, rays of light
-//homing missiles
-	SND_HOMINGATK,
-	SND_HOMINGHIT,
-//teleport in & out
-	SND_TPORT_IN,
-	SND_TPORT_OUT,
-	NUM_SOUNDS
-} SoundID_t;
-
 extern mmove_t	priestess_move_stand1,
 					priestess_move_attack1_go,
 					priestess_move_attack1_loop,

@@ -26,12 +26,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_PAIN1,
-	NUM_SOUNDS
-} SoundID_t;
-
 #define MODEL_SCALE		1.000000
 
 extern mmove_t dranor_move_c_action1;

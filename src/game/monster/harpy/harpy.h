@@ -32,22 +32,6 @@ typedef enum AnimID_e
 	NUM_ANIMS
 } AnimID_t;
 
-typedef enum SoundID_e
-{
-	SND_FLAP,
-	SND_SCREAM,
-	SND_FLAP_FAST,
-	SND_DIVE,
-	SND_DEATH,
-	SND_PAIN1,
-	SND_PAIN2,
-	SND_ATTACK,
-	SND_GIB,
-	SND_IDLE1,
-	SND_IDLE2,
-	NUM_SOUNDS
-} SoundID_t;
-
 void move_harpy_tumble(edict_t *self);
 
 void harpy_flap_noise(edict_t *self);

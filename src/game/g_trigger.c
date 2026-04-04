@@ -40,6 +40,8 @@
 #define PUSH_START_OFF 0x02
 #define PUSH_SILENT 0x04
 
+static int windsound;
+
 void trigger_push_active(edict_t *self);
 void hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 		const csurface_t *surf /* unused */);
@@ -377,6 +379,154 @@ SP_trigger_relay(edict_t *self)
  */
 
 /*
+ * QUAKED trigger_key (.5 .5 .5) (-8 -8 -8) (8 8 8)
+ * A relay trigger that only fires it's targets if player
+ * has the proper key. Use "item" to specify the required key,
+ * for example "key_data_cd"
+ */
+void
+trigger_key_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator)
+{
+	int index;
+
+	if (!self || !activator)
+	{
+		return;
+	}
+
+	if (!self->item)
+	{
+		return;
+	}
+
+	if (!activator->client)
+	{
+		return;
+	}
+
+	index = ITEM_INDEX(self->item);
+
+	if (!activator->client->pers.inventory[index])
+	{
+		if (level.time < self->touch_debounce_time)
+		{
+			return;
+		}
+
+		self->touch_debounce_time = level.time + 5.0;
+		gi.centerprintf(activator, "You need the %s", self->item->pickup_name);
+		gi.sound(activator, CHAN_AUTO, gi.soundindex("misc/keytry.wav"), 1, ATTN_NORM, 0);
+		return;
+	}
+
+	gi.sound(activator, CHAN_AUTO, gi.soundindex("misc/keyuse.wav"), 1, ATTN_NORM, 0);
+
+	if (coop->value)
+	{
+		int player;
+		edict_t *ent;
+
+		if (strcmp(self->item->classname, "key_power_cube") == 0)
+		{
+			int cube;
+
+			for (cube = 0; cube < 8; cube++)
+			{
+				if (activator->client->pers.power_cubes & (1 << cube))
+				{
+					break;
+				}
+			}
+
+			for (player = 1; player <= game.maxclients; player++)
+			{
+				ent = &g_edicts[player];
+
+				if (!ent->inuse)
+				{
+					continue;
+				}
+
+				if (!ent->client)
+				{
+					continue;
+				}
+
+				if (ent->client->pers.power_cubes & (1 << cube))
+				{
+					ent->client->pers.inventory[index]--;
+					ent->client->pers.power_cubes &= ~(1 << cube);
+				}
+			}
+		}
+		else
+		{
+			for (player = 1; player <= game.maxclients; player++)
+			{
+				ent = &g_edicts[player];
+
+				if (!ent->inuse)
+				{
+					continue;
+				}
+
+				if (!ent->client)
+				{
+					continue;
+				}
+
+				ent->client->pers.inventory[index] = 0;
+			}
+		}
+	}
+	else
+	{
+		activator->client->pers.inventory[index]--;
+	}
+
+	G_UseTargets(self, activator);
+
+	self->use = NULL;
+}
+
+void
+SP_trigger_key(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	if (!st.item)
+	{
+		gi.dprintf("no key item for trigger_key at %s\n", vtos(self->s.origin));
+		return;
+	}
+
+	self->item = FindItemByClassname(st.item);
+
+	if (!self->item)
+	{
+		gi.dprintf("item %s not found for trigger_key at %s\n", st.item,
+				vtos(self->s.origin));
+		return;
+	}
+
+	if (!self->target)
+	{
+		gi.dprintf("%s at %s has no target\n", self->classname,
+				vtos(self->s.origin));
+		return;
+	}
+
+	gi.soundindex("misc/keytry.wav");
+	gi.soundindex("misc/keyuse.wav");
+
+	self->use = trigger_key_use;
+}
+
+/*
  * QUAKED trigger_puzzle (.5 .5 .5) (-8 -8 -8) (8 8 8)  NO_TEXT  NO_TAKE
  * A relay trigger that only fires it's targets if player has the proper puzzle item.
  * ------KEYS--------------
@@ -386,7 +536,7 @@ SP_trigger_relay(edict_t *self)
  * Use "item" to specify the required puzzle item, for example "key_data_cd"
  */
 void
-trigger_key_use(edict_t *self, edict_t *other /* unused */,
+trigger_puzzle_use(edict_t *self, edict_t *other /* unused */,
 		edict_t *activator)
 {
 	int index;
@@ -484,6 +634,11 @@ trigger_key_use(edict_t *self, edict_t *other /* unused */,
 void
 SP_trigger_puzzle(edict_t *self)
 {
+	if (!self)
+	{
+		return;
+	}
+
 	self->classID = CID_TRIGGER;
 
 	if (!st.item)
@@ -508,7 +663,7 @@ SP_trigger_puzzle(edict_t *self)
 		return;
 	}
 
-	self->use = trigger_key_use;
+	self->use = trigger_puzzle_use;
 }
 
 /*
@@ -520,13 +675,15 @@ SP_trigger_puzzle(edict_t *self)
  */
 
 /*
- * QUAKED trigger_counter (.5 .5 .5) ? NOMESSAGE
+ * QUAKED trigger_counter (.5 .5 .5) ? nomessage
  *
  * Acts as an intermediary for an action that takes multiple inputs.
  *
- * If NOMESSAGE is not set, t will print "1 more.. " etc when triggered and "sequence complete" when finished.
+ * If nomessage is not set, it will print "1 more.. " etc when
+ * triggered and "sequence complete" when finished.
  *
- * After the counter has been triggered "count" times (default 2), it will fire all of it's targets and remove itself.
+ * After the counter has been triggered "count" times (default 2),
+ * it will fire all of it's targets and remove itself.
  */
 
 void
@@ -549,7 +706,7 @@ trigger_counter_use(edict_t *self, edict_t *other /* unused */,
 	{
 		if (!(self->spawnflags & 1))
 		{
-			G_CPrintf(activator, PRINT_HIGH, (short)(self->count + GM_SEQCOMPLETE));
+			gi.centerprintf(activator, "%i more to go...", self->count);
 		}
 
 		return;
@@ -557,7 +714,7 @@ trigger_counter_use(edict_t *self, edict_t *other /* unused */,
 
 	if (!(self->spawnflags & 1))
 	{
-		G_CPrintf(activator, PRINT_HIGH, GM_SEQCOMPLETE);
+		gi.centerprintf(activator, "Sequence completed!");
 	}
 
 	self->activator = activator;
@@ -685,17 +842,18 @@ void trigger_playerusepuzzle(edict_t *self, edict_t *activator)
 
 }
 
-/*QUAKED trigger_playerusepuzzle (.5 .5 .5) ?  MONSTER NOT_PLAYER TRIGGERED ANY NO_INVENTORY DONT_REMOVE
-Player can 'use' puzzle items within this entity.  Will remove itself after one use.
--------SPAWN FLAGS-------------
-MONSTER - only a monster will trigger it
-NOT_PLAYER -  can't be triggered by player
-TRIGGERED - starts trigger deactivated
-ANY - anything can activate it
-NO_INVENTORY - don't show inventory bar, don't take puzzle piece
-DONT_REMOVE - entity won't remove itself after one use
-*/
-
+/*
+ * QUAKED trigger_playerusepuzzle (.5 .5 .5) ?  MONSTER NOT_PLAYER TRIGGERED ANY NO_INVENTORY DONT_REMOVE
+ *
+ * Player can 'use' puzzle items within this entity.  Will remove itself after one use.
+ * -------SPAWN FLAGS-------------
+ * MONSTER - only a monster will trigger it
+ * NOT_PLAYER -  can't be triggered by player
+ * TRIGGERED - starts trigger deactivated
+ * ANY - anything can activate it
+ * NO_INVENTORY - don't show inventory bar, don't take puzzle piece
+ * DONT_REMOVE - entity won't remove itself after one use
+ */
 void SP_trigger_PlayerUsePuzzle(edict_t *self)
 {
 	InitTrigger(self);
@@ -719,9 +877,11 @@ void trigger_playerpushbutton(edict_t *self, edict_t *other, const cplane_t *pla
 	}
 }
 
-/*QUAKED trigger_playerpushbutton (.5 .5 .5) ?
-Triggers player to know he is near a button.
-*/
+/*
+ * QUAKED trigger_playerpushbutton (.5 .5 .5) ?
+ *
+ * Triggers player to know he is near a button.
+ */
 void SP_trigger_PlayerPushButton(edict_t *self)
 {
 	self->classID = CID_TRIGGER;
