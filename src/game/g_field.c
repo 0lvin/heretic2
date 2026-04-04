@@ -57,8 +57,8 @@ void TrigDamage_Activate(edict_t *self, G_Message_t *msg)
 
 void TrigDamageStaticsInit()
 {
-	classStatics[CID_TRIG_DAMAGE].msgReceivers[G_MSG_SUSPEND] = TrigDamage_Deactivate;
-	classStatics[CID_TRIG_DAMAGE].msgReceivers[G_MSG_UNSUSPEND] = TrigDamage_Activate;
+	classStatics[CID_TRIG_DAMAGE].msgReceivers[MSG_SUSPEND] = TrigDamage_Deactivate;
+	classStatics[CID_TRIG_DAMAGE].msgReceivers[MSG_UNSUSPEND] = TrigDamage_Activate;
 }
 
 
@@ -241,7 +241,7 @@ void trigger_goto_buoy_execute (edict_t *self, edict_t *monster, edict_t *activa
 
 	//make him check mood NOW and get going! Don't wait for current anim to finish!
 	if (classStatics[monster->classID].msgReceivers[MSG_CHECK_MOOD])
-		G_QPostMessage(monster, MSG_CHECK_MOOD,PRI_DIRECTIVE, "i", monster->ai_mood);
+		G_QPostMessage(monster, MSG_CHECK_MOOD, PRI_DIRECTIVE, MSG_CHECK_MOOD_FORMAT, monster->ai_mood);
 	else
 	{//no check mood message handler, just send a run and let him wait, i guess!
 		monster->mood_nextthink = 0;

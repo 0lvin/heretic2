@@ -60,8 +60,8 @@ void InitField(edict_t *self);
 
 void TriggerStaticsInit()
 {
-	classStatics[CID_TRIGGER].msgReceivers[G_MSG_SUSPEND] = Trigger_Deactivate;
-	classStatics[CID_TRIGGER].msgReceivers[G_MSG_UNSUSPEND] = Trigger_Activate;
+	classStatics[CID_TRIGGER].msgReceivers[MSG_SUSPEND] = Trigger_Deactivate;
+	classStatics[CID_TRIGGER].msgReceivers[MSG_UNSUSPEND] = Trigger_Activate;
 }
 
 static void
@@ -936,7 +936,7 @@ void SuspendTrigger_Activated(edict_t *self, edict_t *activator)
 	while ((t = G_Find (t, FOFS(targetname), self->target)))
 	{
 		if (t->msgHandler)
-			G_QPostMessage(t, G_MSG_SUSPEND, PRI_ORDER, "f", self->time);
+			G_QPostMessage(t, MSG_SUSPEND, PRI_ORDER, MSG_SUSPEND_FORMAT, self->time);
 	}
 }
 
@@ -979,7 +979,7 @@ void ActivateTrigger_Activated(edict_t *self, edict_t *activator)
 	while ((t = G_Find (t, FOFS(targetname), self->target)))
 	{
 		if (t->msgHandler)
-			G_QPostMessage(t, G_MSG_UNSUSPEND, PRI_ORDER, "f", self->time);
+			G_QPostMessage(t, MSG_UNSUSPEND, PRI_ORDER, MSG_UNSUSPEND_FORMAT, self->time);
 	}
 }
 
@@ -1414,8 +1414,8 @@ TrigPush_Activate(edict_t *self, G_Message_t *msg)
 void
 TrigPushStaticsInit()
 {
-	classStatics[CID_TRIG_PUSH].msgReceivers[G_MSG_SUSPEND] = TrigPush_Deactivate;
-	classStatics[CID_TRIG_PUSH].msgReceivers[G_MSG_UNSUSPEND] = TrigPush_Activate;
+	classStatics[CID_TRIG_PUSH].msgReceivers[MSG_SUSPEND] = TrigPush_Deactivate;
+	classStatics[CID_TRIG_PUSH].msgReceivers[MSG_UNSUSPEND] = TrigPush_Activate;
 }
 
 /*

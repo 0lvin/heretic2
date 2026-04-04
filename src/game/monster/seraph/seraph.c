@@ -278,7 +278,7 @@ void seraph_pause(edict_t *self)
 
 void seraph_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	seraph_pause(self);
 }
@@ -518,7 +518,7 @@ void seraph_death(edict_t *self, G_Message_t *msg)
 	float	damage;
 	int		soundID;
 
-	G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
+	G_ParseMsgParms(msg, MSG_DEATH_FORMAT, &targ, &inflictor, &attacker, &damage);
 
 	M_StartDeath(self, SERAPH_ANIM_DEATH1);
 

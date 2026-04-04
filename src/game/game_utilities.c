@@ -843,7 +843,7 @@ void PostKnockBack(edict_t *target, vec3_t dir, float knockback, int flags)
 
 	CalculateKnockBack(dir, knockback, flags, target->mass, vel);
 
-	G_QPostMessage(target, G_MSG_KNOCKEDBACK, PRI_PHYSICS, "fffi", vel[0], vel[1], vel[2], flags);
+	G_QPostMessage(target, MSG_KNOCKEDBACK, PRI_PHYSICS, MSG_KNOCKEDBACK_FORMAT, vel[0], vel[1], vel[2], flags);
 }
 
 

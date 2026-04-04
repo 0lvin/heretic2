@@ -364,7 +364,7 @@ void spreader_pause(edict_t *self)
 
 void spreader_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	spreader_pause(self);
 }
@@ -572,7 +572,7 @@ void spreader_evade(edict_t *self, G_Message_t *msg)
 	int				duck_chance, chance;
 	float eta;
 
-	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
+	G_ParseMsgParms(msg, MSG_EVADE_FORMAT, &projectile, &HitLocation, &eta);
 
 	switch (self->curAnimID)
 	{
@@ -639,7 +639,7 @@ void spreader_death(edict_t *self, G_Message_t *msg)
 	vec3_t	dVel, vf, yf;
 
 	if (msg)
-		G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
+		G_ParseMsgParms(msg, MSG_DEATH_FORMAT, &targ, &inflictor, &attacker, &damage);
 
 	spreader_hidegrenade(self);
 

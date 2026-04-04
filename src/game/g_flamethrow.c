@@ -36,8 +36,8 @@ void FlameThrower_Activate(edict_t *self, G_Message_t *msg)
 
 void FlameThrowerStaticsInit()
 {
-	classStatics[CID_FLAMETHROWER].msgReceivers[G_MSG_SUSPEND] = FlameThrower_Deactivate;
-	classStatics[CID_FLAMETHROWER].msgReceivers[G_MSG_UNSUSPEND] = FlameThrower_Activate;
+	classStatics[CID_FLAMETHROWER].msgReceivers[MSG_SUSPEND] = FlameThrower_Deactivate;
+	classStatics[CID_FLAMETHROWER].msgReceivers[MSG_UNSUSPEND] = FlameThrower_Activate;
 }
 
 

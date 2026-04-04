@@ -1191,7 +1191,7 @@ void assassin_dismember_msg(edict_t *self, G_Message_t *msg)
 	int				damage;
 	HitLocation_t	HitLocation;
 
-	G_ParseMsgParms(msg, "ii", &damage, &HitLocation);
+	G_ParseMsgParms(msg, MSG_DISMEMBER_FORMAT, &damage, &HitLocation);
 	assassin_dismember(self, damage, HitLocation);
 }
 
@@ -1693,7 +1693,7 @@ void assassin_evade (edict_t *self, G_Message_t *msg)
 	if (!self->groundentity)
 		return;
 
-	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
+	G_ParseMsgParms(msg, MSG_EVADE_FORMAT, &projectile, &HitLocation, &eta);
 
 	if (eta < 2)
 		self->evade_debounce_time = level.time + eta;
@@ -2567,7 +2567,7 @@ void assassinInitCloak (edict_t *self)
 
 void assassin_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	assassin_pause(self);
 }
@@ -2785,7 +2785,7 @@ void SP_monster_assassin (edict_t *self)
 	else if (self->spawnflags & MSF_ASS_CINEMATIC)
 	{
 		self->monsterinfo.c_mode = 1;
-		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 	}
 	else
 	{

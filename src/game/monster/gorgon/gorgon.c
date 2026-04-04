@@ -244,7 +244,8 @@ void gorgonRoar (edict_t *self)
 									found->monsterinfo.roared = true;
 									found->enemy = self->enemy;
 									FoundTarget(found, false);
-									G_QPostMessage(found, MSG_VOICE_POLL, PRI_DIRECTIVE, "");
+									G_QPostMessage(found, MSG_VOICE_POLL, PRI_DIRECTIVE, MSG_VOICE_POLL_FORMAT,
+										0, 0, 0.0);
 								}
 							}
 						}
@@ -925,7 +926,7 @@ void gorgon_mood(edict_t *self)
 
 void gorgon_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	gorgonCheckMood(self);
 }
@@ -1377,7 +1378,7 @@ void gorgon_evade (edict_t *self, G_Message_t *msg)
 	int chance;
 	float eta;
 
-	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
+	G_ParseMsgParms(msg, MSG_EVADE_FORMAT, &projectile, &HitLocation, &eta);
 
 	if (eta<0.3)
 		return;//needs a .3 seconds to respond, minimum
@@ -1786,8 +1787,10 @@ void gorgon_anger_sound (edict_t *self)
 	{
 		chance = (byte)irand(1,3);
 
-		G_QPostMessage(self->enemy,MSG_DISMEMBER,PRI_DIRECTIVE,"ii", self->enemy->health*0.5, irand(1,13));//do I need last three if not sending them?
-		G_QPostMessage(self->enemy,MSG_PAIN,PRI_DIRECTIVE,"ii", self->enemy, self);//do I need last three if not sending them?
+		G_QPostMessage(self->enemy, MSG_DISMEMBER, PRI_DIRECTIVE, MSG_DISMEMBER_FORMAT,
+			(int)(self->enemy->health * 0.5), irand(1, 13));
+		G_QPostMessage(self->enemy, MSG_PAIN, PRI_DIRECTIVE, MSG_PAIN_FORMAT,
+			self->enemy, self, 0, 0, 0);
 	}
 }
 

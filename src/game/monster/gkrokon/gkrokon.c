@@ -417,7 +417,7 @@ void beetle_skitter(edict_t *self, G_Message_t *Msg)
 
 void beetle_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	GkrokonPause(self);
 }
@@ -649,7 +649,7 @@ void beetle_death(edict_t *self,G_Message_t *Msg)
 	edict_t	*targ, *inflictor, *attacker;
 	float	damage;
 
-	G_ParseMsgParms(Msg, "eeei", &targ, &inflictor, &attacker, &damage);
+	G_ParseMsgParms(Msg, MSG_DEATH_FORMAT, &targ, &inflictor, &attacker, &damage);
 
 	M_StartDeath(self, GKROKON_ANIM_DIE1);
 

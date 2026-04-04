@@ -41,12 +41,12 @@ G_MsgReceiver_t DefaultMessageReceivers[NUM_MESSAGES] =
 	NULL,								// MSG_TURNLEFT,
 	NULL,								// MSG_TURNRIGHT,
 	NULL, 								// MSG_BLOCKED,
-	NULL,								// G_MSG_KNOCKEDBACK,
-	NULL,								// G_MSG_RESTSTATE,
-	DefaultReceiver_SetAnim,			// G_MSG_SET_ANIM,
-	DefaultReceiver_RemoveSelf,			// G_MSG_REMOVESELF,
-	DefaultReceiver_Suspend,			// G_MSG_SUSPEND,
-	DefaultReceiver_Unsuspend,			// G_MSG_UNSUSPEND,
+	NULL,								// MSG_KNOCKEDBACK,
+	NULL,								// MSG_RESTSTATE,
+	DefaultReceiver_SetAnim,			// MSG_SET_ANIM,
+	DefaultReceiver_RemoveSelf,			// MSG_REMOVESELF,
+	DefaultReceiver_Suspend,			// MSG_SUSPEND,
+	DefaultReceiver_Unsuspend,			// MSG_UNSUSPEND,
 
 	NULL,								// MSG_VOICE_SIGHT,
 	NULL,								// MSG_VOICE_POLL,
@@ -61,9 +61,11 @@ void DefaultMsgHandler(edict_t *self, G_Message_t *msg)
 
 	if (msg->ID == MSG_PAIN)
 	{
-		edict_t *targ, *activator;
+		edict_t	*targ, *activator;
+		int temp, damage;
+		qboolean force_pain;
 
-		G_ParseMsgParms(msg, "ee", &targ, &activator);
+		G_ParseMsgParms(msg, MSG_PAIN_FORMAT, &targ, &activator, &force_pain, &damage, &temp);
 
 		if (targ->pain_target)
 		{
@@ -99,19 +101,17 @@ void DefaultReceiver_Repulse(edict_t *self, G_Message_t *msg)
 {
 	vec3_t		vel;
 
-	G_ParseMsgParms(msg, "fff", &vel[0], &vel[1], &vel[2]);
-//	VectorAdd(self->velocity, vel, self->velocity);
+	G_ParseMsgParms(msg, MSG_REPULSE_FORMAT, &vel[0], &vel[1], &vel[2]);
 }
 
 void DefaultReceiver_SetAnim(edict_t *self, G_Message_t *msg)
 {
-	int ID;
+	int id;
 
 	if (msg->priority >= PRI_DIRECTIVE)
 	{
-		G_ParseMsgParms(msg, "i", &ID);
-
-		SetAnim(self, ID);
+		G_ParseMsgParms(msg, MSG_SET_ANIM_FORMAT, &id);
+		SetAnim(self, id);
 	}
 }
 

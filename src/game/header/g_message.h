@@ -50,19 +50,19 @@ typedef enum G_MsgID_e
 // High Level Utitlity messages
 //--------------------------------------------
 
-	G_MSG_KNOCKEDBACK,
-	G_MSG_RESTSTATE,
+	MSG_KNOCKEDBACK,
+	MSG_RESTSTATE,
 
 //--------------------------------------------
 // Low Level Utitlity messages
 //--------------------------------------------
-	G_MSG_SET_ANIM,
+	MSG_SET_ANIM,
 		// int anim ID
-	G_MSG_REMOVESELF,		// the only time an ent should be freed is in response to this_ptr message,
+	MSG_REMOVESELF,		// the only time an ent should be freed is in response to this_ptr message,
 							// which should set self->think to G_FreeEdict and nextthink to 0
-	G_MSG_SUSPEND,//35
+	MSG_SUSPEND,//35
 		// float time ( <= 0 indicates indefinite suspend )
-	G_MSG_UNSUSPEND,
+	MSG_UNSUSPEND,
 
 //--------------------------------------------
 // Voice messages
@@ -153,7 +153,23 @@ typedef enum G_MsgID_e
 	NUM_MESSAGES
 } G_MsgID_t;
 
+#define MSG_CHECK_MOOD_FORMAT "i"
+#define MSG_C_IDLE1_FORMAT "iiige"
+#define MSG_DEATH_FORMAT "eeei"
+#define MSG_DEATH_PAIN_FORMAT "ii"
+#define MSG_DISMEMBER_FORMAT "ii"
+#define MSG_EVADE_FORMAT "eif"
+#define MSG_KNOCKEDBACK_FORMAT "fffi"
 #define MSG_PAIN_FORMAT "eeiii"
+#define MSG_REPULSE_FORMAT "fff"
+#define MSG_RESTSTATE_FORMAT "i"
+#define MSG_STAND_FORMAT ""
+#define MSG_SUSPEND_FORMAT "f"
+#define MSG_UNSUSPEND_FORMAT "f"
+#define MSG_VOICE_POLL_FORMAT "bbf"
+#define MSG_VOICE_PUPPET_FORMAT "i"
+#define MSG_VOICE_SIGHT_FORMAT "be"
+#define MSG_SET_ANIM_FORMAT "i"
 
 typedef enum G_MsgPriority_e
 {

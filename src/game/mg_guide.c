@@ -1756,7 +1756,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 					self->ai_mood_flags &= ~AI_MOOD_FLAG_GOTO_STAND;
 					self->enemy = NULL;
 					self->ai_mood = AI_MOOD_STAND;
-					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, "");
+					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, MSG_STAND_FORMAT);
 					return;
 				}
 
@@ -1807,7 +1807,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 					else
 					{
 						self->ai_mood = AI_MOOD_STAND;
-						G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, "");
+						G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, MSG_STAND_FORMAT);
 					}
 					return;
 				}
@@ -1849,7 +1849,7 @@ void MG_Pathfind(edict_t *self, qboolean check_clear_path)
 							self->ai_mood = AI_MOOD_JUMP;//don't technically need this line
 							self->mood_nextthink = level.time + 0.5;
 							//as an alternative, call self->forced_jump(self);
-							G_QPostMessage(self, MSG_CHECK_MOOD, PRI_DIRECTIVE, "i", AI_MOOD_JUMP);
+							G_QPostMessage(self, MSG_CHECK_MOOD, PRI_DIRECTIVE, MSG_CHECK_MOOD_FORMAT, AI_MOOD_JUMP);
 							return;
 						}
 					}

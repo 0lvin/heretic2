@@ -1187,7 +1187,7 @@ void ogle_death(edict_t *self, G_Message_t *msg)
 	float	damage;
 	vec3_t	dVel, vf, yf;
 
-	G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
+	G_ParseMsgParms(msg, MSG_DEATH_FORMAT, &targ, &inflictor, &attacker, &damage);
 
 	M_StartDeath(self, ANIM_DEATH1);
 

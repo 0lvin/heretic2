@@ -1302,7 +1302,7 @@ M_MoveFrame(edict_t *self)
 		if (self->monsterinfo.sound_pending && self->monsterinfo.sound_start <= level.time)
 		{
 			//Post a message and make the monster speak
-			G_QPostMessage(self, MSG_VOICE_PUPPET, PRI_DIRECTIVE, "i", self->monsterinfo.sound_pending);
+			G_QPostMessage(self, MSG_VOICE_PUPPET, PRI_DIRECTIVE, MSG_VOICE_PUPPET_FORMAT, self->monsterinfo.sound_pending);
 
 			//Sound queue is free
 			self->monsterinfo.sound_pending = 0;
@@ -2456,7 +2456,7 @@ monster_start_go(edict_t *self)
 				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 				else
-					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 			}
 			else if (strcmp (self->movetarget->classname, "path_corner") == 0)
 			{
@@ -2475,7 +2475,7 @@ monster_start_go(edict_t *self)
 					if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 						G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 					else
-						G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+						G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 				}
 				self->target = NULL;
 			}
@@ -2486,7 +2486,7 @@ monster_start_go(edict_t *self)
 				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 				else
-					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 			}
 		}
 		else
@@ -2501,7 +2501,7 @@ monster_start_go(edict_t *self)
 				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 				else
-					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT, 0, 0, 0, NULL, NULL);
 			}
 		}
 	}
@@ -3454,7 +3454,7 @@ void M_jump(edict_t *self, G_Message_t *msg)
 		self->ai_mood = AI_MOOD_JUMP;//don't technically need this line
 		self->mood_nextthink = level.time + 0.5;
 		//as an alternative, call self->forced_jump(self);
-		G_QPostMessage(self, MSG_CHECK_MOOD, PRI_DIRECTIVE, "i", AI_MOOD_JUMP);
+		G_QPostMessage(self, MSG_CHECK_MOOD, PRI_DIRECTIVE, MSG_CHECK_MOOD_FORMAT, AI_MOOD_JUMP);
 	}
 	else
 		VectorCopy(jvec, self->velocity);
@@ -3474,7 +3474,7 @@ void MG_parse_dismember_msg(edict_t *self, G_Message_t *msg)
 		return;
 	}
 
-	G_ParseMsgParms(msg, "ii", &damage, &HitLocation);
+	G_ParseMsgParms(msg, MSG_DISMEMBER_FORMAT, &damage, &HitLocation);
 
 	self->monsterinfo.dismember(self, damage, HitLocation);
 }

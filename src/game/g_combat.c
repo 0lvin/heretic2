@@ -429,7 +429,7 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			}
 			else
 			{
-				G_QPostMessage(targ,MSG_DEATH,PRI_DIRECTIVE,"eeei",targ,inflictor,attacker,damage);
+				G_QPostMessage(targ,MSG_DEATH, PRI_DIRECTIVE, MSG_DEATH_FORMAT,targ,inflictor,attacker,damage);
 			}
 		}
 		return;
@@ -461,7 +461,9 @@ Killed(edict_t *targ, edict_t *inflictor, edict_t *attacker,
 			targ->die(targ, inflictor, attacker, damage, vec3_origin);
 		}
 		else
-			G_QPostMessage(targ,MSG_DEATH,PRI_DIRECTIVE,"eeei",targ,inflictor,attacker,damage);
+		{
+			G_QPostMessage(targ, MSG_DEATH, PRI_DIRECTIVE, MSG_DEATH_FORMAT, targ, inflictor, attacker, damage);
+		}
 	}
 
 	if (Vec3IsZero(targ->velocity) && (damage != 12345))
@@ -1400,7 +1402,7 @@ T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 				if (targ->client)
 					player_dismember(targ, attacker, dsm_dmg, hl);
 				else
-					G_QPostMessage(targ, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", dsm_dmg, hl);
+					G_QPostMessage(targ, MSG_DISMEMBER, PRI_DIRECTIVE, MSG_DISMEMBER_FORMAT, dsm_dmg, hl);
 			}
 		}
 
@@ -1425,7 +1427,7 @@ T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 						//hl|=hl_MeleeHit;//force dismember
 						hl = (HitLocation_t)(((int)hl) | hl_MeleeHit);
 // jmarshall end
-						G_QPostMessage(targ, MSG_DEATH_PAIN, PRI_DIRECTIVE,"ii", take, hl);
+						G_QPostMessage(targ, MSG_DEATH_PAIN, PRI_DIRECTIVE, MSG_DEATH_PAIN_FORMAT, take, hl);
 					}
 				}
 				return;
@@ -1477,9 +1479,9 @@ T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 			(targ->pain_debounce_time  < level.time))
 		{
 			if (targ->classID == CID_ASSASSIN)
-				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE, MSG_PAIN_FORMAT, inflictor, attacker, force_pain, take, hl);
+				G_QPostMessage(targ, MSG_PAIN, PRI_DIRECTIVE, MSG_PAIN_FORMAT, inflictor, attacker, force_pain, take, hl);
 			else
-				G_QPostMessage(targ,MSG_PAIN,PRI_DIRECTIVE, MSG_PAIN_FORMAT, targ, attacker, force_pain, take, hl);
+				G_QPostMessage(targ, MSG_PAIN, PRI_DIRECTIVE, MSG_PAIN_FORMAT, targ, attacker, force_pain, take, hl);
 
 			/* nightmare mode monsters don't go into pain frames often */
 			if (skill->value == SKILL_HARDPLUS)

@@ -1980,12 +1980,12 @@ static void Physics_StepMove(edict_t *self)
 
 		if (hasVel)
 		{	// stopped
-			G_QPostMessage(self, G_MSG_RESTSTATE, PRI_PHYSICS, "i", hasVel);
+			G_QPostMessage(self, MSG_RESTSTATE, PRI_PHYSICS, MSG_RESTSTATE_FORMAT, hasVel);
 		}
 	}
 	else if (!hasVel)
 	{	// started
-		G_QPostMessage(self, G_MSG_RESTSTATE, PRI_PHYSICS, "i", hasVel);
+		G_QPostMessage(self, MSG_RESTSTATE, PRI_PHYSICS, MSG_RESTSTATE_FORMAT, hasVel);
 	}
 
 	PhysicsCheckWaterTransition(self);

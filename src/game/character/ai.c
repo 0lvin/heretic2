@@ -33,7 +33,7 @@ void ai_c_readmessage(edict_t *self, G_Message_t *msg)
 	int turning;
 	int repeat;
 
-	G_ParseMsgParms(msg, "iiige", &self->monsterinfo.c_dist,&turning,&repeat,
+	G_ParseMsgParms(msg, MSG_C_IDLE1_FORMAT, &self->monsterinfo.c_dist,&turning,&repeat,
 		&self->monsterinfo.c_callback,&self->monsterinfo.c_ent);
 
 	self->monsterinfo.c_repeat = repeat;
@@ -73,7 +73,7 @@ void ai_c_cycleend (edict_t *self)
 	else								// Well then just sit there if you aren't already
 	{
 		if (!(self->monsterinfo.c_anim_flag & C_ANIM_IDLE))	//
-			G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+			G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 	}
 }
 
@@ -288,7 +288,7 @@ void c_character_init(edict_t *self,int classId)
 	MG_InitMoods(self);
 
 	self->monsterinfo.c_mode = 1;
-	G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+	G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT, 0, 0, 0, NULL, NULL);
 
 }
 

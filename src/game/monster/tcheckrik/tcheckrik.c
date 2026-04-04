@@ -1280,7 +1280,7 @@ insect_pause(edict_t *self)
 
 void insect_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	insect_pause(self);
 }
@@ -1633,11 +1633,12 @@ void SP_monster_tcheckrik_male (edict_t *self)
 	else if (self->spawnflags & MSF_INSECT_CINEMATIC)
 	{
 		self->monsterinfo.c_mode = 1;
-		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,
+			0, 0, 0, NULL, NULL);
 	}
 	else
 	{
-		G_QPostMessage(self,MSG_STAND,PRI_DIRECTIVE, NULL);
+		G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 	}
 
 	gi.CreateEffect(self,

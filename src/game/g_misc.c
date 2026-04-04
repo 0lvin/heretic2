@@ -3667,9 +3667,10 @@ SprayDebris(edict_t *self, vec3_t spot, byte NoOfChunks, float damage)
 void
 DefaultObjectDieHandler(edict_t *self, G_Message_t *msg)
 {
-	edict_t *inflictor;
+	edict_t	*targ, *inflictor, *attacker;
+	float	damage;
 
-	G_ParseMsgParms(msg, "ee", &inflictor, &inflictor);
+	G_ParseMsgParms(msg, MSG_DEATH_FORMAT, &targ, &inflictor, &attacker, &damage);
 
 	G_UseTargets(self, inflictor);
 
@@ -3898,8 +3899,8 @@ void Teleporter_Activate(edict_t *self, G_Message_t *msg)
 
 void TeleporterStaticsInit()
 {
-	classStatics[CID_TELEPORTER].msgReceivers[G_MSG_SUSPEND] = Teleporter_Deactivate;
-	classStatics[CID_TELEPORTER].msgReceivers[G_MSG_UNSUSPEND] = Teleporter_Activate;
+	classStatics[CID_TELEPORTER].msgReceivers[MSG_SUSPEND] = Teleporter_Deactivate;
+	classStatics[CID_TELEPORTER].msgReceivers[MSG_UNSUSPEND] = Teleporter_Activate;
 }
 
 /*QUAKED misc_teleporter (1 0 0) ? NO_MODEL DEATHMATCH_RANDOM START_OFF MULT_DEST

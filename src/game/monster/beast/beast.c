@@ -1548,7 +1548,7 @@ void tbeast_anger_sound (edict_t *self)
 		SprayDebris(self->teamchain, self->teamchain->s.origin, chance, 100);
 		if (!self->teamchain->client)
 		{
-			G_QPostMessage(self->teamchain, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", self->teamchain->health*0.5, irand(1,13));//do I need last three if not sending them?
+			G_QPostMessage(self->teamchain, MSG_DISMEMBER, PRI_DIRECTIVE, MSG_DISMEMBER_FORMAT, self->teamchain->health*0.5, irand(1,13));//do I need last three if not sending them?
 			G_QPostMessage(self->teamchain, MSG_PAIN, PRI_DIRECTIVE, MSG_PAIN_FORMAT, self, self, true, 200, 0);
 		}
 	}

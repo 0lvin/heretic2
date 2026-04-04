@@ -1842,8 +1842,8 @@ FuncRotate_Activate(edict_t *self, G_Message_t *msg)
 void
 FuncRotateStaticsInit()
 {
-	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
-	classStatics[CID_FUNC_ROTATE].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
+	classStatics[CID_FUNC_ROTATE].msgReceivers[MSG_SUSPEND] = FuncRotate_Deactivate;
+	classStatics[CID_FUNC_ROTATE].msgReceivers[MSG_UNSUSPEND] = FuncRotate_Activate;
 }
 
 void
@@ -1863,8 +1863,8 @@ FuncDoor_Activate(edict_t *self, G_Message_t *msg)
 void
 FuncDoorStaticsInit()
 {
-	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_SUSPEND] = FuncRotate_Deactivate;
-	classStatics[CID_FUNC_DOOR].msgReceivers[G_MSG_UNSUSPEND] = FuncRotate_Activate;
+	classStatics[CID_FUNC_DOOR].msgReceivers[MSG_SUSPEND] = FuncRotate_Deactivate;
+	classStatics[CID_FUNC_DOOR].msgReceivers[MSG_UNSUSPEND] = FuncRotate_Activate;
 }
 
 void

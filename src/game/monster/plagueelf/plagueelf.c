@@ -394,7 +394,7 @@ void plagueElf_death(edict_t *self, G_Message_t *msg)
 
 	pelf_init_phase_in(self);
 
-	G_ParseMsgParms(msg, "eeei", &targ, &inflictor, &attacker, &damage);
+	G_ParseMsgParms(msg, MSG_DEATH_FORMAT, &targ, &inflictor, &attacker, &damage);
 
 	// Big enough death to be thrown back
 	if (self->monsterinfo.aiflags&AI_DONT_THINK)
@@ -1395,7 +1395,7 @@ void pelf_jump (edict_t *self, G_Message_t *msg)
 
 void pelf_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	plagueElf_pause(self);
 }
@@ -1552,7 +1552,7 @@ void pelf_SightSound ( edict_t *self, G_Message_t *msg )
 	if (self->monsterinfo.supporters != -1)
 		return;
 
-	G_ParseMsgParms(msg, "be", &sight_type, &enemy);
+	G_ParseMsgParms(msg, MSG_VOICE_SIGHT_FORMAT, &sight_type, &enemy);
 
 	//Find out how many elves are around (save this if we want it later)
 	support = self->monsterinfo.supporters = M_FindSupport(self, PLAGUEELF_SUPPORT_RADIUS);
@@ -1638,7 +1638,8 @@ void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float tim
 		}
 
 		//This is the elf to respond, so post the message
-		G_QPostMessage(ent, MSG_VOICE_POLL, PRI_DIRECTIVE, "bbf", sound_event, sound_id, time);
+		G_QPostMessage(ent, MSG_VOICE_POLL, PRI_DIRECTIVE, MSG_VOICE_POLL_FORMAT,
+			sound_event, sound_id, time);
 		last_valid = NULL;
 		break;
 	}
@@ -1646,7 +1647,7 @@ void pelf_PollResponse ( edict_t *self, int sound_event, int sound_id, float tim
 	//We skipped the last valid elf, so just make the last valid one talk
 	if (last_valid)
 	{
-		G_QPostMessage(last_valid, MSG_VOICE_POLL, PRI_DIRECTIVE, "bbf", sound_event, sound_id, time);
+		G_QPostMessage(last_valid, MSG_VOICE_POLL, PRI_DIRECTIVE, MSG_VOICE_POLL_FORMAT, sound_event, sound_id, time);
 		last_valid = NULL;
 	}
 }
@@ -1662,7 +1663,7 @@ void pelf_EchoResponse  ( edict_t *self, G_Message_t *msg )
 
 	//gi.dprintf("pelf_EchoResponse: Echoing alert response\n");
 
-	G_ParseMsgParms(msg, "bbf", &sound_event, &sound_id, &time);
+	G_ParseMsgParms(msg, MSG_VOICE_POLL_FORMAT, &sound_event, &sound_id, &time);
 
 	switch ( sound_event )
 	{
@@ -1715,7 +1716,7 @@ void pelf_EchoSound ( edict_t *self, G_Message_t *msg )
 {
 	int sound;
 
-	G_ParseMsgParms(msg, "i", &sound);
+	G_ParseMsgParms(msg, MSG_VOICE_PUPPET_FORMAT, &sound);
 
 	gi.sound(self, CHAN_VOICE, sounds[sound], 1, ATTN_NORM, 0);
 }
@@ -2044,7 +2045,7 @@ void SP_monster_plagueElf (edict_t *self)
 		self->svflags|=SVF_FLOAT;
 		self->monsterinfo.c_mode = 1;
 //		self->takedamage = DAMAGE_NO;
-		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, "iiige",0,0,0,NULL,NULL);
+		G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 	}
 	else
 	{

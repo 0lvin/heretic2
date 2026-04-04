@@ -272,7 +272,7 @@ void harpy_blocked (edict_t *self, trace_t *trace)
 					player_decap(trace->ent, self);
 				}
 				else
-					G_QPostMessage(trace->ent, MSG_DISMEMBER, PRI_DIRECTIVE, "ii", 9999999, hl_Head|hl_MeleeHit);
+					G_QPostMessage(trace->ent, MSG_DISMEMBER, PRI_DIRECTIVE, MSG_DISMEMBER_FORMAT, 9999999, hl_Head|hl_MeleeHit);
 				return;
 			}
 		}

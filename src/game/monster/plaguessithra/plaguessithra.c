@@ -2614,7 +2614,7 @@ void ssithra_evade (edict_t *self, G_Message_t *msg)
 	int chance;
 	float eta;
 
-	G_ParseMsgParms(msg, "eif", &projectile, &HitLocation, &eta);
+	G_ParseMsgParms(msg, MSG_EVADE_FORMAT, &projectile, &HitLocation, &eta);
 
 	switch(HitLocation)
 	{
@@ -2772,7 +2772,7 @@ void SsithraMood (edict_t *self)
 
 void ssithra_check_mood (edict_t *self, G_Message_t *msg)
 {
-	G_ParseMsgParms(msg, "i", &self->ai_mood);
+	G_ParseMsgParms(msg, MSG_CHECK_MOOD_FORMAT, &self->ai_mood);
 
 	SsithraCheckMood(self);
 }
@@ -2795,7 +2795,7 @@ void ssithra_sight (edict_t *self, G_Message_t *msg)
 	if (self->monsterinfo.supporters != -1)
 		return;
 
-	G_ParseMsgParms(msg, "be", &sight_type, &enemy);
+	G_ParseMsgParms(msg, MSG_VOICE_SIGHT_FORMAT, &sight_type, &enemy);
 
 	//See if we are the first to see the player
 	if (M_CheckAlert(self, SSITHRA_SUPPORT_RADIUS))
