@@ -390,6 +390,10 @@ typedef struct model_s
 extern refdef_t r_newrefdef;
 extern viddef_t vid;
 
+/* vis cluster/frame */
+extern int r_viewcluster, r_oldviewcluster;
+extern int r_visframecount;
+
 /* Shared models func */
 typedef struct image_s* (*findimage_t)(const char *name, imagetype_t type);
 extern void *Mod_LoadModel(const char *mod_name, const void *buffer, int modfilelen,
@@ -427,6 +431,8 @@ extern void Mod_VisRealloc(const model_t *model);
 extern void Mod_VisFree(void);
 
 /* Surface logic */
+extern void R_MarkLeaves(const model_t *r_worldmodel);
+extern void R_SetClusters(const model_t *r_worldmodel, const vec3_t r_origin);
 extern void R_PushDlights(refdef_t *r_newrefdef, mnode_t *nodes, int lightframecount,
 	msurface_t *surfaces);
 extern struct image_s *R_TextureAnimation(const entity_t *currententity,
@@ -437,10 +443,12 @@ extern void R_SetFrustum(vec3_t vup, vec3_t vpn, vec3_t vright, vec3_t r_origin,
 	float fov_x, float fov_y, cplane_t *frustum);
 extern void R_SubdivideSurface(const int *surfedges, mvertex_t *vertexes, medge_t *edges,
 	msurface_t *fa);
+extern void R_BuildLMPolygonFromSurface(model_t *currentmodel, msurface_t *fa,
+	size_t block_width, size_t block_height, size_t image_width, size_t image_height);
 
 /* Mesh logic */
-extern qboolean R_CullAliasMeshModel(dmdx_t *paliashdr, cplane_t *frustum,
-	int frame, int oldframe, vec3_t e_angles, vec3_t e_origin, vec3_t bbox[8]);
+extern qboolean R_CullAliasModel(const model_t *currentmodel, cplane_t *frustum,
+		vec3_t bbox[8], entity_t *e);
 extern void R_LerpVerts(qboolean powerUpEffect, int nverts,
 		const dxtrivertx_t *v, const dxtrivertx_t *ov,
 		float *lerp, const float move[3],

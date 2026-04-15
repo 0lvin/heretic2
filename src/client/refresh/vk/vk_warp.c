@@ -104,7 +104,7 @@ EmitWaterPolys(const msurface_t *fa, image_t *texture, const float *modelMatrix,
 		texture->vk_texture.descriptorSet,
 		uboDescriptorSet
 	};
-	int pos_vect = 0, index_pos = 0;
+	int pos_vect = 0, index_pos = 0, total_verts = 0;
 
 	float gamma = 2.1F - vid_gamma->value;
 
@@ -129,31 +129,30 @@ EmitWaterPolys(const msurface_t *fa, image_t *texture, const float *modelMatrix,
 	}
 
 	for (bp = fa->polys; bp; bp = bp->next)
+		total_verts += bp->numverts;
+
+	if (Mesh_VertsRealloc(total_verts))
 	{
-		const mpoly_t *p;
-
-		p = bp;
-
-		if (Mesh_VertsRealloc(pos_vect + p->numverts))
-		{
-			Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
-			return;
-		}
-
-		memcpy(verts_buffer + pos_vect, p->verts, sizeof(mvtx_t) * p->numverts);
-		for (i = 0; i < p->numverts; i++)
-		{
-			verts_buffer[i + pos_vect].texCoord[0] /= 64.f;
-			verts_buffer[i + pos_vect].texCoord[1] /= 64.f;
-		}
-		R_GenFanIndexes(vertIdxData + index_pos,
-			pos_vect, p->numverts - 2 + pos_vect);
-		pos_vect += p->numverts;
-		index_pos += (p->numverts - 2) * 3;
+		Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
+		return;
 	}
 
-	uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * pos_vect, &vbo, &vboOffset);
-	memcpy(vertData, verts_buffer, sizeof(mvtx_t) * pos_vect);
+	uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * total_verts, &vbo, &vboOffset);
+	mvtx_t *verts = (mvtx_t *)vertData;
+
+	for (bp = fa->polys; bp; bp = bp->next)
+	{
+		memcpy(verts + pos_vect, bp->verts, sizeof(mvtx_t) * bp->numverts);
+		for (i = 0; i < bp->numverts; i++)
+		{
+			verts[i + pos_vect].texCoord[0] /= 64.f;
+			verts[i + pos_vect].texCoord[1] /= 64.f;
+		}
+		R_GenFanIndexes(vertIdxData + index_pos,
+			pos_vect, bp->numverts - 2 + pos_vect);
+		pos_vect += bp->numverts;
+		index_pos += (bp->numverts - 2) * 3;
+	}
 
 	buffer = UpdateIndexBuffer(vertIdxData, index_pos * sizeof(uint16_t), &dstOffset);
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
@@ -177,12 +176,15 @@ void
 R_DrawSkyBox(void)
 {
 	VkDeviceSize dstOffset;
-	mvtx_t skyVerts[4] = {0};
+	unsigned visibleFaces[6];
+	unsigned numVisible = 0;
 	float model[16] = {0};
 	float gamma;
 	uint32_t uboOffset;
-	uint8_t *uboData;
+	uint8_t *uboData, *vertData;
 	VkBuffer *buffer;
+	VkBuffer vbo;
+	VkDeviceSize vboOffset;
 	qboolean farsee;
 	unsigned i;
 
@@ -229,8 +231,6 @@ R_DrawSkyBox(void)
 
 	for (i = 0; i < 6; i++)
 	{
-		uint8_t *vertData;
-
 		if (skyrotate)
 		{
 			skymins[0][i] = -1;
@@ -239,35 +239,51 @@ R_DrawSkyBox(void)
 			skymaxs[1][i] = 1;
 		}
 
-		if ((skymins[0][i] >= skymaxs[0][i]) ||
-		    (skymins[1][i] >= skymaxs[1][i]))
+		if (skymins[0][i] >= skymaxs[0][i] ||
+		    skymins[1][i] >= skymaxs[1][i])
 		{
 			continue;
 		}
 
-		R_MakeSkyVec(skymins[0][i], skymins[1][i], i, &skyVerts[0],
-			farsee, sky_min, sky_max);
-		R_MakeSkyVec(skymins[0][i], skymaxs[1][i], i, &skyVerts[1],
-			farsee, sky_min, sky_max);
-		R_MakeSkyVec(skymaxs[0][i], skymaxs[1][i], i, &skyVerts[2],
-			farsee, sky_min, sky_max);
-		R_MakeSkyVec(skymaxs[0][i], skymins[1][i], i, &skyVerts[3],
-			farsee, sky_min, sky_max);
+		visibleFaces[numVisible++] = i;
+	}
 
-		VkBuffer vbo;
-		VkDeviceSize vboOffset;
-		vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * 4, &vbo, &vboOffset);
-		memcpy(vertData, skyVerts, sizeof(mvtx_t) * 4);
+	if (numVisible == 0)
+	{
+		return;
+	}
 
+	vertData = QVk_GetVertexBuffer(
+		sizeof(mvtx_t)* 4 * numVisible, &vbo, &vboOffset);
+
+	for (i = 0; i < numVisible; i++)
+	{
+		mvtx_t *skyVerts = &((mvtx_t *)vertData)[i * 4];
+		const unsigned face = visibleFaces[i];
+
+		R_MakeSkyVec(skymins[0][face], skymins[1][face], face,
+				&skyVerts[0], farsee, sky_min, sky_max);
+		R_MakeSkyVec(skymins[0][face], skymaxs[1][face], face,
+				&skyVerts[1], farsee, sky_min, sky_max);
+		R_MakeSkyVec(skymaxs[0][face], skymaxs[1][face], face,
+				&skyVerts[2], farsee, sky_min, sky_max);
+		R_MakeSkyVec(skymaxs[0][face], skymins[1][face], face,
+				&skyVerts[3], farsee, sky_min, sky_max);
+	}
+
+	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
+
+	for (i = 0; i < numVisible; i++)
+	{
 		VkDescriptorSet descriptorSets[] = {
-			sky_images[skytexorder[i]]->vk_texture.descriptorSet
+			sky_images[skytexorder[visibleFaces[i]]]->vk_texture.descriptorSet
 		};
 
-		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+		vkCmdBindDescriptorSets(vk_activeCmdbuffer,
+			VK_PIPELINE_BIND_POINT_GRAPHICS,
 			vk_drawSkyboxPipeline.layout, 0, 1, descriptorSets, 0, NULL);
-		vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
-
-		vkCmdDrawIndexed(vk_activeCmdbuffer, 6, 1, 0, 0, 0);
+		vkCmdDrawIndexed(vk_activeCmdbuffer, 6, 1, 0,
+			(int32_t)(i * 4), 0);
 	}
 }
 

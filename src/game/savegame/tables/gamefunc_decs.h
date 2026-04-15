@@ -1024,12 +1024,16 @@ extern void misc_magic_portal_use(edict_t *self, edict_t *other, edict_t *activa
 extern void misc_nuke_core_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void misc_player_mannequin_think ( edict_t * self ) ;
 extern void misc_player_mannequin_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
+extern void misc_lightning_think ( edict_t * self ) ;
 extern void misc_rain_think ( edict_t * self ) ;
 extern void misc_rain_touch ( edict_t *self , edict_t * other, const cplane_t * plane, const csurface_t * surf ) ;
 extern void misc_remote_camera_think(edict_t *self);
+extern void misc_text_caption_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void misc_satellite_dish_think ( edict_t * self ) ;
 extern void misc_satellite_dish_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
 extern void misc_strogg_ship_use ( edict_t * self , edict_t * other , edict_t * activator ) ;
+extern void misc_drip_think ( edict_t * self ) ;
+extern void misc_drip_touch ( edict_t * self , edict_t * other , const cplane_t * plane , const csurface_t * surf ) ;
 extern void misc_update_spawner_touch(edict_t *self, edict_t *other, const cplane_t *plane , const csurface_t *surf ) ;
 extern void misc_viper_bomb_prethink ( edict_t * self ) ;
 extern void misc_viper_bomb_touch ( edict_t * self , edict_t * other , const cplane_t * plane , const csurface_t * surf ) ;

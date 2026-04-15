@@ -154,7 +154,7 @@ typedef struct
 	void (*centerprintf)(const edict_t *ent, const char *fmt, ...);
 	void (*sound)(const edict_t *ent, int channel, int soundindex, float volume,
 			float attenuation, float timeofs);
-	void (*positioned_sound)(vec3_t origin, const edict_t *ent, int channel,
+	void (*positioned_sound)(const vec3_t origin, const edict_t *ent, int channel,
 			int soundinedex, float volume, float attenuation, float timeofs);
 
 	/* config strings hold all the index strings, the lightstyles,
@@ -176,7 +176,7 @@ typedef struct
 	/* collision detection */
 	trace_t (*trace)(const vec3_t start, const vec3_t mins, const vec3_t maxs,
 			const vec3_t end, const edict_t *passent, int contentmask);
-	int (*pointcontents)(vec3_t point);
+	int (*pointcontents)(const vec3_t point);
 	qboolean (*inPVS)(vec3_t p1, vec3_t p2);
 	qboolean (*inPHS)(vec3_t p1, vec3_t p2);
 	void (*SetAreaPortalState)(int portalnum, qboolean open);
@@ -187,7 +187,7 @@ typedef struct
 	   solidity changes, it must be relinked. */
 	void (*linkentity)(edict_t *ent);
 	void (*unlinkentity)(edict_t *ent);         /* call before removing an interactive edict */
-	int (*BoxEdicts)(vec3_t mins, vec3_t maxs, edict_t **list, int maxcount,
+	int (*BoxEdicts)(const vec3_t mins, const vec3_t maxs, edict_t **list, int maxcount,
 			int areatype);
 	void (*Pmove)(pmove_t *pmove);				/* player movement code common with client prediction */
 

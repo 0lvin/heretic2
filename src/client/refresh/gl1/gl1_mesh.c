@@ -228,7 +228,6 @@ R_DrawAliasShadowCommand(const entity_t *currententity, int *order, const int *o
 {
 	while (1)
 	{
-		vec3_t point;
 		int count;
 
 		/* get the vertex count and primitive type */
@@ -251,6 +250,8 @@ R_DrawAliasShadowCommand(const entity_t *currententity, int *order, const int *o
 
 		do
 		{
+			vec3_t point;
+
 			/* normals and vertexes come from the frame list */
 			memcpy(point, s_lerped[order[2]], sizeof(point));
 
@@ -313,37 +314,6 @@ R_DrawAliasShadow(entity_t *currententity, dmdx_t *paliashdr, int posenum,
 	}
 }
 
-static qboolean
-R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
-{
-	dmdx_t *paliashdr;
-
-	paliashdr = (dmdx_t *)currentmodel->extradata;
-	if (!paliashdr)
-	{
-		Com_Printf("%s %s: Model is not fully loaded\n",
-				__func__, currentmodel->name);
-		return true;
-	}
-
-	if ((e->frame >= paliashdr->num_frames) || (e->frame < 0))
-	{
-		Com_DPrintf("%s %s: no such frame %d\n",
-				__func__, currentmodel->name, e->frame);
-		e->frame = 0;
-	}
-
-	if ((e->oldframe >= paliashdr->num_frames) || (e->oldframe < 0))
-	{
-		Com_DPrintf("%s %s: no such oldframe %d\n",
-				__func__, currentmodel->name, e->oldframe);
-		e->oldframe = 0;
-	}
-
-	return R_CullAliasMeshModel(paliashdr, frustum, e->frame, e->oldframe,
-		e->angles, e->origin, bbox);
-}
-
 void
 R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 {
@@ -357,7 +327,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 	if (!(currententity->flags & RF_WEAPONMODEL))
 	{
-		if (R_CullAliasModel(currentmodel, bbox, currententity))
+		if (R_CullAliasModel(currentmodel, frustum, bbox, currententity))
 		{
 			return;
 		}
@@ -371,8 +341,6 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		}
 	}
 
-	paliashdr = (dmdx_t *)currentmodel->extradata;
-
 	for (i = 0; i < 3; i++)
 	{
 		/* fix scale */
@@ -381,6 +349,8 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 			currententity->scale[i] = 1.0f;
 		}
 	}
+
+	paliashdr = (dmdx_t *)currentmodel->extradata;
 
 	if (r_worldmodel)
 	{
@@ -404,8 +374,8 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	}
 
 	/* ir goggles color override */
-	if (r_newrefdef.rdflags & RDF_IRGOGGLES && currententity->flags &
-		RF_IR_VISIBLE)
+	if ((r_newrefdef.rdflags & RDF_IRGOGGLES) &&
+		(currententity->flags & RF_IR_VISIBLE))
 	{
 		shadelight[0] = 1.0;
 		shadelight[1] = 0.0;

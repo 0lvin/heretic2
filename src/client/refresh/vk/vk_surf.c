@@ -39,6 +39,8 @@ vklightmapstate_t vk_lms;
 static void
 DrawVkPoly(const msurface_t *fa, image_t *texture, const float *color)
 {
+	VkBuffer vbo;
+	VkDeviceSize vboOffset;
 	float sscroll, tscroll;
 	const mpoly_t *p;
 	int i;
@@ -47,28 +49,22 @@ DrawVkPoly(const msurface_t *fa, image_t *texture, const float *color)
 
 	R_FlowingScroll(&r_newrefdef, fa->texinfo->flags, &sscroll, &tscroll);
 
-	if (Mesh_VertsRealloc(p->numverts))
-	{
-		Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
-		return;
-	}
-
-	memcpy(verts_buffer, p->verts, sizeof(mvtx_t) * p->numverts);
+	uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * p->numverts, &vbo, &vboOffset);
+	memcpy(vertData, p->verts, sizeof(mvtx_t) * p->numverts);
+	mvtx_t *verts = (mvtx_t *)vertData;
 	for (i = 0; i < p->numverts; i++)
 	{
-		verts_buffer[i].texCoord[0] += sscroll;
-		verts_buffer[i].texCoord[1] += tscroll;
+		verts[i].texCoord[0] += sscroll;
+		verts[i].texCoord[1] += tscroll;
 	}
 
 	QVk_BindPipeline(&vk_drawPolyPipeline);
 
-	VkDeviceSize vboOffset, dstOffset;
-	VkBuffer vbo, *buffer;
+	VkDeviceSize dstOffset;
+	VkBuffer *buffer;
 	uint32_t uboOffset;
 	VkDescriptorSet uboDescriptorSet;
-	uint8_t *vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * p->numverts, &vbo, &vboOffset);
 	uint8_t *uboData  = QVk_GetUniformBuffer(sizeof(float) * 4, &uboOffset, &uboDescriptorSet);
-	memcpy(vertData, verts_buffer, sizeof(mvtx_t) * p->numverts);
 	memcpy(uboData,  color, sizeof(float) * 4);
 
 	VkDescriptorSet descriptorSets[] = {
@@ -579,12 +575,6 @@ Vk_RenderLightmappedPoly(msurface_t *surf, float alpha,
 		}
 	}
 
-	if (Mesh_VertsRealloc(nv))
-	{
-		Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
-		return;
-	}
-
 	if (is_dynamic)
 	{
 		int smax, tmax, size;
@@ -619,13 +609,18 @@ Vk_RenderLightmappedPoly(msurface_t *surf, float alpha,
 	VkBuffer vbo, *buffer;
 	uint8_t *vertData;
 	float sscroll, tscroll;
-	int pos_vect = 0, index_pos = 0;
+	int pos_vect = 0, index_pos = 0, total_verts = 0;
 
 	c_brush_polys++;
 
 	//==========
 	//PGM
 	R_FlowingScroll(&r_newrefdef, surf->texinfo->flags, &sscroll, &tscroll);
+
+	for (p = surf->polys; p; p = p->chain)
+		total_verts += nv;
+	vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * total_verts, &vbo, &vboOffset);
+	mvtx_t *verts = (mvtx_t *)vertData;
 
 	for (p = surf->polys; p; p = p->chain)
 	{
@@ -635,11 +630,11 @@ Vk_RenderLightmappedPoly(msurface_t *surf, float alpha,
 			return;
 		}
 
-		memcpy(verts_buffer + pos_vect, p->verts, sizeof(mvtx_t) * nv);
+		memcpy(verts + pos_vect, p->verts, sizeof(mvtx_t) * nv);
 		for (i = 0; i < nv; i++)
 		{
-			verts_buffer[pos_vect + i].texCoord[0] += sscroll;
-			verts_buffer[pos_vect + i].texCoord[1] += tscroll;
+			verts[pos_vect + i].texCoord[0] += sscroll;
+			verts[pos_vect + i].texCoord[1] += tscroll;
 		}
 
 		R_GenFanIndexes(vertIdxData + index_pos,
@@ -658,9 +653,6 @@ Vk_RenderLightmappedPoly(msurface_t *surf, float alpha,
 
 	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
 		vk_drawPolyLmapPipeline.layout, 0, 3, descriptorSets, 1, uboOffset);
-
-	vertData = QVk_GetVertexBuffer(sizeof(mvtx_t) * pos_vect, &vbo, &vboOffset);
-	memcpy(vertData, verts_buffer, sizeof(mvtx_t) * pos_vect);
 
 	buffer = UpdateIndexBuffer(vertIdxData, index_pos * sizeof(uint16_t), &dstOffset);
 
@@ -940,8 +932,7 @@ R_RecursiveWorldNode(entity_t *currententity, mnode_t *node)
 		}
 		else
 		{
-			// the polygon is visible, so add it to the texture
-			// sorted chain
+			/* the polygon is visible, so add it to the texture sorted chain */
 			image = R_TextureAnimation(currententity, surf->texinfo);
 			surf->texturechain = image->texturechain;
 			image->texturechain = surf;
@@ -986,110 +977,4 @@ R_DrawWorld(void)
 	DrawTextureChains(&ent);
 	R_DrawSkyBox();
 	R_DrawTriangleOutlines();
-}
-
-/*
- * Mark the leaves and nodes that are
- * in the PVS for the current cluster
- */
-void
-R_MarkLeaves(void)
-{
-	const byte *vis;
-	byte *fatvis = NULL;
-	mnode_t *node;
-	int i;
-	mleaf_t *leaf;
-
-	if ((r_oldviewcluster == r_viewcluster) &&
-		(r_oldviewcluster2 == r_viewcluster2) &&
-		!r_novis->value &&
-		(r_viewcluster != -1))
-	{
-		return;
-	}
-
-	/* development aid to let you run around
-	   and see exactly where the pvs ends */
-	if (r_lockpvs->value)
-	{
-		return;
-	}
-
-	r_visframecount++;
-	r_oldviewcluster = r_viewcluster;
-	r_oldviewcluster2 = r_viewcluster2;
-
-	if (r_novis->value || (r_viewcluster == -1) || !r_worldmodel->vis)
-	{
-		/* mark everything */
-		for (i = 0; i < r_worldmodel->numleafs; i++)
-		{
-			r_worldmodel->leafs[i].visframe = r_visframecount;
-		}
-
-		for (i = 0; i < r_worldmodel->numnodes; i++)
-		{
-			r_worldmodel->nodes[i].visframe = r_visframecount;
-		}
-
-		return;
-	}
-
-	vis = Mod_ClusterPVS(r_viewcluster, r_worldmodel);
-
-	/* may have to combine two clusters because of solid water boundaries */
-	if (r_viewcluster2 != r_viewcluster)
-	{
-		int c;
-
-		fatvis = malloc(((r_worldmodel->numleafs + 31) / 32) * sizeof(int));
-		memcpy(fatvis, vis, (r_worldmodel->numleafs + 7) / 8);
-		vis = Mod_ClusterPVS(r_viewcluster2, r_worldmodel);
-		c = (r_worldmodel->numleafs + 31) / 32;
-
-		for (i = 0; i < c; i++)
-		{
-			((int *)fatvis)[i] |= ((int *)vis)[i];
-		}
-
-		vis = fatvis;
-	}
-
-	for (i = 0, leaf = r_worldmodel->leafs;
-		 i < r_worldmodel->numleafs;
-		 i++, leaf++)
-	{
-		int cluster;
-
-		cluster = leaf->cluster;
-
-		if (cluster == -1)
-		{
-			continue;
-		}
-
-		if (vis[cluster >> 3] & (1 << (cluster & 7)))
-		{
-			node = (mnode_t *)leaf;
-
-			do
-			{
-				if (node->visframe == r_visframecount)
-				{
-					break;
-				}
-
-				node->visframe = r_visframecount;
-				node = node->parent;
-			}
-			while (node);
-		}
-	}
-
-	/* clean combined buffer */
-	if (fatvis)
-	{
-		free(fatvis);
-	}
 }

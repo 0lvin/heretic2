@@ -5208,6 +5208,129 @@ SP_misc_hologram(edict_t *ent)
 }
 
 void
+misc_lightning_think(edict_t *self)
+{
+	/* Randomly decide whether to play thunder sound or just reschedule */
+	if (frandk() < 0.38f)
+	{
+		/* Schedule another quick think without sound */
+		self->nextthink = level.time + frandk();
+	}
+	else
+	{
+		float attenuation = 0.0f;
+		float volume = 1.0f;
+		char *soundname;
+		int soundindex;
+
+		/* Play thunder sound effect */
+		if (frandk() >= 0.5f)
+		{
+			soundname = "world/amb2.wav";
+		}
+		else
+		{
+			soundname = "world/amb1.wav";
+		}
+
+		soundindex = gi.soundindex(soundname);
+		gi.positioned_sound(self->s.origin, self, CHAN_AUTO, soundindex, 1.0, ATTN_NORM, 0);
+		gi.sound(self, CHAN_AUTO, soundindex, volume, attenuation, 0);
+
+		/* Schedule next thunder event */
+		self->nextthink = level.time + 38.0f + frandk() * 28.0f;
+	}
+}
+
+/*
+ * QUAKED misc_lightning (.5 .5 .5) (0 0 0) (0 0 0)
+ *
+ * Infinity: Lightning sound spawner.
+ */
+void
+SP_misc_lightning(edict_t *self)
+{
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_NOT;
+	self->touch = NULL;
+
+	VectorClear(self->mins);
+	VectorClear(self->maxs);
+
+	self->s.modelindex = 0;
+	self->classname = "misc_lightning";
+
+	self->think = misc_lightning_think;
+	self->nextthink = level.time + 8.0f + frandk() * 8.0f;
+
+	gi.linkentity(self);
+}
+
+void
+misc_text_caption_use(edict_t *self, edict_t *other, edict_t *activator)
+{
+	char filepath[MAX_QPATH];
+	void *raw = NULL;
+	int len;
+
+	if (!self || !self->message || !activator || !activator->client)
+	{
+		return;
+	}
+
+	if (!strncmp(self->message, "infinity/", 9) ||
+		!strncmp(self->message, "infinity\\", 9))
+	{
+		/* infinity demo has infinity prefix */
+		Q_strlcpy(filepath, self->message + 9, sizeof(filepath));
+	}
+	else
+	{
+		Q_strlcpy(filepath, self->message, sizeof(filepath));
+	}
+
+	Q_replacebackslash(filepath);
+
+	len = gi.LoadFile(filepath, &raw);
+	if (len > 0 && raw)
+	{
+		char *buf;
+
+		buf = malloc(len + 1);
+		if (buf)
+		{
+			memcpy(buf, raw, len);
+			buf[len] = 0;
+			gi.centerprintf(activator, "%s", buf);
+			free(buf);
+		}
+
+		gi.FreeFile(raw);
+		return;
+	}
+}
+
+/*
+ * QUAKED misc_text_caption (0.5 0.5 0.5) (0 0 0) (0 0 0)
+ *
+ * Infinity: show text from file.
+ */
+void
+SP_misc_text_caption(edict_t *self)
+{
+	if (deathmatch->value || !self || !self->message)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	self->s.modelindex = 0;
+	self->solid = SOLID_NOT;
+	self->use = misc_text_caption_use;
+	gi.linkentity(self);
+}
+
+void
 misc_rain_touch(edict_t *self, edict_t *other, const cplane_t *plane,
 		const csurface_t *surf)
 {
@@ -5234,14 +5357,11 @@ ThrowRainDropGib(edict_t *self)
 
 	ent = G_Spawn();
 	ent->owner = self;
-	ent->movetype = MOVETYPE_BOUNCE;
+	ent->movetype = MOVETYPE_TOSS;
 	ent->solid = SOLID_NOT;
 	ent->touch = misc_rain_touch;
 
 	VectorCopy(self->s.origin, ent->s.origin);
-	VectorClear(ent->mins);
-	VectorClear(ent->maxs);
-	VectorClear(ent->velocity);
 
 	/* Randomize X/Y slightly */
 	ent->s.origin[0] -= rand() % 256 - 128;
@@ -5271,14 +5391,12 @@ misc_rain_think(edict_t *self)
 	{
 		char name[MAX_OSPATH];
 		int soundindex;
-		vec3_t origin;
 
 		/* Pick one of several ambient rain sounds */
 		snprintf(name, sizeof(name), "world/amb%i.wav", (rand() % 4) + 1);
 		soundindex = gi.soundindex(name);
 
-		VectorCopy(self->s.origin, origin);
-		gi.positioned_sound(origin, self, CHAN_AUTO, soundindex, 1.0, ATTN_NORM, 0);
+		gi.positioned_sound(self->s.origin, self, CHAN_AUTO, soundindex, 1.0, ATTN_NORM, 0);
 	}
 
 	/* Spawn a raindrop gib */
@@ -5289,15 +5407,13 @@ misc_rain_think(edict_t *self)
 }
 
 /*
- * QUAKED misc_rain (0 .5 .8) (-8 -8 -8) (8 8 8)
+ * QUAKED misc_rain (.5 .5 .5) (0 0 0) (0 0 0)
  *
  * Infinity: misc_rain entities.
  */
 void
 SP_misc_rain(edict_t *self)
 {
-	vec3_t point;
-
 	/* Disable in deathmatch/coop */
 	if (deathmatch->value || coop->value)
 	{
@@ -5306,8 +5422,7 @@ SP_misc_rain(edict_t *self)
 	}
 
 	/* Check if origin is inside solid contents */
-	VectorCopy(self->s.origin, point);
-	if (gi.pointcontents(point) & MASK_SOLID)
+	if (gi.pointcontents(self->s.origin) & MASK_SOLID)
 	{
 		G_FreeEdict(self);
 		return;
@@ -5317,14 +5432,102 @@ SP_misc_rain(edict_t *self)
 	self->solid = SOLID_NOT;
 	self->touch = NULL;
 
-	/* Rain does not have volume */
-	VectorClear(self->mins);
-	VectorClear(self->maxs);
-
 	self->s.modelindex = 0;
 
 	self->think = misc_rain_think;
 	self->nextthink = level.time + 0.1f;
+
+	gi.linkentity(self);
+}
+
+/* Drip sound effect thinker */
+void
+misc_drip_touch(edict_t *self, edict_t *other, const cplane_t *plane,
+		const csurface_t *surf)
+{
+	if (!self->s.skinnum)
+	{
+		float timeofs;
+
+		timeofs = frandk();
+
+		if (frandk() < 0.28f)
+		{
+			gi.sound(self, CHAN_AUTO, gi.soundindex("world/h2odrip.wav"), 1, ATTN_NORM, timeofs);
+		}
+		else
+		{
+			gi.sound(self, CHAN_AUTO, gi.soundindex("world/h2odpsph.wav"), 1, ATTN_NORM, timeofs);
+		}
+	}
+
+	G_FreeEdict(self);
+}
+
+/* Spawn a drip effect entity */
+static void
+misc_drip_effect(edict_t *self)
+{
+	edict_t *ent;
+
+	if (gi.pointcontents(self->s.origin) & MASK_WATER)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	ent = G_Spawn();
+	ent->owner = self;
+	ent->movetype = MOVETYPE_TOSS;
+	ent->solid = SOLID_NOT;
+	ent->touch = misc_drip_touch;
+
+	VectorCopy(self->s.origin, ent->s.origin);
+
+	/* Randomize position slightly */
+	ent->s.origin[0] -= rand() % 16 - 8;
+	ent->s.origin[1] -= rand() % 16 - 8;
+
+	ent->s.modelindex = gi.modelindex("models/objects/drip/tris.md2");
+
+	self->s.skinnum = rand() % 3;
+
+	ent->s.origin[2] -= 5.0f;
+	ent->think = G_FreeEdict;
+	ent->classname = "drip";
+	ent->nextthink = level.time + 2.0f;
+
+	gi.linkentity(ent);
+}
+
+/* Thinker for drip source */
+void
+misc_drip_think(edict_t *self)
+{
+	if (gi.pointcontents(self->s.origin) & MASK_WATER)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	misc_drip_effect(self);
+	self->nextthink = level.time + 1.0f + (frandk() * 2.0f);
+}
+
+/*
+ * QUAKED misc_drip (.5 .5 .5) (0 0 0) (0 0 0)
+ *
+ * Infinity: misc_drip entities.
+ */
+void
+SP_misc_drip(edict_t *self)
+{
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_NOT;
+	self->touch = NULL;
+
+	self->think = misc_drip_think;
+	self->nextthink = level.time + 1.0f + (frandk() * 2.0f);
 
 	gi.linkentity(self);
 }
