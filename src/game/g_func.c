@@ -2025,9 +2025,17 @@ button_done(edict_t *self)
 
 	if (!self->bmodel_anim.enabled)
 	{
-		self->s.frame = 0;
-		// self->s.effects &= ~EF_ANIM23;
-		// self->s.effects |= EF_ANIM01;
+		// if (level.is_n64)
+		{
+			self->s.frame = 0;
+		}
+#if 0
+		else
+		{
+			self->s.effects &= ~EF_ANIM23;
+		}
+		self->s.effects |= EF_ANIM01;
+#endif
 	}
 	else
 	{
@@ -2067,8 +2075,17 @@ button_wait(edict_t *self)
 
 	if (!self->bmodel_anim.enabled)
 	{
-		// self->s.effects &= ~EF_ANIM01;
-		// self->s.effects |= EF_ANIM23;
+#if 0
+		self->s.effects &= ~EF_ANIM01;
+		if (level.is_n64)
+		{
+			self->s.frame = 2;
+		}
+		else
+		{
+			self->s.effects |= EF_ANIM23;
+		}
+#endif
 	}
 	else
 	{

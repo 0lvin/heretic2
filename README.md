@@ -307,6 +307,10 @@ Note:
 
 ### Games check videos:
 
+* 8.61RR15+:
+
+[![Check hologram implementation](https://img.youtube.com/vi/jTaCyx3KCr0/hqdefault.jpg)](https://www.youtube.com/watch?v=jTaCyx3KCr0)
+
 * 8.61RR14+:
 
 [![Check dynamic animation for weapons](https://img.youtube.com/vi/R8crz-ISkeA/hqdefault.jpg)](https://www.youtube.com/watch?v=R8crz-ISkeA)
@@ -389,6 +393,7 @@ Checked with:
 * [ ] vulkan: group `it_pic` images,
 * [ ] vulkan: rearange surfaces before render,
 * [ ] vulkan: add fog distance effect,
+* [ ] soft: add fog distance effect (optional),
 * [ ] reuse memory from models cache in renders model list,
 * [ ] reuse memory from models cache for bsp,
 * [ ] game: cleanup function declarations in game save code,
@@ -408,7 +413,6 @@ Checked with:
 * [ ] ReRelease: basicsjam1_detrohogga: fix droptofloor startsolid,
 * [ ] gl1, gl3, gl4, vk, soft: implement direction of `CS_SHADOWLIGHTS`,
 * [ ] gl3, gl4: implement color multiplication and alpha gradient for `misc_flare`,
-* [ ] gl3, gl4: add fog distance effect,
 * [ ] soft, vulkan: implement color multiplication and alpha combine or make black
       parts transparent for `misc_flare`,
 * [ ] ReRelease: single player support,
@@ -431,7 +435,6 @@ Checked with:
 * [ ] Anachronox: load atd as sprite,
 * [ ] Anachronox: fix incorrect scale of `ob_stop-flame` and `ob_wommhill01`,
 * [ ] Anachronox: skins load broken with mingw win64 build,
-* [ ] Anachronox: rowdys save entity disappear in a8080c05,
 * [ ] Anachronox: CTC entity format,
 * [ ] Anachronox: support material load textures/textureinfo.dat,
 * [ ] Daikatana: Fix protopod animation,
@@ -441,13 +444,20 @@ Checked with:
 
 ### Fixed:
 
-* [x] Infinity: `misc_lightning`,
-* [x] Infinity: `misc_text_caption`,
-* [x] Infinity: `misc_rain`,
-* [x] Infinity: `misc_drip`,
-* [x] Infinity: `misc_desk`,
-* [x] Infinity: `misc_chair`,
-* [x] Infinity: `misc_crate`,
+* [x] Rerelease: fix vulkan render on open door in mguhub,
+* [x] gl1: reuse R_MakeSkyVec,
+* [x] Anachronox: rowdys save entity disappear in a8080c05,
+* [x] gl4: add fog distance effect,
+* [x] gl3: add fog distance effect,
+* [x] client: share r_farsee,
+* [x] Infinity: implement `misc_hologram`,
+* [x] Infinity: implement `misc_lightning`,
+* [x] Infinity: implement `misc_text_caption`,
+* [x] Infinity: implement `misc_rain`,
+* [x] Infinity: implement `misc_drip`,
+* [x] Infinity: implement `misc_desk`,
+* [x] Infinity: implement `misc_chair`,
+* [x] Infinity: implement `misc_crate`,
 * [x] ReRelease: implement `misc_lavaball`,
 * [x] CppCheck: fix const warnings and scope,
 * [x] renders: share model_t type.

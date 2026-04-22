@@ -86,8 +86,6 @@ cvar_t *gl4_debugcontext;
 cvar_t *gl4_usebigvbo;
 cvar_t *gl4_usefbo;
 
-static cvar_t *gl_znear;
-
 // Yaw-Pitch-Roll
 // equivalent to R_z * R_y * R_x where R_x is the trans matrix for rotating around X axis for aroundXdeg
 static hmm_mat4 rotAroundAxisZYX(float aroundZdeg, float aroundYdeg, float aroundXdeg)
@@ -183,12 +181,10 @@ GL4_Register(void)
 
 	gl_zfix = ri.Cvar_Get("gl_zfix", "0", 0);
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
-	gl_znear = ri.Cvar_Get("gl_znear", "4", CVAR_ARCHIVE);
 
 	gl4_usefbo = ri.Cvar_Get("gl4_usefbo", "1", CVAR_ARCHIVE); // use framebuffer object for postprocess effects (water)
 
 #if 0 // TODO!
-	//gl_farsee = ri.Cvar_Get("gl_farsee", "0", CVAR_LATCH | CVAR_ARCHIVE);
 	//gl_overbrightbits = ri.Cvar_Get("gl_overbrightbits", "0", CVAR_ARCHIVE);
 
 	gl1_particle_min_size = ri.Cvar_Get("gl1_particle_min_size", "2", CVAR_ARCHIVE);
@@ -1047,7 +1043,7 @@ SetupFrame(void)
 
 	R_SetClusters(gl4_worldmodel, gl4_origin);
 
-	R_CombineBlendWithFog(v_blend, false);
+	R_CombineBlendWithFog(v_blend, true);
 
 	c_brush_polys = 0;
 	c_alias_polys = 0;
@@ -1133,8 +1129,8 @@ hmm_mat4
 GL4_SetPerspective(GLdouble fovy)
 {
 	// gluPerspective() / R_MYgluPerspective() style parameters
-	const GLdouble zNear = Q_max(gl_znear->value, 0.1f);
-	const GLdouble zFar = (r_farsee->value) ? (gl4_worldmodel->radius * 2) : 4096.0f;
+	const GLdouble zNear = R_GetNearValue();
+	const GLdouble zFar = R_GetFarValue(gl4_worldmodel);
 	const GLdouble aspect = (GLdouble)r_newrefdef.width / r_newrefdef.height;
 
 	// calculation of left, right, bottom, top is from R_MYgluPerspective() of old gl backend
@@ -1299,6 +1295,32 @@ SetupGL(void)
 	gl4state.uni3DData.transModelMat4 = gl4_identityMat4;
 
 	gl4state.uni3DData.time = r_newrefdef.time;
+
+	/* Set up fog parameters from server data */
+	gl4state.uni3DData.fogColor = HMM_Vec4(
+		r_newrefdef.fog.red / 255.0f,
+		r_newrefdef.fog.green / 255.0f,
+		r_newrefdef.fog.blue / 255.0f,
+		r_newrefdef.fog.density / 64.0f
+	);
+
+	/* Height fog parameters */
+	gl4state.uni3DData.heightfog_start = HMM_Vec4(
+		r_newrefdef.fog.hf_start_r / 255.0f,
+		r_newrefdef.fog.hf_start_g / 255.0f,
+		r_newrefdef.fog.hf_start_b / 255.0f,
+		(float)r_newrefdef.fog.hf_start_dist
+	);
+
+	gl4state.uni3DData.heightfog_end = HMM_Vec4(
+		r_newrefdef.fog.hf_end_r / 255.0f,
+		r_newrefdef.fog.hf_end_g / 255.0f,
+		r_newrefdef.fog.hf_end_b / 255.0f,
+		(float)r_newrefdef.fog.hf_end_dist
+	);
+
+	gl4state.uni3DData.heightfog_density = r_newrefdef.fog.hf_density;
+	gl4state.uni3DData.heightfog_falloff = r_newrefdef.fog.hf_falloff;
 
 	GL4_UpdateUBO3D();
 

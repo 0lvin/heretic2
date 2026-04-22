@@ -244,146 +244,21 @@ GL4_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 /*
  * Returns has_alpha
  */
-qboolean
-GL4_Upload8(const byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
+static qboolean
+GL4_Upload8(const byte *data, int width, int height, qboolean mipmap)
 {
-	size_t i, s = width * height;
-	unsigned *trans = malloc(s * sizeof(unsigned));
+	unsigned *trans = NULL;
+	qboolean ret;
 
-	YQ2_COM_CHECK_OOM(trans, "malloc()",
-		s * sizeof(unsigned))
+	trans = R_Convert8to32(data, width, height, d_8to24table);
 	if (!trans)
 	{
-		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
 		return false;
 	}
 
-	for (i = 0; i < s; i++)
-	{
-		int p = data[i];
-		trans[i] = d_8to24table[p];
-
-		/* transparent, so scan around for
-		   another color to avoid alpha fringes */
-		if (p == 255)
-		{
-			if ((i > width) && (data[i - width] != 255))
-			{
-				p = data[i - width];
-			}
-			else if ((i < s - width) && (data[i + width] != 255))
-			{
-				p = data[i + width];
-			}
-			else if ((i > 0) && (data[i - 1] != 255))
-			{
-				p = data[i - 1];
-			}
-			else if ((i < s - 1) && (data[i + 1] != 255))
-			{
-				p = data[i + 1];
-			}
-			else
-			{
-				p = 0;
-			}
-
-			/* copy rgb components */
-			((byte *)&trans[i])[0] = ((byte *)&d_8to24table[p])[0];
-			((byte *)&trans[i])[1] = ((byte *)&d_8to24table[p])[1];
-			((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
-		}
-	}
-
-	qboolean ret = GL4_Upload32(trans, width, height, mipmap);
+	ret = GL4_Upload32(trans, width, height, mipmap);
 	free(trans);
 	return ret;
-}
-
-typedef struct
-{
-	short x, y;
-} floodfill_t;
-
-/* must be a power of 2 */
-#define FLOODFILL_FIFO_SIZE 0x1000
-#define FLOODFILL_FIFO_MASK (FLOODFILL_FIFO_SIZE - 1)
-
-#define FLOODFILL_STEP(off, dx, dy)	\
-	{ \
-		if (pos[off] == fillcolor) \
-		{ \
-			pos[off] = 255;	\
-			fifo[inpt].x = x + (dx), fifo[inpt].y = y + (dy); \
-			inpt = (inpt + 1) & FLOODFILL_FIFO_MASK; \
-		} \
-		else if (pos[off] != 255) \
-		{ \
-			fdc = pos[off];	\
-		} \
-	}
-
-/*
- * Fill background pixels so mipmapping doesn't have haloes
- */
-static void
-FloodFillSkin(byte *skin, int skinwidth, int skinheight)
-{
-	byte fillcolor = *skin; /* assume this is the pixel to fill */
-	floodfill_t fifo[FLOODFILL_FIFO_SIZE];
-	int inpt = 0, outpt = 0;
-	int filledcolor = 0;
-	int i;
-
-	/* attempt to find opaque black */
-	for (i = 0; i < 256; ++i)
-	{
-		if (LittleLong(d_8to24table[i]) == (255 << 0)) /* alpha 1.0 */
-		{
-			filledcolor = i;
-			break;
-		}
-	}
-
-	/* can't fill to filled color or to transparent color (used as visited marker) */
-	if ((fillcolor == filledcolor) || (fillcolor == 255))
-	{
-		return;
-	}
-
-	fifo[inpt].x = 0, fifo[inpt].y = 0;
-	inpt = (inpt + 1) & FLOODFILL_FIFO_MASK;
-
-	while (outpt != inpt)
-	{
-		int x = fifo[outpt].x, y = fifo[outpt].y;
-		int fdc = filledcolor;
-		byte *pos = &skin[x + skinwidth * y];
-
-		outpt = (outpt + 1) & FLOODFILL_FIFO_MASK;
-
-		if (x > 0)
-		{
-			FLOODFILL_STEP(-1, -1, 0);
-		}
-
-		if (x < skinwidth - 1)
-		{
-			FLOODFILL_STEP(1, 1, 0);
-		}
-
-		if (y > 0)
-		{
-			FLOODFILL_STEP(-skinwidth, 0, -1);
-		}
-
-		if (y < skinheight - 1)
-		{
-			FLOODFILL_STEP(skinwidth, 0, 1);
-		}
-
-		skin[x + skinwidth * y] = fdc;
-	}
 }
 
 /*
@@ -453,7 +328,7 @@ GL4_LoadPic(char *name, byte *pic, int width, int realwidth,
 
 	if ((type == it_skin) && (bits == 8))
 	{
-		FloodFillSkin(pic, width, height);
+		R_FloodFillSkin(pic, width, height, d_8to24table);
 	}
 
 	image->is_lava = (strstr(name, "lava") != NULL);
@@ -490,15 +365,13 @@ GL4_LoadPic(char *name, byte *pic, int width, int realwidth,
 			}
 
 			image->has_alpha = GL4_Upload8(image_converted, width * scale, height * scale,
-						(image->type != it_pic && image->type != it_sky),
-						image->type == it_sky);
+						(image->type != it_pic && image->type != it_sky));
 			free(image_converted);
 		}
 		else
 		{
 			image->has_alpha = GL4_Upload8(pic, width, height,
-						(image->type != it_pic && image->type != it_sky),
-						image->type == it_sky);
+						(image->type != it_pic && image->type != it_sky));
 		}
 	}
 	else

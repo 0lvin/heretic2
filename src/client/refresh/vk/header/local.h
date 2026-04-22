@@ -97,7 +97,6 @@ extern	vec3_t	r_origin;
 //
 // screen size info
 //
-extern	cvar_t	*vk_znear;
 extern	cvar_t	*vk_overbrightbits;
 extern	cvar_t	*vk_picmip;
 extern	cvar_t	*vk_finish;
@@ -304,6 +303,7 @@ extern uint16_t	*vertIdxData;
 void	Mesh_Init (void);
 void	Mesh_Free (void);
 int Mesh_VertsRealloc(int count);
+int Mesh_IndexesRealloc(int count);
 
 void Mod_Init(void);
 

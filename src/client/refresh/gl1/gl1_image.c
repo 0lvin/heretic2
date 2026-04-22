@@ -29,8 +29,6 @@
 image_t gltextures[MAX_TEXTURES];
 int numgltextures;
 static int image_max = 0;
-extern qboolean scrap_dirty;
-extern byte scrap_texels[MAX_SCRAPS][SCRAP_WIDTH * SCRAP_HEIGHT];
 
 static byte intensitytable[256];
 byte gammatable[256];
@@ -122,29 +120,6 @@ gltmode_t gl_solid_modes[] = {
 
 #define NUM_GL_ALPHA_MODES ARRLEN(gl_alpha_modes)
 #define NUM_GL_SOLID_MODES ARRLEN(gl_solid_modes)
-
-typedef struct
-{
-	short x, y;
-} floodfill_t;
-
-/* must be a power of 2 */
-#define FLOODFILL_FIFO_SIZE 0x1000
-#define FLOODFILL_FIFO_MASK (FLOODFILL_FIFO_SIZE - 1)
-
-#define FLOODFILL_STEP(off, dx, dy)	\
-	{ \
-		if (pos[off] == fillcolor) \
-		{ \
-			pos[off] = 255;	\
-			fifo[inpt].x = x + (dx), fifo[inpt].y = y + (dy); \
-			inpt = (inpt + 1) & FLOODFILL_FIFO_MASK; \
-		} \
-		else if (pos[off] != 255) \
-		{ \
-			fdc = pos[off];	\
-		} \
-	}
 
 static int upload_width, upload_height;
 static qboolean uploaded_paletted;
@@ -422,7 +397,7 @@ R_ImageList_f(void)
 
 	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
 	{
-		char *in_use = "";
+		const char *in_use = "", *scrap = "";
 
 		if (image->texnum <= 0)
 		{
@@ -433,6 +408,11 @@ R_ImageList_f(void)
 		{
 			in_use = "*";
 			used++;
+		}
+
+		if (image->scrap)
+		{
+			scrap = "scrap";
 		}
 
 		texels += image->upload_width * image->upload_height;
@@ -456,10 +436,10 @@ R_ImageList_f(void)
 				break;
 		}
 
-		Com_Printf(" %3i %3i %s: %s (%dx%d) %s\n",
+		Com_Printf(" %3i %3i %s: %s (%dx%d) %s %s\n",
 				image->upload_width, image->upload_height,
 				palstrings[image->paletted], image->name,
-				image->width, image->height, in_use);
+				image->width, image->height, in_use, scrap);
 	}
 
 	Com_Printf("Total texel count (not counting mipmaps): %i\n",
@@ -467,70 +447,6 @@ R_ImageList_f(void)
 	freeup = R_ImageHasFreeSpace();
 	Com_Printf("Used %d of %d / %d images%s.\n",
 		used, image_max, MAX_TEXTURES, freeup ? ", has free space" : "");
-}
-
-/*
- * Fill background pixels so mipmapping doesn't have haloes
- */
-static void
-R_FloodFillSkin(byte *skin, int skinwidth, int skinheight)
-{
-	byte fillcolor = *skin; /* assume this is the pixel to fill */
-	floodfill_t fifo[FLOODFILL_FIFO_SIZE];
-	int inpt = 0, outpt = 0;
-	int filledcolor = 0;
-	int i;
-
-	// NOTE: there was a if (filledcolor == -1) which didn't make sense b/c filledcolor used to be initialized to -1
-	/* attempt to find opaque black */
-	for (i = 0; i < 256; ++i)
-	{
-		if (LittleLong(d_8to24table[i]) == (255 << 0)) /* alpha 1.0 */
-		{
-			filledcolor = i;
-			break;
-		}
-	}
-
-	/* can't fill to filled color or to transparent color (used as visited marker) */
-	if ((fillcolor == filledcolor) || (fillcolor == 255))
-	{
-		return;
-	}
-
-	fifo[inpt].x = 0, fifo[inpt].y = 0;
-	inpt = (inpt + 1) & FLOODFILL_FIFO_MASK;
-
-	while (outpt != inpt)
-	{
-		int x = fifo[outpt].x, y = fifo[outpt].y;
-		int fdc = filledcolor;
-		byte *pos = &skin[x + skinwidth * y];
-
-		outpt = (outpt + 1) & FLOODFILL_FIFO_MASK;
-
-		if (x > 0)
-		{
-			FLOODFILL_STEP(-1, -1, 0);
-		}
-
-		if (x < skinwidth - 1)
-		{
-			FLOODFILL_STEP(1, 1, 0);
-		}
-
-		if (y > 0)
-		{
-			FLOODFILL_STEP(-skinwidth, 0, -1);
-		}
-
-		if (y < skinheight - 1)
-		{
-			FLOODFILL_STEP(skinwidth, 0, 1);
-		}
-
-		skin[x + skinwidth * y] = fdc;
-	}
 }
 
 /*
@@ -880,15 +796,12 @@ R_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 	return res;
 }
 
-
 /*
  * Returns has_alpha
  */
 qboolean
 R_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
 {
-	int s = width * height;
-
 	if (gl_config.palettedtexture && is_sky)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT,
@@ -902,54 +815,16 @@ R_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
 	}
 	else
 	{
-		unsigned *trans = malloc(s * sizeof(unsigned));
+		unsigned *trans = NULL;
+		qboolean ret;
 
-		YQ2_COM_CHECK_OOM(trans, "malloc()",
-			s * sizeof(unsigned))
+		trans = R_Convert8to32(data, width, height, d_8to24table);
 		if (!trans)
 		{
-			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
 			return false;
 		}
 
-		for (int i = 0; i < s; i++)
-		{
-			int p = data[i];
-			trans[i] = d_8to24table[p];
-
-			/* transparent, so scan around for
-			   another color to avoid alpha fringes */
-			if (p == 255)
-			{
-				if ((i > width) && (data[i - width] != 255))
-				{
-					p = data[i - width];
-				}
-				else if ((i < s - width) && (data[i + width] != 255))
-				{
-					p = data[i + width];
-				}
-				else if ((i > 0) && (data[i - 1] != 255))
-				{
-					p = data[i - 1];
-				}
-				else if ((i < s - 1) && (data[i + 1] != 255))
-				{
-					p = data[i + 1];
-				}
-				else
-				{
-					p = 0;
-				}
-
-				/* copy rgb components */
-				((byte *)&trans[i])[0] = ((byte *)&d_8to24table[p])[0];
-				((byte *)&trans[i])[1] = ((byte *)&d_8to24table[p])[1];
-				((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
-			}
-		}
-
-		qboolean ret = R_Upload32(trans, width, height, mipmap);
+		ret = R_Upload32(trans, width, height, mipmap);
 		free(trans);
 		return ret;
 	}
@@ -1027,7 +902,7 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 
 	if ((type == it_skin) && (bits == 8))
 	{
-		R_FloodFillSkin(pic, width, height);
+		R_FloodFillSkin(pic, width, height, d_8to24table);
 	}
 
 	/* Normalize crosshair images to white so that color tinting via
@@ -1064,42 +939,41 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	}
 
 	/* load little pics into the scrap */
-	if (!nolerp && (image->type == it_pic) && (bits == 8) &&
-		(image->width < 64) && (image->height < 64))
+	if (!nolerp && (image->type == it_pic) && (width < 128) && (height < 128))
 	{
 		int x, y;
-		int i, k;
-		int texnum;
+		int texnum = -1;
 
-		texnum = Scrap_AllocBlock(image->width, image->height, &x, &y);
+		if (bits == 32)
+		{
+			texnum = Scrap_AllocBlock(width, height, &x, &y, (unsigned*)pic);
+		}
+		else
+		{
+			unsigned *trans;
+
+			trans = R_Convert8to32(pic, width, height, d_8to24table);
+			if (trans)
+			{
+				texnum = Scrap_AllocBlock(width, height, &x, &y, trans);
+				free(trans);
+			}
+		}
 
 		if (texnum == -1)
 		{
 			goto nonscrap;
 		}
 
-		scrap_dirty = true;
-
-		/* copy the texels into the scrap block */
-		k = 0;
-
-		for (i = 0; i < image->height; i++)
-		{
-			int j;
-
-			for (j = 0; j < image->width; j++, k++)
-			{
-				scrap_texels[texnum][(y + i) * SCRAP_WIDTH + x + j] = pic[k];
-			}
-		}
-
 		image->texnum = TEXNUM_SCRAPS + texnum;
 		image->scrap = true;
 		image->has_alpha = true;
 		image->sl = (float)x / SCRAP_WIDTH;
-		image->sh = (float)(x + image->width) / SCRAP_WIDTH;
+		image->sh = (float)(x + width) / SCRAP_WIDTH;
 		image->tl = (float)y / SCRAP_HEIGHT;
-		image->th = (float)(y + image->height) / SCRAP_HEIGHT;
+		image->th = (float)(y + height) / SCRAP_HEIGHT;
+		image->upload_width = width;
+		image->upload_height = height;
 	}
 	else
 	{
@@ -1152,21 +1026,6 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		image->upload_height = upload_height;
 		image->paletted = uploaded_paletted;
 
-		if (realwidth && realheight)
-		{
-			if ((realwidth <= image->width) && (realheight <= image->height))
-			{
-				image->width = realwidth;
-				image->height = realheight;
-			}
-			else
-			{
-				Com_DPrintf(
-						"Warning, image '%s' has hi-res replacement smaller than the original! (%d x %d) < (%d x %d)\n",
-						name, image->width, image->height, realwidth, realheight);
-			}
-		}
-
 		image->sl = 0;
 		image->sh = 1;
 		image->tl = 0;
@@ -1176,6 +1035,21 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 		{
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
+	}
+
+	if (realwidth && realheight)
+	{
+		if ((realwidth <= image->width) && (realheight <= image->height))
+		{
+			image->width = realwidth;
+			image->height = realheight;
+		}
+		else
+		{
+			Com_DPrintf(
+					"Warning, image '%s' has hi-res replacement smaller than the original! (%d x %d) < (%d x %d)\n",
+					name, image->width, image->height, realwidth, realheight);
 		}
 	}
 

@@ -407,6 +407,8 @@ extern struct image_s *GetTexImage(const char *name, findimage_t find_image);
 extern struct image_s *R_FindPic(const char *name, findimage_t find_image);
 extern struct image_s *R_LoadConsoleChars(findimage_t find_image);
 extern unsigned R_NextUTF8Code(const char **curr);
+extern void R_FloodFillSkin(byte *skin, int skinwidth, int skinheight, const unsigned *table_8to24);
+unsigned *R_Convert8to32(const byte *data, int width, int height, const unsigned *table_8to24);
 extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
 	imagetype_t type, loadimage_t load_image);
 extern void Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes,
@@ -482,8 +484,10 @@ extern void R_ClipSkyPolygon(int nump, vec3_t vecs, int stage,
 extern void R_AddSkySurface(msurface_t *fa,
 	float skymins[2][6], float skymaxs[2][6], vec3_t r_origin);
 extern void R_ClearSkyBox(float skymins[2][6], float skymaxs[2][6]);
+extern float R_GetNearValue(void);
+extern float R_GetFarValue(const model_t *r_worldmodel);
 extern void R_MakeSkyVec(float s, float t, int axis, mvtx_t* vert,
-	qboolean farsee, float sky_min, float sky_max);
+	const model_t *r_worldmodel, float sky_min, float sky_max);
 extern void R_FlowingScroll(const refdef_t *r_newrefdef, int flags,
 	float *sscroll, float *tscroll);
 

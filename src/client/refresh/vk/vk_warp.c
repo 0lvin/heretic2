@@ -128,10 +128,14 @@ EmitWaterPolys(const msurface_t *fa, image_t *texture, const float *modelMatrix,
 			descriptorSets, 1, &uboOffset);
 	}
 
+	int total_indices = 0;
 	for (bp = fa->polys; bp; bp = bp->next)
+	{
 		total_verts += bp->numverts;
+		total_indices += (bp->numverts - 2) * 3;
+	}
 
-	if (Mesh_VertsRealloc(total_verts))
+	if (Mesh_IndexesRealloc(total_indices))
 	{
 		Com_Error(ERR_FATAL, "%s: can't allocate memory", __func__);
 		return;
@@ -185,10 +189,7 @@ R_DrawSkyBox(void)
 	VkBuffer *buffer;
 	VkBuffer vbo;
 	VkDeviceSize vboOffset;
-	qboolean farsee;
 	unsigned i;
-
-	farsee = (r_farsee->value == 0);
 
 	if (skyrotate)
 	{   /* check for no sky at all */
@@ -217,8 +218,8 @@ R_DrawSkyBox(void)
 	uboData = QVk_GetUniformBuffer(sizeof(model), &uboOffset, &uboDescriptorSet);
 	memcpy(uboData, model, sizeof(model));
 
-	Mesh_VertsRealloc(6);
-	R_GenFanIndexes(vertIdxData, 0, 4);
+	Mesh_IndexesRealloc(6);
+	R_GenFanIndexes(vertIdxData, 0, 2);
 	buffer = UpdateIndexBuffer(vertIdxData, 6 * sizeof(uint16_t), &dstOffset);
 	gamma = 2.1F - vid_gamma->value;
 
@@ -262,13 +263,13 @@ R_DrawSkyBox(void)
 		const unsigned face = visibleFaces[i];
 
 		R_MakeSkyVec(skymins[0][face], skymins[1][face], face,
-				&skyVerts[0], farsee, sky_min, sky_max);
+				&skyVerts[0], r_worldmodel, sky_min, sky_max);
 		R_MakeSkyVec(skymins[0][face], skymaxs[1][face], face,
-				&skyVerts[1], farsee, sky_min, sky_max);
+				&skyVerts[1], r_worldmodel, sky_min, sky_max);
 		R_MakeSkyVec(skymaxs[0][face], skymaxs[1][face], face,
-				&skyVerts[2], farsee, sky_min, sky_max);
+				&skyVerts[2], r_worldmodel, sky_min, sky_max);
 		R_MakeSkyVec(skymaxs[0][face], skymins[1][face], face,
-				&skyVerts[3], farsee, sky_min, sky_max);
+				&skyVerts[3], r_worldmodel, sky_min, sky_max);
 	}
 
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);

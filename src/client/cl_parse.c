@@ -266,6 +266,43 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		}
 	}
 
+	/* Validate message end error in receive models indexes */
+	if (bits & U_MODEL)
+	{
+		if (to->modelindex < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end, bad modelindex",
+				__func__);
+		}
+	}
+
+	if (bits & U_MODEL2)
+	{
+		if (to->modelindex2 < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end, bad modelindex2",
+				__func__);
+		}
+	}
+
+	if (bits & U_MODEL3)
+	{
+		if (to->modelindex3 < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end, bad modelindex3",
+				__func__);
+		}
+	}
+
+	if (bits & U_MODEL4)
+	{
+		if (to->modelindex4 < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end, bad modelindex4",
+				__func__);
+		}
+	}
+
 	if (bits & U_FRAME8)
 	{
 		to->frame = MSG_ReadByte(&net_message);
@@ -406,6 +443,39 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	if (bits & U_SOLID)
 	{
 		to->solid = MSG_ReadShort(&net_message);
+	}
+
+	/* Revalidate model indexes limits */
+	if (bits & U_MODEL)
+	{
+		if (to->modelindex >= MAX_MODELS)
+		{
+			Com_Error(ERR_DROP, "%s: bad modelindex %d", __func__, to->modelindex);
+		}
+	}
+
+	if ((bits & U_MODEL2) && !(to->renderfx & RF_FLARE))
+	{
+		if (to->modelindex2 >= MAX_MODELS)
+		{
+			Com_Error(ERR_DROP, "%s: bad modelindex2 %d", __func__, to->modelindex2);
+		}
+	}
+
+	if ((bits & U_MODEL3) && !(to->renderfx & RF_FLARE))
+	{
+		if (to->modelindex3 >= MAX_MODELS)
+		{
+			Com_Error(ERR_DROP, "%s: bad modelindex3 %d", __func__, to->modelindex3);
+		}
+	}
+
+	if (bits & U_MODEL4)
+	{
+		if (to->modelindex4 >= MAX_MODELS)
+		{
+			Com_Error(ERR_DROP, "%s: bad modelindex4 %d", __func__, to->modelindex4);
+		}
 	}
 }
 
@@ -787,6 +857,10 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 		else
 		{
 			state->gunindex = MSG_ReadShort(&net_message);
+			if (state->gunindex < 0 || state->gunindex >= MAX_MODELS)
+			{
+				Com_Error(ERR_DROP, "%s: bad gunindex %d", __func__, state->gunindex);
+			}
 		}
 	}
 
@@ -890,6 +964,11 @@ CL_FireEntityEvents(const frame_t *frame)
 		if (s1->effects & EF_TELEPORTER)
 		{
 			CL_TeleporterParticles(s1);
+		}
+
+		if (s1->rr_effects & EF_TELEPORTER2)
+		{
+			CL_TeleporterParticles2(s1);
 		}
 	}
 }

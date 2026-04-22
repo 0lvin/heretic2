@@ -3391,6 +3391,9 @@ SP_func_clock(edict_t *self)
 
 /* ================================================================================= */
 
+#define SPAWNFLAG_TELEPORTER_NO_SOUND 1
+#define SPAWNFLAG_TELEPORTER_NO_TELEPORT_EFFECT 2
+
 typedef struct DebrisSound
 {
 	char	*Name;
@@ -3961,7 +3964,6 @@ void SP_misc_teleporter (edict_t *ent)
 		if (!(ent->spawnflags & 1))
 			effect->PersistantCFX = gi.CreatePersistantEffect(effect, FX_TELEPORT_PAD, CEF_BROADCAST, real_origin, "");
 	}
-
 }
 
 /*
@@ -3975,7 +3977,8 @@ SP_misc_teleporter_dest(edict_t *ent)
 	trace_t		tr;
 	vec3_t		endpos;
 
-	if (!ent)
+	/* Paril-KEX N64 doesn't display these */
+	if (!ent || level.is_n64)
 	{
 		return;
 	}
@@ -5166,8 +5169,8 @@ SP_misc_flare(edict_t* ent)
 	VectorSet(ent->mins, -32, -32, -32);
 	VectorSet(ent->maxs, 32, 32, 32);
 
-	ent->s.modelindex2 = st.fade_start_dist;
-	ent->s.modelindex3 = st.fade_end_dist;
+	ent->s.modelindex2 = Q_max(st.fade_start_dist, 0);
+	ent->s.modelindex3 = Q_max(st.fade_end_dist, 0);
 	ent->s.skinnum = st.rgba;
 	if (!ent->s.skinnum)
 	{
@@ -5190,20 +5193,130 @@ misc_hologram_think(edict_t *ent)
 	ent->rrs.alpha = 0.2f + 0.4f * random(); /* 0.2..0.6 */
 }
 
+void misc_hologram_infinity_think(edict_t *self);
+
+void
+misc_hologram_infinity_destroy(edict_t *self)
+{
+	self->s.modelindex = 0;
+	self->spawnflags |= 1;
+	self->think = misc_hologram_infinity_think;
+}
+
+void
+misc_hologram_infinity_gib(edict_t *self)
+{
+	int i;
+
+	/* Gib explosion, throw 8 hologram gibs */
+	for (i = 0; i < 8; i++)
+	{
+		char *model;
+		float rnd;
+
+		rnd = frandk();
+
+		if (rnd < 0.25f)
+		{
+			model = "models/objects/gibs/blood/tris.md2";
+		}
+		else if (rnd < 0.5f)
+		{
+			model = "models/objects/gibs/meat1/tris.md2";
+		}
+		else if (rnd < 0.75f)
+		{
+			model = "models/objects/gibs/meat2/tris.md2";
+		}
+		else
+		{
+			model = "models/objects/gibs/meat3/tris.md2";
+		}
+
+		ThrowGib(self, model, 8, GIB_ORGANIC);
+	}
+
+	M_SetAnimGroupFrame(self, "headless", false);
+	self->think = misc_hologram_infinity_destroy;
+	self->nextthink = level.time + 2.0f;
+}
+
+void
+misc_hologram_infinity_think(edict_t *self)
+{
+	/* Animate flicker */
+	if (self->s.modelindex != 0)
+	{
+		int ofs_frames = 0, num_frames = 1;
+
+		M_SetAnimGroupFrameValues(self, "headless", &ofs_frames, &num_frames, 0);
+
+		self->s.frame++;
+		if (self->s.frame >= ofs_frames)
+		{
+			self->s.frame = 0;
+		}
+	}
+
+	/* hologram flicker */
+	self->rrs.alpha = 0.2f + 0.4f * random(); /* 0.2..0.6 */
+	self->nextthink = level.time + FRAMETIME;
+}
+
+/*
+ * Player interaction with hologram.
+ */
+void
+misc_hologram_infinity_use(edict_t *self, edict_t *other /* unused */,
+		edict_t *activator /* unused */)
+{
+	self->s.modelindex = gi.modelindex("models/objects/holo/tris.md2");
+
+	if (self->spawnflags & 1)
+	{
+		self->spawnflags &= ~1;
+		self->think = misc_hologram_infinity_think;
+	}
+	else
+	{
+		/* trigger gib explosion next think */
+		self->think = misc_hologram_infinity_gib;
+	}
+}
+
 /*
  * QUAKED misc_hologram (1.0 1.0 0.0) (-16 -16 0) (16 16 32)
  *
- * Ship hologram seen in the N64 version.
+ * Ship hologram seen in the N64 version or infinity hologram.
  */
 void
 SP_misc_hologram(edict_t *ent)
 {
+	const dmdxframegroup_t * frames;
+	int num, modelindex;
+
 	ent->solid = SOLID_NOT;
 	ent->rrs.effects = EF_HOLOGRAM;
-	ent->think = misc_hologram_think;
+
+	/* Check infinity hologram model */
+	modelindex = gi.modelindex("models/objects/holo/tris.md2");
+	frames = gi.GetModelInfo(modelindex, &num, NULL, NULL);
+
+	if (frames && (num > 0))
+	{
+		ent->s.modelindex = 0;
+		ent->use = misc_hologram_infinity_use;
+		ent->think = misc_hologram_infinity_think;
+	}
+	else
+	{
+		ent->think = misc_hologram_think;
+		VectorSet(ent->rrs.scale, 0.75f, 0.75f, 0.75f);
+	}
+
 	ent->nextthink = level.time + FRAMETIME;
 	ent->rrs.alpha = 0.2f + 0.4f * random(); /* 0.2..0.6 */
-	VectorSet(ent->rrs.scale, 0.75f, 0.75f, 0.75f);
+
 	gi.linkentity(ent);
 }
 
@@ -5364,12 +5477,12 @@ ThrowRainDropGib(edict_t *self)
 	VectorCopy(self->s.origin, ent->s.origin);
 
 	/* Randomize X/Y slightly */
-	ent->s.origin[0] -= rand() % 256 - 128;
-	ent->s.origin[1] -= rand() % 256 - 128;
+	ent->s.origin[0] -= frandk() * 256 - 128;
+	ent->s.origin[1] -= frandk() * 256 - 128;
 	ent->s.origin[2] -= 2.0f;
 
 	/* Give downward velocity */
-	ent->velocity[2] -= (168 - (rand() % 64));
+	ent->velocity[2] -= frandk() * 64 + 128;
 
 	ent->s.modelindex = gi.modelindex("models/objects/rain/tris.md2");
 
@@ -5403,7 +5516,7 @@ misc_rain_think(edict_t *self)
 	ThrowRainDropGib(self);
 
 	self->think = misc_rain_think;
-	self->nextthink = level.time + 0.1f;
+	self->nextthink = level.time + FRAMETIME;
 }
 
 /*
@@ -5435,7 +5548,7 @@ SP_misc_rain(edict_t *self)
 	self->s.modelindex = 0;
 
 	self->think = misc_rain_think;
-	self->nextthink = level.time + 0.1f;
+	self->nextthink = level.time + FRAMETIME;
 
 	gi.linkentity(self);
 }
@@ -5485,8 +5598,8 @@ misc_drip_effect(edict_t *self)
 	VectorCopy(self->s.origin, ent->s.origin);
 
 	/* Randomize position slightly */
-	ent->s.origin[0] -= rand() % 16 - 8;
-	ent->s.origin[1] -= rand() % 16 - 8;
+	ent->s.origin[0] -= frandk() * 16 - 8;
+	ent->s.origin[1] -= frandk() * 16 - 8;
 
 	ent->s.modelindex = gi.modelindex("models/objects/drip/tris.md2");
 

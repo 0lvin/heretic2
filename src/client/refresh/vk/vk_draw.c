@@ -22,6 +22,7 @@
 
 #include "header/local.h"
 #include "../files/stb_truetype.h"
+#include <limits.h>
 
 static int vk_rawTexture_height = 0;
 static int vk_rawTexture_width = 0;
@@ -29,20 +30,19 @@ static float vk_font_size = 8.0;
 static int vk_font_height = 128;
 static image_t *draw_chars = NULL;
 static image_t *draw_font = NULL;
-static image_t *draw_font_alt = NULL;
 static stbtt_bakedchar *draw_fontcodes = NULL;
 static qboolean draw_chars_has_alt;
 
 void R_LoadTTFFont(const char *ttffont, int vid_height, float *r_font_size,
 	int *r_font_height, stbtt_bakedchar **draw_fontcodes,
-	struct image_s **draw_font, struct image_s **draw_font_alt,
+	struct image_s **draw_font,
 	loadimage_t R_LoadPic);
 
 void
 Draw_InitLocal(void)
 {
 	R_LoadTTFFont(r_ttffont->string, vid.height, &vk_font_size, &vk_font_height,
-		&draw_fontcodes, &draw_font, &draw_font_alt, Vk_LoadPic);
+		&draw_fontcodes, &draw_font, Vk_LoadPic);
 
 	draw_chars = R_LoadConsoleChars((findimage_t)Vk_FindImage);
 	/* Heretic 2 uses more than 128 symbols in image */
@@ -104,7 +104,7 @@ RE_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messag
 	{
 		unsigned value = R_NextUTF8Code(&message);
 
-		if (draw_fontcodes && draw_font && draw_font_alt)
+		if (draw_fontcodes && draw_font)
 		{
 			float font_scale;
 
@@ -118,6 +118,12 @@ RE_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messag
 				stbtt_GetBakedQuad(draw_fontcodes, vk_font_height, vk_font_height,
 					value - 32, &xf, &yf, &q, 1);
 
+				if (alt)
+				{
+					q.t0 += 0.5;
+					q.t1 += 0.5;
+				}
+
 				xdiff = (8 - xf / font_scale) / 2;
 				if (xdiff < 0)
 				{
@@ -129,7 +135,7 @@ RE_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messag
 								(q.x1 - q.x0) * scale / font_scale / vid.width,
 								(q.y1 - q.y0) * scale / font_scale / vid.height,
 								q.s0, q.t0, q.s1 - q.s0, q.t1 - q.t0,
-								alt ? &draw_font_alt->vk_texture : &draw_font->vk_texture);
+								&draw_font->vk_texture);
 				x += Q_max(8, xf / font_scale) * scale;
 			}
 			else
@@ -153,22 +159,12 @@ RE_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messag
 	}
 }
 
-/*
-=============
-RE_Draw_FindPic
-=============
-*/
 image_t *
 RE_Draw_FindPic(const char *name)
 {
 	return R_FindPic(name, (findimage_t)Vk_FindImage);
 }
 
-/*
-=============
-RE_Draw_GetPicSize
-=============
-*/
 void
 RE_Draw_GetPicSize(int *w, int *h, const char *name)
 {
@@ -185,11 +181,6 @@ RE_Draw_GetPicSize(int *w, int *h, const char *name)
 	*h = image->height;
 }
 
-/*
-=============
-RE_Draw_StretchPic
-=============
-*/
 void
 RE_Draw_StretchPic(int x, int y, int w, int h, const char *name)
 {
@@ -212,12 +203,6 @@ RE_Draw_StretchPic(int x, int y, int w, int h, const char *name)
 					0, 0, 1, 1, &vk->vk_texture);
 }
 
-
-/*
-=============
-RE_Draw_PicScaled
-=============
-*/
 void
 RE_Draw_PicScaled(int x, int y, const char *name, float scale, const char *alttext)
 {
@@ -330,14 +315,6 @@ RE_Draw_Fill(int x, int y, int w, int h, int c)
 		RP_UI);
 }
 
-//=============================================================================
-
-/*
-================
-RE_Draw_FadeScreen
-
-================
-*/
 void
 RE_Draw_FadeScreen(void)
 {
@@ -352,15 +329,6 @@ RE_Draw_FadeScreen(void)
 		RP_UI);
 }
 
-
-//====================================================================
-
-
-/*
-=============
-RE_Draw_StretchRaw
-=============
-*/
 void
 RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
 {
@@ -375,6 +343,11 @@ RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *d
 
 	if (bits == 32)
 	{
+		if (rows == 0 || cols > INT_MAX / rows / sizeof(unsigned))
+		{
+			return;
+		}
+
 		raw_image32 = malloc(cols * rows * sizeof(unsigned));
 		if (!raw_image32)
 		{
@@ -393,7 +366,16 @@ RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *d
 			// triple scaling
 			if (cols < (vid.width / 3) || rows < (vid.height / 3))
 			{
+				if (rows == 0 || cols > INT_MAX / rows / 9)
+				{
+					return;
+				}
+
 				image_scaled = malloc(cols * rows * 9);
+				if (!image_scaled)
+				{
+					return;
+				}
 
 				scale3x(data, image_scaled, cols, rows);
 
@@ -403,7 +385,16 @@ RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *d
 			else
 			// double scaling
 			{
+				if (rows == 0 || cols > INT_MAX / rows / 4)
+				{
+					return;
+				}
+
 				image_scaled = malloc(cols * rows * 4);
+				if (!image_scaled)
+				{
+					return;
+				}
 
 				scale2x(data, image_scaled, cols, rows);
 
