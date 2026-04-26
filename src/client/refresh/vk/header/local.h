@@ -48,6 +48,7 @@
 #include "../../ref_shared.h"
 #include "../volk/volk.h"
 #include "qvk.h"
+#include "../../files/lightmap.h"
 
 #if defined(__APPLE__)
 #include <MoltenVK/vk_mvk_moltenvk.h>
@@ -72,6 +73,8 @@ typedef struct image_s
 	int registration_sequence;          /* 0 = free */
 	struct msurface_s *texturechain;    /* for sort-by-texture world drawing */
 	qvktexture_t vk_texture;            /* Vulkan texture handle */
+	float sl, tl, sh, th;               /* 0,0 - 1,1 unless part of the scrap */
+	qboolean	scrap;
 } image_t;
 
 //====================================================
@@ -165,6 +168,7 @@ struct image_s	*RE_Draw_FindPic (const char *name);
 
 void	RE_Draw_GetPicSize (int *w, int *h, const char *name);
 void	RE_Draw_PicScaled (int x, int y, const char *name, float scale, const char *alttext);
+void	RE_Draw_PicScaledCol(int x, int y, const char *name, float factor, const vec3_t color, const char *alttext);
 void	RE_Draw_StretchPic (int x, int y, int w, int h, const char *name);
 void	RE_Draw_CharScaled (int x, int y, int num, float scale);
 void	RE_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *message);
@@ -193,9 +197,6 @@ void	Vk_InitImages (void);
 void	Vk_ShutdownImages (void);
 void	Vk_FreeUnusedImages (void);
 qboolean Vk_ImageHasFreeSpace(void);
-
-void LM_InitBlock(void);
-qboolean LM_AllocBlock(int w, int h, int *x, int *y);
 
 void	RE_BeginRegistration (const char *model);
 struct model_s	*RE_RegisterModel (const char *name);
@@ -231,26 +232,7 @@ typedef struct
 	uint32_t    uniform_buffer_size;
 } vkconfig_t;
 
-#define MAX_LIGHTMAPS 256
 #define DYNLIGHTMAP_OFFSET MAX_LIGHTMAPS
-
-#define BLOCK_WIDTH 1024
-#define BLOCK_HEIGHT 1024
-
-typedef struct
-{
-	int	current_lightmap_texture;
-
-	msurface_t	*lightmap_surfaces[MAX_LIGHTMAPS];
-
-	int			allocated[BLOCK_WIDTH];
-
-	// the lightmap texture data needs to be kept in
-	// main memory so texsubimage can update properly
-	byte		lightmap_buffer[4*BLOCK_WIDTH*BLOCK_HEIGHT];
-} vklightmapstate_t;
-
-extern vklightmapstate_t vk_lms;
 
 typedef struct
 {

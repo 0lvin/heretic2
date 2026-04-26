@@ -601,7 +601,7 @@ infantry_fire_prep(edict_t *self)
 		return;
 	}
 
-	n = (rand() & 15) + 3 + 1;
+	n = (randk() & 15) + 3 + 1;
 	self->monsterinfo.pausetime = level.time + n * FRAMETIME;
 }
 
@@ -938,7 +938,7 @@ infantry_smack(edict_t *self)
 
 	VectorSet(aim, MELEE_DISTANCE, 0, 0);
 
-	if (fire_hit(self, aim, (5 + (rand() % 5)), 50))
+	if (fire_hit(self, aim, (5 + (randk() % 5)), 50))
 	{
 		gi.sound(self, CHAN_WEAPON, sound_punch_hit, 1, ATTN_NORM, 0);
 	}

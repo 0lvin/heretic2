@@ -1174,7 +1174,8 @@ R_SetMode(void)
 RE_Init
 ===============
 */
-static qboolean RE_Init( void )
+static qboolean 
+RE_Init(void)
 {
 	Com_Printf("Refresh: " REF_VERSION "\n");
 	Com_Printf("Platform: " YQ2OSTYPE "\n");
@@ -1227,6 +1228,7 @@ RE_Shutdown(void)
 
 	QVk_WaitAndShutdownAll();
 
+	LM_FreeLightmapBuffers();
 	R_FreeTemporaryLMBuffer();
 }
 
@@ -1621,8 +1623,7 @@ GetRefAPI(refimport_t imp)
 
 	refexport.DrawStretchRaw = RE_Draw_StretchRaw;
 
-	/* TODO: not implemented yet */
-	refexport.DrawPicScaledCol = NULL;
+	refexport.DrawPicScaledCol = RE_Draw_PicScaledCol;
 
 	refexport.Init = RE_Init;
 	refexport.IsVSyncActive = RE_IsVsyncActive;

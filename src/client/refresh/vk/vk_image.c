@@ -18,25 +18,30 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
  * 02111-1307, USA.
  *
+ * =======================================================================
+ *
+ * Texture handling
+ *
+ * =======================================================================
  */
 
 #include "header/local.h"
 #include <limits.h>
 
-image_t		vktextures[MAX_TEXTURES];
-int		numvktextures = 0;
-static int		img_loaded = 0;
-static int		image_max = 0;
+image_t vktextures[MAX_TEXTURES];
+int numvktextures = 0;
+static int img_loaded = 0;
+static int image_max = 0;
 
 // texture for storing raw image data (cinematics, endscreens, etc.)
 qvktexture_t vk_rawTexture = QVVKTEXTURE_INIT;
 
-static byte			 intensitytable[256];
+static byte intensitytable[256];
 static unsigned char overbrightable[256];
 
-static cvar_t	*intensity;
+static cvar_t *intensity;
 
-unsigned	d_8to24table[256];
+unsigned d_8to24table[256];
 
 // default global texture and lightmap samplers
 qvksampler_t vk_current_sampler = S_MIPMAP_LINEAR;
@@ -459,7 +464,8 @@ QVk_CreateTexture(qvktexture_t *texture, const unsigned char *data, uint32_t wid
 	QVk_UpdateTextureSampler(texture, samplerType, clampToEdge);
 }
 
-void QVk_UpdateTextureData(qvktexture_t *texture, const unsigned char *data, uint32_t offset_x, uint32_t offset_y, uint32_t width, uint32_t height)
+void
+QVk_UpdateTextureData(qvktexture_t *texture, const unsigned char *data, uint32_t offset_x, uint32_t offset_y, uint32_t width, uint32_t height)
 {
 	int unifiedTransferAndGfx = vk_device.transferQueue == vk_device.gfxQueue ? 1 : 0;
 	// assuming 32bit images
@@ -571,7 +577,7 @@ QVk_ReadPixels(uint8_t *dstBuffer, const VkOffset2D *offset, const VkExtent2D *e
 		.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 		.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 		.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-		.image = vk_swapchain.images[vk_activeBufferIdx],
+		.image = vk_swapchain.images[vk_imageIndex],
 		.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
 		.subresourceRange.baseMipLevel = 0,
 		.subresourceRange.baseArrayLayer = 0,
@@ -594,8 +600,7 @@ QVk_ReadPixels(uint8_t *dstBuffer, const VkOffset2D *offset, const VkExtent2D *e
 	};
 
 	// copy the swapchain image
-	vkCmdCopyImageToBuffer(cmdBuffer, vk_swapchain.images[vk_activeBufferIdx], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, buff.buffer, 1, &region);
-	VK_VERIFY(vkDeviceWaitIdle(vk_device.logical));
+	vkCmdCopyImageToBuffer(cmdBuffer, vk_swapchain.images[vk_imageIndex], VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, buff.buffer, 1, &region);
 	QVk_SubmitCommand(&cmdBuffer, &vk_device.gfxQueue);
 
 	// store image in destination buffer
@@ -606,16 +611,11 @@ QVk_ReadPixels(uint8_t *dstBuffer, const VkOffset2D *offset, const VkExtent2D *e
 	buffer_destroy(&buff);
 }
 
-/*
-===============
-Vk_ImageList_f
-===============
-*/
 void
 Vk_ImageList_f(void)
 {
-	int		i, used, texels;
-	image_t	*image;
+	int i, used, texels;
+	image_t *image;
 	qboolean	freeup;
 
 	Com_Printf("------------------\n");
@@ -624,10 +624,12 @@ Vk_ImageList_f(void)
 
 	for (i = 0, image = vktextures; i < numvktextures; i++, image++)
 	{
-		const char *in_use = "";
+		const char *in_use = "", *scrap = "";
 
 		if (image->vk_texture.resource.image == VK_NULL_HANDLE)
+		{
 			continue;
+		}
 
 		if (image->registration_sequence == registration_sequence)
 		{
@@ -635,35 +637,45 @@ Vk_ImageList_f(void)
 			used++;
 		}
 
-		texels += image->upload_width*image->upload_height;
-		switch (image->type)
+		if (image->scrap)
 		{
-		case it_skin:
-			Com_Printf("M");
-			break;
-		case it_sprite:
-			Com_Printf("S");
-			break;
-		case it_wall:
-			Com_Printf("W");
-			break;
-		case it_pic:
-			Com_Printf("P");
-			break;
-		default:
-			Com_Printf(" ");
-			break;
+			scrap = "scrap";
 		}
 
-		Com_Printf(" %4i %4i RGB: %s (%dx%d) %s\n",
+		texels += image->upload_width * image->upload_height;
+
+		switch (image->type)
+		{
+			case it_skin:
+				Com_Printf("M");
+				break;
+			case it_sprite:
+				Com_Printf("S");
+				break;
+			case it_wall:
+				Com_Printf("W");
+				break;
+			case it_pic:
+				Com_Printf("P");
+				break;
+			default:
+				Com_Printf(" ");
+				break;
+		}
+
+		Com_Printf(" %4i %4i RGB: %s (%dx%d) %s %s\n",
 			image->upload_width, image->upload_height, image->name,
-			image->width, image->height, in_use);
+			image->width, image->height, in_use, scrap);
 	}
+
 	Com_Printf("Total texel count (not counting mipmaps): %i in %d images\n", texels, img_loaded);
 	freeup = Vk_ImageHasFreeSpace();
 	Com_Printf("Used %d of %d / %d images%s.\n",
 		used, image_max, MAX_TEXTURES, freeup ? ", has free space" : "");
 }
+
+/* textures for storing scrap image data (tiny image atlas) */
+static qvktexture_t vk_scrapTextures[MAX_SCRAPS] = { QVVKTEXTURE_INIT };
 
 typedef struct
 {
@@ -678,13 +690,8 @@ static vkmode_t modes[] = {
 	{"VK_MIPMAP_LINEAR", S_MIPMAP_LINEAR }
 };
 
-#define NUM_VK_MODES (sizeof(modes) / sizeof (vkmode_t))
+#define NUM_VK_MODES ARRLEN(modes)
 
-/*
- ===============
- Vk_TextureMode
- ===============
- */
 void
 Vk_TextureMode(const char *string)
 {
@@ -737,11 +744,26 @@ Vk_TextureMode(const char *string)
 			nolerp = true;
 		}
 
-		if(!nolerp)
+		if (!nolerp)
 		{
 			QVk_UpdateTextureSampler(&image->vk_texture, i, image->vk_texture.clampToEdge);
 		}
 	}
+
+	/* use S_NEAREST for scrap 0 (nolerp images) */
+	if (vk_scrapTextures[0].resource.image != VK_NULL_HANDLE)
+	{
+		QVk_UpdateTextureSampler(&vk_scrapTextures[0], S_NEAREST, false);
+	}
+
+	for (j = 1; j < MAX_SCRAPS; j++)
+	{
+		if (vk_scrapTextures[j].resource.image != VK_NULL_HANDLE)
+		{
+			QVk_UpdateTextureSampler(&vk_scrapTextures[j], i, false);
+		}
+	}
+
 
 	if (vk_rawTexture.resource.image != VK_NULL_HANDLE)
 	{
@@ -749,11 +771,6 @@ Vk_TextureMode(const char *string)
 	}
 }
 
-/*
- ===============
- Vk_LmapTextureMode
- ===============
- */
 void
 Vk_LmapTextureMode(const char *string)
 {
@@ -840,9 +857,14 @@ Vk_Upload32Native(byte *data, int width, int height, imagetype_t type,
 	}
 
 	if (scaled_width < 1)
+	{
 		scaled_width = 1;
+	}
+
 	if (scaled_height < 1)
+	{
 		scaled_height = 1;
+	}
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -931,28 +953,26 @@ Vk_Upload8(const byte *data, int width, int height, imagetype_t type,
 
 
 /*
-================
-Vk_LoadPic
-
-This is also used as an entry point for the generated r_notexture
-================
-*/
+ * This is also used as an entry point for the generated r_notexture
+ */
 image_t *
 Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	   int height, int realheight, size_t data_size, imagetype_t type,
 	   int bits)
 {
-	image_t		*image;
-	byte		*texBuffer = NULL;
-	int		upload_width, upload_height;
+	byte *texBuffer = NULL;
+	int upload_width, upload_height;
 	const char* nolerplist = r_nolerp_list->string;
 	const char* lerplist = r_lerp_list->string;
 	qboolean nolerp = false;
+	image_t *image;
 
 	if (r_2D_unfiltered->value && type == it_pic)
 	{
-		// if r_2D_unfiltered is true(ish), nolerp should usually be true,
-		// *unless* the texture is on the r_lerp_list
+		/*
+		 * if r_2D_unfiltered is true(ish), nolerp should usually be true,
+		 * *unless* the texture is on the r_lerp_list
+		 */
 		nolerp = (lerplist == NULL) || Utils_FilenameFiltered(name, lerplist, ' ');
 	}
 	else if (nolerplist != NULL)
@@ -961,11 +981,12 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	}
 
 	{
-		int		i;
-		// find a free image_t
-		for (i = 0, image = vktextures; i<numvktextures; i++, image++)
+		int i;
+
+		/* find a free image_t */
+		for (i = 0, image = vktextures; i < numvktextures; i++, image++)
 		{
-			if (image->vk_texture.resource.image == VK_NULL_HANDLE)
+			if (image->vk_texture.resource.image == VK_NULL_HANDLE && !image->scrap)
 			{
 				break;
 			}
@@ -999,6 +1020,7 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 
 	strcpy(image->name, name);
 	image->registration_sequence = registration_sequence;
+
 	// zero-clear Vulkan texture handle
 	QVVKTEXTURE_CLEAR(image->vk_texture);
 	image->type = type;
@@ -1028,85 +1050,165 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	upload_width = realwidth;
 	upload_height = realheight;
 
-	if (bits == 8)
+	/* load little pics into the scrap */
+	if ((image->type == it_pic) && (width < 128) && (height < 128))
 	{
-		// resize 8bit images only when we forced such logic
-		if (r_scale8bittextures->value)
+		unsigned *scrap_texels;
+		int texnum = -1;
+		int x, y;
+
+		if (bits == 32)
 		{
-			byte *image_converted;
-			int scale = 2;
-
-			// scale 3 times if lerp image
-			if (!nolerp && (vid.height >= 240 * 3))
-				scale = 3;
-
-			if (height == 0 || scale == 0 || width > INT_MAX / height / scale / scale)
-			{
-				Com_Error(ERR_DROP, "%s: invalid dimensions", __func__);
-				return NULL;
-			}
-
-			image_converted = malloc(width * height * scale * scale);
-			if (!image_converted)
-				return NULL;
-
-			if (scale == 3) {
-				scale3x(pic, image_converted, width, height);
-			} else {
-				scale2x(pic, image_converted, width, height);
-			}
-
-			image->vk_texture.mipLevels = Vk_Upload8(image_converted, width * scale, height * scale,
-						image->type, &texBuffer,
-						&upload_width, &upload_height);
-			free(image_converted);
+			texnum = Scrap_AllocBlock(width, height, &x, &y, (unsigned*)pic, nolerp ? 0 : 1);
 		}
 		else
 		{
-			image->vk_texture.mipLevels = Vk_Upload8(pic, width, height, image->type, &texBuffer, &upload_width, &upload_height);
+			unsigned *trans;
+
+			trans = R_Convert8to32(pic, width, height, d_8to24table);
+			if (trans)
+			{
+				texnum = Scrap_AllocBlock(width, height, &x, &y, trans, nolerp ? 0 : 1);
+				free(trans);
+			}
 		}
+
+		if (texnum == -1)
+		{
+			goto nonscrap;
+		}
+
+		scrap_texels = Scrap_Upload(texnum);
+		if (!scrap_texels)
+		{
+			/* Strange, must be changed */
+			goto nonscrap;
+		}
+
+		image->scrap = true;
+		image->sl = (x + 0.01) / (float)SCRAP_WIDTH;
+		image->sh = (x + width - 0.01) / (float)SCRAP_WIDTH;
+		image->tl = (y + 0.01) / (float)SCRAP_WIDTH;
+		image->th = (y + height - 0.01) / (float)SCRAP_WIDTH;
+
+		image->upload_width = width;
+		image->upload_height = height;
+
+		Vk_Upload32Native((byte *)scrap_texels, SCRAP_WIDTH, SCRAP_HEIGHT,
+			image->type, &texBuffer, &upload_width, &upload_height);
+
+		if (vk_scrapTextures[texnum].resource.image != VK_NULL_HANDLE)
+		{
+			QVk_UpdateTextureData(&vk_scrapTextures[texnum], (unsigned char*)texBuffer,
+				0, 0, upload_width, upload_height);
+		}
+		else
+		{
+			QVVKTEXTURE_CLEAR(vk_scrapTextures[texnum]);
+			// don't use linear filtering for scrap 0 - this fixes display issues for the dot crosshair and makes it look consistent across different values of hudscale cvar
+			QVk_CreateTexture(&vk_scrapTextures[texnum], (unsigned char*)texBuffer,
+				upload_width, upload_height,
+				nolerp ? S_NEAREST : vk_current_sampler, false);
+			QVk_DebugSetObjectName((uint64_t)vk_scrapTextures[texnum].resource.image, VK_OBJECT_TYPE_IMAGE, va("Image: %s", name));
+			QVk_DebugSetObjectName((uint64_t)vk_scrapTextures[texnum].imageView, VK_OBJECT_TYPE_IMAGE_VIEW, va("Image View: %s", name));
+			QVk_DebugSetObjectName((uint64_t)vk_scrapTextures[texnum].descriptorSet, VK_OBJECT_TYPE_DESCRIPTOR_SET, va("Descriptor Set: %s", name));
+			QVk_DebugSetObjectName((uint64_t)vk_scrapTextures[texnum].resource.memory, VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: scrap texture");
+		}
+
+		image->vk_texture = vk_scrapTextures[texnum];
 	}
 	else
-		image->vk_texture.mipLevels = Vk_Upload32Native(pic, width, height, image->type, &texBuffer, &upload_width, &upload_height);
-
-	image->upload_width = upload_width;		// after power of 2 and scales
-	image->upload_height = upload_height;
-
-	assert(texBuffer != NULL);
-
-	QVk_CreateTexture(&image->vk_texture, (unsigned char*)texBuffer,
-		image->upload_width, image->upload_height,
-		nolerp ? S_NEAREST : vk_current_sampler, (type == it_sky));
-	QVk_DebugSetObjectName((uint64_t)image->vk_texture.resource.image,
-		VK_OBJECT_TYPE_IMAGE, va("Image: %s", name));
-	QVk_DebugSetObjectName((uint64_t)image->vk_texture.imageView,
-		VK_OBJECT_TYPE_IMAGE_VIEW, va("Image View: %s", name));
-	QVk_DebugSetObjectName((uint64_t)image->vk_texture.descriptorSet,
-		VK_OBJECT_TYPE_DESCRIPTOR_SET, va("Descriptor Set: %s", name));
-	QVk_DebugSetObjectName((uint64_t)image->vk_texture.resource.memory,
-		VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: game textures");
-
-	if (texBuffer && texBuffer != pic)
 	{
-		free(texBuffer);
+	nonscrap:
+		image->scrap = false;
+
+		if (bits == 8)
+		{
+			// resize 8bit images only when we forced such logic
+			if (r_scale8bittextures->value)
+			{
+				byte *image_converted;
+				int scale = 2;
+
+				// scale 3 times if lerp image
+				if (!nolerp && (vid.height >= 240 * 3))
+					scale = 3;
+
+				if (height == 0 || scale == 0 || width > INT_MAX / height / scale / scale)
+				{
+					Com_Error(ERR_DROP, "%s: invalid dimensions", __func__);
+					return NULL;
+				}
+
+				image_converted = malloc(width * height * scale * scale);
+				if (!image_converted)
+					return NULL;
+
+				if (scale == 3) {
+					scale3x(pic, image_converted, width, height);
+				} else {
+					scale2x(pic, image_converted, width, height);
+				}
+
+				image->vk_texture.mipLevels = Vk_Upload8(image_converted, width * scale, height * scale,
+							image->type, &texBuffer,
+							&upload_width, &upload_height);
+				free(image_converted);
+			}
+			else
+			{
+				image->vk_texture.mipLevels = Vk_Upload8(pic, width, height,
+					image->type, &texBuffer,
+					&upload_width, &upload_height);
+			}
+		}
+		else
+		{
+			image->vk_texture.mipLevels = Vk_Upload32Native(pic, width, height,
+				image->type, &texBuffer, &upload_width, &upload_height);
+		}
+
+		image->upload_width = upload_width;		// after power of 2 and scales
+		image->upload_height = upload_height;
+		image->sl = 0;
+		image->sh = 1;
+		image->tl = 0;
+		image->th = 1;
+
+		assert(texBuffer != NULL);
+
+		QVk_CreateTexture(&image->vk_texture, (unsigned char*)texBuffer,
+			image->upload_width, image->upload_height,
+			nolerp ? S_NEAREST : vk_current_sampler, (type == it_sky));
+		QVk_DebugSetObjectName((uint64_t)image->vk_texture.resource.image,
+			VK_OBJECT_TYPE_IMAGE, va("Image: %s", name));
+		QVk_DebugSetObjectName((uint64_t)image->vk_texture.imageView,
+			VK_OBJECT_TYPE_IMAGE_VIEW, va("Image View: %s", name));
+		QVk_DebugSetObjectName((uint64_t)image->vk_texture.descriptorSet,
+			VK_OBJECT_TYPE_DESCRIPTOR_SET, va("Descriptor Set: %s", name));
+		QVk_DebugSetObjectName((uint64_t)image->vk_texture.resource.memory,
+			VK_OBJECT_TYPE_DEVICE_MEMORY, "Memory: game textures");
+
+		if (texBuffer && texBuffer != pic)
+		{
+			free(texBuffer);
+		}
 	}
+
 	return image;
 }
 
 /*
-===============
-Vk_FindImage
-
-Finds or loads the given image or NULL
-===============
-*/
-image_t	*
+ * Finds or loads the given image or null
+ */
+image_t *
 Vk_FindImage(const char *originname, imagetype_t type)
 {
 	char namewe[256], name[256] = {0};
 	const char* ext;
 	image_t *image;
-	int i, len;
+	size_t len;
+	int i;
 
 	if (!originname)
 	{
@@ -1137,7 +1239,7 @@ Vk_FindImage(const char *originname, imagetype_t type)
 	namewe[len] = 0;
 
 	/* look for it */
-	for (i=0, image=vktextures ; i<numvktextures ; i++,image++)
+	for (i = 0, image = vktextures; i < numvktextures; i++, image++)
 	{
 		if (!strcmp(name, image->name))
 		{
@@ -1160,15 +1262,10 @@ Vk_FindImage(const char *originname, imagetype_t type)
 	return image;
 }
 
-/*
-===============
-RE_RegisterSkin
-===============
-*/
 struct image_s *
-RE_RegisterSkin (const char *name)
+RE_RegisterSkin(const char *name)
 {
-	return Vk_FindImage (name, it_skin);
+	return Vk_FindImage(name, it_skin);
 }
 
 qboolean
@@ -1199,14 +1296,12 @@ Vk_ImageHasFreeSpace(void)
 }
 
 /*
-================
-Vk_FreeUnusedImages
-
-Any image that was not touched on this registration sequence
-will be freed.
-================
-*/
-void Vk_FreeUnusedImages (void)
+ * Any image that was not touched on
+ * this registration sequence
+ * will be freed.
+ */
+void
+Vk_FreeUnusedImages(void)
 {
 	int		i;
 	image_t	*image;
@@ -1228,15 +1323,17 @@ void Vk_FreeUnusedImages (void)
 	{
 		if (image->registration_sequence == registration_sequence)
 		{
-			continue;		// used this sequence
+			continue; /* used this sequence */
 		}
+
 		if (!image->registration_sequence)
 		{
-			continue;		// free image_t slot
+			continue; /* free image_t slot */
 		}
+
 		if (image->type == it_pic)
 		{
-			continue;		// don't free pics
+			continue; /* don't free pics */
 		}
 
 		if (r_validation->value > 0)
@@ -1260,26 +1357,26 @@ void Vk_FreeUnusedImages (void)
 	vulkan_memory_free_unused();
 }
 
-/*
-===============
-Vk_InitImages
-===============
-*/
-void	Vk_InitImages (void)
+void
+Vk_InitImages(void)
 {
-	int	i;
-	float	overbright;
+	int i;
+	float overbright;
+
+	Scrap_Init();
 
 	numvktextures = 0;
 	img_loaded = 0;
-	image_max = 0;
 	registration_sequence = 1;
+	image_max = 0;
 
-	// init intensity conversions
+	/* init intensity conversions */
 	intensity = ri.Cvar_Get("vk_intensity", "2", 0);
 
 	if (intensity->value <= 1)
+	{
 		ri.Cvar_Set("vk_intensity", "1");
+	}
 
 	vk_state.inverse_intensity = 1 / intensity->value;
 
@@ -1317,27 +1414,30 @@ void	Vk_InitImages (void)
 	}
 }
 
-/*
-===============
-Vk_ShutdownImages
-===============
-*/
-void	Vk_ShutdownImages (void)
+void
+Vk_ShutdownImages(void)
 {
-	int		i;
-	image_t	*image;
+	int i;
+	image_t *image;
 
 	for (i = 0, image = vktextures; i<numvktextures; i++, image++)
 	{
 		if (!image->registration_sequence)
-			continue;		// free image_t slot
+		{
+			continue; /* free image_t slot */
+		}
 
 		if (r_validation->value > 0)
 		{
 			Com_Printf("%s: Unload %s[%d]\n", __func__, image->name, img_loaded);
 		}
 
-		QVk_ReleaseTexture(&image->vk_texture, true);
+		// free it (scraps are stored in a separate Vulkan buffer)
+		if (!image->scrap)
+		{
+			QVk_ReleaseTexture(&image->vk_texture, true);
+		}
+
 		memset(image, 0, sizeof(*image));
 
 		img_loaded --;
@@ -1349,6 +1449,9 @@ void	Vk_ShutdownImages (void)
 	}
 
 	QVk_ReleaseTexture(&vk_rawTexture, true);
+
+	for(i = 0; i < MAX_SCRAPS; i++)
+		QVk_ReleaseTexture(&vk_scrapTextures[i], true);
 
 	for(i = 0; i < MAX_LIGHTMAPS * 2; i++)
 	{

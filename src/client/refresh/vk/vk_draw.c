@@ -200,7 +200,9 @@ RE_Draw_StretchPic(int x, int y, int w, int h, const char *name)
 
 	QVk_DrawTexRect((float)x / vid.width, (float)y / vid.height,
 					(float)w / vid.width, (float)h / vid.height,
-					0, 0, 1, 1, &vk->vk_texture);
+					vk->sl, vk->tl,
+					vk->sh - vk->sl, vk->th - vk->tl,
+					&vk->vk_texture);
 }
 
 void
@@ -223,6 +225,37 @@ RE_Draw_PicScaled(int x, int y, const char *name, float scale, const char *altte
 	}
 
 	RE_Draw_StretchPic(x, y, vk->width * scale, vk->height * scale, name);
+}
+
+void
+RE_Draw_PicScaledCol(int x, int y, const char *name, float factor, const vec3_t color, const char *alttext)
+{
+	const image_t *vk;
+
+	if (!vk_frameStarted)
+		return;
+
+	vk = R_FindPic(name, (findimage_t)Vk_FindImage);
+	if (!vk)
+	{
+		if (alttext && alttext[0])
+		{
+			/* Show alttext if provided */
+			RE_Draw_StringScaled(x, y, factor, false, alttext);
+			return;
+		}
+
+		Com_Printf("%s(): Can't find pic: %s\n", __func__, name);
+		return;
+	}
+
+	QVk_DrawTexRectTinted((float)x / vid.width, (float)y / vid.height,
+		(float)(vk->width * factor) / vid.width,
+		(float)(vk->height * factor) / vid.height,
+		vk->sl, vk->tl,
+		vk->sh - vk->sl, vk->th - vk->tl,
+		color[0], color[1], color[2], 1.0f,
+		&vk->vk_texture);
 }
 
 /*

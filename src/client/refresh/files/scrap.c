@@ -25,43 +25,78 @@
  * =======================================================================
  */
 
-#include "header/local.h"
+#include "../ref_shared.h"
 
-#define STB_RECT_PACK_IMPLEMENTATION
-#include "../files/stb_rect_pack.h"
-
-static stbrp_context scrap_packer[MAX_SCRAPS];
-static stbrp_node scrap_nodes[MAX_SCRAPS][SCRAP_WIDTH * 2];
-
+static int scrap_allocated[MAX_SCRAPS][SCRAP_WIDTH];
 static unsigned scrap_texels[MAX_SCRAPS][SCRAP_WIDTH * SCRAP_HEIGHT];
-static qboolean scrap_dirty;
+static qboolean scrap_dirty[MAX_SCRAPS];
+
+qboolean
+CommonAllocBlock(int *allocated, size_t alloc_width, size_t alloc_height,
+	unsigned w, unsigned h, int *x, int *y)
+{
+	size_t i, best;
+
+	best = alloc_height;
+
+	for (i = 0; i < alloc_width - w; i++)
+	{
+		size_t best2, j;
+
+		best2 = 0;
+
+		for (j = 0; j < w; j++)
+		{
+			if (allocated[i + j] >= best)
+			{
+				break;
+			}
+
+			if (allocated[i + j] > best2)
+			{
+				best2 = allocated[i + j];
+			}
+		}
+
+		if (j == w)
+		{   /* this is a valid spot */
+			*x = i;
+			*y = best = best2;
+		}
+	}
+
+	if (best + h > alloc_height)
+	{
+		return false;
+	}
+
+	for (i = 0; i < w; i++)
+	{
+		allocated[*x + i] = best + h;
+	}
+
+	return true;
+}
 
 /* returns a texture number and the position inside it */
 int
-Scrap_AllocBlock(int w, int h, int *x, int *y, unsigned *pic)
+Scrap_AllocBlock(unsigned w, unsigned h, int *x, int *y, unsigned *pic, int scrap_offset)
 {
 	int texnum;
-
-	/* add an empty border to all sides */
-	w += 2;
+	w += 2;	// add an empty border to all sides
 	h += 2;
 
 	for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
 	{
-		stbrp_rect rect;
-		rect.w = w;
-		rect.h = h;
-		rect.x = 0;
-		rect.y = 0;
-		rect.was_packed = 0;
-
-		if (stbrp_pack_rects(&scrap_packer[texnum], &rect, 1))
+		if (CommonAllocBlock(scrap_allocated[texnum], SCRAP_WIDTH, SCRAP_HEIGHT,
+			w, h, x, y))
 		{
 			size_t k, i;
 
-			*x = rect.x + 1; /* skip border */
-			*y = rect.y + 1;
-			scrap_dirty = true;
+			(*x)++;	// jump the border
+			(*y)++;
+
+			scrap_dirty[texnum] = true;
 
 			/* copy the texels into the scrap block */
 			k = 0;
@@ -80,32 +115,25 @@ Scrap_AllocBlock(int w, int h, int *x, int *y, unsigned *pic)
 	return -1;
 }
 
-void
-Scrap_Upload(void)
+unsigned *
+Scrap_Upload(int texnum)
 {
-	if (!scrap_dirty)
+	if (texnum < 0 || texnum >= MAX_SCRAPS || !scrap_dirty[texnum])
 	{
-		return;
+		return NULL;
 	}
 
-	R_Bind(TEXNUM_SCRAPS);
-	R_Upload32(scrap_texels[0], SCRAP_WIDTH, SCRAP_HEIGHT, false);
-	scrap_dirty = false;
+	scrap_dirty[texnum] = false;
+	return scrap_texels[texnum];
 }
 
 void
 Scrap_Init(void)
 {
-	size_t i;
-
-	for (i = 0; i < MAX_SCRAPS; i ++)
-	{
-		stbrp_init_target(&scrap_packer[i], SCRAP_WIDTH, SCRAP_HEIGHT,
-			scrap_nodes[i], SCRAP_WIDTH * 2);
-	}
-	scrap_dirty = false;
+	memset(scrap_allocated, 0, sizeof(scrap_allocated));
+	memset(scrap_dirty, 0, sizeof(scrap_dirty));
 
 	/* transparent */
-	memset(scrap_texels, 255, sizeof(scrap_texels));
+	memset(scrap_texels, 0, sizeof(scrap_texels));
 }
 

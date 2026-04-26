@@ -102,8 +102,6 @@ static cvar_t *gl1_waterwarp;
 
 refimport_t ri;
 
-void LM_FreeLightmapBuffers(void);
-
 extern void R_SetDefaultState(void);
 extern void R_ResetGLBuffer(void);
 
@@ -1686,7 +1684,6 @@ RI_Init(void)
 	R_SetDefaultState();
 
 	R_VertBufferInit();
-	Scrap_Init();
 	R_InitImages();
 	Mod_Init();
 	R_InitParticleTexture();

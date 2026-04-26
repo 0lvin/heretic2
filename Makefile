@@ -1689,6 +1689,7 @@ endif
 
 REFGL1_OBJS_ := \
 	src/client/refresh/gl1/qgl.o \
+	src/client/refresh/gl1/gl1_buffer.o \
 	src/client/refresh/gl1/gl1_draw.o \
 	src/client/refresh/gl1/gl1_image.o \
 	src/client/refresh/gl1/gl1_light.o \
@@ -1697,16 +1698,16 @@ REFGL1_OBJS_ := \
 	src/client/refresh/gl1/gl1_mesh.o \
 	src/client/refresh/gl1/gl1_misc.o \
 	src/client/refresh/gl1/gl1_model.o \
-	src/client/refresh/gl1/gl1_scrap.o \
 	src/client/refresh/gl1/gl1_surf.o \
 	src/client/refresh/gl1/gl1_warp.o \
 	src/client/refresh/gl1/gl1_sdl.o \
+	src/client/refresh/files/scrap.o \
 	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
-	src/client/refresh/gl1/gl1_buffer.o \
 	src/client/refresh/files/common.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
+	src/client/refresh/files/lightmap.o \
 	src/client/refresh/files/models.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
@@ -1749,6 +1750,7 @@ REFGL3_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/scrap.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1793,6 +1795,7 @@ REFGL4_OBJS_ := \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \
+	src/client/refresh/files/scrap.o \
 	src/client/refresh/files/stb.o \
 	src/client/refresh/files/wal.o \
 	src/client/refresh/files/warp.o \
@@ -1878,9 +1881,11 @@ REFVK_OBJS_ := \
 	src/client/refresh/vk/vk_warp.o \
 	src/client/refresh/vk/vk_util.o \
 	src/client/refresh/vk/volk/volk.o \
+	src/client/refresh/files/scrap.o \
 	src/client/refresh/files/common.o \
 	src/client/refresh/files/mesh.o \
 	src/client/refresh/files/light.o \
+	src/client/refresh/files/lightmap.o \
 	src/client/refresh/files/surf.o \
 	src/client/refresh/files/maps.o \
 	src/client/refresh/files/models.o \

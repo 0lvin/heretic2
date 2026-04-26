@@ -5211,7 +5211,7 @@ misc_hologram_infinity_gib(edict_t *self)
 	/* Gib explosion, throw 8 hologram gibs */
 	for (i = 0; i < 8; i++)
 	{
-		char *model;
+		const char *model;
 		float rnd;
 
 		rnd = frandk();
@@ -5500,13 +5500,13 @@ void
 misc_rain_think(edict_t *self)
 {
 	/* Occasionally play ambient rain sound */
-	if ((rand() & 1) == 0)
+	if ((randk() & 1) == 0)
 	{
 		char name[MAX_OSPATH];
 		int soundindex;
 
 		/* Pick one of several ambient rain sounds */
-		snprintf(name, sizeof(name), "world/amb%i.wav", (rand() % 4) + 1);
+		snprintf(name, sizeof(name), "world/amb%i.wav", (randk() % 4) + 1);
 		soundindex = gi.soundindex(name);
 
 		gi.positioned_sound(self->s.origin, self, CHAN_AUTO, soundindex, 1.0, ATTN_NORM, 0);
@@ -5603,7 +5603,7 @@ misc_drip_effect(edict_t *self)
 
 	ent->s.modelindex = gi.modelindex("models/objects/drip/tris.md2");
 
-	self->s.skinnum = rand() % 3;
+	self->s.skinnum = randk() % 3;
 
 	ent->s.origin[2] -= 5.0f;
 	ent->think = G_FreeEdict;
