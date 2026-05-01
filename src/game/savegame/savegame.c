@@ -1167,6 +1167,24 @@ WriteGameLocals(FILE *f, qboolean autosave)
 	sg_fwrite(&temp, sizeof(temp), f);
 }
 
+static void
+WriteItemsNames(FILE *f)
+{
+	size_t i;
+
+	for (i = 0; i < itemlist_len; i++)
+	{
+		if (itemlist[i].classname)
+		{
+			char temp[MAX_QPATH + 1] = {0};
+
+			Q_strlcpy(temp, itemlist[i].classname, sizeof(temp));
+
+			sg_fwrite(&temp, sizeof(temp) - 1 /* MAX_QPATH */, f);
+		}
+	}
+}
+
 void
 WriteGame(const char *filename, qboolean autosave)
 {
@@ -1200,7 +1218,7 @@ WriteGame(const char *filename, qboolean autosave)
 	// this is a bit bogus - search through the client effects and kill all the FX_PLAYER_EFFECTS before saving, since they will be re-created
 	// upon players re-joining the game after a load anyway.
 	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
-	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
+	for (i = 0; i < MAX_PERSISTANT_EFFECTS; i++, peffect++)
 	{
 		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
 			peffect->numEffects = 0;
@@ -1209,11 +1227,14 @@ WriteGame(const char *filename, qboolean autosave)
 	// save all the current persistant effects
 	fwrite (gi.Persistant_Effects_Array, (sizeof(PerEffectsBuffer_t) * MAX_PERSISTANT_EFFECTS), 1, f);
 
+	/* Save items names */
+	WriteItemsNames(f);
+
 	fclose(f);
 
 	// this is a bit bogus - search through the client effects and renable all FX_PLAYER_EFFECTS
 	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
-	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
+	for (i = 0; i < MAX_PERSISTANT_EFFECTS; i++, peffect++)
 	{
 		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
 			peffect->numEffects = 1;
@@ -1332,6 +1353,35 @@ SanitizeGameStruct(void)
 	game.spawnpoint[sizeof(game.spawnpoint) - 1] = 0;
 }
 
+static void
+ReadItemsNames(FILE *f)
+{
+	size_t i;
+
+	for (i = 0; i < itemlist_len; i++)
+	{
+		if (feof(f))
+		{
+			/* no more names in save file */
+			return;
+		}
+
+		if (itemlist[i].classname)
+		{
+			char temp[MAX_QPATH + 1];
+
+			sg_fread(&temp, sizeof(temp) - 1 /* MAX_QPATH */, f);
+			temp[sizeof(temp) - 1] = 0;
+
+			if (strncmp(temp, itemlist[i].classname, sizeof(temp) - 1))
+			{
+				gi.error("%s: mismatch items class %d %s != %s\n",
+					__func__, i, itemlist[i].classname, temp);
+			}
+		}
+	}
+}
+
 void
 ReadGame(const char *filename)
 {
@@ -1379,6 +1429,9 @@ ReadGame(const char *filename)
 	}
 
 	LoadScripts(f, true);
+
+	/* Read and recheck items class names */
+	ReadItemsNames(f);
 
 	fclose(f);
 }
