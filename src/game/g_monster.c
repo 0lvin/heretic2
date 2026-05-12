@@ -508,6 +508,27 @@ monster_fire_bfg(edict_t *self, vec3_t start, vec3_t aimdir,
 	monster_muzzleflash2(self, start, flashtype);
 }
 
+/* Scale fire source to right place by scale */
+void
+M_ProjectFlashSource(const edict_t *self, const vec3_t offset, const vec3_t forward,
+	const vec3_t right, vec3_t result)
+{
+	vec3_t scaled_offset;
+	size_t i;
+
+	VectorCopy(offset, scaled_offset);
+
+	for (i = 0; i < 3; i++)
+	{
+		if (self->rrs.scale[i] > 0)
+		{
+			scaled_offset[i] *= self->rrs.scale[i];
+		}
+	}
+
+	return G_ProjectSource(self->s.origin, scaled_offset, forward, right, result);
+}
+
 /* ================================================================== */
 
 /* Monster utility functions */
@@ -1682,6 +1703,26 @@ monster_dynamic_attack(edict_t *self)
 }
 
 void
+monster_sync_scale_mins_maxs(edict_t *self)
+{
+	size_t i;
+
+	if (!self)
+	{
+		return;
+	}
+
+	for (i = 0; i < 3; i++)
+	{
+		if (self->rrs.scale[i] > 0 && self->rrs.scale[i] != 1.0)
+		{
+			self->mins[i] *= self->rrs.scale[i];
+			self->maxs[i] *= self->rrs.scale[i];
+		}
+	}
+}
+
+void
 monster_dynamic_dead(edict_t *self)
 {
 	if (!self)
@@ -2257,16 +2298,10 @@ monster_start(edict_t *self)
 	/* non default scale */
 	if (scale != 1.0)
 	{
-		int i;
-
 		self->monsterinfo.scale *= scale;
 		self->mass *= scale;
 
-		for (i = 0; i < 3; i++)
-		{
-			self->mins[i] *= self->rrs.scale[i];
-			self->maxs[i] *= self->rrs.scale[i];
-		}
+		monster_sync_scale_mins_maxs(self);
 	}
 
 	VectorCopy(self->s.origin, self->s.old_origin);

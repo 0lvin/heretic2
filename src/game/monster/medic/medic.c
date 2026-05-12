@@ -768,7 +768,7 @@ medic_fire_blaster(edict_t *self)
 	}
 
 	AngleVectors(self->s.angles, forward, right, NULL);
-	G_ProjectSource(self->s.origin, monster_flash_offset[MZ2_MEDIC_BLASTER_1],
+	M_ProjectFlashSource(self, monster_flash_offset[MZ2_MEDIC_BLASTER_1],
 			forward, right, start);
 
 	VectorCopy(self->enemy->s.origin, end);
@@ -803,6 +803,7 @@ medic_dead(edict_t *self)
 
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 
@@ -1141,7 +1142,7 @@ medic_cable_attack(edict_t *self)
 
 	AngleVectors(self->s.angles, f, r, NULL);
 	VectorCopy(medic_cable_offsets[self->s.frame - FRAME_attack42], offset);
-	G_ProjectSource(self->s.origin, offset, f, r, start);
+	M_ProjectFlashSource(self, offset, f, r, start);
 
 	/* check for max distance */
 	VectorSubtract(start, self->enemy->s.origin, dir);
@@ -1476,7 +1477,7 @@ medic_determine_spawn(edict_t *self)
 		inc = count + (count % 2); /* 0, 2, 2, 4, 4 */
 		VectorCopy(reinforcement_position[count], offset);
 
-		G_ProjectSource(self->s.origin, offset, f, r, startpoint);
+		M_ProjectFlashSource(self, offset, f, r, startpoint);
 		startpoint[2] += 10;
 
 		if (FindSpawnPoint(startpoint, reinforcement_mins[summonStr - inc],
@@ -1502,7 +1503,7 @@ medic_determine_spawn(edict_t *self)
 			/* check behind */
 			offset[0] *= -1.0;
 			offset[1] *= -1.0;
-			G_ProjectSource(self->s.origin, offset, f, r, startpoint);
+			M_ProjectFlashSource(self, offset, f, r, startpoint);
 			/* a little off the ground */
 			startpoint[2] += 10;
 
@@ -1588,7 +1589,7 @@ medic_spawngrows(edict_t *self)
 		inc = count + (count % 2); /* 0, 2, 2, 4, 4 */
 		VectorCopy(reinforcement_position[count], offset);
 
-		G_ProjectSource(self->s.origin, offset, f, r, startpoint);
+		M_ProjectFlashSource(self, offset, f, r, startpoint);
 		/* a little off the ground */
 		startpoint[2] += 10;
 
@@ -1658,7 +1659,7 @@ medic_finish_spawn(edict_t *self)
 		inc = count + (count % 2); /* 0, 2, 2, 4, 4 */
 		VectorCopy(reinforcement_position[count], offset);
 
-		G_ProjectSource(self->s.origin, offset, f, r, startpoint);
+		M_ProjectFlashSource(self, offset, f, r, startpoint);
 
 		/* a little off the ground */
 		startpoint[2] += 10;

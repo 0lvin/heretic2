@@ -657,7 +657,7 @@ stalker_shoot_attack(edict_t *self)
 
 	AngleVectors(self->s.angles, f, r, NULL);
 	VectorSet(offset, 24, 0, 6);
-	G_ProjectSource(self->s.origin, offset, f, r, start);
+	M_ProjectFlashSource(self, offset, f, r, start);
 
 	VectorSubtract(self->enemy->s.origin, start, dir);
 
@@ -1359,6 +1359,7 @@ stalker_dead(edict_t *self)
 
 	VectorSet(self->mins, -28, -28, -18);
 	VectorSet(self->maxs, 28, 28, -4);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 

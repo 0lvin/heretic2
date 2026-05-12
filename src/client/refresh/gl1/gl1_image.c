@@ -39,7 +39,7 @@ static cvar_t *intensity;
 unsigned d_8to24table[256];
 
 extern cvar_t *gl1_minlight;
-extern unsigned char minlight[256];
+extern byte minlight[256];
 
 qboolean R_Upload8(byte *data, int width, int height,
 		qboolean mipmap, qboolean is_sky);
@@ -130,7 +130,7 @@ R_SetTexturePalette(const unsigned palette[256])
 {
 	if (gl_config.palettedtexture)
 	{
-		unsigned char temptable[768];
+		byte temptable[768];
 		int i;
 
 		for (i = 0; i < 256; i++)
@@ -398,6 +398,7 @@ R_ImageList_f(void)
 
 	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
 	{
+		int w, h;
 		const char *in_use = "", *scrap = "";
 
 		if (image->texnum <= 0)
@@ -416,29 +417,36 @@ R_ImageList_f(void)
 			scrap = "scrap";
 		}
 
-		texels += image->upload_width * image->upload_height;
+		w = image->upload_width;
+		h = image->upload_height;
 
+		texels += w * h;
+
+		char imageType = '?';
 		switch (image->type)
 		{
 			case it_skin:
-				Com_Printf("M");
+				imageType = 'M';
 				break;
 			case it_sprite:
-				Com_Printf("S");
+				imageType = 'S';
 				break;
 			case it_wall:
-				Com_Printf("W");
+				imageType = 'W';
 				break;
 			case it_pic:
-				Com_Printf("P");
+				imageType = 'P';
+				break;
+			case it_sky:
+				imageType = 'Y';
 				break;
 			default:
-				Com_Printf(" ");
+				imageType = '?';
 				break;
 		}
 
-		Com_Printf(" %3i %3i %s: %s (%dx%d) %s %s\n",
-				image->upload_width, image->upload_height,
+		Com_Printf("%c %3i %3i %s: %s (%dx%d) %s %s\n",
+				imageType, image->upload_width, image->upload_height,
 				palstrings[image->paletted], image->name,
 				image->width, image->height, in_use, scrap);
 	}
@@ -522,7 +530,7 @@ R_MipMap(byte *in, int width, int height)
  * Returns has_alpha
  */
 static void
-R_BuildPalettedTexture(unsigned char *paletted_texture, unsigned char *scaled,
+R_BuildPalettedTexture(byte *paletted_texture, byte *scaled,
 		int scaled_width, int scaled_height)
 {
 	int i;
@@ -584,7 +592,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 {
 	int samples;
 	unsigned scaled[256 * 256];
-	unsigned char paletted_texture[256 * 256];
+	byte paletted_texture[256 * 256];
 	int scaled_width, scaled_height;
 	int i, c;
 	byte *scan;
@@ -668,7 +676,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 				(samples == Q2_GL_SOLID_FORMAT))
 			{
 				uploaded_paletted = true;
-				R_BuildPalettedTexture(paletted_texture, (unsigned char *)data,
+				R_BuildPalettedTexture(paletted_texture, (byte *)data,
 						scaled_width, scaled_height);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT,
 						scaled_width, scaled_height, 0, GL_COLOR_INDEX,
@@ -698,7 +706,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 		(samples == Q2_GL_SOLID_FORMAT))
 	{
 		uploaded_paletted = true;
-		R_BuildPalettedTexture(paletted_texture, (unsigned char *)scaled,
+		R_BuildPalettedTexture(paletted_texture, (byte *)scaled,
 				scaled_width, scaled_height);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT,
 				scaled_width, scaled_height, 0, GL_COLOR_INDEX,
@@ -739,7 +747,7 @@ R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
 				(samples == Q2_GL_SOLID_FORMAT))
 			{
 				uploaded_paletted = true;
-				R_BuildPalettedTexture(paletted_texture, (unsigned char *)scaled,
+				R_BuildPalettedTexture(paletted_texture, (byte *)scaled,
 						scaled_width, scaled_height);
 				glTexImage2D(GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT,
 						scaled_width, scaled_height, 0, GL_COLOR_INDEX,
@@ -943,7 +951,7 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	}
 
 	/* load little pics into the scrap */
-	if ((image->type == it_pic) && (width < 128) && (height < 128))
+	if ((image->type == it_pic) && (width <= 256) && (height <= 256))
 	{
 		int texnum = -1;
 		int x, y;
@@ -1144,8 +1152,8 @@ RI_RegisterSkin(const char *name)
 void
 R_FreeUnusedImages(void)
 {
-	int i;
 	image_t *image;
+	size_t i;
 
 	/* never free r_notexture or particle texture */
 	r_notexture->registration_sequence = registration_sequence;
@@ -1304,4 +1312,3 @@ R_ShutdownImages(void)
 		memset(image, 0, sizeof(*image));
 	}
 }
-

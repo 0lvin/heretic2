@@ -59,6 +59,32 @@ RDraw_FreeLocal(void)
 	free(draw_fontcodes);
 }
 
+static void
+Scrap_Update(void)
+{
+	int texnum;
+
+	for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
+	{
+		unsigned *scrap_texels;
+
+		scrap_texels = Scrap_Upload(texnum);
+		if (scrap_texels)
+		{
+			R_Bind(TEXNUM_SCRAPS + texnum);
+
+			if (!texnum)
+			{
+				/* nolerp textures*/
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			}
+
+			R_Upload32(scrap_texels, SCRAP_WIDTH, SCRAP_HEIGHT, false);
+		}
+	}
+}
+
 /*
  * Draws one 8*8 graphics character with 0 being transparent.
  * It can be clipped to the top of the screen to allow the console to be
@@ -91,10 +117,18 @@ RDraw_CharScaled(int x, int y, int num, float scale)
 
 	scaledSize = 8 * scale;
 
+	if (draw_chars->scrap)
+	{
+		Scrap_Update();
+	}
+
 	R_UpdateGLBuffer(buf_2d, draw_chars->texnum, 0, 0, 1);
 
 	R_Buffer2DQuad(x, y, x + scaledSize, y + scaledSize,
-		fcol, frow, fcol + size, frow + size);
+		draw_chars->sl + fcol * (draw_chars->sh - draw_chars->sl),
+		draw_chars->tl + frow * (draw_chars->th - draw_chars->tl),
+		draw_chars->sl + (fcol + size) * (draw_chars->sh - draw_chars->sl),
+		draw_chars->tl + (frow + size) * (draw_chars->th - draw_chars->tl));
 }
 
 void
@@ -184,32 +218,6 @@ RDraw_GetPicSize(int *w, int *h, const char *pic)
 	*h = gl->height;
 }
 
-static void
-Scrap_Update(void)
-{
-	int texnum;
-
-	for (texnum = 0; texnum < MAX_SCRAPS; texnum++)
-	{
-		unsigned *scrap_texels;
-
-		scrap_texels = Scrap_Upload(texnum);
-		if (scrap_texels)
-		{
-			R_Bind(TEXNUM_SCRAPS + texnum);
-
-			if (!texnum)
-			{
-				/* nolerp textures*/
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			}
-
-			R_Upload32(scrap_texels, SCRAP_WIDTH, SCRAP_HEIGHT, false);
-		}
-	}
-}
-
 void
 RDraw_StretchPic(int x, int y, int w, int h, const char *pic)
 {
@@ -219,8 +227,13 @@ RDraw_StretchPic(int x, int y, int w, int h, const char *pic)
 
 	if (!gl)
 	{
-		Com_Printf("Can't find pic: %s\n", pic);
+		Com_Printf("%s(): Can't find pic: %s\n", __func__, pic);
 		return;
+	}
+
+	if (gl->scrap)
+	{
+		Scrap_Update();
 	}
 
 	R_UpdateGLBuffer(buf_2d, gl->texnum, 0, 0, 1);
@@ -249,7 +262,10 @@ RDraw_PicScaled(int x, int y, const char *pic, float factor, const char *alttext
 		return;
 	}
 
-	Scrap_Update();
+	if (gl->scrap)
+	{
+		Scrap_Update();
+	}
 
 	if (gl->texnum >= TEXNUM_SCRAPS && gl->texnum < TEXNUM_IMAGES)
 	{
@@ -257,6 +273,11 @@ RDraw_PicScaled(int x, int y, const char *pic, float factor, const char *alttext
 		R_Buffer2DQuad(x, y, x + gl->width * factor, y + gl->height * factor,
 			gl->sl, gl->tl, gl->sh, gl->th);
 		return;
+	}
+
+	if (gl->scrap)
+	{
+		Scrap_Update();
 	}
 
 	R_Bind(gl->texnum);
@@ -307,7 +328,10 @@ RDraw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t col
 		return;
 	}
 
-	Scrap_Update();
+	if (gl->scrap)
+	{
+		Scrap_Update();
+	}
 
 	R_ApplyGLBuffer();
 
@@ -358,8 +382,13 @@ RDraw_TileClear(int x, int y, int w, int h, const char *pic)
 
 	if (!image)
 	{
-		Com_Printf("Can't find pic: %s\n", pic);
+		Com_Printf("%s(): Can't find pic: %s\n", __func__, pic);
 		return;
+	}
+
+	if (image->scrap)
+	{
+		Scrap_Update();
 	}
 
 	R_UpdateGLBuffer(buf_2d, image->texnum, 0, 0, 1);
@@ -583,12 +612,12 @@ RDraw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *dat
 	}
 	else
 	{
-		unsigned char image8[256 * 256];
+		byte image8[256 * 256];
 		int trows = 256;
 
 		for (i = 0; i < trows; i++)
 		{
-			unsigned char *dest;
+			byte *dest;
 			const byte *source;
 
 			row = (int)(i * hscale);

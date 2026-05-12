@@ -382,6 +382,7 @@ ThrowGib(edict_t *self, const char *gibname, int damage, gibtype_t type)
 	gib->s.origin[0] = origin[0] + crandom() * size[0];
 	gib->s.origin[1] = origin[1] + crandom() * size[1];
 	gib->s.origin[2] = origin[2] + crandom() * size[2];
+	VectorCopy(self->rrs.scale, gib->rrs.scale);
 
 	gi.setmodel(gib, gibname);
 	gib->solid = SOLID_NOT;
@@ -5901,8 +5902,6 @@ SetupMannequinModel(edict_t * self, int modelType, const char *weapon, const cha
 void
 SP_misc_player_mannequin(edict_t * self)
 {
-	int i;
-
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_BBOX;
 	if (!st.effects)
@@ -5937,11 +5936,7 @@ SP_misc_player_mannequin(edict_t * self)
 			st.radius, st.radius, st.radius);
 	}
 
-	for (i = 0;i < 3; i++)
-	{
-		self->mins[i] *= self->rrs.scale[i];
-		self->maxs[i] *= self->rrs.scale[i];
-	}
+	monster_sync_scale_mins_maxs(self);
 
 	self->think = misc_player_mannequin_think;
 	self->nextthink = level.time + FRAMETIME;

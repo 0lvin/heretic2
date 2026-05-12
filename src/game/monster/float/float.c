@@ -89,7 +89,7 @@ floater_fire_blaster(edict_t *self)
 	}
 
 	AngleVectors(self->s.angles, forward, right, NULL);
-	G_ProjectSource(self->s.origin, monster_flash_offset[MZ2_FLOAT_BLASTER_1],
+	M_ProjectFlashSource(self, monster_flash_offset[MZ2_FLOAT_BLASTER_1],
 			forward, right, start);
 
 	VectorCopy(self->enemy->s.origin, end);
@@ -687,7 +687,7 @@ floater_zap(edict_t *self)
 
 	AngleVectors(self->s.angles, forward, right, NULL);
 	VectorSet(offset, 18.5, -0.9, 10);
-	G_ProjectSource(self->s.origin, offset, forward, right, origin);
+	M_ProjectFlashSource(self, offset, forward, right, origin);
 
 	gi.sound(self, CHAN_WEAPON, sound_attack2, 1, ATTN_NORM, 0);
 
@@ -818,6 +818,7 @@ floater_dead(edict_t *self)
 
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 

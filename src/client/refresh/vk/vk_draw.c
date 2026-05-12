@@ -92,9 +92,18 @@ RE_Draw_CharScaled(int x, int y, int num, float scale)
 
 	scaledSize = 8 * scale;
 
+	if (draw_chars->scrap)
+	{
+		Vk_Scrap_Upload();
+	}
+
 	QVk_DrawTexRect((float)x / vid.width, (float)y / vid.height,
 					scaledSize / vid.width, scaledSize / vid.height,
-					fcol, frow, size, size, &draw_chars->vk_texture);
+					draw_chars->sl + fcol * (draw_chars->sh - draw_chars->sl),
+					draw_chars->tl + frow * (draw_chars->th - draw_chars->tl),
+					size * (draw_chars->sh - draw_chars->sl),
+					size * (draw_chars->th - draw_chars->tl),
+					&draw_chars->vk_texture);
 }
 
 void
@@ -198,6 +207,11 @@ RE_Draw_StretchPic(int x, int y, int w, int h, const char *name)
 		return;
 	}
 
+	if (vk->scrap)
+	{
+		Vk_Scrap_Upload();
+	}
+
 	QVk_DrawTexRect((float)x / vid.width, (float)y / vid.height,
 					(float)w / vid.width, (float)h / vid.height,
 					vk->sl, vk->tl,
@@ -224,6 +238,11 @@ RE_Draw_PicScaled(int x, int y, const char *name, float scale, const char *altte
 		return;
 	}
 
+	if (vk->scrap)
+	{
+		Vk_Scrap_Upload();
+	}
+
 	RE_Draw_StretchPic(x, y, vk->width * scale, vk->height * scale, name);
 }
 
@@ -247,6 +266,11 @@ RE_Draw_PicScaledCol(int x, int y, const char *name, float factor, const vec3_t 
 
 		Com_Printf("%s(): Can't find pic: %s\n", __func__, name);
 		return;
+	}
+
+	if (vk->scrap)
+	{
+		Vk_Scrap_Upload();
 	}
 
 	QVk_DrawTexRectTinted((float)x / vid.width, (float)y / vid.height,
@@ -280,6 +304,11 @@ RE_Draw_TileClear(int x, int y, int w, int h, const char *name)
 	{
 		Com_Printf("%s(): Can't find pic: %s\n", __func__, name);
 		return;
+	}
+
+	if (image->scrap)
+	{
+		Vk_Scrap_Upload();
 	}
 
 	/* draw before change viewport */
@@ -482,7 +511,7 @@ RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *d
 
 	if (vk_rawTexture.resource.image != VK_NULL_HANDLE)
 	{
-		QVk_UpdateTextureData(&vk_rawTexture, (unsigned char*)raw_image32, 0, 0, cols, rows);
+		QVk_UpdateTextureData(&vk_rawTexture, (byte*)raw_image32, 0, 0, cols, rows);
 	}
 	else
 	{
@@ -490,7 +519,7 @@ RE_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *d
 		vk_rawTexture_height = rows;
 
 		QVVKTEXTURE_CLEAR(vk_rawTexture);
-		QVk_CreateTexture(&vk_rawTexture, (unsigned char*)raw_image32, cols, rows,
+		QVk_CreateTexture(&vk_rawTexture, (byte*)raw_image32, cols, rows,
 			(r_videos_unfiltered->value == 0) ? vk_current_sampler : S_NEAREST,
 			false);
 		QVk_DebugSetObjectName((uint64_t)vk_rawTexture.resource.image,

@@ -81,8 +81,8 @@ shambler_lightning_update(edict_t *self)
 	lightning->owner = self;
 
 	AngleVectors(self->s.angles, f, r, NULL);
-	G_ProjectSource(self->s.origin, lightning_left_hand[self->s.frame - FRAME_magic01], f, r, lightning->s.origin);
-	G_ProjectSource(self->s.origin, lightning_right_hand[self->s.frame - FRAME_magic01], f, r, lightning->s.old_origin);
+	M_ProjectFlashSource(self, lightning_left_hand[self->s.frame - FRAME_magic01], f, r, lightning->s.origin);
+	M_ProjectFlashSource(self, lightning_right_hand[self->s.frame - FRAME_magic01], f, r, lightning->s.old_origin);
 	gi.linkentity(lightning);
 }
 
@@ -593,6 +593,7 @@ shambler_dead(edict_t* self)
 
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 

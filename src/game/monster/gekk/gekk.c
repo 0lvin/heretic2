@@ -881,7 +881,7 @@ gekk_loogie(edict_t *self)
 	}
 
 	AngleVectors(self->s.angles, forward, right, up);
-	G_ProjectSource(self->s.origin, gekkoffset, forward, right, start);
+	M_ProjectFlashSource(self, gekkoffset, forward, right, start);
 
 	VectorMA(start, 2, up, start);
 
@@ -1454,6 +1454,7 @@ gekk_dead(edict_t *self)
 	{
 		VectorSet(self->mins, -16, -16, -24);
 		VectorSet(self->maxs, 16, 16, -8);
+		monster_sync_scale_mins_maxs(self);
 		monster_dynamic_dead(self);
 	}
 }

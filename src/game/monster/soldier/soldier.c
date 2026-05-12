@@ -728,7 +728,7 @@ soldier_fire(edict_t *self, int in_flash_number)
 	}
 
 	AngleVectors(self->s.angles, forward, right, NULL);
-	G_ProjectSource(self->s.origin, monster_flash_offset[flash_index],
+	M_ProjectFlashSource(self, monster_flash_offset[flash_index],
 			forward, right, start);
 
 	if ((flash_number == 5) || (flash_number == 6)) /* he's dead */
@@ -1482,6 +1482,7 @@ soldier_dead(edict_t *self)
 
 	VectorSet(self->mins, -16, -16, -24);
 	VectorSet(self->maxs, 16, 16, -8);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 
@@ -1519,6 +1520,7 @@ soldier_dead2(edict_t *self)
 		VectorCopy(tempmaxs, self->maxs);
 	}
 
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 
@@ -2417,7 +2419,7 @@ soldierh_fire(edict_t *self, int flash_number)
 	}
 
 	AngleVectors(self->s.angles, forward, right, NULL);
-	G_ProjectSource(self->s.origin, monster_flash_offset[flash_index],
+	M_ProjectFlashSource(self, monster_flash_offset[flash_index],
 			forward, right, start);
 
 	if ((flash_number == 5) || (flash_number == 6))

@@ -184,7 +184,7 @@ FireShalrathPod(edict_t *self)
 	vec3_t offset = {16, 0, 16};
 
 	AngleVectors(self->s.angles, forward, right, NULL);
-	G_ProjectSource(self->s.origin, offset, forward, right, start);
+	M_ProjectFlashSource(self, offset, forward, right, start);
 	VectorCopy(self->enemy->s.origin, vec);
 	vec[2] += self->enemy->viewheight;
 
@@ -263,6 +263,7 @@ shalrath_dead(edict_t *self)
 {
 	VectorSet(self->mins, -32, -32, -24);
 	VectorSet(self->maxs, 32, 32, -8);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 

@@ -4297,6 +4297,7 @@ ClientDisconnect(edict_t *ent)
 	{
 		CTFDeadDropFlag(ent);
 		CTFDeadDropTech(ent);
+		CTFPlayerResetGrapple(ent);
 	}
 
 	/* make sure no trackers are still hurting us. */

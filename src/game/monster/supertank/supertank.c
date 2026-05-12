@@ -670,7 +670,7 @@ supertankRocket(edict_t *self)
 	}
 
 	AngleVectors(self->s.angles, forward, right, NULL);
-	G_ProjectSource(self->s.origin, monster_flash_offset[flash_number],
+	M_ProjectFlashSource(self, monster_flash_offset[flash_number],
 			forward, right, start);
 
 	VectorCopy(self->enemy->s.origin, vec);
@@ -708,7 +708,7 @@ supertankMachineGun(edict_t *self)
 	dir[2] = 0;
 
 	AngleVectors(dir, forward, right, NULL);
-	G_ProjectSource(self->s.origin, monster_flash_offset[flash_number],
+	M_ProjectFlashSource(self, monster_flash_offset[flash_number],
 			forward, right, start);
 
 	if (self->enemy)
@@ -767,6 +767,7 @@ supertank_dead(edict_t *self)
 
 	VectorSet(self->mins, -60, -60, 0);
 	VectorSet(self->maxs, 60, 60, 72);
+	monster_sync_scale_mins_maxs(self);
 	monster_dynamic_dead(self);
 }
 

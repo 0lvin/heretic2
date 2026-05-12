@@ -341,7 +341,7 @@ GL4_SetMode(void)
 				ri.Cvar_SetValue("r_msaa_samples", 0.0f);
 				r_msaa_samples->modified = false;
 
-				if ((err = SetMode_impl(&vid.width, &vid.height, r_mode->value, 0)) == rserr_ok)
+				if (SetMode_impl(&vid.width, &vid.height, r_mode->value, 0) == rserr_ok)
 				{
 					return true;
 				}
@@ -358,7 +358,7 @@ GL4_SetMode(void)
 		}
 
 		/* try setting it back to something safe */
-		if ((err = SetMode_impl(&vid.width, &vid.height, gl4state.prev_mode, 0)) != rserr_ok)
+		if (SetMode_impl(&vid.width, &vid.height, gl4state.prev_mode, 0) != rserr_ok)
 		{
 			Com_Printf("ref_gl4::GL4_SetMode() - could not revert to safe mode\n");
 			return false;
@@ -1598,6 +1598,7 @@ GL4_RenderFrame(const refdef_t *fd)
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // now render to default framebuffer
 		gl4state.ppFBObound = false;
 	}
+
 	GL4_SetGL2D();
 
 	int x = (vid.width - r_newrefdef.width)/2;
@@ -1769,7 +1770,7 @@ GL4_BeginFrame(float camera_separation)
 }
 
 static void
-GL4_SetPalette(const unsigned char *palette)
+GL4_SetPalette(const byte *palette)
 {
 	int i;
 	byte *rp = (byte *)gl4_rawpalette;

@@ -1650,6 +1650,7 @@ GL3_RenderFrame(const refdef_t *fd)
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // now render to default framebuffer
 		gl3state.ppFBObound = false;
 	}
+
 	GL3_SetGL2D();
 
 	int x = (vid.width - r_newrefdef.width)/2;
@@ -1828,7 +1829,7 @@ GL3_BeginFrame(float camera_separation)
 }
 
 static void
-GL3_SetPalette(const unsigned char *palette)
+GL3_SetPalette(const byte *palette)
 {
 	int i;
 	byte *rp = (byte *)gl3_rawpalette;

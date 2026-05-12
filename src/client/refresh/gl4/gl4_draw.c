@@ -167,9 +167,18 @@ GL4_Draw_CharScaled(int x, int y, int num, float scale)
 
 	// TODO: batchen?
 
+	if (draw_chars->scrap)
+	{
+		GL4_Scrap_Upload();
+	}
+
 	GL4_UseProgram(gl4state.si2D.shaderProgram);
 	GL4_Bind(draw_chars->texnum);
-	drawTexturedRectangle(x, y, scaledSize, scaledSize, fcol, frow, fcol+size, frow+size);
+	drawTexturedRectangle(x, y, scaledSize, scaledSize,
+		draw_chars->sl + fcol * (draw_chars->sh - draw_chars->sl),
+		draw_chars->tl + frow * (draw_chars->th - draw_chars->tl),
+		draw_chars->sl + (fcol + size) * (draw_chars->sh - draw_chars->sl),
+		draw_chars->tl + (frow + size) * (draw_chars->th - draw_chars->tl));
 }
 
 void
@@ -266,8 +275,14 @@ GL4_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 
 	if (!gl)
 	{
-		Com_Printf("Can't find pic: %s\n", pic);
+		Com_Printf("%s(): Can't find pic: %s\n", __func__, pic);
 		return;
+	}
+
+	if (gl->scrap)
+	{
+		/* Upload any pending scrap textures before rendering 2D elements */
+		GL4_Scrap_Upload();
 	}
 
 	GL4_UseProgram(gl4state.si2D.shaderProgram);
@@ -295,10 +310,17 @@ GL4_Draw_PicScaled(int x, int y, const char *pic, float factor, const char *altt
 		return;
 	}
 
+	if (gl->scrap)
+	{
+		/* Upload any pending scrap textures before rendering 2D elements */
+		GL4_Scrap_Upload();
+	}
+
 	GL4_UseProgram(gl4state.si2D.shaderProgram);
 	GL4_Bind(gl->texnum);
 
-	drawTexturedRectangle(x, y, gl->width*factor, gl->height*factor, gl->sl, gl->tl, gl->sh, gl->th);
+	drawTexturedRectangle(x, y, gl->width * factor, gl->height * factor,
+		gl->sl, gl->tl, gl->sh, gl->th);
 }
 
 void
@@ -317,6 +339,12 @@ GL4_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t 
 
 		Com_Printf("Can't find pic: %s\n", pic);
 		return;
+	}
+
+	if (gl->scrap)
+	{
+		/* Upload any pending scrap textures before rendering 2D elements */
+		GL4_Scrap_Upload();
 	}
 
 	gl4state.uniCommonData.color = HMM_Vec4(color[0], color[1], color[2], 1.0f);
@@ -342,14 +370,21 @@ GL4_Draw_TileClear(int x, int y, int w, int h, const char *pic)
 	const gl4image_t *image = R_FindPic(pic, (findimage_t)GL4_FindImage);
 	if (!image)
 	{
-		Com_Printf("Can't find pic: %s\n", pic);
+		Com_Printf("%s(): Can't find pic: %s\n", __func__, pic);
 		return;
+	}
+
+	if (image->scrap)
+	{
+		/* Upload any pending scrap textures before rendering 2D elements */
+		GL4_Scrap_Upload();
 	}
 
 	GL4_UseProgram(gl4state.si2D.shaderProgram);
 	GL4_Bind(image->texnum);
 
-	drawTexturedRectangle(x, y, w, h, x/64.0f, y/64.0f, (x+w)/64.0f, (y+h)/64.0f);
+	drawTexturedRectangle(x, y, w, h,
+		x / 64.0f, y / 64.0f, (x + w) / 64.0f, (y + h) / 64.0f);
 }
 
 void
@@ -384,7 +419,7 @@ GL4_Draw_Fill(int x, int y, int w, int h, int c)
 		unsigned c;
 		byte v[4];
 	} color;
-	int i;
+	size_t i;
 
 	if ((unsigned)c > 255)
 	{
@@ -402,10 +437,11 @@ GL4_Draw_Fill(int x, int y, int w, int h, int c)
 		x+w, y
 	};
 
-	for (i=0; i<3; ++i)
+	for (i = 0; i < 3; ++i)
 	{
 		gl4state.uniCommonData.color.Elements[i] = color.v[i] * (1.0f/255.0f);
 	}
+
 	gl4state.uniCommonData.color.A = 1.0f;
 
 	GL4_UpdateUBOCommon();
@@ -425,12 +461,12 @@ GL4_Draw_Fill(int x, int y, int w, int h, int c)
 void
 GL4_Draw_Flash(const float color[4], float x, float y, float w, float h)
 {
+	size_t i = 0;
+
 	if (gl_polyblend->value == 0)
 	{
 		return;
 	}
-
-	int i=0;
 
 	GLfloat vBuf[8] = {
 	//  X,   Y
@@ -442,7 +478,10 @@ GL4_Draw_Flash(const float color[4], float x, float y, float w, float h)
 
 	glEnable(GL_BLEND);
 
-	for (i=0; i<4; ++i)  gl4state.uniCommonData.color.Elements[i] = color[i];
+	for (i = 0; i < 4; ++i)
+	{
+		gl4state.uniCommonData.color.Elements[i] = color[i];
+	}
 
 	GL4_UpdateUBOCommon();
 
