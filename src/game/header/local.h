@@ -384,6 +384,7 @@ typedef struct
 
 	/* cross level triggers */
 	int serverflags;
+	int cross_unit_flags;
 
 	qboolean autosaved;
 
@@ -770,7 +771,7 @@ typedef struct
 	char forcemap[MAX_QPATH];           /* go here */
 
 	/* intermission state */
-	float intermissiontime;             /* time the intermission was started */
+	float intermissiontime; /* time the intermission was started */
 	const char *changemap;
 	int exitintermission;
 	vec3_t intermission_origin;
@@ -809,6 +810,7 @@ typedef struct
 	float next_auto_save;          /* target_autosave */
 
 	qboolean is_n64;
+	qboolean story_active;
 
 	buoy_t		buoy_list[MAX_MAP_BUOYS];	//Buoy information for this map
 	int		active_buoys;				//Number of actual buoys on the level
@@ -1690,7 +1692,6 @@ void fire_flaregun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 /* g_ptrail.c */
 void PlayerTrail_Init(void);
 void PlayerTrail_Add(vec3_t spot);
-void PlayerTrail_New(vec3_t spot);
 edict_t *PlayerTrail_PickFirst(const edict_t *self);
 edict_t *PlayerTrail_PickNext(const edict_t *self);
 edict_t *PlayerTrail_LastSpot(void);
@@ -1714,7 +1715,7 @@ void player_repair_skin(edict_t *self);
 
 /* g_svcmds.c */
 void ServerCommand(void);
-qboolean SV_FilterPacket(char *from);
+qboolean SV_FilterPacket(const char *from);
 
 /* p_view.c */
 void G_SetClientFrame(edict_t *ent, float speed);
@@ -2628,7 +2629,7 @@ struct edict_s
 	float nextthink;
 	void (*prethink)(edict_t *ent);
 	void (*think)(edict_t *self);
-	void (*blocked)(edict_t *self, edict_t *other);         /* move to moveinfo? */
+	void (*blocked)(edict_t *self, edict_t *other);
 	void (*touch)(edict_t *self, edict_t *other, const cplane_t *plane,
 			const csurface_t *surf);
 	void (*use)(edict_t *self, edict_t *other, edict_t *activator);
@@ -2901,7 +2902,7 @@ typedef struct dm_game_rs
 	void (*GameInit)(void);
 	void (*PostInitSetup)(void);
 	void (*ClientBegin)(edict_t *ent);
-	void (*SelectSpawnPoint)(edict_t *ent, vec3_t origin, vec3_t angles);
+	void (*SelectSpawnPoint)(const edict_t *ent, vec3_t origin, vec3_t angles);
 	void (*PlayerDeath)(edict_t *targ, edict_t *inflictor, edict_t *attacker);
 	void (*Score)(edict_t *attacker, const edict_t *victim, int scoreChange);
 	void (*PlayerEffects)(edict_t *ent);
@@ -2924,7 +2925,7 @@ int Tag_ChangeDamage(const edict_t *targ, const edict_t *attacker, int damage, i
 
 void DBall_GameInit(void);
 void DBall_ClientBegin(edict_t *ent);
-void DBall_SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
+void DBall_SelectSpawnPoint(const edict_t *ent, vec3_t origin, vec3_t angles);
 int DBall_ChangeKnockback(const edict_t *targ, const edict_t *attacker, int knockback, int mod);
 int DBall_ChangeDamage(const edict_t *targ, const edict_t *attacker, int damage, int mod);
 void DBall_PostInitSetup(void);
@@ -3072,7 +3073,7 @@ char *CTFTeamName(int team);
 char *CTFOtherTeamName(int team);
 void CTFAssignSkin(edict_t *ent, char *s);
 void CTFAssignTeam(gclient_t *who);
-edict_t *SelectCTFSpawnPoint(edict_t *ent);
+edict_t *SelectCTFSpawnPoint(const edict_t *ent);
 qboolean CTFPickup_Flag(edict_t *ent, edict_t *other);
 void CTFDrop_Flag(edict_t *ent, const gitem_t *item);
 void CTFEffects(edict_t *player);
@@ -3162,7 +3163,7 @@ qboolean Pickup_Sphere(edict_t * ent, edict_t * other);
 
 void CopyToBodyQue(edict_t *ent);
 void Use_Plat(edict_t *ent, edict_t *other, edict_t *activator);
-void SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles);
+void SelectSpawnPoint(const edict_t *ent, vec3_t origin, vec3_t angles);
 
 /* platforms states */
 #define STATE_TOP 0

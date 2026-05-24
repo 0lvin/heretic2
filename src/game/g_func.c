@@ -895,7 +895,7 @@ wait_and_change(edict_t* ent, void (*afterwaitfunc)(edict_t *))
 }
 
 void
-Touch_Plat_Center(edict_t *ent, edict_t *other, const cplane_t *plane /* unsed */,
+Touch_Plat_Center(edict_t *ent, edict_t *other, const cplane_t *plane /* unused */,
 		const csurface_t *surf /* unused */)
 {
 	if (!ent || !other)
@@ -2164,9 +2164,8 @@ button_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 }
 
 void
-button_killed(edict_t *self, edict_t *inflictor /* unused */,
-		edict_t *attacker, int damage /* unused */,
-		const vec3_t point /* unused */)
+button_killed(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* unsued */,
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	if (!self || !attacker)
 	{
@@ -2975,9 +2974,8 @@ door_blocked(edict_t *self, edict_t *other)
 }
 
 void
-door_killed(edict_t *self, edict_t *inflictor /* unused */,
-		edict_t *attacker, int damage /* unused */,
-		const vec3_t point /* unused */)
+door_killed(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	edict_t *ent;
 
@@ -4514,9 +4512,8 @@ door_secret_blocked(edict_t *self, edict_t *other)
 }
 
 void
-door_secret_die(edict_t *self, edict_t *inflictor /* unused */,
-		edict_t *attacker, int damage /* unused */,
-		const vec3_t point /* unused */)
+door_secret_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker,
+		int damage /* unused */, const vec3_t point /* unused */)
 {
 	if (!self || !attacker)
 	{

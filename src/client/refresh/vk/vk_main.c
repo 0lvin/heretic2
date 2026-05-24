@@ -1310,7 +1310,10 @@ RE_BeginFrame(float camera_separation)
 	}
 
 	if (QVk_BeginFrame(&vk_viewport, &vk_scissor) == VK_SUCCESS)
+	{
 		QVk_BeginRenderpass(RP_WORLD);
+		vkCmdSetDepthBias(vk_activeCmdbuffer, 0.0f, 0.0f, 0.0f);
+	}
 }
 
 /*

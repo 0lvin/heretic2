@@ -2262,7 +2262,6 @@ droptofloor(edict_t *ent)
 	trace_t tr;
 	const float *v;
 
-
 	if (!ent)
 	{
 		return;

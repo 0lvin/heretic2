@@ -493,7 +493,8 @@ HelpComputerMessage(edict_t *ent)
 			"xv 0 yv 54 cstring2 \"%s\" " /* help 1 */
 			"xv 0 yv 110 cstring2 \"%s\" " /* help 2 */
 			"xv 50 yv 164 string2 \" %-9s %-8s %-9s\" "
-			"xv 50 yv 172 string2 \"%3i/%3i     %i/%i       %i/%i\" ",
+			"xv 50 yv 172 string2 \"%3i/%3i     %i/%i       %i/%i\" "
+			"%s", /* story */
 			sk,
 			level.level_name,
 			gi.LocalizationMessage(game.helpmessage1, NULL),
@@ -503,7 +504,8 @@ HelpComputerMessage(edict_t *ent)
 			gi.LocalizationUIMessage("$g_pc_secrets", "secrets"),
 			level.killed_monsters, level.total_monsters,
 			level.found_goals, level.total_goals,
-			level.found_secrets, level.total_secrets);
+			level.found_secrets, level.total_secrets,
+			level.story_active ? " story ": "");
 
 	gi.WriteByte(svc_layout);
 	gi.WriteString(string);
@@ -808,28 +810,28 @@ G_SetStats(edict_t *ent)
 	{
 		if (!strcmp(ent->target_ent->classname, "trigger_playerusepuzzle"))
 		{
-			ps->stats[STAT_LAYOUTS] |= 4;
+			ps->stats[STAT_LAYOUTS] |= LAYOUTS_HIDE_HUD;
 		}
 	}
 
 	if (ent->client->playerinfo.showpuzzleinventory)
 	{
 		/* Show puzzle inventory. */
-		ps->stats[STAT_LAYOUTS] |= 4;
+		ps->stats[STAT_LAYOUTS] |= LAYOUTS_HIDE_HUD;
 	}
 
 	if (deathmatch->value)
 	{
 		if (pers->health <= 0 || level.intermissiontime || ent->client->playerinfo.showscores)
 		{
-			ps->stats[STAT_LAYOUTS] |= 1;
+			ps->stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
 		}
 	}
 	else
 	{
 		if (ent->client->playerinfo.showscores)
 		{
-			ps->stats[STAT_LAYOUTS] |= 1;
+			ps->stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
 		}
 	}
 }

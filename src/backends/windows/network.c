@@ -862,6 +862,7 @@ NET_IPSocket(char *net_interface, int port, netsrc_t type, int family)
 		if (ioctlsocket(newsocket, FIONBIO, &t) == -1)
 		{
 			Com_Printf("%s: ioctl FIONBIO: %s\n", __func__, strerror(errno));
+			closesocket(newsocket);
 			continue;
 		}
 
@@ -870,6 +871,7 @@ NET_IPSocket(char *net_interface, int port, netsrc_t type, int family)
 		{
 			printf("%s: setsockopt(SO_REUSEADDR) failed: %u\n",
 					__func__, WSAGetLastError());
+			closesocket(newsocket);
 			continue;
 		}
 
@@ -881,6 +883,8 @@ NET_IPSocket(char *net_interface, int port, netsrc_t type, int family)
 			{
 				Com_Printf("ERROR: %s: setsockopt SO_BROADCAST:%s\n",
 						__func__, strerror(errno));
+				closesocket(newsocket);
+				freeaddrinfo(res);
 				return 0;
 			}
 		}
@@ -1236,28 +1240,20 @@ NET_Sleep(int msec)
 	}
 
 	FD_ZERO(&fdset);
-	i = 0;
 
 	if (ip6_sockets[NS_SERVER])
 	{
 		FD_SET(ip6_sockets[NS_SERVER], &fdset); /* network socket */
-		i = ip6_sockets[NS_SERVER];
 	}
 
 	if (ip_sockets[NS_SERVER])
 	{
 		FD_SET(ip_sockets[NS_SERVER], &fdset); /* network socket */
-		i = ip_sockets[NS_SERVER];
 	}
 
 	if (ipx_sockets[NS_SERVER])
 	{
 		FD_SET(ipx_sockets[NS_SERVER], &fdset); /* network socket */
-
-		if (ipx_sockets[NS_SERVER] > i)
-		{
-			i = ipx_sockets[NS_SERVER];
-		}
 	}
 
 	timeout.tv_sec = msec / 1000;

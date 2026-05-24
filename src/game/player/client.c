@@ -2469,11 +2469,14 @@ SP_GetSpawnPoint(void)
  * Chooses a player start, deathmatch start, coop start, etc
  */
 void
-SelectSpawnPoint(edict_t *ent, vec3_t origin, vec3_t angles)
+SelectSpawnPoint(const edict_t *ent, vec3_t origin, vec3_t angles)
 {
 	edict_t *spot = NULL;
 	trace_t	tr;
 	vec3_t endpos;
+
+	VectorClear(origin);
+	VectorClear(angles);
 
 	if (!ent)
 	{
@@ -4162,7 +4165,7 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 qboolean
 ClientConnect(edict_t *ent, char *userinfo)
 {
-	char *value;
+	const char *value;
 
 	if (!ent || !userinfo)
 	{
