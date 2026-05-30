@@ -1371,8 +1371,7 @@ extern int self_spawn;
 
 /* fields are needed for spawning from the entity
    string and saving / loading games */
-#define FFL_SPAWNTEMP 1
-#define FFL_NOSPAWN 2
+#define FFL_NOSPAWN 1
 
 typedef enum
 {
@@ -1401,6 +1400,7 @@ typedef struct
 } field_t;
 
 const field_t *FindSpawnfield(const char *key);
+const field_t *FindSpawntempField(const char *key);
 
 extern gitem_t itemlist[];
 extern size_t itemlist_len;

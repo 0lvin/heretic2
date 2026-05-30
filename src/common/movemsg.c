@@ -570,17 +570,17 @@ MSG_DeltaEntity_Size(const entity_xstate_t *from, const entity_xstate_t *to,
 
 	if (bits & U_ANGLE1)
 	{
-		sz++;
+		sz += IS_QII97_PROTOCOL(protocol) ? 1 : 2;
 	}
 
 	if (bits & U_ANGLE2)
 	{
-		sz++;
+		sz += IS_QII97_PROTOCOL(protocol) ? 1 : 2;
 	}
 
 	if (bits & U_ANGLE3)
 	{
-		sz++;
+		sz += IS_QII97_PROTOCOL(protocol) ? 1 : 2;
 	}
 
 	if (bits & U_OLDORIGIN)
@@ -697,9 +697,16 @@ MSG_WritePos(sizebuf_t *sb, const vec3_t pos, int protocol)
 }
 
 void
-MSG_WriteAngle(sizebuf_t *sb, float f)
+MSG_WriteAngle(sizebuf_t *sb, float f, int protocol)
 {
-	MSG_WriteByte(sb, (int)(f * 256 / 360) & 255);
+	if (IS_QII97_PROTOCOL(protocol))
+	{
+		MSG_WriteByte(sb, (int)(f * 256 / 360) & 255);
+	}
+	else
+	{
+		MSG_WriteAngle16(sb, f);
+	}
 }
 
 void
@@ -1105,17 +1112,17 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 
 	if (bits & U_ANGLE1)
 	{
-		MSG_WriteAngle(msg, to->angles[0]);
+		MSG_WriteAngle(msg, to->angles[0], protocol);
 	}
 
 	if (bits & U_ANGLE2)
 	{
-		MSG_WriteAngle(msg, to->angles[1]);
+		MSG_WriteAngle(msg, to->angles[1], protocol);
 	}
 
 	if (bits & U_ANGLE3)
 	{
-		MSG_WriteAngle(msg, to->angles[2]);
+		MSG_WriteAngle(msg, to->angles[2], protocol);
 	}
 
 	if (bits & U_OLDORIGIN)
@@ -1339,9 +1346,16 @@ MSG_ReadPos(sizebuf_t *msg_read, vec3_t pos, int protocol)
 }
 
 float
-MSG_ReadAngle(sizebuf_t *msg_read)
+MSG_ReadAngle(sizebuf_t *msg_read, int protocol)
 {
-	return MSG_ReadChar(msg_read) * 1.40625f;
+	if (IS_QII97_PROTOCOL(protocol))
+	{
+		return MSG_ReadChar(msg_read) * 1.40625f;
+	}
+	else
+	{
+		return MSG_ReadAngle16(msg_read);
+	}
 }
 
 float

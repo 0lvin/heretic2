@@ -2445,6 +2445,8 @@ Variable *CScript::HandleSpawn(void)
 
 	for(Count = ReadByte(); Count; Count--)
 	{
+		void *b;
+
 		Name = PopStack();
 		Value = PopStack();
 		if (!Name || !Value)
@@ -2454,45 +2456,47 @@ Variable *CScript::HandleSpawn(void)
 
 		NameValue = Name->GetStringValue();
 
-		f = FindSpawnfield(NameValue);
+		f = FindSpawntempField(NameValue);
 		if (f)
 		{
-			byte *b;
+			b = (byte *)&st + f->ofs;
+		}
+		else
+		{
+			f = FindSpawnfield(NameValue);
+			if (!f)
+			{
+				gi.dprintf("'%s' is not a field.\n", NameValue);
+				continue;
+			}
 
-			if (f->flags & FFL_SPAWNTEMP)
-			{
-				b = (byte *)&st;
-			}
-			else
-			{
-				b = (byte *)ent;
-			}
+			b = (byte *)ent + f->ofs;
+		}
 
-			switch (f->type)
-			{
-				case F_LRAWSTRING:
-					*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), true);
-					break;
-				case F_LSTRING:
-					*(char **)(b + f->ofs) = ED_NewString(Value->GetStringValue(), false);
-					break;
-				case F_VECTOR:
-					Value->GetVectorValue(*(vec3_t *)(b+f->ofs));
-					break;
-				case F_INT:
-					*(int *)(b+f->ofs) = Value->GetIntValue();
-					break;
-				case F_FLOAT:
-					*(float *)(b+f->ofs) = Value->GetFloatValue();
-					break;
-				case F_ANGLEHACK:
-					((float *)(b+f->ofs))[0] = 0;
-					((float *)(b+f->ofs))[1] = Value->GetFloatValue();
-					((float *)(b+f->ofs))[2] = 0;
-					break;
-				default:
-					break;
-			}
+		switch (f->type)
+		{
+			case F_LRAWSTRING:
+				*(char **)b = ED_NewString(Value->GetStringValue(), true);
+				break;
+			case F_LSTRING:
+				*(char **)b = ED_NewString(Value->GetStringValue(), false);
+				break;
+			case F_VECTOR:
+				Value->GetVectorValue(*(vec3_t *)b);
+				break;
+			case F_INT:
+				*(int *)b = Value->GetIntValue();
+				break;
+			case F_FLOAT:
+				*(float *)b = Value->GetFloatValue();
+				break;
+			case F_ANGLEHACK:
+				((float *)b)[0] = 0;
+				((float *)b)[1] = Value->GetFloatValue();
+				((float *)b)[2] = 0;
+				break;
+			default:
+				break;
 		}
 	}
 
