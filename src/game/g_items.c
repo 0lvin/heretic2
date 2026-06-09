@@ -2205,7 +2205,7 @@ Use_Item(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused
  * Passedict and edicts owned by passedict are explicitly not checked.
  */
 void
-SearchGoodPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
+FixEntityPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
 	vec3_t ent_origin)
 {
 	int i;
@@ -2260,12 +2260,6 @@ SearchGoodPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *
 }
 
 void
-FixEntityPosition(edict_t *ent)
-{
-	SearchGoodPosition(ent->mins, ent->maxs, ent, ent->s.origin);
-}
-
-void
 droptofloor(edict_t *ent)
 {
 	vec3_t dest;
@@ -2309,7 +2303,7 @@ droptofloor(edict_t *ent)
 
 		if (tr.startsolid)
 		{
-			FixEntityPosition(ent);
+			FixEntityPosition(ent->mins, ent->maxs, ent, ent->s.origin);
 
 			tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 		}
