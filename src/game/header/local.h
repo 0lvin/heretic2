@@ -47,6 +47,10 @@
 /* the "gameversion" client command will print this plus compile date */
 #define GAMEVERSION "yQRHeretic2"
 
+/* player box */
+#define PLAYER_MINS { -16, -16, -34 }
+#define PLAYER_MAXS { 16, 16, 32 }
+
 /* protocol bytes that can be directly added to messages */
 #define svc_muzzleflash 1
 #define svc_muzzleflash2 2
