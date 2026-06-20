@@ -318,7 +318,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		if (playerinfo->flags & PLAYER_FLAG_SLIDE)
 		{
 			//Make sure the player doesn't try to slide underwater
-			if (playerinfo->waterlevel < 2)
+			if (playerinfo->waterlevel < WATER_WAIST)
 			{
 				if (playerinfo->flags & PLAYER_FLAG_COLLISION)
 				{// See if the player is in a jump.
@@ -379,7 +379,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				case ASEQ_FORWARD_FLIP_R:
 
 				// Check for an autovault.
-				if ( (playerinfo->waterlevel < 2) && (playerinfo->upperidle) )
+				if ( (playerinfo->waterlevel < WATER_WAIST) && (playerinfo->upperidle) )
 				{
 					if (PlayerActionCheckVault(playerinfo, 0))
 					{
@@ -414,7 +414,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 				case ASEQ_SSWIM_FAST:
 
 				// Check for an autovault.
-				if (playerinfo->waterlevel < 2 && playerinfo->upperidle)
+				if (playerinfo->waterlevel < WATER_WAIST && playerinfo->upperidle)
 				{
 					if (PlayerActionCheckVault(playerinfo, 0))
 					{
@@ -644,11 +644,11 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 
 		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
 		   (pi.PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
-		   (playerinfo->waterlevel==1))
+		   (playerinfo->waterlevel == WATER_FEET))
 		{
 			PlayerIntLand(playerinfo,delta);
 		}
-		else if ((playerinfo->waterlevel==3)&&(playerinfo->flags&PLAYER_FLAG_FALLING))
+		else if ((playerinfo->waterlevel == WATER_UNDER)&&(playerinfo->flags&PLAYER_FLAG_FALLING))
 		{
 			// We were falling, and we're now underwater so we should STOP FALLING. Capiche?
 			PlayerIntLand(playerinfo,delta);
@@ -657,7 +657,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		return;
 	}
 
-	if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&(playerinfo->waterlevel<=2))
+	if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&(playerinfo->waterlevel <= WATER_WAIST))
 	{
 		PlayerIntLand(playerinfo,delta);
 	}
@@ -666,11 +666,11 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 
 	// Never take falling damage if completely underwater.
 
-	if (playerinfo->waterlevel==3)
+	if (playerinfo->waterlevel == WATER_UNDER)
 		return;
-	if (playerinfo->waterlevel==2)
+	if (playerinfo->waterlevel == WATER_WAIST)
 		delta*=0.25;
-	if (playerinfo->waterlevel==1)
+	if (playerinfo->waterlevel == WATER_FEET)
 		delta*=0.5;
 
 	if (playerinfo->seqcmd[ACMDL_CROUCH])

@@ -404,7 +404,7 @@ qboolean ssithraCheckInWater (edict_t *self)
 		{
 			if (!(self->flags & FL_INSLIME))
 			{
-				if (self->waterlevel > 2 || !self->groundentity)//???
+				if (self->waterlevel > WATER_WAIST || !self->groundentity)//???
 				{
 					inwater = true;
 				}

@@ -1103,7 +1103,6 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 				canthrownode_player(self, MESH__LHANDHI,&throw_nodes);
 				canthrownode_player(self, MESH__RHANDHI,&throw_nodes);
 
-//				player_dropweapon (self, (int)damage, (BIT_BOWACTV|BIT_BLADSTF|BIT_HELSTF));
 				ThrowBodyPart(self, gore_spot, throw_nodes, damage, 1);
 				VectorAdd(self->s.origin, gore_spot, gore_spot);
 				SprayDebris(self,gore_spot,12,damage);
@@ -1425,7 +1424,7 @@ void player_make_gib(edict_t *self, edict_t *attacker)
 	self->takedamage = DAMAGE_NO;
 }
 
-void
+static void
 TossClientWeapon(edict_t *self)
 {
 	const gitem_t *item;
@@ -1726,7 +1725,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 				self->svflags |= SVF_ALWAYS_SEND;
 				self->s.effects |= EF_NODRAW_ALWAYS_SEND | EF_ALWAYS_ADD_EFFECTS;
 			}
-			else if ( (self->client->playerinfo.flags & PLAYER_FLAG_SURFSWIM) || (self->waterlevel >= 2) )
+			else if ( (self->client->playerinfo.flags & PLAYER_FLAG_SURFSWIM) || (self->waterlevel >= WATER_WAIST) )
 			{
 				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
 				gi.sound(self,CHAN_BODY, gi.soundindex("*drowndeath.wav"), 1, ATTN_NORM, 0);
@@ -2783,7 +2782,7 @@ respawn(edict_t *self)
  * note that resp.spectator should be the
  * opposite of pers.spectator here
  */
-void
+static void
 spectator_respawn(edict_t *ent)
 {
 	if (!ent)
@@ -3505,7 +3504,7 @@ PutClientInServer(edict_t *ent)
 	ent->model = "players/male/tris.md2";
 	ent->pain = player_pain;
 	ent->die = player_die;
-	ent->waterlevel = 0;
+	ent->waterlevel = WATER_NONE;
 	ent->watertype = 0;
 	ent->flags &= ~FL_NO_KNOCKBACK;
 	ent->svflags &= ~SVF_DEADMONSTER;
@@ -3743,7 +3742,7 @@ PutClientInServer(edict_t *ent)
  * deathmatch mode, so clear everything out before
  * starting them.
  */
-void
+static void
 ClientBeginDeathmatch(edict_t *ent)
 {
 	if (!ent)
@@ -4582,7 +4581,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		}
 
 		// Check to add into movement velocity through crouch and duck if underwater.
-		if (!ent->deadflag && ent->waterlevel > 2)
+		if (!ent->deadflag && ent->waterlevel > WATER_WAIST)
 		{
 			// NOTENOTE: If they're pressing both, nullify it.
 
@@ -4596,7 +4595,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 				ent->velocity[2] += SWIM_ADJUST_AMOUNT;
 			}
 		}
-		else if (!ent->deadflag && ent->waterlevel > 1)	// On the surface trying to go down???
+		else if (!ent->deadflag && ent->waterlevel > WATER_FEET)	// On the surface trying to go down???
 		{
 			// NOTENOTE: If they're pressing both, nullify it.
 
@@ -4696,7 +4695,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		client->resp.cmd_angles[1] = SHORT2ANGLE(ucmd->angles[1]);
 		client->resp.cmd_angles[2] = SHORT2ANGLE(ucmd->angles[2]);
 
-		if (ent->waterlevel)
+		if (ent->waterlevel > WATER_NONE)
 		{
 			client->playerinfo.flags |= FL_INWATER;
 		}

@@ -144,24 +144,24 @@ M_MonsterCatPos(edict_t *ent)
 
 	if (!(cont & MASK_WATER))
 	{
-		ent->waterlevel = 0;
+		ent->waterlevel = WATER_NONE;
 		ent->watertype = 0;
 		return;
 	}
 
 	point[2] -= 1;
 	ent->watertype = cont;
-	ent->waterlevel = 1;//below knees
+	ent->waterlevel = WATER_FEET;//below knees
 	point[2] += ent->size[2] * 0.25;// quarter of way up
 	cont = gi.pointcontents (point);
 	if (!(cont & MASK_WATER))
 		return;
 
-	ent->waterlevel = 2;//between knees and head
+	ent->waterlevel = WATER_WAIST;//between knees and head
 	point[2] = ent->absmax[2];//over head
 	cont = gi.pointcontents (point);
 	if (cont & MASK_WATER)
-		ent->waterlevel = 3;//all the way in
+		ent->waterlevel = WATER_UNDER;//all the way in
 }
 
 void monster_start_go(edict_t *self);
@@ -628,9 +628,21 @@ M_CheckGround(edict_t *ent)
 			ent, MASK_MONSTERSOLID);
 
 	/* check steepness */
-	if ((trace.plane.normal[2] < 0.7) && !trace.startsolid)
+	if (ent->gravityVector[2] < 0) /* normal gravity */
 	{
-		return;
+		if ((trace.plane.normal[2] < 0.7) && !trace.startsolid)
+		{
+			ent->groundentity = NULL;
+			return;
+		}
+	}
+	else /* inverted gravity */
+	{
+		if ((trace.plane.normal[2] > -0.7) && !trace.startsolid)
+		{
+			ent->groundentity = NULL;
+			return;
+		}
 	}
 
 	if (!trace.startsolid && !trace.allsolid)
@@ -667,13 +679,13 @@ M_CatagorizePosition(edict_t *ent)
 
 	if (!(cont & MASK_WATER))
 	{
-		ent->waterlevel = 0;
+		ent->waterlevel = WATER_NONE;
 		ent->watertype = 0;
 		return;
 	}
 
 	ent->watertype = cont;
-	ent->waterlevel = 1;
+	ent->waterlevel = WATER_FEET;
 	point[2] += 26;
 	cont = gi.pointcontents(point);
 
@@ -682,13 +694,13 @@ M_CatagorizePosition(edict_t *ent)
 		return;
 	}
 
-	ent->waterlevel = 2;
+	ent->waterlevel = WATER_WAIST;
 	point[2] += 22;
 	cont = gi.pointcontents(point);
 
 	if (cont & MASK_WATER)
 	{
-		ent->waterlevel = 3;
+		ent->waterlevel = WATER_UNDER;
 	}
 }
 
@@ -704,7 +716,7 @@ M_WorldEffects(edict_t *ent)
 	{
 		if (!(ent->flags & FL_SWIM))
 		{
-			if (ent->waterlevel < 3 || (ent->monsterinfo.aiflags&AI_SWIM_OK))
+			if (ent->waterlevel < WATER_UNDER || (ent->monsterinfo.aiflags & AI_SWIM_OK))
 			{
 				ent->air_finished = level.time + M_HOLD_BREATH_TIME;
 			}
@@ -730,7 +742,7 @@ M_WorldEffects(edict_t *ent)
 		}
 		else
 		{
-			if (ent->waterlevel > 0 || (ent->monsterinfo.aiflags&AI_SWIM_OK))
+			if (ent->waterlevel > WATER_NONE || (ent->monsterinfo.aiflags & AI_SWIM_OK))
 			{
 				ent->air_finished = level.time + 9;
 			}
@@ -756,7 +768,7 @@ M_WorldEffects(edict_t *ent)
 		}
 	}
 
-	if (ent->waterlevel == 0)
+	if (ent->waterlevel == WATER_NONE)
 	{
 		// INWATER is set whether in lava, slime or water.
 		if (ent->flags & FL_INWATER)
@@ -1435,6 +1447,22 @@ M_MoveFrame(edict_t *self)
 				/* regrab move, endfunc is very likely to change it */
 				move = self->monsterinfo.currentmove;
 
+				/* we need to recompute as endfunc may have swapped to a move with a different frame range */
+				if (move)
+				{
+					firstframe = move->firstframe;
+					lastframe = move->lastframe;
+
+					reverse = false;
+
+					if (lastframe < firstframe)
+					{
+						reverse = true;
+						firstframe = move->lastframe;
+						lastframe = move->firstframe;
+					}
+				}
+
 				/* check for death */
 				if (self->svflags & SVF_DEADMONSTER)
 				{
@@ -2067,8 +2095,7 @@ monster_triggered_spawn(edict_t *self)
 
 	if (strcmp(self->classname, "monster_fixbot") == 0)
 	{
-		if (self->spawnflags & 16 || self->spawnflags & 8 || self->spawnflags &
-			4)
+		if (self->spawnflags & (SPAWNFLAG_FIXBOT_LANDING | SPAWNFLAG_FIXBOT_TAKEOFF | SPAWNFLAG_FIXBOT_FIXIT))
 		{
 			self->enemy = NULL;
 			return;
@@ -2114,9 +2141,29 @@ monster_triggered_spawn_use(edict_t *self, edict_t *other /* unused */, edict_t 
 	}
 
 	self->use = monster_use;
+
+	if (self->spawnflags & SPAWNFLAG_MONSTER_SCENIC)
+	{
+		int i;
+
+		M_droptofloor(self);
+
+		self->nextthink = 0;
+		self->think(self);
+
+		if (self->spawnflags & SPAWNFLAG_MONSTER_AMBUSH)
+		{
+			monster_use(self, other, activator);
+		}
+
+		for (i = 0; i < 30; i++)
+		{
+			self->think(self);
+		}
+	}
 }
 
-void
+static void
 monster_triggered_start(edict_t *self)
 {
 	if (!self)
@@ -2384,6 +2431,7 @@ monster_start_go(edict_t *self)
 {
 	vec3_t v;
 	float	volume;
+	qboolean spawn_dead = false;
 
 	if (!self)
 	{
@@ -2486,7 +2534,7 @@ monster_start_go(edict_t *self)
 			{
 				gi.dprintf ("%s can't find target %s at %s\n", self->classname, self->target, vtos(self->s.origin));
 				self->target = NULL;
-				self->monsterinfo.pausetime = 100000000;
+				self->monsterinfo.pausetime = HOLD_FOREVER;
 
 				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
@@ -2506,7 +2554,7 @@ monster_start_go(edict_t *self)
 				else
 				{
 					self->goalentity = self->movetarget = NULL;
-					self->monsterinfo.pausetime = 100000000;
+					self->monsterinfo.pausetime = HOLD_FOREVER;
 					if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 						G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 					else
@@ -2517,7 +2565,7 @@ monster_start_go(edict_t *self)
 			else
 			{
 				self->goalentity = self->movetarget = NULL;
-				self->monsterinfo.pausetime = 100000000;
+				self->monsterinfo.pausetime = HOLD_FOREVER;
 				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
 					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 				else
@@ -2526,7 +2574,7 @@ monster_start_go(edict_t *self)
 		}
 		else
 		{
-			self->monsterinfo.pausetime = 100000000;
+			self->monsterinfo.pausetime = HOLD_FOREVER;
 			if (self->monsterinfo.aiflags & AI_EATING)
 			{
 				G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
@@ -2541,8 +2589,100 @@ monster_start_go(edict_t *self)
 		}
 	}
 
-	self->think = monster_think;
-	self->nextthink = level.time + FRAMETIME;
+	if (spawn_dead)
+	{
+		int lastframe = 0;
+		mmove_t *move;
+		vec3_t f;
+
+		/* to spawn dead, we'll mimick them dying naturally */
+		self->health = 0;
+
+		VectorCopy(self->s.origin, f);
+
+		if (self->die)
+		{
+			self->die(self, self, self, 0, vec3_origin);
+		}
+
+		if (!self->inuse)
+		{
+			return;
+		}
+
+		move = self->monsterinfo.currentmove;
+		if (move)
+		{
+			int firstframe, i;
+
+			firstframe = move->firstframe;
+			lastframe = move->lastframe;
+
+			if (lastframe < firstframe)
+			{
+				firstframe = move->lastframe;
+				lastframe = move->firstframe;
+			}
+
+			/* static move */
+			for (i = firstframe; i < lastframe; i++)
+			{
+				self->s.frame = i;
+
+				if (move->frame[i - firstframe].thinkfunc)
+				{
+					move->frame[i - firstframe].thinkfunc(self);
+				}
+
+				if (!self->inuse)
+				{
+					return;
+				}
+			}
+
+			if (move->endfunc)
+			{
+				move->endfunc(self);
+			}
+		}
+		else if (self->monsterinfo.action)
+		{
+			int firstframe;
+
+			firstframe = self->monsterinfo.firstframe;
+
+			if (self->monsterinfo.numframes > 0)
+			{
+				lastframe = firstframe + self->monsterinfo.numframes - 1;
+			}
+			else
+			{
+				lastframe = firstframe - self->monsterinfo.numframes - 1;
+			}
+		}
+
+		if (!self->inuse)
+		{
+			return;
+		}
+
+		if (self->monsterinfo.dead_frame)
+		{
+			self->s.frame = self->monsterinfo.dead_frame;
+		}
+		else
+		{
+			self->s.frame = lastframe;
+		}
+
+		VectorCopy(f, self->s.origin);
+		gi.linkentity(self);
+	}
+	else
+	{
+		self->think = monster_think;
+		self->nextthink = level.time + FRAMETIME;
+	}
 }
 
 void
@@ -2739,7 +2879,7 @@ stationarymonster_triggered_spawn_use(edict_t *self, edict_t *other /* unused */
 	self->use = monster_use;
 }
 
-void
+static void
 stationarymonster_triggered_start(edict_t *self)
 {
 	if (!self)

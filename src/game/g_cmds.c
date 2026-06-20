@@ -1344,7 +1344,7 @@ Cmd_WeapPrev_f(edict_t *ent)
 		}
 
 		// if we are in water, don't select any weapon that requires ammo
-		if ((ent->waterlevel >= 2) &&
+		if ((ent->waterlevel >= WATER_WAIST) &&
 			((it->tag == ITEM_WEAPON_HELLSTAFF) ||
 			 (it->tag == ITEM_WEAPON_REDRAINBOW) ||
 			 (it->tag == ITEM_WEAPON_PHOENIXBOW)))
@@ -1406,7 +1406,7 @@ Cmd_WeapNext_f(edict_t *ent)
 			continue;
 
 		// if we are in water, don't select any weapon that requires ammo
-		if ((ent->waterlevel >= 2) &&
+		if ((ent->waterlevel >= WATER_WAIST) &&
 			((it->tag == ITEM_WEAPON_HELLSTAFF) ||
 			(it->tag == ITEM_WEAPON_REDRAINBOW) ||
 			(it->tag == ITEM_WEAPON_PHOENIXBOW)))

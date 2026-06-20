@@ -832,17 +832,17 @@ P_FallingDamage(edict_t *ent)
 	}
 
 	/* never take falling damage if completely underwater */
-	if (ent->waterlevel == 3)
+	if (ent->waterlevel == WATER_UNDER)
 	{
 		return;
 	}
 
-	if (ent->waterlevel == 2)
+	if (ent->waterlevel == WATER_WAIST)
 	{
 		delta *= 0.25;
 	}
 
-	if (ent->waterlevel == 1)
+	if (ent->waterlevel == WATER_FEET)
 	{
 		delta *= 0.5;
 	}
@@ -1255,7 +1255,8 @@ P_WorldEffects(void)
 	// Start a waterwake effect if the current player has been in water and still is in water.
 	//
 
-	if (waterlevel && (old_waterlevel&&waterlevel < 3) && (VectorLength(current_player->velocity) != 0.0))
+	if (waterlevel && (old_waterlevel && waterlevel < WATER_UNDER) &&
+		(VectorLength(current_player->velocity) != 0.0))
 	{
 		// no ripples while in cinematics
 		if (sv_cinematicfreeze->value)
@@ -1295,7 +1296,7 @@ P_WorldEffects(void)
 	}
 
 	/* check for head just coming out of water */
-	if ((old_waterlevel == 3) && (waterlevel != 3))
+	if ((old_waterlevel == WATER_UNDER) && (waterlevel != WATER_UNDER))
 	{
 		if (current_player->air_finished < level.time)
 		{
@@ -1314,7 +1315,7 @@ P_WorldEffects(void)
 	}
 
 	/* check for drowning */
-	if (waterlevel == 3)
+	if (waterlevel == WATER_UNDER)
 	{
 		if (current_player->watertype & CONTENTS_SLIME)
 		{
@@ -1400,7 +1401,7 @@ P_WorldEffects(void)
 			}
 		}
 
-		if (old_waterlevel !=  3)
+		if (old_waterlevel != WATER_UNDER)
 		{	// We weren't underwater before this, so play a submerged sound
 			gi.sound(current_player, CHAN_VOICE, gi.soundindex("player/underwater.wav"), 1, ATTN_IDLE, 0);
 		}
@@ -1444,7 +1445,7 @@ P_WorldEffects(void)
 	}
 }
 
-void
+static void
 G_SetClientEffects(edict_t *ent)
 {
 	int remaining;
@@ -1564,7 +1565,7 @@ G_SetClientEffects(edict_t *ent)
 	}
 }
 
-void
+static void
 G_SetClientEvent(edict_t *ent)
 {
 	if (!ent)
@@ -1611,7 +1612,7 @@ G_SetClientEvent(edict_t *ent)
 	}
 }
 
-void
+static void
 G_SetClientSound(edict_t *ent)
 {
 #if 0
@@ -1824,7 +1825,7 @@ newanim:
 			firstframe = FRAME_run1;
 			lastframe = FRAME_run6;
 
-			if (ent->waterlevel >= 2)
+			if (ent->waterlevel >= WATER_WAIST)
 			{
 				animname = "swim";
 			}

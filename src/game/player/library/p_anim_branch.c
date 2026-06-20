@@ -264,14 +264,14 @@ int ChickenBranchLwrStanding(playerinfo_t *playerinfo)
 	// Decide if we have just fallen off something, or we are falling down.
 
 	//Since the chicken runs through this always, make sure we don't check for falling in the water!
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2)
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST)
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALL;
 	}
 
 	// Decide what we should be doing now.
-	if (playerinfo->waterlevel >= 2)
+	if (playerinfo->waterlevel >= WATER_WAIST)
 	{
 		if (playerinfo->seqcmd[ACMDL_FWD])
 			return ASEQ_USWIMF_GO;
@@ -454,7 +454,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		playerinfo->idletime = playerinfo->leveltime;
 
 	//Check for a fall
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2)
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST)
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALL;
@@ -661,7 +661,7 @@ int BranchLwrStandingRun(playerinfo_t *playerinfo)
 
 	assert(playerinfo);
 
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2)
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST)
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALL;
@@ -751,7 +751,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	//Check for the player falling [LOW PROBABILITY, IMMEDIATE CONCERN]
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALLWALK_GO;
@@ -996,7 +996,7 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 /*	assert(playerinfo);
 
 	//Check for the player falling [LOW PROBABILITY, BUT IMMEDIATE CONCERN]
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALLWALK_GO;
@@ -1129,7 +1129,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	//Check for the player falling [LOW PROBABILITY, BUT IMMEDIATE CONCERN]
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALLWALK_GO;
@@ -1255,7 +1255,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 
 	assert(playerinfo);
 
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALLWALK_GO;
@@ -1365,7 +1365,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALLWALK_GO;
@@ -1488,7 +1488,7 @@ int BranchLwrBackspring(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_FALLWALK_GO;
@@ -1578,7 +1578,7 @@ int BranchLwrCrouching(playerinfo_t *playerinfo)
 		playerinfo->self->maxs[2] = 4;
 	}
 
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2)
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST)
 	{
 		if (CheckFall(playerinfo))
 			return ASEQ_CROUCH_END;
@@ -1718,7 +1718,7 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 		if (playerinfo->lowerseq == ASEQ_PULLUP_HALFWALL)
 			return ASEQ_PULLUP_HALFWALL;
 
-		if (playerinfo->waterlevel > 2)
+		if (playerinfo->waterlevel > WATER_WAIST)
 		{
 			return ASEQ_USWIMF_GO;
 		}
@@ -1759,7 +1759,7 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 	}
 	else
 	{
-		if (playerinfo->waterlevel > 2 && (playerinfo->lowerseq == ASEQ_SSWIM_IDLE))
+		if (playerinfo->waterlevel > WATER_WAIST && (playerinfo->lowerseq == ASEQ_SSWIM_IDLE))
 			return ASEQ_USWIM_IDLE;
 
 		return ASEQ_NONE;
@@ -1793,7 +1793,7 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 	}
 	else if (playerinfo->seqcmd[ACMDL_FWD])
 	{
-		if (playerinfo->waterlevel <= 2)
+		if (playerinfo->waterlevel <= WATER_WAIST)
 		{
 			return ASEQ_SSWIM_RESURFACE;
 		}
@@ -1831,7 +1831,7 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 	}
 	else
 	{
-		if (playerinfo->waterlevel <= 2 && (playerinfo->lowerseq == ASEQ_USWIM_IDLE))
+		if (playerinfo->waterlevel <= WATER_WAIST && (playerinfo->lowerseq == ASEQ_USWIM_IDLE))
 			return ASEQ_SSWIM_IDLE;
 
 		return ASEQ_NONE;

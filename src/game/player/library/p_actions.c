@@ -2447,7 +2447,7 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
 
-	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < 2)
+	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < WATER_WAIST)
 	{
 		playerinfo->upvel = value*10;
 	}
@@ -2472,7 +2472,7 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
 
-	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < 2)
+	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < WATER_WAIST)
 	{
 		playerinfo->upvel = 150;
 	}
@@ -3049,7 +3049,7 @@ void PlayScratch(playerinfo_t *playerinfo, float dist)
 
 void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 {
-	if (playerinfo->waterlevel==0)
+	if (playerinfo->waterlevel == WATER_NONE)
 	{
 		pi.G_CreateEffect(playerinfo->self,
 								   FX_DUST_PUFF,
@@ -3471,7 +3471,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 {
 	int	curseq = playerinfo->lowerseq;
 
-	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < 2 && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if (playerinfo->groundentity==NULL && playerinfo->waterlevel < WATER_WAIST && !(playerinfo->watertype & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 		if (CheckFall(playerinfo))
 		{

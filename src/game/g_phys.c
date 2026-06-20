@@ -1099,11 +1099,11 @@ SV_Physics_Toss(edict_t *ent)
 
 	if (isinwater)
 	{
-		ent->waterlevel = 1;
+		ent->waterlevel = WATER_FEET;
 	}
 	else
 	{
-		ent->waterlevel = 0;
+		ent->waterlevel = WATER_NONE;
 	}
 
 	/* Don't do the sounds for the camera */
@@ -1232,14 +1232,14 @@ SV_Physics_Step(edict_t *ent)
 	{
 		if (!(ent->flags & FL_FLY))
 		{
-			if (!((ent->flags & FL_SWIM) && (ent->waterlevel > 2)))
+			if (!((ent->flags & FL_SWIM) && (ent->waterlevel > WATER_WAIST)))
 			{
 				if (ent->velocity[2] < sv_gravity->value * -0.1)
 				{
 					hitsound = true;
 				}
 
-				if (ent->waterlevel == 0)
+				if (ent->waterlevel == WATER_NONE)
 				{
 					SV_AddGravity(ent);
 				}
@@ -1567,7 +1567,11 @@ G_RunEntity(edict_t *ent)
 			SV_Physics_Script_Angular(ent);
 			break;
 		default:
-			gi.error("%s: bad movetype %i", __func__, (int)ent->movetype);
+			gi.dprintf("%s:%d has bad movetype: %d\n",
+				ent->classname, ent->s.number, ent->movetype);
+			ent->movetype = MOVETYPE_NONE;
+			SV_Physics_None(ent);
+			break;
 	}
 
 	/* if we moved, check and fix origin if needed */
@@ -1702,11 +1706,11 @@ SV_Physics_NewToss(edict_t *ent)
 
 	if (isinwater)
 	{
-		ent->waterlevel = 1;
+		ent->waterlevel = WATER_FEET;
 	}
 	else
 	{
-		ent->waterlevel = 0;
+		ent->waterlevel = WATER_NONE;
 	}
 
 	if (!wasinwater && isinwater)
@@ -3508,7 +3512,7 @@ qboolean CheckAnimMove(edict_t *self, vec3_t origin, vec3_t move, float *dist, f
 		// probably want to actually let monsters wade
 		if (self->flags & FL_INWATER)
 		{
-			self->waterlevel = 0;
+			self->waterlevel = WATER_NONE;
 			self->watertype = 0;
 
 			self->flags &= ~FL_INWATER;

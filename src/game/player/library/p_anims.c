@@ -467,8 +467,8 @@ PlayerAnimSetVault(playerinfo_t *playerinfo, int seq)
 	playerinfo->pm_flags |= PMF_LOCKMOVE;
 	VectorClear(playerinfo->self->velocity);
 
-	if (playerinfo->waterlevel>1)
-		playerinfo->waterlevel = 1;
+	if (playerinfo->waterlevel > WATER_FEET)
+		playerinfo->waterlevel = WATER_FEET;
 }
 
 void

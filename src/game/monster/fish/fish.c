@@ -342,7 +342,7 @@ void fish_think (edict_t *self)
 	M_CatagorizePosition(self);
 
 	// did we break the surface ?
-	if (self->waterlevel < 3)
+	if (self->waterlevel < WATER_UNDER)
 	{
 		// if we break water - don't let us target anyone anymore
 		self->enemy = NULL;
@@ -564,7 +564,7 @@ void finished_fish_pain(edict_t *self)
 	self->ai_mood = AI_MOOD_WANDER;
 	self->deadflag = DEAD_NO;
 
-	if (self->waterlevel == 3)
+	if (self->waterlevel == WATER_UNDER)
 		fish_hunt(self);
 }
 
@@ -740,14 +740,14 @@ void fish_deadfloat(edict_t *self)
 
 	M_CatagorizePosition(self);
 
-	if (self->waterlevel == 3)
+	if (self->waterlevel == WATER_UNDER)
 	{
 		if (self->velocity[2]<10)
 			self->velocity[2]+=10;
 		else
 			self->velocity[2] = 20;	// Just in case somethimg blocked it going up
 	}
-	else if (self->waterlevel < 2)
+	else if (self->waterlevel < WATER_WAIST)
 	{
 		if (self->velocity[2] > -150)
 			self->velocity[2] -= 50;	// Fall back in now!

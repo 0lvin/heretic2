@@ -721,7 +721,7 @@ G_SetStats(edict_t *ent)
 	ps->stats[STAT_LUNG_BACK] =	gi.imageindex("icons/breath2");
 	ps->stats[STAT_LUNG_ICON] =	gi.imageindex("icons/breath");
 	ps->stats[STAT_LUNG_TIMER] = 0;
-	if ((ent->waterlevel > 2) && !(ent->flags & FL_INLAVA))
+	if ((ent->waterlevel > WATER_WAIST) && !(ent->flags & FL_INLAVA))
 	{
 		// Make negative if we have lungs powerup.
 		if (pi->playerinfo.lungs_timer)

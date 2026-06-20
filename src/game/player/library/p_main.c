@@ -188,13 +188,13 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	{
 		// Then we SHOULD be in water for this particular move.
 
-		if ((playerinfo->waterlevel > 2) && (PlayerSeqData2[playerinfo->lowerseq].waterseq == ASEQ_SSWIM_IDLE))
+		if ((playerinfo->waterlevel > WATER_WAIST) && (PlayerSeqData2[playerinfo->lowerseq].waterseq == ASEQ_SSWIM_IDLE))
 		{
 			// We're completely under the water.
 
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_USWIM_IDLE);
 		}
-		else if (playerinfo->waterlevel < 1 || (playerinfo->waterlevel < 2 && playerinfo->groundentity))
+		else if (playerinfo->waterlevel < WATER_FEET|| (playerinfo->waterlevel < WATER_WAIST && playerinfo->groundentity))
 		{
 			// If we are not in the water at all currently OR if our toes are in yet our feet are
 			// touching the ground then we abandon the water sequence. Waterseq here represents the
@@ -210,13 +210,13 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	{
 		// We should NOT be in water for this particular move.
 
-		if ((playerinfo->waterlevel > 2) && (PlayerSeqData2[playerinfo->lowerseq].waterseq == ASEQ_SSWIM_IDLE))
+		if ((playerinfo->waterlevel > WATER_WAIST) && (PlayerSeqData2[playerinfo->lowerseq].waterseq == ASEQ_SSWIM_IDLE))
 		{
 			// We're completely under the water.
 
 			PlayerAnimSetLowerSeq(playerinfo, ASEQ_USWIM_IDLE);
 		}
-		else if (playerinfo->waterlevel >= 2)
+		else if (playerinfo->waterlevel >= WATER_WAIST)
 		{
 			// We're now in water, go to the appropriate water sequence. Waterseq here represents
 			// the proper sequence to go to when ENTERING water.

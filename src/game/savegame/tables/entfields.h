@@ -144,6 +144,7 @@
 {"duck", FOFS(monsterinfo.duck), F_FUNCTION, FFL_NOSPAWN},
 {"unduck", FOFS(monsterinfo.unduck), F_FUNCTION, FFL_NOSPAWN},
 {"sidestep", FOFS(monsterinfo.sidestep), F_FUNCTION, FFL_NOSPAWN},
+{"dead_frame", FOFS(monsterinfo.dead_frame), F_INT},
 {"time", FOFS(time), F_FLOAT},
 {"text_msg", FOFS(text_msg), F_LSTRING},
 {"jumptarget", FOFS(combattarget), F_LSTRING},

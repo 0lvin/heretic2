@@ -178,7 +178,7 @@ ai_trystep(edict_t *ent, vec3_t move)
 	}
 
 	// don't go in to water unless only 40% hieght deep
-	if (ent->waterlevel == 0)
+	if (ent->waterlevel == WATER_NONE)
 	{
 		test[0] = trace.endpos[0];
 		test[1] = trace.endpos[1];
@@ -1441,7 +1441,7 @@ startcheck:
 	}
 
 	// if we are a fish - is the target in the water - have to be at least waist deep?
-	if (self->classID == CID_FISH && client->waterlevel < 2)
+	if (self->classID == CID_FISH && client->waterlevel < WATER_WAIST)
 		goto nextcheck;	//????
 
 	if (client->client)
@@ -3577,7 +3577,7 @@ MG_MoveStep(edict_t *self, vec3_t move, qboolean relink, qboolean *trace_succeed
 				{
 					if (dz > 40)
 						test_org[2] -= 8;
-					if (!((self->flags & FL_SWIM) && (self->waterlevel < 2)))
+					if (!((self->flags & FL_SWIM) && (self->waterlevel < WATER_WAIST)))
 						if (dz < 30)
 							test_org[2] += 8;
 				}
@@ -3616,7 +3616,7 @@ MG_MoveStep(edict_t *self, vec3_t move, qboolean relink, qboolean *trace_succeed
 			// swim monsters don't exit water voluntarily
 			if (self->flags & FL_SWIM)
 			{
-				if (self->waterlevel < 2)
+				if (self->waterlevel < WATER_WAIST)
 				{
 					test[0] = trace.endpos[0];
 					test[1] = trace.endpos[1];
@@ -3698,7 +3698,7 @@ MG_MoveStep(edict_t *self, vec3_t move, qboolean relink, qboolean *trace_succeed
 	}
 
 	// don't go in to water unless only 40% hieght deep or an amphibian
-	if (self->waterlevel == 0)
+	if (self->waterlevel == WATER_NONE)
 	{//not currently in water
 		test[0] = trace.endpos[0];
 		test[1] = trace.endpos[1];

@@ -738,7 +738,7 @@ void CheckContinuousAutomaticEffects(edict_t *self)
 			{
 				float waterlevel;
 
-				waterlevel = self->waterlevel/5.0;
+				waterlevel = self->waterlevel / 5.0;
 				if (self->watertype & CONTENTS_LAVA)
 					waterlevel = 0;
 				self->fire_damage_time -= (0.15 + (waterlevel*0.5));//stop, drop and roll!

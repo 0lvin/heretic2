@@ -122,7 +122,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 							  playerinfo->self,
 							  MASK_PLAYERSOLID);
 
-	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel<2)
+	if ((playerinfo->groundentity || trace.fraction < 0.2) && playerinfo->waterlevel < WATER_WAIST)
 		playerinfo->upvel=200;
 
 	PlayerAnimSetLowerSeq(playerinfo,ASEQ_FALL);

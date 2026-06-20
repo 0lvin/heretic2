@@ -2329,7 +2329,7 @@ void assassinCloakThink (edict_t *self)
 		}
 	}
 
-	if (self->waterlevel == 3 && self->air_finished <= level.time)//going to drown!
+	if (self->waterlevel == WATER_UNDER && self->air_finished <= level.time)//going to drown!
 	{//pick either last buoy or my startspot
 		VectorCopy(self->pos1, tport_dest);
 		if (self->lastbuoy>NULL_BUOY)

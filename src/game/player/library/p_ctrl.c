@@ -211,7 +211,7 @@ void PlayerIntLand(playerinfo_t *playerinfo, float landspeed)
 
 	// Don't do dust in the water!
 
-	if (playerinfo->waterlevel == 0)
+	if (playerinfo->waterlevel == WATER_NONE)
 	{
 		pi.G_CreateEffect(playerinfo->self,
 			FX_DUST_PUFF,

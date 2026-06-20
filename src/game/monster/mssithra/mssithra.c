@@ -713,7 +713,7 @@ void SP_monster_mssithra (edict_t *self)
 	self->flags |= FL_IMMUNE_SLIME;
 	if (self->flags&FL_INWATER||
 		gi.pointcontents(self->s.origin)&CONTENTS_WATER||
-		self->waterlevel >= 3)
+		self->waterlevel >= WATER_UNDER)
 		self->flags|=FL_SWIM;
 
 	if (self->health<=0)

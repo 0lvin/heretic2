@@ -662,7 +662,7 @@ ChangeWeapon(edict_t *ent)
 	}
 }
 
-void
+static void
 NoAmmoWeaponChange(edict_t *ent)
 {
 	if (!ent)
@@ -1550,7 +1550,7 @@ Weapon_Tesla(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 weapon_grenadelauncher_fire(edict_t *ent)
 {
 	vec3_t offset;
@@ -1687,7 +1687,7 @@ Weapon_ProxLauncher(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 Weapon_RocketLauncher_Fire(edict_t *ent)
 {
 	vec3_t offset, start;
@@ -1786,7 +1786,7 @@ Weapon_RocketLauncher(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 Blaster_Fire(edict_t *ent, vec3_t g_offset, int damage,
 		qboolean hyper, int effect)
 {
@@ -1855,7 +1855,7 @@ Blaster_Fire(edict_t *ent, vec3_t g_offset, int damage,
 	PlayerNoise(ent, start, PNOISE_WEAPON);
 }
 
-void
+static void
 Weapon_Blaster_Fire(edict_t *ent)
 {
 	int damage;
@@ -1940,7 +1940,7 @@ Weapon_DynamicWeapon(edict_t *ent)
 	}
 }
 
-void
+static void
 Weapon_HyperBlaster_Fire(edict_t *ent)
 {
 	if (!ent)
@@ -2050,7 +2050,7 @@ Weapon_HyperBlaster(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 Machinegun_Fire(edict_t *ent)
 {
 	int i;
@@ -2191,7 +2191,7 @@ Weapon_Machinegun(edict_t *ent)
 	}
 }
 
-void
+static void
 Chaingun_Fire(edict_t *ent)
 {
 	int i;
@@ -2388,7 +2388,7 @@ Weapon_Chaingun(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 weapon_shotgun_fire(edict_t *ent)
 {
 	vec3_t start;
@@ -2492,7 +2492,7 @@ Weapon_Shotgun(edict_t *ent)
 	}
 }
 
-void
+static void
 weapon_supershotgun_fire(edict_t *ent)
 {
 	vec3_t start;
@@ -2642,7 +2642,7 @@ Weapon_SuperShotgun(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 weapon_railgun_fire(edict_t *ent)
 {
 	vec3_t start;
@@ -2748,7 +2748,7 @@ Weapon_Railgun(edict_t *ent)
  * ======================================================================
  */
 
-void
+static void
 weapon_bfg_fire(edict_t *ent)
 {
 	vec3_t offset, start, forward, right;
@@ -2900,7 +2900,7 @@ Weapon_Beta_Disintegrator(edict_t *ent)
 
 /* CHAINFIST */
 
-void
+static void
 weapon_chainfist_fire(edict_t *ent)
 {
 	vec3_t offset;
@@ -2947,7 +2947,7 @@ weapon_chainfist_fire(edict_t *ent)
 /*
  * this spits out some smoke from the motor. it's a two-stroke, you know.
  */
-void
+static void
 chainfist_smoke(edict_t *ent)
 {
 	vec3_t tempVec, forward, right, up;
@@ -3064,7 +3064,7 @@ Weapon_ChainFist(edict_t *ent)
 
 /* Disintegrator */
 
-void
+static void
 weapon_tracker_fire(edict_t *self)
 {
 	vec3_t forward, right;
@@ -3166,7 +3166,7 @@ Weapon_Disintegrator(edict_t *ent)
  *
  * ======================================================================
  */
-void
+static void
 weapon_etf_rifle_fire(edict_t *ent)
 {
 	vec3_t forward, right, up;
@@ -3270,7 +3270,7 @@ Weapon_ETF_Rifle(edict_t *ent)
 	}
 }
 
-void
+static void
 Heatbeam_Fire(edict_t *ent)
 {
 	vec3_t start;
@@ -3379,7 +3379,7 @@ Weapon_Heatbeam(edict_t *ent)
 
 /* RipperGun */
 
-void
+static void
 weapon_ionripper_fire(edict_t *ent)
 {
 	vec3_t start;
@@ -3455,9 +3455,9 @@ Weapon_Ionripper(edict_t *ent)
 	}
 }
 
-/*	Phalanx */
+/* Phalanx */
 
-void
+static void
 weapon_phalanx_fire(edict_t *ent)
 {
 	vec3_t start;
@@ -4635,7 +4635,7 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, const gitem_t *Weapon)
 	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
 
-	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
+	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= WATER_WAIST)
 		return;
 
 	ent->client->newweapon = Weapon;
@@ -4672,7 +4672,7 @@ Weapon_EquipSpell(struct edict_s *ent, const gitem_t *Weapon)
 	// In blade only DM, don't put away the staff and change weapons.
 
 	if (playerinfo->dmflags&DF_NO_OFFENSIVE_SPELL)
-		if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
+		if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= WATER_WAIST)
 			return;
 
 	// if its anything other than the flying fist, see if we have mana for it.
@@ -4716,7 +4716,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, const gitem_t *Weapon)
 		return;
 	}
 
-	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
+	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= WATER_WAIST)
 	{
 		return;
 	}
@@ -4763,7 +4763,7 @@ void Weapon_EquipBow(struct edict_s *ent, const gitem_t *Weapon)
 	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
 
-	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= 2)
+	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= WATER_WAIST)
 		return;
 
 	// see if we actually have any ammo for it
