@@ -2464,6 +2464,16 @@ SP_GetSpawnPoint(void)
 	return spot;
 }
 
+static void
+TryLandmarkSpawn(const edict_t* ent, vec3_t origin, vec3_t angles)
+{
+	static const vec3_t mins = {-16, -16, -24};
+	static const vec3_t maxs = {16, 16, 32};
+
+	/* originaly was origin[2] += 9 */
+	SearchGoodPosition(mins, maxs, NULL, origin);
+}
+
 /*
  * Chooses a player start, deathmatch start, coop start, etc
  */
@@ -2562,16 +2572,11 @@ SelectSpawnPoint(const edict_t *ent, vec3_t origin, vec3_t angles)
 		}
 	}
 
-	//debounce tim eon use to help prevent telefragging
-	//spot->damage_debounce_time = level.time + 0.3;
-	// Do a trace to the floor to find where to put player.
-	VectorCopy(spot->s.origin, endpos);
-	endpos[2] -= 1000;
-	tr = gi.trace (spot->s.origin, vec3_origin, vec3_origin, endpos, NULL, CONTENTS_WORLD_ONLY|MASK_PLAYERSOLID);
-
-	VectorCopy(tr.endpos, origin);
-	origin[2] -= mins[2];
+	VectorCopy(spot->s.origin, origin);
 	VectorCopy(spot->s.angles, angles);
+
+	/* check landmark */
+	TryLandmarkSpawn(ent, origin, angles);
 }
 
 /* ====================================================================== */

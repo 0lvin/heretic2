@@ -1427,6 +1427,8 @@ void Cmd_Use_f(edict_t *ent);
 /* g_items.c */
 void droptofloor(edict_t *ent);
 void FixEntityPosition(edict_t *ent);
+void SearchGoodPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
+	vec3_t ent_origin);
 void PrecacheItem(const gitem_t *it);
 void InitItems(void);
 qboolean ItemHasValidModel(gitem_t *item);
