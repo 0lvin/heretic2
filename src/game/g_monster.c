@@ -2065,6 +2065,11 @@ monster_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 		return;
 	}
 
+	if (activator->flags & FL_DISGUISED)
+	{
+		return;
+	}
+
 	/* delay reaction so if the monster is
 	   teleported, its sound is still heard */
 	self->enemy = activator;
@@ -2111,9 +2116,17 @@ monster_triggered_spawn(edict_t *self)
 		pos[2]+=self->mins[2];
 		gi.CreateEffect(NULL, FX_TPORTSMOKE, 0, pos, "");
 	}
-	else if (self->enemy && !(self->spawnflags & MSF_AMBUSH) && !(self->enemy->flags & FL_NOTARGET))
+	else if (self->enemy && !(self->spawnflags & SPAWNFLAG_MONSTER_AMBUSH) &&
+		!(self->enemy->flags & FL_NOTARGET))
 	{
-		FoundTarget(self, true);
+		if (!(self->enemy->flags & FL_DISGUISED))
+		{
+			FoundTarget(self, true);
+		}
+		else
+		{
+			self->enemy = NULL;
+		}
 	}
 	else
 	{
@@ -2131,7 +2144,7 @@ monster_triggered_spawn_use(edict_t *self, edict_t *other /* unused */, edict_t 
 
 	/* we have a one frame delay here so we
 	   don't telefrag the guy who activated us */
-	self->spawnflags &= ~MSF_ASLEEP;
+	self->spawnflags &= ~SPAWNFLAG_MONSTER_TRIGGER_SPAWN;
 	self->think = monster_triggered_spawn;
 	self->nextthink = level.time + FRAMETIME;
 
@@ -2728,7 +2741,7 @@ walkmonster_start_go(edict_t *self)
 		return;
 	}
 
-	if (!(self->spawnflags & MSF_ASLEEP) && (level.time < 1))
+	if (!(self->spawnflags & SPAWNFLAG_MONSTER_TRIGGER_SPAWN) && (level.time < 1))
 	{
 		M_droptofloor(self);
 

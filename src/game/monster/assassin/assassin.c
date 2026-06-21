@@ -2738,7 +2738,7 @@ void SP_monster_assassin (edict_t *self)
 		self->spawnflags |= MSF_AMBUSH;
 
 	if (self->spawnflags & MSF_ASS_TPORTAMBUSH)
-		self->spawnflags|=MSF_ASLEEP;
+		self->spawnflags |= SPAWNFLAG_MONSTER_TRIGGER_SPAWN;
 
 	walkmonster_start(self);
 

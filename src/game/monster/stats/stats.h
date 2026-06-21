@@ -30,13 +30,13 @@ extern struct MonsterShadow_s G_MonsterShadow[NUM_CLASSIDS];
 // ** MONSTER SPAWNFLAGS
 // ***************************************
 #define MSF_NONE				0x000000//0-no spawn flags
-#define MSF_AMBUSH				0x000001//1-monster spawn flag AMBUSH
-#define MSF_ASLEEP				0x000002//2-monster spawn flag ASLEEP- will not so anything until used
+#define MSF_AMBUSH				SPAWNFLAG_MONSTER_AMBUSH//1-monster spawn flag AMBUSH
+#define MSF_ASLEEP				SPAWNFLAG_MONSTER_TRIGGER_SPAWN //2-monster spawn flag ASLEEP- will not so anything until used
 
 //next three are mutually exclusive, sorry- that's how it was made, would be a pain to change now- should make walking a seperate one from other two...
-#define MSF_WALKING				0x000004//4-monster is walking a beat
-#define MSF_EATING				0x000004//4-monster is eating
-#define MSF_PERCHING			0x000004//4-monster is perched- only harpies and imps
+#define MSF_WALKING				SPAWNFLAG_MONSTER_FUBAR//4-monster is walking a beat
+#define MSF_EATING				SPAWNFLAG_MONSTER_FUBAR//4-monster is eating
+#define MSF_PERCHING			SPAWNFLAG_MONSTER_FUBAR//4-monster is perched- only harpies and imps
 
 // spawnflags 8 - 64 are individual to the monster
 #define	MSF_SPECIAL1			0x000008//8

@@ -463,7 +463,8 @@ ai_stand(edict_t *self, float dist)
 		return;
 	}
 
-	if (!(self->spawnflags & MSF_AMBUSH) && (self->monsterinfo.idle) && (level.time > self->monsterinfo.idle_time))
+	if (!(self->spawnflags & SPAWNFLAG_MONSTER_AMBUSH) && (self->monsterinfo.idle) &&
+		(level.time > self->monsterinfo.idle_time))
 	{
 		if (self->monsterinfo.idle_time)
 		{
@@ -3243,7 +3244,7 @@ ok_to_wake(edict_t *monster, qboolean gorgon_roar, qboolean ignore_ambush)
 	else if (monster->monsterinfo.aiflags & AI_EATING ||//eating or perching
 		monster->targetname ||//a monster that's supposed to be triggered - problem, one a monster is used and woken up, won't respond to alerts like others...?
 		monster->monsterinfo.c_mode ||//cinematic
-		monster->spawnflags & MSF_ASLEEP ||//shouldn't happen, but just in case
+		monster->spawnflags & SPAWNFLAG_MONSTER_TRIGGER_SPAWN ||//shouldn't happen, but just in case
 		(monster->spawnflags & MSF_AMBUSH && !ignore_ambush))
 		return false;
 
