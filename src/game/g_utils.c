@@ -169,7 +169,7 @@ findradius(edict_t *from, const vec3_t org, float rad)
  * returned if the end of the list is reached.
  */
 edict_t *
-G_PickTarget(char *targetname)
+G_PickTarget(const char *targetname)
 {
 	edict_t *ent = NULL;
 	int num_choices = 0;
@@ -347,7 +347,7 @@ G_UseTargets(edict_t *ent, edict_t *activator)
  * This is just a convenience function
  * for making temporary vectors for function calls
  */
-float *
+const float *
 tv(float x, float y, float z)
 {
 	static int index;
@@ -371,8 +371,8 @@ tv(float x, float y, float z)
  * This is just a convenience function
  * for printing vectors
  */
-char *
-vtos(vec3_t v)
+const char *
+vtos(const vec3_t v)
 {
 	static int index;
 	static char str[8][32];

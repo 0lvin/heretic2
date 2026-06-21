@@ -476,7 +476,8 @@ PlayerUpdateModelAttributes(edict_t *self)
 	}
 
 	//If the switch is valid
-	if (BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
+	if (playerinfo->pers.weapon &&
+		BranchCheckDismemberAction(playerinfo, playerinfo->pers.weapon->tag))
 	{//FIXME: doesn't allow for dropping of weapons
 		// Now turn on the appropriate weapon bits.
 		switch (client->pers.weaponready)
