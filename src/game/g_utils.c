@@ -236,7 +236,7 @@ void
 G_UseTargets(edict_t *ent, edict_t *activator)
 {
 	edict_t *t;
-
+	edict_t *master;
 
 	if (!ent)
 	{
@@ -297,6 +297,48 @@ G_UseTargets(edict_t *ent, edict_t *activator)
 
 		while ((t = G_Find(t, FOFS(targetname), ent->killtarget)))
 		{
+			/* decrement secret count if target_secret is removed */
+			if (!Q_stricmp(t->classname,"target_secret"))
+			{
+				level.total_secrets--;
+			}
+
+			/* same deal with target_goal, but also turn off CD music if applicable */
+			else if (!Q_stricmp(t->classname,"target_goal"))
+			{
+				level.total_goals--;
+
+				if (level.found_goals >= level.total_goals)
+				{
+					gi.configstring (CS_CDTRACK, "0");
+				}
+			}
+
+			/* if this entity is part of a train, cleanly remove it */
+			if (t->flags & FL_TEAMSLAVE)
+			{
+				master = t->teammaster;
+
+				while (master)
+				{
+					if (master->teamchain == t)
+					{
+						master->teamchain = t->teamchain;
+						break;
+					}
+
+					master = master->teamchain;
+				}
+			}
+
+			/* correct killcounter if a living monster gets killtargeted */
+			if ((t->monsterinfo.checkattack || strcmp (t->classname, "turret_driver") == 0) &&
+				!(t->monsterinfo.aiflags & (AI_GOOD_GUY | AI_DO_NOT_COUNT)) &&
+				t->deadflag != DEAD_DEAD && !(t->spawnflags & SPAWNFLAG_MONSTER_DEAD))
+			{
+				level.killed_monsters++;
+			}
+
 			G_QPostMessage(t, MSG_DEATH, PRI_DIRECTIVE, MSG_DEATH_FORMAT,t,ent,activator,100000);
 
 			if (!ent->inuse)

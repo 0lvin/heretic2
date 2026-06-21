@@ -2290,7 +2290,25 @@ monster_start(edict_t *self)
 		return false;
 	}
 
-	if (!(self->monsterinfo.aiflags & AI_GOOD_GUY))
+	if ((self->spawnflags & SPAWNFLAG_MONSTER_FUBAR) && !(self->monsterinfo.aiflags & AI_GOOD_GUY))
+	{
+		self->spawnflags &= ~SPAWNFLAG_MONSTER_FUBAR;
+		self->spawnflags |= SPAWNFLAG_MONSTER_AMBUSH;
+	}
+
+	if ((self->spawnflags & SPAWNFLAG_MONSTER_TRIGGER_SPAWN) && !self->targetname)
+	{
+		if (g_fix_triggered->value)
+		{
+			self->spawnflags &= ~SPAWNFLAG_MONSTER_TRIGGER_SPAWN;
+		}
+
+		gi.dprintf ("triggered %s at %s has no targetname\n", self->classname, vtos (self->s.origin));
+	}
+
+	if ((!(self->monsterinfo.aiflags & AI_GOOD_GUY)) &&
+		!(self->spawnflags & SPAWNFLAG_MONSTER_DEAD) &&
+		(!(self->monsterinfo.aiflags & AI_DO_NOT_COUNT)))
 	{
 		level.total_monsters++;
 	}
@@ -2431,7 +2449,7 @@ monster_start_go(edict_t *self)
 {
 	vec3_t v;
 	float	volume;
-	qboolean spawn_dead = false;
+	qboolean spawn_dead;
 
 	if (!self)
 	{
@@ -2472,95 +2490,102 @@ monster_start_go(edict_t *self)
 
 	self->jump_time = level.time + 2;//so they don't take damage from the fall after spawning...
 
-	// check for target to combat_point and change to combattarget
 	self->monsterinfo.coop_check_debounce_time = 0;
 	self->monsterinfo.pausetime = -1;
 	if (self->enemy)
 	{
 		/* spawned mad */
 		FoundTarget(self, false);
+		self->think = monster_think;
+		self->nextthink = level.time + FRAMETIME;
+		return;
 	}
-	else
+
+	/* check for target to combat_point and change to combattarget */
+	if (self->target)
 	{
-		if (self->target)
-		{
-			qboolean	notcombat;
-			qboolean	fixup;
-			edict_t		*target;
+		qboolean notcombat;
+		qboolean fixup;
+		edict_t *target;
 
-			target = NULL;
-			notcombat = false;
-			fixup = false;
-			while ((target = G_Find (target, FOFS(targetname), self->target)) != NULL)
+		target = NULL;
+		notcombat = false;
+		fixup = false;
+
+		while ((target = G_Find(target, FOFS(targetname), self->target)) != NULL)
+		{
+			if (strcmp(target->classname, "point_combat") == 0)
 			{
-				if (strcmp(target->classname, "point_combat") == 0)
-				{
-					self->combattarget = self->target;
-					fixup = true;
-				}
-				else
-				{
-					notcombat = true;
-				}
+				self->combattarget = self->target;
+				fixup = true;
 			}
-			if (notcombat && self->combattarget)
-				gi.dprintf("%s at %s has target with mixed types\n", self->classname, vtos(self->s.origin));
-			if (fixup)
-				self->target = NULL;
+			else
+			{
+				notcombat = true;
+			}
 		}
 
-		/* validate combattarget */
-		if (self->combattarget)
+		if (notcombat && self->combattarget)
 		{
-			edict_t		*target;
+			gi.dprintf("%s at %s has target with mixed types\n",
+					self->classname, vtos(self->s.origin));
+		}
 
-			target = NULL;
-			while ((target = G_Find (target, FOFS(targetname), self->combattarget)) != NULL)
+		if (fixup)
+		{
+			self->target = NULL;
+		}
+	}
+
+	/* validate combattarget */
+	if (self->combattarget)
+	{
+		edict_t *target;
+
+		target = NULL;
+
+		while ((target = G_Find(target, FOFS(targetname),
+						self->combattarget)) != NULL)
+		{
+			if (strcmp(target->classname, "point_combat") != 0)
 			{
-				if (strcmp(target->classname, "point_combat") != 0)
-				{
-					gi.dprintf("%s at (%i %i %i) has a bad combattarget %s : %s at (%i %i %i)\n",
-						self->classname, (int)self->s.origin[0], (int)self->s.origin[1], (int)self->s.origin[2],
-						self->combattarget, target->classname, (int)target->s.origin[0], (int)target->s.origin[1],
+				gi.dprintf("%s at (%i %i %i) has a bad combattarget %s : %s at (%i %i %i)\n",
+						self->classname, (int)self->s.origin[0], (int)self->s.origin[1],
+						(int)self->s.origin[2], self->combattarget, target->classname,
+						(int)target->s.origin[0], (int)target->s.origin[1],
 						(int)target->s.origin[2]);
-				}
 			}
 		}
+	}
 
-		if (self->target)
+	/* allow spawning dead */
+	spawn_dead = self->spawnflags & SPAWNFLAG_MONSTER_DEAD;
+
+	if (self->target)
+	{
+		self->goalentity = self->movetarget = G_PickTarget(self->target);
+
+		if (!self->movetarget)
 		{
-			self->goalentity = self->movetarget = G_PickTarget(self->target);
-			if (!self->movetarget)
-			{
-				gi.dprintf ("%s can't find target %s at %s\n", self->classname, self->target, vtos(self->s.origin));
-				self->target = NULL;
-				self->monsterinfo.pausetime = HOLD_FOREVER;
+			gi.dprintf("%s can't find target %s at %s\n", self->classname,
+					self->target, vtos(self->s.origin));
+			self->target = NULL;
+			self->monsterinfo.pausetime = HOLD_FOREVER;
 
-				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
-					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-				else
-					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
-			}
-			else if (strcmp (self->movetarget->classname, "path_corner") == 0)
+			if (!self->monsterinfo.c_mode)	// Not in cinematic mode
+				G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
+			else
+				G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
+		}
+		else if (strcmp(self->movetarget->classname, "path_corner") == 0)
+		{
+			if (self->classID != CID_SERAPH_OVERLORD)
 			{
-				if (self->classID != CID_SERAPH_OVERLORD)
-				{
-					VectorSubtract (self->goalentity->s.origin, self->s.origin, v);
-					self->ideal_yaw = self->s.angles[YAW] = vectoyaw(v);
-					gi.dprintf("Monster start go to walk\n");
-					G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
-					self->monsterinfo.pausetime = 0;
-				}
-				else
-				{
-					self->goalentity = self->movetarget = NULL;
-					self->monsterinfo.pausetime = HOLD_FOREVER;
-					if (!self->monsterinfo.c_mode)	// Not in cinematic mode
-						G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-					else
-						G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
-				}
-				self->target = NULL;
+				VectorSubtract (self->goalentity->s.origin, self->s.origin, v);
+				self->ideal_yaw = self->s.angles[YAW] = vectoyaw(v);
+				gi.dprintf("Monster start go to walk\n");
+				G_QPostMessage(self, MSG_WALK, PRI_DIRECTIVE, NULL);
+				self->monsterinfo.pausetime = 0;
 			}
 			else
 			{
@@ -2571,21 +2596,31 @@ monster_start_go(edict_t *self)
 				else
 					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
 			}
+			self->target = NULL;
 		}
 		else
 		{
+			self->goalentity = self->movetarget = NULL;
 			self->monsterinfo.pausetime = HOLD_FOREVER;
-			if (self->monsterinfo.aiflags & AI_EATING)
-			{
-				G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
-			}
+			if (!self->monsterinfo.c_mode)	// Not in cinematic mode
+				G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
 			else
-			{
-				if (!self->monsterinfo.c_mode)	// Not in cinematic mode
-					G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
-				else
-					G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT, 0, 0, 0, NULL, NULL);
-			}
+				G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT,0,0,0,NULL,NULL);
+		}
+	}
+	else
+	{
+		self->monsterinfo.pausetime = HOLD_FOREVER;
+		if (self->monsterinfo.aiflags & AI_EATING)
+		{
+			G_QPostMessage(self, MSG_EAT, PRI_DIRECTIVE, NULL);
+		}
+		else
+		{
+			if (!self->monsterinfo.c_mode)	// Not in cinematic mode
+				G_QPostMessage(self, MSG_STAND, PRI_DIRECTIVE, NULL);
+			else
+				G_QPostMessage(self, MSG_C_IDLE1, PRI_DIRECTIVE, MSG_C_IDLE1_FORMAT, 0, 0, 0, NULL, NULL);
 		}
 	}
 
@@ -2717,11 +2752,13 @@ walkmonster_start_go(edict_t *self)
 		self->viewheight = 25;
 	}
 
-	monster_start_go(self);
-
-	if (self->spawnflags & MSF_ASLEEP)
+	if (self->spawnflags & SPAWNFLAG_MONSTER_TRIGGER_SPAWN)
 	{
 		monster_triggered_start(self);
+	}
+	else
+	{
+		monster_start_go(self);
 	}
 }
 
@@ -2760,11 +2797,13 @@ flymonster_start_go(edict_t *self)
 		self->viewheight = 25;
 	}
 
-	monster_start_go(self);
-
-	if (self->spawnflags & MSF_ASLEEP)
+	if (self->spawnflags & SPAWNFLAG_MONSTER_TRIGGER_SPAWN)
 	{
 		monster_triggered_start(self);
+	}
+	else
+	{
+		monster_start_go(self);
 	}
 }
 
@@ -2799,11 +2838,13 @@ swimmonster_start_go(edict_t *self)
 		self->viewheight = 10;
 	}
 
-	monster_start_go(self);
-
-	if (self->spawnflags & MSF_ASLEEP)
+	if (self->spawnflags & SPAWNFLAG_MONSTER_TRIGGER_SPAWN)
 	{
 		monster_triggered_start(self);
+	}
+	else
+	{
+		monster_start_go(self);
 	}
 }
 
