@@ -540,7 +540,7 @@ use_target_changelevel(edict_t *self, edict_t *other, edict_t *activator)
 
 			if (self->target_ent && activator && activator->client)
 			{
-				activator->client->landmark_name = G_CopyString(self->target_ent->targetname);
+				activator->client->landmark_name = G_CopyString(self->target_ent->targetname, TAG_GAME);
 			}
 		}
 	}
@@ -903,7 +903,15 @@ target_laser_think(edict_t *self)
 
 	while (1)
 	{
-		tr = gi.trace(start, NULL, NULL, end, ignore, CONTENTS_SOLID|CONTENTS_MONSTER|CONTENTS_DEADMONSTER);
+		if (self->spawnflags & LASER_STOPWINDOW)
+		{
+			tr = gi.trace(start, NULL, NULL, end, ignore, MASK_SHOT);
+		}
+		else
+		{
+			tr = gi.trace(start, NULL, NULL, end, ignore,
+					CONTENTS_SOLID | CONTENTS_MONSTER | CONTENTS_DEADMONSTER);
+		}
 
 		if (!tr.ent)
 		{
@@ -911,10 +919,11 @@ target_laser_think(edict_t *self)
 		}
 
 		// hurt it if we can
-		//if ((tr.ent->takedamage) && !(tr.ent->flags & FL_IMMUNE_LASER) && (tr.ent != self->owner))
-		//	T_Damage (tr.ent, self, self->owner, self->movedir, tr.endpos, vec3_origin, self->dmg, 1, 0);
+		//if ((tr.ent->takedamage) && !(tr.ent->flags & FL_IMMUNE_LASER))
+		//	T_Damage(tr.ent, self, self->owner, self->movedir, tr.endpos, vec3_origin, self->dmg, 1, 0);
 
-		// if we hit something that's not a monster or player or is immune to lasers, we're done
+		/* if we hit something that's not a monster
+		   or player or is immune to lasers, we're done */
 		if (!(tr.ent->svflags & SVF_MONSTER) && (!tr.ent->client))
 		{
 			if (self->spawnflags & SPAWNFLAG_LASER_ZAP)
@@ -1005,7 +1014,7 @@ target_laser_start(edict_t *self)
 	self->movetype = MOVETYPE_NONE;
 	self->solid = SOLID_NOT;
 	self->s.renderfx |= RF_BEAM | RF_TRANSLUCENT;
-	self->s.modelindex = 1; /* must be non-zero */
+	self->s.modelindex = MODELINDEX_WORLD; /* must be non-zero */
 
 	/* [Sam-KEX] On Q2N64, spawnflag of 128 turns it into a lightning bolt */
 	if (level.is_n64)
@@ -1428,30 +1437,35 @@ SP_target_lightramp(edict_t *self)
  * "speed"		severity of the quake (default:200)
  * "count"		duration of the quake (default:5)
  */
+
+#define SPAWNFLAGS_EARTHQUAKE_SILENT  1
+#define SPAWNFLAGS_EARTHQUAKE_TOGGLE 2
+#define SPAWNFLAGS_EARTHQUAKE_ONE_SHOT 8
+
 void
 target_earthquake_think(edict_t *self)
 {
 	int i;
 	edict_t *e;
 
-	if (!self)
+	if (!self || sv_jumpcinematic->value)	// Don't do this if jumping a cinematic
 	{
 		return;
 	}
 
-	if (sv_jumpcinematic->value)	// Don't do this if jumping a cinematic
-		return;
-
-	if (self->last_move_time < level.time)
+	if (!(self->spawnflags & SPAWNFLAGS_EARTHQUAKE_SILENT))
 	{
-		gi.positioned_sound(self->s.origin,
-				self,
-				CHAN_AUTO,
-				self->noise_index,
-				1.0,
-				ATTN_NONE,
-				0);
-		self->last_move_time = level.time + 0.5;
+		if (self->last_move_time < level.time)
+		{
+			gi.positioned_sound(self->s.origin,
+					self,
+					CHAN_AUTO,
+					self->noise_index,
+					1.0,
+					ATTN_NONE,
+					0);
+			self->last_move_time = level.time + 0.5;
+		}
 	}
 
 	for (i = 1, e = g_edicts + i; i < globals.num_edicts; i++, e++)
@@ -1476,6 +1490,11 @@ target_earthquake_think(edict_t *self)
 		e->velocity[2] = self->speed * (100.0 / e->mass);
 	}
 
+	if (self->spawnflags & SPAWNFLAGS_EARTHQUAKE_ONE_SHOT)
+	{
+		return;
+	}
+
 	if (level.time < self->timestamp)
 	{
 		self->nextthink = level.time + FRAMETIME;
@@ -1485,12 +1504,7 @@ target_earthquake_think(edict_t *self)
 void
 target_earthquake_use(edict_t *self, edict_t *other /* unused */, edict_t *activator)
 {
-	if (!self || !activator)
-	{
-		return;
-	}
-
-	if (sv_jumpcinematic->value)	// Don't do this if jumping a cinematic
+	if (!self || !activator || sv_jumpcinematic->value)	// Don't do this if jumping a cinematic
 	{
 		return;
 	}
@@ -1500,9 +1514,6 @@ target_earthquake_use(edict_t *self, edict_t *other /* unused */, edict_t *activ
 	self->activator = activator;
 	self->last_move_time = 0;
 }
-
-#define SPAWNFLAGS_EARTHQUAKE_SILENT  1
-#define SPAWNFLAGS_EARTHQUAKE_TOGGLE 2
 
 void
 SP_target_earthquake(edict_t *self)

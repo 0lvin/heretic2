@@ -4914,7 +4914,7 @@ void monsterspawner_go(edict_t *self)
 		return;
 
 	monster = G_Spawn();
-	monster->classname = ED_NewString(MonsterSpawnerClassname[self->style].name, true);
+	monster->classname = ED_NewString(MonsterSpawnerClassname[self->style].name, true, TAG_LEVEL);
 
 	/* copy my designer-modified fields to the monster to overrride defaults */
 	monster->classID = CIDForSpawnerStyle[self->style];

@@ -2475,11 +2475,14 @@ Variable *CScript::HandleSpawn(void)
 
 		switch (f->type)
 		{
+			case F_GRAWSTRING:
+				*(char **)b = ED_NewString(Value->GetStringValue(), true, TAG_GAME);
+				break;
 			case F_LRAWSTRING:
-				*(char **)b = ED_NewString(Value->GetStringValue(), true);
+				*(char **)b = ED_NewString(Value->GetStringValue(), true, TAG_LEVEL);
 				break;
 			case F_LSTRING:
-				*(char **)b = ED_NewString(Value->GetStringValue(), false);
+				*(char **)b = ED_NewString(Value->GetStringValue(), false, TAG_LEVEL);
 				break;
 			case F_VECTOR:
 				Value->GetVectorValue(*(vec3_t *)b);

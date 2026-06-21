@@ -3777,9 +3777,9 @@ ItemSpitterSpit(edict_t *self,edict_t *owner,edict_t *attacker)
 		if (!item)	// Must be an object not an item
 		{
 			newitem = G_Spawn();
-			newitem->classname = ED_NewString(self->target, true);
+			newitem->classname = ED_NewString(self->target, true, TAG_LEVEL);
 
-			AngleVectors(holdangles,forward,NULL,NULL);
+			AngleVectors(holdangles, forward, NULL, NULL);
 
 			VectorCopy(self->s.origin,newitem->s.origin);
 			VectorMA(newitem->s.origin, self->dmg_radius, forward, newitem->s.origin);
@@ -5859,7 +5859,7 @@ SetupMannequinModel(edict_t * self, int modelType, const char *weapon, const cha
 		char line[MAX_QPATH] = {0};
 
 		snprintf(line, sizeof(line), "players/%s/tris.md2", model_name);
-		self->model = ED_NewString(line, true);
+		self->model = ED_NewString(line, true, TAG_LEVEL);
 
 		if (weapon)
 		{
