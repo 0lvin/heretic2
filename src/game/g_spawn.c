@@ -1446,6 +1446,60 @@ SpawnEntitiesCount(const char *entities)
 	return num_ent;
 }
 
+/* inhibit entities from game based on cvars & spawnflags */
+static qboolean
+G_InhibitEntity(edict_t *ent)
+{
+	if (deathmatch->value)
+	{
+		if (ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH)
+		{
+			return true;
+		}
+	}
+	else if (coop->value && !coop_baseq2->value)
+	{
+		if (ent->spawnflags & SPAWNFLAG_NOT_COOP)
+		{
+			return true;
+		}
+
+		/* stuff marked !easy & !med & !hard are coop only, all levels */
+		if (!((ent->spawnflags & SPAWNFLAG_NOT_EASY) &&
+			  (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM) &&
+			  (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
+		{
+			if (((skill->value == SKILL_EASY) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+				((skill->value == SKILL_MEDIUM) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
+				(((skill->value == SKILL_HARD) || (skill->value == SKILL_HARDPLUS)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
+			{
+				return true;
+			}
+		}
+	}
+	else if (!coop->value && (ent->spawnflags & SPAWNFLAG_COOP_ONLY))
+	{
+		return true;
+	}
+	else
+	{
+		if (Spawn_CheckCoop_MapHacks(ent) || (
+			((skill->value == SKILL_EASY) &&
+			 (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
+			((skill->value == SKILL_MEDIUM) &&
+			 (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
+			(((skill->value == SKILL_HARD) ||
+			  (skill->value == SKILL_HARDPLUS)) &&
+			 (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
+			)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /*
  * Creates a server's entity / program execution context by
  * parsing textual entity definitions out of an ent file.
@@ -1572,55 +1626,11 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 		   different skill levels or deathmatch */
 		if (ent != g_edicts)
 		{
-			if (deathmatch->value)
+			if (G_InhibitEntity(ent))
 			{
-				if (ent->spawnflags & SPAWNFLAG_NOT_DEATHMATCH)
-				{
-					G_FreeEdict(ent);
-					inhibit++;
-					continue;
-				}
-			}
-			else if (coop->value && !coop_baseq2->value)
-			{
-				if (ent->spawnflags & SPAWNFLAG_NOT_COOP)
-				{
-					G_FreeEdict(ent);
-					inhibit++;
-					continue;
-				}
-
-				/* stuff marked !easy & !med & !hard are coop only, all levels */
-				if (!((ent->spawnflags & SPAWNFLAG_NOT_EASY) &&
-					  (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM) &&
-					  (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
-				{
-					if (((skill->value == SKILL_EASY) && (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
-						((skill->value == SKILL_MEDIUM) && (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
-						(((skill->value == SKILL_HARD) || (skill->value == SKILL_HARDPLUS)) && (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
-					{
-						G_FreeEdict(ent);
-						inhibit++;
-						continue;
-					}
-				}
-			}
-			else
-			{
-				if (Spawn_CheckCoop_MapHacks(ent) || (
-					((skill->value == SKILL_EASY) &&
-					 (ent->spawnflags & SPAWNFLAG_NOT_EASY)) ||
-					((skill->value == SKILL_MEDIUM) &&
-					 (ent->spawnflags & SPAWNFLAG_NOT_MEDIUM)) ||
-					(((skill->value == SKILL_HARD) ||
-					  (skill->value == SKILL_HARDPLUS)) &&
-					 (ent->spawnflags & SPAWNFLAG_NOT_HARD)))
-					)
-				{
-					G_FreeEdict(ent);
-					inhibit++;
-					continue;
-				}
+				G_FreeEdict(ent);
+				inhibit++;
+				continue;
 			}
 
 			// Check if it's a monster and if we're nomonster here...
@@ -1635,7 +1645,7 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 
 			ent->spawnflags &=
 				~(SPAWNFLAG_NOT_EASY | SPAWNFLAG_NOT_MEDIUM |
-				  SPAWNFLAG_NOT_HARD |
+				  SPAWNFLAG_NOT_HARD | SPAWNFLAG_COOP_ONLY |
 				  SPAWNFLAG_NOT_COOP | SPAWNFLAG_NOT_DEATHMATCH);
 		}
 
@@ -1676,7 +1686,7 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 		CTFSpawn();
 	}
 
-	AI_NewMap();//JABot
+	AI_NewMap(); //JABot
 
 	/* setup server-side shadow lights */
 	setup_shadow_lights();

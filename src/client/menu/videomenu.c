@@ -42,34 +42,36 @@ static cvar_t *gl_anisotropic;
 static cvar_t *gl_msaa_samples;
 static cvar_t *gl3_colorlight;
 static cvar_t *gl4_colorlight;
+static cvar_t *gl_bloom;
 static cvar_t *vk_dynamic;
 
-static menuframework_s s_opengl_menu = {0};
+static menuframework_s s_opengl_menu;
 
-static menulist_s s_renderer_list = {0};
-static menulist_s s_mode_list = {0};
-static menulist_s s_uiscale_list = {0};
-static menuslider_s s_brightness_slider = {0};
-static menuslider_s s_fov_slider = {0};
-static menuslider_s s_gl1_intensity_slider = {0};
-static menuslider_s s_gl3_intensity_slider = {0};
-static menuslider_s s_gl4_intensity_slider = {0};
-static menuslider_s s_vk_intensity_slider = {0};
-static menuslider_s s_gl1_overbrightbits_slider = {0};
-static menuslider_s s_gl3_overbrightbits_slider = {0};
-static menuslider_s s_gl4_overbrightbits_slider = {0};
-static menuslider_s s_vk_overbrightbits_slider = {0};
-static menuslider_s s_gl1_minlight_slider = {0};
-static menulist_s s_gl3_colorlight_list = {0};
-static menulist_s s_gl4_colorlight_list = {0};
-static menulist_s s_vk_dynamic_list = {0};
-static menulist_s s_fs_box = {0};
-static menulist_s s_vsync_list = {0};
-static menulist_s s_af_list = {0};
-static menulist_s s_msaa_list = {0};
-static menulist_s s_filter_list = {0};
-static menuaction_s s_defaults_action = {0};
-static menuaction_s s_apply_action = {0};
+static menulist_s s_renderer_list;
+static menulist_s s_mode_list;
+static menulist_s s_uiscale_list;
+static menuslider_s s_brightness_slider;
+static menuslider_s s_fov_slider;
+static menuslider_s s_gl1_intensity_slider;
+static menuslider_s s_gl3_intensity_slider;
+static menuslider_s s_gl4_intensity_slider;
+static menuslider_s s_vk_intensity_slider;
+static menuslider_s s_gl1_overbrightbits_slider;
+static menuslider_s s_gl3_overbrightbits_slider;
+static menuslider_s s_gl4_overbrightbits_slider;
+static menuslider_s s_vk_overbrightbits_slider;
+static menuslider_s s_gl1_minlight_slider;
+static menulist_s s_gl3_colorlight_list;
+static menulist_s s_gl4_colorlight_list;
+static menulist_s s_gl_bloom_list;
+static menulist_s s_vk_dynamic_list;
+static menulist_s s_fs_box;
+static menulist_s s_vsync_list;
+static menulist_s s_af_list;
+static menulist_s s_msaa_list;
+static menulist_s s_filter_list;
+static menuaction_s s_defaults_action;
+static menuaction_s s_apply_action;
 
 // --------
 
@@ -401,6 +403,16 @@ ApplyChanges(void *unused)
 		Cvar_SetValue("gl3_colorlight", s_gl3_colorlight_list.curvalue);
 	}
 
+	if (gl4_colorlight && gl4_colorlight->value != s_gl4_colorlight_list.curvalue)
+	{
+		Cvar_SetValue("gl4_colorlight", s_gl4_colorlight_list.curvalue);
+	}
+
+	if (gl_bloom && gl_bloom->value != s_gl_bloom_list.curvalue)
+	{
+		Cvar_SetValue("r_bloom", s_gl_bloom_list.curvalue);
+	}
+
 	/* anisotropic filtering */
 	if (s_af_list.curvalue == 0)
 	{
@@ -673,6 +685,14 @@ VID_MenuInit(void)
 			s_gl3_colorlight_list.generic.y = (y += 10);
 			s_gl3_colorlight_list.itemnames = yesno_names;
 			s_gl3_colorlight_list.curvalue = (gl3_colorlight->value != 0);
+
+			gl_bloom = Cvar_Get("r_bloom", "0", CVAR_ARCHIVE);
+			s_gl_bloom_list.generic.type = MTYPE_SPINCONTROL;
+			s_gl_bloom_list.generic.name = "bloom";
+			s_gl_bloom_list.generic.x = 0;
+			s_gl_bloom_list.generic.y = (y += 10);
+			s_gl_bloom_list.itemnames = yesno_names;
+			s_gl_bloom_list.curvalue = (gl_bloom->value != 0);
 			break;
 
 		case ref_gl4:
@@ -699,6 +719,14 @@ VID_MenuInit(void)
 			s_gl4_colorlight_list.generic.y = (y += 10);
 			s_gl4_colorlight_list.itemnames = yesno_names;
 			s_gl4_colorlight_list.curvalue = (gl4_colorlight->value != 0);
+
+			gl_bloom = Cvar_Get("r_bloom", "0", CVAR_ARCHIVE);
+			s_gl_bloom_list.generic.type = MTYPE_SPINCONTROL;
+			s_gl_bloom_list.generic.name = "bloom";
+			s_gl_bloom_list.generic.x = 0;
+			s_gl_bloom_list.generic.y = (y += 10);
+			s_gl_bloom_list.itemnames = yesno_names;
+			s_gl_bloom_list.curvalue = (gl_bloom->value != 0);
 			break;
 
 		case ref_vk:
@@ -916,11 +944,13 @@ VID_MenuInit(void)
 			Menu_AddItem(&s_opengl_menu, (void *)&s_gl3_intensity_slider);
 			Menu_AddItem(&s_opengl_menu, (void *)&s_gl3_overbrightbits_slider);
 			Menu_AddItem(&s_opengl_menu, (void *)&s_gl3_colorlight_list);
+			Menu_AddItem(&s_opengl_menu, (void *)&s_gl_bloom_list);
 			break;
 		case ref_gl4:
 			Menu_AddItem(&s_opengl_menu, (void *)&s_gl4_intensity_slider);
 			Menu_AddItem(&s_opengl_menu, (void *)&s_gl4_overbrightbits_slider);
 			Menu_AddItem(&s_opengl_menu, (void *)&s_gl4_colorlight_list);
+			Menu_AddItem(&s_opengl_menu, (void *)&s_gl_bloom_list);
 			break;
 		case ref_vk:
 			Menu_AddItem(&s_opengl_menu, (void *)&s_vk_intensity_slider);

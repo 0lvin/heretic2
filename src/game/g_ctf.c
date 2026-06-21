@@ -273,7 +273,7 @@ loc_findradius(edict_t *from, vec3_t org, float rad)
 					   (from->mins[j] + from->maxs[j]) * 0.5);
 		}
 
-		if (VectorLength(eorg) > rad)
+		if (VectorLengthSquared(eorg) > rad * rad)
 		{
 			continue;
 		}
@@ -398,6 +398,8 @@ CTFTeamName(int team)
 			return "RED";
 		case CTF_TEAM2:
 			return "BLUE";
+		case CTF_NOTEAM:
+			return "SPECTATOR";
 	}
 
 	return "UNKNOWN";

@@ -2204,25 +2204,23 @@ Use_Item(edict_t *ent, edict_t *other /* unused */, edict_t *activator /* unused
 /*
  * Passedict and edicts owned by passedict are explicitly not checked.
  */
-void
-FixEntityPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
-	vec3_t ent_origin)
+static float
+GetBetterPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
+	const vec3_t ent_origin, const vec3_t diff, vec3_t best_pos, float best_dist,int contentmask)
 {
-	int i;
+	byte i;
 
 	for (i = 0; i < 3; i++)
 	{
-		int j;
+		byte j;
 
 		for (j = 0; j < 3; j++)
 		{
-			vec3_t pos, diff;
 			trace_t tr_pos;
-			int k;
+			vec3_t pos;
+			byte k;
 
 			VectorCopy(ent_origin, pos);
-
-			VectorSubtract(ent_maxs, ent_mins, diff);
 
 			/* move by up */
 			for (k = 0; k < i + 1; k++)
@@ -2233,11 +2231,19 @@ FixEntityPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *p
 				pos[v] = ent_origin[v] + diff[v];
 			}
 
-			tr_pos = gi.trace(pos, ent_mins, ent_maxs, ent_origin, passedict, MASK_SOLID);
+			tr_pos = gi.trace(pos, ent_mins, ent_maxs, ent_origin, passedict, contentmask);
 			if (!tr_pos.startsolid)
 			{
-				VectorCopy(tr_pos.endpos, ent_origin);
-				return;
+				vec3_t diff_pos;
+				vec_t diff_pos_len;
+
+				VectorSubtract(tr_pos.endpos, ent_origin, diff_pos);
+				diff_pos_len = VectorLengthSquared(diff_pos);
+				if (best_dist > diff_pos_len)
+				{
+					VectorCopy(tr_pos.endpos, best_pos);
+					best_dist = diff_pos_len;
+				}
 			}
 
 			/* move by down */
@@ -2249,14 +2255,54 @@ FixEntityPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *p
 				pos[v] = ent_origin[v] - diff[v];
 			}
 
-			tr_pos = gi.trace(pos, ent_mins, ent_maxs, ent_origin, passedict, MASK_SOLID);
+			tr_pos = gi.trace(pos, ent_mins, ent_maxs, ent_origin, passedict, contentmask);
 			if (!tr_pos.startsolid)
 			{
-				VectorCopy(tr_pos.endpos, ent_origin);
-				return;
+				vec3_t diff_pos;
+				vec_t diff_pos_len;
+
+				VectorSubtract(tr_pos.endpos, ent_origin, diff_pos);
+				diff_pos_len = VectorLengthSquared(diff_pos);
+				if (best_dist > diff_pos_len)
+				{
+					VectorCopy(tr_pos.endpos, best_pos);
+					best_dist = diff_pos_len;
+				}
 			}
 		}
 	}
+
+	return best_dist;
+}
+
+void
+FixEntityPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
+	vec3_t ent_origin, int contentmask)
+{
+	vec3_t best_pos, diff, half_diff;
+	float best_dist, half_dist;
+
+	VectorCopy(ent_origin, best_pos);
+	VectorSubtract(ent_maxs, ent_mins, diff);
+
+	best_dist = VectorLengthSquared(diff);
+
+	/* get half diff / entity size */
+	VectorScale(diff, 0.5, half_diff);
+
+	/* search nearest position in half of entity box */
+	half_dist = GetBetterPosition(ent_mins, ent_maxs, passedict, ent_origin,
+		half_diff, best_pos, best_dist * 4, contentmask);
+
+	if (half_dist > best_dist)
+	{
+		/* no space near to entity, search little more */
+		GetBetterPosition(ent_mins, ent_maxs, passedict, ent_origin,
+			diff, best_pos, half_dist, contentmask);
+	}
+
+	/* should be either better position or original value */
+	VectorCopy(best_pos, ent_origin);
 }
 
 void
@@ -2303,7 +2349,7 @@ droptofloor(edict_t *ent)
 
 		if (tr.startsolid)
 		{
-			FixEntityPosition(ent->mins, ent->maxs, ent, ent->s.origin);
+			FixEntityPosition(ent->mins, ent->maxs, ent, ent->s.origin, MASK_SOLID);
 
 			tr = gi.trace(ent->s.origin, ent->mins, ent->maxs, dest, ent, MASK_SOLID);
 		}

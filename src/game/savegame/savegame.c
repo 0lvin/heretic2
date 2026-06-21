@@ -1629,13 +1629,15 @@ WriteLevel(const char *filename)
 
 	fclose(f);
 
+	/* Store AI navigation data */
+	AITools_SaveNodes();
+
 	// this is a bit bogus - search through the client effects and renable all FX_PLAYER_EFFECTS
 	peffect = (PerEffectsBuffer_t*) gi.Persistant_Effects_Array;
 	for (i=0; i<MAX_PERSISTANT_EFFECTS; i++, peffect++)
 	{
 		if (peffect->fx_num == FX_PLAYER_PERSISTANT)
 			peffect->numEffects = 1;
-
 	}
 }
 

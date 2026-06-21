@@ -77,6 +77,7 @@
 #define SPAWNFLAG_NOT_HARD 0x00000400
 #define SPAWNFLAG_NOT_DEATHMATCH 0x00000800
 #define SPAWNFLAG_NOT_COOP 0x00001000
+#define SPAWNFLAG_COOP_ONLY 0x00004000
 
 /* edict->flags */
 #define FL_FLY 0x00000001
@@ -1436,7 +1437,7 @@ void Cmd_Use_f(edict_t *ent);
 /* g_items.c */
 void droptofloor(edict_t *ent);
 void FixEntityPosition(const vec3_t ent_mins, const vec3_t ent_maxs, const edict_t *passedict,
-	vec3_t ent_origin);
+	vec3_t ent_origin, int contentmask);
 void PrecacheItem(const gitem_t *it);
 void InitItems(void);
 qboolean ItemHasValidModel(gitem_t *item);
