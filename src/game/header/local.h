@@ -1176,6 +1176,7 @@ extern int snd_fry;
 
 extern int debristhisframe;
 extern int gibsthisframe;
+void M_WorldEffects(edict_t *ent);
 
 /* means of death */
 #define MOD_UNKNOWN 0
@@ -1653,6 +1654,7 @@ void barrel_delay (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 void SP_misc_teleporter_dest(edict_t *ent);
 void barrel_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 	const csurface_t *surf /*unused */);
+void ClipGibVelocity(edict_t *ent);
 
 /* g_ai.c */
 void AI_SetSightClient(void);
@@ -1708,6 +1710,11 @@ void fire_trap(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 		int speed, float timer, float damage_radius, qboolean held);
 void fire_flaregun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 		int speed, float timer, float damage_radius);
+void check_dodge(edict_t *self, vec3_t start, vec3_t dir, int speed);
+void Grenade_Explode(edict_t *ent);
+
+/* g_trigger.c */
+void hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
 
 /* g_ptrail.c */
 void PlayerTrail_Init(void);
@@ -1756,6 +1763,9 @@ void ValidateSelectedItem(gclient_t *cl);
 void DeathmatchScoreboardMessage(edict_t *ent, edict_t *killer);
 void HelpComputerMessage(edict_t *ent);
 void InventoryMessage(edict_t *ent);
+
+/* g_func.c */
+void Move_Calc(edict_t *ent, vec3_t dest, void (*func)(edict_t *));
 
 /* g_pweapon.c */
 void PlayerNoise(edict_t *who, vec3_t where, int type);
@@ -1913,7 +1923,7 @@ edict_t *CreateFlyMonster(vec3_t origin, vec3_t angles, vec3_t mins,
 		vec3_t maxs, const char *classname);
 edict_t *CreateGroundMonster(vec3_t origin, vec3_t angles, vec3_t entMins,
 		vec3_t entMaxs, const char *classname, int height);
-qboolean FindSpawnPoint(vec3_t startpoint, vec3_t mins, vec3_t maxs,
+qboolean FindSpawnPoint(vec3_t startpoint, const vec3_t mins, const vec3_t maxs,
 		vec3_t spawnpoint, float maxMoveUp);
 qboolean CheckSpawnPoint(const vec3_t origin, const vec3_t mins, const vec3_t maxs);
 qboolean CheckGroundSpawnPoint(const vec3_t origin, const vec3_t entMins, const vec3_t entMaxs,
@@ -1937,6 +1947,19 @@ float PlayersRangeFromSpot(edict_t *spot);
 void WidowPowerups(edict_t *self);
 void WidowCalcSlots(edict_t *self);
 void widow_start_spawn(edict_t *self);
+
+/* boss31 */
+void MakronToss(edict_t *self);
+void MakronPrecache(void);
+
+/* boss3 */
+void Use_Boss3(edict_t * ent, edict_t * other, edict_t * activator);
+
+/* boss5 */
+void BossExplode2(edict_t *self);
+
+/* supertank.c */
+void BossExplode(edict_t *self);
 
 /* ============================================================================ */
 

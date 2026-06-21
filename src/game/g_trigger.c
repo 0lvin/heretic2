@@ -43,8 +43,6 @@
 static int windsound;
 
 void trigger_push_active(edict_t *self);
-void hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
-		const csurface_t *surf /* unused */);
 
 #define PUZZLE_SHOWNO_INVENTORY 16
 #define PUZZLE_DONT_REMOVE		32
@@ -131,7 +129,7 @@ multi_wait(edict_t *ent)
  * through a delay so wait for the
  * delay time before firing
  */
-void
+static void
 multi_trigger(edict_t *ent)
 {
 	if (!ent)
@@ -854,7 +852,8 @@ void trigger_playerusepuzzle(edict_t *self, edict_t *activator)
  * NO_INVENTORY - don't show inventory bar, don't take puzzle piece
  * DONT_REMOVE - entity won't remove itself after one use
  */
-void SP_trigger_PlayerUsePuzzle(edict_t *self)
+void
+SP_trigger_PlayerUsePuzzle(edict_t *self)
 {
 	InitTrigger(self);
 

@@ -713,8 +713,8 @@ CheckArmor(edict_t *ent, vec3_t point, const vec3_t normal, int damage,
 	return save;
 }
 
-void
-M_ReactToDamage(edict_t *targ, edict_t *attacker)
+static void
+M_ReactToDamage(edict_t *targ, edict_t *attacker, edict_t *inflictor)
 {
 	if (!(attacker->client) && !(attacker->svflags & SVF_MONSTER))
 		return;
@@ -1473,7 +1473,7 @@ T_Damage(edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t pdir,
 		targ->spawnflags &= ~MSF_AMBUSH;
 		targ->targetname = NULL;
 
-		M_ReactToDamage (targ, attacker);
+		M_ReactToDamage(targ, attacker, inflictor);
 
 		if (!(targ->monsterinfo.aiflags & AI_DUCKED) && (take) &&
 			(targ->pain_debounce_time  < level.time))

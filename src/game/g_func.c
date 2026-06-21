@@ -75,11 +75,11 @@ void door_secret_move6(edict_t *self);
 void door_secret_done(edict_t *self);
 
 void train_next(edict_t *self);
-void door_go_up(edict_t *self, edict_t *activator);
+static void door_go_up(edict_t *self, edict_t *activator);
 void door_go_down(edict_t *self);
 void plat2_go_down(edict_t *ent);
 void plat2_go_up(edict_t *ent);
-void plat2_spawn_danger_area(edict_t *ent);
+static void plat2_spawn_danger_area(edict_t *ent);
 static void plat2_kill_danger_area(const edict_t *ent);
 void Think_AccelMove(edict_t *ent);
 void plat_go_down(edict_t *ent);
@@ -498,7 +498,7 @@ TrainAngleMove_Calc(edict_t *self, edict_t *ent, vec3_t dest)
 	VectorAdd(self->s.angles, angles, self->moveinfo.end_angles);
 }
 
-void
+static void
 AngleMove_Calc(edict_t *ent, void (*func)(edict_t *))
 {
 	if (!ent || !func)
@@ -779,7 +779,7 @@ plat_go_down(edict_t *ent)
 	Move_Calc(ent, ent->moveinfo.end_origin, plat_hit_bottom);
 }
 
-void
+static void
 plat_go_up(edict_t *ent)
 {
 	if (!ent)
@@ -1126,7 +1126,7 @@ SP_func_plat(edict_t *ent)
 
 }
 
-void
+static void
 plat2_spawn_danger_area(edict_t *ent)
 {
 	if (!ent)
@@ -1164,7 +1164,7 @@ plat2_kill_danger_area(const edict_t *ent)
 	}
 }
 
-void
+static void
 plat2_hit_top(edict_t *ent)
 {
 	if (!ent)
@@ -1221,7 +1221,7 @@ plat2_hit_top(edict_t *ent)
 	G_UseTargets(ent, ent);
 }
 
-void
+static void
 plat2_hit_bottom(edict_t *ent)
 {
 	if (!ent)
@@ -2106,7 +2106,7 @@ button_wait(edict_t *self)
 	}
 }
 
-void
+static void
 button_fire(edict_t *self)
 {
 	if (!self)
@@ -2510,7 +2510,7 @@ door_go_down(edict_t *self)
 	}
 }
 
-void
+static void
 door_go_up(edict_t *self, edict_t *activator)
 {
 	if (!self)
@@ -3851,7 +3851,7 @@ again:
 	TrainAngleMove_Calc(self, ent, dest);
 }
 
-void
+static void
 train_resume(edict_t *self)
 {
 	edict_t *ent;

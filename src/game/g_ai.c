@@ -1821,7 +1821,7 @@ M_CheckAttack(edict_t *self)
  * Turn and close until within an
  * angle to launch a melee attack
  */
-void
+static void
 ai_run_melee(edict_t *self)
 {
 	if (!self)
@@ -1847,7 +1847,7 @@ ai_run_melee(edict_t *self)
  * Turn in place until within an
  * angle to launch a missile attack
  */
-void
+static void
 ai_run_missile(edict_t *self)
 {
 	if (!self)
@@ -1874,7 +1874,7 @@ ai_run_missile(edict_t *self)
  * Strafe sideways, but stay at
  * aproximately the same range
  */
-void
+static void
 ai_run_slide(edict_t *self, float distance)
 {
 	float ofs;
@@ -4037,7 +4037,7 @@ void MG_NewDir (edict_t *self, float dist)
 // a valid standing position at all
 
 	if (!MG_CheckBottom (self))// && self->classID!=CID_TBEAST)
-		SV_FixCheckBottom (self);
+		SV_FixCheckBottom(self);
 }
 
 /*

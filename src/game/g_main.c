@@ -563,7 +563,7 @@ CheckNeedPass(void)
 	}
 }
 
-void
+static void
 CheckDMRules(void)
 {
 	if (level.intermissiontime)

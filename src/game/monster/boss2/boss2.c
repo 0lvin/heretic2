@@ -30,15 +30,10 @@
 
 #define BOSS2_ROCKET_SPEED	750
 
-void BossExplode(edict_t *self);
 void boss2_run(edict_t *self);
-void boss2_stand(edict_t *self);
-void boss2_dead(edict_t *self);
-void boss2_attack(edict_t *self);
-void boss2_attack_mg(edict_t *self);
-void boss2_reattack_mg(edict_t *self);
-void boss2_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
-		int damage, const vec3_t point);
+static void boss2_dead(edict_t *self);
+static void boss2_attack_mg(edict_t *self);
+static void boss2_reattack_mg(edict_t *self);
 
 static int sound_pain1;
 static int sound_pain2;
@@ -121,7 +116,7 @@ Boss2PredictiveRocket(edict_t *self)
 	monster_fire_rocket(self, start, dir, 50, BOSS2_ROCKET_SPEED, MZ2_BOSS2_ROCKET_4);
 }
 
-void
+static void
 Boss2Rocket(edict_t *self)
 {
 	vec3_t forward, right;
@@ -181,7 +176,7 @@ Boss2Rocket(edict_t *self)
 	monster_fire_rocket(self, start, dir, 50, 500, MZ2_BOSS2_ROCKET_4);
 }
 
-void
+static void
 boss2_firebullet_right(edict_t *self)
 {
 	vec3_t forward, right, target;
@@ -206,7 +201,7 @@ boss2_firebullet_right(edict_t *self)
 			MZ2_BOSS2_MACHINEGUN_R1);
 }
 
-void
+static void
 boss2_firebullet_left(edict_t *self)
 {
 	vec3_t forward, right, target;
@@ -232,7 +227,7 @@ boss2_firebullet_left(edict_t *self)
 			MZ2_BOSS2_MACHINEGUN_L1);
 }
 
-void
+static void
 Boss2MachineGun(edict_t *self)
 {
 	if (!self)
@@ -637,7 +632,7 @@ boss2_attack(edict_t *self)
 	}
 }
 
-void
+static void
 boss2_attack_mg(edict_t *self)
 {
 	if (!self)
@@ -648,7 +643,7 @@ boss2_attack_mg(edict_t *self)
 	self->monsterinfo.currentmove = &boss2_move_attack_mg;
 }
 
-void
+static void
 boss2_reattack_mg(edict_t *self)
 {
 	if (!self)
@@ -712,7 +707,7 @@ boss2_pain(edict_t *self, edict_t *other /* unused */,
 	}
 }
 
-void
+static void
 boss2_dead(edict_t *self)
 {
 	if (!self)

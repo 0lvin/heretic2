@@ -39,10 +39,6 @@
 #define TRACKER_IMPACT_FLAGS (DAMAGE_NO_POWER_ARMOR | DAMAGE_ENERGY)
 #define TRACKER_DAMAGE_TIME 0.5
 
-extern void check_dodge(edict_t *self, vec3_t start, vec3_t dir, int speed);
-extern void hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf);
-extern void Grenade_Explode(edict_t *ent);
-
 void
 flechette_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
@@ -706,7 +702,7 @@ Nuke_Quake(edict_t *self)
 	}
 }
 
-void
+static void
 Nuke_Explode(edict_t *ent)
 {
 	if (!ent)
@@ -944,7 +940,8 @@ fire_nuke(edict_t *self, vec3_t start, vec3_t aimdir, int speed)
 
 	gi.linkentity(nuke);
 }
-void
+
+static void
 tesla_remove(edict_t *self)
 {
 	edict_t *cur, *next;
@@ -1003,7 +1000,7 @@ tesla_die(edict_t *self, edict_t *inflictor /* unused */, edict_t *attacker /* u
 	tesla_remove(self);
 }
 
-void
+static void
 tesla_blow(edict_t *self)
 {
 	if (!self)
@@ -1346,7 +1343,7 @@ fire_tesla(edict_t *self, vec3_t start, vec3_t aimdir,
 	gi.linkentity(tesla);
 }
 
-void
+static void
 fire_beams(edict_t *self, vec3_t start, vec3_t aimdir, vec3_t offset,
 		int damage, int kick, int te_beam, int te_impact, int mod)
 {
@@ -1726,7 +1723,7 @@ tracker_pain_daemon_think(edict_t *self)
 	}
 }
 
-void
+static void
 tracker_pain_daemon_spawn(edict_t *owner, edict_t *enemy, int damage)
 {
 	edict_t *daemon;
@@ -1746,7 +1743,7 @@ tracker_pain_daemon_spawn(edict_t *owner, edict_t *enemy, int damage)
 	daemon->dmg = damage;
 }
 
-void
+static void
 tracker_explode(edict_t *self)
 {
 	if (!self)

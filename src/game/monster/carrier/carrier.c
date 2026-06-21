@@ -19,27 +19,13 @@
 #define NUM_FLYERS_SPAWNED 6            /* max # of flyers he can spawn */
 #define RAIL_FIRE_TIME 3
 
-void BossExplode(edict_t *self);
-void Grenade_Explode(edict_t *ent);
-
 void carrier_run(edict_t *self);
-void carrier_stand(edict_t *self);
-void carrier_dead(edict_t *self);
-void carrier_attack(edict_t *self);
-void carrier_attack_mg(edict_t *self);
-void carrier_reattack_mg(edict_t *self);
-void carrier_die(edict_t *self,
-		edict_t *inflictor,
-		edict_t *attacker,
-		int damage,
-		const vec3_t point);
-void carrier_attack_gren(edict_t *self);
-void carrier_reattack_gren(edict_t *self);
-void carrier_start_spawn(edict_t *self);
-void carrier_spawn_check(edict_t *self);
-void carrier_prep_spawn(edict_t *self);
-void CarrierMachineGunHold(edict_t *self);
-void CarrierRocket(edict_t *self);
+static void carrier_dead(edict_t *self);
+static void carrier_attack_mg(edict_t *self);
+static void carrier_reattack_mg(edict_t *self);
+static void carrier_attack_gren(edict_t *self);
+static void carrier_reattack_gren(edict_t *self);
+static void CarrierRocket(edict_t *self);
 
 static int sound_pain1;
 static int sound_pain2;
@@ -49,12 +35,12 @@ static int sound_sight;
 static int sound_rail;
 static int sound_spawn;
 
-float orig_yaw_speed;
+static float orig_yaw_speed;
 
-vec3_t flyer_mins = {-16, -16, -24};
-vec3_t flyer_maxs = {16, 16, 16};
+static vec3_t flyer_mins = {-16, -16, -24};
+static vec3_t flyer_maxs = {16, 16, 16};
 
-extern mmove_t flyer_move_attack2, flyer_move_attack3, flyer_move_kamikaze;
+extern mmove_t flyer_move_attack3, flyer_move_kamikaze;
 
 void
 carrier_sight(edict_t *self, edict_t *other /* other */)
@@ -67,7 +53,7 @@ carrier_sight(edict_t *self, edict_t *other /* other */)
 	gi.sound(self, CHAN_VOICE, sound_sight, 1, ATTN_NORM, 0);
 }
 
-void
+static void
 CarrierCoopCheck(edict_t *self)
 {
 	if (!self)
@@ -151,7 +137,7 @@ CarrierCoopCheck(edict_t *self)
 	return;
 }
 
-void
+static void
 CarrierGrenade(edict_t *self)
 {
 	vec3_t start;
@@ -235,7 +221,7 @@ CarrierGrenade(edict_t *self)
 	monster_fire_grenade(self, start, aim, 50, 600, flash_number);
 }
 
-void
+static void
 CarrierPredictiveRocket(edict_t *self)
 {
 	vec3_t forward, right;
@@ -274,7 +260,7 @@ CarrierPredictiveRocket(edict_t *self)
 	monster_fire_rocket(self, start, dir, 50, CARRIER_ROCKET_SPEED, MZ2_CARRIER_ROCKET_4);
 }
 
-void
+static void
 CarrierRocket(edict_t *self)
 {
 	vec3_t forward, right;
@@ -345,7 +331,7 @@ CarrierRocket(edict_t *self)
 	monster_fire_rocket(self, start, dir, 50, 500, MZ2_CARRIER_ROCKET_4);
 }
 
-void
+static void
 carrier_firebullet_right(edict_t *self)
 {
 	vec3_t forward, right, target;
@@ -379,7 +365,7 @@ carrier_firebullet_right(edict_t *self)
 			DEFAULT_BULLET_VSPREAD, flashnum);
 }
 
-void
+static void
 carrier_firebullet_left(edict_t *self)
 {
 	vec3_t forward, right, target;
@@ -415,7 +401,7 @@ carrier_firebullet_left(edict_t *self)
 			DEFAULT_BULLET_VSPREAD, flashnum);
 }
 
-void
+static void
 CarrierMachineGun(edict_t *self)
 {
 	if (!self)
@@ -436,7 +422,7 @@ CarrierMachineGun(edict_t *self)
 	}
 }
 
-void
+static void
 CarrierSpawn(edict_t *self)
 {
 	vec3_t f, r, offset, startpoint, spawnpoint;
@@ -516,7 +502,7 @@ CarrierSpawn(edict_t *self)
 	}
 }
 
-void
+static void
 carrier_prep_spawn(edict_t *self)
 {
 	if (!self)
@@ -531,7 +517,7 @@ carrier_prep_spawn(edict_t *self)
 	CarrierMachineGun(self);
 }
 
-void
+static void
 carrier_spawn_check(edict_t *self)
 {
 	if (!self)
@@ -555,7 +541,7 @@ carrier_spawn_check(edict_t *self)
 	}
 }
 
-void
+static void
 carrier_ready_spawn(edict_t *self)
 {
 	float current_yaw;
@@ -590,7 +576,7 @@ carrier_ready_spawn(edict_t *self)
 	}
 }
 
-void
+static void
 carrier_start_spawn(edict_t *self)
 {
 	int mytime;
@@ -808,7 +794,7 @@ mmove_t carrier_move_attack_rocket = {
 	carrier_run
 };
 
-void
+static void
 CarrierRail(edict_t *self)
 {
 	vec3_t start;
@@ -833,7 +819,7 @@ CarrierRail(edict_t *self)
 	self->monsterinfo.attack_finished = level.time + RAIL_FIRE_TIME;
 }
 
-void
+static void
 CarrierSaveLoc(edict_t *self)
 {
 	if (!self)
@@ -993,17 +979,6 @@ carrier_walk(edict_t *self)
 	}
 
 	self->monsterinfo.currentmove = &carrier_move_walk;
-}
-
-void
-CarrierMachineGunHold(edict_t *self)
-{
-	if (!self)
-	{
-		return;
-	}
-
-	CarrierMachineGun(self);
 }
 
 void
@@ -1185,7 +1160,7 @@ carrier_attack(edict_t *self)
 	}
 }
 
-void
+static void
 carrier_attack_mg(edict_t *self)
 {
 	if (!self)
@@ -1197,7 +1172,7 @@ carrier_attack_mg(edict_t *self)
 	self->monsterinfo.currentmove = &carrier_move_attack_mg;
 }
 
-void
+static void
 carrier_reattack_mg(edict_t *self)
 {
 	if (!self)
@@ -1231,7 +1206,7 @@ carrier_reattack_mg(edict_t *self)
 	}
 }
 
-void
+static void
 carrier_attack_gren(edict_t *self)
 {
 	if (!self)
@@ -1244,7 +1219,7 @@ carrier_attack_gren(edict_t *self)
 	self->monsterinfo.currentmove = &carrier_move_attack_gren;
 }
 
-void
+static void
 carrier_reattack_gren(edict_t *self)
 {
 	if (!self)
@@ -1322,7 +1297,7 @@ carrier_pain(edict_t *self, edict_t *other /* unused */, float kick /* unused */
 	}
 }
 
-void
+static void
 carrier_dead(edict_t *self)
 {
 	if (!self)
