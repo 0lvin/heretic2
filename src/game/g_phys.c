@@ -3554,95 +3554,96 @@ TestEntityPosition(edict_t *self)
 
 static void BackSub(float a[][MAX_MATRIX],int *indx,float *b,int sz)
 {
-    int i,j,ii=-1,ip;
-    float sum;
-    for (i=0;i<sz;i++)
-    {
+	int i,j,ii=-1,ip;
+	float sum;
+	for (i=0;i<sz;i++)
+	{
 		ip=indx[i];
 		sum=b[ip];
-        b[ip]=b[i];
-        if (ii>=0)
-        {
-            for (j=ii;j<i;j++)
-                sum-=a[i][j]*b[j];
-        }
-        else if (sum!=0.0)
-        {
-            ii=i;
-        }
-        b[i]=sum;
-    }
-    for (i=sz-1;i>=0;i--)
-    {
-        sum=b[i];
-        for (j=i+1;j<sz;j++)
-            sum-=a[i][j]*b[j];
-        b[i]=sum/a[i][i];
-    }
+		b[ip]=b[i];
+		if (ii>=0)
+		{
+			for (j=ii;j<i;j++)
+				sum-=a[i][j]*b[j];
+		}
+		else if (sum!=0.0)
+		{
+			ii=i;
+		}
+		b[i]=sum;
+	}
+	for (i=sz-1;i>=0;i--)
+	{
+		sum=b[i];
+		for (j=i+1;j<sz;j++)
+			sum-=a[i][j]*b[j];
+		b[i]=sum/a[i][i];
+	}
 }
 
 #define EPS_MATRIX (1E-15)
 
-static int LUDecomposition(float a[][MAX_MATRIX],int indx[],int sz,float *d)
+static int
+LUDecomposition(float a[][MAX_MATRIX], int indx[], int sz, float *d)
 {
-    int i,imax,j,k;
-    float big,dum,sum,temp;
-    float vv[MAX_MATRIX];
+	int i,imax,j,k;
+	float big,dum,sum,temp;
+	float vv[MAX_MATRIX];
 	*d=1;
-    for (i=0;i<sz;i++)
-    {
-        big=0.;
-        for (j=0;j<sz;j++)
-            if ((temp=fabs(a[i][j]))>big)
-                    big=temp;
-        if (big<EPS_MATRIX)
+	for (i=0;i<sz;i++)
+	{
+		big=0.;
+		for (j=0;j<sz;j++)
+			if ((temp=fabs(a[i][j]))>big)
+					big=temp;
+		if (big<EPS_MATRIX)
 			return 0;
-        vv[i]=1.0/big;
-    }
+		vv[i]=1.0/big;
+	}
 	imax = 0;//should have a def value just to make sure
-    for (j=0;j<sz;j++)
-    {
-        for (i=0;i<j;i++)
-        {
-            sum=a[i][j];
-            for (k=0;k<i;k++)
-                sum-=a[i][k]*a[k][j];
-            a[i][j]=sum;
-        }
-        big=0.;
-        for (i=j;i<sz;i++)
-        {
-            sum=a[i][j];
-            for (k=0;k<j;k++)
-                sum-=a[i][k]*a[k][j];
-            a[i][j]=sum;
-            if ((dum=vv[i]*fabs(sum))>=big)
-            {
-                big=dum;
-                imax=i;
-            }
-        }
-        if (j!=imax)
-        {
-            for (k=0;k<sz;k++)
-            {
-                dum=a[imax][k];
-                a[imax][k]=a[j][k];
-                a[j][k]=dum;
-            }
-            vv[imax]=vv[j];
+	for (j=0;j<sz;j++)
+	{
+		for (i=0;i<j;i++)
+		{
+			sum=a[i][j];
+			for (k=0;k<i;k++)
+				sum-=a[i][k]*a[k][j];
+			a[i][j]=sum;
+		}
+		big=0.;
+		for (i=j;i<sz;i++)
+		{
+			sum=a[i][j];
+			for (k=0;k<j;k++)
+				sum-=a[i][k]*a[k][j];
+			a[i][j]=sum;
+			if ((dum=vv[i]*fabs(sum))>=big)
+			{
+				big=dum;
+				imax=i;
+			}
+		}
+		if (j!=imax)
+		{
+			for (k=0;k<sz;k++)
+			{
+				dum=a[imax][k];
+				a[imax][k]=a[j][k];
+				a[j][k]=dum;
+			}
+			vv[imax]=vv[j];
 			*d=-(*d);
-        }
-        indx[j]=imax;
-        if (fabs(a[j][j])<EPS_MATRIX)
+		}
+		indx[j]=imax;
+		if (fabs(a[j][j])<EPS_MATRIX)
 			return 0;
-        if (j!=sz-1)
-        {
-            dum=1.0/a[j][j];
-            for (i=j+1;i<sz;i++)
-                    a[i][j]*=dum;
-        }
-    }
+		if (j!=sz-1)
+		{
+			dum=1.0/a[j][j];
+			for (i=j+1;i<sz;i++)
+					a[i][j]*=dum;
+		}
+	}
 	return 1;
 }
 
@@ -3654,19 +3655,6 @@ Objects need to be moved back on a failed push,
 otherwise riders would continue to slide.
 ============
 */
-
-#if 0
-void VectorRound(vec3_t v)
-{
-	//assert(v != vec3_origin);
-
-	v[0] = (float)floor(v[0] + 0.5);
-	v[1] = (float)floor(v[1] + 0.5);
-	v[2] = (float)floor(v[2] + 0.5);
-}
-#endif
-
-#define GIL_PUSH 1
 qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 {
 	int			e;
@@ -3675,23 +3663,12 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 	pushed_t	*p;
 	vec3_t		org, org2, move2, forward, right, up,holdOrg;
 
-#if GIL_PUSH
 	float a[3][3];
 	vec3_t		forwardInv, rightInv, upInv,OrgOrg;
 	int indx[3];
 	float d;
-#endif
-	// Commented out for Mr Rick
-#if	0
-// clamp the move to 1/8 units, so the position will
-// be accurate for client side prediction
-	Vec3ScaleAssign(8.0, move);
-	VectorRound(move);
-	Vec3ScaleAssign(0.125, move);
-#endif
 
-// find the bounding box
-
+	// find the bounding box
 	if (move[0]<0)
 	{
 		mins[0]=pusher->absmin[0]+move[0];
@@ -3724,21 +3701,9 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 	}
 
 // we need this for pushing things later
-#if GIL_PUSH
 	VectorCopy(pusher->s.angles, org);
 	Vec3AddAssign(amove, org);
 	AngleVectors(org, forward, right, up);
-/*
-	a[0][0]=forward[0];
-	a[0][1]=forward[1];
-	a[0][2]=forward[2];
-	a[1][0]=-right[0];
-	a[1][1]=-right[1];
-	a[1][2]=-right[2];
-	a[2][0]=up[0];
-	a[2][1]=up[1];
-	a[2][2]=up[2];
-*/
 	a[0][0]=forward[0];
 	a[1][0]=forward[1];
 	a[2][0]=forward[2];
@@ -3764,10 +3729,6 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 		VectorClear(upInv);
 	}
 	AngleVectors(pusher->s.angles, forward, right, up);
-#else
-	VectorNegate(amove, org);
-	AngleVectors(org, forward, right, up);
-#endif
 
 // save the pusher's original position
 	pushed_p->ent = pusher;
@@ -3783,9 +3744,7 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 	pushed_p++;
 
 // move the pusher to it's final position
-#if GIL_PUSH
 	VectorCopy(pusher->s.origin,OrgOrg);
-#endif
 	Vec3AddAssign(move, pusher->s.origin);
 	Vec3AddAssign(amove, pusher->s.angles);
 
@@ -3847,7 +3806,6 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 				check->client->ps.pmove.delta_angles[YAW] += amove[YAW];
 			}
 			// figure movement due to the pusher's amove
-#if GIL_PUSH
 			{
 				int test;
 				vec3_t testpnt;
@@ -3886,23 +3844,6 @@ qboolean PushEntities(edict_t *pusher, vec3_t move, vec3_t amove)
 						break;
 				}
 			}
-#else
-			Vec3AddAssign(move, check->s.origin);
-			VectorSubtract(check->s.origin, pusher->s.origin, org);
-			org2[0] = DotProduct(org, forward);
-			org2[1] = -DotProduct(org, right);
-			org2[2] = DotProduct(org, up);
-			VectorSubtract(org2, org, move2);
-			Vec3AddAssign(move2, check->s.origin);
-
-			// may have pushed them off an edge
-			if (check->groundentity != pusher)
-			{
-				check->groundentity = NULL;
-			}
-
-			block = TestEntityPosition(check);
-#endif
 
 			if (!block)
 			{	// pushed ok
@@ -4068,4 +4009,3 @@ static void Physics_ScriptAngular(edict_t *self)
 	}
 	Physics_Push(self);
 }
-
