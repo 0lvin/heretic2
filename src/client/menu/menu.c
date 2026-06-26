@@ -674,7 +674,7 @@ InitMainMenu(void)
 	s_plaque.generic.x = (x - (m_cursor_width + 5) - w);
 	s_plaque.generic.y = y;
 	s_plaque.generic.name = "m_main_plaque";
-	s_plaque.generic.callback = 0;
+	s_plaque.generic.callback = NULL;
 	s_plaque.focuspic = 0;
 	s_plaque.generic.alttext = NULL;
 
@@ -683,7 +683,7 @@ InitMainMenu(void)
 	s_logo.generic.x = (x - (m_cursor_width + 5) - w);
 	s_logo.generic.y = y + h + 5;
 	s_logo.generic.name = "m_main_logo";
-	s_logo.generic.callback = 0;
+	s_logo.generic.callback = NULL;
 	s_logo.focuspic = 0;
 	s_logo.generic.alttext = NULL;
 
@@ -2739,7 +2739,7 @@ Options_MenuInit(void)
 		"cyan",
 		"magenta",
 		"orange",
-		0
+		NULL
 	};
 
 	float scale = SCR_GetMenuScale();
@@ -3537,7 +3537,20 @@ Mods_MenuInit(void)
 {
 	int currentmod, x = 0, y = 0, i;
 	char modname[MAX_QPATH]; /* TG626 */
-	char **displaynames;
+	char **displaynames, **ptr;
+
+	displaynames = ptr = (char **)s_mods_list.itemnames;
+
+	if (ptr)
+	{
+		while (*ptr)
+		{
+			free(*ptr);
+			ptr ++;
+		}
+
+		free(displaynames);
+	}
 
 	Mods_NamesInit();
 
@@ -4578,17 +4591,50 @@ RulesChangeFunc(void *self)
 	}
 }
 
+static const char *
+GetStartSpot(const char *startmap)
+{
+	const char **s;
+
+	static const char *spots[] =
+	{
+		"bunk1", "start",
+		"mintro", "start",
+		"fact1", "start",
+		"power1", "pstart",
+		"biggun", "bstart",
+		"hangar1", "unitstart",
+		"city1", "unitstart",
+		"boss1", "bosstart"
+	};
+
+	for (s = spots; s < ARREND(spots); s += 2)
+	{
+		if (!Q_stricmp(startmap, *s))
+		{
+			return *(s + 1);
+		}
+	}
+
+	return NULL;
+}
+
 static void
 StartServerActionFunc(void *self)
 {
-	char startmap[1024];
+	const char *startmap, *spot;
 	float timelimit;
 	float fraglimit;
 	float maxclients;
-	char *spot;
 
-	Q_strlcpy(startmap, strchr(mapnames[s_startmap_list.curvalue], '\n') + 1,
-		sizeof(startmap));
+	startmap = strchr(mapnames[s_startmap_list.curvalue], '\n');
+
+	if (!startmap)
+	{
+		return;
+	}
+
+	startmap++;
 
 	maxclients = (float)strtod(s_maxclients_field.buffer, (char **)NULL);
 	timelimit = (float)strtod(s_timelimit_field.buffer, (char **)NULL);
@@ -4621,45 +4667,7 @@ StartServerActionFunc(void *self)
 
 	if (s_rules_box.curvalue == 1)
 	{
-		if (Q_stricmp(startmap, "bunk1") == 0)
-		{
-			spot = "start";
-		}
-
-		else if (Q_stricmp(startmap, "mintro") == 0)
-		{
-			spot = "start";
-		}
-
-		else if (Q_stricmp(startmap, "fact1") == 0)
-		{
-			spot = "start";
-		}
-
-		else if (Q_stricmp(startmap, "power1") == 0)
-		{
-			spot = "pstart";
-		}
-
-		else if (Q_stricmp(startmap, "biggun") == 0)
-		{
-			spot = "bstart";
-		}
-
-		else if (Q_stricmp(startmap, "hangar1") == 0)
-		{
-			spot = "unitstart";
-		}
-
-		else if (Q_stricmp(startmap, "city1") == 0)
-		{
-			spot = "unitstart";
-		}
-
-		else if (Q_stricmp(startmap, "boss1") == 0)
-		{
-			spot = "bosstart";
-		}
+		spot = GetStartSpot(startmap);
 	}
 
 	if (spot)
@@ -4694,6 +4702,94 @@ CleanCachedMapsList(void)
 		free(mapnames);
 		mapnames = NULL;
 	}
+}
+
+static char**
+GetMapsDBList(int *num)
+{
+	char *buffer;
+	int length;
+
+	if ((length = FS_LoadFile("mapdb.json", (void **)&buffer)) != -1)
+	{
+		char **mapnamestmp = NULL;
+		int numtmpmaps = 0;
+
+		char *s = buffer;
+		char shortname[MAX_TOKEN_CHARS];
+		char longname[MAX_TOKEN_CHARS];
+		char scratch[200];
+
+		/* We’ll scan through the JSON with COM_Parse, looking for "bsp" and "title" keys */
+		while (1)
+		{
+			const char *token = COM_Parse(&s);
+			if (!token || !*token)
+			{
+				break;
+			}
+
+			if (!strcmp(token, "bsp"))
+			{
+				/* skip ':' */
+				token = COM_Parse(&s);
+				/* next token is the bsp string */
+				token = COM_Parse(&s);
+				if (token && *token)
+				{
+					Q_strlcpy(shortname, token, sizeof(shortname));
+					for (size_t j = 0; j < strlen(shortname); j++)
+					{
+						shortname[j] = toupper((unsigned char)shortname[j]);
+					}
+				}
+			}
+			else if (!strcmp(token, "title"))
+			{
+				/* skip ':' */
+				token = COM_Parse(&s);
+				/* next token is the title string */
+				token = COM_Parse(&s);
+				if (token && *token)
+				{
+					Q_strlcpy(longname, token, sizeof(longname));
+
+					/* now we have both bsp and title, build entry */
+					Com_sprintf(scratch, sizeof(scratch), "%s\n%s", longname, shortname);
+
+					/* grow array */
+					char **newlist = realloc(mapnamestmp, sizeof(char *) * (numtmpmaps + 2));
+					if (!newlist)
+					{
+						free(mapnamestmp);
+						FS_FreeFile(buffer);
+						YQ2_COM_CHECK_OOM(newlist, "realloc(mapnamestmp)", sizeof(char *) * (numtmpmaps + 2))
+						return NULL;
+					}
+
+					mapnamestmp = newlist;
+
+					mapnamestmp[numtmpmaps] = strdup(scratch);
+					YQ2_COM_CHECK_OOM(mapnamestmp[numtmpmaps], "strdup(scratch)", strlen(scratch)+1)
+					if (!mapnamestmp[numtmpmaps])
+					{
+						free(mapnamestmp);
+						FS_FreeFile(buffer);
+						return NULL;
+					}
+
+					numtmpmaps++;
+					mapnamestmp[numtmpmaps] = NULL;
+				}
+			}
+		}
+
+		FS_FreeFile(buffer);
+		*num = numtmpmaps;
+		return mapnamestmp;
+	}
+
+	return NULL;
 }
 
 static char**
@@ -4847,72 +4943,31 @@ GetMapsInFolderList(int *numtmpmaps)
 	return mapnamestmp;
 }
 
-static char**
-GetCombinedMapsList(int *nummaps)
+static void
+AddMapsToList(char **mapnames_source, int nummaps_source, char **mapname_target, int *nummaps_taget)
 {
-	char **mapnamestmp_list = NULL, **mapnamestmp_folder = NULL, **mapnamestmp = NULL;
-	int nummaps_list = 0, nummaps_folder = 0;
-	size_t nummapslen, currpos;
+	size_t currpos;
 
-	mapnamestmp_folder = GetMapsInFolderList(&nummaps_folder);
-	if (!mapnamestmp_folder)
-	{
-		/* no maps at all? */
-		return NULL;
-	}
-
-	mapnamestmp_list = GetMapsList(&nummaps_list);
-	if (!mapnamestmp_list)
-	{
-		/* no maps in list? */
-		*nummaps = nummaps_folder;
-		return mapnamestmp_folder;
-	}
-
-	/* we have maps in file and in folder */
-	nummapslen = sizeof(char *) * (nummaps_list + nummaps_folder + 1);
-	mapnamestmp = malloc(nummapslen);
-	YQ2_COM_CHECK_OOM(mapnamestmp, "malloc(sizeof(char *) * (num))", nummapslen)
-	if (!mapnamestmp)
-	{
-		size_t i;
-
-		for (i = 0; i < nummaps_list; i++)
-		{
-			free(mapnamestmp_list[i]);
-		}
-
-		free(mapnamestmp_list);
-		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
-		*nummaps = nummaps_folder;
-		return mapnamestmp_folder;
-	}
-
-	memset(mapnamestmp, 0, nummapslen);
-	memcpy(mapnamestmp, mapnamestmp_list, sizeof(char *) * nummaps_list);
-	*nummaps = nummaps_list;
-	free(mapnamestmp_list);
-
-	for (currpos = 0; currpos < nummaps_folder; currpos ++)
+	for (currpos = 0; currpos < nummaps_source; currpos ++)
 	{
 		qboolean found;
 		const char *foldername;
 		size_t i;
 
-		foldername = strchr(mapnamestmp_folder[currpos], '\n');
+		foldername = strchr(mapnames_source[currpos], '\n');
 		if (!foldername)
 		{
-			free(mapnamestmp_folder[currpos]);
+			free(mapnames_source[currpos]);
 			continue;
 		}
 		foldername++;
 
 		found = false;
-		for (i = 0; i < *nummaps; i++)
+		for (i = 0; i < *nummaps_taget; i++)
 		{
 			const char *currname;
 
-			currname = strchr(mapnamestmp[i], '\n');
+			currname = strchr(mapname_target[i], '\n');
 			if (!currname)
 			{
 				continue;
@@ -4928,18 +4983,88 @@ GetCombinedMapsList(int *nummaps)
 
 		if (!found)
 		{
-			mapnamestmp[*nummaps] = mapnamestmp_folder[currpos];
-			(*nummaps) ++;
+			mapname_target[*nummaps_taget] = mapnames_source[currpos];
+			(*nummaps_taget) ++;
 		}
 		else
 		{
-			free(mapnamestmp_folder[currpos]);
+			free(mapnames_source[currpos]);
 		}
 	}
+}
+
+static char**
+GetCombinedMapsList(int *nummaps)
+{
+	char **mapnamestmp_list = NULL, **mapnamestmp_folder = NULL, **mapnamestmp = NULL, **mapdbnamestmp_list = NULL;
+	int nummaps_list = 0, nummaps_folder = 0, nummapsdb_list = 0;
+	size_t nummapslen;
+
+	mapnamestmp_folder = GetMapsInFolderList(&nummaps_folder);
+	if (!mapnamestmp_folder)
+	{
+		/* no maps at all? */
+		return NULL;
+	}
+
+	mapnamestmp_list = GetMapsList(&nummaps_list);
+	mapdbnamestmp_list = GetMapsDBList(&nummapsdb_list);
+	if (!mapnamestmp_list && !mapdbnamestmp_list)
+	{
+		/* no maps in list? */
+		*nummaps = nummaps_folder;
+		return mapnamestmp_folder;
+	}
+
+	/* we have maps in file and in folder */
+	nummapslen = sizeof(char *) * (nummaps_list + nummaps_folder + nummapsdb_list + 1);
+	mapnamestmp = malloc(nummapslen);
+	if (!mapnamestmp)
+	{
+		if (mapnamestmp_list && nummaps_list)
+		{
+			size_t i;
+
+			for (i = 0; i < nummaps_list; i++)
+			{
+				free(mapnamestmp_list[i]);
+			}
+
+			free(mapnamestmp_list);
+		}
+
+		if (mapdbnamestmp_list && nummapsdb_list)
+		{
+			size_t i;
+
+			for (i = 0; i < nummapsdb_list; i++)
+			{
+				free(mapdbnamestmp_list[i]);
+			}
+
+			free(mapdbnamestmp_list);
+		}
+
+		YQ2_COM_CHECK_OOM(mapnamestmp, "malloc(sizeof(char *) * (num))", nummapslen)
+
+		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+		*nummaps = nummaps_folder;
+		return mapnamestmp_folder;
+	}
+
+	memset(mapnamestmp, 0, nummapslen);
+	*nummaps = 0;
+
+	AddMapsToList(mapnamestmp_list, nummaps_list, mapnamestmp, nummaps);
+	AddMapsToList(mapdbnamestmp_list, nummapsdb_list, mapnamestmp, nummaps);
+	AddMapsToList(mapnamestmp_folder, nummaps_folder, mapnamestmp, nummaps);
 
 	mapnamestmp[*nummaps] = NULL;
 
+	free(mapnamestmp_list);
 	free(mapnamestmp_folder);
+	free(mapdbnamestmp_list);
+
 	return mapnamestmp;
 }
 
@@ -5846,7 +5971,7 @@ AddressBook_MenuInit(void)
 
 		f->generic.type = MTYPE_FIELD;
 		f->generic.name = NULL;
-		f->generic.callback = 0;
+		f->generic.callback = NULL;
 		f->generic.x = 0;
 		f->generic.y = i * 18 + 0;
 		f->generic.localdata[0] = i;
@@ -5927,13 +6052,8 @@ static strlist_t s_modelname;
 static strlist_t s_directory;
 
 static int rate_tbl[] = {2500, 3200, 5000, 10000, 25000, 0};
-static const char *rate_names[] =
-{
-	"28.8 Modem", "33.6 Modem",
-	"Single ISDN", "Dual ISDN/Cable",
-	"T1/LAN", "User defined",
-	NULL
-};
+static const char *rate_names[] = {"28.8 Modem", "33.6 Modem", "Single ISDN",
+								   "Dual ISDN/Cable", "T1/LAN", "User defined", NULL};
 
 static void
 DownloadOptionsFunc(void *self)
@@ -6695,7 +6815,7 @@ PlayerConfig_MenuInit(void)
 	s_player_name_field.generic.type = MTYPE_FIELD;
 	s_player_name_field.generic.name = "name";
 	s_player_name_field.generic.alttext = "$m_name";
-	s_player_name_field.generic.callback = 0;
+	s_player_name_field.generic.callback = NULL;
 	s_player_name_field.generic.x = 0;
 	s_player_name_field.generic.y = 0;
 	s_player_name_field.length = 20;
@@ -6708,8 +6828,8 @@ PlayerConfig_MenuInit(void)
 	s_player_icon_bitmap.generic.flags = QMF_INACTIVE;
 	s_player_icon_bitmap.generic.x = ((viddef.width / scale - 95) / 2) - 87;
 	s_player_icon_bitmap.generic.y = ((viddef.height / (2 * scale))) - 72;
-	s_player_icon_bitmap.generic.name = 0;
-	s_player_icon_bitmap.generic.callback = 0;
+	s_player_icon_bitmap.generic.name = NULL;
+	s_player_icon_bitmap.generic.callback = NULL;
 	s_player_icon_bitmap.focuspic = 0;
 
 	s_player_model_title.generic.type = MTYPE_SEPARATOR;
@@ -6736,7 +6856,7 @@ PlayerConfig_MenuInit(void)
 	s_player_skin_box.generic.x = -56 * scale;
 	s_player_skin_box.generic.y = 94;
 	s_player_skin_box.generic.name = NULL;
-	s_player_skin_box.generic.callback = 0;
+	s_player_skin_box.generic.callback = NULL;
 	s_player_skin_box.generic.cursor_offset = -48;
 	s_player_skin_box.curvalue = imgindex;
 	s_player_skin_box.itemnames = (const char **)s_skinnames[mdlindex].data;
