@@ -104,10 +104,6 @@ typedef struct
 	float		fvrectright_adj, fvrectbottom_adj; // right and bottom edges, for clamping
 	float		fvrectright; // rightmost edge, for Alias clamping
 	float		fvrectbottom; // bottommost edge, for Alias clamping
-	float		horizontalFieldOfView;	// at Z = 1.0, this many X is visible
-						// 2.0 = 90 degrees
-	float		xOrigin; // should probably always be 0.5
-	float		yOrigin; // between be around 0.3 to 0.5
 
 	vec3_t		vieworg;
 	vec3_t		viewangles;
@@ -149,10 +145,6 @@ extern oldrefdef_t	r_refdef;
 #define ALIAS_RIGHT_CLIP	0x0004
 #define ALIAS_BOTTOM_CLIP	0x0008
 #define ALIAS_Z_CLIP		0x0010
-#define ALIAS_XY_CLIP_MASK	0x000F
-
-#define XCENTERING	(1.0 / 2.0)
-#define YCENTERING	(1.0 / 2.0)
 
 #define NEAR_CLIP	0.01
 
@@ -223,15 +215,6 @@ typedef struct bedge_s
 	struct bedge_s	*pnext;
 } bedge_t;
 
-typedef struct clipplane_s
-{
-	vec3_t	normal;
-	float	dist;
-	struct clipplane_s *next;
-	byte	leftedge;
-	byte	rightedge;
-} clipplane_t;
-
 typedef struct espan_s
 {
 	int		u, v, count;
@@ -300,8 +283,6 @@ VARS
 
 ====================================================
 */
-extern int	r_framecount; // sequence # of current frame since Quake
-			      //  started
 extern float	r_aliasuvscale; // scale-up factor for screen u and v
 				//  on Alias vertices passed to driver
 extern qboolean	r_dowarp;
@@ -395,23 +376,15 @@ extern cvar_t	*sw_waterwarp;
 extern cvar_t	*sw_gunzposition;
 extern cvar_t	*sw_colorlight;
 
-extern clipplane_t	view_clipplanes[4];
-extern int		*pfrustum_indexes[4];
-extern cplane_t	frustum[4];
+//=============================================================================
 
+void R_DrawWorld(void);
 
 //=============================================================================
 
-void R_RenderWorld(entity_t *currententity);
-
-//=============================================================================
-
-extern cplane_t        screenedge[4];
-
-extern vec3_t  r_origin;
-
-extern vec3_t	modelorg;
-extern vec3_t	r_entorigin;
+extern vec3_t r_origin;
+extern vec3_t modelorg;
+extern vec3_t r_entorigin;
 
 extern msurface_t	*r_alpha_surfaces;
 
@@ -424,11 +397,10 @@ void R_DrawAlphaSurfaces(const entity_t *currententity);
 
 void R_DrawSprite(entity_t *currententity, const model_t *currentmodel);
 void R_ClipAndDrawPoly(float alpha, int isturbulent, qboolean textured);
-void R_RenderFace(entity_t *currententity, const model_t *currentmodel, msurface_t *fa, int clipflags, qboolean insubmodel);
+void R_RenderFaceEdge(entity_t *currententity, msurface_t *fa, int clipflags, qboolean insubmodel);
 void R_RenderBmodelFace(entity_t *currententity, bedge_t *pedges, msurface_t *psurf, int r_currentbkey);
-void R_TransformFrustum(void);
 
-void R_DrawSubmodelPolygons(entity_t *currententity, const model_t *currentmodel, int clipflags, mnode_t *topnode);
+void R_DrawSubmodelPolygons(entity_t *currententity, int clipflags, mnode_t *topnode);
 void R_DrawSolidClippedSubmodelPolygons(entity_t *currententity, const model_t *currentmodel, mnode_t *topnode);
 
 void R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel);
@@ -436,6 +408,7 @@ void R_BeginEdgeFrame(void);
 void R_ScanEdges(entity_t *currententity, const surf_t *surface);
 void RI_PushDlights(const model_t *model);
 void R_RotateBmodel(const entity_t *currententity);
+void RI_BuildLightMap(drawsurf_t* drawsurf, const refdef_t *r_newrefdef, float modulate);
 
 extern int	c_faceclip;
 extern int	r_polycount;
@@ -443,9 +416,7 @@ extern int	r_polycount;
 extern int	sadjust, tadjust;
 extern int	bbextents, bbextentt;
 
-extern int	r_currentkey;
-
-void R_DrawParticles (void);
+void R_DrawParticles(void);
 
 extern int	r_amodels_drawn;
 extern int	r_numallocatededges;
@@ -495,23 +466,22 @@ extern mvertex_t	*r_pcurrentvertbase;
 void R_DrawTriangle(const entity_t *currententity, const finalvert_t *a, const finalvert_t *b, const finalvert_t *c);
 void R_AliasClipTriangle(const entity_t *currententity, const finalvert_t *index0, const finalvert_t *index1, const finalvert_t *index2);
 
-
-extern float	r_time1;
-extern float	da_time1, da_time2;
-extern float	dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
-extern float	se_time1, se_time2, de_time1, de_time2;
+extern size_t r_time1;
+extern float da_time1, da_time2;
+extern float dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
+extern float se_time1, se_time2, de_time1, de_time2;
 
 extern int r_clipflags;
 
-extern image_t		*r_notexture_mip;
-extern model_t		*r_worldmodel;
-extern vec3_t		lightspot;
+extern image_t *r_notexture_mip;
+extern model_t *r_worldmodel;
+extern vec3_t lightspot;
 
 void R_AliasProjectAndClipTestFinalVert(finalvert_t *fv);
-void R_PrintAliasStats (void);
-void R_PrintTimes (void);
-void R_PrintDSpeeds (void);
-void R_SetupFrame (void);
+void R_PrintAliasStats(void);
+void R_PrintTimes(void);
+void R_PrintDSpeeds(void);
+void R_SetupFrame(void);
 
 extern  surfcache_t	*sc_base;
 

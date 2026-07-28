@@ -74,7 +74,7 @@ typedef struct swstate_s
 static swstate_t sw_state;
 
 void	*colormap;
-float	r_time1;
+size_t r_time1;
 int	r_numallocatededges;
 int	r_numallocatedverts;
 int	r_numallocatedtriangles;
@@ -113,18 +113,13 @@ float		xscaleinv, yscaleinv;
 float		xscaleshrink, yscaleshrink;
 float		aliasxscale, aliasyscale, aliasxcenter, aliasycenter;
 
-cplane_t	screenedge[4];
-
 //
 // refresh flags
 //
-int		r_framecount = 1;	// so frame counts initialized to 0 don't match
 int		r_polycount;
 int		r_drawnpolycount;
 
-int		*pfrustum_indexes[4];
-
-image_t  	*r_notexture_mip;
+image_t	*r_notexture_mip;
 
 float	da_time1, da_time2, dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
 float	se_time1, se_time2, de_time1, de_time2;
@@ -412,9 +407,6 @@ RE_Init(void)
 	view_clipplanes[0].rightedge = view_clipplanes[2].rightedge =
 			view_clipplanes[3].rightedge = false;
 
-	r_refdef.xOrigin = XCENTERING;
-	r_refdef.yOrigin = YCENTERING;
-
 	r_aliasuvscale = 1.0;
 
 	/* set our "safe" mode */
@@ -697,121 +689,128 @@ R_DrawNullModel(void)
 R_DrawEntitiesOnList
 =============
 */
-static void
-R_DrawEntitiesOnList(void)
+static qboolean
+R_DrawEntitiesOnList(qboolean translucent)
 {
-	qboolean translucent_entities = false;
-	int i;
+	qboolean anytranslucent = false;
 
 	if (!r_drawentities->value)
 	{
-		return;
+		return false;
 	}
 
-	// all bmodels have already been drawn by the edge list
-	for (i = 0; i < r_newrefdef.num_entities; i++)
+	if (!translucent)
 	{
-		entity_t *currententity = &r_newrefdef.entities[i];
+		size_t i;
 
-		if (currententity->flags & (RF_TRANSLUCENT | RF_FLARE))
+		/* all bmodels have already been drawn by the edge list */
+		for (i = 0; i < r_newrefdef.num_entities; i++)
 		{
-			translucent_entities = true;
-			continue; /* not solid */
-		}
+			entity_t *currententity = &r_newrefdef.entities[i];
 
-		if ( currententity->flags & RF_BEAM )
-		{
-			modelorg[0] = -r_origin[0];
-			modelorg[1] = -r_origin[1];
-			modelorg[2] = -r_origin[2];
-			VectorCopy(vec3_origin, r_entorigin);
-			R_DrawBeam(currententity);
-		}
-		else
-		{
-			const model_t *currentmodel = currententity->model;
-			if (!currentmodel)
+			if (currententity->flags & (RF_TRANSLUCENT | RF_FLARE))
 			{
-				R_DrawNullModel();
-				continue;
+				anytranslucent = true;
+				continue; /* not solid */
 			}
-			VectorCopy(currententity->origin, r_entorigin);
-			VectorSubtract (r_origin, r_entorigin, modelorg);
 
-			switch (currentmodel->type)
+			if ( currententity->flags & RF_BEAM )
 			{
-			case mod_sprite:
-				R_DrawSprite(currententity, currentmodel);
-				break;
+				modelorg[0] = -r_origin[0];
+				modelorg[1] = -r_origin[1];
+				modelorg[2] = -r_origin[2];
+				VectorCopy(vec3_origin, r_entorigin);
+				R_DrawBeam(currententity);
+			}
+			else
+			{
+				const model_t *currentmodel = currententity->model;
+				if (!currentmodel)
+				{
+					R_DrawNullModel();
+					continue;
+				}
 
-			case mod_alias:
-				R_DrawAliasModel(currententity, currentmodel);
-				break;
+				VectorCopy(currententity->origin, r_entorigin);
+				VectorSubtract(r_origin, r_entorigin, modelorg);
 
-			case mod_brush:
-				break;
+				switch (currentmodel->type)
+				{
+				case mod_sprite:
+					R_DrawSprite(currententity, currentmodel);
+					break;
 
-			default:
-				Com_Printf("%s: Bad modeltype %d\n",
-					__func__, currentmodel->type);
-				return;
+				case mod_alias:
+					R_DrawAliasModel(currententity, currentmodel);
+					break;
+
+				case mod_brush:
+					break;
+
+				default:
+					Com_Printf("%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
+					return false;
+				}
 			}
 		}
 	}
-
-	if (!translucent_entities)
+	else
 	{
-		return;
+		size_t i;
+
+		for (i = 0; i < r_newrefdef.num_entities; i++)
+		{
+			entity_t *currententity = &r_newrefdef.entities[i];
+
+			if (!(currententity->flags & (RF_TRANSLUCENT | RF_FLARE)))
+			{
+				continue; /* solid */
+			}
+
+			if (currententity->flags & RF_BEAM)
+			{
+				modelorg[0] = -r_origin[0];
+				modelorg[1] = -r_origin[1];
+				modelorg[2] = -r_origin[2];
+				VectorCopy(vec3_origin, r_entorigin);
+				R_DrawBeam(currententity);
+			}
+			else
+			{
+				const model_t *currentmodel = currententity->model;
+				if (!currentmodel)
+				{
+					R_DrawNullModel();
+					continue;
+				}
+
+				VectorCopy(currententity->origin, r_entorigin);
+				VectorSubtract(r_origin, r_entorigin, modelorg);
+
+				switch (currentmodel->type)
+				{
+				case mod_sprite:
+					R_DrawSprite(currententity, currentmodel);
+					break;
+
+				case mod_alias:
+					R_DrawAliasModel(currententity, currentmodel);
+					break;
+
+				case mod_brush:
+					break;
+
+				default:
+					Com_Printf("%s: Bad modeltype %d\n",
+						__func__, currentmodel->type);
+					return false;
+				}
+			}
+		}
 	}
 
-	for (i = 0; i < r_newrefdef.num_entities; i++)
-	{
-		entity_t *currententity = &r_newrefdef.entities[i];
-
-		if (!(currententity->flags & (RF_TRANSLUCENT | RF_FLARE)))
-		{
-			continue; /* solid */
-		}
-
-		if (currententity->flags & RF_BEAM)
-		{
-			modelorg[0] = -r_origin[0];
-			modelorg[1] = -r_origin[1];
-			modelorg[2] = -r_origin[2];
-			VectorCopy(vec3_origin, r_entorigin);
-			R_DrawBeam(currententity);
-		}
-		else
-		{
-			const model_t *currentmodel = currententity->model;
-			if (!currentmodel)
-			{
-				R_DrawNullModel();
-				continue;
-			}
-			VectorCopy(currententity->origin, r_entorigin);
-			VectorSubtract (r_origin, r_entorigin, modelorg);
-
-			switch (currentmodel->type)
-			{
-			case mod_sprite:
-				R_DrawSprite(currententity, currentmodel);
-				break;
-
-			case mod_alias:
-				R_DrawAliasModel(currententity, currentmodel);
-				break;
-
-			case mod_brush:
-				break;
-
-			default:
-				Com_Printf("%s: Bad modeltype %d\n",
-					__func__, currentmodel->type);
-				return;
-			}
-		}
-	}
+	return anytranslucent;
 }
 
 /*
@@ -847,7 +846,7 @@ R_BmodelCheckBBox(const float *minmaxs)
 		rejectpt[1] = minmaxs[pindex[1]];
 		rejectpt[2] = minmaxs[pindex[2]];
 
-		d = DotProduct (rejectpt, view_clipplanes[i].normal);
+		d = DotProduct(rejectpt, view_clipplanes[i].normal);
 		d -= view_clipplanes[i].dist;
 
 		if (d <= 0)
@@ -859,7 +858,7 @@ R_BmodelCheckBBox(const float *minmaxs)
 		acceptpt[1] = minmaxs[pindex[3+1]];
 		acceptpt[2] = minmaxs[pindex[3+2]];
 
-		d = DotProduct (acceptpt, view_clipplanes[i].normal);
+		d = DotProduct(acceptpt, view_clipplanes[i].normal);
 		d -= view_clipplanes[i].dist;
 
 		if (d <= 0)
@@ -1044,10 +1043,10 @@ R_DrawBEntitiesOnList(void)
 
 		// see if the bounding box lets us trivially reject, also sets
 		// trivial accept status
-		RotatedBBox (currentmodel->mins, currentmodel->maxs,
+		RotatedBBox(currentmodel->mins, currentmodel->maxs,
 			currententity->angles, mins, maxs);
-		VectorAdd (mins, currententity->origin, minmaxs);
-		VectorAdd (maxs, currententity->origin, (minmaxs+3));
+		VectorAdd(mins, currententity->origin, minmaxs);
+		VectorAdd(maxs, currententity->origin, (minmaxs+3));
 
 		clipflags = R_BmodelCheckBBox (minmaxs);
 		if (clipflags == BMODEL_FULLY_CLIPPED)
@@ -1062,7 +1061,7 @@ R_DrawBEntitiesOnList(void)
 		}
 
 		VectorCopy(currententity->origin, r_entorigin);
-		VectorSubtract (r_origin, r_entorigin, modelorg);
+		VectorSubtract(r_origin, r_entorigin, modelorg);
 
 		r_pcurrentvertbase = currentmodel->vertexes;
 
@@ -1083,7 +1082,7 @@ R_DrawBEntitiesOnList(void)
 			// falls entirely in one leaf, so we just put all the
 			// edges in the edge list and let 1/z sorting handle
 			// drawing order
-			R_DrawSubmodelPolygons(currententity, currentmodel, clipflags, topnode);
+			R_DrawSubmodelPolygons(currententity, clipflags, topnode);
 		}
 
 		// put back world rotation and frustum clipping
@@ -1092,7 +1091,7 @@ R_DrawBEntitiesOnList(void)
 		VectorCopy(base_vup, vup);
 		VectorCopy(base_vright, vright);
 		VectorCopy(oldorigin, modelorg);
-		R_TransformFrustum();
+		R_TransformFrustum(modelorg, vright, vup, vpn);
 	}
 }
 
@@ -1124,7 +1123,7 @@ R_EdgeDrawing(entity_t *currententity)
 
 	// Build the Global Edget Table
 	// Also populate the surface stack and count # surfaces to render (surf_max is the max)
-	R_RenderWorld(currententity);
+	R_DrawWorld();
 
 	if (sw_dspeeds->value)
 	{
@@ -1261,20 +1260,12 @@ VectorCompareRound(const vec3_t v1, const vec3_t v2)
 	return 1;
 }
 
-cplane_t frustum[4];
-
-
-/*
-================
-RE_RenderFrame
-
-================
-*/
 static void
 RE_RenderFrame(const refdef_t *fd)
 {
 	r_newrefdef = *fd;
 	entity_t	ent;
+	qboolean	anytranslucent = false;
 
 	if (!r_worldmodel && !( r_newrefdef.rdflags & RDF_NOWORLDMODEL ) )
 	{
@@ -1288,7 +1279,7 @@ RE_RenderFrame(const refdef_t *fd)
 	VectorCopy(fd->vieworg, r_refdef.vieworg);
 	VectorCopy(fd->viewangles, r_refdef.viewangles);
 
-	// compare current position with old
+	/* compare current position with old */
 	if (vid_buffer_width <= 640 ||
 	    !VectorCompareRound(fd->vieworg, lastvieworg) ||
 	    !VectorCompareRound(fd->viewangles, lastviewangles))
@@ -1309,10 +1300,9 @@ RE_RenderFrame(const refdef_t *fd)
 		r_time1 = SDL_GetTicks();
 	}
 
-	R_SetupFrame ();
+	R_SetupFrame();
 
-	R_SetFrustum(vup, vpn, vright, r_origin, r_newrefdef.fov_x, r_newrefdef.fov_y,
-		frustum);
+	R_SetFrustum(vup, vpn, vright, r_origin, r_newrefdef.fov_x, r_newrefdef.fov_y);
 
 	// Using the current view cluster (r_viewcluster), retrieve and decompress
 	// the PVS (Potentially Visible Set)
@@ -1348,7 +1338,7 @@ RE_RenderFrame(const refdef_t *fd)
 	}
 	// Draw enemies, barrel etc...
 	// Use Z-Buffer mostly in read mode only.
-	R_DrawEntitiesOnList();
+	anytranslucent = R_DrawEntitiesOnList(false);
 
 	if (sw_dspeeds->value)
 	{
@@ -1367,12 +1357,17 @@ RE_RenderFrame(const refdef_t *fd)
 	// Perform pixel palette blending ia the pics/colormap.pcx lower part lookup table.
 	R_DrawAlphaSurfaces(&ent);
 
+	if (anytranslucent)
+	{
+		R_DrawEntitiesOnList(true);
+	}
+
 	// Save off light value for server to look at (BIG HACK!)
 	R_SetLightLevel(&ent);
 
 	if (r_dowarp)
 	{
-		D_WarpScreen ();
+		D_WarpScreen();
 	}
 
 	if (sw_dspeeds->value)

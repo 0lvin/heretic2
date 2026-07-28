@@ -72,11 +72,25 @@ typedef struct
 /* Unsupported SiN Reloaded Assets format */
 #define SINRHEADER (('K' << 24) + ('P' << 16) + ('R' << 8) + 'S')
 
+typedef struct {
+	int ident;
+	int version;
+	int64_t dirofs;
+	int64_t strofs;
+	int dirlen;
+	int strlen;
+} dsinrheader_t;
+
 typedef struct
 {
 	char name[120];
 	int filepos, filelen;
 } dsinfile_t;
+
+typedef struct
+{
+	int64_t filepos, filelen;
+} dsinrfile_t;
 
 /* The .pak files are just a linear collapse of a directory tree */
 
@@ -644,6 +658,7 @@ typedef struct
 	int num_meshes;
 	int num_imgbit; /* image format of embeded images */
 	int num_animgroup;
+	int num_bones;
 
 	int ofs_skins;  /* each skin is a MAX_SKINNAME string */
 	int ofs_st;     /* byte offset from start for stverts */

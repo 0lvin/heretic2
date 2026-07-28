@@ -27,6 +27,7 @@
 
 #include "header/local.h"
 #include "../files/stb_truetype.h"
+#include "../files/DG_dynarr.h"
 
 unsigned d_8to24table[256];
 
@@ -38,17 +39,25 @@ static gl3image_t *draw_font = NULL;
 static stbtt_bakedchar *draw_fontcodes = NULL;
 static qboolean draw_chars_has_alt;
 
-static GLuint vbo2D = 0, vao2D = 0, vao2Dcolor = 0; // vao2D is for textured rendering, vao2Dcolor for color-only
-static qboolean bloomInitialized = false;
-
-#define BLOOM_TEXTURES 2
-static GLuint bloomTex[BLOOM_TEXTURES] = {0, 0};
-static GLuint bloomFBO[BLOOM_TEXTURES] = {0, 0};
+static GLuint vbo2D = 0, ebo2D = 0, vao2D = 0, vao2Dcolor = 0; // vao2D is for textured rendering, vao2Dcolor for color-only
 
 void R_LoadTTFFont(const char *ttffont, int vid_height, float *r_font_size,
 	int *r_font_height, stbtt_bakedchar **draw_fontcodes,
 	struct image_s **draw_font,
 	loadimage_t R_LoadPic);
+
+int gl3_num3Ddraws = 0, gl3_num2Ddraws = 0, gl3_numBufferVtxData = 0, gl3_numBufferUniforms = 0;
+
+typedef struct gl3_drawVert2D_s {
+	float x, y, s, t;
+} gl3_drawVert2D;
+
+DA_TYPEDEF(gl3_drawVert2D, Vtx2DArray_t);
+DA_TYPEDEF(GLushort, UShortArray_t);
+// dynamic arrays to batch all consecutive 2D draws with same texture to reduce drawcalls
+static Vtx2DArray_t vtxBuf = {0};
+static UShortArray_t idxBuf = {0};
+static GLuint lastBatchTexture = 0;
 
 void
 GL3_Draw_InitLocal(void)
@@ -68,6 +77,7 @@ GL3_Draw_InitLocal(void)
 
 	glGenBuffers(1, &vbo2D);
 	GL3_BindVBO(vbo2D);
+	glGenBuffers(1, &ebo2D);
 
 	GL3_UseProgram(gl3state.si2D.shaderProgram);
 
@@ -97,18 +107,55 @@ GL3_Draw_InitLocal(void)
 void
 GL3_Draw_ShutdownLocal(void)
 {
+	glDeleteBuffers(1, &ebo2D);
+	ebo2D = 0;
 	glDeleteBuffers(1, &vbo2D);
 	vbo2D = 0;
 	glDeleteVertexArrays(1, &vao2D);
 	vao2D = 0;
 	glDeleteVertexArrays(1, &vao2Dcolor);
 	vao2Dcolor = 0;
+
+	da_free(vtxBuf);
+	da_free(idxBuf);
+
 	free(draw_fontcodes);
 }
 
-// bind the texture before calling this
+void
+GL3_DrawCurrent2Dbatch()
+{
+	int numVtx = da_count(vtxBuf);
+
+	if (numVtx == 0)
+	{
+		return;
+	}
+
+	GL3_UseProgram(gl3state.si2D.shaderProgram);
+	GL3_Bind(lastBatchTexture);
+
+	GL3_BindVAO(vao2D);
+
+	// Note: while vao2D "remembers" its vbo for drawing, binding the vao does *not*
+	//       implicitly bind the vbo, so I need to explicitly bind it before glBufferData()
+	GL3_BindVBO(vbo2D);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(gl3_drawVert2D)*numVtx, vtxBuf.p, GL_STREAM_DRAW);
+
+	GL3_BindEBO(ebo2D);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, da_count(idxBuf)*sizeof(GLushort), idxBuf.p, GL_STREAM_DRAW);
+	glDrawElements(GL_TRIANGLES, da_count(idxBuf), GL_UNSIGNED_SHORT, NULL);
+
+	++gl3_numBufferVtxData;
+	++gl3_num2Ddraws;
+
+	lastBatchTexture = 0;
+	da_clear(vtxBuf);
+	da_clear(idxBuf);
+}
+
 static void
-drawTexturedRectangle(float x, float y, float w, float h,
+drawTexturedRectangle(GLuint texNum, float x, float y, float w, float h,
                       float sl, float tl, float sh, float th)
 {
 	/*
@@ -121,12 +168,56 @@ drawTexturedRectangle(float x, float y, float w, float h,
 	 *  x,y        x+w,y
 	 */
 
-	GLfloat vBuf[16] = {
-	//  X,   Y,   S,  T
-		x,   y+h, sl, th,
-		x,   y,   sl, tl,
-		x+w, y+h, sh, th,
-		x+w, y,   sh, tl
+	if ((lastBatchTexture != 0 && texNum != lastBatchTexture) || da_count(vtxBuf) + 4 > UINT16_MAX)
+	{
+		GL3_DrawCurrent2Dbatch();
+	}
+
+	lastBatchTexture = texNum;
+
+	GLushort firstIdx = da_count(vtxBuf);
+
+	gl3_drawVert2D* addVtx = da_addn_uninit(vtxBuf, 4);
+	//                            X,   Y,   S,  T
+	addVtx[0] = (gl3_drawVert2D){ x,   y+h, sl, th };
+	addVtx[1] = (gl3_drawVert2D){ x,   y,   sl, tl };
+	addVtx[2] = (gl3_drawVert2D){ x+w, y+h, sh, th };
+	addVtx[3] = (gl3_drawVert2D){ x+w, y,   sh, tl };
+
+	GLushort* addIdx = da_addn_uninit(idxBuf, 6);
+	addIdx[0] = firstIdx;  // first triangle of rectangle
+	addIdx[1] = firstIdx+1;
+	addIdx[2] = firstIdx+2;
+	addIdx[3] = firstIdx+1; // second triangle
+	addIdx[4] = firstIdx+3;
+	addIdx[5] = firstIdx+2;
+}
+
+// bind the texture before calling this
+static void
+drawTexturedRectangleNow(float x, float y, float w, float h,
+                      float sl, float tl, float sh, float th)
+{
+	/*
+	 *  x,y+h      x+w,y+h
+	 * sl,th--------sh,th
+	 *  |             |
+	 *  |             |
+	 *  |             |
+	 * sl,tl--------sh,tl
+	 *  x,y        x+w,y
+	 */
+
+	// in case some batched 2D draws are outstanding, draw them now
+	// to preserve draw order
+	GL3_DrawCurrent2Dbatch();
+
+	gl3_drawVert2D vBuf[4] = {
+	//    X,   Y,   S,  T
+		{ x,   y+h, sl, th },
+		{ x,   y,   sl, tl },
+		{ x+w, y+h, sh, th },
+		{ x+w, y,   sh, tl }
 	};
 
 	GL3_BindVAO(vao2D);
@@ -135,8 +226,9 @@ drawTexturedRectangle(float x, float y, float w, float h,
 	//       implicitly bind the vbo, so I need to explicitly bind it before glBufferData()
 	GL3_BindVBO(vbo2D);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vBuf), vBuf, GL_STREAM_DRAW);
-
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	++gl3_numBufferVtxData;
+	++gl3_num2Ddraws;
 
 	//glMultiDrawArrays(mode, first, count, drawcount) ??
 }
@@ -173,16 +265,12 @@ GL3_Draw_CharScaled(int x, int y, int num, float scale)
 
 	scaledSize = 8 * scale;
 
-	// TODO: batchen?
-
 	if (draw_chars->scrap)
 	{
 		GL3_Scrap_Upload();
 	}
 
-	GL3_UseProgram(gl3state.si2D.shaderProgram);
-	GL3_Bind(draw_chars->texnum);
-	drawTexturedRectangle(x, y, scaledSize, scaledSize,
+	drawTexturedRectangle(draw_chars->texnum, x, y, scaledSize, scaledSize,
 		draw_chars->sl + fcol * (draw_chars->sh - draw_chars->sl),
 		draw_chars->tl + frow * (draw_chars->th - draw_chars->tl),
 		draw_chars->sl + (fcol + size) * (draw_chars->sh - draw_chars->sl),
@@ -222,9 +310,18 @@ GL3_Draw_StringScaled(int x, int y, float scale, qboolean alt, const char *messa
 					xdiff = 0;
 				}
 
-				GL3_UseProgram(gl3state.si2D.shaderProgram);
-				GL3_Bind(draw_font->texnum);
+				/* If the font texture is packed inside a scrap atlas,
+				 * map the 0.0-1.0 glyph coordinates into the scrap sub-region. */
+				if (draw_font->scrap)
+				{
+					q.s0 = draw_font->sl + q.s0 * (draw_font->sh - draw_font->sl);
+					q.s1 = draw_font->sl + q.s1 * (draw_font->sh - draw_font->sl);
+					q.t0 = draw_font->tl + q.t0 * (draw_font->th - draw_font->tl);
+					q.t1 = draw_font->tl + q.t1 * (draw_font->th - draw_font->tl);
+				}
+
 				drawTexturedRectangle(
+					draw_font->texnum,
 					(float)(x + (xdiff + q.x0 / font_scale) * scale),
 					(float)(y + q.y0 * scale / font_scale + 8 * scale),
 					(q.x1 - q.x0) * scale / font_scale,
@@ -279,7 +376,9 @@ GL3_Draw_GetPicSize(int *w, int *h, const char *pic)
 void
 GL3_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 {
-	const gl3image_t *gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
+	const gl3image_t *gl;
+
+	gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
 
 	if (!gl)
 	{
@@ -293,10 +392,7 @@ GL3_Draw_StretchPic(int x, int y, int w, int h, const char *pic)
 		GL3_Scrap_Upload();
 	}
 
-	GL3_UseProgram(gl3state.si2D.shaderProgram);
-	GL3_Bind(gl->texnum);
-
-	drawTexturedRectangle(x, y, w, h, gl->sl, gl->tl, gl->sh, gl->th);
+	drawTexturedRectangle(gl->texnum, x, y, w, h, gl->sl, gl->tl, gl->sh, gl->th);
 }
 
 void
@@ -324,10 +420,7 @@ GL3_Draw_PicScaled(int x, int y, const char *pic, float factor, const char *altt
 		GL3_Scrap_Upload();
 	}
 
-	GL3_UseProgram(gl3state.si2D.shaderProgram);
-	GL3_Bind(gl->texnum);
-
-	drawTexturedRectangle(x, y, gl->width * factor, gl->height * factor,
+	drawTexturedRectangle(gl->texnum, x, y, gl->width * factor, gl->height * factor,
 		gl->sl, gl->tl, gl->sh, gl->th);
 }
 
@@ -335,7 +428,9 @@ void
 GL3_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t color,
 	const char *alttext)
 {
-	const gl3image_t *gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
+	const gl3image_t *gl;
+
+	gl = R_FindPic(pic, (findimage_t)GL3_FindImage);
 	if (!gl)
 	{
 		if (alttext && alttext[0])
@@ -361,7 +456,9 @@ GL3_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t 
 	GL3_UseProgram(gl3state.si2Dtinted.shaderProgram);
 	GL3_Bind(gl->texnum);
 
-	drawTexturedRectangle(x, y, gl->width*factor, gl->height*factor, gl->sl, gl->tl, gl->sh, gl->th);
+	// NOTE: this function (and this shader) are only used for the crosshair
+	//       so use the simple immediate (unbatched) draw function
+	drawTexturedRectangleNow(x, y, gl->width * factor, gl->height*factor, gl->sl, gl->tl, gl->sh, gl->th);
 
 	gl3state.uniCommonData.color = HMM_Vec4(1, 1, 1, 1);
 	GL3_UpdateUBOCommon();
@@ -375,7 +472,14 @@ GL3_Draw_PicScaledCol(int x, int y, const char *pic, float factor, const vec3_t 
 void
 GL3_Draw_TileClear(int x, int y, int w, int h, const char *pic)
 {
-	const gl3image_t *image = R_FindPic(pic, (findimage_t)GL3_FindImage);
+	const gl3image_t *image;
+
+	if (w <= 0 || h <= 0)
+	{
+		return;
+	}
+
+	image = R_FindPic(pic, (findimage_t)GL3_FindImage);
 	if (!image)
 	{
 		Com_Printf("%s(): Can't find pic: %s\n", __func__, pic);
@@ -388,260 +492,8 @@ GL3_Draw_TileClear(int x, int y, int w, int h, const char *pic)
 		GL3_Scrap_Upload();
 	}
 
-	GL3_UseProgram(gl3state.si2D.shaderProgram);
-	GL3_Bind(image->texnum);
-
-	drawTexturedRectangle(x, y, w, h,
+	drawTexturedRectangle(image->texnum, x, y, w, h,
 		x / 64.0f, y / 64.0f, (x + w) / 64.0f, (y + h) / 64.0f);
-}
-
-void
-GL3_DrawFrameBufferObject(int x, int y, int w, int h, GLuint fboTexture, const float v_blend[4])
-{
-	GLuint finalTex = fboTexture;
-	qboolean bloomActive = false;
-
-	/* check for r_bloom */
-	if (r_bloom && r_bloom->value)
-	{
-		GLuint bloom = GL3_ApplyBloom(fboTexture, w, h);
-		if (bloom != 0)
-		{
-			finalTex = bloom;
-			bloomActive = true;
-		}
-	}
-
-	qboolean underwater = (r_newrefdef.rdflags & RDF_UNDERWATER) != 0;
-	gl3ShaderInfo_t* shader = underwater ? &gl3state.si2DpostProcessWater
-	                                     : &gl3state.si2DpostProcess;
-	GL3_UseProgram(shader->shaderProgram);
-	GL3_Bind(fboTexture);
-
-	/* select shader and bind scene texture */
-	GL3_UseProgram(shader->shaderProgram);
-	GL3_Bind(finalTex);
-
-	/* set shader uniforms if present */
-	if (underwater && shader->uniLmScalesOrTime != -1)
-	{
-		glUniform1f(shader->uniLmScalesOrTime, r_newrefdef.time);
-	}
-
-	if (shader->uniVblend != -1)
-	{
-		glUniform4fv(shader->uniVblend, 1, v_blend);
-	}
-
-	if (!r_bloom || !r_bloom->value)
-	{
-		drawTexturedRectangle(x, y, w, h, 0, 1, 1, 0);
-		return;
-	}
-
-	/*
-	 * Build a small fullscreen quad vertex array and upload it into the
-	 * shared VBO. We use the same VBO/VAO used by other 2D draw helpers
-	 * (vao2D / vbo2D). The VAO already has pointers configured
-	 * in GL3_Draw_InitLocal(), so we only need to upload the vertex data.
-	 *
-	 * Vertex layout (matches VAO setup): X, Y, S, T
-	 */
-	GLfloat fsQuad[16];
-
-	if (bloomActive && underwater)
-	{
-		/* invert T coordinates to compensate for FBO orientation underwater */
-		fsQuad[0]  = (GLfloat)x;       fsQuad[1]  = (GLfloat)(y + h); fsQuad[2]  = 0.0f; fsQuad[3]  = 0.0f;
-		fsQuad[4]  = (GLfloat)x;       fsQuad[5]  = (GLfloat)y;       fsQuad[6]  = 0.0f; fsQuad[7]  = 1.0f;
-		fsQuad[8]  = (GLfloat)(x + w); fsQuad[9]  = (GLfloat)(y + h); fsQuad[10] = 1.0f; fsQuad[11] = 0.0f;
-		fsQuad[12] = (GLfloat)(x + w); fsQuad[13] = (GLfloat)y;       fsQuad[14] = 1.0f; fsQuad[15] = 1.0f;
-	}
-	else
-	{
-		fsQuad[0]  = (GLfloat)x;       fsQuad[1]  = (GLfloat)(y + h); fsQuad[2]  = 0.0f; fsQuad[3]  = 1.0f;
-		fsQuad[4]  = (GLfloat)x;       fsQuad[5]  = (GLfloat)y;       fsQuad[6]  = 0.0f; fsQuad[7]  = 0.0f;
-		fsQuad[8]  = (GLfloat)(x + w); fsQuad[9]  = (GLfloat)(y + h); fsQuad[10] = 1.0f; fsQuad[11] = 1.0f;
-		fsQuad[12] = (GLfloat)(x + w); fsQuad[13] = (GLfloat)y;       fsQuad[14] = 1.0f; fsQuad[15] = 0.0f;
-	}
-
-	GL3_BindVAO(vao2D);
-	GL3_BindVBO(vbo2D);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(fsQuad), fsQuad, GL_STREAM_DRAW);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	GL3_BindVAO(0);
-	if (finalTex != fboTexture)
-	{
-		glDeleteTextures(1, &finalTex);
-	}
-}
-
-/*
- * Fills a box of pixels with a single color
- */
-void
-GL3_Draw_Fill(int x, int y, int w, int h, int c)
-{
-	union
-	{
-		unsigned c;
-		byte v[4];
-	} color;
-	size_t i;
-
-	if ((unsigned)c > 255)
-	{
-		Com_Error(ERR_FATAL, "%s: bad color", __func__);
-		return;
-	}
-
-	color.c = d_8to24table[c];
-
-	GLfloat vBuf[8] = {
-	//  X,   Y
-		x,   y+h,
-		x,   y,
-		x+w, y+h,
-		x+w, y
-	};
-
-	for (i = 0; i < 3; ++i)
-	{
-		gl3state.uniCommonData.color.Elements[i] = color.v[i] * (1.0f/255.0f);
-	}
-
-	gl3state.uniCommonData.color.A = 1.0f;
-
-	GL3_UpdateUBOCommon();
-
-	GL3_UseProgram(gl3state.si2Dcolor.shaderProgram);
-	GL3_BindVAO(vao2Dcolor);
-
-	GL3_BindVBO(vbo2D);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vBuf), vBuf, GL_STREAM_DRAW);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-}
-
-// in GL1 this is called R_Flash() (which just calls R_PolyBlend())
-// now implemented in 2D mode and called after SetGL2D() because
-// it's pretty similar to GL3_Draw_FadeScreen()
-void
-GL3_Draw_Flash(const float color[4], float x, float y, float w, float h)
-{
-	size_t i = 0;
-
-	if (gl_polyblend->value == 0)
-	{
-		return;
-	}
-
-	GLfloat vBuf[8] = {
-	//  X,   Y
-		x,   y+h,
-		x,   y,
-		x+w, y+h,
-		x+w, y
-	};
-
-	glEnable(GL_BLEND);
-
-	/* this blends the screen flash while bloom is enabled
-	 * TODO: disable broke fixing window on disable bloom */
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	for (i = 0; i < 4; ++i)
-	{
-		gl3state.uniCommonData.color.Elements[i] = color[i];
-	}
-
-	GL3_UpdateUBOCommon();
-
-	GL3_UseProgram(gl3state.si2Dcolor.shaderProgram);
-
-	GL3_BindVAO(vao2Dcolor);
-
-	GL3_BindVBO(vbo2D);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vBuf), vBuf, GL_STREAM_DRAW);
-
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-	glDisable(GL_BLEND);
-}
-
-void
-GL3_Draw_FadeScreen(void)
-{
-	float color[4] = {0, 0, 0, 0.6f};
-	GL3_Draw_Flash(color, 0, 0, vid.width, vid.height);
-}
-
-void
-GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
-{
-	GL3_Bind(0);
-
-	unsigned image32[320*240]; /* was 256 * 256, but we want a bit more space */
-
-	unsigned* img = image32;
-
-	if (bits == 32)
-	{
-		img = (unsigned *)data;
-	}
-	else
-	{
-		size_t i;
-
-		if (cols * rows > 320 * 240)
-		{
-			/* in case there is a bigger video after all,
-			 * malloc enough space to hold the frame */
-			img = (unsigned*)malloc(cols*rows*4);
-		}
-
-		for (i = 0; i < rows; ++i)
-		{
-			size_t j, rowOffset;
-
-			rowOffset = i * cols;
-
-			for (j = 0; j < cols; ++j)
-			{
-				byte palIdx = data[rowOffset+j];
-				img[rowOffset+j] = gl3_rawpalette[palIdx];
-			}
-		}
-	}
-
-	GL3_UseProgram(gl3state.si2D.shaderProgram);
-
-	GLuint glTex;
-	glGenTextures(1, &glTex);
-	GL3_SelectTMU(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, glTex);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, gl3_tex_solid_format,
-	             cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
-
-	if (img != image32 && img != (unsigned *)data)
-	{
-		free(img);
-	}
-
-	// Note: gl_filter_min could be GL_*_MIPMAP_* so we can't use it for min filter here (=> no mipmaps)
-	//       but gl_filter_max (either GL_LINEAR or GL_NEAREST) should do the trick.
-	GLint filter = (r_videos_unfiltered->value == 0) ? gl_filter_max : GL_NEAREST;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
-
-	drawTexturedRectangle(x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f);
-
-	glDeleteTextures(1, &glTex);
-
-	GL3_Bind(0);
 }
 
 /* draw a fullscreen quad using the existing vao2D/vbo2D */
@@ -655,48 +507,16 @@ GL3_DrawFullscreenQuadFromArray(const GLfloat fsQuad[16])
 	GL3_BindVAO(0);
 }
 
-/* Shutdown bloom resources */
-void
-GL3_BloomShutdown(void)
-{
-	size_t i;
-
-	for (i = 0; i < BLOOM_TEXTURES; i++)
-	{
-		if (bloomFBO[i])
-		{
-			glDeleteFramebuffers(1, &bloomFBO[i]);
-			bloomFBO[i] = 0;
-		}
-
-		if (bloomTex[i])
-		{
-			glDeleteTextures(1, &bloomTex[i]);
-			bloomTex[i] = 0;
-		}
-	}
-
-	bloomInitialized = false;
-}
-
 /*
  * Apply a simple bloom effect
  *
  * Returns: GLuint of the composite bloom texture.
  * Caller must delete the returned texture when done.
  */
-GLuint
-GL3_ApplyBloom(GLuint sceneTex, int sceneW, int sceneH)
+static GLuint
+GL3_ApplyBloomPass(GLuint sceneTex, int w, int h)
 {
 	GLint locTex, locDir;
-
-	if (!r_bloom || !r_bloom->value)
-	{
-		return 0;
-	}
-
-	int w = Q_max(sceneW, 1);
-	int h = Q_max(sceneH, 1);
 
 	int downscale = 2;
 	int bw = (w / downscale) > 0 ? (w / downscale) : 1;
@@ -776,10 +596,10 @@ GL3_ApplyBloom(GLuint sceneTex, int sceneW, int sceneH)
 		1.0f, -1.0f, 1.0f, 0.0f
 	};
 	GLfloat fsQuadFull[16] = {
-		0.0f, (GLfloat)h, 0.0f, 1.0f,
-		0.0f, 0.0f, 0.0f, 0.0f,
-		(GLfloat)w, (GLfloat)h, 1.0f, 1.0f,
-		(GLfloat)w, 0.0f, 1.0f, 0.0f
+		0.0f, (GLfloat)h, 0.0f, 0.0f,        // Bottom-Left of Screen -> Bottom-Left of Texture
+		0.0f, 0.0f, 0.0f, 1.0f,              // Top-Left of Screen    -> Top-Left of Texture
+		(GLfloat)w, (GLfloat)h, 1.0f, 0.0f,  // Bottom-Right of Screen -> Bottom-Right of Texture
+		(GLfloat)w, 0.0f, 1.0f, 1.0f         // Top-Right of Screen    -> Top-Right of Texture
 	};
 
 	/* Bright pass */
@@ -930,4 +750,272 @@ fail:
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	return 0;
+}
+
+void
+GL3_DrawFrameBufferObject(int x, int y, int w, int h, GLuint fboTexture, const float v_blend[4])
+{
+	GLuint finalTex = fboTexture;
+
+	if (r_bloom && r_bloom->value)
+	{
+		GLuint bloom = GL3_ApplyBloomPass(fboTexture, w, h);
+		if (bloom != 0)
+		{
+			finalTex = bloom;
+		}
+	}
+
+	qboolean underwater = (r_newrefdef.rdflags & RDF_UNDERWATER) != 0;
+	gl3ShaderInfo_t* shader = underwater ? &gl3state.si2DpostProcessWater
+	                                     : &gl3state.si2DpostProcess;
+
+	/* select shader and bind scene texture */
+	GL3_UseProgram(shader->shaderProgram);
+	GL3_Bind(finalTex);
+
+	/* set shader uniforms if present */
+	if (underwater && shader->uniLmScalesOrTime != -1)
+	{
+		glUniform1f(shader->uniLmScalesOrTime, r_newrefdef.time);
+	}
+
+	if (shader->uniVblend != -1)
+	{
+		glUniform4fv(shader->uniVblend, 1, v_blend);
+	}
+
+	drawTexturedRectangleNow(x, y, w, h, 0, 1, 1, 0);
+
+	if (finalTex != fboTexture)
+	{
+		glDeleteTextures(1, &finalTex);
+	}
+}
+
+/*
+ * Fills a box of pixels with a single color
+ */
+void
+GL3_Draw_Fill(int x, int y, int w, int h, int c)
+{
+	union
+	{
+		unsigned c;
+		byte v[4];
+	} color;
+	size_t i;
+
+	if ((unsigned)c > 255)
+	{
+		Com_Error(ERR_FATAL, "%s: bad color", __func__);
+		return;
+	}
+
+	color.c = d_8to24table[c];
+
+	// in case some batched 2D draws are outstanding, draw them now
+	// to preserve draw order
+	GL3_DrawCurrent2Dbatch();
+
+	GLfloat vBuf[8] = {
+	//  X,   Y
+		x,   y+h,
+		x,   y,
+		x+w, y+h,
+		x+w, y
+	};
+
+	for (i = 0; i < 3; ++i)
+	{
+		gl3state.uniCommonData.color.Elements[i] = color.v[i] * (1.0f/255.0f);
+	}
+
+	gl3state.uniCommonData.color.A = 1.0f;
+
+	GL3_UpdateUBOCommon();
+
+	GL3_UseProgram(gl3state.si2Dcolor.shaderProgram);
+	GL3_BindVAO(vao2Dcolor);
+
+	GL3_BindVBO(vbo2D);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vBuf), vBuf, GL_STREAM_DRAW);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	++gl3_numBufferVtxData;
+	++gl3_num2Ddraws;
+}
+
+// in GL1 this is called R_Flash() (which just calls R_PolyBlend())
+// now implemented in 2D mode and called after SetGL2D() because
+// it's pretty similar to GL3_Draw_FadeScreen()
+void
+GL3_Draw_Flash(const float color[4], float x, float y, float w, float h)
+{
+	size_t i = 0;
+
+	if (gl_polyblend->value == 0)
+	{
+		return;
+	}
+
+	// in case some batched 2D draws are outstanding, draw them now
+	// to preserve draw order
+	GL3_DrawCurrent2Dbatch();
+
+	GLfloat vBuf[8] = {
+	//  X,   Y
+		x,   y+h,
+		x,   y,
+		x+w, y+h,
+		x+w, y
+	};
+
+	glEnable(GL_BLEND);
+
+	for (i = 0; i < 4; ++i)
+	{
+		gl3state.uniCommonData.color.Elements[i] = color[i];
+	}
+
+	GL3_UpdateUBOCommon();
+
+	GL3_UseProgram(gl3state.si2Dcolor.shaderProgram);
+
+	GL3_BindVAO(vao2Dcolor);
+
+	GL3_BindVBO(vbo2D);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vBuf), vBuf, GL_STREAM_DRAW);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	++gl3_numBufferVtxData;
+	++gl3_num2Ddraws;
+
+	glDisable(GL_BLEND);
+}
+
+void
+GL3_Draw_FadeScreen(void)
+{
+	float color[4] = {0, 0, 0, 0.6f};
+	GL3_Draw_Flash(color, 0, 0, vid.width, vid.height);
+}
+
+void
+GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits)
+{
+	GL3_Bind(0);
+
+	static unsigned image32[320 * 240]; /* was 256 * 256, but we want a bit more space */
+
+	unsigned* img = image32;
+
+	if (bits == 32)
+	{
+		img = (unsigned *)data;
+	}
+	else
+	{
+		size_t i;
+
+		if (cols * rows > 320 * 240)
+		{
+			/* in case there is a bigger video after all,
+			 * malloc enough space to hold the frame */
+			img = (unsigned*)malloc(cols*rows*4);
+		}
+
+		for (i = 0; i < rows; ++i)
+		{
+			size_t j, rowOffset;
+
+			rowOffset = i * cols;
+
+			for (j = 0; j < cols; ++j)
+			{
+				byte palIdx = data[rowOffset+j];
+				img[rowOffset+j] = gl3_rawpalette[palIdx];
+			}
+		}
+	}
+
+	GL3_UseProgram(gl3state.si2D.shaderProgram);
+
+	GLuint glTex;
+	glGenTextures(1, &glTex);
+	GL3_SelectTMU(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, glTex);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, gl3_tex_solid_format,
+	             cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+
+	if (img != image32 && img != (unsigned *)data)
+	{
+		free(img);
+	}
+
+	// Note: gl_filter_min could be GL_*_MIPMAP_* so we can't use it for min filter here (=> no mipmaps)
+	//       but gl_filter_max (either GL_LINEAR or GL_NEAREST) should do the trick.
+	GLint filter = (r_videos_unfiltered->value == 0) ? gl_filter_max : GL_NEAREST;
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+
+	// NOTE: this is only used for videos and only called once per frame (or not at all)
+	drawTexturedRectangleNow(x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f);
+
+	glDeleteTextures(1, &glTex);
+
+	GL3_Bind(0);
+}
+
+/*
+ * Called at the end of the frame, after 2D (UI) rendering is done.
+ * Does some internal housekeeping, then swaps the buffers
+ * and shows the next frame.
+ */
+void GL3_EndFrame(void)
+{
+	GL3_DrawCurrent2Dbatch();
+
+	// by saving those values into a variable and setting them to 0 afterwards,
+	// gl3_show_draw_stats can include its own drawcalls (from previous frame)
+	int num3D = gl3_num3Ddraws;
+	int num2D = gl3_num2Ddraws;
+	int numBufVtx = gl3_numBufferVtxData;
+	int numBufUni = gl3_numBufferUniforms;
+	gl3_num3Ddraws = 0;
+	gl3_num2Ddraws = 0;
+	gl3_numBufferVtxData = 0;
+	gl3_numBufferUniforms = 0;
+
+	if (gl3_show_draw_stats->value)
+	{
+		float factor = 1.0f; // TODO: like SCR_GetConsoleScale()
+		char stbuf[128] = {0};
+		snprintf(stbuf, sizeof(stbuf), "3D drawcalls: %d - 2D drawcalls: %d - buffer vtx data: %d - buffer uniforms: %d",
+		         num3D, num2D, numBufVtx, numBufUni);
+
+		GL3_Draw_StringScaled(10, 5, factor, true, stbuf);
+		GL3_DrawCurrent2Dbatch();
+	}
+
+#ifdef YQ2_GL3_GLES
+	if(gl3config.discardfb && gl_discardfb->value != 0.0f)
+	{
+		static const GLenum attachments[] = { GL_COLOR, GL_DEPTH, GL_STENCIL };
+		// depth and stencil buffer can be discarded now (and that seems to be fastest)
+		glDiscardFramebufferEXT(GL_FRAMEBUFFER, 3, &attachments[1]);
+
+		GL3_SwapWindow();
+		// ... but the color buffer must be discarded after swapping buffers
+		// probably because it is what's getting rendered
+		glDiscardFramebufferEXT(GL_FRAMEBUFFER, 1, attachments);
+	}
+	else
+#endif
+	{
+		GL3_SwapWindow();
+	}
 }

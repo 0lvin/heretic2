@@ -393,6 +393,9 @@ extern viddef_t vid;
 /* vis cluster/frame */
 extern int r_viewcluster, r_oldviewcluster;
 extern int r_visframecount;
+extern int r_currentkey;
+/* sequence # of current frame since Quake started */
+extern int r_framecount;
 
 /* lightmap */
 #define BLOCK_WIDTH 1024
@@ -411,9 +414,9 @@ extern int r_visframecount;
 */
 #define SCRAP_WIDTH (BLOCK_WIDTH * 2)
 #define SCRAP_HEIGHT (BLOCK_HEIGHT * 2)
-/* define 3 scrap textures: scrap 0 for crosshair images, scrap 1 and 2
- * for everything else */
-#define MAX_SCRAPS 3
+/* define 4 scrap textures MAX_SCRAPS_NOLERP < MAX_SCRAPS */
+#define MAX_SCRAPS_NOLERP 2
+#define MAX_SCRAPS 4
 
 qboolean CommonAllocBlock(int *allocated, size_t alloc_width, size_t alloc_height,
 	unsigned w, unsigned h, int *x, int *y);
@@ -436,7 +439,7 @@ extern struct image_s *R_FindPic(const char *name, findimage_t find_image);
 extern struct image_s *R_LoadConsoleChars(findimage_t find_image);
 extern unsigned R_NextUTF8Code(const char **curr);
 extern void R_FloodFillSkin(byte *skin, int skinwidth, int skinheight, const unsigned *table_8to24);
-unsigned *R_Convert8to32(const byte *data, int width, int height, const unsigned *table_8to24);
+extern unsigned *R_Convert8to32(const byte *data, size_t width, size_t height, const unsigned *table_8to24);
 extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
 	imagetype_t type, loadimage_t load_image);
 extern void Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes,
@@ -461,6 +464,25 @@ extern void Mod_VisRealloc(const model_t *mod);
 extern void Mod_VisFree(void);
 
 /* Surface logic */
+#define ALIAS_XY_CLIP_MASK	0x000F
+#define XCENTERING (1.0 / 2.0)
+#define YCENTERING (1.0 / 2.0)
+
+typedef struct clipplane_s
+{
+	vec3_t	normal;
+	float	dist;
+	struct clipplane_s *next;
+	byte	leftedge;
+	byte	rightedge;
+} clipplane_t;
+
+extern clipplane_t view_clipplanes[4];
+extern int *pfrustum_indexes[4];
+
+typedef void (*facerender_t)(entity_t *currententity, msurface_t *surf, int clipflags);
+extern void R_RecursiveWorldNode(entity_t *currententity, mnode_t *node, int clipflags, facerender_t facerender);
+extern void R_TransformFrustum(vec3_t modelorg, vec3_t vright, vec3_t vup, vec3_t vpn);
 extern void R_MarkLeaves(const model_t *r_worldmodel);
 extern void R_SetClusters(const model_t *r_worldmodel, const vec3_t r_origin);
 extern void R_PushDlights(refdef_t *r_newrefdef, mnode_t *nodes, int lightframecount,
@@ -468,17 +490,16 @@ extern void R_PushDlights(refdef_t *r_newrefdef, mnode_t *nodes, int lightframec
 extern struct image_s *R_TextureAnimation(const entity_t *currententity,
 	const mtexinfo_t *tex);
 extern qboolean R_AreaVisible(const byte *areabits, const mleaf_t *pleaf);
-extern qboolean R_CullBox(vec3_t mins, vec3_t maxs, const cplane_t *frustum);
+extern qboolean R_CullBox(vec3_t mins, vec3_t maxs);
 extern void R_SetFrustum(vec3_t vup, vec3_t vpn, vec3_t vright, vec3_t r_origin,
-	float fov_x, float fov_y, cplane_t *frustum);
+	float fov_x, float fov_y);
 extern void R_SubdivideSurface(const int *surfedges, mvertex_t *vertexes, medge_t *edges,
 	msurface_t *fa);
 extern void R_BuildLMPolygonFromSurface(model_t *currentmodel, msurface_t *fa,
 	size_t block_width, size_t block_height, size_t image_width, size_t image_height);
 
 /* Mesh logic */
-extern qboolean R_CullAliasModel(const model_t *currentmodel, cplane_t *frustum,
-		vec3_t bbox[8], entity_t *e);
+extern qboolean R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e);
 extern void R_LerpVerts(qboolean powerUpEffect, int nverts,
 		const dxtrivertx_t *v, const dxtrivertx_t *ov,
 		float *lerp, const float move[3],
@@ -501,15 +522,13 @@ extern void R_ApplyModelLight(const model_t *model, const entity_t *currententit
 	vec3_t shadelight, vec3_t lightspot, const byte *lightdata);
 extern void R_SetCacheState(msurface_t *surf, const refdef_t *refdef);
 extern void R_BuildLightMap(const msurface_t *surf, byte *dest, int stride,
-	const refdef_t *r_newrefdef, float modulate, int r_framecount,
-	const byte *gammatable, const byte *minlight);
+	const refdef_t *r_newrefdef, float modulate, const byte *gammatable,
+	const byte *minlight);
 extern void R_InitTemporaryLMBuffer(void);
 extern void R_FreeTemporaryLMBuffer(void);
 extern byte *R_GetTemporaryLMBuffer(size_t size);
 
 /* Warp Sky logic */
-extern void R_ClipSkyPolygon(int nump, vec3_t vecs, int stage,
-	float skymins[2][6], float skymaxs[2][6]);
 extern void R_AddSkySurface(msurface_t *fa,
 	float skymins[2][6], float skymaxs[2][6], vec3_t r_origin);
 extern void R_ClearSkyBox(float skymins[2][6], float skymaxs[2][6]);

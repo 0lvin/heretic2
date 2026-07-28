@@ -838,7 +838,6 @@ Mod_LoadModel_MD3(const char *mod_name, const void *buffer, int modfilelen)
 	dmdxheader.num_meshes = pinmodel.num_meshes;
 	dmdxheader.num_st = num_tris * 3;
 	dmdxheader.num_tris = num_tris;
-	dmdxheader.num_imgbit = 0;
 	dmdxheader.num_animgroup = pinmodel.num_frames;
 
 	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
@@ -1079,7 +1078,6 @@ Mod_LoadModel_MD2A(const char *mod_name, const void *buffer, int modfilelen)
 	dmdxheader.num_tris = pinmodel.num_tris;
 	dmdxheader.num_glcmds = pinmodel.num_glcmds;
 	dmdxheader.num_frames = pinmodel.num_frames;
-	dmdxheader.num_imgbit = 0;
 	dmdxheader.num_animgroup = pinmodel.num_frames;
 
 	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
@@ -1201,7 +1199,6 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen)
 	dmdxheader.num_tris = pinmodel.num_tris;
 	dmdxheader.num_glcmds = pinmodel.num_glcmds;
 	dmdxheader.num_frames = pinmodel.num_frames;
-	dmdxheader.num_imgbit = 0;
 	dmdxheader.num_animgroup = pinmodel.num_frames;
 
 	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
@@ -1310,6 +1307,12 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 		char blockname[32];
 		int version, size;
 
+		if (modfilelen < (int)(sizeof(blockname) + sizeof(version) + sizeof(size)))
+		{
+			Com_Printf("%s: Invalid mod file len\n", __func__);
+			return NULL;
+		}
+
 		memcpy(blockname, src, sizeof(blockname));
 
 		src += sizeof(blockname);
@@ -1318,6 +1321,12 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 		size = *(int*)src;
 		src += sizeof(size);
 		modfilelen = modfilelen - sizeof(blockname) - sizeof(version) - sizeof(size);
+
+		if (size < 0 || size > modfilelen)
+		{
+			Com_Printf("%s: Invalid chunk size\n", __func__);
+			return NULL;
+		}
 
 		if (Q_strncasecmp(blockname, "header", sizeof(blockname)) == 0)
 		{
@@ -1364,7 +1373,6 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 			dmdxheader.num_glcmds = LittleLong(header->num_glcmds);
 			dmdxheader.num_frames = LittleLong(header->num_frames);
 			dmdxheader.num_meshes = LittleLong(header->num_mesh_nodes);
-			dmdxheader.num_imgbit = 0;
 			dmdxheader.num_animgroup = dmdxheader.num_frames;
 
 			if (dmdxheader.num_xyz <= 0)
@@ -1499,7 +1507,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 					return NULL;
 				}
 
-				Mod_LoadCmdList (mod_name, pheader, (int *)src);
+				Mod_LoadCmdList(mod_name, pheader, (int *)src);
 			}
 			else if (Q_strncasecmp(blockname, "mesh nodes", sizeof(blockname)) == 0)
 			{
@@ -1590,10 +1598,34 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 					}
 				}
 			}
+			else if (Q_strncasecmp(blockname, "skeleton", sizeof(blockname)) == 0)
+			{
+				int skeleton_type, skeleton_joints_num, *skeleton_data;
+
+				if (version != 1)
+				{
+					Com_Printf("%s: Invalid %s version %d\n",
+						__func__, blockname, version);
+					return NULL;
+				}
+
+				if (size < (int)(2 * sizeof(int))) {
+					Com_Printf("%s: Invalid %s size\n",
+						__func__, blockname);
+					return NULL;
+				}
+
+				skeleton_data = (int *)src;
+				skeleton_type = LittleLong(*skeleton_data);
+				skeleton_data++;
+				skeleton_joints_num = LittleLong(*skeleton_data);
+				Com_DPrintf("%s: %s in %s has 0x%02x type and %d bones\n",
+					__func__, mod_name, blockname, skeleton_type, skeleton_joints_num);
+				pheader->num_bones = skeleton_joints_num;
+			}
 			else if (Q_strncasecmp(blockname, "normals", sizeof(blockname)) == 0 ||
 					 Q_strncasecmp(blockname, "short frames", sizeof(blockname)) == 0 ||
 					 Q_strncasecmp(blockname, "comp data", sizeof(blockname)) == 0 ||
-					 Q_strncasecmp(blockname, "skeleton", sizeof(blockname)) == 0 ||
 					 Q_strncasecmp(blockname, "references", sizeof(blockname)) == 0)
 			{
 				/* skipped block */
@@ -1645,10 +1677,6 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen)
 		return NULL;
 	}
 
-	/* copy back all values */
-	memset(&dmdxheader, 0, sizeof(dmdxheader));
-	dmdxheader.skinwidth = 256;
-	dmdxheader.skinheight = 256;
 	if (header.version != DKM2_VERSION)
 	{
 		/* has same frame structure */
@@ -1671,6 +1699,10 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen)
 		}
 	}
 
+	/* copy back all values */
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.skinwidth = 256;
+	dmdxheader.skinheight = 256;
 	dmdxheader.framesize = sizeof(daliasxframe_t) - sizeof(dxtrivertx_t);
 	dmdxheader.framesize += header.num_xyz * sizeof(dxtrivertx_t);
 
@@ -1682,7 +1714,6 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen)
 	dmdxheader.num_frames = header.num_frames;
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
-	dmdxheader.num_imgbit = 0;
 	dmdxheader.num_animgroup = header.num_animgroup;
 
 	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
@@ -1747,10 +1778,6 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen)
 		return NULL;
 	}
 
-	/* copy back all values */
-	memset(&dmdxheader, 0, sizeof(dmdxheader));
-	dmdxheader.skinwidth = header.skinwidth;
-	dmdxheader.skinheight = header.skinwidth;
 	/* has same frame structure */
 	if (header.framesize < (
 		sizeof(daliasframe_t) + (header.num_xyz - 1) * sizeof(dtrivertx_t)))
@@ -1760,6 +1787,10 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen)
 		return NULL;
 	}
 
+	/* copy back all values */
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.skinwidth = header.skinwidth;
+	dmdxheader.skinheight = header.skinwidth;
 	dmdxheader.framesize = sizeof(daliasxframe_t) - sizeof(dxtrivertx_t);
 	dmdxheader.framesize += header.num_xyz * sizeof(dxtrivertx_t);
 
@@ -1771,7 +1802,6 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen)
 	dmdxheader.num_frames = header.num_frames;
 	/* (count vert + 3 vert * (2 float + 1 int)) + final zero; */
 	dmdxheader.num_glcmds = (10 * dmdxheader.num_tris) + 1 * dmdxheader.num_meshes;
-	dmdxheader.num_imgbit = 0;
 	dmdxheader.num_animgroup = header.num_frames;
 
 	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);

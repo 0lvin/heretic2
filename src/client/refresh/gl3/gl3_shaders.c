@@ -150,7 +150,7 @@ CreateShaderProgram(int numShaders, const GLuint* shaders)
 		return 0;
 	}
 
-	for (i=0; i<numShaders; ++i)
+	for (i = 0; i < numShaders; ++i)
 	{
 		// after linking, they don't need to be attached anymore.
 		// no idea  why they even are, if they don't have to..
@@ -241,7 +241,7 @@ static const char* fragmentSrc2Dtinted = MULTILINE_STRING(
 		{
 			vec4 texel = texture(tex, passTexCoord);
 
-			if(texel.a <= 0.666)
+			if (texel.a <= 0.666)
 				discard;
 
 			// apply color tint
@@ -310,8 +310,7 @@ static const char* fragmentSrc2DpostprocessWater = MULTILINE_STRING(
 
 		void main()
 		{
-			// fix for inverted water rendering (bloom)
-			vec2 uv = vec2(passTexCoord.x, 1.0 - passTexCoord.y);
+			vec2 uv = passTexCoord;
 
 			// warping based on ref_vk
 			float sx = 1.0 - abs(0.5 - uv.x) * 2.0;
@@ -885,7 +884,8 @@ static const char* fragmentSrc3DspriteAlpha = MULTILINE_STRING(
 				outColor.rgb = mix(outColor.rgb, fogColor.rgb, fogFactor);
 			}
 
-			outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+			//outColor.a = texel.a*alpha; // I think alpha shouldn't be modified by gamma and intensity
+			outColor.a = texel.a; // I think in this case alpha from uni3d shouldn't be used
 		}
 );
 
@@ -1095,7 +1095,7 @@ static const char* fragmentBloomBright = MULTILINE_STRING(
 			vec3 c = texture(tex, passTexCoord).rgb;
 			float lum = max(max(c.r, c.g), c.b);
 
-			if(lum > threshold)
+			if (lum > threshold)
 			{
 				outColor = vec4(c, 1.0);
 			}
@@ -1164,7 +1164,7 @@ initShader2D(gl3ShaderInfo_t* shaderInfo, const char* vertSrc, const char* fragS
 
 	if (shaderInfo->shaderProgram != 0)
 	{
-		Com_Printf("WARNING: calling %s for gl4ShaderInfo_t that already has a shaderProgram!\n",
+		Com_Printf("WARNING: calling %s for gl3ShaderInfo_t that already has a shaderProgram!\n",
 			__func__);
 		glDeleteProgram(shaderInfo->shaderProgram);
 	}
@@ -1485,16 +1485,16 @@ createShaders(void)
 	}
 
 	/* bright */
-	if(!initShader2D(&gl3state.si2DbloomBright, vertexBloomSrcFullScreen, fragmentBloomBright))
+	if (!initShader2D(&gl3state.si2DbloomBright, vertexBloomSrcFullScreen, fragmentBloomBright))
 	{
-		R_Printf(PRINT_ALL, "GL4_InitBloomShaders: bright shader failed\n");
+		R_Printf(PRINT_ALL, "%s: bright shader failed\n", __func__);
 		return false;
 	}
 
 	/* blur */
-	if(!initShader2D(&gl3state.si2DbloomBlur, vertexBloomSrcFullScreen, fragmentBloomBlur))
+	if (!initShader2D(&gl3state.si2DbloomBlur, vertexBloomSrcFullScreen, fragmentBloomBlur))
 	{
-		R_Printf(PRINT_ALL, "GL4_InitBloomShaders: blur shader failed\n");
+		R_Printf(PRINT_ALL, "%s: blur shader failed\n", __func__);
 		return false;
 	}
 
@@ -1623,13 +1623,15 @@ qboolean GL3_RecreateShaders(void)
 }
 
 static inline void
-updateUBO(GLuint ubo, GLsizeiptr size, void* data)
+updateUBO(GLuint ubo, GLsizeiptr size, const void *data)
 {
 	if (gl3state.currentUBO != ubo)
 	{
 		gl3state.currentUBO = ubo;
 		glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	}
+
+	++gl3_numBufferUniforms;
 
 	// http://docs.gl/gl3/glBufferSubData says  "When replacing the entire data store,
 	// consider using glBufferSubData rather than completely recreating the data store

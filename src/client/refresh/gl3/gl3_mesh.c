@@ -283,6 +283,10 @@ DrawAliasFrameLerp(dmdx_t *paliashdr, entity_t* entity, vec3_t shadelight,
 				mesh_nodes[i].ofs_glcmds + mesh_nodes[i].num_glcmds),
 			alpha, colorOnly, verts, s_lerped, shadevector);
 	}
+
+	++gl3_num3Ddraws;
+	++gl3_numBufferVtxData;
+	// TODO ++gl3_numBufferIdxData ?
 }
 
 static void
@@ -439,6 +443,10 @@ DrawAliasShadow(gl3_shadowinfo_t* shadowInfo)
 				mesh_nodes[i].ofs_glcmds + mesh_nodes[i].num_glcmds),
 			shadevector, height, lheight, s_lerped);
 	}
+
+	++gl3_num3Ddraws;
+	++gl3_numBufferVtxData;
+	// TODO ++gl3_numBufferIdxData ?
 }
 
 void
@@ -459,7 +467,7 @@ GL3_DrawAliasModel(entity_t *currententity)
 	{
 		vec3_t bbox[8];
 
-		if (R_CullAliasModel(currentmodel, frustum, bbox, currententity))
+		if (R_CullAliasModel(currentmodel, bbox, currententity))
 		{
 			return;
 		}
@@ -485,10 +493,10 @@ GL3_DrawAliasModel(entity_t *currententity)
 		}
 	}
 
-	if (gl3_worldmodel)
+	if (r_worldmodel)
 	{
-		R_ApplyModelLight(gl3_worldmodel, currententity, shadelight,
-			lightspot, gl3_worldmodel->lightdata);
+		R_ApplyModelLight(r_worldmodel, currententity, shadelight,
+			lightspot, r_worldmodel->lightdata);
 	}
 	else
 	{
@@ -552,7 +560,7 @@ GL3_DrawAliasModel(entity_t *currententity)
 	origModelMat = gl3state.uni3DData.transModelMat4;
 
 	currententity->angles[PITCH] = -currententity->angles[PITCH];
-	GL3_RotateForEntity(currententity);
+	GL3_RotateUni3DforEntity(currententity);
 	currententity->angles[PITCH] = -currententity->angles[PITCH];
 
 	/* select skin */
@@ -605,19 +613,18 @@ GL3_DrawAliasModel(entity_t *currententity)
 
 	DrawAliasFrameLerp(paliashdr, currententity, shadelight, shadevector);
 
-	//glPopMatrix();
-	gl3state.uni3DData.transModelMat4 = origModelMat;
-	GL3_UpdateUBO3D();
-
 	if (currententity->flags & RF_WEAPONMODEL)
 	{
 		gl3state.uni3DData.transProjViewMat4 = origProjViewMat;
-		GL3_UpdateUBO3D();
 		if (r_lefthand->value == 1.0F)
 		{
 			glCullFace(GL_FRONT);
 		}
 	}
+
+	//glPopMatrix();
+	gl3state.uni3DData.transModelMat4 = origModelMat;
+	GL3_UpdateUBO3D();
 
 	if (currententity->flags & RF_TRANSLUCENT)
 	{

@@ -80,8 +80,7 @@ static qboolean is_quadfire;
 static byte damage_multiplier;
 static byte is_silenced;
 
-void weapon_grenade_fire(edict_t *ent, qboolean held);
-void weapon_trap_fire(edict_t *ent, qboolean held);
+static void weapon_grenade_fire(edict_t *ent, qboolean held);
 
 byte
 P_DamageModifier(const edict_t *ent)
@@ -1235,7 +1234,7 @@ Weapon_PredictFramesGeneric(edict_t *ent, const dmdxframegroup_t *frames,
  * ======================================================================
  */
 
-void
+static void
 weapon_grenade_fire(edict_t *ent, qboolean held)
 {
 	vec3_t offset;

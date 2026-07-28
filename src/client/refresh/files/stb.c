@@ -997,7 +997,7 @@ R_LoadTTFFont(const char *ttffont, int vid_height, float *r_font_size,
 		mask_idx ++;
 	}
 
-	*draw_font = R_LoadPic("***ttf***", font_data,
+	*draw_font = R_LoadPic("pics/conchars.ttf", font_data,
 		*r_font_height, *r_font_height, *r_font_height, *r_font_height,
 		texture_size, it_pic, 32);
 
@@ -1047,7 +1047,7 @@ void
 R_FloodFillSkin(byte *skin, int skinwidth, int skinheight, const unsigned *table_8to24)
 {
 	byte fillcolor = *skin; /* assume this is the pixel to fill */
-	floodfill_t fifo[FLOODFILL_FIFO_SIZE];
+	static floodfill_t fifo[FLOODFILL_FIFO_SIZE];
 	int inpt = 0, outpt = 0;
 	int filledcolor = 0;
 	int i;
@@ -1105,7 +1105,7 @@ R_FloodFillSkin(byte *skin, int skinwidth, int skinheight, const unsigned *table
 }
 
 unsigned *
-R_Convert8to32(const byte *data, int width, int height, const unsigned *table_8to24)
+R_Convert8to32(const byte *data, size_t width, size_t height, const unsigned *table_8to24)
 {
 	unsigned *trans;
 	size_t i, s;

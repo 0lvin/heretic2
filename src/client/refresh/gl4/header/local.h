@@ -25,7 +25,6 @@
  * =======================================================================
  */
 
-
 #ifndef SRC_CLIENT_REFRESH_GL4_HEADER_LOCAL_H_
 #define SRC_CLIENT_REFRESH_GL4_HEADER_LOCAL_H_
 
@@ -46,7 +45,12 @@
 
 #include "../../ref_shared.h"
 
+#include <stddef.h> // offsetof()
+
 #include "../../files/HandmadeMath.h"
+
+#define DG_DYNARR_ASSERT(cond, msg) \
+	((cond) ? (void)0 : Com_Error(ERR_FATAL, "DG_dynarr.h error: %s\n", msg))
 
 // a wrapper around glVertexAttribPointer() to stay sane
 // (caller doesn't have to cast to GLintptr and then void*)
@@ -82,6 +86,9 @@ static const int gl4_tex_alpha_format = GL_RGBA;
 extern unsigned gl4_rawpalette[256];
 extern unsigned d_8to24table[256];
 
+// for stats
+extern int gl4_num3Ddraws, gl4_num2Ddraws, gl4_numBufferVtxData, gl4_numBufferUniforms;
+
 typedef struct
 {
 	const char *renderer_string;
@@ -97,8 +104,6 @@ typedef struct
 	qboolean anisotropic; // is GL_EXT_texture_filter_anisotropic supported?
 	qboolean debug_output; // is GL_ARB_debug_output supported?
 	qboolean stencil; // Do we have a stencil buffer?
-
-	qboolean useBigVBO; // workaround for AMDs windows driver for fewer calls to glBufferData()
 
 	// ----
 
@@ -214,7 +219,7 @@ typedef struct
 	GLuint currentShaderProgram;
 	GLuint currentUBO;
 
-	// NOTE: make sure si2D is always the first shaderInfo (or adapt GL4_ShutdownShaders())
+	// NOTE: make sure si2D is always the first shaderInfo (or adapt GL4_ShutdownShaders() and GL4_SetDrawCmdShader())
 	gl4ShaderInfo_t si2D;      // shader for rendering 2D with textures
 	gl4ShaderInfo_t si2Dtinted; // shader for rendering 2D with textures and color tinting
 	gl4ShaderInfo_t si2Dcolor; // shader for rendering 2D with flat colors
@@ -242,12 +247,7 @@ typedef struct
 	// NOTE: make sure siParticle is always the last shaderInfo (or adapt GL4_ShutdownShaders())
 	gl4ShaderInfo_t siParticle; // for particles. surprising, right?
 
-	GLuint vao3D, vbo3D; // for brushes etc, using 10 floats and one uint as vertex input (x,y,z, s,t, lms,lmt, normX,normY,normZ ; lightFlags)
-
-	// the next two are for gl4config.useBigVBO == true
-	int vbo3Dsize;
-	int vbo3DcurOffset;
-
+	GLuint vao3D, vbo3D, ebo3D; // for brushes etc, using 10 floats and one uint as vertex input (x,y,z, s,t, lms,lmt, normX,normY,normZ ; lightFlags)
 	GLuint vaoAlias, vboAlias, eboAlias; // for models, using 9 floats as (x,y,z, s,t, r,g,b,a)
 	GLuint vaoParticle, vboParticle; // for particles, using 9 floats (x,y,z, size,distance, r,g,b,a)
 
@@ -265,10 +265,92 @@ typedef struct
 	hmm_mat4 viewMat3D;
 } gl4state_t;
 
+
+// drawcommands using mvtx_t, for batching
+typedef struct gl4drawCmd_s {
+	GLuint		texnum;
+	signed char	lmtexnum;
+	signed char	shaderIdx;
+
+	// index into gl4_main.c transModelMats; 0 always is identity matrix
+	unsigned short transModelMatIdx;
+
+	float		sscroll; // for gl4state.uni3DData.sscroll
+	float		tscroll; // for gl4state.uni3DData.tscroll
+	float		lightScaleForTurb; // for gl4state.uni3DData.lightScaleForTurb
+	float		alpha; // either part of color or for gl4state.uni3DData.alpha
+	byte		color[3]; // for uniCommonData.color; its alpha chan is in .alpha
+	byte		flags;    // gl4drawCmd_Flags
+	byte		styles[MAXLIGHTMAPS]; // indexes into r_newrefdef.lightstyles[]; 255 means "ignore"
+
+	// the following are set in GL4_Add3DdrawCmdToBatch()
+	int			idxBufOffset;
+	int			numElements; // in index buffer
+} gl4drawCmd_t;
+
+// for gl4drawCmd_t::flags
+enum gl4drawCmd_Flags {
+	DCFlag_DisableDepthMask =  1, // glDepthMask() - GL_FALSE if bit is set
+	DCFlag_Blend            =  2, // GL_BLEND (glEnable/glDisable)
+	DCFlag_PolyOffsetFill   =  4, // GL_POLYGON_OFFSET_FILL (glEnable/glDisable) - for gl_zfix
+	DCFlag_UseColor         =  8,
+	DCFlag_UseScroll        = 16,
+	DCFlag_UseLmStyles      = 32,
+	DCFlag_UseLightScaleForTurb = 64,
+	DCFlag_Flare            = 128, // Combine flare effect
+
+	// TODO: DCFlag_SameAsPrevious = 255 for "don't check, just merge into previous command"?
+};
+
+// create an "empty" gl4drawCmd_t with sane defaults
+static inline gl4drawCmd_t
+GL4_CreateDrawCmd(void)
+{
+	gl4drawCmd_t ret = {0};
+	ret.alpha = 1.0f;
+	ret.styles[0] = 255;
+	ret.lmtexnum = -1;
+	ret.shaderIdx = -1;
+	// the other values can remain 0/NULL
+
+	return ret;
+}
+
 extern gl4config_t gl4config;
 extern gl4state_t gl4state;
 
-extern int gl4_framecount; /* used for dlight push checking */
+enum {
+	_gl4_numShaders = 1 + ((offsetof(gl4state_t, siParticle) - offsetof(gl4state_t, si2D)) / sizeof(gl4ShaderInfo_t))
+};
+
+static inline void
+GL4_SetDrawCmdShader(gl4drawCmd_t* drawCmd, const gl4ShaderInfo_t* shader)
+{
+	if (shader == NULL)
+	{
+		drawCmd->shaderIdx = -1;
+		return;
+	}
+	ptrdiff_t offset = shader - &gl4state.si2D;
+	if ( offset >= 0 && offset < _gl4_numShaders)
+	{
+		drawCmd->shaderIdx = offset;
+	}
+	else
+	{
+		assert(0 && "invalid shader!");
+		drawCmd->shaderIdx = -1;
+	}
+}
+
+static inline gl4ShaderInfo_t*
+GL4_GetDrawCmdShader(const gl4drawCmd_t* drawCmd)
+{
+	unsigned shaderIdx = drawCmd->shaderIdx;
+	if (shaderIdx >= _gl4_numShaders) // because it's unsigned this also handles shaderIdx -1
+		return NULL;
+	return &gl4state.si2D + shaderIdx;
+}
 
 extern int c_brush_polys, c_alias_polys;
 
@@ -315,11 +397,9 @@ typedef struct gl4_alias_vtx_s {
 	GLfloat color[4];
 } gl4_alias_vtx_t;
 
-extern model_t *gl4_worldmodel;
+extern model_t *r_worldmodel;
 
 extern float gl4depthmin, gl4depthmax;
-
-extern cplane_t frustum[4];
 
 extern vec3_t gl4_origin;
 
@@ -334,7 +414,7 @@ extern int gl_filter_max;
 static inline void
 GL4_UseProgram(GLuint shaderProgram)
 {
-	if(shaderProgram != gl4state.currentShaderProgram)
+	if (shaderProgram != gl4state.currentShaderProgram)
 	{
 		gl4state.currentShaderProgram = shaderProgram;
 		glUseProgram(shaderProgram);
@@ -344,7 +424,7 @@ GL4_UseProgram(GLuint shaderProgram)
 static inline void
 GL4_BindVAO(GLuint vao)
 {
-	if(vao != gl4state.currentVAO)
+	if (vao != gl4state.currentVAO)
 	{
 		gl4state.currentVAO = vao;
 		glBindVertexArray(vao);
@@ -354,7 +434,7 @@ GL4_BindVAO(GLuint vao)
 static inline void
 GL4_BindVBO(GLuint vbo)
 {
-	if(vbo != gl4state.currentVBO)
+	if (vbo != gl4state.currentVBO)
 	{
 		gl4state.currentVBO = vbo;
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -364,15 +444,18 @@ GL4_BindVBO(GLuint vbo)
 static inline void
 GL4_BindEBO(GLuint ebo)
 {
-	if(ebo != gl4state.currentEBO)
+	if (ebo != gl4state.currentEBO)
 	{
 		gl4state.currentEBO = ebo;
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	}
 }
 
-extern void GL4_BufferAndDraw3D(const mvtx_t* verts, int numVerts, GLenum drawMode);
-extern void GL4_RotateForEntity(entity_t *e);
+extern void GL4_Add3DdrawCmdToBatch(const mvtx_t* verts, int numVerts, GLenum drawMode, gl4drawCmd_t drawCmd);
+extern void GL4_Draw3DBatchesNow(void);
+extern void GL4_SetDrawCmdTransMatrix(gl4drawCmd_t* drawCmd, hmm_mat4 mat);
+extern void GL4_RotateUni3DforEntity(entity_t *e);
+extern void GL4_RotateForEntity(entity_t *e, gl4drawCmd_t* drawCmd);
 extern hmm_mat4 GL4_SetPerspective(GLdouble fovy);
 
 // gl4_sdl.c
@@ -380,7 +463,7 @@ extern int GL4_InitContext(void* win);
 extern void GL4_GetDrawableSize(int* width, int* height);
 extern int GL4_PrepareForWindow(void);
 extern qboolean GL4_IsVsyncActive(void);
-extern void GL4_EndFrame(void);
+extern void GL4_SwapWindow(void);
 extern void GL4_SetVsync(void);
 extern void GL4_ShutdownContext(void);
 extern int GL4_GetSDLVersion(void);
@@ -418,12 +501,15 @@ extern void GL4_Draw_FadeScreen(void);
 extern void GL4_Draw_Flash(const float color[4], float x, float y, float w, float h);
 extern void GL4_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits);
 
+extern void GL4_DrawCurrent2Dbatch();
+extern void GL4_EndFrame(void);
+
 // gl4_image.c
 
 static inline void
 GL4_SelectTMU(GLenum tmu)
 {
-	if(gl4state.currenttmu != tmu)
+	if (gl4state.currenttmu != tmu)
 	{
 		glActiveTexture(tmu);
 		gl4state.currenttmu = tmu;
@@ -460,12 +546,12 @@ extern void LM_BeginBuildingLightmaps(model_t *m);
 extern void LM_EndBuildingLightmaps(void);
 
 // gl4_warp.c
-extern void GL4_EmitWaterPolys(msurface_t *fa);
+extern void GL4_EmitWaterPolys(msurface_t *fa, gl4drawCmd_t drawCmd);
 
 extern void GL4_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis);
 extern void GL4_DrawSkyBox(void);
 extern void RE_ClearSkyBox(void);
-extern void GL4_AddSkySurface(msurface_t *fa);
+extern void RE_AddSkySurface(msurface_t *fa);
 
 
 // gl4_surf.c
@@ -505,10 +591,8 @@ extern cvar_t *gl4_particle_square;
 extern cvar_t *gl4_colorlight;
 extern cvar_t *gl_polyblend;
 extern cvar_t *gl4_debugcontext;
+extern cvar_t *gl4_show_draw_stats;
 
 extern cvar_t *r_bloom;
-
-GLuint GL4_ApplyBloom(GLuint sceneTex, int sceneW, int sceneH);
-void GL4_BloomShutdown(void);
 
 #endif /* SRC_CLIENT_REFRESH_GL4_HEADER_LOCAL_H_ */

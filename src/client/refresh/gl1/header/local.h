@@ -133,8 +133,6 @@ extern int numgltextures;
 
 extern image_t *r_notexture;
 extern image_t *r_particletexture;
-extern int r_framecount;
-extern cplane_t frustum[4];
 extern int c_brush_polys, c_alias_polys;
 extern int gl_filter_min, gl_filter_max;
 
@@ -236,7 +234,7 @@ qboolean R_ImageHasFreeSpace(void);
 void R_TextureAlphaMode(const char *string);
 void R_TextureSolidMode(const char *string);
 
-qboolean R_Upload32(unsigned *data, int width, int height, qboolean mipmap);
+qboolean R_Upload32(unsigned *data, size_t width, size_t height, qboolean mipmap);
 
 // GL buffer operations
 

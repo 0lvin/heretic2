@@ -41,10 +41,6 @@ unsigned d_8to24table[256];
 extern cvar_t *gl1_minlight;
 extern byte minlight[256];
 
-qboolean R_Upload8(byte *data, int width, int height,
-		qboolean mipmap, qboolean is_sky);
-qboolean R_Upload32(unsigned *data, int width, int height, qboolean mipmap);
-
 #define Q2_GL_SOLID_FORMAT GL_RGB
 #define Q2_GL_ALPHA_FORMAT GL_RGBA
 
@@ -249,7 +245,7 @@ R_EnableMultitexture(qboolean enable)
 void
 R_TextureMode(const char *string)
 {
-	int i;
+	int i, texnum;
 	image_t *glt;
 
 	for (i = 0; i < NUM_GL_MODES; i++)
@@ -335,6 +331,26 @@ R_TextureMode(const char *string)
 			}
 		}
 	}
+
+	for (texnum = MAX_SCRAPS_NOLERP; texnum < MAX_SCRAPS; texnum++)
+	{
+		R_Bind(TEXNUM_SCRAPS + texnum);
+
+		if (unfiltered2D)
+		{
+			// 2D textures shouldn't be filtered by default (r_2D_unfiltered),
+			// so the scrap shouldn't be filtered
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
+		else // 2D textures should be filtered by default => filter the scrap
+		{
+			// we can't use gl_filter_min which might be GL_*_MIPMAP_*
+			// also, there's no anisotropic filtering for textures w/o mipmaps
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		}
+	}
 }
 
 void
@@ -399,7 +415,8 @@ R_ImageList_f(void)
 	for (i = 0, image = gltextures; i < numgltextures; i++, image++)
 	{
 		int w, h;
-		const char *in_use = "", *scrap = "";
+		const char *in_use = "";
+		char isScrap = image->scrap ? 'S' : ' ';
 
 		if (image->texnum <= 0)
 		{
@@ -412,17 +429,13 @@ R_ImageList_f(void)
 			used++;
 		}
 
-		if (image->scrap)
-		{
-			scrap = "scrap";
-		}
-
 		w = image->upload_width;
 		h = image->upload_height;
 
 		texels += w * h;
 
 		char imageType = '?';
+
 		switch (image->type)
 		{
 			case it_skin:
@@ -445,10 +458,10 @@ R_ImageList_f(void)
 				break;
 		}
 
-		Com_Printf("%c %3i %3i %s: %s (%dx%d) %s %s\n",
-				imageType, image->upload_width, image->upload_height,
+		Com_Printf("%c%c %3i %3i %s: %s (%dx%d) %s\n",
+				isScrap, imageType, image->upload_width, image->upload_height,
 				palstrings[image->paletted], image->name,
-				image->width, image->height, in_use, scrap);
+				image->width, image->height, in_use);
 	}
 
 	Com_Printf("Total texel count (not counting mipmaps): %i\n",
@@ -552,7 +565,7 @@ R_BuildPalettedTexture(byte *paletted_texture, byte *scaled,
 }
 
 static qboolean
-R_Upload32Native(unsigned *data, int width, int height, qboolean mipmap)
+R_Upload32Native(unsigned *data, size_t width, size_t height, qboolean mipmap)
 {
 	// This is for GL 2.x so no palettes, no scaling, no messing around with the data here. :)
 	int samples;
@@ -588,11 +601,11 @@ R_Upload32Native(unsigned *data, int width, int height, qboolean mipmap)
 
 
 static qboolean
-R_Upload32Soft(unsigned *data, int width, int height, qboolean mipmap)
+R_Upload32Soft(unsigned *data, size_t width, size_t height, qboolean mipmap)
 {
 	int samples;
-	unsigned scaled[256 * 256];
-	byte paletted_texture[256 * 256];
+	static unsigned scaled[256 * 256];
+	static byte paletted_texture[256 * 256];
 	int scaled_width, scaled_height;
 	int i, c;
 	byte *scan;
@@ -767,7 +780,7 @@ done:
 }
 
 qboolean
-R_Upload32(unsigned *data, int width, int height, qboolean mipmap)
+R_Upload32(unsigned *data, size_t width, size_t height, qboolean mipmap)
 {
 	qboolean res;
 
@@ -809,8 +822,8 @@ R_Upload32(unsigned *data, int width, int height, qboolean mipmap)
 /*
  * Returns has_alpha
  */
-qboolean
-R_Upload8(byte *data, int width, int height, qboolean mipmap, qboolean is_sky)
+static qboolean
+R_Upload8(byte *data, size_t width, size_t height, qboolean mipmap, qboolean is_sky)
 {
 	if (gl_config.palettedtexture && is_sky)
 	{
@@ -852,7 +865,8 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	qboolean nolerp = false;
 	image_t *image;
 
-	if (r_2D_unfiltered->value && type == it_pic)
+	qboolean default2Dnolerp = r_2D_unfiltered->value != 0.0f;
+	if (default2Dnolerp && type == it_pic)
 	{
 		/*
 		 * if r_2D_unfiltered is true(ish), nolerp should usually be true,
@@ -951,30 +965,40 @@ R_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	}
 
 	/* load little pics into the scrap */
-	if ((image->type == it_pic) && (width <= 256) && (height <= 256))
+	if ((image->type == it_pic) && (width <= BLOCK_WIDTH) && (height <= BLOCK_HEIGHT))
 	{
 		int texnum = -1;
 		int x, y;
 
 		if (bits == 32)
 		{
-			texnum = Scrap_AllocBlock(width, height, &x, &y, (unsigned*)pic, nolerp ? 0 : 1);
+			texnum = Scrap_AllocBlock(width, height, &x, &y, (unsigned*)pic, nolerp ? 0 : MAX_SCRAPS_NOLERP);
 		}
-		else
+		else if (bits == 8)
 		{
 			unsigned *trans;
 
 			trans = R_Convert8to32(pic, width, height, d_8to24table);
 			if (trans)
 			{
-				texnum = Scrap_AllocBlock(width, height, &x, &y, trans, nolerp ? 0 : 1);
+				texnum = Scrap_AllocBlock(width, height, &x, &y, trans, nolerp ? 0 : MAX_SCRAPS_NOLERP);
 				free(trans);
 			}
+		}
+		else
+		{
+			Sys_Error("Error: texture '%s' has %d bits per pixel, only 8 and 32 supported!\n",
+				name, bits);
 		}
 
 		if (texnum == -1)
 		{
 			goto nonscrap;
+		}
+
+		if (nolerp && texnum >= MAX_SCRAPS_NOLERP)
+		{
+			Com_Printf("%s: Nolerp image stored to lerp\n", name);
 		}
 
 		image->texnum = TEXNUM_SCRAPS + texnum;

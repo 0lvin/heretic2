@@ -556,7 +556,7 @@ R_AliasSetUpLerpData(entity_t *currententity, dmdx_t *pmdl, float backlerp)
 	/*
 	** translation is the vector from last position to this position
 	*/
-	VectorSubtract (currententity->oldorigin, currententity->origin, translation);
+	VectorSubtract(currententity->oldorigin, currententity->origin, translation);
 
 	/*
 	** move should be the delta back to the previous frame * backlerp
@@ -595,7 +595,7 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 	{
 		vec3_t bbox[8];
 
-		if (R_CullAliasModel(currentmodel, frustum, bbox, currententity))
+		if (R_CullAliasModel(currentmodel, bbox, currententity))
 		{
 			return;
 		}

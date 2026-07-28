@@ -395,7 +395,7 @@ QVk_CreateDepthBuffer(VkSampleCountFlagBits sampleCount, qvktexture_t *depthBuff
 			__func__, __LINE__, QVk_GetError(res));
 		return;
 	}
-	
+
 	res = QVk_CreateImageView(&depthBuffer->resource.image, getDepthStencilAspect(depthBuffer->format), &depthBuffer->imageView, depthBuffer->format, depthBuffer->mipLevels);
 	if (res != VK_SUCCESS)
 	{
@@ -452,7 +452,7 @@ QVk_CreateColorBuffer(VkSampleCountFlagBits sampleCount, qvktexture_t *colorBuff
 			__func__, __LINE__, QVk_GetError(res));
 		return;
 	}
-	
+
 	res = QVk_CreateImageView(&colorBuffer->resource.image, VK_IMAGE_ASPECT_COLOR_BIT, &colorBuffer->imageView, colorBuffer->format, colorBuffer->mipLevels);
 	if (res != VK_SUCCESS)
 	{
@@ -654,7 +654,8 @@ Vk_ImageList_f(void)
 	for (i = 0, image = vktextures; i < numvktextures; i++, image++)
 	{
 		int w, h;
-		const char *in_use = "", *scrap = "";
+		const char *in_use = "";
+		char isScrap = image->scrap ? 'S' : ' ';
 
 		if (image->vk_texture.resource.image == VK_NULL_HANDLE)
 		{
@@ -665,11 +666,6 @@ Vk_ImageList_f(void)
 		{
 			in_use = "*";
 			used++;
-		}
-
-		if (image->scrap)
-		{
-			scrap = "scrap";
 		}
 
 		w = image->upload_width;
@@ -700,9 +696,9 @@ Vk_ImageList_f(void)
 				break;
 		}
 
-		Com_Printf("%c %4i %4i RGB: %s (%dx%d) %s %s\n",
-			imageType, image->upload_width, image->upload_height, image->name,
-			image->width, image->height, in_use, scrap);
+		Com_Printf("%c%c %4i %4i RGB: %s (%dx%d) %s\n",
+			isScrap, imageType, image->upload_width, image->upload_height, image->name,
+			image->width, image->height, in_use);
 	}
 
 	Com_Printf("Total texel count (not counting mipmaps): %i in %d images\n",
@@ -788,20 +784,21 @@ Vk_TextureMode(const char *string)
 		}
 	}
 
-	/* use S_NEAREST for scrap 0 (nolerp images) */
-	if (vk_scrapTextures[0].resource.image != VK_NULL_HANDLE)
-	{
-		QVk_UpdateTextureSampler(&vk_scrapTextures[0], S_NEAREST, false);
-	}
-
-	for (j = 1; j < MAX_SCRAPS; j++)
+	for (j = MAX_SCRAPS_NOLERP; j < MAX_SCRAPS; j++)
 	{
 		if (vk_scrapTextures[j].resource.image != VK_NULL_HANDLE)
 		{
-			QVk_UpdateTextureSampler(&vk_scrapTextures[j], i, false);
+			if (unfiltered2D)
+			{
+				/* use S_NEAREST for scrap (nolerp images) */
+				QVk_UpdateTextureSampler(&vk_scrapTextures[j], S_NEAREST, false);
+			}
+			else
+			{
+				QVk_UpdateTextureSampler(&vk_scrapTextures[j], i, false);
+			}
 		}
 	}
-
 
 	if (vk_rawTexture.resource.image != VK_NULL_HANDLE)
 	{
@@ -879,11 +876,11 @@ if vk_picmip is set. Does not use power of 2 scaling.
 ===============
 */
 static uint32_t
-Vk_Upload32Native(byte *data, int width, int height, imagetype_t type,
+Vk_Upload32Native(byte *data, size_t width, size_t height, imagetype_t type,
 	byte **texBuffer, int *upload_width, int *upload_height)
 {
-	int	scaled_width = width, scaled_height = height;
-	int	miplevel = 1;
+	size_t scaled_width = width, scaled_height = height;
+	int miplevel = 1;
 
 	*texBuffer = NULL;
 
@@ -931,7 +928,7 @@ Vk_Upload32Native(byte *data, int width, int height, imagetype_t type,
 	*upload_width = scaled_width;
 	*upload_height = scaled_height;
 
-	// world textures
+	/* world textures */
 	if (type != it_pic && type != it_sky)
 	{
 		Vk_LightScaleTexture(*texBuffer, scaled_width, scaled_height);
@@ -942,9 +939,15 @@ Vk_Upload32Native(byte *data, int width, int height, imagetype_t type,
 		scaled_width >>= 1;
 		scaled_height >>= 1;
 		if (scaled_width < 1)
+		{
 			scaled_width = 1;
+		}
+
 		if (scaled_height < 1)
+		{
 			scaled_height = 1;
+		}
+
 		miplevel++;
 	}
 
@@ -959,7 +962,7 @@ Returns number of mip levels
 ===============
 */
 static uint32_t
-Vk_Upload8(const byte *data, int width, int height, imagetype_t type,
+Vk_Upload8(const byte *data, size_t width, size_t height, imagetype_t type,
 	byte **texBuffer, int *upload_width, int *upload_height)
 {
 	unsigned *trans = NULL;
@@ -1017,11 +1020,15 @@ Vk_Scrap_Upload(void)
 		}
 		else
 		{
+			qboolean default2Dnolerp;
+
+			default2Dnolerp = r_2D_unfiltered->value != 0.0f;
+
 			QVVKTEXTURE_CLEAR(vk_scrapTextures[texnum]);
 			// don't use linear filtering for scrap 0 - this fixes display issues for the dot crosshair and makes it look consistent across different values of hudscale cvar
 			QVk_CreateTexture(&vk_scrapTextures[texnum], (byte*)texBuffer,
 				upload_width, upload_height,
-				(texnum == 0) ? S_NEAREST : vk_current_sampler, false);
+				(default2Dnolerp || (texnum < MAX_SCRAPS_NOLERP)) ? S_NEAREST : vk_current_sampler, false);
 			QVk_DebugSetObjectName((uint64_t)vk_scrapTextures[texnum].resource.image,
 				VK_OBJECT_TYPE_IMAGE, va("Image: scrap #" YQ2_COM_PRIdS, texnum));
 			QVk_DebugSetObjectName((uint64_t)vk_scrapTextures[texnum].imageView,
@@ -1053,7 +1060,8 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	qboolean nolerp = false;
 	image_t *image;
 
-	if (r_2D_unfiltered->value && type == it_pic)
+	qboolean default2Dnolerp = r_2D_unfiltered->value != 0.0f;
+	if (default2Dnolerp && type == it_pic)
 	{
 		/*
 		 * if r_2D_unfiltered is true(ish), nolerp should usually be true,
@@ -1137,30 +1145,40 @@ Vk_LoadPic(const char *name, byte *pic, int width, int realwidth,
 	upload_height = realheight;
 
 	/* load little pics into the scrap */
-	if ((image->type == it_pic) && (width <= 256) && (height <= 256))
+	if ((image->type == it_pic) && (width <= BLOCK_WIDTH) && (height <= BLOCK_HEIGHT))
 	{
 		int texnum = -1;
 		int x, y;
 
 		if (bits == 32)
 		{
-			texnum = Scrap_AllocBlock(width, height, &x, &y, (unsigned*)pic, nolerp ? 0 : 1);
+			texnum = Scrap_AllocBlock(width, height, &x, &y, (unsigned*)pic, nolerp ? 0 : MAX_SCRAPS_NOLERP);
 		}
-		else
+		else if (bits == 8)
 		{
 			unsigned *trans;
 
 			trans = R_Convert8to32(pic, width, height, d_8to24table);
 			if (trans)
 			{
-				texnum = Scrap_AllocBlock(width, height, &x, &y, trans, nolerp ? 0 : 1);
+				texnum = Scrap_AllocBlock(width, height, &x, &y, trans, nolerp ? 0 : MAX_SCRAPS_NOLERP);
 				free(trans);
 			}
+		}
+		else
+		{
+			Sys_Error("Error: texture '%s' has %d bits per pixel, only 8 and 32 supported!\n",
+				name, bits);
 		}
 
 		if (texnum == -1)
 		{
 			goto nonscrap;
+		}
+
+		if (nolerp && texnum >= MAX_SCRAPS_NOLERP)
+		{
+			Com_Printf("%s: Nolerp image stored to lerp\n", name);
 		}
 
 		if (!vk_scrapTextures[texnum].resource.image)

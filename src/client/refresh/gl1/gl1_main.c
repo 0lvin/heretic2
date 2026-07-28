@@ -24,10 +24,17 @@
  * =======================================================================
  */
 
+#ifdef USE_SDL3
+#include <SDL3/SDL.h>
+#else
+#include <SDL2/SDL.h>
+#endif
+
 #include "header/local.h"
 
 #define NUM_BEAM_SEGS 6
 
+static size_t r_time1;
 model_t *r_worldmodel = NULL;
 
 float gldepthmin, gldepthmax;
@@ -37,10 +44,6 @@ glstate_t gl_state = {0};
 
 image_t *r_notexture; /* use for bad textures */
 image_t *r_particletexture; /* little dot for particles */
-
-cplane_t frustum[4];
-
-int r_framecount; /* used for dlight push checking */
 
 int c_brush_polys, c_alias_polys;
 
@@ -1061,9 +1064,12 @@ R_RenderView(const refdef_t *fd)
 	{
 		c_brush_polys = 0;
 		c_alias_polys = 0;
+		r_time1 = SDL_GetTicks();
 	}
 
 	RI_PushDlights();
+	/* key for leafs/nodes */
+	r_currentkey = 0;
 
 	if (gl_finish->value)
 	{
@@ -1072,8 +1078,9 @@ R_RenderView(const refdef_t *fd)
 
 	R_SetupFrame();
 
-	R_SetFrustum(vup, vpn, vright, r_origin, r_newrefdef.fov_x, r_newrefdef.fov_y,
-		frustum);
+	R_SetFrustum(vup, vpn, vright, r_origin, r_newrefdef.fov_x, r_newrefdef.fov_y);
+	/* compute view-space clip planes and indexes for software-style culling */
+	R_TransformFrustum(r_origin, vright, vup, vpn);
 
 	R_SetupGL();
 
@@ -1093,8 +1100,15 @@ R_RenderView(const refdef_t *fd)
 
 	if (r_speeds->value)
 	{
-		Com_Printf("%4i wpoly %4i epoly %i tex %i lmaps\n",
-				c_brush_polys, c_alias_polys, c_visible_textures,
+		size_t r_time2;
+		int ms;
+
+		r_time2 = SDL_GetTicks();
+
+		ms = r_time2 - r_time1;
+
+		Com_Printf("%5i ms %4i nodes %4i wpoly %4i epoly %i tex %i lmaps\n",
+				ms, r_currentkey, c_brush_polys, c_alias_polys, c_visible_textures,
 				c_visible_lightmaps);
 	}
 

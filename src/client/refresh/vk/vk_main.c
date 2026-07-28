@@ -25,6 +25,12 @@
  * =======================================================================
  */
 
+#ifdef USE_SDL3
+#include <SDL3/SDL.h>
+#else
+#include <SDL2/SDL.h>
+#endif
+
 #include "header/local.h"
 
 #define	REF_VERSION	"Yamagi Quake II Vulkan Refresher (based on vkQuake2 v1.4.3)"
@@ -35,7 +41,8 @@ static qboolean RE_IsHighDPIaware = false;
 
 refimport_t	ri;
 
-model_t		*r_worldmodel;
+static size_t r_time1;
+model_t *r_worldmodel;
 
 vkconfig_t vk_config;
 vkstate_t  vk_state;
@@ -43,13 +50,7 @@ vkstate_t  vk_state;
 image_t		*r_notexture;		// use for bad textures
 image_t		*r_particletexture;	// little dot for particles
 image_t		*r_squaretexture;	// rectangle for particles
-
-cplane_t	frustum[4];
-
-int			r_framecount;		// used for dlight push checking
-
 int			c_brush_polys, c_alias_polys;
-
 static float		v_blend[4];	// final blending color
 
 //
@@ -614,8 +615,12 @@ R_SetupFrame(void)
 
 	R_CombineBlendWithFog(v_blend, false);
 
-	c_brush_polys = 0;
-	c_alias_polys = 0;
+	if (r_speeds->value)
+	{
+		c_brush_polys = 0;
+		c_alias_polys = 0;
+		r_time1 = SDL_GetTicks();
+	}
 
 	/* clear out the portion of the screen that the NOWORLDMODEL defines
 	   unlike OpenGL, draw a rectangle in proper location - it's easier to do in Vulkan */
@@ -810,8 +815,9 @@ R_SetupVulkan(void)
 	r_proj_aspect = (float)r_newrefdef.width / r_newrefdef.height;
 	Mat_Perspective(r_projection_matrix, r_vulkan_correction, r_proj_fovy, r_proj_aspect, zNear, dist);
 
-	R_SetFrustum(vup, vpn, vright, r_origin, r_proj_fovx, r_proj_fovy,
-		frustum);
+	R_SetFrustum(vup, vpn, vright, r_origin, r_proj_fovx, r_proj_fovy);
+	/* compute view-space clip planes and indexes for software-style culling */
+	R_TransformFrustum(r_origin, vright, vup, vpn);
 
 	// set up view matrix
 	Mat_Identity(r_view_matrix);
@@ -863,6 +869,7 @@ RE_RenderView(const refdef_t *fd)
 	{
 		c_brush_polys = 0;
 		c_alias_polys = 0;
+		r_time1 = SDL_GetTicks();
 	}
 
 	VkRect2D scissor = {
@@ -883,8 +890,10 @@ RE_RenderView(const refdef_t *fd)
 	vkCmdSetScissor(vk_activeCmdbuffer, 0, 1, &scissor);
 
 	RI_PushDlights();
+	/* key for leafs/nodes */
+	r_currentkey = 0;
 
-	// added for compatibility sake with OpenGL implementation - don't use it!
+	/* added for compatibility sake with OpenGL implementation - don't use it! */
 	if (vk_finish->value)
 	{
 		vkDeviceWaitIdle(vk_device.logical);
@@ -910,11 +919,16 @@ RE_RenderView(const refdef_t *fd)
 
 	if (r_speeds->value)
 	{
-		Com_Printf("%4i wpoly %4i epoly %i tex %i lmaps\n",
-			c_brush_polys,
-			c_alias_polys,
-			c_visible_textures,
-			c_visible_lightmaps);
+		size_t r_time2;
+		int ms;
+
+		r_time2 = SDL_GetTicks();
+
+		ms = r_time2 - r_time1;
+
+		Com_Printf("%5i ms %4i nodes %4i wpoly %4i epoly %i tex %i lmaps\n",
+				ms, r_currentkey, c_brush_polys, c_alias_polys, c_visible_textures,
+				c_visible_lightmaps);
 	}
 }
 

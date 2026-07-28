@@ -31,7 +31,12 @@
 
 #include "header/common.h"
 #include "header/glob.h"
+
+#ifdef USE_SYSTEM_MINIZIP
+#include <minizip/unzip.h>
+#else
 #include "unzip/unzip.h"
+#endif
 
 #include "../client/sound/header/vorbis.h"
 
@@ -74,16 +79,16 @@ typedef struct fsLink_s
 typedef struct
 {
 	char name[MAX_FILENAME];
-	int size;
-	int offset;     /* Ignored in PK3 files. */
-	int compressed_size; /* Should be zero for original PAK files */
+	size_t size;
+	size_t offset;     /* Ignored in PK3 files. */
+	size_t compressed_size; /* Should be zero for original PAK files */
 	fsPackCompress_t format;
 } fsPackFile_t;
 
 typedef struct
 {
 	char name[MAX_OSPATH];
-	int numFiles;
+	size_t numFiles;
 	FILE *pak;
 	unzFile *pk3;
 	qboolean isProtectedPak;
@@ -160,7 +165,12 @@ fsRawPath_t *fs_rawPath;
  */
 
 #include <windows.h>
+
+#ifdef USE_SYSTEM_MINIZIP
+#include <minizip/ioapi.h>
+#else
 #include "unzip/ioapi.h"
+#endif
 
 zlib_filefunc_def zlib_file_api;
 
@@ -1098,7 +1108,7 @@ static fsPack_t *
 FS_LoadWAD(const char *packPath)
 {
 	int i, curr = 0; /* Loop counter. */
-	int numFiles; /* Number of files in WAD. */
+	size_t numFiles; /* Number of files in WAD. */
 	FILE *handle; /* File handle. */
 	fsPackFile_t *files; /* List of files in WAD. */
 	fsPack_t *pack; /* WAD file. */
@@ -1144,7 +1154,7 @@ FS_LoadWAD(const char *packPath)
 
 	if (numFiles > MAX_FILES_IN_PACK)
 	{
-		Com_Printf("%s: '%s' has %i > %i files\n",
+		Com_Printf("%s: '%s' has " YQ2_COM_PRIdS " > %i files\n",
 				__func__, packPath, numFiles, MAX_FILES_IN_PACK);
 	}
 
@@ -1326,7 +1336,7 @@ FS_LoadWAD(const char *packPath)
 	pack->numFiles = curr;
 	pack->files = files;
 
-	Com_Printf("Added wadfile '%s' (%i / %i files).\n",
+	Com_Printf("Added wadfile '%s' (%i / " YQ2_COM_PRIdS " files).\n",
 		pack->name, curr, numFiles);
 
 	return pack;
@@ -1336,7 +1346,7 @@ static fsPack_t *
 FS_LoadDAT(const char *packPath)
 {
 	int i; /* Loop counter. */
-	int numFiles; /* Number of files in DAT. */
+	size_t numFiles; /* Number of files in DAT. */
 	FILE *handle; /* File handle. */
 	fsPackFile_t *files; /* List of files in DAT. */
 	fsPack_t *pack; /* DAT file. */
@@ -1385,7 +1395,7 @@ FS_LoadDAT(const char *packPath)
 
 	if (numFiles > MAX_FILES_IN_PACK)
 	{
-		Com_Printf("%s: '%s' has %i > %i files\n",
+		Com_Printf("%s: '%s' has " YQ2_COM_PRIdS " > %i files\n",
 				__func__, packPath, numFiles, MAX_FILES_IN_PACK);
 	}
 
@@ -1464,42 +1474,27 @@ FS_LoadDAT(const char *packPath)
 	pack->numFiles = numFiles;
 	pack->files = files;
 
-	Com_Printf("Added datfile '%s' (%i files).\n", pack->name, numFiles);
+	Com_Printf("Added datfile '%s' (" YQ2_COM_PRIdS " files).\n",
+		pack->name, numFiles);
 
 	return pack;
 }
 
 static fsPack_t *
-FS_LoadSIN(const char *packPath)
+FS_LoadSINSPAK(FILE *handle, const char *packPath)
 {
 	int i; /* Loop counter. */
-	int numFiles; /* Number of files in SIN. */
-	FILE *handle; /* File handle. */
+	size_t numFiles; /* Number of files in SIN. */
 	fsPackFile_t *files; /* List of files in PAK. */
 	fsPack_t *pack; /* SIN file. */
 	dpackheader_t header; /* SIN file header. */
 	dsinfile_t *info = NULL; /* SIN info. */
-
-	handle = Q_fopen(packPath, "rb");
-
-	if (handle == NULL)
-	{
-		return NULL;
-	}
 
 	if (fread(&header, sizeof(dpackheader_t), 1, handle) != 1)
 	{
 		fclose(handle);
 		Com_Error(ERR_FATAL, "%s: '%s' too short file",
 			__func__, packPath);
-		return NULL;
-	}
-
-	if (LittleLong(header.ident) == SINRHEADER)
-	{
-		fclose(handle);
-		Com_Printf("Skipped packfile '%s' as 'SiN Reloaded' assets.\n",
-			packPath);
 		return NULL;
 	}
 
@@ -1527,7 +1522,7 @@ FS_LoadSIN(const char *packPath)
 
 	if (numFiles > MAX_FILES_IN_PACK)
 	{
-		Com_Printf("%s: '%s' has %i > %i files\n",
+		Com_Printf("%s: '%s' has " YQ2_COM_PRIdS " > %i files\n",
 			__func__, packPath, numFiles, MAX_FILES_IN_PACK);
 	}
 
@@ -1578,9 +1573,205 @@ FS_LoadSIN(const char *packPath)
 	pack->numFiles = numFiles;
 	pack->files = files;
 
-	Com_Printf("Added sinfile '%s' (%i files).\n", pack->name, numFiles);
+	Com_Printf("Added sinfile '%s' (" YQ2_COM_PRIdS " files).\n",
+		pack->name, numFiles);
 
 	return pack;
+}
+
+static fsPack_t *
+FS_LoadSINSRPK(FILE *handle, const char *packPath)
+{
+	int i; /* Loop counter. */
+	size_t numFiles; /* Number of files in SIN. */
+	fsPackFile_t *files; /* List of files in PAK. */
+	fsPack_t *pack; /* SIN file. */
+	dsinrheader_t header; /* SIN file header. */
+	dsinrfile_t *info = NULL; /* SIN info. */
+	char *infostr = NULL, *infoname = NULL; /* SIN file names. */
+
+	if (fread(&header, sizeof(dsinrheader_t), 1, handle) != 1)
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' too short file",
+			__func__, packPath);
+		return NULL;
+	}
+
+	if (LittleLong(header.ident) != SINRHEADER)
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' is not a pack file", __func__, packPath);
+		return NULL;
+	}
+
+	header.dirofs = LittleLongLong(header.dirofs);
+	header.dirlen = LittleLongLong(header.dirlen);
+	header.strofs = LittleLongLong(header.strofs);
+	header.strlen = LittleLongLong(header.strlen);
+
+	if ((header.dirlen <= 0) ||
+		(header.dirofs < 0) ||
+		(header.strlen <= 0) ||
+		(header.strofs < 0))
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' is too short.",
+				__func__, packPath);
+		return NULL;
+	}
+
+	numFiles = header.dirlen;
+
+	if (numFiles > MAX_FILES_IN_PACK)
+	{
+		Com_Printf("%s: '%s' has " YQ2_COM_PRIdS " > %i files\n",
+			__func__, packPath, numFiles, MAX_FILES_IN_PACK);
+	}
+
+	if (numFiles > SIZE_MAX / sizeof(fsPackFile_t))
+	{
+		fclose(handle);
+		Com_Printf("%s: '%s' has too many files (" YQ2_COM_PRIdS ")\n",
+			__func__, packPath, numFiles);
+		return NULL;
+	}
+
+	info = malloc(header.dirlen * sizeof(dsinrfile_t));
+	if (!info)
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
+				__func__, packPath, header.dirlen);
+		return NULL;
+	}
+
+	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
+
+	if (fseek(handle, header.dirofs, SEEK_SET))
+	{
+		free(info);
+		Z_Free(files);
+		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
+	}
+
+	if (fread(info, header.dirlen * sizeof(dsinrfile_t), 1, handle) != 1)
+	{
+		free(info);
+		Z_Free(files);
+		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
+	}
+
+	/* Parse the directory. */
+	for (i = 0; i < numFiles; i++)
+	{
+		/* files.name: 128, info.name: 120 */
+		snprintf(files[i].name, sizeof(files[i].name), "SiN Reloaded #%i", i);
+		files[i].offset = LittleLongLong(info[i].filepos);
+		files[i].size = LittleLongLong(info[i].filelen);
+		files[i].compressed_size = 0;
+		files[i].format = PAK_MODE_Q2;
+	}
+	free(info);
+
+	infostr = malloc(header.strlen + 1);
+	if (!infostr)
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' is to big for read %d",
+				__func__, packPath, header.dirlen);
+		return NULL;
+	}
+
+	if (fseek(handle, header.strofs, SEEK_SET))
+	{
+		free(infostr);
+		Z_Free(files);
+		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
+	}
+
+	if (fread(infostr, header.strlen, 1, handle) != 1)
+	{
+		free(infostr);
+		Z_Free(files);
+		Com_Error(ERR_FATAL, "%s: '%s' is too short", __func__, packPath);
+		return NULL;
+	}
+
+	infostr[header.strlen] = 0;
+	infoname = infostr;
+
+	/* Parse the file names. */
+	for (i = 0; i < numFiles; i++)
+	{
+		if (infoname >= infostr + header.strlen)
+		{
+			free(infostr);
+			Z_Free(files);
+			Com_Error(ERR_FATAL, "%s: '%s' to short names list\n",
+				__func__, packPath);
+			return NULL;
+		}
+
+		/* files.name: 128 */
+		Q_strlcpy(files[i].name, infoname, sizeof(files[i].name));
+
+		infoname += strlen(infoname) + 1;
+	}
+	free(infostr);
+
+	pack = Z_Malloc(sizeof(fsPack_t));
+	Q_strlcpy(pack->name, packPath, sizeof(pack->name));
+	pack->pak = handle;
+	pack->pk3 = NULL;
+	pack->numFiles = numFiles;
+	pack->files = files;
+
+	Com_Printf("Added sinfile '%s' (" YQ2_COM_PRIdS " files).\n",
+		pack->name, numFiles);
+
+	return pack;
+}
+
+static fsPack_t *
+FS_LoadSIN(const char *packPath)
+{
+	FILE *handle; /* File handle. */
+	int ident;
+
+	handle = Q_fopen(packPath, "rb");
+
+	if (handle == NULL)
+	{
+		return NULL;
+	}
+
+	if (fread(&ident, sizeof(ident), 1, handle) != 1)
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' too short file",
+			__func__, packPath);
+		return NULL;
+	}
+
+	if (fseek(handle, 0, SEEK_SET))
+	{
+		fclose(handle);
+		Com_Error(ERR_FATAL, "%s: '%s' seek failed", __func__, packPath);
+		return NULL;
+	}
+
+	if (LittleLong(ident) == SINRHEADER)
+	{
+		return FS_LoadSINSRPK(handle, packPath);
+	}
+	else
+	{
+		return FS_LoadSINSPAK(handle, packPath);
+	}
 }
 
 /*
@@ -1593,7 +1784,7 @@ static fsPack_t *
 FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 {
 	int i; /* Loop counter. */
-	int numFiles; /* Number of files in PAK. */
+	size_t numFiles; /* Number of files in PAK. */
 	fsPackFile_t *files; /* List of files in PAK. */
 	fsPack_t *pack; /* PAK file. */
 	dpackfile_t *info = NULL; /* PAK info. */
@@ -1610,7 +1801,7 @@ FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 
 	if (numFiles > MAX_FILES_IN_PACK)
 	{
-		Com_Printf("%s: '%s' has %i > %i files\n",
+		Com_Printf("%s: '%s' has " YQ2_COM_PRIdS " > %i files\n",
 				__func__, packPath, numFiles, MAX_FILES_IN_PACK);
 	}
 
@@ -1661,7 +1852,8 @@ FS_LoadPAKQ2(dpackheader_t *header, FILE *handle, const char *packPath)
 	pack->numFiles = numFiles;
 	pack->files = files;
 
-	Com_Printf("Added packfile '%s' (%i files).\n", pack->name, numFiles);
+	Com_Printf("Added packfile '%s' (" YQ2_COM_PRIdS " files).\n",
+		pack->name, numFiles);
 
 	return pack;
 }
@@ -1670,7 +1862,7 @@ static fsPack_t *
 FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 {
 	int i; /* Loop counter. */
-	int numFiles; /* Number of files in PAK. */
+	size_t numFiles; /* Number of files in PAK. */
 	fsPackFile_t *files; /* List of files in PAK. */
 	fsPack_t *pack; /* PAK file. */
 	dpackdkfile_t *info = NULL; /* PAK info. */
@@ -1687,7 +1879,7 @@ FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 
 	if (numFiles > MAX_FILES_IN_PACK)
 	{
-		Com_Printf("%s: '%s' has %i > %i files\n",
+		Com_Printf("%s: '%s' has " YQ2_COM_PRIdS " > %i files\n",
 				__func__, packPath, numFiles, MAX_FILES_IN_PACK);
 	}
 
@@ -1746,7 +1938,8 @@ FS_LoadPAKDK(dpackheader_t *header, FILE *handle, const char *packPath)
 	pack->numFiles = numFiles;
 	pack->files = files;
 
-	Com_Printf("Added packfile '%s' (%i files).\n", pack->name, numFiles);
+	Com_Printf("Added packfile '%s' (" YQ2_COM_PRIdS " files).\n",
+		pack->name, numFiles);
 
 	return pack;
 }
@@ -1825,7 +2018,7 @@ static fsPack_t *
 FS_LoadPK3(const char *packPath)
 {
 	int i = 0; /* Loop counter. */
-	int numFiles; /* Number of files in PK3. */
+	size_t numFiles; /* Number of files in PK3. */
 	int status; /* Error indicator. */
 	fsPackFile_t *files; /* List of files in PK3. */
 	fsPack_t *pack; /* PK3 file. */
@@ -1851,16 +2044,15 @@ FS_LoadPK3(const char *packPath)
 		return NULL;
 	}
 
-	numFiles = global.number_entry;
-
-	if (numFiles <= 0)
+	if (global.number_entry <= 0)
 	{
 		unzClose(handle);
-		Com_Error(ERR_FATAL, "%s: '%s' has %i files",
-				__func__, packPath, numFiles);
+		Com_Error(ERR_FATAL, "%s: '%s' has " YQ2_COM_PRIdS " files",
+				__func__, packPath, global.number_entry);
 		return NULL;
 	}
 
+	numFiles = global.number_entry;
 	files = Z_Malloc(numFiles * sizeof(fsPackFile_t));
 
 	/* Parse the directory. */
@@ -1886,7 +2078,8 @@ FS_LoadPK3(const char *packPath)
 	pack->numFiles = numFiles;
 	pack->files = files;
 
-	Com_Printf("Added packfile '%s' (%i files).\n", pack->name, numFiles);
+	Com_Printf("Added packfile '%s' (" YQ2_COM_PRIdS " files).\n",
+		pack->name, numFiles);
 
 	return pack;
 }
@@ -1940,7 +2133,7 @@ FS_Path_f(void)
 	{
 		if (search->pack != NULL)
 		{
-			Com_Printf("%s (%i files)\n", search->pack->name,
+			Com_Printf("%s (" YQ2_COM_PRIdS " files)\n", search->pack->name,
 					search->pack->numFiles);
 			totalFiles += search->pack->numFiles;
 		}

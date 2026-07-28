@@ -42,7 +42,7 @@ extern int cur_lm_copy;
 byte minlight[256];
 
 static void
-R_DrawGLPoly(msurface_t *fa)
+R_DrawPoly(const msurface_t *fa)
 {
 	int i, nv;
 	mvtx_t *v;
@@ -55,7 +55,7 @@ R_DrawGLPoly(msurface_t *fa)
 
 	R_SetBufferIndices(GL_TRIANGLE_FAN, nv);
 
-	for ( i = 0; i < nv; i++, v ++)
+	for (i = 0; i < nv; i++, v ++)
 	{
 		GLBUFFER_VERTEX( v->pos[0], v->pos[1], v->pos[2] )
 		GLBUFFER_SINGLETEX( v->texCoord[0] + sscroll, v->texCoord[1] + tscroll )
@@ -120,7 +120,7 @@ R_DrawTriangleOutlines(void)
 }
 
 static void
-R_DrawGLPolyChain(mpoly_t *p, float soffset, float toffset)
+R_DrawPolyChain(mpoly_t *p, float soffset, float toffset)
 {
 	if ((soffset == 0) && (toffset == 0))
 	{
@@ -253,7 +253,7 @@ R_BlendLightmaps(const model_t *currentmodel)
 						glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE, gl1_overbrightbits->value);
 					}
 
-					R_DrawGLPolyChain(surf->polys, 0, 0);
+					R_DrawPolyChain(surf->polys, 0, 0);
 				}
 			}
 		}
@@ -292,7 +292,7 @@ R_BlendLightmaps(const model_t *currentmodel)
 						surf->dlight_s) * LIGHTMAP_BYTES;
 
 				R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
-					&r_newrefdef, r_modulate->value, r_framecount, gammatable,
+					&r_newrefdef, r_modulate->value, gammatable,
 					gl_state.minlight_set ? minlight : NULL);
 			}
 			else
@@ -316,7 +316,7 @@ R_BlendLightmaps(const model_t *currentmodel)
 							glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE, gl1_overbrightbits->value);
 						}
 
-						R_DrawGLPolyChain(drawsurf->polys,
+						R_DrawPolyChain(drawsurf->polys,
 								(drawsurf->light_s - drawsurf->dlight_s) * (float)(1.0 / BLOCK_WIDTH),
 								(drawsurf->light_t - drawsurf->dlight_t) * (float)(1.0 / BLOCK_HEIGHT));
 					}
@@ -341,7 +341,7 @@ R_BlendLightmaps(const model_t *currentmodel)
 						surf->dlight_s) * LIGHTMAP_BYTES;
 
 				R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
-					&r_newrefdef, r_modulate->value, r_framecount, gammatable,
+					&r_newrefdef, r_modulate->value, gammatable,
 					gl_state.minlight_set ? minlight : NULL);
 			}
 		}
@@ -363,7 +363,7 @@ R_BlendLightmaps(const model_t *currentmodel)
 					glTexEnvi(GL_TEXTURE_ENV, GL_RGB_SCALE, gl1_overbrightbits->value);
 				}
 
-				R_DrawGLPolyChain(surf->polys,
+				R_DrawPolyChain(surf->polys,
 						(surf->light_s - surf->dlight_s) * (float)(1.0 / BLOCK_WIDTH),
 						(surf->light_t - surf->dlight_t) * (float)(1.0 / BLOCK_HEIGHT));
 			}
@@ -390,7 +390,7 @@ R_RenderBrushPoly(msurface_t *fa)
 		return;
 	}
 
-	R_DrawGLPoly(fa);
+	R_DrawPoly(fa);
 
 	if (gl_config.multitexture)
 	{
@@ -439,7 +439,7 @@ R_RenderBrushPoly(msurface_t *fa)
 			temp = R_GetTemporaryLMBuffer(size);
 
 			R_BuildLightMap(fa, temp, smax * 4,
-				&r_newrefdef, r_modulate->value, r_framecount, gammatable,
+				&r_newrefdef, r_modulate->value, gammatable,
 				gl_state.minlight_set ? minlight : NULL);
 			R_SetCacheState(fa, &r_newrefdef);
 
@@ -506,7 +506,7 @@ R_DrawAlphaSurfaces(void)
 		}
 		else
 		{
-			R_DrawGLPoly(s);
+			R_DrawPoly(s);
 		}
 	}
 	R_ApplyGLBuffer();	// Flush the last batched array
@@ -645,7 +645,7 @@ dynamic_surf:
 			base += (current.top * BLOCK_WIDTH + current.left) * LIGHTMAP_BYTES;
 
 			R_BuildLightMap(surf, base, BLOCK_WIDTH * LIGHTMAP_BYTES,
-				&r_newrefdef, r_modulate->value, r_framecount, gammatable,
+				&r_newrefdef, r_modulate->value, gammatable,
 				gl_state.minlight_set ? minlight : NULL);
 
 			surf->dirty_lightmap = (surf->dlightframe == r_framecount);
@@ -820,8 +820,8 @@ R_DrawTextureChains(void)
 static void
 R_DrawInlineBModel(const entity_t *currententity, const model_t *currentmodel)
 {
-	int i;
 	msurface_t *psurf;
+	size_t i;
 
 	/* calculate dynamic lighting for bmodel */
 	if (!gl_config.multitexture && !r_flashblend->value)
@@ -926,7 +926,7 @@ R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel)
 		VectorAdd(currententity->origin, currentmodel->maxs, maxs);
 	}
 
-	if (r_cull->value && R_CullBox(mins, maxs, frustum))
+	if (r_cull->value && R_CullBox(mins, maxs))
 	{
 		return;
 	}
@@ -980,146 +980,39 @@ R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel)
 }
 
 static void
-R_RecursiveWorldNode(entity_t *currententity, mnode_t *node)
+R_RenderFace(entity_t *currententity, msurface_t *surf, int clipflags)
 {
-	int c, side, sidebit;
-	cplane_t *plane;
-	msurface_t *surf;
-	mleaf_t *pleaf;
-	float dot;
-	image_t *image;
-
-	if (node->contents == CONTENTS_SOLID)
+	if (surf->texinfo->flags & SURF_SKY)
 	{
-		return; /* solid */
+		/* just adds to visible sky bounds */
+		RE_AddSkySurface(surf);
 	}
-
-	if (node->visframe != r_visframecount)
+	else if (surf->texinfo->flags & SURF_TRANSPARENT)
 	{
-		return;
+		/* add to the translucent chain */
+		surf->texturechain = r_alpha_surfaces;
+		r_alpha_surfaces = surf;
+		r_alpha_surfaces->texinfo->image = R_TextureAnimation(currententity, surf->texinfo);
 	}
-
-	if (r_cull->value && R_CullBox(node->minmaxs, node->minmaxs + 3, frustum))
+	else if (surf->texinfo->flags & SURF_NODRAW)
 	{
-		return;
-	}
-
-	/* if a leaf node, draw stuff */
-	if (node->contents != CONTENTS_NODE)
-	{
-		msurface_t	**mark;
-
-		pleaf = (mleaf_t *)node;
-
-		/* check for door connected areas */
-		if (!R_AreaVisible(r_newrefdef.areabits, pleaf))
-			return;	// not visible
-
-		mark = pleaf->firstmarksurface;
-		c = pleaf->nummarksurfaces;
-
-		if (c)
-		{
-			do
-			{
-				(*mark)->visframe = r_framecount;
-				mark++;
-			}
-			while (--c);
-		}
-
-		return;
-	}
-
-	/* node is just a decision point, so go down the apropriate
-	   sides find which side of the node we are on */
-	plane = node->plane;
-
-	switch (plane->type)
-	{
-		case PLANE_X:
-			dot = modelorg[0] - plane->dist;
-			break;
-		case PLANE_Y:
-			dot = modelorg[1] - plane->dist;
-			break;
-		case PLANE_Z:
-			dot = modelorg[2] - plane->dist;
-			break;
-		default:
-			dot = DotProduct(modelorg, plane->normal) - plane->dist;
-			break;
-	}
-
-	if (dot >= 0)
-	{
-		side = 0;
-		sidebit = 0;
+		/* Surface should be skipped */
 	}
 	else
 	{
-		side = 1;
-		sidebit = SURF_PLANEBACK;
-	}
+		image_t *image;
 
-	/* recurse down the children, front side first */
-	R_RecursiveWorldNode(currententity, node->children[side]);
+		/* the polygon is visible, so add it to the texture sorted chain */
+		image = R_TextureAnimation(currententity, surf->texinfo);
+		surf->texturechain = image->texturechain;
+		image->texturechain = surf;
 
-	if ((node->numsurfaces + node->firstsurface) > r_worldmodel->numsurfaces)
-	{
-		Com_Printf("Broken node firstsurface\n");
-		return;
-	}
-
-	/* draw stuff */
-	for (c = node->numsurfaces,
-		 surf = r_worldmodel->surfaces + node->firstsurface;
-		 c; c--, surf++)
-	{
-		if (surf->visframe != r_framecount)
+		if (gl_config.multitexture && !(surf->texinfo->flags & SURF_WARP))	// needed for R_RegenAllLightmaps()
 		{
-			continue;
-		}
-
-		if ((surf->flags & SURF_PLANEBACK) != sidebit)
-		{
-			continue; /* wrong side */
-		}
-
-		if (surf->texinfo->flags & SURF_SKY)
-		{
-			/* just adds to visible sky bounds */
-			RE_AddSkySurface(surf);
-		}
-		else if (surf->texinfo->flags & SURF_TRANSPARENT)
-		{
-			/* add to the translucent chain */
-			surf->texturechain = r_alpha_surfaces;
-			r_alpha_surfaces = surf;
-			r_alpha_surfaces->texinfo->image = R_TextureAnimation(currententity, surf->texinfo);
-		}
-		else if (surf->texinfo->flags & SURF_NODRAW)
-		{
-			/* Surface should be skipped */
-			continue;
-		}
-		else
-		{
-			/* the polygon is visible, so add it to the texture sorted chain */
-			image = R_TextureAnimation(currententity, surf->texinfo);
-			surf->texturechain = image->texturechain;
-			image->texturechain = surf;
-
-			if (gl_config.multitexture && !(surf->texinfo->flags & SURF_WARP))	// needed for R_RegenAllLightmaps()
-			{
-				surf->lightmapchain = r_lms.lightmap_surfaces[surf->lightmaptexturenum];
-				r_lms.lightmap_surfaces[surf->lightmaptexturenum] = surf;
-			}
+			surf->lightmapchain = r_lms.lightmap_surfaces[surf->lightmaptexturenum];
+			r_lms.lightmap_surfaces[surf->lightmaptexturenum] = surf;
 		}
 	}
-
-	/* recurse down the back side */
-	R_RecursiveWorldNode(currententity, node->children[!side]);
 }
 
 /*
@@ -1172,7 +1065,7 @@ R_GetBrushesLighting(void)
 			VectorAdd(currententity->origin, currentmodel->maxs, maxs);
 		}
 
-		if (r_cull->value && R_CullBox(mins, maxs, frustum))
+		if (r_cull->value && R_CullBox(mins, maxs))
 		{
 			continue;
 		}
@@ -1211,12 +1104,7 @@ R_DrawWorld(void)
 {
 	entity_t ent;
 
-	if (!r_drawworld->value)
-	{
-		return;
-	}
-
-	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
+	if ((!r_drawworld->value) || (r_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
 		return;
 	}
@@ -1226,6 +1114,8 @@ R_DrawWorld(void)
 	/* auto cycle the world frame for texture animation */
 	memset(&ent, 0, sizeof(ent));
 	ent.frame = (int)(r_newrefdef.time * 2);
+	ent.model = r_worldmodel;
+	VectorCopy(r_newrefdef.vieworg, ent.origin);
 
 	gl_state.currenttextures[0] = gl_state.currenttextures[1] = -1;
 
@@ -1233,7 +1123,8 @@ R_DrawWorld(void)
 	memset(r_lms.lightmap_surfaces, 0, sizeof(r_lms.lightmap_surfaces));
 
 	RE_ClearSkyBox();
-	R_RecursiveWorldNode(&ent, r_worldmodel->nodes);
+	R_RecursiveWorldNode(&ent, r_worldmodel->nodes, ALIAS_XY_CLIP_MASK,
+		R_RenderFace);
 	R_GetBrushesLighting();
 	R_RegenAllLightmaps();
 	R_DrawTextureChains();

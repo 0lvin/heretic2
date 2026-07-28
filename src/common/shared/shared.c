@@ -866,6 +866,8 @@ static int (*_BigLong)(int l);
 static int (*_LittleLong)(int l);
 static float (*_BigFloat)(float l);
 static float (*_LittleFloat)(float l);
+static int64_t (*_BigLongLong)(int64_t l);
+static int64_t (*_LittleLongLong)(int64_t l);
 
 short
 BigShort(short l)
@@ -903,6 +905,18 @@ LittleFloat(float l)
 	return _LittleFloat(l);
 }
 
+int64_t
+BigLongLong(int64_t l)
+{
+	return _BigLongLong(l);
+}
+
+int64_t
+LittleLongLong(int64_t l)
+{
+	return _LittleLongLong(l);
+}
+
 static short
 ShortSwap(short l)
 {
@@ -935,6 +949,33 @@ LongSwap(int l)
 
 static int
 LongNoSwap(int l)
+{
+	return l;
+}
+
+static int64_t
+LongLongSwap(int64_t l)
+{
+	byte b1, b2, b3, b4, b5, b6, b7, b8;
+
+	b1 = l & 255;
+	b2 = (l >> 8) & 255;
+	b3 = (l >> 16) & 255;
+	b4 = (l >> 24) & 255;
+	b5 = (l >> 32) & 255;
+	b6 = (l >> 40) & 255;
+	b7 = (l >> 48) & 255;
+	b8 = (l >> 56) & 255;
+
+	return (
+		((int64_t)b1 << 56) + ((int64_t)b2 << 48) +
+		((int64_t)b3 << 40) + ((int64_t)b4 << 32) +
+		((int64_t)b5 << 24) + ((int64_t)b6 << 16) +
+		((int64_t)b7 << 8) + b8);
+}
+
+static int64_t
+LongLongNoSwap(int64_t l)
 {
 	return l;
 }
@@ -978,6 +1019,8 @@ Swap_Init(void)
 		_LittleShort = ShortNoSwap;
 		_BigLong = LongSwap;
 		_LittleLong = LongNoSwap;
+		_BigLongLong = LongLongSwap;
+		_LittleLongLong = LongLongNoSwap;
 		_BigFloat = FloatSwap;
 		_LittleFloat = FloatNoSwap;
 		Com_Printf("Byte ordering: little endian\n\n");
@@ -989,13 +1032,17 @@ Swap_Init(void)
 		_LittleShort = ShortSwap;
 		_BigLong = LongNoSwap;
 		_LittleLong = LongSwap;
+		_BigLongLong = LongLongNoSwap;
+		_LittleLongLong = LongLongSwap;
 		_BigFloat = FloatNoSwap;
 		_LittleFloat = FloatSwap;
 		Com_Printf("Byte ordering: big endian\n\n");
 	}
 
 	if (LittleShort(swapTestShort) != 1)
+	{
 		assert("Error in the endian conversion!");
+	}
 }
 
 /*

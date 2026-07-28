@@ -112,20 +112,8 @@ DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei le
 
 // ---------
 
-/*
- * Swaps the buffers and shows the next frame.
- */
-void GL3_EndFrame(void)
+void GL3_SwapWindow(void)
 {
-	if (gl3config.useBigVBO)
-	{
-		// I think this is a good point to orphan the VBO and get a fresh one
-		GL3_BindVAO(gl3state.vao3D);
-		GL3_BindVBO(gl3state.vbo3D);
-		glBufferData(GL_ARRAY_BUFFER, gl3state.vbo3Dsize, NULL, GL_STREAM_DRAW);
-		gl3state.vbo3DcurOffset = 0;
-	}
-
 	SDL_GL_SwapWindow(window);
 }
 
@@ -262,10 +250,11 @@ int GL3_PrepareForWindow(void)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 #else // Desktop GL
-	if (gl_version_override->value)
+	if (gl_version_override->value && (gl_version_override->value > 2))
 	{
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl_version_override->value);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,
+			gl_version_override->value == 3 ? 1 : 0);
 	}
 	else
 	{
@@ -417,7 +406,8 @@ int GL3_InitContext(void* win)
 #endif
 	{
 		if ((!gl_version_override->value) ||
-			(GLVersion.major < gl_version_override->value))
+			(GLVersion.major < gl_version_override->value) ||
+			(GLVersion.major < 3))
 		{
 			Com_Printf("%s(): ERROR: glad only got GL version %d.%d!\n",
 				__func__, GLVersion.major, GLVersion.minor);
@@ -439,6 +429,7 @@ int GL3_InitContext(void* win)
 
 #ifdef YQ2_GL3_GLES
 	gl3config.debug_output = GLAD_GL_KHR_debug != 0;
+	gl3config.discardfb = GLAD_GL_EXT_discard_framebuffer != 0;
 #else // Desktop GL
 	gl3config.debug_output = GLAD_GL_ARB_debug_output != 0;
 #endif
@@ -465,9 +456,11 @@ int GL3_InitContext(void* win)
 	// Window title - set here so we can display renderer name in it.
 	char title[64] = {0};
 #ifdef YQ2_GL3_GLES3
-	snprintf(title, sizeof(title), "Yamagi Quake II %s - OpenGL ES 3.0", YQ2VERSION);
+	snprintf(title, sizeof(title), "Yamagi Quake II %s - OpenGL ES 3.0 (%d.%d mode)",
+		YQ2VERSION, GLVersion.major, GLVersion.minor);
 #else
-	snprintf(title, sizeof(title), "Yamagi Quake II %s - OpenGL 3.2", YQ2VERSION);
+	snprintf(title, sizeof(title), "Yamagi Quake II %s - OpenGL 3.2 (%d.%d mode)",
+		YQ2VERSION, GLVersion.major, GLVersion.minor);
 #endif
 	SDL_SetWindowTitle(window, title);
 

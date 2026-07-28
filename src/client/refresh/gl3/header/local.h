@@ -56,7 +56,12 @@
 
 #include "../../ref_shared.h"
 
+#include <stddef.h> // offsetof()
+
 #include "../../files/HandmadeMath.h"
+
+#define DG_DYNARR_ASSERT(cond, msg) \
+	((cond) ? (void)0 : Com_Error(ERR_FATAL, "DG_dynarr.h error: %s\n", msg))
 
 // a wrapper around glVertexAttribPointer() to stay sane
 // (caller doesn't have to cast to GLintptr and then void*)
@@ -92,6 +97,9 @@ static const int gl3_tex_alpha_format = GL_RGBA;
 extern unsigned gl3_rawpalette[256];
 extern unsigned d_8to24table[256];
 
+// for stats
+extern int gl3_num3Ddraws, gl3_num2Ddraws, gl3_numBufferVtxData, gl3_numBufferUniforms;
+
 typedef struct
 {
 	const char *renderer_string;
@@ -107,8 +115,9 @@ typedef struct
 	qboolean anisotropic; // is GL_EXT_texture_filter_anisotropic supported?
 	qboolean debug_output; // is GL_ARB_debug_output supported?
 	qboolean stencil; // Do we have a stencil buffer?
-
-	qboolean useBigVBO; // workaround for AMDs windows driver for fewer calls to glBufferData()
+#ifdef YQ2_GL3_GLES
+	qboolean discardfb; // Is GLES GL_EXT_discard_framebuffer supported?
+#endif
 
 	// ----
 
@@ -224,7 +233,7 @@ typedef struct
 	GLuint currentShaderProgram;
 	GLuint currentUBO;
 
-	// NOTE: make sure si2D is always the first shaderInfo (or adapt GL3_ShutdownShaders())
+	// NOTE: make sure si2D is always the first shaderInfo (or adapt GL3_ShutdownShaders() and GL3_SetDrawCmdShader())
 	gl3ShaderInfo_t si2D;      // shader for rendering 2D with textures
 	gl3ShaderInfo_t si2Dtinted; // shader for rendering 2D with textures and color tinting
 	gl3ShaderInfo_t si2Dcolor; // shader for rendering 2D with flat colors
@@ -252,12 +261,7 @@ typedef struct
 	// NOTE: make sure siParticle is always the last shaderInfo (or adapt GL3_ShutdownShaders())
 	gl3ShaderInfo_t siParticle; // for particles. surprising, right?
 
-	GLuint vao3D, vbo3D; // for brushes etc, using 10 floats and one uint as vertex input (x,y,z, s,t, lms,lmt, normX,normY,normZ ; lightFlags)
-
-	// the next two are for gl3config.useBigVBO == true
-	int vbo3Dsize;
-	int vbo3DcurOffset;
-
+	GLuint vao3D, vbo3D, ebo3D; // for brushes etc, using 10 floats and one uint as vertex input (x,y,z, s,t, lms,lmt, normX,normY,normZ ; lightFlags)
 	GLuint vaoAlias, vboAlias, eboAlias; // for models, using 9 floats as (x,y,z, s,t, r,g,b,a)
 	GLuint vaoParticle, vboParticle; // for particles, using 9 floats (x,y,z, size,distance, r,g,b,a)
 
@@ -275,10 +279,92 @@ typedef struct
 	hmm_mat4 viewMat3D;
 } gl3state_t;
 
+
+// drawcommands using mvtx_t, for batching
+typedef struct gl3drawCmd_s {
+	GLuint		texnum;
+	signed char	lmtexnum;
+	signed char	shaderIdx;
+
+	// index into gl3_main.c transModelMats; 0 always is identity matrix
+	unsigned short transModelMatIdx;
+
+	float		sscroll; // for gl3state.uni3DData.sscroll
+	float		tscroll; // for gl3state.uni3DData.tscroll
+	float		lightScaleForTurb; // for gl3state.uni3DData.lightScaleForTurb
+	float		alpha; // either part of color or for gl3state.uni3DData.alpha
+	byte		color[3]; // for uniCommonData.color; its alpha chan is in .alpha
+	byte		flags;    // gl3drawCmd_Flags
+	byte		styles[MAXLIGHTMAPS]; // indexes into r_newrefdef.lightstyles[]; 255 means "ignore"
+
+	// the following are set in GL3_Add3DdrawCmdToBatch()
+	int			idxBufOffset;
+	int			numElements; // in index buffer
+} gl3drawCmd_t;
+
+// for gl3drawCmd_t::flags
+enum gl3drawCmd_Flags {
+	DCFlag_DisableDepthMask =  1, // glDepthMask() - GL_FALSE if bit is set
+	DCFlag_Blend            =  2, // GL_BLEND (glEnable/glDisable)
+	DCFlag_PolyOffsetFill   =  4, // GL_POLYGON_OFFSET_FILL (glEnable/glDisable) - for gl_zfix
+	DCFlag_UseColor         =  8,
+	DCFlag_UseScroll        = 16,
+	DCFlag_UseLmStyles      = 32,
+	DCFlag_UseLightScaleForTurb = 64,
+	DCFlag_Flare            = 128, // Combine flare effect
+
+	// TODO: DCFlag_SameAsPrevious = 255 for "don't check, just merge into previous command"?
+};
+
+// create an "empty" gl3drawCmd_t with sane defaults
+static inline gl3drawCmd_t
+GL3_CreateDrawCmd(void)
+{
+	gl3drawCmd_t ret = {0};
+	ret.alpha = 1.0f;
+	ret.styles[0] = 255;
+	ret.lmtexnum = -1;
+	ret.shaderIdx = -1;
+	// the other values can remain 0/NULL
+
+	return ret;
+}
+
 extern gl3config_t gl3config;
 extern gl3state_t gl3state;
 
-extern int gl3_framecount; /* used for dlight push checking */
+enum {
+	_gl3_numShaders = 1 + ((offsetof(gl3state_t, siParticle) - offsetof(gl3state_t, si2D)) / sizeof(gl3ShaderInfo_t))
+};
+
+static inline void
+GL3_SetDrawCmdShader(gl3drawCmd_t* drawCmd, const gl3ShaderInfo_t* shader)
+{
+	if (shader == NULL)
+	{
+		drawCmd->shaderIdx = -1;
+		return;
+	}
+	ptrdiff_t offset = shader - &gl3state.si2D;
+	if ( offset >= 0 && offset < _gl3_numShaders)
+	{
+		drawCmd->shaderIdx = offset;
+	}
+	else
+	{
+		assert(0 && "invalid shader!");
+		drawCmd->shaderIdx = -1;
+	}
+}
+
+static inline gl3ShaderInfo_t*
+GL3_GetDrawCmdShader(const gl3drawCmd_t* drawCmd)
+{
+	unsigned shaderIdx = drawCmd->shaderIdx;
+	if (shaderIdx >= _gl3_numShaders) // because it's unsigned this also handles shaderIdx -1
+		return NULL;
+	return &gl3state.si2D + shaderIdx;
+}
 
 extern int c_brush_polys, c_alias_polys;
 
@@ -325,11 +411,9 @@ typedef struct gl3_alias_vtx_s {
 	GLfloat color[4];
 } gl3_alias_vtx_t;
 
-extern model_t *gl3_worldmodel;
+extern model_t *r_worldmodel;
 
 extern float gl3depthmin, gl3depthmax;
-
-extern cplane_t frustum[4];
 
 extern vec3_t gl3_origin;
 
@@ -344,7 +428,7 @@ extern int gl_filter_max;
 static inline void
 GL3_UseProgram(GLuint shaderProgram)
 {
-	if(shaderProgram != gl3state.currentShaderProgram)
+	if (shaderProgram != gl3state.currentShaderProgram)
 	{
 		gl3state.currentShaderProgram = shaderProgram;
 		glUseProgram(shaderProgram);
@@ -354,7 +438,7 @@ GL3_UseProgram(GLuint shaderProgram)
 static inline void
 GL3_BindVAO(GLuint vao)
 {
-	if(vao != gl3state.currentVAO)
+	if (vao != gl3state.currentVAO)
 	{
 		gl3state.currentVAO = vao;
 		glBindVertexArray(vao);
@@ -364,7 +448,7 @@ GL3_BindVAO(GLuint vao)
 static inline void
 GL3_BindVBO(GLuint vbo)
 {
-	if(vbo != gl3state.currentVBO)
+	if (vbo != gl3state.currentVBO)
 	{
 		gl3state.currentVBO = vbo;
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -374,15 +458,18 @@ GL3_BindVBO(GLuint vbo)
 static inline void
 GL3_BindEBO(GLuint ebo)
 {
-	if(ebo != gl3state.currentEBO)
+	if (ebo != gl3state.currentEBO)
 	{
 		gl3state.currentEBO = ebo;
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	}
 }
 
-extern void GL3_BufferAndDraw3D(const mvtx_t* verts, int numVerts, GLenum drawMode);
-extern void GL3_RotateForEntity(entity_t *e);
+extern void GL3_Add3DdrawCmdToBatch(const mvtx_t* verts, int numVerts, GLenum drawMode, gl3drawCmd_t drawCmd);
+extern void GL3_Draw3DBatchesNow(void);
+extern void GL3_SetDrawCmdTransMatrix(gl3drawCmd_t* drawCmd, hmm_mat4 mat);
+extern void GL3_RotateUni3DforEntity(entity_t *e);
+extern void GL3_RotateForEntity(entity_t *e, gl3drawCmd_t* drawCmd);
 extern hmm_mat4 GL3_SetPerspective(GLdouble fovy);
 
 // gl3_sdl.c
@@ -390,7 +477,7 @@ extern int GL3_InitContext(void* win);
 extern void GL3_GetDrawableSize(int* width, int* height);
 extern int GL3_PrepareForWindow(void);
 extern qboolean GL3_IsVsyncActive(void);
-extern void GL3_EndFrame(void);
+extern void GL3_SwapWindow(void);
 extern void GL3_SetVsync(void);
 extern void GL3_ShutdownContext(void);
 extern int GL3_GetSDLVersion(void);
@@ -429,12 +516,15 @@ extern void GL3_Draw_Flash(const float color[4], float x, float y, float w, floa
 extern void GL3_Draw_StretchRaw(int x, int y, int w, int h, int cols, int rows, const byte *data, int bits);
 extern void GL3_Draw_FreeLocal(void);
 
+extern void GL3_DrawCurrent2Dbatch();
+extern void GL3_EndFrame(void);
+
 // gl3_image.c
 
 static inline void
 GL3_SelectTMU(GLenum tmu)
 {
-	if(gl3state.currenttmu != tmu)
+	if (gl3state.currenttmu != tmu)
 	{
 		glActiveTexture(tmu);
 		gl3state.currenttmu = tmu;
@@ -471,7 +561,7 @@ extern void LM_BeginBuildingLightmaps(model_t *m);
 extern void LM_EndBuildingLightmaps(void);
 
 // gl3_warp.c
-extern void GL3_EmitWaterPolys(msurface_t *fa);
+extern void GL3_EmitWaterPolys(msurface_t *fa, gl3drawCmd_t drawCmd);
 
 extern void GL3_SetSky(const char *name, float rotate, int autorotate, const vec3_t axis);
 extern void GL3_DrawSkyBox(void);
@@ -516,11 +606,14 @@ extern cvar_t *gl3_particle_fade_factor;
 extern cvar_t *gl3_particle_square;
 extern cvar_t *gl3_colorlight;
 extern cvar_t *gl_polyblend;
+
+#ifdef YQ2_GL3_GLES
+extern cvar_t *gl_discardfb;
+#endif
+
 extern cvar_t *gl3_debugcontext;
+extern cvar_t *gl3_show_draw_stats;
 
 extern cvar_t *r_bloom;
-
-GLuint GL3_ApplyBloom(GLuint sceneTex, int sceneW, int sceneH);
-void GL3_BloomShutdown(void);
 
 #endif /* SRC_CLIENT_REFRESH_GL3_HEADER_LOCAL_H_ */

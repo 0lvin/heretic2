@@ -37,11 +37,11 @@ static msurface_t *gl3_alpha_surfaces;
 
 gl3lightmapstate_t gl3_lms;
 
-
 extern gl3image_t gl3textures[MAX_TEXTURES];
 extern int numgl3textures;
 
-void GL3_SurfInit(void)
+void
+GL3_SurfInit(void)
 {
 	// init the VAO and VBO for the standard vertexdata: 10 floats and 1 uint
 	// (X, Y, Z), (S, T), (LMS, LMT), (normX, normY, normZ) ; lightFlags - last two groups for lightmap/dynlights
@@ -51,13 +51,6 @@ void GL3_SurfInit(void)
 
 	glGenBuffers(1, &gl3state.vbo3D);
 	GL3_BindVBO(gl3state.vbo3D);
-
-	if (gl3config.useBigVBO)
-	{
-		gl3state.vbo3Dsize = 5*1024*1024; // a 5MB buffer seems to work well?
-		gl3state.vbo3DcurOffset = 0;
-		glBufferData(GL_ARRAY_BUFFER, gl3state.vbo3Dsize, NULL, GL_STREAM_DRAW); // allocate/reserve that data
-	}
 
 	glEnableVertexAttribArray(GL3_ATTRIB_POSITION);
 	qglVertexAttribPointer(GL3_ATTRIB_POSITION, 3, GL_FLOAT, GL_FALSE, sizeof(mvtx_t), 0);
@@ -74,7 +67,7 @@ void GL3_SurfInit(void)
 	glEnableVertexAttribArray(GL3_ATTRIB_LIGHTFLAGS);
 	qglVertexAttribIPointer(GL3_ATTRIB_LIGHTFLAGS, 1, GL_UNSIGNED_INT, sizeof(mvtx_t), offsetof(mvtx_t, lightFlags));
 
-
+	glGenBuffers(1, &gl3state.ebo3D);
 
 	// init VAO and VBO for model vertexdata: 9 floats
 	// (X,Y,Z), (S,T), (R,G,B,A)
@@ -118,6 +111,8 @@ void GL3_SurfInit(void)
 
 void GL3_SurfShutdown(void)
 {
+	glDeleteBuffers(1, &gl3state.ebo3D);
+	gl3state.ebo3D = 0;
 	glDeleteBuffers(1, &gl3state.vbo3D);
 	gl3state.vbo3D = 0;
 	glDeleteVertexArrays(1, &gl3state.vao3D);
@@ -135,7 +130,7 @@ static void
 SetLightFlags(msurface_t *surf)
 {
 	unsigned int lightFlags = 0;
-	if (surf->dlightframe == gl3_framecount)
+	if (surf->dlightframe == r_framecount)
 	{
 		lightFlags = surf->dlightbits;
 	}
@@ -164,18 +159,15 @@ SetAllLightFlags(msurface_t *surf)
 }
 
 static void
-GL3_DrawGLPoly(const msurface_t *fa)
+GL3_DrawGLPoly(const msurface_t *fa, gl3drawCmd_t drawCmd)
 {
 	const mpoly_t *p = fa->polys;
 
-	GL3_BindVAO(gl3state.vao3D);
-	GL3_BindVBO(gl3state.vbo3D);
-
-	GL3_BufferAndDraw3D(p->verts, p->numverts, GL_TRIANGLE_FAN);
+	GL3_Add3DdrawCmdToBatch(p->verts, p->numverts, GL_TRIANGLE_FAN, drawCmd);
 }
 
 static void
-GL3_DrawGLFlowingPoly(const msurface_t *fa)
+GL3_DrawGLFlowingPoly(const msurface_t *fa, gl3drawCmd_t drawCmd)
 {
 	const mpoly_t *p;
 	float sscroll, tscroll;
@@ -184,41 +176,45 @@ GL3_DrawGLFlowingPoly(const msurface_t *fa)
 
 	R_FlowingScroll(&r_newrefdef, fa->texinfo->flags, &sscroll, &tscroll);
 
-	if ((gl3state.uni3DData.sscroll != sscroll) || (gl3state.uni3DData.tscroll != tscroll))
-	{
-		gl3state.uni3DData.sscroll = sscroll;
-		gl3state.uni3DData.tscroll = tscroll;
-		GL3_UpdateUBO3D();
-	}
+	drawCmd.sscroll = sscroll;
+	drawCmd.tscroll = tscroll;
+	drawCmd.flags |= DCFlag_UseScroll;
 
-	GL3_BindVAO(gl3state.vao3D);
-	GL3_BindVBO(gl3state.vbo3D);
-
-	GL3_BufferAndDraw3D(p->verts, p->numverts, GL_TRIANGLE_FAN);
+	GL3_Add3DdrawCmdToBatch(p->verts, p->numverts, GL_TRIANGLE_FAN, drawCmd);
 }
+
+#define LINE_VTX_COUNT (256 * 6)
 
 static void
 DrawTriangleOutlines(void)
 {
+	static mvtx_t vtx[LINE_VTX_COUNT];
 	const msurface_t *surf;
-	size_t i;
+	size_t i, curr_vtx;
 
 	if (!r_showtris->value)
 	{
 		return;
 	}
 
+	GL3_Draw3DBatchesNow();
+
 	glDisable(GL_DEPTH_TEST);
-	GL3_UseProgram(gl3state.si3DcolorOnly.shaderProgram);
+	glUseProgram(gl3state.si3DcolorOnly.shaderProgram);
 
 	gl3state.uniCommonData.color = HMM_Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	GL3_UpdateUBOCommon();
+	GL3_BindVAO(gl3state.vao3D);
+	GL3_BindVBO(gl3state.vbo3D);
 
-	for (i = 0, surf = gl3_worldmodel->surfaces; i < gl3_worldmodel->numsurfaces; i++, surf++)
+	curr_vtx = 0;
+
+	memset(vtx, 0, sizeof(vtx));
+	for (i = 0, surf = r_worldmodel->surfaces; i < r_worldmodel->numsurfaces; i++, surf++)
 	{
 		const mpoly_t *p;
 
-		if (surf->visframe != gl3_framecount)
+		if (surf->visframe != r_framecount)
 		{
 			continue;
 		}
@@ -229,114 +225,75 @@ DrawTriangleOutlines(void)
 
 			for (j = 2; j < p->numverts; j++)
 			{
-				mvtx_t vtx[4];
 				size_t k;
+
+				if (curr_vtx > (LINE_VTX_COUNT - 6))
+				{
+					glBufferData(GL_ARRAY_BUFFER, sizeof(vtx), vtx, GL_STREAM_DRAW);
+					glDrawArrays(GL_LINES, 0, curr_vtx);
+					curr_vtx = 0;
+					memset(vtx, 0, sizeof(vtx));
+				}
 
 				for (k = 0; k < 3; k++)
 				{
-					vtx[0].pos[k] = p->verts[0].pos[k];
-					vtx[1].pos[k] = p->verts[j - 1].pos[k];
-					vtx[2].pos[k] = p->verts[j].pos[k];
-					vtx[3].pos[k] = p->verts[0].pos[k];
+					vtx[curr_vtx + 0].pos[k] = p->verts[0].pos[k];
+					vtx[curr_vtx + 1].pos[k] = p->verts[j - 1].pos[k];
+
+					vtx[curr_vtx + 2].pos[k] = p->verts[j - 1].pos[k];
+					vtx[curr_vtx + 3].pos[k] = p->verts[j].pos[k];
+
+					vtx[curr_vtx + 4].pos[k] = p->verts[j].pos[k];
+					vtx[curr_vtx + 5].pos[k] = p->verts[0].pos[k];
 				}
 
-				// set other fields to 0
-				for (k = 0; k < 4; k++)
-				{
-					vtx[k].texCoord[0] = 0;
-					vtx[k].texCoord[1] = 0;
-					vtx[k].lmTexCoord[0] = 0;
-					vtx[k].lmTexCoord[1] = 0;
-					vtx[k].normal[0] = 0;
-					vtx[k].normal[1] = 0;
-					vtx[k].normal[2] = 0;
-					vtx[k].lightFlags = 0;
-				}
-
-				GL3_BufferAndDraw3D(vtx, 4, GL_LINE_STRIP);
+				curr_vtx += 6;
 			}
 		}
+	}
+
+	if (curr_vtx)
+	{
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vtx), vtx, GL_STREAM_DRAW);
+		glDrawArrays(GL_LINES, 0, curr_vtx);
 	}
 
 	glEnable(GL_DEPTH_TEST);
 }
 
 static void
-UpdateLMscales(const hmm_vec4 lmScales[MAX_LIGHTMAPS_PER_SURFACE], gl3ShaderInfo_t* si)
+RenderBrushPoly(const entity_t *currententity, msurface_t *fa, gl3drawCmd_t drawCmd)
 {
-	int i;
-	qboolean hasChanged = false;
-
-	for (i=0; i<MAX_LIGHTMAPS_PER_SURFACE; ++i)
-	{
-		if (hasChanged)
-		{
-			si->lmScales[i] = lmScales[i];
-		}
-		else if (  si->lmScales[i].R != lmScales[i].R
-		        || si->lmScales[i].G != lmScales[i].G
-		        || si->lmScales[i].B != lmScales[i].B
-		        || si->lmScales[i].A != lmScales[i].A )
-		{
-			si->lmScales[i] = lmScales[i];
-			hasChanged = true;
-		}
-	}
-
-	if (hasChanged)
-	{
-		glUniform4fv(si->uniLmScalesOrTime, MAX_LIGHTMAPS_PER_SURFACE, si->lmScales[0].Elements);
-	}
-}
-
-static void
-RenderBrushPoly(const entity_t *currententity, msurface_t *fa)
-{
-	int map;
 	const gl3image_t *image;
 
 	c_brush_polys++;
 
 	image = R_TextureAnimation(currententity, fa->texinfo);
+	drawCmd.texnum = image->texnum;
 
 	if (fa->flags & SURF_DRAWTURB)
 	{
-		GL3_Bind(image->texnum);
-
-		GL3_EmitWaterPolys(fa);
-
+		GL3_EmitWaterPolys(fa, drawCmd);
 		return;
 	}
-	else
-	{
-		GL3_Bind(image->texnum);
-	}
 
-	hmm_vec4 lmScales[MAX_LIGHTMAPS_PER_SURFACE] = {0};
-	lmScales[0] = HMM_Vec4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	GL3_BindLightmap(fa->lightmaptexturenum);
+	drawCmd.lmtexnum = fa->lightmaptexturenum;
 
 	// Any dynamic lights on this surface?
-	for (map = 0; map < MAX_LIGHTMAPS_PER_SURFACE && fa->styles[map] != 255; map++)
-	{
-		lmScales[map].R = r_newrefdef.lightstyles[fa->styles[map]].rgb[0];
-		lmScales[map].G = r_newrefdef.lightstyles[fa->styles[map]].rgb[1];
-		lmScales[map].B = r_newrefdef.lightstyles[fa->styles[map]].rgb[2];
-		lmScales[map].A = 1.0f;
-	}
+	// TODO: maybe put lightstyles into a uniform (it's just 256 vec4)
+	//       and put fa->styles[] into the 3d draw vertex?
+	memcpy(drawCmd.styles, fa->styles, sizeof(fa->styles));
+	drawCmd.flags |= DCFlag_UseLmStyles;
 
 	if (fa->texinfo->flags & SURF_SCROLL)
 	{
-		GL3_UseProgram(gl3state.si3DlmFlow.shaderProgram);
-		UpdateLMscales(lmScales, &gl3state.si3DlmFlow);
-		GL3_DrawGLFlowingPoly(fa);
+		GL3_SetDrawCmdShader(&drawCmd, &gl3state.si3DlmFlow);
+		GL3_DrawGLFlowingPoly(fa, drawCmd);
 	}
 	else
 	{
-		GL3_UseProgram(gl3state.si3Dlm.shaderProgram);
-		UpdateLMscales(lmScales, &gl3state.si3Dlm);
-		GL3_DrawGLPoly(fa);
+		GL3_SetDrawCmdShader(&drawCmd, &gl3state.si3Dlm);
+		GL3_DrawGLPoly(fa, drawCmd);
 	}
 
 	// Note: lightmap chains are gone, lightmaps are rendered together with normal texture in one pass
@@ -344,7 +301,7 @@ RenderBrushPoly(const entity_t *currententity, msurface_t *fa)
 
 /*
  * Draw water surfaces and windows.
- * The BSP tree is waled front to back, so unwinding the chain
+ * The BSP tree is walked front to back, so unwinding the chain
  * of alpha_surfaces will draw back to front, giving proper ordering.
  */
 void
@@ -353,51 +310,41 @@ GL3_DrawAlphaSurfaces(void)
 	msurface_t *s;
 
 	/* go back to the world matrix */
-	gl3state.uni3DData.transModelMat4 = gl3_identityMat4;
-	GL3_UpdateUBO3D();
-
-	glEnable(GL_BLEND);
+	gl3drawCmd_t drawCmd = GL3_CreateDrawCmd();
+	drawCmd.flags |= DCFlag_Blend;
 
 	for (s = gl3_alpha_surfaces; s != NULL; s = s->texturechain)
 	{
-		GL3_Bind(s->texinfo->image->texnum);
+		drawCmd.texnum = s->texinfo->image->texnum;
 		c_brush_polys++;
-		float alpha = 1.0f;
 		if (s->texinfo->flags & SURF_TRANS33)
 		{
-			alpha = 0.333f;
+			drawCmd.alpha = 0.333f;
 		}
 		else if (s->texinfo->flags & SURF_TRANS66)
 		{
-			alpha = 0.666f;
+			drawCmd.alpha = 0.666f;
 		}
-
-		if (alpha != gl3state.uni3DData.alpha)
+		else
 		{
-			gl3state.uni3DData.alpha = alpha;
-			GL3_UpdateUBO3D();
+			drawCmd.alpha = 1.0f;
 		}
 
 		if (s->flags & SURF_DRAWTURB)
 		{
-			GL3_EmitWaterPolys(s);
+			GL3_EmitWaterPolys(s, drawCmd);
 		}
 		else if (s->texinfo->flags & SURF_SCROLL)
 		{
-			GL3_UseProgram(gl3state.si3DtransFlow.shaderProgram);
-			GL3_DrawGLFlowingPoly(s);
+			GL3_SetDrawCmdShader(&drawCmd, &gl3state.si3DtransFlow);
+			GL3_DrawGLFlowingPoly(s, drawCmd);
 		}
 		else
 		{
-			GL3_UseProgram(gl3state.si3Dtrans.shaderProgram);
-			GL3_DrawGLPoly(s);
+			GL3_SetDrawCmdShader(&drawCmd, &gl3state.si3Dtrans);
+			GL3_DrawGLPoly(s, drawCmd);
 		}
 	}
-
-	gl3state.uni3DData.alpha = 1.0f;
-	GL3_UpdateUBO3D();
-
-	glDisable(GL_BLEND);
 
 	gl3_alpha_surfaces = NULL;
 }
@@ -410,6 +357,8 @@ DrawTextureChains(const entity_t *currententity)
 	gl3image_t *image;
 
 	c_visible_textures = 0;
+
+	gl3drawCmd_t drawCmd = GL3_CreateDrawCmd();
 
 	for (i = 0, image = gl3textures; i < numgl3textures; i++, image++)
 	{
@@ -430,7 +379,7 @@ DrawTextureChains(const entity_t *currententity)
 		for ( ; s; s = s->texturechain)
 		{
 			SetLightFlags(s);
-			RenderBrushPoly(currententity, s);
+			RenderBrushPoly(currententity, s, drawCmd);
 		}
 
 		image->texturechain = NULL;
@@ -440,47 +389,36 @@ DrawTextureChains(const entity_t *currententity)
 }
 
 static void
-RenderLightmappedPoly(const entity_t *currententity, msurface_t *surf)
+RenderLightmappedPoly(const entity_t *currententity, const msurface_t *surf, gl3drawCmd_t drawCmd)
 {
-	int map;
 	const gl3image_t *image = R_TextureAnimation(currententity, surf->texinfo);
-
-	hmm_vec4 lmScales[MAX_LIGHTMAPS_PER_SURFACE] = {0};
-	lmScales[0] = HMM_Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	assert((surf->texinfo->flags & (SURF_SKY | SURF_TRANSPARENT | SURF_WARP)) == 0
 			&& "RenderLightMappedPoly mustn't be called with transparent, sky or warping surfaces!");
 
 	// Any dynamic lights on this surface?
-	for (map = 0; map < MAX_LIGHTMAPS_PER_SURFACE && surf->styles[map] != 255; map++)
-	{
-		lmScales[map].R = r_newrefdef.lightstyles[surf->styles[map]].rgb[0];
-		lmScales[map].G = r_newrefdef.lightstyles[surf->styles[map]].rgb[1];
-		lmScales[map].B = r_newrefdef.lightstyles[surf->styles[map]].rgb[2];
-		lmScales[map].A = 1.0f;
-	}
+	memcpy(drawCmd.styles, surf->styles, sizeof(surf->styles));
+	drawCmd.flags |= DCFlag_UseLmStyles;
 
 	c_brush_polys++;
 
-	GL3_Bind(image->texnum);
-	GL3_BindLightmap(surf->lightmaptexturenum);
+	drawCmd.texnum = image->texnum;
+	drawCmd.lmtexnum = surf->lightmaptexturenum;
 
 	if (surf->texinfo->flags & SURF_SCROLL)
 	{
-		GL3_UseProgram(gl3state.si3DlmFlow.shaderProgram);
-		UpdateLMscales(lmScales, &gl3state.si3DlmFlow);
-		GL3_DrawGLFlowingPoly(surf);
+		GL3_SetDrawCmdShader(&drawCmd, &gl3state.si3DlmFlow);
+		GL3_DrawGLFlowingPoly(surf, drawCmd);
 	}
 	else
 	{
-		GL3_UseProgram(gl3state.si3Dlm.shaderProgram);
-		UpdateLMscales(lmScales, &gl3state.si3Dlm);
-		GL3_DrawGLPoly(surf);
+		GL3_SetDrawCmdShader(&drawCmd, &gl3state.si3Dlm);
+		GL3_DrawGLPoly(surf, drawCmd);
 	}
 }
 
 static void
-DrawInlineBModel(const entity_t *currententity, model_t *currentmodel)
+DrawInlineBModel(const entity_t *currententity, model_t *currentmodel, gl3drawCmd_t drawCmd)
 {
 	msurface_t *psurf;
 	size_t i;
@@ -493,7 +431,7 @@ DrawInlineBModel(const entity_t *currententity, model_t *currentmodel)
 
 	if (currententity->flags & RF_TRANSLUCENT)
 	{
-		glEnable(GL_BLEND);
+		drawCmd.flags |= DCFlag_Blend;
 		/* TODO: should I care about the 0.25 part? we'll just set alpha to 0.33 or 0.66 depending on surface flag..
 		glColor4f(1, 1, 1, 0.25);
 		R_TexEnv(GL_MODULATE);
@@ -524,19 +462,15 @@ DrawInlineBModel(const entity_t *currententity, model_t *currentmodel)
 			else if (!(psurf->flags & SURF_DRAWTURB))
 			{
 				SetAllLightFlags(psurf);
-				RenderLightmappedPoly(currententity, psurf);
+				RenderLightmappedPoly(currententity, psurf, drawCmd);
 			}
 			else
 			{
-				RenderBrushPoly(currententity, psurf);
+				RenderBrushPoly(currententity, psurf, drawCmd);
 			}
 		}
 	}
 
-	if (currententity->flags & RF_TRANSLUCENT)
-	{
-		glDisable(GL_BLEND);
-	}
 }
 
 void
@@ -550,7 +484,9 @@ GL3_DrawBrushModel(entity_t *e, model_t *currentmodel)
 		return;
 	}
 
-	gl3state.currenttexture = -1;
+	gl3drawCmd_t drawCmd = GL3_CreateDrawCmd();
+	if (e->flags & RF_TRANSLUCENT)
+		drawCmd.flags |= DCFlag_DisableDepthMask;
 
 	if (e->angles[0] || e->angles[1] || e->angles[2])
 	{
@@ -571,14 +507,14 @@ GL3_DrawBrushModel(entity_t *e, model_t *currentmodel)
 		VectorAdd(e->origin, currentmodel->maxs, maxs);
 	}
 
-	if (r_cull->value && R_CullBox(mins, maxs, frustum))
+	if (r_cull->value && R_CullBox(mins, maxs))
 	{
 		return;
 	}
 
 	if (r_zfix->value)
 	{
-		glEnable(GL_POLYGON_OFFSET_FILL);
+		drawCmd.flags |= DCFlag_PolyOffsetFill;
 	}
 
 	VectorSubtract(r_newrefdef.vieworg, e->origin, modelorg);
@@ -595,173 +531,55 @@ GL3_DrawBrushModel(entity_t *e, model_t *currentmodel)
 		modelorg[2] = DotProduct(temp, up);
 	}
 
-	//glPushMatrix();
-	hmm_mat4 oldMat = gl3state.uni3DData.transModelMat4;
-
 	e->angles[0] = -e->angles[0];
 	e->angles[2] = -e->angles[2];
-	GL3_RotateForEntity(e);
+	GL3_RotateForEntity(e, &drawCmd);
 	e->angles[0] = -e->angles[0];
 	e->angles[2] = -e->angles[2];
 
-	DrawInlineBModel(e, currentmodel);
-
-	// glPopMatrix();
-	gl3state.uni3DData.transModelMat4 = oldMat;
-	GL3_UpdateUBO3D();
-
-	if (r_zfix->value)
-	{
-		glDisable(GL_POLYGON_OFFSET_FILL);
-	}
+	DrawInlineBModel(e, currentmodel, drawCmd);
 }
 
 static void
-RecursiveWorldNode(entity_t *currententity, mnode_t *node)
+R_RenderFace(entity_t *currententity, msurface_t *surf, int clipflags)
 {
-	int c, side, sidebit;
-	cplane_t *plane;
-	msurface_t *surf, **mark;
-	mleaf_t *pleaf;
-	float dot;
-	gl3image_t *image;
-
-	if (node->contents == CONTENTS_SOLID)
+	if (surf->texinfo->flags & SURF_SKY)
 	{
-		return; /* solid */
+		/* just adds to visible sky bounds */
+		RE_AddSkySurface(surf);
 	}
-
-	if (node->visframe != r_visframecount)
+	else if (surf->texinfo->flags & SURF_TRANSPARENT)
 	{
-		return;
+		/* add to the translucent chain */
+		surf->texturechain = gl3_alpha_surfaces;
+		gl3_alpha_surfaces = surf;
+		gl3_alpha_surfaces->texinfo->image = R_TextureAnimation(currententity, surf->texinfo);
 	}
-
-	if (r_cull->value && R_CullBox(node->minmaxs, node->minmaxs + 3, frustum))
+	else if (surf->texinfo->flags & SURF_NODRAW)
 	{
-		return;
-	}
-
-	/* if a leaf node, draw stuff */
-	if (node->contents != CONTENTS_NODE)
-	{
-		pleaf = (mleaf_t *)node;
-
-		/* check for door connected areas */
-		// check for door connected areas
-		if (!R_AreaVisible(r_newrefdef.areabits, pleaf))
-			return;	// not visible
-
-		mark = pleaf->firstmarksurface;
-		c = pleaf->nummarksurfaces;
-
-		if (c)
-		{
-			do
-			{
-				(*mark)->visframe = gl3_framecount;
-				mark++;
-			}
-			while (--c);
-		}
-
-		return;
-	}
-
-	/* node is just a decision point, so go down the apropriate
-	   sides find which side of the node we are on */
-	plane = node->plane;
-
-	switch (plane->type)
-	{
-		case PLANE_X:
-			dot = modelorg[0] - plane->dist;
-			break;
-		case PLANE_Y:
-			dot = modelorg[1] - plane->dist;
-			break;
-		case PLANE_Z:
-			dot = modelorg[2] - plane->dist;
-			break;
-		default:
-			dot = DotProduct(modelorg, plane->normal) - plane->dist;
-			break;
-	}
-
-	if (dot >= 0)
-	{
-		side = 0;
-		sidebit = 0;
+		/* Surface should be skipped */
 	}
 	else
 	{
-		side = 1;
-		sidebit = SURF_PLANEBACK;
-	}
-
-	/* recurse down the children, front side first */
-	RecursiveWorldNode(currententity, node->children[side]);
-
-	if ((node->numsurfaces + node->firstsurface) > gl3_worldmodel->numsurfaces)
-	{
-		Com_Printf("Broken node firstsurface\n");
-		return;
-	}
-
-	/* draw stuff */
-	for (c = node->numsurfaces,
-		 surf = gl3_worldmodel->surfaces + node->firstsurface;
-		 c; c--, surf++)
-	{
-		if (surf->visframe != gl3_framecount)
+		// calling RenderLightmappedPoly() here probably isn't optimal, rendering everything
+		// through texturechains should be faster, because far less glBindTexture() is needed
+		// (and it might allow batching the drawcalls of surfaces with the same texture)
+#if 0
+		if (!(surf->flags & SURF_DRAWTURB))
 		{
-			continue;
-		}
-
-		if ((surf->flags & SURF_PLANEBACK) != sidebit)
-		{
-			continue; /* wrong side */
-		}
-
-		if (surf->texinfo->flags & SURF_SKY)
-		{
-			/* just adds to visible sky bounds */
-			RE_AddSkySurface(surf);
-		}
-		else if (surf->texinfo->flags & SURF_TRANSPARENT)
-		{
-			/* add to the translucent chain */
-			surf->texturechain = gl3_alpha_surfaces;
-			gl3_alpha_surfaces = surf;
-			gl3_alpha_surfaces->texinfo->image = R_TextureAnimation(currententity, surf->texinfo);
-		}
-		else if (surf->texinfo->flags & SURF_NODRAW)
-		{
-			/* Surface should be skipped */
-			continue;
+			RenderLightmappedPoly(surf);
 		}
 		else
-		{
-			// calling RenderLightmappedPoly() here probably isn't optimal, rendering everything
-			// through texturechains should be faster, because far less glBindTexture() is needed
-			// (and it might allow batching the drawcalls of surfaces with the same texture)
-#if 0
-			if (!(surf->flags & SURF_DRAWTURB))
-			{
-				RenderLightmappedPoly(surf);
-			}
-			else
 #endif // 0
-			{
-				/* the polygon is visible, so add it to the texture sorted chain */
-				image = R_TextureAnimation(currententity, surf->texinfo);
-				surf->texturechain = image->texturechain;
-				image->texturechain = surf;
-			}
+		{
+			gl3image_t *image;
+
+			/* the polygon is visible, so add it to the texture sorted chain */
+			image = R_TextureAnimation(currententity, surf->texinfo);
+			surf->texturechain = image->texturechain;
+			image->texturechain = surf;
 		}
 	}
-
-	/* recurse down the back side */
-	RecursiveWorldNode(currententity, node->children[!side]);
 }
 
 void
@@ -769,12 +587,7 @@ GL3_DrawWorld(void)
 {
 	entity_t ent;
 
-	if (!r_drawworld->value)
-	{
-		return;
-	}
-
-	if (r_newrefdef.rdflags & RDF_NOWORLDMODEL)
+	if ((!r_drawworld->value) || (r_newrefdef.rdflags & RDF_NOWORLDMODEL))
 	{
 		return;
 	}
@@ -784,12 +597,18 @@ GL3_DrawWorld(void)
 	/* auto cycle the world frame for texture animation */
 	memset(&ent, 0, sizeof(ent));
 	ent.frame = (int)(r_newrefdef.time * 2);
+	ent.model = r_worldmodel;
+	VectorCopy(r_newrefdef.vieworg, ent.origin);
 
 	gl3state.currenttexture = -1;
 
 	RE_ClearSkyBox();
-	RecursiveWorldNode(&ent, gl3_worldmodel->nodes);
+	R_RecursiveWorldNode(&ent, r_worldmodel->nodes, ALIAS_XY_CLIP_MASK,
+		R_RenderFace);
 	DrawTextureChains(&ent);
 	GL3_DrawSkyBox();
 	DrawTriangleOutlines();
+
+	// make sure all this is drawed
+	GL3_Draw3DBatchesNow();
 }

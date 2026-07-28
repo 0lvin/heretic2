@@ -219,7 +219,7 @@ All models support only single texture for all meshes and frames limit based on 
 | ------ | ---------------------------------- |
 | dat    | Anachronox                         |
 | pak    | Quake, Quake 2, Daikatana, Kingpin |
-| sin    | SiN                                |
+| sin    | SiN, SiN Reloaded Demo             |
 | wad    | Doom, Doom 2                       |
 | pk2    | Quake 2 Mods                       |
 | pk3    | Quake 2 Mods, Quake 3              |
@@ -441,33 +441,6 @@ Checked with:
 * [ ] Support obj waveform model format for debug other formats.
 
 ### Fixed:
-
-* [x] ReRelease: mguhub map has sometimes broken logic for surface fall in next maps,
-* [x] game: cleanup function declarations in game save code,
-* [x] Jabot: fix crash in SZ_GetSpace,
-* [x] vulkan: implement color multiplication and alpha combine or make black
-      parts transparent for `misc_flare`,
-* [x] ReRelease: fix vulkan render on open door in mguhub,
-* [x] gl1: reuse R_MakeSkyVec,
-* [x] Anachronox: rowdys save entity disappear in a8080c05,
-* [x] gl4: add fog distance effect,
-* [x] gl3: add fog distance effect,
-* [x] client: share r_farsee,
-* [x] Infinity: implement `misc_hologram`,
-* [x] Infinity: implement `misc_lightning`,
-* [x] Infinity: implement `misc_text_caption`,
-* [x] Infinity: implement `misc_rain`,
-* [x] Infinity: implement `misc_drip`,
-* [x] Infinity: implement `misc_desk`,
-* [x] Infinity: implement `misc_chair`,
-* [x] Infinity: implement `misc_crate`,
-* [x] ReRelease: implement `misc_lavaball`,
-* [x] ReRelease: implement `target_story`,
-* [x] ReRelease: implement `target_crossunit_target`,
-* [x] ReRelease: implement `target_crossunit_trigger`,
-* [x] CppCheck: fix const warnings and scope,
-* [x] renders: share model_t type.
-* [x] ReRelease: Fix jerky rotation animation for func_rotating entities in Call of the Machine
 
 ### Not a goal:
 
@@ -697,7 +670,7 @@ We are always open to code contributions, no matter if they are small
 bugfixes or bigger features. However, Yamagi Quake II is a conservative
 project with big focus on stability and backward compatibility. We don't
 accept breaking changes. When in doubt please open an issue and ask if a
-contribution in welcome before putting too much work into it. Open a
+contribution is welcome before putting too much work into it. Open a
 pull request to submit code:
 
 * [Pull Requests](https://github.com/yquake2/yquake2/pulls)

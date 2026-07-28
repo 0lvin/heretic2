@@ -29,6 +29,13 @@
 int r_viewcluster, r_oldviewcluster;
 static int r_viewcluster2, r_oldviewcluster2;
 int r_visframecount; /* bumped when going to a new PVS */
+int r_currentkey;
+static cplane_t frustum[4];
+clipplane_t view_clipplanes[4];
+int *pfrustum_indexes[4];
+/* screen edges and transformed clip planes (used for software-style clip testing) */
+static int r_frustum_indexes[4 * 6];
+static cplane_t screenedge[4];
 
 #define SUBDIVIDE_SIZE 64.0f
 #define MAX_SUBDIVIDE_VERTS 60
@@ -90,7 +97,7 @@ R_AreaVisible(const byte *areabits, const mleaf_t *pleaf)
  * Returns true if the box is completely outside the frustom
  */
 qboolean
-R_CullBox(vec3_t mins, vec3_t maxs, const cplane_t *frustum)
+R_CullBox(vec3_t mins, vec3_t maxs)
 {
 	int i;
 
@@ -126,7 +133,7 @@ R_SignbitsForPlane(const cplane_t *out)
 
 void
 R_SetFrustum(vec3_t vup, vec3_t vpn, vec3_t vright, vec3_t r_origin,
-	float fov_x, float fov_y, cplane_t *frustum)
+	float fov_x, float fov_y)
 {
 	int i;
 
@@ -510,4 +517,447 @@ R_SetClusters(const model_t *r_worldmodel, const vec3_t r_origin)
 			}
 		}
 	}
+}
+
+static qboolean
+R_CullAliasMeshModel(dmdx_t *paliashdr, int frame, int oldframe, vec3_t e_angles,
+	vec3_t e_origin, vec3_t bbox[8])
+{
+	int i;
+	vec3_t mins, maxs;
+	vec3_t vectors[3];
+	vec3_t thismins, oldmins, thismaxs, oldmaxs;
+	daliasxframe_t *pframe, *poldframe;
+	vec3_t angles;
+
+	pframe = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames +
+			frame * paliashdr->framesize);
+
+	poldframe = (daliasxframe_t *)((byte *)paliashdr + paliashdr->ofs_frames +
+			oldframe * paliashdr->framesize);
+
+	/* compute axially aligned mins and maxs */
+	if (pframe == poldframe)
+	{
+		for (i = 0; i < 3; i++)
+		{
+			mins[i] = pframe->translate[i];
+			maxs[i] = mins[i] + pframe->scale[i] * 0xFFFF;
+		}
+	}
+	else
+	{
+		for (i = 0; i < 3; i++)
+		{
+			thismins[i] = pframe->translate[i];
+			thismaxs[i] = thismins[i] + pframe->scale[i] * 0xFFFF;
+
+			oldmins[i] = poldframe->translate[i];
+			oldmaxs[i] = oldmins[i] + poldframe->scale[i] * 0xFFFF;
+
+			if (thismins[i] < oldmins[i])
+			{
+				mins[i] = thismins[i];
+			}
+			else
+			{
+				mins[i] = oldmins[i];
+			}
+
+			if (thismaxs[i] > oldmaxs[i])
+			{
+				maxs[i] = thismaxs[i];
+			}
+			else
+			{
+				maxs[i] = oldmaxs[i];
+			}
+		}
+	}
+
+	/* compute a full bounding box */
+	for (i = 0; i < 8; i++)
+	{
+		vec3_t tmp;
+
+		if (i & 1)
+		{
+			tmp[0] = mins[0];
+		}
+		else
+		{
+			tmp[0] = maxs[0];
+		}
+
+		if (i & 2)
+		{
+			tmp[1] = mins[1];
+		}
+		else
+		{
+			tmp[1] = maxs[1];
+		}
+
+		if (i & 4)
+		{
+			tmp[2] = mins[2];
+		}
+		else
+		{
+			tmp[2] = maxs[2];
+		}
+
+		VectorCopy(tmp, bbox[i]);
+	}
+
+	/* rotate the bounding box */
+	VectorCopy(e_angles, angles);
+	angles[YAW] = -angles[YAW];
+	AngleVectors(angles, vectors[0], vectors[1], vectors[2]);
+
+	for (i = 0; i < 8; i++)
+	{
+		vec3_t tmp;
+
+		VectorCopy(bbox[i], tmp);
+
+		bbox[i][0] = DotProduct(vectors[0], tmp);
+		bbox[i][1] = -DotProduct(vectors[1], tmp);
+		bbox[i][2] = DotProduct(vectors[2], tmp);
+
+		VectorAdd(e_origin, bbox[i], bbox[i]);
+	}
+
+	int p, f, aggregatemask = ~0;
+
+	for (p = 0; p < 8; p++)
+	{
+		int mask = 0;
+
+		for (f = 0; f < 4; f++)
+		{
+			float dp = DotProduct(frustum[f].normal, bbox[p]);
+
+			if ((dp - frustum[f].dist) < 0)
+			{
+				mask |= (1 << f);
+			}
+		}
+
+		aggregatemask &= mask;
+	}
+
+	if (aggregatemask)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+qboolean
+R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e)
+{
+	dmdx_t *paliashdr;
+
+	paliashdr = (dmdx_t *)currentmodel->extradata;
+	if (!paliashdr)
+	{
+		Com_Printf("%s %s: Model is not fully loaded\n",
+				__func__, currentmodel->name);
+		return true;
+	}
+
+	if ((e->frame >= paliashdr->num_frames) || (e->frame < 0))
+	{
+		Com_DPrintf("%s %s: no such frame %d\n",
+				__func__, currentmodel->name, e->frame);
+		e->frame = 0;
+	}
+
+	if ((e->oldframe >= paliashdr->num_frames) || (e->oldframe < 0))
+	{
+		Com_DPrintf("%s %s: no such oldframe %d\n",
+				__func__, currentmodel->name, e->oldframe);
+		e->oldframe = 0;
+	}
+
+	return R_CullAliasMeshModel(paliashdr, e->frame, e->oldframe,
+		e->angles, e->origin, bbox);
+}
+
+static void
+SetupScreenEdge(void)
+{
+	/*
+	 * at Z = 1.0, this many X is visible
+	 * 2.0 = 90 degrees
+	 */
+	float verticalFieldOfView, horizontalFieldOfView;
+	int i;
+
+	horizontalFieldOfView = 2 * tan((float)r_newrefdef.fov_x / 360 * M_PI);
+	verticalFieldOfView = 2 * tan((float)r_newrefdef.fov_y / 360 * M_PI);
+
+	/* left side clip */
+	screenedge[0].normal[0] = -1.0 / (XCENTERING * horizontalFieldOfView);
+	screenedge[0].normal[1] = 0;
+	screenedge[0].normal[2] = 1;
+	screenedge[0].type = PLANE_ANYZ;
+
+	/* right side clip */
+	screenedge[1].normal[0] = 1.0 / ((1.0 - XCENTERING) * horizontalFieldOfView);
+	screenedge[1].normal[1] = 0;
+	screenedge[1].normal[2] = 1;
+	screenedge[1].type = PLANE_ANYZ;
+
+	/* top side clip */
+	screenedge[2].normal[0] = 0;
+	screenedge[2].normal[1] = -1.0 / (YCENTERING * verticalFieldOfView);
+	screenedge[2].normal[2] = 1;
+	screenedge[2].type = PLANE_ANYZ;
+
+	/* bottom side clip */
+	screenedge[3].normal[0] = 0;
+	screenedge[3].normal[1] = 1.0 / ((1.0 - YCENTERING) * verticalFieldOfView);
+	screenedge[3].normal[2] = 1;
+	screenedge[3].type = PLANE_ANYZ;
+
+	for (i = 0; i < 4; i++)
+	{
+		VectorNormalize(screenedge[i].normal);
+	}
+}
+
+static void
+R_SetUpFrustumIndexes(void)
+{
+	int i, *pindex;
+
+	pindex = r_frustum_indexes;
+
+	for (i = 0; i < 4; i++)
+	{
+		int j;
+
+		for (j = 0; j < 3; j++)
+		{
+			if (view_clipplanes[i].normal[j] < 0)
+			{
+				pindex[j] = j;
+				pindex[j + 3] = j + 3;
+			}
+			else
+			{
+				pindex[j] = j + 3;
+				pindex[j + 3] = j;
+			}
+		}
+
+		/* FIXME: do just once at start */
+		pfrustum_indexes[i] = pindex;
+		pindex += 6;
+	}
+}
+
+/*
+ * Transform screen-edge clip planes into view-space clip planes and
+ * build index tables for fast box tests (ported from the software refresher).
+ */
+void
+R_TransformFrustum(vec3_t modelorg, vec3_t vright, vec3_t vup, vec3_t vpn)
+{
+	vec3_t v, v2;
+	size_t i;
+
+	SetupScreenEdge();
+
+	for (i = 0; i < 4; i++)
+	{
+		v[0] = screenedge[i].normal[2];
+		v[1] = -screenedge[i].normal[0];
+		v[2] = screenedge[i].normal[1];
+
+		v2[0] = v[1] * vright[0] + v[2] * vup[0] + v[0] * vpn[0];
+		v2[1] = v[1] * vright[1] + v[2] * vup[1] + v[0] * vpn[1];
+		v2[2] = v[1] * vright[2] + v[2] * vup[2] + v[0] * vpn[2];
+
+		VectorCopy(v2, view_clipplanes[i].normal);
+
+		view_clipplanes[i].dist = DotProduct(modelorg, v2);
+	}
+
+	R_SetUpFrustumIndexes();
+}
+
+void
+R_RecursiveWorldNode(entity_t *currententity, mnode_t *node, int clipflags,
+	facerender_t facerender)
+{
+	vec3_t acceptpt, rejectpt;
+	int c, side, sidebit;
+	msurface_t *surf;
+	cplane_t *plane;
+	mleaf_t *pleaf;
+	model_t *model;
+	float dot;
+
+	if (node->contents == CONTENTS_SOLID)
+	{
+		return; /* solid */
+	}
+
+	if (node->visframe != r_visframecount)
+	{
+		return;
+	}
+
+	if (r_cull->value && R_CullBox(node->minmaxs, node->minmaxs + 3))
+	{
+		return;
+	}
+
+	/* cull the clipping planes if not trivial accept */
+	if (clipflags)
+	{
+		int i;
+
+		for (i = 0; i < 4 ; i++)
+		{
+			const int *pindex;
+			float d;
+
+			if (!(clipflags & (1<<i)))
+			{
+				continue;	/* don't need to clip against it */
+			}
+
+			// generate accept and reject points
+			// FIXME: do with fast look-ups or integer tests based on the sign bit
+			// of the floating point values
+			pindex = pfrustum_indexes[i];
+
+			rejectpt[0] = node->minmaxs[pindex[0]];
+			rejectpt[1] = node->minmaxs[pindex[1]];
+			rejectpt[2] = node->minmaxs[pindex[2]];
+
+			d = DotProduct(rejectpt, view_clipplanes[i].normal);
+			d -= view_clipplanes[i].dist;
+			if (d <= 0)
+			{
+				return;
+			}
+
+			acceptpt[0] = node->minmaxs[pindex[3+0]];
+			acceptpt[1] = node->minmaxs[pindex[3+1]];
+			acceptpt[2] = node->minmaxs[pindex[3+2]];
+
+			d = DotProduct(acceptpt, view_clipplanes[i].normal);
+			d -= view_clipplanes[i].dist;
+
+			if (d >= 0)
+			{
+				clipflags &= ~(1<<i);	/* node is entirely on screen */
+			}
+		}
+	}
+
+	/* if a leaf node, draw stuff */
+	if (node->contents != CONTENTS_NODE)
+	{
+		msurface_t **mark;
+
+		pleaf = (mleaf_t *)node;
+
+		/* check for door connected areas */
+		if (!R_AreaVisible(r_newrefdef.areabits, pleaf))
+		{
+			return;	/* not visible */
+		}
+
+		mark = pleaf->firstmarksurface;
+		c = pleaf->nummarksurfaces;
+
+		if (c)
+		{
+			do
+			{
+				(*mark)->visframe = r_framecount;
+				mark++;
+			}
+			while (--c);
+		}
+
+		pleaf->key = r_currentkey;
+		r_currentkey++;	/* all bmodels in a leaf share the same key */
+		return;
+	}
+
+	/* node is just a decision point, so go down the apropriate
+	   sides find which side of the node we are on */
+	plane = node->plane;
+
+	switch (plane->type)
+	{
+		case PLANE_X:
+			dot = currententity->origin[0] - plane->dist;
+			break;
+		case PLANE_Y:
+			dot = currententity->origin[1] - plane->dist;
+			break;
+		case PLANE_Z:
+			dot = currententity->origin[2] - plane->dist;
+			break;
+		default:
+			dot = DotProduct(currententity->origin, plane->normal) - plane->dist;
+			break;
+	}
+
+	if (dot >= 0)
+	{
+		side = 0;
+		sidebit = 0;
+	}
+	else
+	{
+		side = 1;
+		sidebit = SURF_PLANEBACK;
+	}
+
+	/* recurse down the children, front side first */
+	R_RecursiveWorldNode(currententity, node->children[side], clipflags, facerender);
+
+	model = currententity->model;
+	if ((node->numsurfaces + node->firstsurface) > currententity->model->numsurfaces)
+	{
+		Com_Printf("%s: Broken node firstsurface\n", __func__);
+		return;
+	}
+
+	/* draw stuff */
+	for (c = node->numsurfaces,
+		 surf = model->surfaces + node->firstsurface;
+		 c; c--, surf++)
+	{
+		if (surf->visframe != r_framecount)
+		{
+			continue;
+		}
+
+		if ((surf->flags & SURF_PLANEBACK) != sidebit)
+		{
+			continue; /* wrong side */
+		}
+
+		facerender(currententity, surf, clipflags);
+	}
+
+	if (node->numsurfaces)
+	{
+		/* all surfaces on the same node share the same sequence number */
+		r_currentkey++;
+	}
+
+	/* recurse down the back side */
+	R_RecursiveWorldNode(currententity, node->children[!side], clipflags, facerender);
 }
