@@ -362,7 +362,10 @@ GL3_GetDrawCmdShader(const gl3drawCmd_t* drawCmd)
 {
 	unsigned shaderIdx = drawCmd->shaderIdx;
 	if (shaderIdx >= _gl3_numShaders) // because it's unsigned this also handles shaderIdx -1
+	{
 		return NULL;
+	}
+
 	return &gl3state.si2D + shaderIdx;
 }
 

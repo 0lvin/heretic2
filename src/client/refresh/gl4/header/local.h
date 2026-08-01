@@ -348,7 +348,10 @@ GL4_GetDrawCmdShader(const gl4drawCmd_t* drawCmd)
 {
 	unsigned shaderIdx = drawCmd->shaderIdx;
 	if (shaderIdx >= _gl4_numShaders) // because it's unsigned this also handles shaderIdx -1
+	{
 		return NULL;
+	}
+
 	return &gl4state.si2D + shaderIdx;
 }
 
