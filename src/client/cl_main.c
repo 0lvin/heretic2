@@ -1092,5 +1092,5 @@ CL_Shutdown(void)
 	VID_Shutdown();
 
 	CL_ClearEntities();
-	Mods_NamesFinish();
+	M_Free();
 }

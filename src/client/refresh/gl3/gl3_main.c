@@ -95,10 +95,6 @@ cvar_t *gl_finish;
 cvar_t *gl3_debugcontext;
 cvar_t *gl3_usefbo;
 
-#ifdef YQ2_GL3_GLES
-cvar_t *gl_discardfb;
-#endif
-
 cvar_t *gl3_show_draw_stats;
 
 DA_TYPEDEF(mvtx_t, Vtx3DArray_t);
@@ -218,10 +214,6 @@ GL3_Register(void)
 	gl_finish = ri.Cvar_Get("gl_finish", "0", CVAR_ARCHIVE);
 	gl3_overbrightbits = ri.Cvar_Get("gl3_overbrightbits", "1.3", CVAR_ARCHIVE);
 
-#ifdef YQ2_GL3_GLES
-	gl_discardfb = ri.Cvar_Get("gl_discardfb", "1", CVAR_ARCHIVE);
-#endif
-
 	gl3_usefbo = ri.Cvar_Get("gl3_usefbo", "1", CVAR_ARCHIVE); // use framebuffer object for postprocess effects (water)
 
 	gl3_show_draw_stats = ri.Cvar_Get("gl3_show_draw_stats", "0", CVAR_ARCHIVE);
@@ -300,8 +292,8 @@ SetMode_impl(int *pwidth, int *pheight, int mode, int fullscreen)
 		GL3_BindVBO(0);
 	}
 
-	/* This is totaly obscure: For some strange reasons the renderer
-	   maintains two(!) repesentations of the resolution. One comes
+	/* This is totally obscure: For some strange reasons the renderer
+	   maintains two(!) representations of the resolution. One comes
 	   from the client and is saved in r_newrefdef. The other one
 	   is determined here and saved in vid. Several calculations take
 	   both representations into account.
@@ -409,8 +401,16 @@ GL3_SetMode(void)
 	return true;
 }
 
-// only needed (and allowed!) if using OpenGL compatibility profile, it's not in 3.2 core
-enum { QGL_POINT_SPRITE = 0x8861 };
+static void
+GL3_ResetClearColor(void)
+{
+#ifdef YQ2_GL3_GLES
+	if (!r_clear->value)
+		glClearColor(0, 0, 0, 0.5);
+	else
+#endif
+		glClearColor(1, 0, 0.5, 0.5);
+}
 
 static qboolean
 GL3_Init(void)
@@ -495,24 +495,10 @@ GL3_Init(void)
 		Com_Printf(" - OpenGL Debug Output: Not Supported\n");
 	}
 
-#ifdef YQ2_GL3_GLES
-	if(gl3config.discardfb)
-	{
-		Com_Printf(" - OpenGL ES EXT_discard_framebuffer: Supported ");
-		if(gl_discardfb->value == 0.0f)
-			Com_Printf("but disabled with gl_discardfb = 0\n");
-		else
-			Com_Printf("and enabled with gl_discardfb = %d\n", (int)gl_discardfb->value);
-	}
-	else
-	{
-		Com_Printf(" - OpenGL ES EXT_discard_framebuffer: Not Supported\n");
-	}
-#endif
-
 	// generate texture handles for all possible lightmaps
 	glGenTextures(MAX_LIGHTMAPS*MAX_LIGHTMAPS_PER_SURFACE, gl3state.lightmap_textureIDs[0]);
 
+	GL3_ResetClearColor();
 	GL3_SetDefaultState();
 
 	if (GL3_InitShaders())
@@ -1374,7 +1360,7 @@ SetupFrame(void)
 				vid.height - r_newrefdef.height - r_newrefdef.y,
 				r_newrefdef.width, r_newrefdef.height);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(1, 0, 0.5, 0.5);
+		GL3_ResetClearColor();
 		glDisable(GL_SCISSOR_TEST);
 	}
 }
@@ -1953,29 +1939,37 @@ GL3_RenderFrame(const refdef_t *fd)
 static void
 GL3_Clear(void)
 {
-	// Check whether the stencil buffer needs clearing, and do so if need be.
-	GLbitfield stencilFlags = 0;
-#if 0 // TODO: stereo stuff
-	if (gl3state.stereo_mode >= STEREO_MODE_ROW_INTERLEAVED && gl_state.stereo_mode <= STEREO_MODE_PIXEL_INTERLEAVED) {
-		glClearStencil(GL_FALSE);
-		stencilFlags |= GL_STENCIL_BUFFER_BIT;
-	}
-#endif // 0
-
+	// Define which buffers need clearing
+	GLbitfield clearFlags = GL_DEPTH_BUFFER_BIT;
 
 	if (r_clear->value)
 	{
-		glClear(GL_COLOR_BUFFER_BIT | stencilFlags | GL_DEPTH_BUFFER_BIT);
+		clearFlags |= GL_COLOR_BUFFER_BIT;
 	}
-	else
+
+	// Stencilbuffer shadows
+	if (r_shadows->value && gl3config.stencil)
 	{
-		glClear(GL_DEPTH_BUFFER_BIT | stencilFlags);
+		glClearStencil(1);
+		clearFlags |= GL_STENCIL_BUFFER_BIT;
 	}
+
+#if 0 // TODO: stereo stuff
+	if (gl3state.stereo_mode >= STEREO_MODE_ROW_INTERLEAVED && gl_state.stereo_mode <= STEREO_MODE_PIXEL_INTERLEAVED) {
+		glClearStencil(0);
+		clearFlags |= GL_STENCIL_BUFFER_BIT;
+	}
+#endif // 0
+
+#ifdef YQ2_GL3_GLES
+	clearFlags |= GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
+#endif
+
+	glClear(clearFlags);
 
 	gl3depthmin = 0;
 	gl3depthmax = 1;
 	glDepthFunc(GL_LEQUAL);
-
 	glDepthRange(gl3depthmin, gl3depthmax);
 
 	if (r_zfix->value)
@@ -1988,13 +1982,6 @@ GL3_Clear(void)
 		{
 			glPolygonOffset(-0.05, -1);
 		}
-	}
-
-	/* stencilbuffer shadows */
-	if (r_shadows->value && gl3config.stencil)
-	{
-		glClearStencil(GL_TRUE);
-		glClear(GL_STENCIL_BUFFER_BIT);
 	}
 }
 
@@ -2071,7 +2058,7 @@ GL3_BeginFrame(float camera_separation)
 #ifdef YQ2_GL3_GLES
 		// OpenGL ES3 only supports GL_NONE, GL_BACK and GL_COLOR_ATTACHMENT*
 		// so this doesn't make sense here, see https://docs.gl/es3/glDrawBuffers
-		Com_Printf("NOTE: gl_drawbuffer not supported by OpenGL ES!\n");
+		Com_Printf("NOTE: gl_drawbuffer not supported by OpenGL ES.\n");
 #else // Desktop GL
 		// TODO: stereo stuff
 		//if ((gl3state.camera_separation == 0) || gl3state.stereo_mode != STEREO_MODE_OPENGL)
@@ -2139,7 +2126,7 @@ GL3_SetPalette(const byte *palette)
 
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(1, 0, 0.5, 0.5);
+	GL3_ResetClearColor();
 }
 
 /*

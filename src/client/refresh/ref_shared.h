@@ -500,12 +500,11 @@ extern void R_BuildLMPolygonFromSurface(model_t *currentmodel, msurface_t *fa,
 
 /* Mesh logic */
 extern qboolean R_CullAliasModel(const model_t *currentmodel, vec3_t bbox[8], entity_t *e);
-extern void R_LerpVerts(qboolean powerUpEffect, int nverts,
-		const dxtrivertx_t *v, const dxtrivertx_t *ov,
-		float *lerp, const float move[3],
-		const float frontv[3], const float backv[3], const float *scale);
+extern void R_LerpVerts(const dmdx_t *pheader, int frame, int oldframe, float frontlerp,
+	float backlerp, float *lerp, const float move[3], const float *scale,
+	qboolean colorOnly);
 extern void R_ConvertNormalMDL(byte in_normal, signed char *normal);
-extern vec4_t *R_VertBufferRealloc(int num);
+extern vec4_t *R_VertBufferRealloc(size_t num);
 extern float r_byteNormalScale[256];
 extern void R_VertBufferInit(void);
 extern void R_VertBufferFree(void);
@@ -573,6 +572,8 @@ extern cvar_t *r_palettedtextures;
 extern cvar_t *r_polyblend;
 extern cvar_t *r_retexturing;
 extern cvar_t *r_scale8bittextures;
+extern cvar_t *r_scale32bittextures;
+extern cvar_t *r_skeletalanimation;
 extern cvar_t *r_shadows;
 extern cvar_t *r_showtris;
 extern cvar_t *r_speeds;

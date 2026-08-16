@@ -109,6 +109,8 @@ typedef struct
 
 	struct model_s	*model;
 
+	vec3_t mins, maxs;
+
 	struct model_s	*weaponmodel[MAX_CLIENTWEAPONMODELS];
 } clientinfo_t;
 
@@ -585,6 +587,7 @@ void CL_EntityEvent(entity_xstate_t *ent);
 void CL_TrapParticles(entity_t *ent);
 
 void M_Init(void);
+void M_Free(void);
 void M_Keydown(int key);
 void M_Draw(void);
 void M_Menu_Main_f(void);

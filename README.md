@@ -147,23 +147,23 @@ not include submodules in these archives. To build the project successfully, you
 
 ### Models support:
 
-| Format | Original Game   | Frame vertex | Meshes   | Comments                                    |
-| ------ | --------------- | ------------ | -------- | ------------------------------------------- |
-| mdl    | Quake / Hexen 2 | 8 bit        | Single   | Unsupported grouped textures                |
-| mdl    | Half-Life       | float        | Multiple | Unsupported skeletal / multi file animation |
-| md2    | Quake 2         | 8 bit        | Single   |                                             |
-| mda    | Anachronox      | Part of md2  | Single   | Unsupported skin pass combine               |
-| md2    | Anachronox      | 8/10/16 bit  | Single   | Unchecked with game                         |
-| mdx    | Kingpin         | 8 bit        | Multiple | No sfx support, unchecked with game         |
-| fm     | Heretic 2       | 8 bit        | Multiple | Without skeletal animation                  |
-| def    | SiN             | Part of sam  | Multiple | Unchecked with game                         |
-| dkm    | Daikatana DKM1  | 8 bit        | Multiple | Unchecked with game                         |
-| dkm    | Daikatana DKM2  | 10 bit       | Multiple | Unchecked with game                         |
-| md3    | Quake 3         | 16 bit       | Multiple | No tags support                             |
-| mdr    | EliteForce      | float        | Multiple | No tags/skeletal support. First LOD only    |
-| md5    | Doom 3/Quake 4  | float        | Multiple | Requires md2 for skins, no skeletal         |
-| sbm    | SiN             | Part of sam  | Multiple | Unchecked with game                         |
-| sam    | SiN             | 8 bit        | Multiple | Unchecked with game                         |
+| Format | Original Game   | Frame vertex | Meshes   | Comments                            |
+| ------ | --------------- | ------------ | -------- | ----------------------------------- |
+| mdl    | Quake / Hexen 2 | 8 bit        | Single   | Unsupported grouped textures        |
+| mdl    | Half-Life       | float        | Multiple | Unsupported multi file animation    |
+| md2    | Quake 2         | 8 bit        | Single   |                                     |
+| mda    | Anachronox      | Part of md2  | Single   | Unsupported skin pass combine       |
+| md2    | Anachronox      | 8/10/16 bit  | Single   | Unchecked with game                 |
+| mdx    | Kingpin         | 8 bit        | Multiple | No sfx support, unchecked with game |
+| fm     | Heretic 2       | 8 bit        | Multiple | Without skeletal animation          |
+| def    | SiN             | Part of sam  | Multiple | Unchecked with game                 |
+| dkm    | Daikatana DKM1  | 8 bit        | Multiple | Unchecked with game                 |
+| dkm    | Daikatana DKM2  | 10 bit       | Multiple | Unchecked with game                 |
+| md3    | Quake 3         | 16 bit       | Multiple | No tags support                     |
+| mdr    | EliteForce      | float        | Multiple | No tags support. First LOD only     |
+| md5    | Doom 3/Quake 4  | float        | Multiple | Requires md2 for skins.             |
+| sbm    | SiN             | Part of sam  | Multiple | Unchecked with game                 |
+| sam    | SiN             | 8 bit        | Multiple | Unchecked with game                 |
 
 All models support only single texture for all meshes and frames limit based on game protocol.
 
@@ -409,6 +409,7 @@ Checked with:
 * [ ] game: code has not reset ctf flag on load saves,
 * [ ] game: code has reset thirdperson flag on load new level,
 * [ ] game: check RealBoundingBox with frame box,
+* [ ] game/client: update bound box based on frame number,
 * [ ] ReRelease: incorrect dead animation for Arachnid,
 * [ ] ReRelease: broken fire effect for Guardian.
 * [ ] ReRelease: water in basicsjam1_ziutek,
@@ -421,8 +422,17 @@ Checked with:
 * [ ] gl1, gl3, gl4, vk, soft: implement direction of `CS_SHADOWLIGHTS`,
 * [ ] gl3, gl4: implement color multiplication and alpha gradient for `misc_flare`,
 * [ ] gl3, gl4, vk: fix and port `r_bloom`,
+* [ ] gl1, gl3, gl4, vk: apply improvements from gl3 to other renders,
 * [ ] soft: implement color multiplication and alpha combine or make black
       parts transparent for `misc_flare`,
+* [ ] ReRelease: Add support of `func_eye`,
+* [ ] ReRelease: Add support of `info_landmark`,
+* [ ] ReRelease: Add support of `info_nav_lock`,
+* [ ] ReRelease: Add support of `info_world_text`,
+* [ ] ReRelease: Add support of `target_healthbar`,
+* [ ] ReRelease: Add support of `target_poi`,
+* [ ] ReRelease: Add support of `trigger_coop_relay`,
+* [ ] ReRelease: Add support of `trigger_health_relay`,
 * [ ] ReRelease: single player support,
 * [ ] ReRelease: support effects and additional flags when possible,
 * [ ] ReRelease: implement demo protocol based on https://github.com/res2k/q2proto
@@ -447,9 +457,48 @@ Checked with:
 * [ ] Daikatana: Fix protopod animation,
 * [ ] Daikatana/SiN: Fix transparent textures in maps,
 * [ ] DoD: fix statusbar `roarke`,
+* [ ] Infinity: Add support of `ammo_energy`,
+* [ ] Infinity: Add support of `ammo_goop`,
+* [ ] Infinity: Add support of `item_radar`,
+* [ ] Infinity: Add support of `monster_alienship1`,
+* [ ] Infinity: Add support of `monster_grunt1v1`,
+* [ ] Infinity: Add support of `monster_grunt1v2`,
+* [ ] Infinity: Add support of `monster_grunt2`,
+* [ ] Infinity: Add support of `monster_screamer`,
+* [ ] Infinity: Add support of `weapon_6bshot`,
+* [ ] Infinity: Add support of `weapon_biggun`,
+* [ ] Infinity: Add support of `weapon_blaze`,
+* [ ] Infinity: Add support of `weapon_goop`,
+* [ ] Infinity: Add support of `weapon_rifle`,
+* [ ] Oblivion: Add support of `ammo_detpack`,
+* [ ] Oblivion: Add support of `ammo_dod`,
+* [ ] Oblivion: Add support of `ammo_mines`,
+* [ ] Oblivion: Add support of `ammo_rifleplasma`,
+* [ ] Oblivion: Add support of `func_rotate_train`,
+* [ ] Oblivion: Add support of `info_teleporter_dest`,
+* [ ] Oblivion: Add support of `misc_camera`,
+* [ ] Oblivion: Add support of `misc_camera_target`,
+* [ ] Oblivion: Add support of `misc_screenfader`,
+* [ ] Oblivion: Add support of `monster_badass`,
+* [ ] Oblivion: Add support of `monster_cyborg`,
+* [ ] Oblivion: Add support of `monster_kigrax`,
+* [ ] Oblivion: Add support of `monster_spider`,
+* [ ] Oblivion: Add support of `target_railgun`,
+* [ ] Oblivion: Add support of `target_rocket`,
+* [ ] Oblivion: Add support of `trigger_misc_camera`,
+* [ ] Oblivion: Add support of `weapon_deatomizer`,
+* [ ] Oblivion: Add support of `weapon_hellfury`,
+* [ ] Oblivion: Add support of `weapon_plasma_pistol`,
+* [ ] Oblivion: Add support of `weapon_plasma_rifle`,
+* [ ] Oblivion: Add support of `weapon_rtdu`,
+* [ ] Dynamic count of entities on client,
 * [ ] Support obj waveform model format for debug other formats.
 
 ### Fixed:
+
+* [x] Infinity: Add support of `weapon_pistol`,
+* [x] renders: add lanczos3 2x scale by `r_scale32bittextures`,
+* [x] Oblivion: Add support of `monster_soldier_deatom`,
 
 ### Not a goal:
 

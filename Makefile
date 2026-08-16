@@ -1632,6 +1632,7 @@ CLIENT_OBJS_ := \
 	src/common/models/models_mda.o \
 	src/common/models/models_mdl.o \
 	src/common/models/models_mdr.o \
+	src/common/models/mesh.o \
 	src/common/models/models_sdef.o \
 	src/common/models/models_utils.o \
 	src/common/models/sprites.o \
@@ -1726,6 +1727,7 @@ REFGL1_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/cmodels.o \
+	src/common/models/mesh.o \
 	src/common/md4.o
 
 REFGL1_OBJS_GLADEES_ := \
@@ -1768,6 +1770,7 @@ REFGL3_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/cmodels.o \
+	src/common/models/mesh.o \
 	src/common/md4.o
 
 REFGL3_OBJS_GLADE_ := \
@@ -1813,6 +1816,7 @@ REFGL4_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/cmodels.o \
+	src/common/models/mesh.o \
 	src/common/md4.o
 
 REFGL4_OBJS_GLADE_ := \
@@ -1859,6 +1863,7 @@ REFSOFT_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/cmodels.o \
+	src/common/models/mesh.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1906,6 +1911,7 @@ REFVK_OBJS_ := \
 	src/common/shared/shared.o \
 	src/common/shared/utils.o \
 	src/common/cmodels.o \
+	src/common/models/mesh.o \
 	src/common/md4.o
 
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -1942,6 +1948,7 @@ SERVER_OBJS_ := \
 	src/common/models/models_mda.o \
 	src/common/models/models_mdl.o \
 	src/common/models/models_mdr.o \
+	src/common/models/mesh.o \
 	src/common/models/models_sdef.o \
 	src/common/models/models_utils.o \
 	src/common/models/sprites.o \
