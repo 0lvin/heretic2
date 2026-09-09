@@ -94,6 +94,21 @@ static VkCommandPool vk_stagingCommandPool[NUM_DYNBUFFERS] = { 0 };
 static VkImageView *vk_imageviews = NULL;
 // Vulkan framebuffers
 static VkFramebuffer *vk_framebuffers[RP_COUNT];
+// RP_WORLD drawing into the swapchain image, and the matching UI pass that
+// keeps what the world left there. Both are render pass compatible with the
+// pass they replace, so the pipelines do not have to be duplicated.
+static qvkrenderpass_t vk_renderpassWorldDirect = {
+	.rp = VK_NULL_HANDLE,
+	.colorLoadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+	.sampleCount = VK_SAMPLE_COUNT_1_BIT
+};
+static qvkrenderpass_t vk_renderpassUiLoad = {
+	.rp = VK_NULL_HANDLE,
+	.colorLoadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
+	.sampleCount = VK_SAMPLE_COUNT_1_BIT
+};
+static VkFramebuffer *vk_framebuffersWorldDirect = NULL;
+static VkFramebuffer *vk_framebuffersUiLoad = NULL;
 // color buffer containing main game/world view
 qvktexture_t vk_colorbuffer = QVVKTEXTURE_INIT;
 // color buffer with postprocessed game view
@@ -132,6 +147,16 @@ qboolean vk_frameStarted = false;
 qboolean vk_recreateSwapchainNeeded = false;
 // is QVk initialized?
 qboolean vk_initialized = false;
+
+int vk_num3Ddraws, vk_num2Ddraws;
+
+// set when the world warp pass is skipped, so the postprocess step knows to
+// read the world straight out of vk_colorbuffer
+qboolean vk_skipWorldWarp = false;
+
+// set when the world is drawn into the swapchain image with no offscreen
+// buffer in between, see vk_directrender
+qboolean vk_worldDirectRender = false;
 
 // render pipelines
 qvkpipeline_t vk_drawTexQuadPipeline[RP_COUNT]    = {
@@ -250,7 +275,6 @@ static VkDescriptorSet *vk_swapDescriptorSets[NUM_SWAPBUFFER_SLOTS];
 // by how much will the dynamic buffers be resized if we run out of space?
 #define BUFFER_RESIZE_FACTOR 2.f
 // size in bytes used for uniform descriptor update
-#define UNIFORM_ALLOC_SIZE 1024
 // start values for dynamic buffer sizes - bound to change if the application runs out of space (sizes in bytes)
 #define VERTEX_BUFFER_SIZE (1024 * 1024)
 #define INDEX_BUFFER_SIZE (1024 * 1024)
@@ -400,6 +424,29 @@ DestroyFramebuffers(void)
 			vk_framebuffers[f] = NULL;
 		}
 	}
+
+	if (vk_framebuffersWorldDirect || vk_framebuffersUiLoad)
+	{
+		for (int i = 0; i < vk_swapchain.imageCount; ++i)
+		{
+			if (vk_framebuffersWorldDirect)
+			{
+				vkDestroyFramebuffer(vk_device.logical,
+					vk_framebuffersWorldDirect[i], NULL);
+			}
+
+			if (vk_framebuffersUiLoad)
+			{
+				vkDestroyFramebuffer(vk_device.logical,
+					vk_framebuffersUiLoad[i], NULL);
+			}
+		}
+
+		free(vk_framebuffersWorldDirect);
+		vk_framebuffersWorldDirect = NULL;
+		free(vk_framebuffersUiLoad);
+		vk_framebuffersUiLoad = NULL;
+	}
 }
 
 /* internal helper */
@@ -414,6 +461,24 @@ CreateFramebuffers(void)
 		YQ2_COM_CHECK_OOM(vk_framebuffers[i], "malloc()",
 			vk_swapchain.imageCount * sizeof(VkFramebuffer))
 		if (!vk_framebuffers[i])
+		{
+			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
+			return VK_ERROR_OUT_OF_HOST_MEMORY;
+		}
+	}
+
+	if (vk_renderpassWorldDirect.rp != VK_NULL_HANDLE)
+	{
+		vk_framebuffersWorldDirect = (VkFramebuffer *)malloc(
+			vk_swapchain.imageCount * sizeof(VkFramebuffer));
+		YQ2_COM_CHECK_OOM(vk_framebuffersWorldDirect, "malloc()",
+			vk_swapchain.imageCount * sizeof(VkFramebuffer))
+		vk_framebuffersUiLoad = (VkFramebuffer *)malloc(
+			vk_swapchain.imageCount * sizeof(VkFramebuffer));
+		YQ2_COM_CHECK_OOM(vk_framebuffersUiLoad, "malloc()",
+			vk_swapchain.imageCount * sizeof(VkFramebuffer))
+
+		if (!vk_framebuffersWorldDirect || !vk_framebuffersUiLoad)
 		{
 			/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
 			return VK_ERROR_OUT_OF_HOST_MEMORY;
@@ -438,7 +503,7 @@ CreateFramebuffers(void)
 			.pNext = NULL,
 			.flags = 0,
 			.renderPass = vk_renderpasses[RP_UI].rp,
-			.attachmentCount = 3,
+			.attachmentCount = 2,
 			.width = vk_swapchain.extent.width,
 			.height = vk_swapchain.extent.height,
 			.layers = 1
@@ -449,7 +514,7 @@ CreateFramebuffers(void)
 			.pNext = NULL,
 			.flags = 0,
 			.renderPass = vk_renderpasses[RP_WORLD_WARP].rp,
-			.attachmentCount = 2,
+			.attachmentCount = 1,
 			.width = vk_swapchain.extent.width,
 			.height = vk_swapchain.extent.height,
 			.layers = 1
@@ -457,15 +522,46 @@ CreateFramebuffers(void)
 	};
 
 	VkImageView worldAttachments[] = { vk_colorbuffer.imageView, vk_depthbuffer.imageView, vk_msaaColorbuffer.imageView };
-	VkImageView warpAttachments[]  = { vk_colorbuffer.imageView, vk_colorbufferWarp.imageView };
+	VkImageView warpAttachments[]  = { vk_colorbufferWarp.imageView };
 
 	fbCreateInfos[RP_WORLD].pAttachments = worldAttachments;
 	fbCreateInfos[RP_WORLD_WARP].pAttachments = warpAttachments;
 
 	for (i = 0; i < vk_swapchain.imageCount; ++i)
 	{
-		VkImageView uiAttachments[] = { vk_colorbufferWarp.imageView, vk_ui_depthbuffer.imageView, vk_imageviews[i] };
+		VkImageView uiAttachments[] = { vk_ui_depthbuffer.imageView, vk_imageviews[i] };
 		fbCreateInfos[RP_UI].pAttachments = uiAttachments;
+
+		if (vk_framebuffersWorldDirect)
+		{
+			VkImageView directAttachments[] = { vk_imageviews[i], vk_depthbuffer.imageView };
+			VkImageView uiLoadAttachments[] = { vk_ui_depthbuffer.imageView, vk_imageviews[i] };
+			VkFramebufferCreateInfo directInfo = fbCreateInfos[RP_WORLD];
+			VkFramebufferCreateInfo uiLoadInfo = fbCreateInfos[RP_UI];
+			VkResult res;
+
+			directInfo.renderPass = vk_renderpassWorldDirect.rp;
+			directInfo.attachmentCount = ARRLEN(directAttachments);
+			directInfo.pAttachments = directAttachments;
+			uiLoadInfo.renderPass = vk_renderpassUiLoad.rp;
+			uiLoadInfo.pAttachments = uiLoadAttachments;
+
+			res = vkCreateFramebuffer(vk_device.logical, &directInfo, NULL,
+				&vk_framebuffersWorldDirect[i]);
+			if (res == VK_SUCCESS)
+			{
+				res = vkCreateFramebuffer(vk_device.logical, &uiLoadInfo, NULL,
+					&vk_framebuffersUiLoad[i]);
+			}
+
+			if (res != VK_SUCCESS)
+			{
+				Com_Printf("%s(): direct framebuffer create error: %s\n",
+					__func__, QVk_GetError(res));
+				DestroyFramebuffers();
+				return res;
+			}
+		}
 
 		for (int j = 0; j < RP_COUNT; ++j)
 		{
@@ -573,18 +669,6 @@ CreateRenderpasses(void)
 	 * world warp setup
 	 */
 	VkAttachmentDescription warpAttachments[] = {
-		// color attachment - input from RP_WORLD renderpass
-		{
-			.flags = 0,
-			.format = vk_swapchain.format,
-			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-			.storeOp = VK_ATTACHMENT_STORE_OP_STORE,
-			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		},
 		// color attachment output - warped/postprocessed image that ends up in RP_UI
 		{
 			.flags = 0,
@@ -601,7 +685,7 @@ CreateRenderpasses(void)
 
 	VkAttachmentReference warpAttachmentRef = {
 		// output color
-		.attachment = 1,
+		.attachment = 0,
 		.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 	};
 
@@ -623,18 +707,6 @@ CreateRenderpasses(void)
 	 * UI setup
 	 */
 	VkAttachmentDescription uiAttachments[] = {
-		// color attachment
-		{
-			.flags = 0,
-			.format = vk_swapchain.format,
-			.samples = VK_SAMPLE_COUNT_1_BIT,
-			.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD,
-			.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
-			.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
-			.initialLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-			.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-		},
 		// depth attachment - because of player model preview in settings screen
 		{
 			.flags = 0,
@@ -665,12 +737,12 @@ CreateRenderpasses(void)
 	VkAttachmentReference uiAttachmentRefs[] = {
 		// depth
 		{
-			.attachment = 1,
+			.attachment = 0,
 			.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
 		},
 		// swapchain output
 		{
-			.attachment = 2,
+			.attachment = 1,
 			.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 		}
 	};
@@ -731,7 +803,7 @@ CreateRenderpasses(void)
 			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 			.pNext = NULL,
 			.flags = 0,
-			.attachmentCount = 3,
+			.attachmentCount = 2,
 			.pAttachments = uiAttachments,
 			.subpassCount = 1,
 			.pSubpasses = &uiSubpassDesc,
@@ -743,7 +815,7 @@ CreateRenderpasses(void)
 			.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
 			.pNext = NULL,
 			.flags = 0,
-			.attachmentCount = 2,
+			.attachmentCount = 1,
 			.pAttachments = warpAttachments,
 			.subpassCount = 1,
 			.pSubpasses = &warpSubpassDesc,
@@ -762,6 +834,58 @@ CreateRenderpasses(void)
 		}
 		QVk_DebugSetObjectName((uint64_t)vk_renderpasses[i].rp, VK_OBJECT_TYPE_RENDER_PASS,
 			va("Render Pass: %s",  renderpassObjectNames[i]));
+	}
+
+	/* Direct rendering needs the world drawn into the swapchain image and the
+	   UI drawn on top of it. Both passes keep the attachment formats of the
+	   pass they stand in for, so they stay pipeline compatible with it.
+	   Multisampling resolves into the offscreen buffer, so it stays away. */
+	if (!msaaEnabled)
+	{
+		VkAttachmentDescription directAttachments[2];
+		VkAttachmentDescription uiLoadAttachments[2];
+		VkRenderPassCreateInfo directCreateInfo = rpCreateInfos[RP_WORLD];
+		VkRenderPassCreateInfo uiLoadCreateInfo = rpCreateInfos[RP_UI];
+		VkResult res;
+
+		directAttachments[0] = worldAttachments[0];
+		directAttachments[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+		directAttachments[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		directAttachments[0].finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		directAttachments[1] = worldAttachments[1];
+
+		directCreateInfo.attachmentCount = ARRLEN(directAttachments);
+		directCreateInfo.pAttachments = directAttachments;
+
+		res = vkCreateRenderPass(vk_device.logical, &directCreateInfo, NULL,
+			&vk_renderpassWorldDirect.rp);
+		if (res != VK_SUCCESS)
+		{
+			Com_Printf("%s(): direct world renderpass create error: %s\n",
+				__func__, QVk_GetError(res));
+			return res;
+		}
+
+		uiLoadAttachments[0] = uiAttachments[0];
+		uiLoadAttachments[1] = uiAttachments[1];
+		uiLoadAttachments[1].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+		uiLoadAttachments[1].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+		uiLoadCreateInfo.pAttachments = uiLoadAttachments;
+
+		res = vkCreateRenderPass(vk_device.logical, &uiLoadCreateInfo, NULL,
+			&vk_renderpassUiLoad.rp);
+		if (res != VK_SUCCESS)
+		{
+			Com_Printf("%s(): direct UI renderpass create error: %s\n",
+				__func__, QVk_GetError(res));
+			return res;
+		}
+
+		QVk_DebugSetObjectName((uint64_t)vk_renderpassWorldDirect.rp,
+			VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: RP_WORLD (direct)");
+		QVk_DebugSetObjectName((uint64_t)vk_renderpassUiLoad.rp,
+			VK_OBJECT_TYPE_RENDER_PASS, "Render Pass: RP_UI (direct)");
 	}
 
 	return VK_SUCCESS;
@@ -862,7 +986,8 @@ CreateDescriptorSetLayouts(void)
 		.binding = 0,
 		.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC,
 		.descriptorCount = 1,
-		.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+		// the lightmapped surface fragment shader reads the dynamic lights
+		.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
 		.pImmutableSamplers = NULL
 	};
 
@@ -1305,11 +1430,11 @@ CreatePipelines(void)
 												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 7));
 
 	/* Lightmap shaders input */
-	VK_VERTINFO(MEM_VERTEX_T, sizeof(mvtx_t),	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, 0),
-												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 3),
-												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, sizeof(float) * 5),
-												VK_INPUTATTR_DESC(3, VK_FORMAT_R32G32B32_SFLOAT, sizeof(float) * 8),
-												VK_INPUTATTR_DESC(4, VK_FORMAT_R8G8B8A8_SINT, sizeof(float) * 11));
+	VK_VERTINFO(MEM_VERTEX_T, sizeof(mvtx_t),	VK_INPUTATTR_DESC(0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(mvtx_t, pos)),
+												VK_INPUTATTR_DESC(1, VK_FORMAT_R32G32_SFLOAT, offsetof(mvtx_t, texCoord)),
+												VK_INPUTATTR_DESC(2, VK_FORMAT_R32G32_SFLOAT, offsetof(mvtx_t, lmTexCoord)),
+												VK_INPUTATTR_DESC(3, VK_FORMAT_R32G32B32_SFLOAT, offsetof(mvtx_t, normal)),
+												VK_INPUTATTR_DESC(4, VK_FORMAT_R32_SINT, offsetof(mvtx_t, lightFlags)));
 
 	/* no vertices passed to the pipeline (postprocessing) */
 	VkPipelineVertexInputStateCreateInfo vertInfoNull = VK_NULL_VERTEXINPUT_CINF;
@@ -1323,6 +1448,12 @@ CreatePipelines(void)
 		vk_samplerDescSetLayout,
 		vk_uboDescSetLayout,
 		vk_samplerLightmapDescSetLayout
+	};
+	const VkDescriptorSetLayout samplerUboLmapDlightDsLayouts[] = {
+		vk_samplerDescSetLayout,
+		vk_uboDescSetLayout,
+		vk_samplerLightmapDescSetLayout,
+		vk_uboDescSetLayout
 	};
 
 	// shader array (vertex and fragment, no compute... yet)
@@ -1450,7 +1581,7 @@ CreatePipelines(void)
 	VK_LOAD_VERTFRAG_SHADERS(shaders, polygon_lmap, polygon_lmap);
 	vk_drawPolyLmapPipeline.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	vk_drawPolyLmapPipeline.depthBiasEnable = VK_TRUE;
-	QVk_CreatePipeline(samplerUboLmapDsLayouts, 3, &vertInfoMEM_VERTEX_T,
+	QVk_CreatePipeline(samplerUboLmapDlightDsLayouts, 4, &vertInfoMEM_VERTEX_T,
 		&vk_drawPolyLmapPipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyLmapPipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: lightmapped polygon");
 	QVk_DebugSetObjectName((uint64_t)vk_drawPolyLmapPipeline.pl, VK_OBJECT_TYPE_PIPELINE, "Pipeline: lightmapped polygon");
@@ -1665,6 +1796,18 @@ QVk_Shutdown(void)
 			}
 
 			vk_renderpasses[i].rp = VK_NULL_HANDLE;
+		}
+
+		if (vk_renderpassWorldDirect.rp != VK_NULL_HANDLE)
+		{
+			vkDestroyRenderPass(vk_device.logical, vk_renderpassWorldDirect.rp, NULL);
+			vk_renderpassWorldDirect.rp = VK_NULL_HANDLE;
+		}
+
+		if (vk_renderpassUiLoad.rp != VK_NULL_HANDLE)
+		{
+			vkDestroyRenderPass(vk_device.logical, vk_renderpassUiLoad.rp, NULL);
+			vk_renderpassUiLoad.rp = VK_NULL_HANDLE;
 		}
 
 		for (i = 0; i < NUM_CMDBUFFERS; i++)
@@ -2437,13 +2580,11 @@ QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 		{.color = {.float32 = { 1.f, .0f, .5f, 1.f } } },
 	};
 
-	const VkClearValue warpClearColors[2] = {
-		clearColors[0],
+	const VkClearValue warpClearColors[1] = {
 		{.color = {.float32 = { 0.f, .0f, .0f, 1.f } } },
 	};
 
-	const VkClearValue uiClearColors[3] = {
-		clearColors[0],
+	const VkClearValue uiClearColors[2] = {
 		clearColors[1],
 		{.color = {.float32 = { 0.f, .0f, .0f, 1.f } } },
 	};
@@ -2466,7 +2607,7 @@ QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 			.framebuffer = vk_framebuffers[RP_UI][vk_imageIndex],
 			.renderArea.offset = { 0, 0 },
 			.renderArea.extent = vk_swapchain.extent,
-			.clearValueCount = 3,
+			.clearValueCount = 2,
 			.pClearValues = uiClearColors
 		},
 		// RP_WORLD_WARP
@@ -2476,7 +2617,7 @@ QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 			.framebuffer = vk_framebuffers[RP_WORLD_WARP][vk_imageIndex],
 			.renderArea.offset = { 0, 0 },
 			.renderArea.extent = vk_swapchain.extent,
-			.clearValueCount = 2,
+			.clearValueCount = 1,
 			.pClearValues = warpClearColors
 		}
 	};
@@ -2491,6 +2632,26 @@ QVk_BeginRenderpass(qvkrenderpasstype_t rpType)
 	if (rpType == RP_WORLD_WARP) {
 		QVk_DebugLabelEnd(&vk_commandbuffers[vk_activeBufferIdx]);
 		QVk_DebugLabelBegin(&vk_commandbuffers[vk_activeBufferIdx], "Draw View Warp", 1.f, 0.f, .5f);
+	}
+
+	if (vk_worldDirectRender && rpType == RP_WORLD)
+	{
+		/* the swapchain image comes back undefined, so it gets cleared here
+		   instead of loaded the way the offscreen buffer is */
+		static const VkClearValue directClearColors[2] = {
+			{.color = {.float32 = { 0.f, .0f, .0f, 1.f } } },
+			{.depthStencil = { 1.f, 0 } },
+		};
+
+		renderBeginInfo[RP_WORLD].renderPass = vk_renderpassWorldDirect.rp;
+		renderBeginInfo[RP_WORLD].framebuffer = vk_framebuffersWorldDirect[vk_imageIndex];
+		renderBeginInfo[RP_WORLD].clearValueCount = ARRLEN(directClearColors);
+		renderBeginInfo[RP_WORLD].pClearValues = directClearColors;
+	}
+	else if (vk_worldDirectRender && rpType == RP_UI)
+	{
+		renderBeginInfo[RP_UI].renderPass = vk_renderpassUiLoad.rp;
+		renderBeginInfo[RP_UI].framebuffer = vk_framebuffersUiLoad[vk_imageIndex];
 	}
 
 	vkCmdBeginRenderPass(vk_commandbuffers[vk_activeBufferIdx], &renderBeginInfo[rpType], VK_SUBPASS_CONTENTS_INLINE);
@@ -2920,6 +3081,7 @@ QVk_Draw2DCallsRender(void)
 		vkCmdBindIndexBuffer(vk_activeCmdbuffer,
 			vk_rectIbo.resource.buffer, vk_rectIboffet, VK_INDEX_TYPE_UINT16);
 		vkCmdDrawIndexed(vk_activeCmdbuffer, 6 * draw2dcolor_num, 1, 0, 0, 0);
+		vk_num2Ddraws++;
 	}
 	else if (draw2dcolor_calltype == CALL_TEX || draw2dcolor_calltype == CALL_TINT)
 	{
@@ -2979,6 +3141,7 @@ QVk_Draw2DCallsRender(void)
 		vkCmdBindIndexBuffer(vk_activeCmdbuffer,
 			vk_rectIbo.resource.buffer, vk_rectIboffet, VK_INDEX_TYPE_UINT16);
 		vkCmdDrawIndexed(vk_activeCmdbuffer, 6 * draw2dcolor_num, 1, 0, 0, 0);
+		vk_num2Ddraws++;
 	}
 
 	draw2dcolor_num = 0;
@@ -3118,13 +3281,34 @@ QVk_DrawTexRectTinted(float x, float y, float w, float h,
 	QVk_StoreTextCoords(x, y, w, h, u, v, us, vs);
 }
 
+qboolean
+QVk_WorldIsMultisampled(void)
+{
+	return vk_renderpasses[RP_WORLD].sampleCount != VK_SAMPLE_COUNT_1_BIT;
+}
+
 void
 QVk_BindPipeline(qvkpipeline_t *pipeline)
 {
 	if (vk_state.current_pipeline != pipeline->pl)
 	{
+		float postConstants[2];
+
 		vkCmdBindPipeline(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pl);
 		vk_state.current_pipeline = pipeline->pl;
+
+		/* the bind is the only place that knows the current renderpass, so
+		   the world shaders get told here whether they have to do the work
+		   the postprocess pass would otherwise do for them, which includes
+		   honouring vk_postprocess the way that pass does */
+		postConstants[0] = (vk_worldDirectRender &&
+			vk_postprocess->value &&
+			vk_state.current_renderpass == RP_WORLD) ? 1.0f : 0.0f;
+		postConstants[1] = 2.1f - vid_gamma->value;
+
+		vkCmdPushConstants(vk_activeCmdbuffer, pipeline->layout,
+			VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_POSTPROCESS_OFFSET,
+			sizeof(postConstants), postConstants);
 	}
 }
 

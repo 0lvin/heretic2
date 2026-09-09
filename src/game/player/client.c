@@ -1891,6 +1891,22 @@ InitClientPersistant(edict_t *ent)
 	memset(&client->pers, 0, sizeof(client->pers));
 	memset(&client->playerinfo.pers, 0, sizeof(client->playerinfo.pers));
 
+	item = FindItem("Plasma Pistol");
+	if (item && ItemHasValidModel(item))
+	{
+		const gitem_t *ammo;
+
+		/* Oblivion: Provide if available weapon_plasma_pistol */
+		client->pers.inventory[ITEM_INDEX(item)] = 1;
+
+		/* And ammo little bit */
+		ammo = FindItem("Rifle Plasma");
+		if (ammo)
+		{
+			client->pers.inventory[ITEM_INDEX(ammo)] = ammo->quantity;
+		}
+	}
+
 	// Give just the sword-staff and flying-fist to the player as starting weapons.
 	item = FindItem("staff");
 	client->pers.selected_item = ITEM_INDEX(item);

@@ -1450,6 +1450,7 @@ Vk_InitImages(void)
 	int i;
 	float overbright;
 
+	R_PicPathCacheClean();
 	Scrap_Init();
 
 	numvktextures = 0;
@@ -1467,13 +1468,17 @@ Vk_InitImages(void)
 
 	vk_state.inverse_intensity = 1 / intensity->value;
 
-	for (i = 0; i<256; i++)
+	for (i = 0; i < 256; i++)
 	{
 		int	j;
 
 		j = i * intensity->value;
+
 		if (j > 255)
+		{
 			j = 255;
+		}
+
 		intensitytable[i] = j;
 	}
 
@@ -1482,20 +1487,30 @@ Vk_InitImages(void)
 	overbright = vk_overbrightbits->value;
 
 	if(overbright < 0.5)
+	{
 		overbright = 0.5;
+	}
 
 	if(overbright > 4.0)
+	{
 		overbright = 4.0;
+	}
 
-	for (i=0 ; i<256 ; i++) {
+	for (i = 0; i < 256; i++)
+	{
 		int inf;
 
 		inf = i * overbright;
 
 		if (inf < 0)
+		{
 			inf = 0;
+		}
+
 		if (inf > 255)
+		{
 			inf = 255;
+		}
 
 		overbrightable[i] = inf;
 	}
@@ -1538,7 +1553,9 @@ Vk_ShutdownImages(void)
 	QVk_ReleaseTexture(&vk_rawTexture, true);
 
 	for(i = 0; i < MAX_SCRAPS; i++)
+	{
 		QVk_ReleaseTexture(&vk_scrapTextures[i], true);
+	}
 
 	for(i = 0; i < MAX_LIGHTMAPS * 2; i++)
 	{

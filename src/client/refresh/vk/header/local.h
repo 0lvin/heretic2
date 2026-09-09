@@ -111,8 +111,8 @@ extern  cvar_t  *vk_molten_fastmath;
 extern  cvar_t  *vk_molten_metalbuffers;
 #endif
 extern	cvar_t	*vk_pixel_size;
+extern       cvar_t  *vk_postprocess;
 
-extern	int		c_visible_lightmaps;
 extern	int		c_visible_textures;
 
 extern	float	r_viewproj_matrix[16];
@@ -139,6 +139,12 @@ void Vk_Strings_f(void);
 void Vk_Mem_f(void);
 
 void RI_PushDlights(void);
+
+/* dynamic lights of the current frame, bound as set 3 by the lightmapped
+   surface pipeline */
+extern uint32_t vk_dlightUboOffset;
+extern VkDescriptorSet vk_dlightUboDescriptorSet;
+extern uint32_t vk_dlightCount;
 
 void R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel);
 void R_DrawBrushModel(entity_t *currententity, const model_t *currentmodel);

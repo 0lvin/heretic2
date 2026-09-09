@@ -117,7 +117,7 @@ OSX_APP:=yes
 CONFIG_FILE:=config.mk
 
 # PKG_CONFIG
-# Specify program that configures SDL.
+# Specify program that configures SDL3.
 # Needs to be overridable for cross-compilation.
 PKG_CONFIG ?= pkgconf
 
@@ -128,6 +128,8 @@ ifeq ($(wildcard $(CONFIG_FILE)), $(CONFIG_FILE))
 include $(CONFIG_FILE)
 endif
 
+# ----------
+
 # Normalize QUIET value to either "x" or ""
 ifdef QUIET
 	override QUIET := "x"
@@ -135,17 +137,21 @@ else
 	override QUIET := ""
 endif
 
-# Detect the OS
-ifdef SystemRoot
-YQ2_OSTYPE ?= Windows
+# ----------
+
+# Check if it's pkgconf or pkg-config.
+ifeq (, $(shell which $(PKG_CONFIG)))
+ifneq (, $(shell which pkgconf))
+PKG_CONFIG:=pkgconf
 else
-YQ2_OSTYPE ?= $(shell uname -s)
+PKG_CONFIG:=pkg-config
+endif
 endif
 
-# Special case for MinGW
-ifneq (,$(findstring MINGW,$(YQ2_OSTYPE)))
-YQ2_OSTYPE := Windows
-endif
+# ----------
+
+# Detect the OS, normalize some abiguous YQ2_OSTYPE strings.
+YQ2_OSTYPE ?= $(shell uname -s | sed -e 's/MINGW.*/Windows/' -e 's/Windows.*/Windows/')
 
 # Detect the architecture
 ifeq ($(YQ2_OSTYPE), Windows)
@@ -156,13 +162,7 @@ else # i686-w64-mingw32
 YQ2_ARCH ?= i386
 endif
 else # windows, but MINGW_CHOST not defined
-ifdef PROCESSOR_ARCHITEW6432
-# 64 bit Windows
-YQ2_ARCH ?= $(PROCESSOR_ARCHITEW6432)
-else
-# 32 bit Windows
-YQ2_ARCH ?= $(PROCESSOR_ARCHITECTURE)
-endif
+YQ2_ARCH ?= $(shell uname -m | sed -e 's/i.86/i386/')
 endif # windows but MINGW_CHOST not defined
 else
 ifneq ($(YQ2_OSTYPE), Darwin)
@@ -485,12 +485,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles1 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract player effects
+.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles1 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract player effects viewer
 
 # ----------
 
 # Builds everything but the GLES1 renderer
-all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract player effects
+all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract player effects viewer
 
 # ----------
 
@@ -503,7 +503,7 @@ with_gles1: all ref_gles1
 config:
 	@echo "Build configuration"
 	@echo "============================"
-	@echo "YQ2_ARCH = $(YQ2_ARCH) COMPILER = $(COMPILER)"
+	@echo "YQ2_ARCH = $(YQ2_ARCH), YQ2_OSTYPE = $(YQ2_OSTYPE), COMPILER = $(COMPILER)"
 	@echo "WITH_CURL = $(WITH_CURL)"
 	@echo "WITH_OPENAL = $(WITH_OPENAL)"
 	@echo "WITH_AVCODEC = $(WITH_AVCODEC)"
@@ -696,7 +696,7 @@ endif
 
 # ----------
 
-# The pakextact
+# The pakextract
 ifeq ($(YQ2_OSTYPE), Windows)
 pakextract:
 	@echo "===> Building pakextract"
@@ -731,6 +731,38 @@ $(BINDIR)/pakextract : CFLAGS += -DDEDICATED_ONLY -Wno-unused-result
 ifeq ($(YQ2_OSTYPE), FreeBSD)
 $(BINDIR)/pakextract : LDLIBS += -lexecinfo
 endif
+
+endif
+
+# ----------
+
+# The model viewer
+ifeq ($(YQ2_OSTYPE), Windows)
+viewer:
+	@echo "===> Building viewer.exe"
+	${Q}mkdir -p $(BINDIR)
+	$(MAKE) $(BINDIR)/viewer.exe
+
+$(BUILDDIR)/viewer/%.o: %.c
+	@if [ -z $(QUIET) ]; then\
+		echo "===> CC $<";\
+	fi
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
+
+else # not Windows
+
+viewer:
+	@echo "===> Building viewer"
+	${Q}mkdir -p $(BINDIR)
+	$(MAKE) $(BINDIR)/viewer
+
+$(BUILDDIR)/viewer/%.o: %.c
+	@if [ -z $(QUIET) ]; then\
+		echo "===> CC $<";\
+	fi
+	${Q}mkdir -p $(@D)
+	${Q}$(CC) -c $(CFLAGS) $(SDLCFLAGS) $(INCLUDE) -o $@ $<
 
 endif
 
@@ -1254,6 +1286,7 @@ GAME_OBJS_ = \
 	src/game/monster/assassin/assassin.o \
 	src/game/monster/beast/beast_anim.o \
 	src/game/monster/beast/beast.o \
+	src/game/monster/badass/badass.o \
 	src/game/monster/berserker/berserker.o \
 	src/game/monster/boss2/boss2.o \
 	src/game/monster/boss3/boss31.o \
@@ -1265,6 +1298,7 @@ GAME_OBJS_ = \
 	src/game/monster/chick/chick.o \
 	src/game/monster/chicken/chicken_anim.o \
 	src/game/monster/chicken/chicken.o \
+	src/game/monster/cyborg/cyborg.o \
 	src/game/monster/demon/demon.o \
 	src/game/monster/dog/dog.o \
 	src/game/monster/elflord/elflord_anims.o \
@@ -1291,6 +1325,7 @@ GAME_OBJS_ = \
 	src/game/monster/hover/hover.o \
 	src/game/monster/infantry/infantry.o \
 	src/game/monster/insane/insane.o \
+	src/game/monster/kigrax/kigrax.o \
 	src/game/monster/knight/knight.o \
 	src/game/monster/medic/medic.o \
 	src/game/monster/misc/move.o \
@@ -1324,6 +1359,7 @@ GAME_OBJS_ = \
 	src/game/monster/spreader/spreader_anim.o \
 	src/game/monster/spreader/spreadermist.o \
 	src/game/monster/spreader/spreader.o \
+	src/game/monster/spider/spider.o \
 	src/game/monster/stalker/stalker.o \
 	src/game/monster/stats/stats.o \
 	src/game/monster/supertank/supertank.o \
@@ -2008,6 +2044,11 @@ PAKEXTRACT_OBJS_ := \
 	src/common/shared/shared.o \
 	src/pakextract/pakextract.o
 
+# Used by the model viewer
+VIEWER_OBJS_ := \
+	src/common/shared/shared.o \
+	src/viewer/main.o
+
 # ----------
 
 # Rewrite paths to our object directory.
@@ -2025,6 +2066,7 @@ REFSOFT_OBJS = $(patsubst %,$(BUILDDIR)/ref_soft/%,$(REFSOFT_OBJS_))
 REFVK_OBJS = $(patsubst %,$(BUILDDIR)/ref_vk/%,$(REFVK_OBJS_))
 SERVER_OBJS = $(patsubst %,$(BUILDDIR)/server/%,$(SERVER_OBJS_))
 PAKEXTRACT_OBJS = $(patsubst %,$(BUILDDIR)/pakextract/%,$(PAKEXTRACT_OBJS_))
+VIEWER_OBJS = $(patsubst %,$(BUILDDIR)/viewer/%,$(VIEWER_OBJS_))
 GAME_OBJS = $(patsubst %,$(BUILDDIR)/baseq2/%,$(GAME_OBJS_))
 PLAYER_OBJS = $(patsubst %,$(BUILDDIR)/player/%,$(PLAYER_OBJS_))
 EFFECTS_OBJS = $(patsubst %,$(BUILDDIR)/effects/%,$(EFFECTS_OBJS_))
@@ -2045,6 +2087,7 @@ REFSOFT_DEPS= $(REFSOFT_OBJS:.o=.d)
 REFVK_DEPS= $(REFVK_OBJS:.o=.d)
 SERVER_DEPS= $(SERVER_OBJS:.o=.d)
 PAKEXTRACT_DEPS= $(PAKEXTRACT_OBJS:.o=.d)
+VIEWER_DEPS= $(VIEWER_OBJS:.o=.d)
 
 # Suck header dependencies in.
 -include $(CLIENT_DEPS)
@@ -2057,6 +2100,7 @@ PAKEXTRACT_DEPS= $(PAKEXTRACT_OBJS:.o=.d)
 -include $(REFVK_DEPS)
 -include $(SERVER_DEPS)
 -include $(PAKEXTRACT_DEPS)
+-include $(VIEWER_DEPS)
 
 # ----------
 
@@ -2065,10 +2109,8 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/yquake2.exe : $(CLIENT_OBJS) icon
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(BUILDROOT)/icon/icon.res $(CLIENT_OBJS) $(LDLIBS) $(SDLLDFLAGS) -o $@
-	$(Q)strip $@
 $(BINDIR)/quake2.exe : src/win-wrapper/wrapper.c icon
 	$(Q)$(CC) -Wall -mwindows $(BUILDROOT)/icon/icon.res src/win-wrapper/wrapper.c -o $@
-	$(Q)strip $@
 else
 $(BINDIR)/quake2 : $(CLIENT_OBJS)
 	@echo "===> LD $@"
@@ -2080,7 +2122,6 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/q2ded.exe : $(SERVER_OBJS) icon
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(BUILDROOT)/icon/icon.res $(SERVER_OBJS) $(LDLIBS) -o $@
-	$(Q)strip $@
 else
 $(BINDIR)/q2ded : $(SERVER_OBJS)
 	@echo "===> LD $@"
@@ -2099,12 +2140,26 @@ $(BINDIR)/pakextract : $(PAKEXTRACT_OBJS)
 	${Q}$(CC) $(LDFLAGS) $(PAKEXTRACT_OBJS) $(LDLIBS) -o $@
 endif
 
+# viewer
+ifeq ($(YQ2_OSTYPE), Windows)
+$(BINDIR)/viewer.exe : $(VIEWER_OBJS) icon
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(BUILDROOT)/icon/icon.res $(VIEWER_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -lopengl32 -o $@
+else ifeq ($(YQ2_OSTYPE), Darwin)
+$(BINDIR)/viewer : $(VIEWER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(VIEWER_OBJS) $(LDLIBS) $(SDLLDFLAGS) -framework OpenGL -o $@
+else
+$(BINDIR)/viewer : $(VIEWER_OBJS)
+	@echo "===> LD $@"
+	${Q}$(CC) $(LDFLAGS) $(VIEWER_OBJS) $(LDLIBS) $(SDLLDFLAGS) -lGL -o $@
+endif
+
 # ref_gl1.so
 ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/ref_gl1.dll : $(REFGL1_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFGL1_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
-	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 $(BINDIR)/ref_gl1.dylib : $(REFGL1_OBJS)
 	@echo "===> LD $@"
@@ -2120,7 +2175,6 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/ref_gles1.dll : $(REFGLES1_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFGLES1_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
-	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 $(BINDIR)/ref_gles1.dylib : $(REFGLES1_OBJS)
 	@echo "===> LD $@"
@@ -2136,7 +2190,6 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/ref_gl3.dll : $(REFGL3_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFGL3_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
-	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 $(BINDIR)/ref_gl3.dylib : $(REFGL3_OBJS)
 	@echo "===> LD $@"
@@ -2152,7 +2205,6 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/ref_gles3.dll : $(REFGLES3_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFGLES3_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
-	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 $(BINDIR)/ref_gles3.dylib : $(REFGLES3_OBJS)
 	@echo "===> LD $@"
@@ -2184,7 +2236,6 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/ref_soft.dll : $(REFSOFT_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CC) $(LDFLAGS) $(REFSOFT_OBJS) $(LDLIBS) $(DLL_SDLLDFLAGS) -o $@
-	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 $(BINDIR)/ref_soft.dylib : $(REFSOFT_OBJS)
 	@echo "===> LD $@"
@@ -2215,7 +2266,6 @@ ifeq ($(YQ2_OSTYPE), Windows)
 $(BINDIR)/baseq2/game.dll : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
-	$(Q)strip $@
 else ifeq ($(YQ2_OSTYPE), Darwin)
 $(BINDIR)/baseq2/game.dylib : $(GAME_OBJS)
 	@echo "===> LD $@"

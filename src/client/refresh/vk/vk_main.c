@@ -37,6 +37,9 @@
 
 // world rendered and ready to render 2d elements
 static qboolean world_rendered;
+// RP_WORLD starts before this frame's refdef is known, so whether the warp
+// pass has anything to do is decided from the previous frame
+static qboolean world_warp_wanted;
 static qboolean RE_IsHighDPIaware = false;
 
 refimport_t	ri;
@@ -82,6 +85,7 @@ cvar_t  *vk_molten_fastmath;
 cvar_t  *vk_molten_metalbuffers;
 #endif
 cvar_t	*vk_pixel_size;
+cvar_t	*vk_directrender;
 static cvar_t	*vk_particle_size;
 static cvar_t	*vk_particle_att_a;
 static cvar_t	*vk_particle_att_b;
@@ -207,6 +211,7 @@ R_DrawSpriteModel(entity_t *currententity, const model_t *currentmodel)
 		vk_drawSpritePipeline.layout, 0, 1,
 		&skin->vk_texture.descriptorSet, 0, NULL);
 	vkCmdDraw(vk_activeCmdbuffer, 6, 1, 0, 0);
+	vk_num3Ddraws++;
 }
 
 static void
@@ -284,6 +289,7 @@ R_DrawNullModel(entity_t *currententity)
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
 	vkCmdBindIndexBuffer(vk_activeCmdbuffer, *buffer, dstOffset, VK_INDEX_TYPE_UINT16);
 	vkCmdDrawIndexed(vk_activeCmdbuffer, 24, 1, 0, 0, 0);
+	vk_num3Ddraws++;
 }
 
 static void
@@ -507,6 +513,7 @@ Vk_DrawParticles(int num_particles, const particle_t particles[])
 
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
 	vkCmdDraw(vk_activeCmdbuffer, (currentvertex - visibleParticles), 1, 0, 0);
+	vk_num3Ddraws++;
 }
 
 static void
@@ -575,6 +582,7 @@ R_DrawParticles(void)
 		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawPointParticlesPipeline.layout, 0, 1, &uboDescriptorSet, 1, &uboOffset);
 		vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
 		vkCmdDraw(vk_activeCmdbuffer, r_newrefdef.num_particles, 1, 0, 0);
+		vk_num3Ddraws++;
 	}
 	else
 	{
@@ -842,6 +850,32 @@ R_Flash(void)
 	R_PolyBlend();
 }
 
+static const char*
+R_GetSpeedString(void)
+{
+	static char stbuf[256] = {0};
+	int ms, num3D, num2D;
+	size_t r_time2;
+
+	// by saving those values into a variable and setting them to 0 afterwards,
+	// r_speeds can include its own drawcalls (from previous frame)
+	num3D = vk_num3Ddraws;
+	num2D = vk_num2Ddraws;
+	vk_num3Ddraws = 0;
+	vk_num2Ddraws = 0;
+
+	r_time2 = SDL_GetTicks();
+
+	ms = r_time2 - r_time1;
+
+	snprintf(stbuf, sizeof(stbuf),
+		"%5i ms %4i nodes %4i wpoly %4i epoly %4i tex %2i 3D draw %3i 2D draw",
+		ms, r_currentkey, c_brush_polys, c_alias_polys, c_visible_textures,
+		num3D, num2D);
+
+	return stbuf;
+}
+
 /*
 ================
 RE_RenderView
@@ -916,20 +950,6 @@ RE_RenderView(const refdef_t *fd)
 	R_DrawAlphaSurfaces();
 
 	R_Flash();
-
-	if (r_speeds->value)
-	{
-		size_t r_time2;
-		int ms;
-
-		r_time2 = SDL_GetTicks();
-
-		ms = r_time2 - r_time1;
-
-		Com_Printf("%5i ms %4i nodes %4i wpoly %4i epoly %i tex %i lmaps\n",
-				ms, r_currentkey, c_brush_polys, c_alias_polys, c_visible_textures,
-				c_visible_lightmaps);
-	}
 }
 
 qboolean RE_EndWorldRenderpass(void)
@@ -951,13 +971,6 @@ qboolean RE_EndWorldRenderpass(void)
 
 	world_rendered = true;
 
-	// finish rendering world view to offsceen buffer
-	vkCmdEndRenderPass(vk_activeCmdbuffer);
-
-	// apply postprocessing effects to offscreen buffer:
-	//	* underwater view warp if the player is submerged in liquid
-	//	* restore world view to the full screen size when vk_pixel_size is >1.0
-	QVk_BeginRenderpass(RP_WORLD_WARP);
 	float underwaterTime;
 	if (vk_underwater->value)
 	{
@@ -967,6 +980,29 @@ qboolean RE_EndWorldRenderpass(void)
 	{
 		underwaterTime = 0.f;
 	};
+
+	// let the next frame know whether the warp pass will have work to do
+	world_warp_wanted = (underwaterTime > 0.f);
+
+	// finish rendering world view to offsceen buffer
+	vkCmdEndRenderPass(vk_activeCmdbuffer);
+
+	if (vk_skipWorldWarp)
+	{
+		// nothing to warp and nothing to upscale, the pass would copy
+		// vk_colorbuffer to vk_colorbufferWarp pixel for pixel; the
+		// postprocess step reads vk_colorbuffer directly instead
+
+		// start drawing UI
+		QVk_BeginRenderpass(RP_UI);
+
+		return true;
+	}
+
+	// apply postprocessing effects to offscreen buffer:
+	//	* underwater view warp if the player is submerged in liquid
+	//	* restore world view to the full screen size when vk_pixel_size is >1.0
+	QVk_BeginRenderpass(RP_WORLD_WARP);
 	float pushConsts[] =
 	{
 		underwaterTime,
@@ -991,6 +1027,7 @@ qboolean RE_EndWorldRenderpass(void)
 	vkCmdSetViewport(vk_activeCmdbuffer, 0u, 1u, &vk_viewport);
 	vkCmdSetScissor(vk_activeCmdbuffer, 0u, 1u, &vk_scissor);
 	vkCmdDraw(vk_activeCmdbuffer, 3, 1, 0, 0);
+	vk_num2Ddraws++;
 	vkCmdEndRenderPass(vk_activeCmdbuffer);
 
 	// start drawing UI
@@ -1013,14 +1050,29 @@ R_SetVulkan2D(const VkViewport* viewport, const VkRect2D* scissor)
 
 	// first, blit offscreen color buffer with warped/postprocessed world view
 	// skip this step if we're in player config screen since it uses RP_UI and draws directly to swapchain
-	if (!(r_newrefdef.rdflags & RDF_NOWORLDMODEL))
+	// and when the world was drawn into the swapchain image already
+	if (!(r_newrefdef.rdflags & RDF_NOWORLDMODEL) && !vk_worldDirectRender)
 	{
-		float pushConsts[] = { vk_postprocess->value, (2.1 - vid_gamma->value)};
+		// the shader also reads the screen size and offset, and the warp
+		// pass that used to leave them behind in the push constants does
+		// not always run
+		float pushConsts[] = {
+			vk_postprocess->value,
+			(2.1 - vid_gamma->value),
+			vid.width,
+			vid.height,
+			vk_viewport.x,
+			vk_viewport.y,
+		};
 		vkCmdPushConstants(vk_activeCmdbuffer, vk_postprocessPipeline.layout,
 			VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float), sizeof(pushConsts), pushConsts);
-		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_postprocessPipeline.layout, 0, 1, &vk_colorbufferWarp.descriptorSet, 0, NULL);
+		const VkDescriptorSet *worldView = vk_skipWorldWarp ?
+			&vk_colorbuffer.descriptorSet : &vk_colorbufferWarp.descriptorSet;
+
+		vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_postprocessPipeline.layout, 0, 1, worldView, 0, NULL);
 		QVk_BindPipeline(&vk_postprocessPipeline);
 		vkCmdDraw(vk_activeCmdbuffer, 3, 1, 0, 0);
+		vk_num2Ddraws++;
 	}
 }
 
@@ -1097,6 +1149,7 @@ R_Register(void)
 	vk_particle_max_size = ri.Cvar_Get("vk_particle_max_size", "40", CVAR_ARCHIVE);
 	vk_custom_particles = ri.Cvar_Get("vk_custom_particles", "1", CVAR_ARCHIVE);
 	vk_postprocess = ri.Cvar_Get("vk_postprocess", "1", CVAR_ARCHIVE);
+	vk_directrender = ri.Cvar_Get("vk_directrender", "1", CVAR_ARCHIVE);
 	vk_texturemode = ri.Cvar_Get("vk_texturemode", "VK_MIPMAP_LINEAR", CVAR_ARCHIVE);
 	vk_lmaptexturemode = ri.Cvar_Get("vk_lmaptexturemode", "VK_MIPMAP_LINEAR", CVAR_ARCHIVE);
 	vk_mip_nearfilter = ri.Cvar_Get("vk_mip_nearfilter", "0", CVAR_ARCHIVE);
@@ -1326,6 +1379,23 @@ RE_BeginFrame(float camera_separation)
 
 	if (QVk_BeginFrame(&vk_viewport, &vk_scissor) == VK_SUCCESS)
 	{
+		// with nothing to warp and nothing to upscale the warp pass is a
+		// plain full screen copy, so leave it out of the frame entirely
+		vk_skipWorldWarp = !world_warp_wanted &&
+			vk_pixel_size->value <= 1.0f &&
+			vk_viewport.x == 0.f && vk_viewport.y == 0.f;
+
+		// and with no offscreen work left at all the world can go straight
+		// into the swapchain image, dropping the last full screen copy.
+		// A reduced viewsize draws the world into part of the screen and
+		// leaves the rest holding whatever the offscreen buffer still had,
+		// which the swapchain images cannot reproduce, so it keeps the old
+		// path as well.
+		vk_worldDirectRender = vk_skipWorldWarp &&
+			vk_directrender->value &&
+			viewsize->value >= 100.0f &&
+			!QVk_WorldIsMultisampled();
+
 		QVk_BeginRenderpass(RP_WORLD);
 		vkCmdSetDepthBias(vk_activeCmdbuffer, 0.0f, 0.0f, 0.0f);
 	}
@@ -1339,6 +1409,17 @@ RE_EndFrame
 static void
 RE_EndFrame(void)
 {
+	if (r_speeds->value)
+	{
+		float factor = 1.0f; // TODO: like SCR_GetConsoleScale()
+		const char *msg;
+
+		msg = R_GetSpeedString();
+		RE_Draw_StringScaled(10, 5, factor, true, msg);
+		Com_DPrintf("%s\n", msg);
+		QVk_Draw2DCallsRender();
+	}
+
 	QVk_EndFrame(false);
 
 	// world has not rendered yet
@@ -1389,13 +1470,8 @@ R_DrawBeam(entity_t *currententity )
 	vec3_t start_points[NUM_BEAM_SEGS], end_points[NUM_BEAM_SEGS];
 	vec3_t oldorigin, origin;
 
-	oldorigin[0] = currententity->oldorigin[0];
-	oldorigin[1] = currententity->oldorigin[1];
-	oldorigin[2] = currententity->oldorigin[2];
-
-	origin[0] = currententity->origin[0];
-	origin[1] = currententity->origin[1];
-	origin[2] = currententity->origin[2];
+	VectorCopy(currententity->oldorigin, oldorigin);
+	VectorCopy(currententity->origin, origin);
 
 	normalized_direction[0] = direction[0] = oldorigin[0] - origin[0];
 	normalized_direction[1] = direction[1] = oldorigin[1] - origin[1];
@@ -1461,6 +1537,7 @@ R_DrawBeam(entity_t *currententity )
 	vkCmdBindDescriptorSets(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vk_drawBeamPipeline.layout, 0, 1, &uboDescriptorSet, 1, &uboOffset);
 	vkCmdBindVertexBuffers(vk_activeCmdbuffer, 0, 1, &vbo, &vboOffset);
 	vkCmdDraw(vk_activeCmdbuffer, NUM_BEAM_SEGS * 4, 1, 0, 0);
+	vk_num3Ddraws++;
 }
 
 //===================================================================

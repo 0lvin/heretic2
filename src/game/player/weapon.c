@@ -739,6 +739,13 @@ NoAmmoWeaponChange(edict_t *ent)
 		return;
 	}
 
+	if (ent->client->pers.inventory[ITEM_INDEX(FindItem("mag slug"))] &&
+		ent->client->pers.inventory[ITEM_INDEX(FindItem("phalanx"))])
+	{
+		ent->client->newweapon = FindItem("phalanx");
+		return;
+	}
+
 	ent->client->newweapon = FindItem("blaster");
 }
 
@@ -1931,7 +1938,7 @@ Weapon_Pistol_Fire(edict_t *ent)
 {
 	vec3_t forward, right;
 	vec3_t start, offset;
-	int damage = 20; // Example damage, adjust as needed
+	int damage = 30;
 
 	if (!ent)
 	{
@@ -1951,7 +1958,7 @@ Weapon_Pistol_Fire(edict_t *ent)
 	VectorScale(forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fire_bball(ent, start, forward, damage, 1000);
+	fire_pistol_bolt(ent, start, forward, damage, 1000);
 
 	gi.WriteByte(svc_muzzleflash);
 	gi.WriteShort(ent - g_edicts);
@@ -3826,6 +3833,244 @@ Weapon_FlareGun(edict_t *ent)
 		fire_frames, weapon_flaregun_fire);
 }
 
+static qboolean
+Weapon_Has_Ammo(edict_t *ent)
+{
+	const gclient_t *client;
+
+	if (!ent || !ent->client)
+	{
+		return false;
+	}
+
+	client = ent->client;
+
+	if (client->pers.inventory[client->ammo_index] < client->pers.weapon->quantity)
+	{
+		if (level.time >= ent->pain_debounce_time)
+		{
+			gi.sound(ent, CHAN_VOICE, gi.soundindex(
+						"weapons/noammo.wav"), 1, ATTN_NORM, 0);
+			ent->pain_debounce_time = level.time + 1;
+		}
+
+		NoAmmoWeaponChange(ent);
+		return false;
+	}
+
+	G_RemoveAmmo(ent);
+
+	return true;
+}
+
+static void
+Weapon_Deatomizer_Fire(edict_t *ent)
+{
+	int damage;
+	vec3_t	offset;
+	vec3_t	start;
+	vec3_t	forward;
+	vec3_t	right;
+	float	volume;
+
+	if (!Weapon_Has_Ammo(ent))
+	{
+		return;
+	}
+
+	if (deathmatch->value)
+	{
+		damage = (randk() % 30) + 90;
+	}
+	else
+	{
+		damage = (randk() % 80) + 120;
+	}
+
+	if (is_quad)
+	{
+		damage *= 4;
+	}
+
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+	VectorSet(offset, 16, 8, ent->viewheight - 8);
+	P_ProjectSource(ent, offset, forward, right, start);
+
+	VectorScale(forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	fire_deatom(ent, start, forward, damage, 1000);
+
+	/* send muzzle flash */
+	gi.WriteByte(svc_muzzleflash);
+
+	if (ent->client->oldplayer)
+	{
+		gi.WriteShort(ent->client->oldplayer - g_edicts);
+	}
+	else
+	{
+		gi.WriteShort(ent - g_edicts);
+	}
+
+	gi.WriteByte(MZ_RAILGUN | is_silenced);
+
+	if (ent->client->oldplayer)
+	{
+		gi.multicast(ent->client->oldplayer->s.origin, MULTICAST_PVS);
+	}
+	else
+	{
+		gi.multicast(ent->s.origin, MULTICAST_PVS);
+	}
+
+	volume = is_silenced ? 0.5f : 1.0f;
+	gi.sound(ent, CHAN_VOICE, gi.soundindex("deatom/dfire.wav"), volume,
+		ATTN_NORM, 0);
+
+	PlayerNoise(ent, start, PNOISE_WEAPON);
+
+	ent->client->ps.gunframe++;
+}
+
+static void
+Weapon_Plasma_Fire(edict_t *ent, vec3_t g_offset, int damage,
+		int plasma_mode)
+{
+	vec3_t offset, start, forward, right;
+
+	if (!Weapon_Has_Ammo(ent))
+	{
+		return;
+	}
+
+	if (is_quad)
+	{
+		damage *= 4;
+	}
+
+	AngleVectors(ent->client->v_angle, forward, right, NULL);
+
+	VectorSet(offset, g_offset[0] + 16, g_offset[1] + 8,
+		ent->viewheight - 8 + g_offset[2]);
+	P_ProjectSource(ent, offset, forward, right, start);
+
+	VectorScale(forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	fire_plasma_bolt(ent, start, forward, damage, 2000, plasma_mode);
+
+	gi.WriteByte(svc_muzzleflash);
+	gi.WriteShort(ent - g_edicts);
+	gi.WriteByte(MZ_BLASTER2 | is_silenced);
+	gi.multicast(ent->s.origin, MULTICAST_PVS);
+
+	PlayerNoise(ent, start, PNOISE_WEAPON);
+}
+
+static void
+Weapon_PlasmaPistol_Fire(edict_t *ent)
+{
+	vec3_t offset = {16, 0, 4};
+	float volume;
+	int damage;
+
+	if (deathmatch->value)
+	{
+		damage = 15;
+	}
+	else
+	{
+		damage = 10;
+	}
+
+	Weapon_Plasma_Fire(ent, offset, damage, 0);
+	ent->client->ps.gunframe++;
+
+	volume = is_silenced ? 0.5f : 1.0f;
+	gi.sound(ent, CHAN_VOICE, gi.soundindex("plasma1/fire.wav"), volume, ATTN_NORM, 0);
+}
+
+static void
+Weapon_PlasmaRifle_Fire(edict_t *ent)
+{
+	vec3_t offset = {0};
+	float volume;
+	int damage;
+
+	if (deathmatch->value)
+	{
+		damage = 50;
+	}
+	else
+	{
+		damage = 35;
+	}
+
+	Weapon_Plasma_Fire(ent, offset, damage, 1);
+	ent->client->ps.gunframe++;
+
+	volume = is_silenced ? 0.5f : 1.0f;
+	gi.sound(ent, CHAN_VOICE, gi.soundindex("plasma2/fire.wav"), volume, ATTN_NORM, 0);
+}
+
+static void
+Weapon_Hellfury_Fire(edict_t *ent)
+{
+	vec3_t offset, start, forward, right, up;
+	int damage, splash;
+
+	if (!Weapon_Has_Ammo(ent))
+	{
+		return;
+	}
+
+	damage = 50 + frandk() * 5.0;
+	splash = 60;
+
+	if (is_quad)
+	{
+		damage *= 4;
+		splash *= 4;
+	}
+
+	AngleVectors(ent->client->v_angle, forward, right, up);
+	VectorCopy(forward, ent->movedir);
+	VectorCopy(right, ent->pos1);
+	VectorCopy(up, ent->pos2);
+	VectorScale(forward, -2, ent->client->kick_origin);
+	ent->client->kick_angles[0] = -1;
+
+	if (ent->client->ps.gunframe == 15)
+	{
+		VectorSet (offset, 8, 12, ent->viewheight - 8);
+	}
+	else if (ent->client->ps.gunframe == 16)
+	{
+		VectorSet (offset, 10, 12, ent->viewheight - 8);
+	}
+	else if (ent->client->ps.gunframe == 17)
+	{
+		VectorSet(offset, 10, 10, ent->viewheight - 8);
+	}
+	else
+	{
+		VectorSet(offset, 8, 10, ent->viewheight - 8);
+	}
+
+	P_ProjectSource(ent, offset, forward, right, start);
+	fire_hellfury_projectile(ent, start, forward, damage, 900, 100.0f,
+		splash);
+
+	gi.WriteByte(svc_muzzleflash);
+	gi.WriteShort(ent - g_edicts);
+	gi.WriteByte(MZ_ROCKET | is_silenced);
+	gi.multicast(ent->s.origin, MULTICAST_PVS);
+
+	ent->client->ps.gunframe++;
+	PlayerNoise(ent, start, PNOISE_WEAPON);
+}
+
 void
 Weapon_DynamicWeapon(edict_t *ent)
 {
@@ -3896,7 +4141,7 @@ Weapon_DynamicWeapon(edict_t *ent)
 		static const int fire_frames[] = {12, 0};
 
 		Weapon_Generic(ent, 11, 21, 43, 49, pause_frames,
-				fire_frames, Weapon_Blaster_Fire);
+				fire_frames, Weapon_Deatomizer_Fire);
 	}
 	else if (!strcmp(ent->client->pers.weapon->classname, "weapon_hellfury"))
 	{
@@ -3904,7 +4149,7 @@ Weapon_DynamicWeapon(edict_t *ent)
 		static const int fire_frames[] = {15, 16, 17, 18, 0};
 
 		Weapon_Generic(ent, 14, 27, 40, 48, pause_frames,
-				fire_frames, Weapon_Blaster_Fire);
+				fire_frames, Weapon_Hellfury_Fire);
 	}
 	else if (!strcmp(ent->client->pers.weapon->classname, "weapon_plasma_pistol"))
 	{
@@ -3912,7 +4157,7 @@ Weapon_DynamicWeapon(edict_t *ent)
 		static const int fire_frames[] = {7, 0};
 
 		Weapon_Generic(ent, 6, 11, 32, 40, pause_frames,
-				fire_frames, Weapon_Blaster_Fire);
+				fire_frames, Weapon_PlasmaPistol_Fire);
 	}
 	else if (!strcmp(ent->client->pers.weapon->classname, "weapon_plasma_rifle"))
 	{
@@ -3920,7 +4165,7 @@ Weapon_DynamicWeapon(edict_t *ent)
 		static const int fire_frames[] = {9, 0};
 
 		Weapon_Generic(ent, 7, 10, 24, 32, pause_frames,
-				fire_frames, Weapon_Blaster_Fire);
+				fire_frames, Weapon_PlasmaRifle_Fire);
 	}
 	/* Some other mod */
 	else

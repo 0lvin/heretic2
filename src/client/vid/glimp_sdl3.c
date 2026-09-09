@@ -210,8 +210,19 @@ CreateSDLWindow(SDL_WindowFlags flags, int fullscreen, int w, int h)
 			{
 				if (SDL_GetClosestFullscreenDisplayMode(displays[last_display], w, h, 0, true, &closestMode) != true)
 				{
-					Com_Printf("SDL was unable to find a mode close to %ix%i@0\n", w, h);
-					return false;
+					const SDL_DisplayMode *mode;
+
+					if ((mode = SDL_GetDesktopDisplayMode(displays[last_display])) == NULL)
+					{
+						Com_Printf("Couldn't get current display mode: %s\n", SDL_GetError());
+						Com_Printf("SDL was unable to find a mode close to %ix%i@0\n", w, h);
+						return false;
+					}
+					else
+					{
+						Com_Printf("Used desktop as near mode %ix%i@%f\n", mode->w, mode->h, mode->refresh_rate);
+						memcpy(&closestMode, mode, sizeof(closestMode));
+					}
 				}
 			}
 
@@ -541,8 +552,15 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 	SDL_WindowFlags flags;
 	SDL_WindowFlags fs_flag = 0;
 	int curWidth, curHeight;
-	int width = *pwidth;
-	int height = *pheight;
+	int width, height;
+
+	if (!pwidth || !pheight || !(*pwidth) || !(*pheight))
+	{
+		return false;
+	}
+
+	width = *pwidth;
+	height = *pheight;
 
 	if (fullscreen == FULLSCREEN_EXCLUSIVE || fullscreen == FULLSCREEN_DESKTOP)
 	{
@@ -556,12 +574,11 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 	if (initSuccessful && GetWindowSize(&curWidth, &curHeight)
 			&& (curWidth == width) && (curHeight == height))
 	{
-		SDL_DisplayMode closestMode;
-
-
 		/* If we want fullscreen, but aren't */
 		if (GetFullscreenType())
 		{
+			SDL_DisplayMode closestMode = {0};
+
 			if (fullscreen == FULLSCREEN_EXCLUSIVE)
 			{
 				if (SDL_GetClosestFullscreenDisplayMode(displays[last_display], width, height, vid_rate->value, false, &closestMode) != true)
@@ -735,6 +752,39 @@ GLimp_InitGraphics(int fullscreen, int *pwidth, int *pheight)
 	else
 	{
 		Com_Printf("Real display mode: %ix%i@%.2f\n", mode->w, mode->h, mode->refresh_rate);
+
+		if (fullscreen == FULLSCREEN_EXCLUSIVE &&
+			(*pheight != mode->h ||
+			 *pwidth != mode->w))
+		{
+			int w;
+
+			w = mode->h * (*pwidth) / (float)(*pheight);
+			if (w < mode->w)
+			{
+				/* Requested aspect ratio is narrower than the display */
+				*pwidth = w;
+				*pheight = mode->h;
+			}
+			else
+			{
+				/* Requested aspect ratio is wider than the display */
+				*pheight = mode->w * (*pheight) / (float)(*pwidth);
+				*pwidth = mode->w;
+			}
+
+			if (*pwidth > mode->w)
+			{
+				*pwidth = mode->w;
+			}
+
+			if (*pheight > mode->h)
+			{
+				*pheight = mode->h;
+			}
+
+			Com_Printf("Preserved aspect ratio: %ix%i\n", *pwidth, *pheight);
+		}
 	}
 
 

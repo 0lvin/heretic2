@@ -475,6 +475,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/assassin/assassin.c
 	${GAME_SRC_DIR}/monster/beast/beast_anim.c
 	${GAME_SRC_DIR}/monster/beast/beast.c
+	${GAME_SRC_DIR}/monster/badass/badass.c
 	${GAME_SRC_DIR}/monster/berserker/berserker.c
 	${GAME_SRC_DIR}/monster/berserker/berserker.h
 	${GAME_SRC_DIR}/monster/boss2/boss2.c
@@ -492,6 +493,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/chick/chick.h
 	${GAME_SRC_DIR}/monster/chicken/chicken_anim.c
 	${GAME_SRC_DIR}/monster/chicken/chicken.c
+	${GAME_SRC_DIR}/monster/cyborg/cyborg.c
 	${GAME_SRC_DIR}/monster/demon/demon.c
 	${GAME_SRC_DIR}/monster/dog/dog.c
 	${GAME_SRC_DIR}/monster/elflord/elflord_anims.c
@@ -526,6 +528,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/infantry/infantry.h
 	${GAME_SRC_DIR}/monster/insane/insane.c
 	${GAME_SRC_DIR}/monster/insane/insane.h
+	${GAME_SRC_DIR}/monster/kigrax/kigrax.c
 	${GAME_SRC_DIR}/monster/knight/knight.c
 	${GAME_SRC_DIR}/monster/medic/medic.c
 	${GAME_SRC_DIR}/monster/medic/medic.h
@@ -566,6 +569,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/spreader/spreadermist.c
 	${GAME_SRC_DIR}/monster/stalker/stalker.c
 	${GAME_SRC_DIR}/monster/stats/stats.c
+	${GAME_SRC_DIR}/monster/spider/spider.c
 	${GAME_SRC_DIR}/monster/supertank/supertank.c
 	${GAME_SRC_DIR}/monster/supertank/supertank.h
 	${GAME_SRC_DIR}/monster/tank/tank.c

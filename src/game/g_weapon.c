@@ -374,8 +374,58 @@ fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 	}
 }
 
-void
-bball_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
+static void
+pistol_bolt_think(edict_t *self)
+{
+	vec3_t back1, back2, back3, dir;
+
+	if (!self)
+	{
+		return;
+	}
+
+	if (level.time >= self->timestamp)
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	/* Spark trails: 3 specific coordinates trailing behind
+	 * (-10, -35, -60 units back) */
+	VectorNormalize2(self->velocity, dir);
+	VectorMA(self->s.origin, -10, dir, back1);
+	VectorMA(self->s.origin, -35, dir, back2);
+	VectorMA(self->s.origin, -60, dir, back3);
+
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_LASER_SPARKS);
+	gi.WriteByte(2);
+	gi.WritePosition(back1);
+	gi.WriteDir(vec3_origin);
+	gi.WriteByte(0);
+	gi.multicast(back1, MULTICAST_PVS);
+
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_LASER_SPARKS);
+	gi.WriteByte(2);
+	gi.WritePosition(back2);
+	gi.WriteDir(vec3_origin);
+	gi.WriteByte(0);
+	gi.multicast(back2, MULTICAST_PVS);
+
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_LASER_SPARKS);
+	gi.WriteByte(2);
+	gi.WritePosition(back3);
+	gi.WriteDir(vec3_origin);
+	gi.WriteByte(0);
+	gi.multicast(back3, MULTICAST_PVS);
+
+	self->nextthink = level.time + 0.1;
+}
+
+static void
+pistol_bolt_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
 {
 	vec3_t normal;
 
@@ -401,30 +451,36 @@ bball_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface
 		PlayerNoise(self->owner, self->s.origin, PNOISE_IMPACT);
 	}
 
+	/* spark */
 	get_normal_vector(plane, normal);
+	gi.WriteByte(svc_temp_entity);
+	gi.WriteByte(TE_LASER_SPARKS);
+	gi.WriteByte(28);
+	gi.WritePosition(self->s.origin);
+	gi.WriteDir(normal);
+	gi.WriteByte(0xb0);
+	gi.multicast(self->s.origin, MULTICAST_PVS);
 
-	if (other->takedamage)
-	{
-		T_Damage(other, self, self->owner, self->velocity, self->s.origin,
-				normal, self->dmg, 1, 0, MOD_UNKNOWN);
-	}
+	/* Impact audio effect */
+	gi.sound(self, CHAN_AUTO, gi.soundindex("weapons/lashit.wav"), 1, ATTN_NORM, 0);
 
-	else
-	{
-		gi.WriteByte(svc_temp_entity);
-		gi.WriteByte(TE_LASER_SPARKS);
-		gi.WriteByte(8);
-		gi.WritePosition(self->s.origin);
-		gi.WriteDir(normal);
-		gi.WriteByte(self->s.skinnum);
-		gi.multicast(self->s.origin, MULTICAST_PVS);
-	}
+	/* Area of effect damage (90-unit radius, 30 damage) */
+	T_RadiusDamage(self, self->owner, self->dmg, other, 90, MOD_UNKNOWN);
 
-	G_FreeEdict(self);
+	/* Swap visual mesh to detonation/explosion model and trigger
+	 * animation / destruction */
+	self->s.modelindex = gi.modelindex("models/objects/disch2/tris.md2");
+	VectorClear(self->velocity);
+	self->movetype = MOVETYPE_NONE;
+	self->solid = SOLID_NOT;
+
+	self->s.frame = 0;
+	self->think = G_FreeEdict;
+	self->nextthink = level.time + 0.3; /* 3 frames at 0.1s each */
 }
 
 void
-fire_bball(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed)
+fire_pistol_bolt(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed)
 {
 	edict_t *bolt;
 
@@ -434,24 +490,30 @@ fire_bball(edict_t *self, vec3_t start, vec3_t dir, int damage, int speed)
 	}
 
 	bolt = G_Spawn();
+	VectorCopy(self->rrs.scale, bolt->rrs.scale);
 	VectorCopy(start, bolt->s.origin);
 	VectorCopy(dir, bolt->movedir);
 	vectoangles(dir, bolt->s.angles);
-	VectorScale(dir, (float)speed, bolt->velocity);
+	VectorScale(dir, speed, bolt->velocity);
 
 	bolt->movetype = MOVETYPE_FLYMISSILE;
 	bolt->clipmask = MASK_SHOT;
 	bolt->solid = SOLID_BBOX;
 
+	VectorSet(bolt->avelocity, randk() % 1200, randk() % 1200, randk() % 1200);
+
 	bolt->owner = self;
 	bolt->dmg = damage;
-	bolt->classname = "bolt";
+	bolt->classname = "obj_bolt";
 	bolt->s.modelindex = gi.modelindex("models/objects/bball/tris.md2");
 	bolt->s.sound = gi.soundindex("misc/lasfly.wav");
+	bolt->s.effects |= EF_BLUEHYPERBLASTER;
 
-	bolt->touch = bball_touch;
-	bolt->think = G_FreeEdict;
-	bolt->nextthink = level.time + 2;
+	bolt->touch = pistol_bolt_touch;
+	bolt->think = pistol_bolt_think;
+	bolt->nextthink = level.time + 0.1;
+	/* Maximum lifespan: 8.0 seconds */
+	bolt->timestamp = level.time + 8.0;
 
 	gi.linkentity(bolt);
 }
@@ -518,9 +580,10 @@ blaster_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurfa
 }
 
 void
-fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
+fire_blaster(edict_t *self, const vec3_t start, const vec3_t aimdir, int damage,
 		int speed, int effect, qboolean hyper)
 {
+	vec3_t forward;
 	edict_t *bolt;
 	trace_t tr;
 
@@ -529,7 +592,8 @@ fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 		return;
 	}
 
-	VectorNormalize(dir);
+	VectorCopy(aimdir, forward);
+	VectorNormalize(forward);
 
 	bolt = G_Spawn();
 	bolt->svflags = SVF_DEADMONSTER;
@@ -542,8 +606,8 @@ fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 	VectorCopy(self->rrs.scale, bolt->rrs.scale);
 	VectorCopy(start, bolt->s.origin);
 	VectorCopy(start, bolt->s.old_origin);
-	vectoangles(dir, bolt->s.angles);
-	VectorScale(dir, speed, bolt->velocity);
+	vectoangles(forward, bolt->s.angles);
+	VectorScale(forward, speed, bolt->velocity);
 	bolt->movetype = MOVETYPE_FLYMISSILE;
 	bolt->clipmask = MASK_SHOT;
 	bolt->solid = SOLID_BBOX;
@@ -569,22 +633,23 @@ fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 
 	if (self->client)
 	{
-		check_dodge(self, bolt->s.origin, dir, speed);
+		check_dodge(self, bolt->s.origin, forward, speed);
 	}
 
 	tr = gi.trace(self->s.origin, NULL, NULL, bolt->s.origin, bolt, MASK_SHOT);
 
 	if (tr.fraction < 1.0)
 	{
-		VectorMA(bolt->s.origin, -10, dir, bolt->s.origin);
+		VectorMA(bolt->s.origin, -10, forward, bolt->s.origin);
 		bolt->touch(bolt, tr.ent, NULL, NULL);
 	}
 }
 
 void
-fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
+fire_blueblaster(edict_t *self, const vec3_t start, const vec3_t aimdir, int damage,
 		int speed, int effect)
 {
+	vec3_t forward;
 	edict_t *bolt;
 	trace_t tr;
 
@@ -593,14 +658,15 @@ fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 		return;
 	}
 
-	VectorNormalize(dir);
+	VectorCopy(aimdir, forward);
+	VectorNormalize(forward);
 
 	bolt = G_Spawn();
 	VectorCopy(self->rrs.scale, bolt->rrs.scale);
 	VectorCopy(start, bolt->s.origin);
 	VectorCopy(start, bolt->s.old_origin);
-	vectoangles(dir, bolt->s.angles);
-	VectorScale(dir, speed, bolt->velocity);
+	vectoangles(forward, bolt->s.angles);
+	VectorScale(forward, speed, bolt->velocity);
 	bolt->movetype = MOVETYPE_FLYMISSILE;
 	bolt->clipmask = MASK_SHOT;
 	bolt->solid = SOLID_BBOX;
@@ -620,14 +686,14 @@ fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 
 	if (self->client)
 	{
-		check_dodge(self, bolt->s.origin, dir, speed);
+		check_dodge(self, bolt->s.origin, forward, speed);
 	}
 
 	tr = gi.trace(self->s.origin, NULL, NULL, bolt->s.origin, bolt, MASK_SHOT);
 
 	if (tr.fraction < 1.0)
 	{
-		VectorMA(bolt->s.origin, -10, dir, bolt->s.origin);
+		VectorMA(bolt->s.origin, -10, forward, bolt->s.origin);
 		bolt->touch(bolt, tr.ent, NULL, NULL);
 	}
 }
@@ -2114,4 +2180,394 @@ fire_flaregun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 	flare->classname = "flare";
 	flare->timestamp = level.time + 15; /* live for 15 seconds */
 	gi.linkentity(flare);
+}
+
+static void
+deatom_think(edict_t *self)
+{
+	vec3_t	target_dir;
+	vec3_t	perp;
+	vec3_t	new_dir;
+	float	dot;
+	float	scale;
+
+	self->s.frame = (self->s.frame + 2) % 15;
+
+	if (!self->target_ent || !self->target_ent->client)
+	{
+		self->target_ent = NULL;
+		self->think = G_FreeEdict;
+		self->nextthink = level.time + 60.0f;
+		return;
+	}
+
+	VectorCopy(self->target_ent->s.origin, target_dir);
+	target_dir[2] += self->target_ent->viewheight;
+	VectorSubtract(target_dir, self->s.origin, target_dir);
+	VectorNormalize(target_dir);
+
+	dot = DotProduct(target_dir, self->movedir);
+	if (dot <= 0.85f)
+	{
+		self->nextthink = level.time + 60.0f;
+		return;
+	}
+
+	VectorMA(target_dir, -dot, self->movedir, perp);
+
+	scale = deathmatch->value ? 0.5f : 0.25f;
+	VectorMA(self->movedir, scale, perp, new_dir);
+	VectorNormalize(new_dir);
+
+	VectorCopy(new_dir, self->movedir);
+	vectoangles(new_dir, self->s.angles);
+	VectorScale(new_dir, self->speed, self->velocity);
+
+	self->nextthink = level.time + 0.1f;
+}
+
+static void
+deatom_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
+{
+	if (other == self->owner)
+	{
+		return;
+	}
+
+	if (surf && (surf->flags & SURF_SKY))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	if (self->owner && self->owner->client)
+	{
+		PlayerNoise(self->owner, self->s.origin, PNOISE_IMPACT);
+	}
+
+	gi.sound(self, CHAN_VOICE, gi.soundindex("deatom/dimpact.wav"), 1, ATTN_NORM,
+		0);
+
+	if (other->takedamage)
+	{
+		vec3_t normal;
+
+		if (plane)
+		{
+			VectorCopy(plane->normal, normal);
+		}
+		else
+		{
+			VectorClear(normal);
+		}
+
+		T_Damage(other, self, self->owner, self->velocity, self->s.origin, normal,
+			self->dmg, 1, DAMAGE_ENERGY, MOD_DISINTEGRATOR);
+	}
+
+	if (other == g_edicts)
+	{
+		vec3_t normal;
+
+		get_normal_vector(plane, normal);
+
+		gi.WriteByte(svc_temp_entity);
+		gi.WriteByte(TE_BLUEHYPERBLASTER);
+		gi.WritePosition(self->s.origin);
+		gi.WriteDir(normal);
+		gi.multicast(self->s.origin, MULTICAST_PVS);
+	}
+
+	G_FreeEdict(self);
+}
+
+void
+fire_deatom(edict_t *self, const vec3_t start, vec3_t aimdir, int damage, int speed)
+{
+	edict_t	*deatom;
+	edict_t	*ent;
+	edict_t	*best_ent;
+	trace_t	tr;
+	vec3_t	dir_to_ent;
+	float	best_dot;
+	float	best_dist;
+	float	dot;
+	float	dist;
+
+	VectorNormalize(aimdir);
+
+	deatom = G_Spawn();
+	VectorCopy(self->rrs.scale, deatom->rrs.scale);
+	deatom->svflags = SVF_DEADMONSTER;
+	VectorCopy(start, deatom->s.origin);
+	VectorCopy(start, deatom->s.old_origin);
+	VectorCopy(aimdir, deatom->movedir);
+	vectoangles(aimdir, deatom->s.angles);
+	VectorScale(aimdir, speed, deatom->velocity);
+	deatom->speed = speed;
+
+	deatom->movetype = MOVETYPE_FLYMISSILE;
+	deatom->solid = SOLID_BBOX;
+	deatom->clipmask = MASK_SHOT;
+
+	VectorClear(deatom->mins);
+	VectorClear(deatom->maxs);
+
+	deatom->s.effects = EF_HALF_DAMAGE | EF_FLAG2;
+	deatom->s.renderfx = RF_SHELL_BLUE | RF_FULLBRIGHT;
+	deatom->s.modelindex = gi.modelindex("models/objects/deatom/tris.md2");
+	deatom->s.sound = gi.soundindex("deatom/dfly.wav");
+	deatom->s.frame = 0;
+	deatom->avelocity[2] = 480.0f;
+
+	deatom->touch = deatom_touch;
+	deatom->owner = self;
+	deatom->dmg = damage;
+	deatom->classname = "deatom_bolt";
+
+	best_ent = NULL;
+	best_dot = 0.85f;
+	best_dist = 9999999.0f;
+
+	ent = NULL;
+	while ((ent = findradius(ent, deatom->s.origin, 1024.0f)) != NULL)
+	{
+		if (ent->takedamage != DAMAGE_YES)
+		{
+			continue;
+		}
+
+		if (!visible(deatom, ent))
+		{
+			continue;
+		}
+
+		VectorSubtract(ent->s.origin, deatom->s.origin, dir_to_ent);
+		dist = VectorNormalize(dir_to_ent);
+		dot = DotProduct(aimdir, dir_to_ent);
+
+		if (best_dot > 0.99f && dot > 0.99f && dist < best_dist)
+		{
+			best_dot = dot;
+			best_dist = dist;
+			best_ent = ent;
+			continue;
+		}
+
+		if (dot > best_dot)
+		{
+			best_dot = dot;
+			best_ent = ent;
+		}
+	}
+
+	deatom->target_ent = best_ent;
+
+	deatom->think = deatom_think;
+	deatom->nextthink = level.time + 0.1f;
+	gi.linkentity(deatom);
+
+	tr = gi.trace(self->s.origin, vec3_origin, vec3_origin, deatom->s.origin,
+		deatom, deatom->clipmask);
+	if (tr.fraction < 1.0f)
+	{
+		VectorMA(deatom->s.origin, -10.0f, aimdir, deatom->s.origin);
+		if (tr.ent == self)
+		{
+			G_FreeEdict(deatom);
+		}
+		else
+		{
+			deatom->touch(deatom, tr.ent, &tr.plane, tr.surface);
+		}
+	}
+}
+
+#define SPAWNFLAG_PLASMA_RIFLE 1
+
+static void
+plasma_bolt_touch(edict_t *self, edict_t *other, const cplane_t *plane, const csurface_t *surf)
+{
+	int rifle_mode;
+	vec3_t normal;
+
+	if (!self || !other)
+	{
+		return;
+	}
+
+	if (other == self->owner)
+	{
+		return;
+	}
+
+	rifle_mode = self->spawnflags & SPAWNFLAG_PLASMA_RIFLE;
+
+	if (surf && (surf->flags & SURF_SKY))
+	{
+		G_FreeEdict(self);
+		return;
+	}
+
+	if (self->owner && self->owner->client)
+	{
+		PlayerNoise(self->owner, self->s.origin, PNOISE_IMPACT);
+	}
+
+	gi.sound(self, CHAN_VOICE,
+		gi.soundindex(rifle_mode ? "plasma2/hit.wav" : "plasma1/hit.wav"),
+		1.0f, ATTN_NORM, 0.0f);
+
+	get_normal_vector(plane, normal);
+
+	if (other->takedamage)
+	{
+		T_Damage(other, self, self->owner, self->velocity, self->s.origin,
+				normal, self->dmg, 1, 0, rifle_mode ? MOD_PLASMA_RIFLE : MOD_PLASMA_PISTOL);
+	}
+	else
+	{
+		gi.WriteByte(svc_temp_entity);
+		gi.WriteByte(TE_BLASTER2);
+		gi.WritePosition(self->s.origin);
+		gi.WriteDir(normal);
+		gi.multicast(self->s.origin, MULTICAST_PVS);
+	}
+
+	G_FreeEdict(self);
+}
+
+void
+fire_plasma_bolt(edict_t *self, const vec3_t start, const vec3_t aimdir, int damage,
+	int speed, int plasma_type)
+{
+	vec3_t forward;
+	edict_t *bolt;
+	trace_t tr;
+
+	if (!self)
+	{
+		return;
+	}
+
+	VectorCopy(aimdir, forward);
+	VectorNormalize(forward);
+
+	bolt = G_Spawn();
+	VectorCopy(self->rrs.scale, bolt->rrs.scale);
+	VectorCopy(start, bolt->s.origin);
+	VectorCopy(start, bolt->s.old_origin);
+	vectoangles(forward, bolt->s.angles);
+	VectorScale(forward, speed, bolt->velocity);
+	bolt->movetype = MOVETYPE_FLYMISSILE;
+	bolt->solid = SOLID_BBOX;
+	bolt->clipmask = MASK_SHOT;
+
+	bolt->s.effects = EF_TRACKER | EF_COLOR_SHELL | EF_BLASTER;
+	bolt->s.renderfx |= RF_WEAPONMODEL | RF_FULLBRIGHT | RF_DEPTHHACK;
+	VectorClear(bolt->mins);
+	VectorClear(bolt->maxs);
+
+	bolt->s.modelindex = gi.modelindex(plasma_type ?
+		"models/objects/plasma/tris.md2" :
+		"models/objects/pistolplasma/tris.md2");
+	bolt->s.sound = gi.soundindex("misc/lasfly.wav");
+	bolt->owner = self;
+	bolt->touch = plasma_bolt_touch;
+	bolt->nextthink = level.time + 2;
+	bolt->think = G_FreeEdict;
+	bolt->dmg = damage;
+	bolt->classname = "bolt";
+
+	if (plasma_type)
+	{
+		bolt->spawnflags = SPAWNFLAG_PLASMA_RIFLE;
+	}
+
+	gi.linkentity(bolt);
+
+	if (self->client)
+	{
+		check_dodge(self, bolt->s.origin, forward, speed);
+	}
+
+	tr = gi.trace(self->s.origin, NULL, NULL, bolt->s.origin, bolt, MASK_SHOT);
+
+	if (tr.fraction < 1.0)
+	{
+		VectorMA(bolt->s.origin, -10, forward, bolt->s.origin);
+		bolt->touch(bolt, tr.ent, NULL, NULL);
+	}
+}
+
+static void
+hellfury_think(edict_t *self)
+{
+	vec3_t diff;
+
+	VectorCopy(self->move_origin, self->movedir);
+	VectorScale(self->pos1, frandk(), diff);
+	VectorAdd(self->movedir, diff, self->movedir);
+	VectorScale(self->pos2, frandk(), diff);
+	VectorAdd(self->movedir, diff, self->movedir);
+	VectorScale(self->movedir, self->speed, self->velocity);
+	vectoangles(self->movedir, self->s.angles);
+	self->nextthink = level.time + 0.2;
+
+	if ((level.time - self->timestamp) > 5)
+	{
+		self->think = G_FreeEdict;
+	}
+}
+
+void
+fire_hellfury_projectile(edict_t *self, const vec3_t start, const vec3_t aimdir, int damage,
+		int speed, float damage_radius, int radius_damage)
+{
+	vec3_t dir, right, up;
+	edict_t *rocket;
+
+	if (!self)
+	{
+		return;
+	}
+
+	VectorCopy(aimdir, dir);
+
+	rocket = G_Spawn();
+	VectorCopy(self->rrs.scale, rocket->rrs.scale);
+	VectorCopy(start, rocket->s.origin);
+	VectorCopy(start, rocket->s.old_origin);
+	VectorCopy(dir, rocket->move_origin);
+	vectoangles(dir, rocket->s.angles);
+	AngleVectors(rocket->s.angles, NULL, right, up);
+	VectorCopy(dir, rocket->movedir);
+	VectorScale(right, 0.1f, rocket->pos1);
+	VectorScale(up, 0.1f, rocket->pos2);
+	rocket->speed = (float) speed;
+	VectorScale(dir, speed, rocket->velocity);
+	rocket->movetype = MOVETYPE_FLYMISSILE;
+	rocket->clipmask = MASK_SHOT;
+	rocket->solid = SOLID_BBOX;
+	rocket->s.effects |= EF_ROCKET;
+	VectorClear(rocket->mins);
+	VectorClear(rocket->maxs);
+	rocket->s.modelindex = gi.modelindex("models/objects/rocket/tris.md2");
+	rocket->owner = self;
+	rocket->touch = rocket_touch;
+	rocket->nextthink = level.time + 0.2;
+	rocket->think = hellfury_think;
+	rocket->timestamp = level.time;
+	rocket->dmg = damage;
+	rocket->radius_dmg = radius_damage;
+	rocket->dmg_radius = damage_radius;
+	rocket->s.sound = gi.soundindex("weapons/rockfly.wav");
+	rocket->classname = "rocket";
+
+	if (self->client)
+	{
+		check_dodge(self, rocket->s.origin, dir, speed);
+	}
+
+	gi.linkentity(rocket);
 }

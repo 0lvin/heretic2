@@ -435,6 +435,7 @@ Vk_DrawAliasFrameLerp(entity_t *currententity, dmdx_t *paliashdr, float backlerp
 
 	vkCmdBindIndexBuffer(vk_activeCmdbuffer, **buffer, *dstOffset, VK_INDEX_TYPE_UINT16);
 	vkCmdDrawIndexed(vk_activeCmdbuffer, *index_pos, 1, 0, 0, 0);
+	vk_num3Ddraws++;
 }
 
 static void
@@ -706,6 +707,17 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 		VkDeviceSize vboOffset, vaoSize;
 		VkBuffer vbo;
 
+		/* calculate shadow vector based on lightspot */
+		VectorSubtract(lightspot, currententity->origin, shadevector);
+		shadevector[2] = 0;
+		/* Keep shadow on the ground plane */
+		VectorNormalize(shadevector);
+		/* Invert because we want shadow direction away from light */
+		VectorNegate(shadevector, shadevector);
+		shadevector[2] = 1;
+		/* Keep it normalized for the shadow math */
+		VectorNormalize(shadevector);
+
 		order = (int *)((byte *)paliashdr + paliashdr->ofs_glcmds);
 
 		num_mesh_nodes = paliashdr->num_meshes;
@@ -736,5 +748,6 @@ R_DrawAliasModel(entity_t *currententity, const model_t *currentmodel)
 
 		vkCmdBindIndexBuffer(vk_activeCmdbuffer, *buffer, dstOffset, VK_INDEX_TYPE_UINT16);
 		vkCmdDrawIndexed(vk_activeCmdbuffer, index_pos, 1, 0, 0, 0);
+		vk_num3Ddraws++;
 	}
 }

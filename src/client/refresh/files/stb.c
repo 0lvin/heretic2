@@ -933,6 +933,67 @@ GetTexImage(const char *name, findimage_t find_image)
 	return image;
 }
 
+#define PIC_CACHE_SIZE 128
+#define PIC_CACHE_BITS 7
+
+typedef struct
+{
+	char name[MAX_QPATH];
+	char path[MAX_QPATH];
+} piccache_t;
+
+typedef struct
+{
+	char name[MAX_QPATH];
+	qboolean warned;
+} picignore_t;
+
+static piccache_t pic_cache[PIC_CACHE_SIZE];
+static picignore_t pic_ignore[PIC_CACHE_SIZE];
+
+static uint32_t
+R_PicCacheSlot(const char *name)
+{
+	uint32_t key = 0;
+
+	while (*name)
+	{
+		key = key * 33 + (byte)*name;
+		name++;
+	}
+
+	return (key * 2654435761u) >> (32 - PIC_CACHE_BITS);
+}
+
+void
+R_PicPathCacheClean(void)
+{
+	memset(pic_cache, 0, sizeof(pic_cache));
+	memset(pic_ignore, 0, sizeof(pic_ignore));
+}
+
+qboolean
+R_PicIgnored(const char *name)
+{
+	picignore_t *ignore;
+
+	ignore = pic_ignore + R_PicCacheSlot(name);
+	if (strcmp(ignore->name, name))
+	{
+		Q_strlcpy(ignore->name, name, sizeof(ignore->name));
+		ignore->warned = false;
+	}
+
+	if (ignore->warned)
+	{
+		return true;
+	}
+
+	ignore->warned = true;
+
+	return false;
+}
+
 struct image_s *
 R_FindPic(const char *name, findimage_t find_image)
 {
@@ -943,6 +1004,28 @@ R_FindPic(const char *name, findimage_t find_image)
 		char	pathname[MAX_QPATH];
 		char	namewe[MAX_QPATH];
 		const char* ext;
+		piccache_t *cache;
+		picignore_t *ignore;
+		uint32_t slot;
+
+		slot = R_PicCacheSlot(name);
+		cache = pic_cache + slot;
+		ignore = pic_ignore + slot;
+
+		if (!strcmp(cache->name, name))
+		{
+			image = find_image(cache->path, it_pic);
+
+			if (image)
+			{
+				return image;
+			}
+		}
+
+		if (!strcmp(ignore->name, name))
+		{
+			return NULL;
+		}
 
 		ext = COM_FileExtension(name);
 		if (!ext[0])
@@ -989,6 +1072,22 @@ R_FindPic(const char *name, findimage_t find_image)
 		{
 			Com_sprintf(pathname, sizeof(pathname), "pics/misc/%s.m32", name);
 			image = find_image(pathname, it_pic);
+		}
+
+		if (image)
+		{
+			Q_strlcpy(cache->name, name, sizeof(cache->name));
+			Q_strlcpy(cache->path, pathname, sizeof(cache->path));
+		}
+		else
+		{
+			if (!strcmp(cache->name, name))
+			{
+				cache->name[0] = 0;
+			}
+
+			Q_strlcpy(ignore->name, name, sizeof(ignore->name));
+			ignore->warned = false;
 		}
 	}
 	else

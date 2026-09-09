@@ -758,6 +758,108 @@ SP_target_blaster(edict_t *self)
 /* ========================================================== */
 
 /*
+ * QUAKED target_railgun (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
+ *
+ * Oblivion: Fires a railgun in the set direction when triggered.
+ *
+ * dmg: default is 150
+ */
+
+void
+use_target_railgun(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	fire_rail(self, self->s.origin, self->movedir, self->dmg, 0);
+	gi.sound(self, CHAN_VOICE, self->noise_index, 1, ATTN_NORM, 0);
+}
+
+void
+SP_target_railgun(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = use_target_railgun;
+	G_SetMovedir(self->s.angles, self->movedir);
+	self->noise_index = gi.soundindex("weapons/railgf1a.wav");
+
+	if (!self->dmg)
+	{
+		self->dmg = 150;
+	}
+
+	self->svflags = SVF_NOCLIENT;
+}
+
+/* ========================================================== */
+
+/*
+ * QUAKED target_rocket (1 0 0) (-8 -8 -8) (8 8 8) NOTRAIL NOEFFECTS
+ *
+ * Oblivion: Fires a rocket in the set direction when triggered.
+ *
+ * count: default is 120
+ * dmg_radius: default is 120
+ * speed: default is 650
+ */
+
+void
+use_target_rocket(edict_t *self, edict_t *other /* unused */, edict_t *activator /* unused */)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	fire_rocket(self, self->s.origin, self->movedir, self->dmg, self->speed,
+		self->dmg_radius, self->count);
+	gi.sound (self, CHAN_VOICE, self->noise_index, 1, ATTN_NORM, 0);
+}
+
+void
+SP_target_rocket(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
+
+	self->use = use_target_rocket;
+	G_SetMovedir(self->s.angles, self->movedir);
+	self->noise_index = gi.soundindex ("weapons/rocklf1a.wav");
+
+	if (!self->dmg)
+	{
+		self->dmg = 100 + crandk() * 20.0f;
+	}
+
+	if (!self->count)
+	{
+		self->count = 120;
+	}
+
+	if (!self->dmg_radius)
+	{
+		self->dmg_radius = 120;
+	}
+
+	if (!self->speed)
+	{
+		self->speed = 650;
+	}
+
+	self->svflags = SVF_NOCLIENT;
+}
+
+/* ========================================================== */
+
+/*
  * QUAKED target_crosslevel_trigger (.5 .5 .5) (-8 -8 -8) (8 8 8) trigger1 trigger2 trigger3 trigger4 trigger5 trigger6 trigger7 trigger8
  *
  * Once this trigger is touched/used, any trigger_crosslevel_target

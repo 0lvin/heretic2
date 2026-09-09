@@ -235,14 +235,14 @@ weapon_plasmabeam|models/weapons/g_beamer/tris.md2|1.0|1.0|1.0|charfly|-15.0|-15
 weapon_proxlauncher|models/weapons/g_plaunch/tris.md2|1.0|1.0|1.0|charfly|-15.0|-15.0|-15.0|15.0|15.0|15.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Prox Launcher|1.0|0.3|0.3|0|0|0|0|0|0|0|none|0
 
 // Quake 2 Zaero
-ammo_a2k|models/weapons/g_a2k/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-ammo_empnuke|models/weapons/g_enuke/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-ammo_flares|models/items/ammo/flares/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-ammo_ired|models/items/ammo/ireds/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-ammo_plasmashield|models/items/plasma/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-item_visor|models/items/visor/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-key_clearancepass|models/items/keys/pass/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|security pass for the security level|0|.5|.8|0|0|0|0|0|0|0|none|0
-key_energy|models/items/keys/energy/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|security pass for the security level|0|.5|.8|0|0|0|0|0|0|0|none|0
+ammo_a2k|models/weapons/g_a2k/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|A2K|.3|.3|1|0|0|0|0|0|0|0|none|0
+ammo_empnuke|models/weapons/g_enuke/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|EMPNuke|.3|.3|1|0|0|0|0|0|0|0|none|0
+ammo_flares|models/items/ammo/flares/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Flares|.3|.3|1|0|0|0|0|0|0|0|none|0
+ammo_ired|models/items/ammo/ireds/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|IRED|.3|.3|1|0|0|0|0|0|0|0|none|0
+ammo_plasmashield|models/items/plasma/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Plasma Shield|.3|.3|1|0|0|0|0|0|0|0|none|0
+item_visor|models/items/visor/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Visor|.3|.3|1|0|0|0|0|0|0|0|none|0
+key_clearancepass|models/items/keys/pass/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Security pass for the security level|0|.5|.8|0|0|0|0|0|0|0|none|0
+key_energy|models/items/keys/energy/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Security pass for the security level|0|.5|.8|0|0|0|0|0|0|0|none|0
 key_lab|models/items/keys/pass/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|security pass for the laboratory|0|.5|.8|0|0|0|0|0|0|0|none|0
 key_landing_area|models/items/keys/key/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|landing arena key - blue|0|.5|.8|0|0|0|0|0|0|0|none|0
 key_lava|models/items/keys/lava/tris.md2|1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||0|.5|.8|0|0|0|0|0|0|0|none|0
@@ -255,10 +255,10 @@ monster_zboss|models/monsters/bossz/mech/tris.md2|1.0|1.0|1.0|char|-16|-16|-24|1
 sound_echo||1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||1|0|0|0|0|0|0|0|0|0|none|0
 target_zboss_target||1.0|1.0|1.0|general|||||||shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|||||0|0|0|0|0|0|0|none|0
 trigger_laser||1.0|1.0|1.0|general|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||1|0|0|0|0|0|0|0|0|0|none|0
-weapon_flaregun|models/weapons/g_flare/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-weapon_push||1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-weapon_sniperrifle|models/weapons/g_sniper/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
-weapon_soniccannon|models/weapons/g_sonic/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none||.3|.3|1|0|0|0|0|0|0|0|none|0
+weapon_flaregun|models/weapons/g_flare/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Flare Gun|.3|.3|1|0|0|0|0|0|0|0|none|0
+weapon_push|models/weapons/v_hand/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Push|.3|.3|1|0|0|0|0|0|0|0|none|0
+weapon_sniperrifle|models/weapons/g_sniper/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Sniper Rifle|.3|.3|1|0|0|0|0|0|0|0|none|0
+weapon_soniccannon|models/weapons/g_sonic/tris.md2|1.0|1.0|1.0|charfly|-16|-16|-16|16|16|16|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Sonic Cannon|.3|.3|1|0|0|0|0|0|0|0|none|0
 
 // Quake 2 ReRelease
 dynamic_light||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Dynamic KEX light|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
@@ -361,11 +361,11 @@ info_teleporter_dest||1.0|1.0|1.0|general|-15.0|-15.0|-15.0|15.0|15.0|15.0|shado
 misc_camera||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Cutscene camera type thing.|1.0|0.0|0.0|0|0|0|0|0|0|0|none|0
 misc_camera_target||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|misc camera target|1.0|0.0|0.0|0|0|0|0|0|0|0|none|0
 misc_screenfader||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Fades the player's screen from the first color to the second color over count seconds.|0.0|0.0|1.0|0|0|0|0|0|0|0|none|0
-monster_badass|models/monsters/badass/tris.md2|1.0|1.0|1.0|char|-45|-48|-64|38|48|30|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Badass|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
-monster_cyborg|models/monsters/cyborg/tris.md2|1.0|1.0|1.0|char|-16|-16|-38|32|32|27|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Cyborg|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
-monster_kigrax|models/monsters/kigrax/tris.md2|1.0|1.0|1.0|char|-20|-20|-32|20|20|12|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Kigrax|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
+monster_badass|models/monsters/badass/tris.md2|1.0|1.0|1.0|char|-52|-40|-64|38|40|32|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Badass|1.0|0.5|0.0|1500|1000|0|0|0|0|0|metal|0
+monster_cyborg|models/monsters/cyborg/tris.md2|1.0|1.0|1.0|char|-16|-16|-38|16|16|27|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Cyborg|1.0|0.5|0.0|300|300|0|0|0|0|0|none|-120
+monster_kigrax|models/monsters/kigrax/tris.md2|1.0|1.0|1.0|char|-20|-20|-32|20|20|12|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Kigrax|1.0|0.5|0.0|200|150|0|0|0|0|0|organic|-100
 monster_soldier_deatom|models/monsters/soldier/tris.md2|1.0|1.0|1.0|char|-16.0|-16.0|-24.0|16.0|16.0|32.0|shadow|1|0.0|0.0|0|0|0|0:0|0|0|none|Soldier deatom|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
-monster_spider|models/monsters/spider/tris.md2|1.0|1.0|1.0|char|-32|-32|-35|32|32|32|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Spider|1.0|0.5|0.0|0|0|0|0|0|0|0|none|0
+monster_spider|models/monsters/spider/tris.md2|1.0|1.0|1.0|char|-32|-32|-35|32|32|32|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Spider|1.0|0.5|0.0|400|300|0|0|0|0|0|organic|-175
 target_railgun||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Fires a railgun shot in set direction when triggered|1.0|0.0|0.0|0|0|0|0|0|0|0|none|0
 target_rocket||1.0|1.0|1.0|general|-8.0|-8.0|-8.0|8.0|8.0|8.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Fires a rocket in the set direction|1.0|0.0|0.0|0|0|0|0|0|0|0|none|0
 trigger_misc_camera||1.0|1.0|1.0|general|-15.0|-15.0|-15.0|15.0|15.0|15.0|shadow|0|0.0|0.0|0|0|0|0:0|0|0|none|Variable sized repeatable trigger for activating a misc_camera.|0.5|0.5|0.5|0|0|0|0|0|0|0|none|0

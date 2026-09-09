@@ -119,8 +119,7 @@ Goals:
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/linux_aarch64.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/linux_aarch64.yml)
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/linux_x86_64.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/linux_x86_64.yml)
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/macos.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/macos.yml)
-[![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win32.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win32.yml)
-[![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win64.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win64.yml)
+[![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win_mingw.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win_mingw.yml)
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/win_msvc.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/win_msvc.yml)
 [![Build Status](https://github.com/yquake2/yquake2remaster/actions/workflows/codeql.yml/badge.svg)](https://github.com/yquake2/yquake2remaster/actions/workflows/codeql.yml)
 
@@ -314,6 +313,8 @@ Note:
 
 * 8.71RR15+:
 
+[![Check Oblivion/Ininity state](https://img.youtube.com/vi/uixogpssDSI/hqdefault.jpg)](https://www.youtube.com/watch?v=uixogpssDSI)
+[![Check BSP46 state](https://img.youtube.com/vi/dmrfJeqW9HU/hqdefault.jpg)](https://www.youtube.com/watch?v=dmrfJeqW9HU)
 [![Check release state](https://img.youtube.com/vi/vFpdbPOcU4A/hqdefault.jpg)](https://www.youtube.com/watch?v=vFpdbPOcU4A)
 
 * 8.61RR15+:
@@ -392,6 +393,8 @@ Checked with:
 
 ### Goals, fully finished goals could be checked in [here](CHANGELOG):
 
+* [ ] windows build: restore build asset on tag,
+* [ ] ReRelease maps: shows shadow in the middle of model,
 * [ ] soft: fix crash with md5 models in player model select and ASAN=1,
 * [ ] soft: q64/outpost scale textures unsupported,
 * [ ] soft: broken wall light and wall glitch,
@@ -448,7 +451,6 @@ Checked with:
 * [ ] Doom: implement map load logic,
 * [ ] Quake 3: finish map load logic,
 * [ ] Quake, Half-Life, Hexen 2: fix brush flags,
-* [ ] Half-Life: support mdl,
 * [ ] Anachronox: load atd as sprite,
 * [ ] Anachronox: fix incorrect scale of `ob_stop-flame` and `ob_wommhill01`,
 * [ ] Anachronox: skins load broken with mingw win64 build,
@@ -457,14 +459,13 @@ Checked with:
 * [ ] Daikatana: Fix protopod animation,
 * [ ] Daikatana/SiN: Fix transparent textures in maps,
 * [ ] DoD: fix statusbar `roarke`,
-* [ ] Infinity: Add support of `ammo_energy`,
-* [ ] Infinity: Add support of `ammo_goop`,
 * [ ] Infinity: Add support of `item_radar`,
 * [ ] Infinity: Add support of `monster_alienship1`,
 * [ ] Infinity: Add support of `monster_grunt1v1`,
 * [ ] Infinity: Add support of `monster_grunt1v2`,
 * [ ] Infinity: Add support of `monster_grunt2`,
 * [ ] Infinity: Add support of `monster_screamer`,
+* [ ] Infinity: Add support of `weapon_pistol`,
 * [ ] Infinity: Add support of `weapon_6bshot`,
 * [ ] Infinity: Add support of `weapon_biggun`,
 * [ ] Infinity: Add support of `weapon_blaze`,
@@ -473,30 +474,32 @@ Checked with:
 * [ ] Oblivion: Add support of `ammo_detpack`,
 * [ ] Oblivion: Add support of `ammo_dod`,
 * [ ] Oblivion: Add support of `ammo_mines`,
-* [ ] Oblivion: Add support of `ammo_rifleplasma`,
 * [ ] Oblivion: Add support of `func_rotate_train`,
 * [ ] Oblivion: Add support of `info_teleporter_dest`,
 * [ ] Oblivion: Add support of `misc_camera`,
 * [ ] Oblivion: Add support of `misc_camera_target`,
 * [ ] Oblivion: Add support of `misc_screenfader`,
-* [ ] Oblivion: Add support of `monster_badass`,
-* [ ] Oblivion: Add support of `monster_cyborg`,
-* [ ] Oblivion: Add support of `monster_kigrax`,
-* [ ] Oblivion: Add support of `monster_spider`,
-* [ ] Oblivion: Add support of `target_railgun`,
-* [ ] Oblivion: Add support of `target_rocket`,
 * [ ] Oblivion: Add support of `trigger_misc_camera`,
-* [ ] Oblivion: Add support of `weapon_deatomizer`,
-* [ ] Oblivion: Add support of `weapon_hellfury`,
-* [ ] Oblivion: Add support of `weapon_plasma_pistol`,
-* [ ] Oblivion: Add support of `weapon_plasma_rifle`,
 * [ ] Oblivion: Add support of `weapon_rtdu`,
 * [ ] Dynamic count of entities on client,
 * [ ] Support obj waveform model format for debug other formats.
 
 ### Fixed:
 
-* [x] Infinity: Add support of `weapon_pistol`,
+* [x] Oblivion: Add support of `target_rocket`,
+* [x] Oblivion: Add support of `target_railgun`,
+* [x] Oblivion: Add support of `monster_spider`,
+* [x] Oblivion: Add support of `monster_badass`,
+* [x] Oblivion: Add support of `monster_cyborg`,
+* [x] Oblivion: Add support of `monster_kigrax`,
+* [x] Infinity: Add support of `ammo_goop`,
+* [x] Infinity: Add support of `ammo_energy`,
+* [x] Oblivion: Add support of `ammo_rifleplasma`,
+* [x] Half-Life: support mdl,
+* [x] Oblivion: Add support of `weapon_hellfury`,
+* [x] Oblivion: Add support of `weapon_plasma_pistol`,
+* [x] Oblivion: Add support of `weapon_plasma_rifle`,
+* [x] Oblivion: Add support of `weapon_deatomizer`,
 * [x] renders: add lanczos3 2x scale by `r_scale32bittextures`,
 * [x] Oblivion: Add support of `monster_soldier_deatom`,
 

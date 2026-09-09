@@ -169,7 +169,7 @@ void monster_start_go(edict_t *self);
 /* Monster weapons */
 
 static void
-monster_muzzleflash2(const edict_t *self, vec3_t start, int flashtype)
+monster_muzzleflash2(const edict_t *self, const vec3_t start, int flashtype)
 {
 	gi.WriteByte(svc_muzzleflash2);
 	gi.WriteShort(self - g_edicts);
@@ -216,7 +216,7 @@ monster_fire_shotgun(edict_t *self, vec3_t start, vec3_t aimdir, int damage,
 }
 
 void
-monster_fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
+monster_fire_blaster(edict_t *self, const vec3_t start, const vec3_t dir, int damage,
 		int speed, int flashtype, int effect)
 {
 	if (!self)
@@ -230,7 +230,7 @@ monster_fire_blaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 }
 
 void
-monster_fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
+monster_fire_blueblaster(edict_t *self, const vec3_t start, const vec3_t aimdir, int damage,
 		int speed, int flashtype, int effect)
 {
 	if (!self)
@@ -238,7 +238,7 @@ monster_fire_blueblaster(edict_t *self, vec3_t start, vec3_t dir, int damage,
 		return;
 	}
 
-	fire_blueblaster(self, start, dir, damage, speed, effect);
+	fire_blueblaster(self, start, aimdir, damage, speed, effect);
 
 	monster_muzzleflash2(self, start, MZ_BLUEHYPERBLASTER);
 }
@@ -1479,12 +1479,20 @@ M_MoveFrame(edict_t *self)
 			else if (self->monsterinfo.action &&
 				self->monsterinfo.run &&
 				(!strcmp(self->monsterinfo.action, "attack") ||
+				 !strcmp(self->monsterinfo.action, "activate") ||
 				 !strcmp(self->monsterinfo.action, "pain") ||
 				 !strcmp(self->monsterinfo.action, "dodge") ||
 				 !strcmp(self->monsterinfo.action, "melee")))
 			{
 				/* last frame in pain / attack go to run action */
 				self->monsterinfo.run(self);
+			}
+			else if (self->monsterinfo.action &&
+				self->monsterinfo.idle &&
+				(!strcmp(self->monsterinfo.action, "deactivate")))
+			{
+				/* last frame in deactivate go to idle action */
+				self->monsterinfo.idle(self);
 			}
 			else if (self->monsterinfo.action &&
 				!strcmp(self->monsterinfo.action, "death"))
@@ -1570,11 +1578,14 @@ M_MoveFrame(edict_t *self)
 		}
 		else if (!strcmp(self->monsterinfo.action, "stand") ||
 			!strcmp(self->monsterinfo.action, "hover") ||
+			!strcmp(self->monsterinfo.action, "standidle") ||
 			!strcmp(self->monsterinfo.action, "idle"))
 		{
 			ai_stand(self, 0);
 		}
 		else if (!strcmp(self->monsterinfo.action, "pain") ||
+			!strcmp(self->monsterinfo.action, "activate") ||
+			!strcmp(self->monsterinfo.action, "deactivate") ||
 			!strcmp(self->monsterinfo.action, "death") ||
 			!strcmp(self->monsterinfo.action, "dodge"))
 		{
@@ -1660,7 +1671,7 @@ monster_dynamic_setframes(edict_t *self, int select)
 }
 
 void
-monster_dynamic_walk(edict_t *self)
+monster_dynamic_action(edict_t *self, const char *action, int select)
 {
 	if (!self)
 	{
@@ -1668,21 +1679,30 @@ monster_dynamic_walk(edict_t *self)
 	}
 
 	self->monsterinfo.currentmove = NULL;
+	self->monsterinfo.action = action;
+	monster_dynamic_setframes(self, select);
+}
+
+void
+monster_dynamic_walk(edict_t *self)
+{
+	if (!self)
+	{
+		return;
+	}
 
 	if (self->flags & FL_FLY)
 	{
-		self->monsterinfo.action = "fly";
+		monster_dynamic_action(self, "fly", 0);
 	}
 	else if (self->flags & FL_SWIM)
 	{
-		self->monsterinfo.action = "swim";
+		monster_dynamic_action(self, "swim", 0);
 	}
 	else
 	{
-		self->monsterinfo.action = "walk";
+		monster_dynamic_action(self, "walk", 0);
 	}
-
-	monster_dynamic_setframes(self, 0);
 }
 
 void
@@ -1693,48 +1713,30 @@ monster_dynamic_run(edict_t *self)
 		return;
 	}
 
-	self->monsterinfo.currentmove = NULL;
-
 	if (self->flags & FL_FLY)
 	{
-		self->monsterinfo.action = "fly";
+		monster_dynamic_action(self, "fly", 0);
 	}
 	else if (self->flags & FL_SWIM)
 	{
-		self->monsterinfo.action = "swim";
+		monster_dynamic_action(self, "swim", 0);
 	}
 	else
 	{
-		self->monsterinfo.action = "run";
+		monster_dynamic_action(self, "run", 0);
 	}
-
-	monster_dynamic_setframes(self, 0);
 }
 
 void
 monster_dynamic_idle(edict_t *self)
 {
-	if (!self)
-	{
-		return;
-	}
-
-	self->monsterinfo.currentmove = NULL;
-	self->monsterinfo.action = "idle";
-	monster_dynamic_setframes(self, -1);
+	monster_dynamic_action(self, "idle", -1);
 }
 
 void
 monster_dynamic_attack(edict_t *self)
 {
-	if (!self)
-	{
-		return;
-	}
-
-	self->monsterinfo.currentmove = NULL;
-	self->monsterinfo.action = "attack";
-	monster_dynamic_setframes(self, -1);
+	monster_dynamic_action(self, "attack", -1);
 }
 
 void
@@ -1804,22 +1806,13 @@ monster_dynamic_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 
-	self->monsterinfo.currentmove = NULL;
-	self->monsterinfo.action = "death";
-	monster_dynamic_setframes(self, -1);
+	monster_dynamic_action(self, "death", -1);
 }
 
 void
 monster_dynamic_melee(edict_t *self)
 {
-	if (!self)
-	{
-		return;
-	}
-
-	self->monsterinfo.currentmove = NULL;
-	self->monsterinfo.action = "melee";
-	monster_dynamic_setframes(self, 0);
+	monster_dynamic_action(self, "melee", 0);
 }
 
 void
@@ -1842,9 +1835,7 @@ monster_dynamic_dodge(edict_t *self, edict_t *attacker, float eta,
 		FoundTarget(self, true);
 	}
 
-	self->monsterinfo.currentmove = NULL;
-	self->monsterinfo.action = "dodge";
-	monster_dynamic_setframes(self, 0);
+	monster_dynamic_action(self, "dodge", 0);
 }
 
 void
@@ -1867,10 +1858,7 @@ monster_dynamic_pain(edict_t *self, edict_t *other /* unused */,
 		return; /* no pain anims in nightmare */
 	}
 
-	self->monsterinfo.currentmove = NULL;
-
-	self->monsterinfo.action = "pain";
-	monster_dynamic_setframes(self, -1);
+	monster_dynamic_action(self, "pain", -1);
 }
 
 void
@@ -1881,22 +1869,18 @@ monster_dynamic_stand(edict_t *self)
 		return;
 	}
 
-	self->monsterinfo.currentmove = NULL;
-
 	if (self->flags & FL_FLY)
 	{
-		self->monsterinfo.action = "hover";
+		monster_dynamic_action(self, "hover", 0);
 	}
 	else if (self->flags & FL_SWIM)
 	{
-		self->monsterinfo.action = "swim";
+		monster_dynamic_action(self, "swim", 0);
 	}
 	else
 	{
-		self->monsterinfo.action = "stand";
+		monster_dynamic_action(self, "stand", 0);
 	}
-
-	monster_dynamic_setframes(self, 0);
 }
 
 void
