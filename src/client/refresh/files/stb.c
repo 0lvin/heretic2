@@ -631,7 +631,10 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 
 		if (!pic)
 		{
-			Com_DPrintf("Bad %s file %s\n", ext, filename);
+			if (!R_PicIgnored(filename))
+			{
+				Com_DPrintf("Bad %s file %s\n", ext, filename);
+			}
 			return NULL;
 		}
 
@@ -933,8 +936,8 @@ GetTexImage(const char *name, findimage_t find_image)
 	return image;
 }
 
-#define PIC_CACHE_SIZE 128
-#define PIC_CACHE_BITS 7
+#define PIC_CACHE_BITS 10
+#define PIC_CACHE_SIZE (1 << PIC_CACHE_BITS)
 
 typedef struct
 {
@@ -951,18 +954,20 @@ typedef struct
 static piccache_t pic_cache[PIC_CACHE_SIZE];
 static picignore_t pic_ignore[PIC_CACHE_SIZE];
 
-static uint32_t
-R_PicCacheSlot(const char *name)
+static unsigned
+R_PicCacheSlotHash(const char *name)
 {
-	uint32_t key = 0;
+	const unsigned long prime = 16777619u;
+	unsigned long hash = 2166136261u;
 
 	while (*name)
 	{
-		key = key * 33 + (byte)*name;
+		hash ^= (byte)*name;
+		hash *= prime;
 		name++;
 	}
 
-	return (key * 2654435761u) >> (32 - PIC_CACHE_BITS);
+	return hash % PIC_CACHE_SIZE;
 }
 
 void
@@ -972,18 +977,102 @@ R_PicPathCacheClean(void)
 	memset(pic_ignore, 0, sizeof(pic_ignore));
 }
 
+static picignore_t *
+R_PicIgnoredSlot(const char *name)
+{
+	unsigned base_slot, slot;
+	picignore_t *ignore;
+
+	base_slot = R_PicCacheSlotHash(name);
+	slot = base_slot;
+
+	while (1)
+	{
+		ignore = &pic_ignore[slot];
+
+		if (ignore->name[0] == '\0')
+		{
+			/* empty slot */
+			Q_strlcpy(ignore->name, name, sizeof(ignore->name));
+			ignore->warned = false;
+			break;
+		}
+
+		if (!strcmp(ignore->name, name))
+		{
+			/* existing entry */
+			break;
+		}
+
+		/* Collision! Slot is occupied by a different file.
+		 * Move to the next slot wrapping around the cache size. */
+		slot = (slot + 1) & (PIC_CACHE_SIZE - 1);
+
+		if (slot == base_slot)
+		{
+			/* Table overflow. Fall back to overwriting the original
+			 * base slot to prevent hanging. */
+			ignore = &pic_ignore[base_slot];
+			Q_strlcpy(ignore->name, name, sizeof(ignore->name));
+			ignore->warned = false;
+			break;
+		}
+	}
+
+	return ignore;
+}
+
+static piccache_t *
+R_PicCacheSlot(const char *name)
+{
+	unsigned base_slot, slot;
+	piccache_t *cache;
+
+	base_slot = R_PicCacheSlotHash(name);
+	slot = base_slot;
+
+	while (1)
+	{
+		cache = &pic_cache[slot];
+
+		if (cache->name[0] == '\0')
+		{
+			/* empty slot */
+			Q_strlcpy(cache->name, name, sizeof(cache->name));
+			cache->path[0] = 0;
+			break;
+		}
+
+		if (!strcmp(cache->name, name))
+		{
+			/* existing entry */
+			break;
+		}
+
+		/* Collision! Slot is occupied by a different file.
+		 * Move to the next slot wrapping around the cache size. */
+		slot = (slot + 1) & (PIC_CACHE_SIZE - 1);
+
+		if (slot == base_slot)
+		{
+			/* Table overflow. Fall back to overwriting the original
+			 * base slot to prevent hanging. */
+			cache = &pic_cache[base_slot];
+			Q_strlcpy(cache->name, name, sizeof(cache->name));
+			cache->path[0] = 0;
+			break;
+		}
+	}
+
+	return cache;
+}
+
 qboolean
 R_PicIgnored(const char *name)
 {
 	picignore_t *ignore;
 
-	ignore = pic_ignore + R_PicCacheSlot(name);
-	if (strcmp(ignore->name, name))
-	{
-		Q_strlcpy(ignore->name, name, sizeof(ignore->name));
-		ignore->warned = false;
-	}
-
+	ignore = R_PicIgnoredSlot(name);
 	if (ignore->warned)
 	{
 		return true;
@@ -1006,13 +1095,11 @@ R_FindPic(const char *name, findimage_t find_image)
 		const char* ext;
 		piccache_t *cache;
 		picignore_t *ignore;
-		uint32_t slot;
 
-		slot = R_PicCacheSlot(name);
-		cache = pic_cache + slot;
-		ignore = pic_ignore + slot;
+		ignore = R_PicIgnoredSlot(name);
+		cache = R_PicCacheSlot(name);
 
-		if (!strcmp(cache->name, name))
+		if (cache->path[0])
 		{
 			image = find_image(cache->path, it_pic);
 
@@ -1022,8 +1109,9 @@ R_FindPic(const char *name, findimage_t find_image)
 			}
 		}
 
-		if (!strcmp(ignore->name, name))
+		if (ignore->warned)
 		{
+			/* has already warned about unexisted file */
 			return NULL;
 		}
 
@@ -1076,18 +1164,14 @@ R_FindPic(const char *name, findimage_t find_image)
 
 		if (image)
 		{
-			Q_strlcpy(cache->name, name, sizeof(cache->name));
 			Q_strlcpy(cache->path, pathname, sizeof(cache->path));
+			/* file found, free found slot */
+			ignore->name[0] = 0;
 		}
 		else
 		{
-			if (!strcmp(cache->name, name))
-			{
-				cache->name[0] = 0;
-			}
-
-			Q_strlcpy(ignore->name, name, sizeof(ignore->name));
-			ignore->warned = false;
+			/* no such file, free found slot */
+			cache->name[0] = 0;
 		}
 	}
 	else
@@ -1248,10 +1332,10 @@ R_LoadTTFFont(const char *ttffont, int vid_height, float *r_font_size,
 	/* half for main font */
 	for (i = 0; i < texture_size / 2; i++)
 	{
-		font_data[i * 4 + 0] = font_mask[i];
-		font_data[i * 4 + 1] = font_mask[i];
-		font_data[i * 4 + 2] = font_mask[i];
-		font_data[i * 4 + 3] = font_mask[i] > 16 ? 255 : 0;
+		font_data[i * 4 + 0] = 0xff;
+		font_data[i * 4 + 1] = 0xff;
+		font_data[i * 4 + 2] = 0xff;
+		font_data[i * 4 + 3] = font_mask[i];
 	}
 
 	/* other half for alt (green) */
@@ -1259,9 +1343,9 @@ R_LoadTTFFont(const char *ttffont, int vid_height, float *r_font_size,
 	for (i = texture_size / 2; i < texture_size; i++)
 	{
 		font_data[i * 4 + 0] = 0x0;
-		font_data[i * 4 + 1] = font_mask[mask_idx];
+		font_data[i * 4 + 1] = 0xFF;
 		font_data[i * 4 + 2] = 0x0;
-		font_data[i * 4 + 3] = font_mask[mask_idx] > 16 ? 255 : 0;
+		font_data[i * 4 + 3] = font_mask[mask_idx];
 		mask_idx ++;
 	}
 

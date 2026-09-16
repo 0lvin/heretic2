@@ -116,9 +116,11 @@ Load the Quake2 md2 default format frames
 =================
 */
 static qboolean
-Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t translate)
+Mod_LoadFrames_MD2(const char *mod_name, dmdx_t *pheader, byte *src,
+	size_t inframesize, vec3_t translate)
 {
 	qboolean normalfix = true;
+	float coord_error = 0;
 	int i;
 
 	for (i = 0; i < pheader->num_frames; i++)
@@ -137,6 +139,14 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 			poutframe->scale[j] = LittleFloat(pinframe->scale[j]) / 0xFF;
 			poutframe->translate[j] = LittleFloat(pinframe->translate[j]);
 			poutframe->translate[j] += translate[j];
+
+			/* check coodinates error as 8 bit,
+			 * originaly was scale / 2 ** 8,
+			 * that equal to upated scale / (2 ** 16) * (2 ** 8) */
+			if (coord_error < poutframe->scale[j])
+			{
+				coord_error = poutframe->scale[j];
+			}
 		}
 
 		/* verts are all 8 bit, so no swapping needed */
@@ -155,6 +165,8 @@ Mod_LoadFrames_MD2(dmdx_t *pheader, byte *src, size_t inframesize, vec3_t transl
 		}
 	}
 
+	Com_DPrintf("%s: model %s vert coodinates error %.5f\n",
+		__func__, mod_name, coord_error);
 	return normalfix;
 }
 
@@ -657,6 +669,9 @@ static const namesconvert_t flex_names[] = {
 };
 
 static const namesconvert_t quake2_names[] = {
+	/* classic base2 */
+	{"actvat",  "activate"},
+	{"runs", "runs"}, /* run and shoot should be left without changes */
 	/* oblivion */
 	{"attak",  "attack"},
 	{"attack",  "attack"},
@@ -1268,7 +1283,7 @@ Mod_LoadModel_MD2(const char *mod_name, const void *buffer, int modfilelen)
 	//
 	// load the frames
 	//
-	normalfix = Mod_LoadFrames_MD2(pheader, (byte *)buffer + pinmodel.ofs_frames,
+	normalfix = Mod_LoadFrames_MD2(mod_name, pheader, (byte *)buffer + pinmodel.ofs_frames,
 		pinmodel.framesize, translate);
 
 	//
@@ -1435,7 +1450,8 @@ Mod_LoadModel_FlexTris(dmdx_t *pheader, const void *buffer, int modfilelen)
 }
 
 static qboolean
-Mod_LoadModel_FlexFrames(size_t inframesize, dmdx_t *pheader, const void *buffer, int modfilelen)
+Mod_LoadModel_FlexFrames(const char *mod_name, size_t inframesize, dmdx_t *pheader,
+	const void *buffer, int modfilelen)
 {
 	const char *src = NULL;
 	size_t size;
@@ -1461,7 +1477,7 @@ Mod_LoadModel_FlexFrames(size_t inframesize, dmdx_t *pheader, const void *buffer
 			return false;
 		}
 
-		Mod_LoadFrames_MD2(pheader, (byte *)src, inframesize, translate);
+		Mod_LoadFrames_MD2(mod_name, pheader, (byte *)src, inframesize, translate);
 		Mod_LoadAnimGroupList(pheader, true);
 		Mod_LoadModel_AnimGroupNamesFix(pheader, flex_names);
 	}
@@ -1739,7 +1755,7 @@ Mod_LoadModel_Flex(const char *mod_name, const void *buffer, int modfilelen)
 	if (!Mod_LoadModel_FlexSkins(pheader, buffer, modfilelen) ||
 		!Mod_LoadModel_FlexSTCoord(pheader, buffer, modfilelen) ||
 		!Mod_LoadModel_FlexTris(pheader, buffer, modfilelen) ||
-		!Mod_LoadModel_FlexFrames(inframesize, pheader, buffer, modfilelen) ||
+		!Mod_LoadModel_FlexFrames(mod_name, inframesize, pheader, buffer, modfilelen) ||
 		!Mod_LoadModel_FlexGLCmd(mod_name, pheader, buffer, modfilelen) ||
 		!Mod_LoadModel_FlexMeshNodes(pheader, buffer, modfilelen))
 	{
@@ -1842,7 +1858,7 @@ Mod_LoadModel_DKM(const char *mod_name, const void *buffer, int modfilelen)
 		(dstvert_t *)((byte *)buffer + header.ofs_st));
 	if (header.version == DKM1_VERSION)
 	{
-		Mod_LoadFrames_MD2(pheader, (byte *)buffer + header.ofs_frames,
+		Mod_LoadFrames_MD2(mod_name, pheader, (byte *)buffer + header.ofs_frames,
 			header.framesize, header.translate);
 	}
 	else
@@ -1930,12 +1946,483 @@ Mod_LoadModel_MDX(const char *mod_name, const void *buffer, int modfilelen)
 		(dtriangle_t *)((byte *)buffer + header.ofs_tris),
 		(int*)((byte *)buffer + header.ofs_glcmds),
 		header.num_glcmds);
-	Mod_LoadFrames_MD2(pheader, (byte *)buffer + header.ofs_frames,
+	Mod_LoadFrames_MD2(mod_name, pheader, (byte *)buffer + header.ofs_frames,
 		header.framesize, translate);
 	Mod_LoadAnimGroupList(pheader, true);
 	Mod_LoadModel_AnimGroupNamesFix(pheader, kingpin_names);
 	Mod_LoadCmdGenerate(pheader);
 	Mod_LoadFixImages(mod_name, pheader, false);
+
+	return extradata;
+}
+
+/*
+=================
+Mod_LoadModel_OBJ
+
+Wavefront OBJ Model
+=================
+*/
+typedef struct
+{
+	int v[3];
+	int vt[3];
+	int vn[3];
+} obj_tri_t;
+
+static void
+ParseOBJFaceVertex(const char *token, int *v_out, int *vt_out, int *vn_out)
+{
+	int v = 0, vt = 0, vn = 0;
+
+	if (sscanf(token, "%d/%d/%d", &v, &vt, &vn) == 3)
+	{
+		*v_out = v;
+		*vt_out = vt;
+		*vn_out = vn;
+	}
+	else if (sscanf(token, "%d//%d", &v, &vn) == 2)
+	{
+		*v_out = v;
+		*vt_out = 0;
+		*vn_out = vn;
+	}
+	else if (sscanf(token, "%d/%d", &v, &vt) == 2)
+	{
+		*v_out = v;
+		*vt_out = vt;
+		*vn_out = 0;
+	}
+	else if (sscanf(token, "%d", &v) == 1)
+	{
+		*v_out = v;
+		*vt_out = 0;
+		*vn_out = 0;
+	}
+	else
+	{
+		*v_out = 0;
+		*vt_out = 0;
+		*vn_out = 0;
+	}
+}
+
+static int
+ConvertOBJIndex(int idx, int count)
+{
+	if (idx > 0)
+	{
+		return idx - 1;
+	}
+	else if (idx < 0)
+	{
+		return count + idx;
+	}
+	return 0;
+}
+
+static void *
+Mod_LoadModel_OBJ(const char *mod_name, const void *buffer, int modfilelen)
+{
+	char *safe_buffer, *curr_buff;
+	const char *end_buff;
+	vec3_t *positions = NULL;
+	int num_xyz = 0, cap_xyz = 0;
+	vec3_t *normals = NULL;
+	int num_vn = 0, cap_vn = 0;
+	vec2_t *texcoords = NULL;
+	int num_st = 0, cap_st = 0;
+	obj_tri_t *triangles = NULL;
+	int num_tris = 0, cap_tris = 0;
+	char skins[MAX_MD2SKINS][MAX_SKINNAME];
+	int num_skins = 0;
+	qboolean error = false;
+	dmdx_t dmdxheader, *pheader;
+	dmdxmesh_t *mesh_nodes;
+	daliasxframe_t *frame;
+	dstvert_t *st;
+	dtriangle_t *tris;
+	dmdx_vert_t *vertexArray = NULL;
+	vec3_t *vert_normals = NULL;
+	void *extradata = NULL;
+	int framesize, i, k;
+
+	safe_buffer = malloc(modfilelen + 1);
+	if (!safe_buffer)
+	{
+		YQ2_COM_CHECK_OOM(safe_buffer, "malloc()", modfilelen + 1)
+		return NULL;
+	}
+
+	memcpy(safe_buffer, buffer, modfilelen);
+	safe_buffer[modfilelen] = 0;
+
+	curr_buff = safe_buffer;
+	end_buff = safe_buffer + modfilelen;
+
+	while (curr_buff && (curr_buff < end_buff))
+	{
+		const char *token;
+
+		token = COM_Parse(&curr_buff);
+		if (!curr_buff || !token[0])
+		{
+			break;
+		}
+
+		if (!strcmp(token, "v"))
+		{
+			if (num_xyz >= cap_xyz)
+			{
+				cap_xyz = cap_xyz ? cap_xyz * 2 : 1024;
+				vec3_t *tmp_xyz = realloc(positions, cap_xyz * sizeof(vec3_t));
+				if (!tmp_xyz)
+				{
+					YQ2_COM_CHECK_OOM(tmp_xyz, "realloc()", cap_xyz * sizeof(vec3_t))
+					error = true;
+					break;
+				}
+				positions = tmp_xyz;
+			}
+
+			token = COM_Parse(&curr_buff);
+			positions[num_xyz][0] = (float)strtod(token, NULL);
+			token = COM_Parse(&curr_buff);
+			positions[num_xyz][1] = (float)strtod(token, NULL);
+			token = COM_Parse(&curr_buff);
+			positions[num_xyz][2] = (float)strtod(token, NULL);
+			num_xyz++;
+
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+		else if (!strcmp(token, "vn"))
+		{
+			if (num_vn >= cap_vn)
+			{
+				cap_vn = cap_vn ? cap_vn * 2 : 1024;
+				vec3_t *tmp_vn = realloc(normals, cap_vn * sizeof(vec3_t));
+				if (!tmp_vn)
+				{
+					YQ2_COM_CHECK_OOM(tmp_vn, "realloc()", cap_vn * sizeof(vec3_t))
+					error = true;
+					break;
+				}
+				normals = tmp_vn;
+			}
+
+			token = COM_Parse(&curr_buff);
+			normals[num_vn][0] = (float)strtod(token, NULL);
+			token = COM_Parse(&curr_buff);
+			normals[num_vn][1] = (float)strtod(token, NULL);
+			token = COM_Parse(&curr_buff);
+			normals[num_vn][2] = (float)strtod(token, NULL);
+			num_vn++;
+
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+		else if (!strcmp(token, "vt"))
+		{
+			if (num_st >= cap_st)
+			{
+				cap_st = cap_st ? cap_st * 2 : 1024;
+				vec2_t *tmp_st = realloc(texcoords, cap_st * sizeof(vec2_t));
+				if (!tmp_st)
+				{
+					YQ2_COM_CHECK_OOM(tmp_st, "realloc()", cap_st * sizeof(vec2_t))
+					error = true;
+					break;
+				}
+				texcoords = tmp_st;
+			}
+
+			token = COM_Parse(&curr_buff);
+			texcoords[num_st][0] = (float)strtod(token, NULL);
+			token = COM_Parse(&curr_buff);
+			texcoords[num_st][1] = (float)strtod(token, NULL);
+			num_st++;
+
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+		else if (!strcmp(token, "f"))
+		{
+			int f_v[32], f_vt[32], f_vn[32];
+			int face_vert_count = 0;
+			int j;
+
+			while (curr_buff && *curr_buff)
+			{
+				while (curr_buff && (*curr_buff == ' ' || *curr_buff == '\t'))
+				{
+					curr_buff++;
+				}
+
+				if (!curr_buff || *curr_buff == '\r' || *curr_buff == '\n' ||
+					*curr_buff == '\0' || *curr_buff == '#')
+				{
+					break;
+				}
+
+				token = COM_Parse(&curr_buff);
+				if (!token[0])
+				{
+					break;
+				}
+
+				if (face_vert_count < 32)
+				{
+					int v = 0, vt = 0, vn = 0;
+					ParseOBJFaceVertex(token, &v, &vt, &vn);
+					f_v[face_vert_count] = ConvertOBJIndex(v, num_xyz);
+					f_vt[face_vert_count] = ConvertOBJIndex(vt, num_st);
+					f_vn[face_vert_count] = ConvertOBJIndex(vn, num_vn);
+					face_vert_count++;
+				}
+			}
+
+			for (j = 2; j < face_vert_count; j++)
+			{
+				if (num_tris >= cap_tris)
+				{
+					cap_tris = cap_tris ? cap_tris * 2 : 2048;
+					obj_tri_t *tmp_tri = realloc(triangles, cap_tris * sizeof(obj_tri_t));
+					if (!tmp_tri)
+					{
+						YQ2_COM_CHECK_OOM(tmp_tri, "realloc()", cap_tris * sizeof(obj_tri_t))
+						error = true;
+						break;
+					}
+					triangles = tmp_tri;
+				}
+
+				triangles[num_tris].v[0] = f_v[0];
+				triangles[num_tris].v[1] = f_v[j - 1];
+				triangles[num_tris].v[2] = f_v[j];
+
+				triangles[num_tris].vt[0] = f_vt[0];
+				triangles[num_tris].vt[1] = f_vt[j - 1];
+				triangles[num_tris].vt[2] = f_vt[j];
+
+				triangles[num_tris].vn[0] = f_vn[0];
+				triangles[num_tris].vn[1] = f_vn[j - 1];
+				triangles[num_tris].vn[2] = f_vn[j];
+
+				num_tris++;
+			}
+
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+		else if (token[0] == '#')
+		{
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+		else if (!strcmp(token, "usemtl"))
+		{
+			token = COM_Parse(&curr_buff);
+			if (token[0] && num_skins < MAX_MD2SKINS)
+			{
+				int s;
+				qboolean found = false;
+				for (s = 0; s < num_skins; s++)
+				{
+					if (!strcmp(skins[s], token))
+					{
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+				{
+					Q_strlcpy(skins[num_skins], token, MAX_SKINNAME);
+					num_skins++;
+				}
+			}
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+		else
+		{
+			while (curr_buff && *curr_buff && *curr_buff != '\n')
+			{
+				curr_buff++;
+			}
+		}
+	}
+
+	free(safe_buffer);
+
+	if (error || num_xyz <= 0 || num_tris <= 0)
+	{
+		Com_Printf("%s: %s failed to parse valid OBJ geometry (verts: %d, tris: %d)\n",
+			__func__, mod_name, num_xyz, num_tris);
+		free(positions);
+		free(normals);
+		free(texcoords);
+		free(triangles);
+		return NULL;
+	}
+
+	if (num_st == 0)
+	{
+		num_st = 1;
+		texcoords = calloc(1, sizeof(vec2_t));
+		if (!texcoords)
+		{
+			free(positions);
+			free(normals);
+			free(triangles);
+			return NULL;
+		}
+	}
+
+	vert_normals = calloc(num_xyz, sizeof(vec3_t));
+	if (!vert_normals)
+	{
+		free(positions);
+		free(normals);
+		free(texcoords);
+		free(triangles);
+		YQ2_COM_CHECK_OOM(vert_normals, "calloc()", num_xyz * sizeof(vec3_t))
+		return NULL;
+	}
+
+	if (num_vn > 0)
+	{
+		for (i = 0; i < num_tris; i++)
+		{
+			for (k = 0; k < 3; k++)
+			{
+				int v_idx = triangles[i].v[k];
+				int vn_idx = triangles[i].vn[k];
+
+				if (v_idx >= 0 && v_idx < num_xyz && vn_idx >= 0 && vn_idx < num_vn)
+				{
+					VectorAdd(vert_normals[v_idx], normals[vn_idx], vert_normals[v_idx]);
+				}
+			}
+		}
+
+		for (i = 0; i < num_xyz; i++)
+		{
+			if (VectorLength(vert_normals[i]) > 0.001f)
+			{
+				VectorNormalize(vert_normals[i]);
+			}
+		}
+	}
+
+	vertexArray = malloc(num_xyz * sizeof(dmdx_vert_t));
+	if (!vertexArray)
+	{
+		free(positions);
+		free(normals);
+		free(texcoords);
+		free(triangles);
+		free(vert_normals);
+		YQ2_COM_CHECK_OOM(vertexArray, "malloc()", num_xyz * sizeof(dmdx_vert_t))
+		return NULL;
+	}
+
+	for (i = 0; i < num_xyz; i++)
+	{
+		VectorCopy(positions[i], vertexArray[i].xyz);
+		VectorCopy(vert_normals[i], vertexArray[i].norm);
+	}
+
+	framesize = sizeof(daliasxframe_t) + (num_xyz - 1) * sizeof(dxtrivertx_t);
+
+	memset(&dmdxheader, 0, sizeof(dmdxheader));
+	dmdxheader.skinwidth = 256;
+	dmdxheader.skinheight = 256;
+	dmdxheader.framesize = framesize;
+
+	dmdxheader.num_meshes = 1;
+	dmdxheader.num_skins = num_skins;
+	dmdxheader.num_xyz = num_xyz;
+	dmdxheader.num_st = num_st;
+	dmdxheader.num_tris = num_tris;
+	dmdxheader.num_glcmds = (10 * num_tris) + 1;
+	dmdxheader.num_frames = 1;
+	dmdxheader.num_animgroup = 1;
+
+	pheader = Mod_LoadAllocate(mod_name, &dmdxheader, &extradata);
+
+	mesh_nodes = (dmdxmesh_t *)((char *)pheader + pheader->ofs_meshes);
+	mesh_nodes[0].ofs_tris = 0;
+	mesh_nodes[0].num_tris = pheader->num_tris;
+	mesh_nodes[0].ofs_glcmds = 0;
+	mesh_nodes[0].num_glcmds = pheader->num_glcmds;
+
+	frame = (daliasxframe_t *)((byte *)pheader + pheader->ofs_frames);
+	Q_strlcpy(frame->name, "frame0", sizeof(frame->name));
+	PrepareFrameVertex(vertexArray, num_xyz, frame);
+
+	st = (dstvert_t *)((byte *)pheader + pheader->ofs_st);
+	for (i = 0; i < num_st; i++)
+	{
+		st[i].s = texcoords[i][0] * pheader->skinwidth;
+		st[i].t = texcoords[i][1] * pheader->skinheight;
+	}
+
+	tris = (dtriangle_t *)((byte *)pheader + pheader->ofs_tris);
+	for (i = 0; i < num_tris; i++)
+	{
+		for (k = 0; k < 3; k++)
+		{
+			int v_idx = triangles[i].v[k];
+			int vt_idx = triangles[i].vt[k];
+
+			if (v_idx < 0 || v_idx >= num_xyz)
+			{
+				v_idx = 0;
+			}
+			if (vt_idx < 0 || vt_idx >= num_st)
+			{
+				vt_idx = 0;
+			}
+
+			tris[i].index_xyz[k] = v_idx;
+			tris[i].index_st[k] = vt_idx;
+		}
+	}
+
+	if (num_skins > 0)
+	{
+		memcpy((char *)pheader + pheader->ofs_skins, skins, num_skins * MAX_SKINNAME);
+	}
+
+	Mod_LoadAnimGroupList(pheader, true);
+	Mod_LoadCmdGenerate(pheader);
+
+	if (num_vn == 0)
+	{
+		Mod_LoadFixNormals(pheader);
+	}
+
+	Mod_LoadFixImages(mod_name, pheader, false);
+
+	free(positions);
+	free(normals);
+	free(texcoords);
+	free(triangles);
+	free(vert_normals);
+	free(vertexArray);
 
 	return extradata;
 }
@@ -2014,6 +2501,10 @@ Mod_LoadModelFile(const char *mod_name, const void *buffer, int modfilelen)
 
 		case IDMD5HEADER:
 			extradata = Mod_LoadModel_MD5(mod_name, buffer, modfilelen);
+			break;
+
+		case IDOBJHEADER:
+			extradata = Mod_LoadModel_OBJ(mod_name, buffer, modfilelen);
 			break;
 
 		case IDSPRITEHEADER:
