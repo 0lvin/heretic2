@@ -38,20 +38,6 @@ void ReleaseEntityMngr()
 	ResMngr_Des(&EntityMngr);
 }
 
-ResourceManager_t FMNodeInfoMngr;
-
-void InitFMNodeInfoMngr()
-{
-#define FMNODEINFO_BLOCK_SIZE 16
-
-	ResMngr_Con(&FMNodeInfoMngr, sizeof(fmnodeinfo_t)*MAX_FM_MESH_NODES, FMNODEINFO_BLOCK_SIZE);
-}
-
-void ReleaseFMNodeInfoMngr()
-{
-	ResMngr_Des(&FMNodeInfoMngr);
-}
-
 client_entity_t *clientEnts = NULL;
 
 client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t direction, int nextThinkTime)

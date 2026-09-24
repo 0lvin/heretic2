@@ -154,9 +154,7 @@ extern CE_ClassStatics_t ce_classStatics[CE_NUM_CLASSIDS];
 extern void (*cg_classStaticsInits[CE_NUM_CLASSIDS])();
 
 void InitEntityMngr(void);
-void InitFMNodeInfoMngr();
 void ReleaseEntityMngr(void);
-void ReleaseFMNodeInfoMngr(void);
 void DoWaterSplash(client_entity_t *effect, paletteRGBA_t color, int count);
 client_entity_t *ClientEntity_new(int type, int flags, vec3_t origin, vec3_t direction, int nextThinkTime);
 void RemoveEffectFromList(client_entity_t **root, centity_t *owner);

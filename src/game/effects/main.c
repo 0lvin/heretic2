@@ -50,7 +50,6 @@ typedef struct
 					renderfx,
 					skinnum,
 					clientnum;
-	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
 } predictinfo_t;
 
 static float EffectEventIdTimeArray[1000];
@@ -112,7 +111,6 @@ Init(void)
 
 	InitResourceManager();
 	InitParticleMngrMngr();
-	InitFMNodeInfoMngr();
 	InitEntityMngr();
 	InitMsgMngr();
 	InitDLightMngr();
@@ -145,7 +143,6 @@ ShutDown(void)
 
 	ReleaseParticleMngrMngr();
 	ReleaseEntityMngr();
-	ReleaseFMNodeInfoMngr();
 	ReleaseDLightMngr();
 	ReleaseMsgMngr();
 	ShutdownResourceManager();
