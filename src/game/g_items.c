@@ -79,6 +79,11 @@ GetWeaponAmmoIndex(const gitem_t *weap)
 		{
 			return ITEM_INDEX(ammo);
 		}
+		else
+		{
+			gi.dprintf("%s: Ammo %s for %s is not defined\n",
+				__func__, weap->ammo, weap->classname);
+		}
 	}
 
 	return 0;
@@ -6685,11 +6690,13 @@ InitItems(void)
 						{
 							itemlist[num_items].ammo = "Slugs";
 							itemlist[num_items].quantity = 3;
+							itemlist[num_items].icon = "w_sniper";
 						}
 						else if (!strcmp(itemlist[num_items].classname, "weapon_soniccannon"))
 						{
 							itemlist[num_items].ammo = "Cells";
 							itemlist[num_items].quantity = 1;
+							itemlist[num_items].icon = "w_sonic";
 						}
 						/* Oblivion ammo */
 						else if (!strcmp(itemlist[num_items].classname, "weapon_plasma_pistol"))
@@ -6732,6 +6739,7 @@ InitItems(void)
 						itemlist[num_items].use = Use_Weapon;
 						itemlist[num_items].drop = Drop_Ammo;
 						itemlist[num_items].flags = IT_AMMO;
+						itemlist[num_items].pickup_sound = "misc/am_pkup.wav";
 
 						/* Infinity */
 						if (!strcmp(itemlist[num_items].classname, "ammo_goop"))
@@ -6749,6 +6757,16 @@ InitItems(void)
 							itemlist[num_items].quantity = 50;
 						}
 						/* Oblivion */
+						else if (!strcmp(itemlist[num_items].classname, "ammo_dod"))
+						{
+							itemlist[num_items].tag = AMMO_GRENADES;
+							itemlist[num_items].count_width = 2;
+							itemlist[num_items].icon = "a_dod";
+							itemlist[num_items].quantity = 1;
+							itemlist[num_items].ammo = itemlist[num_items].pickup_name;
+							itemlist[num_items].weaponthink = Weapon_DynamicWeapon;
+							itemlist[num_items].flags |= IT_WEAPON;
+						}
 						else if (!strcmp(itemlist[num_items].classname, "ammo_detpack"))
 						{
 							itemlist[num_items].tag = AMMO_GRENADES;
@@ -6764,8 +6782,9 @@ InitItems(void)
 							itemlist[num_items].tag = AMMO_GRENADES;
 							itemlist[num_items].count_width = 3;
 							itemlist[num_items].icon = "a_mines";
+							itemlist[num_items].ammo = itemlist[num_items].pickup_name;
 							itemlist[num_items].view_model = "models/weapons/v_mine/tris.md2";
-							itemlist[num_items].quantity = 1;
+							itemlist[num_items].quantity = 5;
 							itemlist[num_items].weaponthink = Weapon_DynamicWeapon;
 							itemlist[num_items].flags |= IT_WEAPON;
 						}
@@ -6775,6 +6794,32 @@ InitItems(void)
 							itemlist[num_items].count_width = 3;
 							itemlist[num_items].icon = "a_plasma2";
 							itemlist[num_items].quantity = 50;
+						}
+						/* Zaero */
+						else if (!strcmp(itemlist[num_items].classname, "ammo_ired"))
+						{
+							itemlist[num_items].count_width = 3;
+							itemlist[num_items].icon = "w_ired";
+							itemlist[num_items].view_model = "models/weapons/v_ired/tris.md2";
+							itemlist[num_items].quantity = 1;
+							itemlist[num_items].ammo = itemlist[num_items].pickup_name;
+							itemlist[num_items].weaponthink = Weapon_DynamicWeapon;
+							itemlist[num_items].flags |= IT_WEAPON;
+						}
+						else if (!strcmp(itemlist[num_items].classname, "ammo_empnuke"))
+						{
+							itemlist[num_items].count_width = 3;
+							itemlist[num_items].icon = "w_enuke";
+							itemlist[num_items].quantity = 1;
+							itemlist[num_items].weaponthink = Weapon_DynamicWeapon;
+						}
+						else if (!strcmp(itemlist[num_items].classname, "ammo_a2k"))
+						{
+							itemlist[num_items].count_width = 1;
+							itemlist[num_items].icon = "w_a2k";
+							itemlist[num_items].quantity = 1;
+							itemlist[num_items].weaponthink = Weapon_DynamicWeapon;
+							itemlist[num_items].flags = IT_POWERUP;
 						}
 					}
 

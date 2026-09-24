@@ -198,6 +198,7 @@ For complete technical specifications and compatibility tables, see [.agents/doc
 
 * 8.71RR15+:
 
+[![Check Oblivion](https://img.youtube.com/vi/D_bWu4apLLg/hqdefault.jpg)](https://www.youtube.com/watch?v=D_bWu4apLLg)
 [![Check Oblivion/Ininity state](https://img.youtube.com/vi/uixogpssDSI/hqdefault.jpg)](https://www.youtube.com/watch?v=uixogpssDSI)
 [![Check BSP46 state](https://img.youtube.com/vi/dmrfJeqW9HU/hqdefault.jpg)](https://www.youtube.com/watch?v=dmrfJeqW9HU)
 [![Check release state](https://img.youtube.com/vi/vFpdbPOcU4A/hqdefault.jpg)](https://www.youtube.com/watch?v=vFpdbPOcU4A)
@@ -354,42 +355,16 @@ Checked with:
 * [ ] Infinity: Add support of `weapon_goop`,
 * [ ] Infinity: Add support of `weapon_rifle`,
 * [ ] Oblivion: Add support of `ammo_dod`,
-* [ ] Oblivion: Add support of `ammo_mines`,
-* [ ] Oblivion: Add support of `func_rotate_train`,
-* [ ] Oblivion: Add support of `info_teleporter_dest`,
+* [ ] Oblivion: Finish support of `func_rotate_train`, add `speeds` for `path_corner`,
 * [ ] Oblivion: Add support of `misc_camera`,
 * [ ] Oblivion: Add support of `misc_camera_target`,
-* [ ] Oblivion: Add support of `misc_screenfader`,
 * [ ] Oblivion: Add support of `trigger_misc_camera`,
 * [ ] Oblivion: Add support of `weapon_rtdu`,
 * [ ] Oblivion: Add dynamic animation based on `activate` for `badass` and `floater`,
+* [ ] game: share `ired_enforce_limit`, `mine_enforce_limit`, `detpack_enforce_limit`,
 * [ ] Dynamic count of entities on client.
 
 ### Fixed:
-
-* [x] Support load `.cin` by ffmpeg from `.pak` file
-* [x] Support obj waveform model format for debug other formats,
-* [x] vulkan: group `it_pic` images,
-* [x] Heretic 2: correct obj placeholders,
-* [x] windows build: restore build asset on tag,
-* [x] Oblivion: Add support of `ammo_detpack`,
-* [x] Oblivion: Add support of `weapon_remote_detonator`,
-* [x] Oblivion: Add support of `target_rocket`,
-* [x] Oblivion: Add support of `target_railgun`,
-* [x] Oblivion: Add support of `monster_spider`,
-* [x] Oblivion: Add support of `monster_badass`,
-* [x] Oblivion: Add support of `monster_cyborg`,
-* [x] Oblivion: Add support of `monster_kigrax`,
-* [x] Infinity: Add support of `ammo_goop`,
-* [x] Infinity: Add support of `ammo_energy`,
-* [x] Oblivion: Add support of `ammo_rifleplasma`,
-* [x] Half-Life: support mdl,
-* [x] Oblivion: Add support of `weapon_hellfury`,
-* [x] Oblivion: Add support of `weapon_plasma_pistol`,
-* [x] Oblivion: Add support of `weapon_plasma_rifle`,
-* [x] Oblivion: Add support of `weapon_deatomizer`,
-* [x] renders: add lanczos3 2x scale by `r_scale32bittextures`,
-* [x] Oblivion: Add support of `monster_soldier_deatom`,
 
 ### Not a goal:
 

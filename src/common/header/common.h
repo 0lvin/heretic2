@@ -32,7 +32,7 @@
 #include "shared.h"
 #include "crc.h"
 
-#define YQ2VERSION "8.71H15"
+#define YQ2VERSION "8.71H16"
 #define BASEDIRNAME "baseq2"
 
 #ifndef YQ2OSTYPE
@@ -925,6 +925,7 @@ void SV_LocalizationFree(void);
 /* Convert protocol */
 int P_ConvertConfigStringFrom(int i, int protocol);
 int P_ConvertConfigStringTo(int i, int protocol);
+int P_GetCountOfItems(int protocol);
 
 /* ======================================================================= */
 
