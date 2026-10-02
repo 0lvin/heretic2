@@ -109,15 +109,21 @@ ResizeSTB(const byte *input_pixels, int input_width, int input_height,
 /* 8 looks good for smoothed textures with whole width as rstep */
 #define COLOR_DISTANCE 8
 
-void
-SmoothColorImage(unsigned *dst, size_t size, size_t rstep)
+typedef struct {
+	unsigned *dst;
+	size_t width;
+	size_t rstep;
+} smooth_job_t;
+
+static void
+SmoothColorImageRow(unsigned *dst, size_t size, size_t rstep)
 {
 	const unsigned *full_size;
 	unsigned last_color;
 	unsigned *last_diff;
 
 	// maximum step for apply
-	if (rstep < 2)
+	if (rstep < 2 || size < 2)
 	{
 		return;
 	}
@@ -134,7 +140,7 @@ SmoothColorImage(unsigned *dst, size_t size, size_t rstep)
 	{
 		if (last_color != *dst)
 		{
-			int step = dst - last_diff;
+			size_t step = dst - last_diff;
 			if (step > 1)
 			{
 				int a_beg, b_beg, c_beg, d_beg;
@@ -225,6 +231,36 @@ SmoothColorImage(unsigned *dst, size_t size, size_t rstep)
 		}
 		dst ++;
 	}
+}
+
+static void
+SmoothColorImageJob(size_t row_start, size_t row_end, void *user)
+{
+	const smooth_job_t *job = (const smooth_job_t *)user;
+	size_t y;
+
+	for (y = row_start; y < row_end; y++)
+	{
+		SmoothColorImageRow(job->dst + y * job->width, job->width, job->rstep);
+	}
+}
+
+void
+SmoothColorImage(unsigned *dst, size_t width, size_t height, size_t rstep)
+{
+	smooth_job_t job;
+
+	// maximum step for apply
+	if (rstep < 2 || width < 2 || height == 0)
+	{
+		return;
+	}
+
+	job.dst = dst;
+	job.width = width;
+	job.rstep = rstep;
+
+	R_ParallelTasks(height, 32, SmoothColorImageJob, &job);
 }
 
 /* https://en.wikipedia.org/wiki/Pixel-art_scaling_algorithms */
@@ -761,7 +797,7 @@ LoadImage_Ext(const char *name, const char* namewe, const char *ext, imagetype_t
 				{
 					if (r_scale8bittextures->value)
 					{
-						SmoothColorImage((unsigned*)image_buffer, size, width);
+						SmoothColorImage((unsigned*)image_buffer, width, height, width);
 					}
 
 					image = load_image(name, image_buffer,
@@ -1456,11 +1492,75 @@ R_FloodFillSkin(byte *skin, int skinwidth, int skinheight, const unsigned *table
 	}
 }
 
+typedef struct
+{
+	const byte *data;
+	unsigned *trans;
+	const unsigned *table_8to24;
+	size_t width;
+	size_t height;
+} convert8to32job_t;
+
+static void
+R_Convert8to32_Worker(size_t row_start, size_t row_end, void *user)
+{
+	const convert8to32job_t *job = (const convert8to32job_t *)user;
+	const byte *data = job->data;
+	unsigned *trans = job->trans;
+	const unsigned *table_8to24 = job->table_8to24;
+	size_t width = job->width;
+	size_t height = job->height;
+	size_t s = width * height;
+	int r;
+
+	for (r = row_start; r < row_end; r++)
+	{
+		size_t i;
+		for (i = (size_t)r * width; i < (size_t)(r + 1) * width && i < s; i++)
+		{
+			byte p = data[i];
+			trans[i] = table_8to24[p];
+
+			/* transparent, so scan around for
+			   another color to avoid alpha fringes */
+			if (p == 255)
+			{
+				if ((i >= width) && (data[i - width] != 255))
+				{
+					p = data[i - width];
+				}
+				else if ((i < s - width) && (data[i + width] != 255))
+				{
+					p = data[i + width];
+				}
+				else if ((i % width > 0) && (data[i - 1] != 255))
+				{
+					p = data[i - 1];
+				}
+				else if ((i % width < width - 1) && (i < s - 1) && (data[i + 1] != 255))
+				{
+					p = data[i + 1];
+				}
+				else
+				{
+					p = 0;
+				}
+
+				/* copy rgb components */
+				((byte *)&trans[i])[0] = ((byte *)&table_8to24[p])[0];
+				((byte *)&trans[i])[1] = ((byte *)&table_8to24[p])[1];
+				((byte *)&trans[i])[2] = ((byte *)&table_8to24[p])[2];
+			}
+		}
+	}
+}
+
 unsigned *
 R_Convert8to32(const byte *data, size_t width, size_t height, const unsigned *table_8to24)
 {
+	convert8to32job_t job;
 	unsigned *trans;
-	size_t i, s;
+	size_t s;
 
 	if (height == 0 || width > INT_MAX / sizeof(*trans) / height)
 	{
@@ -1471,50 +1571,36 @@ R_Convert8to32(const byte *data, size_t width, size_t height, const unsigned *ta
 	s = width * height;
 
 	trans = malloc(s * sizeof(unsigned));
-	YQ2_COM_CHECK_OOM(trans, "malloc()",
-		s * sizeof(unsigned))
+	YQ2_COM_CHECK_OOM(trans, "malloc()", s * sizeof(unsigned))
 	if (!trans)
 	{
 		/* unaware about YQ2_ATTR_NORETURN_FUNCPTR? */
 		return NULL;
 	}
 
-	for (i = 0; i < s; i++)
-	{
-		byte p = data[i];
-		trans[i] = table_8to24[p];
+	job.data = data;
+	job.trans = trans;
+	job.table_8to24 = table_8to24;
+	job.width = width;
+	job.height = height;
 
-		/* transparent, so scan around for
-		   another color to avoid alpha fringes */
-		if (p == 255)
-		{
-			if ((i > width) && (data[i - width] != 255))
-			{
-				p = data[i - width];
-			}
-			else if ((i < s - width) && (data[i + width] != 255))
-			{
-				p = data[i + width];
-			}
-			else if ((i > 0) && (data[i - 1] != 255))
-			{
-				p = data[i - 1];
-			}
-			else if ((i < s - 1) && (data[i + 1] != 255))
-			{
-				p = data[i + 1];
-			}
-			else
-			{
-				p = 0;
-			}
-
-			/* copy rgb components */
-			((byte *)&trans[i])[0] = ((byte *)&table_8to24[p])[0];
-			((byte *)&trans[i])[1] = ((byte *)&table_8to24[p])[1];
-			((byte *)&trans[i])[2] = ((byte *)&table_8to24[p])[2];
-		}
-	}
+	R_ParallelTasks(height, 64, R_Convert8to32_Worker, &job);
 
 	return trans;
+}
+
+void
+R_Convert8to32Solid(const byte *src, unsigned *dst, size_t size,
+	const unsigned *table_8to24)
+{
+	const byte *src_max;
+
+	src_max = src + size;
+	while (src < src_max)
+	{
+		*dst = table_8to24[*src];
+
+		src++;
+		dst++;
+	}
 }

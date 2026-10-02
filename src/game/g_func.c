@@ -31,6 +31,21 @@
 #include "monster/stats/stats.h"
 #include "header/buoy.h"
 
+#define SPAWNFLAG_ROTATING_START_ON 1
+#define SPAWNFLAG_ROTATING_REVERSE 2
+#define SPAWNFLAG_ROTATING_X_AXIS 4
+#define SPAWNFLAG_ROTATING_Y_AXIS 8
+#define SPAWNFLAG_ROTATING_TOUCH_PAIN 16
+#define SPAWNFLAG_ROTATING_STOP 32
+#define SPAWNFLAG_ROTATING_ANIMATED 64
+#define SPAWNFLAG_ROTATING_ANIMATED_FAST 128
+/* ReRelease has 0x00010000 */
+#define SPAWNFLAG_ROTATING_ACCEL 8192
+#define SPAWNFLAG_WATER_SMART 2
+#define SPAWNFLAG_TIMER_START_ON 1
+#define SPAWNFLAG_CONVEYOR_START_ON 1
+#define SPAWNFLAG_CONVEYOR_TOGGLE 2
+
 #define PLAT_LOW_TRIGGER 1
 #define PLAT2_TOGGLE 2
 #define PLAT2_TOP 4
@@ -1819,6 +1834,7 @@ rotating_use(edict_t *self, edict_t *other /* unused */,
 		self->s.sound = self->moveinfo.sound_middle;
 		self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_IDLE;
 		VectorScale(self->movedir, self->speed, self->avelocity);
+
 		if (self->spawnflags & 16)
 		{
 			self->touch = rotating_touch;
@@ -1911,7 +1927,7 @@ SP_func_rotating(edict_t *ent)
 
 	ent->solid = SOLID_BSP;
 
-	if (ent->spawnflags & 32)
+	if (ent->spawnflags & SPAWNFLAG_ROTATING_STOP)
 	{
 		ent->movetype = MOVETYPE_STOP;
 	}
@@ -1927,11 +1943,11 @@ SP_func_rotating(edict_t *ent)
 	/* set the axis of rotation */
 	VectorClear(ent->movedir);
 
-	if (ent->spawnflags & 4)
+	if (ent->spawnflags & SPAWNFLAG_ROTATING_X_AXIS)
 	{
 		ent->movedir[2] = 1.0;
 	}
-	else if (ent->spawnflags & 8)
+	else if (ent->spawnflags & SPAWNFLAG_ROTATING_Y_AXIS)
 	{
 		ent->movedir[0] = 1.0;
 	}
@@ -1941,7 +1957,7 @@ SP_func_rotating(edict_t *ent)
 	}
 
 	/* check for reverse rotation */
-	if (ent->spawnflags & 2)
+	if (ent->spawnflags & SPAWNFLAG_ROTATING_REVERSE)
 	{
 		VectorNegate(ent->movedir, ent->movedir);
 	}
@@ -1963,17 +1979,17 @@ SP_func_rotating(edict_t *ent)
 		ent->blocked = rotating_blocked;
 	}
 
-	if (ent->spawnflags & 1)
+	if (ent->spawnflags & SPAWNFLAG_ROTATING_START_ON)
 	{
 		ent->use(ent, NULL, NULL);
 	}
 
-	if (ent->spawnflags & DOOR_ANIMATED_FAST)
+	if (ent->spawnflags & SPAWNFLAG_ROTATING_ANIMATED)
 	{
 		ent->s.effects |= EF_ANIM_ALL;
 	}
 
-	if (ent->spawnflags & 128)
+	if (ent->spawnflags & SPAWNFLAG_ROTATING_ANIMATED_FAST)
 	{
 		ent->s.effects |= EF_ANIM_ALLFAST;
 	}
@@ -4236,7 +4252,7 @@ SP_func_timer(edict_t *self)
 				self->classname, vtos(self->s.origin));
 	}
 
-	if (self->spawnflags & 1)
+	if (self->spawnflags & SPAWNFLAG_TIMER_START_ON)
 	{
 		self->nextthink = level.time + 1.0 + st.pausetime + self->delay +
 						  self->wait + crandom() * self->random;
@@ -4266,18 +4282,18 @@ func_conveyor_use(edict_t *self, edict_t *other /* unused */,
 		return;
 	}
 
-	if (self->spawnflags & 1)
+	if (self->spawnflags & SPAWNFLAG_CONVEYOR_START_ON)
 	{
 		self->speed = 0;
-		self->spawnflags &= ~1;
+		self->spawnflags &= ~SPAWNFLAG_CONVEYOR_START_ON;
 	}
 	else
 	{
 		self->speed = self->count;
-		self->spawnflags |= 1;
+		self->spawnflags |= SPAWNFLAG_CONVEYOR_START_ON;
 	}
 
-	if (!(self->spawnflags & 2))
+	if (!(self->spawnflags & SPAWNFLAG_CONVEYOR_TOGGLE))
 	{
 		self->count = 0;
 	}
@@ -4296,7 +4312,7 @@ SP_func_conveyor(edict_t *self)
 		self->speed = 100;
 	}
 
-	if (!(self->spawnflags & 1))
+	if (!(self->spawnflags & SPAWNFLAG_CONVEYOR_START_ON))
 	{
 		self->count = self->speed;
 		self->speed = 0;
@@ -4663,7 +4679,9 @@ SP_func_killbox(edict_t *ent)
  * "health"	if set, the light may be killed.
  */
 
-#define START_OFF 1
+#define SPAWNFLAG_ROTATING_LIGHT_START_OFF 1
+#define SPAWNFLAG_ROTATING_LIGHT_ALARM 2
+#define START_OFF SPAWNFLAG_ROTATING_LIGHT_START_OFF
 
 void
 rotating_light_alarm(edict_t *self)
@@ -4673,7 +4691,7 @@ rotating_light_alarm(edict_t *self)
 		return;
 	}
 
-	if (self->spawnflags & START_OFF)
+	if (self->spawnflags & SPAWNFLAG_ROTATING_LIGHT_START_OFF)
 	{
 		self->think = NULL;
 		self->nextthink = 0;
@@ -4721,12 +4739,12 @@ rotating_light_use(edict_t *self, edict_t *other /* unused */,
 		return;
 	}
 
-	if (self->spawnflags & START_OFF)
+	if (self->spawnflags & SPAWNFLAG_ROTATING_LIGHT_START_OFF)
 	{
-		self->spawnflags &= ~START_OFF;
+		self->spawnflags &= ~SPAWNFLAG_ROTATING_LIGHT_START_OFF;
 		self->s.effects |= EF_SPINNINGLIGHTS;
 
-		if (self->spawnflags & 2)
+		if (self->spawnflags & SPAWNFLAG_ROTATING_LIGHT_ALARM)
 		{
 			self->think = rotating_light_alarm;
 			self->nextthink = level.time + 0.1;
@@ -4734,7 +4752,7 @@ rotating_light_use(edict_t *self, edict_t *other /* unused */,
 	}
 	else
 	{
-		self->spawnflags |= START_OFF;
+		self->spawnflags |= SPAWNFLAG_ROTATING_LIGHT_START_OFF;
 		self->s.effects &= ~EF_SPINNINGLIGHTS;
 	}
 }
@@ -4756,7 +4774,7 @@ SP_rotating_light(edict_t *self)
 
 	self->use = rotating_light_use;
 
-	if (self->spawnflags & START_OFF)
+	if (self->spawnflags & SPAWNFLAG_ROTATING_LIGHT_START_OFF)
 	{
 		self->s.effects &= ~EF_SPINNINGLIGHTS;
 	}
@@ -4784,7 +4802,7 @@ SP_rotating_light(edict_t *self)
 		self->takedamage = DAMAGE_YES;
 	}
 
-	if (self->spawnflags & 2)
+	if (self->spawnflags & SPAWNFLAG_ROTATING_LIGHT_ALARM)
 	{
 		self->moveinfo.sound_start = gi.soundindex("misc/alarm.wav");
 	}
@@ -5251,9 +5269,8 @@ RotateTrain_MoveFinal(edict_t *self)
 void
 RotateTrain_MoveBegin(edict_t *self)
 {
+	float frames, travel_time;
 	vec3_t delta;
-	float frames;
-	float travel_time;
 
 	if ((self->moveinfo.speed * FRAMETIME) >= self->moveinfo.remaining_distance)
 	{
@@ -5297,46 +5314,7 @@ RotateTrain_MoveBegin(edict_t *self)
 	self->nextthink = level.time + frames * FRAMETIME;
 }
 
-static void
-RotateTrain_MoveCalc(edict_t *self, vec3_t dest,
-				 void (*func)(edict_t *))
-{
-	VectorClear(self->velocity);
-	VectorSubtract(dest, self->s.origin, self->moveinfo.dir);
-	self->moveinfo.remaining_distance = VectorNormalize(self->moveinfo.dir);
-	self->moveinfo.endfunc = func;
-
-	if (self->duration > 0)
-	{
-		self->moveinfo.speed =
-			self->moveinfo.remaining_distance / self->duration;
-	}
-
-	if (!VectorCompare(self->rotate, vec3_origin))
-	{
-		VectorCopy(self->s.angles, self->moveinfo.start_angles);
-		VectorCopy(self->s.angles, self->moveinfo.end_angles);
-		VectorAdd(self->moveinfo.end_angles, self->rotate,
-			  self->moveinfo.end_angles);
-	}
-	else if (!VectorCompare(self->rotate_speed, vec3_origin))
-	{
-		VectorCopy(self->rotate_speed, self->avelocity);
-	}
-
-	if (level.current_entity ==
-	    ((self->flags & FL_TEAMSLAVE) ? self->teammaster : self))
-	{
-		RotateTrain_MoveBegin(self);
-	}
-	else
-	{
-		self->think = RotateTrain_MoveBegin;
-		self->nextthink = level.time + FRAMETIME;
-	}
-}
-
-static void
+void
 rotate_train_wait(edict_t *self)
 {
 	if (self->target_ent->pathtarget)
@@ -5384,6 +5362,48 @@ rotate_train_wait(edict_t *self)
 	else
 	{
 		rotate_train_next(self);
+	}
+}
+
+static void
+RotateTrain_MoveCalc(edict_t *self, vec3_t dest)
+{
+	VectorClear(self->velocity);
+	VectorSubtract(dest, self->s.origin, self->moveinfo.dir);
+	self->moveinfo.remaining_distance = VectorNormalize(self->moveinfo.dir);
+	self->moveinfo.endfunc = rotate_train_wait;
+
+	if (self->duration > 0)
+	{
+		self->moveinfo.speed =
+			self->moveinfo.remaining_distance / self->duration;
+	}
+	else
+	{
+		self->moveinfo.speed = self->speed;
+	}
+
+	if (!VectorCompare(self->rotate, vec3_origin))
+	{
+		VectorCopy(self->s.angles, self->moveinfo.start_angles);
+		VectorCopy(self->s.angles, self->moveinfo.end_angles);
+		VectorAdd(self->moveinfo.end_angles, self->rotate,
+			  self->moveinfo.end_angles);
+	}
+	else if (!VectorCompare(self->speeds, vec3_origin))
+	{
+		VectorCopy(self->speeds, self->avelocity);
+	}
+
+	if (level.current_entity ==
+	    ((self->flags & FL_TEAMSLAVE) ? self->teammaster : self))
+	{
+		RotateTrain_MoveBegin(self);
+	}
+	else
+	{
+		self->think = RotateTrain_MoveBegin;
+		self->nextthink = level.time + FRAMETIME;
 	}
 }
 
@@ -5451,7 +5471,7 @@ again:
 
 	if (ent->speed > 0)
 	{
-		self->moveinfo.speed = ent->speed;
+		self->speed = ent->speed;
 	}
 
 	if (!VectorCompare(ent->rotate, vec3_origin))
@@ -5463,19 +5483,19 @@ again:
 		VectorClear(self->rotate);
 	}
 
-	if (!VectorCompare(ent->rotate_speed, vec3_origin))
+	if (!VectorCompare(ent->speeds, vec3_origin))
 	{
-		VectorCopy(ent->rotate_speed, self->rotate_speed);
+		VectorCopy(ent->speeds, self->speeds);
 	}
 	else
 	{
-		VectorClear(self->rotate_speed);
+		VectorClear(self->speeds);
 	}
 
 	VectorCopy(self->s.origin, self->moveinfo.start_origin);
 	VectorCopy(ent->s.origin, self->moveinfo.end_origin);
 
-	RotateTrain_MoveCalc(self, ent->s.origin, rotate_train_wait);
+	RotateTrain_MoveCalc(self, ent->s.origin);
 	self->spawnflags |= SPAWNFLAG_TRAIN_START_ON;
 }
 
@@ -5490,7 +5510,7 @@ rotate_train_resume(edict_t *self)
 	VectorCopy(self->s.origin, self->moveinfo.start_origin);
 	VectorCopy(self->target_ent->s.origin, self->moveinfo.end_origin);
 
-	RotateTrain_MoveCalc(self, self->target_ent->s.origin, rotate_train_wait);
+	RotateTrain_MoveCalc(self, self->target_ent->s.origin);
 	self->spawnflags |= SPAWNFLAG_TRAIN_START_ON;
 }
 
@@ -5532,16 +5552,14 @@ rotate_train_find(edict_t *self)
 		VectorClear(self->rotate);
 	}
 
-	if (!VectorCompare(ent->rotate_speed, vec3_origin))
+	if (!VectorCompare(ent->speeds, vec3_origin))
 	{
-		VectorCopy(ent->rotate_speed, self->rotate_speed);
+		VectorCopy(ent->speeds, self->speeds);
 	}
 	else
 	{
-		VectorClear(self->rotate_speed);
+		VectorClear(self->speeds);
 	}
-
-	self->moveinfo.speed = ent->speed;
 
 	VectorCopy(ent->s.origin, self->s.origin);
 	gi.linkentity(self);

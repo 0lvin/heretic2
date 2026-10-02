@@ -32,18 +32,18 @@
 
 #ifdef _MSC_VER
 
-  #include <malloc.h>
+	#include <malloc.h>
 
-  #define YQ2_VLA(TYPE, VARNAME, NUMELEMS) \
-	TYPE * VARNAME = (TYPE *) _malloca(sizeof(TYPE) * NUMELEMS)
-  #define YQ2_VLAFREE(VARNAME) \
-	_freea(VARNAME); VARNAME=NULL;
+	#define YQ2_VLA(TYPE, VARNAME, NUMELEMS) \
+		TYPE * VARNAME = (TYPE *) _malloca(sizeof(TYPE) * NUMELEMS)
+	#define YQ2_VLAFREE(VARNAME) \
+		_freea(VARNAME); VARNAME=NULL;
 
 #else // other compilers hopefully support C99 VLAs (gcc/mingw and clang do)
 
-  #define YQ2_VLA(TYPE, VARNAME, NUMELEMS) \
-	TYPE VARNAME[NUMELEMS]
-  #define YQ2_VLAFREE(VARNAME)
+	#define YQ2_VLA(TYPE, VARNAME, NUMELEMS) \
+		TYPE VARNAME[NUMELEMS]
+	#define YQ2_VLAFREE(VARNAME)
 
 #endif
 
@@ -107,7 +107,7 @@ extern void GetSWLInfo(const char *name, int *width, int *height);
 extern qboolean LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height);
 extern qboolean ResizeSTB(const byte *input_pixels, int input_width, int input_height,
 			  byte *output_pixels, int output_width, int output_height);
-extern void SmoothColorImage(unsigned *dst, size_t size, size_t rstep);
+extern void SmoothColorImage(unsigned *dst, size_t width, size_t height, size_t rstep);
 extern void scale2x(const byte *src, byte *dst, int width, int height);
 extern void scale3x(const byte *src, byte *dst, int width, int height);
 
@@ -442,6 +442,8 @@ extern struct image_s *R_LoadConsoleChars(findimage_t find_image);
 extern unsigned R_NextUTF8Code(const char **curr);
 extern void R_FloodFillSkin(byte *skin, int skinwidth, int skinheight, const unsigned *table_8to24);
 extern unsigned *R_Convert8to32(const byte *data, size_t width, size_t height, const unsigned *table_8to24);
+extern void R_Convert8to32Solid(const byte *src, unsigned *dst, size_t size,
+	const unsigned *table_8to24);
 extern struct image_s *R_LoadImage(const char *name, const char* namewe, const char *ext,
 	imagetype_t type, loadimage_t load_image);
 extern void Mod_LoadQBSPNodes(const char *name, cplane_t *planes, int numplanes,
@@ -591,5 +593,7 @@ extern cvar_t *viewsize;
 Q2_DLL_EXPORTED refexport_t GetRefAPI(refimport_t imp);
 extern void R_CombineBlendWithFog(float *v_blend, qboolean native_fog);
 extern void R_InitCvar(void);
+extern void R_ParallelTasks(size_t rows, size_t  min_rows_per_task,
+	void (*fn)(size_t, size_t, void*), void* user);
 
 #endif /* SRC_CLIENT_REFRESH_REF_SHARED_H_ */

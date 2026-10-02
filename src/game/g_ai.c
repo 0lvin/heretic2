@@ -1610,7 +1610,6 @@ startcheck:
 	else /* heardit */
 	{
 		goto nextcheck;
-
 	}
 
 //

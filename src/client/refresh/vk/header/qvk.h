@@ -173,6 +173,7 @@ typedef struct
 	VkBool32 depthTestEnable;
 	VkBool32 depthWriteEnable;
 	VkBool32 depthBiasEnable;
+	uint32_t vertexPushConstantSize;
 } qvkpipeline_t;
 
 // Vulkan shader
@@ -200,7 +201,8 @@ typedef struct
 	}, \
 	.depthTestEnable = VK_TRUE, \
 	.depthWriteEnable = VK_TRUE, \
-	.depthBiasEnable = VK_FALSE \
+	.depthBiasEnable = VK_FALSE, \
+	.vertexPushConstantSize = PUSH_CONSTANT_VERTEX_SIZE * sizeof(float) \
 }
 
 // renderpass type
@@ -222,9 +224,9 @@ typedef enum
 #define PUSH_CONSTANT_VERTEX_SIZE 17
 // the last two floats are the world postprocess (see QVk_BindPipeline), they sit
 // past every shader's own fragment constants so a bind can never clobber them
-#define PUSH_CONSTANT_FRAGMENT_SIZE 13
-#define PUSH_CONSTANT_POSTPROCESS_OFFSET \
-	((PUSH_CONSTANT_VERTEX_SIZE + PUSH_CONSTANT_FRAGMENT_SIZE - 2) * sizeof(float))
+#define PUSH_CONSTANT_FRAGMENT_SIZE 11
+#define PUSH_CONSTANT_FOG_INDEX 3
+#define PUSH_CONSTANT_POSTPROCESS_INDEX 1
 
 // Vulkan instance
 extern VkInstance vk_instance;

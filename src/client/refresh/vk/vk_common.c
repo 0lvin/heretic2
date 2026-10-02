@@ -1464,7 +1464,8 @@ CreatePipelines(void)
 	for (int i = 0; i < RP_COUNT; ++i)
 	{
 		vk_drawTexQuadPipeline[i].depthTestEnable = VK_FALSE;
-		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRG_RG, &vk_drawTexQuadPipeline[i], &vk_renderpasses[i], shaders, 2);
+		QVk_CreatePipeline(samplerUboDsLayouts, 2, &vertInfoRG_RG,
+			&vk_drawTexQuadPipeline[i], &vk_renderpasses[i], shaders, 2);
 		QVk_DebugSetObjectName((uint64_t)vk_drawTexQuadPipeline[i].layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT,
 			va("Pipeline Layout: textured quad (%s)", renderpassObjectNames[i]));
 		QVk_DebugSetObjectName((uint64_t)vk_drawTexQuadPipeline[i].pl, VK_OBJECT_TYPE_PIPELINE,
@@ -1552,6 +1553,7 @@ CreatePipelines(void)
 
 	// draw sprite pipeline
 	VK_LOAD_VERTFRAG_SHADERS(shaders, sprite, basic);
+	vk_drawSpritePipeline.vertexPushConstantSize = sizeof(float) * 20;
 	vk_drawSpritePipeline.blendOpts.blendEnable = VK_TRUE;
 	QVk_CreatePipeline(&vk_samplerDescSetLayout, 1, &vertInfoRGB_RG, &vk_drawSpritePipeline, &vk_renderpasses[RP_WORLD], shaders, 2);
 	QVk_DebugSetObjectName((uint64_t)vk_drawSpritePipeline.layout, VK_OBJECT_TYPE_PIPELINE_LAYOUT, "Pipeline Layout: sprite");
@@ -1559,6 +1561,7 @@ CreatePipelines(void)
 
 	// draw sprite flares pipeline (additive blend)
 	VK_LOAD_VERTFRAG_SHADERS(shaders, sprite, basic);
+	vk_drawSpriteFlaresPipeline.vertexPushConstantSize = sizeof(float) * 20;
 	vk_drawSpriteFlaresPipeline.blendOpts.blendEnable = VK_TRUE;
 	vk_drawSpriteFlaresPipeline.blendOpts.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
 	vk_drawSpriteFlaresPipeline.blendOpts.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
@@ -3292,23 +3295,34 @@ QVk_BindPipeline(qvkpipeline_t *pipeline)
 {
 	if (vk_state.current_pipeline != pipeline->pl)
 	{
-		float postConstants[2];
+		float postConstants[PUSH_CONSTANT_FRAGMENT_SIZE] = {0};
 
 		vkCmdBindPipeline(vk_activeCmdbuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pl);
 		vk_state.current_pipeline = pipeline->pl;
+		if (vk_state.current_renderpass != RP_WORLD_WARP &&
+			pipeline != &vk_postprocessPipeline)
+		{
+			if (vk_state.current_renderpass == RP_WORLD)
+			{
+				postConstants[PUSH_CONSTANT_FOG_INDEX + 0] = r_newrefdef.fog.red / 255.f;
+				postConstants[PUSH_CONSTANT_FOG_INDEX + 1] = r_newrefdef.fog.green / 255.f;
+				postConstants[PUSH_CONSTANT_FOG_INDEX + 2] = r_newrefdef.fog.blue / 255.f;
+				postConstants[PUSH_CONSTANT_FOG_INDEX + 3] = r_newrefdef.fog.density / 64.f;
+			}
 
-		/* the bind is the only place that knows the current renderpass, so
-		   the world shaders get told here whether they have to do the work
-		   the postprocess pass would otherwise do for them, which includes
-		   honouring vk_postprocess the way that pass does */
-		postConstants[0] = (vk_worldDirectRender &&
-			vk_postprocess->value &&
-			vk_state.current_renderpass == RP_WORLD) ? 1.0f : 0.0f;
-		postConstants[1] = 2.1f - vid_gamma->value;
+			/* the bind is the only place that knows the current renderpass, so
+			   the world shaders get told here whether they have to do the work
+			   the postprocess pass would otherwise do for them, which includes
+			   honouring vk_postprocess the way that pass does */
+			postConstants[PUSH_CONSTANT_POSTPROCESS_INDEX] = (vk_worldDirectRender &&
+				vk_postprocess->value &&
+				vk_state.current_renderpass == RP_WORLD) ? 1.0f : 0.0f;
+			postConstants[PUSH_CONSTANT_POSTPROCESS_INDEX + 1] = 2.1f - vid_gamma->value;
 
-		vkCmdPushConstants(vk_activeCmdbuffer, pipeline->layout,
-			VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_POSTPROCESS_OFFSET,
-			sizeof(postConstants), postConstants);
+			vkCmdPushConstants(vk_activeCmdbuffer, pipeline->layout,
+				VK_SHADER_STAGE_FRAGMENT_BIT, PUSH_CONSTANT_VERTEX_SIZE * sizeof(float),
+				sizeof(postConstants), postConstants);
+		}
 	}
 }
 

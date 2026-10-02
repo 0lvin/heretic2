@@ -2134,21 +2134,13 @@ RE_CopyFrame(Uint32 *pixels, int pitch, SDL_Rect *rect)
 	/* no gaps between images rows */
 	if (pitch == vid_buffer_width)
 	{
-		const byte *src_max;
 		Uint32 *dst;
 		byte *src;
 
 		dst = pixels;
 		src = vid_buffer + rect->y * vid_buffer_width;
-		src_max = src + rect->h * vid_buffer_width;
 
-		while (src < src_max)
-		{
-			*dst = sdl_palette[*src];
-
-			src++;
-			dst++;
-		}
+		R_Convert8to32Solid(src, dst, rect->h * vid_buffer_width, sdl_palette);
 	}
 	else
 	{
@@ -2174,7 +2166,7 @@ RE_CopyFrame(Uint32 *pixels, int pitch, SDL_Rect *rect)
 
 	if ((r_anisotropic->value > 0) && !fastmoving)
 	{
-		SmoothColorImage((unsigned *)pixels, rect->h * vid_buffer_width,
+		SmoothColorImage((unsigned *)pixels, vid_buffer_width, rect->h,
 			r_anisotropic->value);
 	}
 }

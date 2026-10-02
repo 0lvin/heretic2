@@ -31,14 +31,34 @@
 #include "common/cl_strings.h"
 #include "player/library/p_main.h"
 
-#define TRIGGER_MONSTER 0x01
-#define TRIGGER_NOT_PLAYER 0x02
-#define TRIGGER_TRIGGERED 0x04
-#define TRIGGER_TOGGLE 0x08
-
-#define PUSH_ONCE 0x01
-#define PUSH_START_OFF 0x02
-#define PUSH_SILENT 0x04
+#define SPAWNFLAG_TRIGGER_MONSTER 0x01
+#define SPAWNFLAG_TRIGGER_NOT_PLAYER 0x02
+#define SPAWNFLAG_TRIGGER_TRIGGERED 0x04
+#define SPAWNFLAG_TRIGGER_TOGGLE 0x08
+#define SPAWNFLAG_COUNTER_NOMESSAGE 0x01
+#define SPAWNFLAG_PUSH_ONCE 0x01
+#define SPAWNFLAG_PUSH_PLUS 0x02
+#define SPAWNFLAG_PUSH_SILENT 0x04
+#define SPAWNFLAG_PUSH_START_OFF 0x08
+#define SPAWNFLAG_PUSH_CLIP 0x10
+#define SPAWNFLAG_HURT_START_OFF 1
+#define SPAWNFLAG_HURT_TOGGLE 2
+#define SPAWNFLAG_HURT_SILENT 4
+#define SPAWNFLAG_HURT_NO_PROTECTION 8
+#define SPAWNFLAG_HURT_SLOW 16
+#define SPAWNFLAG_GRAVITY_TOGGLE 1
+#define SPAWNFLAG_GRAVITY_START_OFF 2
+#define SPAWNFLAG_GRAVITY_CLIPPED 4
+#define SPAWNFLAG_MONSTERJUMP_TOGGLE 1
+#define SPAWNFLAG_MONSTERJUMP_START_OFF 2
+#define SPAWNFLAG_MONSTERJUMP_CLIPPED 4
+#define TRIGGER_MONSTER SPAWNFLAG_TRIGGER_MONSTER
+#define TRIGGER_NOT_PLAYER SPAWNFLAG_TRIGGER_NOT_PLAYER
+#define TRIGGER_TRIGGERED SPAWNFLAG_TRIGGER_TRIGGERED
+#define TRIGGER_TOGGLE SPAWNFLAG_TRIGGER_TOGGLE
+#define PUSH_ONCE SPAWNFLAG_PUSH_ONCE
+#define PUSH_START_OFF SPAWNFLAG_PUSH_START_OFF
+#define PUSH_SILENT SPAWNFLAG_PUSH_SILENT
 
 static int windsound;
 
@@ -199,7 +219,7 @@ Touch_Multi(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 	// Just monster will trigger it
 	else if (other->svflags & SVF_MONSTER)
 	{
-		if (!(self->spawnflags & TRIGGER_MONSTER))
+		if (!(self->spawnflags & SPAWNFLAG_TRIGGER_MONSTER))
 		{
 			return;
 		}
@@ -297,7 +317,6 @@ SP_trigger_multiple(edict_t *ent)
 	ent->TriggerActivated = G_UseTargets;
 
 	Trigger_Sounds(ent);
-
 }
 //----------------------------------------------------------------------
 // One Time Trigger
@@ -702,7 +721,7 @@ trigger_counter_use(edict_t *self, edict_t *other /* unused */,
 
 	if (self->count)
 	{
-		if (!(self->spawnflags & 1))
+		if (!(self->spawnflags & SPAWNFLAG_COUNTER_NOMESSAGE))
 		{
 			gi.centerprintf(activator, "%i more to go...", self->count);
 		}
@@ -710,7 +729,7 @@ trigger_counter_use(edict_t *self, edict_t *other /* unused */,
 		return;
 	}
 
-	if (!(self->spawnflags & 1))
+	if (!(self->spawnflags & SPAWNFLAG_COUNTER_NOMESSAGE))
 	{
 		gi.centerprintf(activator, "Sequence completed!");
 	}
@@ -800,7 +819,8 @@ trigger_push_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unuse
 	{
 		if (other->client)	// A player???
 		{
-			// don't take falling damage immediately from this
+			/* don't take falling damage
+			   immediately from this */
 			VectorCopy(other->velocity, other->client->playerinfo.oldvelocity);
 			other->client->playerinfo.flags |= PLAYER_FLAG_USE_ENT_POS;
 			other->groundentity = NULL;
@@ -1508,7 +1528,7 @@ hurt_use(edict_t *self, edict_t *other /* unused */,
 
 	gi.linkentity(self);
 
-	if (!(self->spawnflags & 2))
+	if (!(self->spawnflags & SPAWNFLAG_HURT_TOGGLE))
 	{
 		self->use = NULL;
 	}
@@ -1535,7 +1555,7 @@ hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 		return;
 	}
 
-	if (self->spawnflags & 16)
+	if (self->spawnflags & SPAWNFLAG_HURT_SLOW)
 	{
 		self->timestamp = level.time + 1;
 	}
@@ -1544,7 +1564,7 @@ hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 		self->timestamp = level.time + FRAMETIME;
 	}
 
-	if (!(self->spawnflags & 4))
+	if (!(self->spawnflags & SPAWNFLAG_HURT_SILENT))
 	{
 		if ((level.framenum % 10) == 0)
 		{
@@ -1552,7 +1572,7 @@ hurt_touch(edict_t *self, edict_t *other, const cplane_t *plane /* unused */,
 		}
 	}
 
-	if (self->spawnflags & 8)
+	if (self->spawnflags & SPAWNFLAG_HURT_NO_PROTECTION)
 	{
 		dflags = DAMAGE_NO_PROTECTION;
 	}
@@ -1583,7 +1603,7 @@ SP_trigger_hurt(edict_t *self)
 		self->dmg = 5;
 	}
 
-	if (self->spawnflags & 1)
+	if (self->spawnflags & SPAWNFLAG_HURT_START_OFF)
 	{
 		self->solid = SOLID_NOT;
 	}
@@ -1592,7 +1612,7 @@ SP_trigger_hurt(edict_t *self)
 		self->solid = SOLID_TRIGGER;
 	}
 
-	if (self->spawnflags & 2)
+	if (self->spawnflags & SPAWNFLAG_HURT_TOGGLE)
 	{
 		self->use = hurt_use;
 	}

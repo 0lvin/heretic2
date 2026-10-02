@@ -29,6 +29,12 @@
 #include "common/h2rand.h"
 #include "common/cl_strings.h"
 
+#define SPAWNFLAG_SPEAKER_LOOPED_ON 1
+#define SPAWNFLAG_SPEAKER_LOOPED_OFF 2
+#define SPAWNFLAG_SPEAKER_RELIABLE 4
+#define SPAWNFLAG_SPEAKER_NO_STEREO 8
+#define SPAWNFLAG_LIGHTRAMP_TOGGLE 1
+
 #define TARGET_HELP_PRIMARY 1
 #define TARGET_HELP_THINK_DELAY 0.3f
 
@@ -98,7 +104,7 @@ Use_Target_Speaker(edict_t *ent, edict_t *other /* unused */, edict_t *activator
 		return;
 	}
 
-	if (ent->spawnflags & 3)
+	if (ent->spawnflags & (SPAWNFLAG_SPEAKER_LOOPED_ON | SPAWNFLAG_SPEAKER_LOOPED_OFF))
 	{
 		/* looping sound toggles */
 		if (ent->s.sound)
@@ -115,7 +121,7 @@ Use_Target_Speaker(edict_t *ent, edict_t *other /* unused */, edict_t *activator
 		int chan;
 
 		/* normal sound */
-		if (ent->spawnflags & 4)
+		if (ent->spawnflags & SPAWNFLAG_SPEAKER_RELIABLE)
 		{
 			chan = CHAN_VOICE | CHAN_RELIABLE;
 		}
@@ -174,7 +180,7 @@ SP_target_speaker(edict_t *ent)
 	}
 
 	/* check for prestarted looping sound */
-	if (ent->spawnflags & 1)
+	if (ent->spawnflags & SPAWNFLAG_SPEAKER_LOOPED_ON)
 	{
 		ent->s.sound = ent->noise_index;
 	}
@@ -982,7 +988,7 @@ target_laser_think(edict_t *self)
 
 		if (!VectorCompare(self->movedir, last_movedir))
 		{
-			self->spawnflags |= 0x80000000;
+			self->spawnflags |= SPAWNFLAG_LASER_ZAP;
 		}
 	}
 
@@ -992,7 +998,7 @@ target_laser_think(edict_t *self)
 
 	while (1)
 	{
-		if (self->spawnflags & LASER_STOPWINDOW)
+		if (self->spawnflags & SPAWNFLAG_LASER_STOPWINDOW)
 		{
 			tr = gi.trace(start, NULL, NULL, end, ignore, MASK_SHOT);
 		}
@@ -1251,7 +1257,7 @@ target_mal_laser_on(edict_t *self)
 		self->activator = self;
 	}
 
-	self->spawnflags |= 0x80000001;
+	self->spawnflags |= SPAWNFLAG_LASER_ZAP | SPAWNFLAG_LASER_ON;
 	self->svflags &= ~SVF_NOCLIENT;
 	self->nextthink = level.time + self->wait + self->delay;
 }
@@ -1264,7 +1270,7 @@ target_mal_laser_off(edict_t *self)
 		return;
 	}
 
-	self->spawnflags &= ~1;
+	self->spawnflags &= ~SPAWNFLAG_LASER_ON;
 	self->svflags |= SVF_NOCLIENT;
 	self->nextthink = 0;
 }
@@ -1279,7 +1285,7 @@ target_mal_laser_use(edict_t *self, edict_t *other /* unused */, edict_t *activa
 
 	self->activator = activator;
 
-	if (self->spawnflags & 1)
+	if (self->spawnflags & SPAWNFLAG_LASER_ON)
 	{
 		target_mal_laser_off(self);
 	}
@@ -1299,7 +1305,7 @@ mal_laser_think(edict_t *self)
 
 	target_laser_think(self);
 	self->nextthink = level.time + self->wait + 0.1;
-	self->spawnflags |= 0x80000000;
+	self->spawnflags |= SPAWNFLAG_LASER_ZAP;
 }
 
 void
@@ -1316,7 +1322,7 @@ SP_target_mal_laser(edict_t *self)
 	self->s.modelindex = 1; /* must be non-zero */
 
 	/* set the beam diameter */
-	if (self->spawnflags & 64)
+	if (self->spawnflags & SPAWNFLAG_LASER_FAT)
 	{
 		self->s.frame = 16;
 	}
@@ -1326,23 +1332,23 @@ SP_target_mal_laser(edict_t *self)
 	}
 
 	/* set the color */
-	if (self->spawnflags & 2)
+	if (self->spawnflags & SPAWNFLAG_LASER_RED)
 	{
 		self->s.skinnum = 0xf2f2f0f0;
 	}
-	else if (self->spawnflags & 4)
+	else if (self->spawnflags & SPAWNFLAG_LASER_GREEN)
 	{
 		self->s.skinnum = 0xd0d1d2d3;
 	}
-	else if (self->spawnflags & 8)
+	else if (self->spawnflags & SPAWNFLAG_LASER_BLUE)
 	{
 		self->s.skinnum = 0xf3f3f1f1;
 	}
-	else if (self->spawnflags & 16)
+	else if (self->spawnflags & SPAWNFLAG_LASER_YELLOW)
 	{
 		self->s.skinnum = 0xdcdddedf;
 	}
-	else if (self->spawnflags & 32)
+	else if (self->spawnflags & SPAWNFLAG_LASER_ORANGE)
 	{
 		self->s.skinnum = 0xe0e1e2e3;
 	}
@@ -1374,7 +1380,7 @@ SP_target_mal_laser(edict_t *self)
 
 	gi.linkentity(self);
 
-	if (self->spawnflags & 1)
+	if (self->spawnflags & SPAWNFLAG_LASER_ON)
 	{
 		target_mal_laser_on(self);
 	}
@@ -1412,7 +1418,7 @@ target_lightramp_think(edict_t *self)
 	{
 		self->nextthink = level.time + FRAMETIME;
 	}
-	else if (self->spawnflags & 1)
+	else if (self->spawnflags & SPAWNFLAG_LIGHTRAMP_TOGGLE)
 	{
 		char temp;
 
