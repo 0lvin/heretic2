@@ -140,8 +140,10 @@ void MSG_WriteFloat(sizebuf_t *sb, float f);
 void MSG_WriteString(sizebuf_t *sb, const char *s);
 void MSG_WriteCoord(sizebuf_t *sb, float f, int protocol);
 void MSG_WritePos(sizebuf_t *sb, const vec3_t pos, int protocol);
+void MSG_WriteVel(sizebuf_t *sb, const short *vel, int protocol);
 void MSG_WriteAngle(sizebuf_t *sb, float f, int protocol);
 void MSG_WriteAngle16(sizebuf_t *sb, float f);
+void MSG_WriteKickAngles(sizebuf_t *sb, const vec3_t kick_angles, int protocol);
 void MSG_WriteConfigString(sizebuf_t *buf, short index, const char *s);
 void MSG_WriteDeltaUsercmd(sizebuf_t *buf, const struct usercmd_s *from,
 		const struct usercmd_s *cmd);
@@ -162,8 +164,10 @@ char *MSG_ReadStringLine(sizebuf_t *msg_read);
 
 float MSG_ReadCoord(sizebuf_t *msg_read, int protocol);
 void MSG_ReadPos(sizebuf_t *msg_read, vec3_t pos, int protocol);
+void MSG_ReadVel(sizebuf_t *msg_read, short *vel, int protocol);
 float MSG_ReadAngle(sizebuf_t *msg_read, int protocol);
 float MSG_ReadAngle16(sizebuf_t *msg_read);
+void MSG_ReadKickAngles(sizebuf_t *msg_read, vec3_t kick_angles, int protocol);
 void MSG_ReadDeltaUsercmd(sizebuf_t *msg_read,
 		const struct usercmd_s *from,
 		struct usercmd_s *move);
@@ -202,6 +206,8 @@ void Info_Print(const char *s);
 
 /* PROTOCOL */
 
+/* Quake 2 Test Demos */
+#define PROTOCOL_Q2TEST_VERSION 25
 /* Quake 2 Release Demos */
 #define PROTOCOL_RELEASE_VERSION 26
 /* Quake 2 Demo */
@@ -210,6 +216,8 @@ void Info_Print(const char *s);
 #define PROTOCOL_XATRIX_VERSION 32
 /* Quake 2 Network Release */
 #define PROTOCOL_R97_VERSION 34
+/* Heretic 2 Release Demos */
+#define PROTOCOL_H2DEMO_VERSION 51
 /* ReRelease demo files */
 #define PROTOCOL_RR22_VERSION 2022
 /* ReRelease network protocol */
@@ -926,6 +934,8 @@ void SV_LocalizationFree(void);
 int P_ConvertConfigStringFrom(int i, int protocol);
 int P_ConvertConfigStringTo(int i, int protocol);
 int P_GetCountOfItems(int protocol);
+int P_GetCountOfStats(int protocol);
+int P_CmdConvert(int cmd, int protocol);
 
 /* ======================================================================= */
 

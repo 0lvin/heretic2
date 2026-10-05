@@ -3429,8 +3429,8 @@ PutClientInServer(edict_t *ent)
 	}
 	else if (coop->value)
 	{
-		int n;
 		char userinfo[MAX_INFO_STRING];
+		int n;
 
 		resp = client->resp;
 		memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
@@ -3456,11 +3456,8 @@ PutClientInServer(edict_t *ent)
 	}
 	else
 	{
-		char userinfo[MAX_INFO_STRING];
-
 		memset(&resp, 0, sizeof(resp));
-		memcpy(userinfo, client->pers.userinfo, sizeof(userinfo));
-		ClientUserinfoChanged (ent, userinfo);
+		ClientUserinfoChanged(ent, NULL);
 	}
 
 	// Complete or partial reset of the player's model?
@@ -3905,13 +3902,19 @@ ClientBegin(edict_t *ent)
 void
 ClientUserinfoChanged(edict_t *ent, char *userinfo)
 {
-	char *s, skin[MAX_QPATH], filename[MAX_QPATH];
+	const char *s;
+	char skin[MAX_QPATH], filename[MAX_QPATH];
 	int playernum;
 	qboolean found = false;
 
-	if (!ent || !userinfo)
+	if (!ent)
 	{
 		return;
+	}
+
+	if (!userinfo)
+	{
+		userinfo = ent->client->pers.userinfo;
 	}
 
 	/* check for malformed or illegal info strings */
@@ -4185,7 +4188,10 @@ ClientUserinfoChanged(edict_t *ent, char *userinfo)
 	}
 
 	/* save off the userinfo in case we want to check something later */
-	Q_strlcpy(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
+	if (userinfo != ent->client->pers.userinfo)
+	{
+		Q_strlcpy(ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo));
+	}
 }
 
 /*

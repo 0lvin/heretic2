@@ -1282,6 +1282,15 @@ typedef enum
 	TE_EXPLOSION1_BIG,
 	TE_EXPLOSION1_NP,
 	TE_FLECHETTE,
+	/* Quake 2 ReRelease */
+	TE_BLUEHYPERBLASTER_2,
+	TE_BFG_ZAP,
+	TE_BERSERK_SLAM,
+	TE_GRAPPLE_CABLE_2,
+	TE_POWER_SPLASH,
+	TE_LIGHTNING_BEAM,
+	TE_EXPLOSION1_NL,
+	TE_EXPLOSION2_NL,
 	/* Quake 2 RTX */
 	TE_FLARE,
 } temp_event_t;
@@ -1338,16 +1347,16 @@ typedef enum
 #define STAT_DEFMANA_BACK     	12
 #define STAT_DEFMANA 13
 #define STAT_FRAGS_ICON 14 // cleared each frame, 1 = health, 2 = armor
-#define	STAT_FRAGS 15 // which status to print
-#define	STAT_FLASHES 16
+#define STAT_FRAGS 15 // which status to print
+#define STAT_FLASHES 16
 #define STAT_CHASE 16
 #define STAT_SPECTATOR 17
-#define	STAT_LAYOUTS 17
-#define	STAT_PUZZLE_ITEM1	 	18
-#define	STAT_PUZZLE_ITEM2	 	19
-#define	STAT_PUZZLE_ITEM3	 	20
-#define	STAT_PUZZLE_ITEM4	 	21
-#define	STAT_PUZZLE_COUNT	 	22
+#define STAT_LAYOUTS 17
+#define STAT_PUZZLE_ITEM1	 	18
+#define STAT_PUZZLE_ITEM2	 	19
+#define STAT_PUZZLE_ITEM3	 	20
+#define STAT_PUZZLE_ITEM4	 	21
+#define STAT_PUZZLE_COUNT	 	22
 #define STAT_POWERUP_ICON		23		// * THESE MUST BE SEQUENTIAL !!!!!
 #define STAT_POWERUP_BACK		24
 #define STAT_POWERUP_TIMER		25
@@ -1362,6 +1371,9 @@ typedef enum
 #define STAT_ARMOUR_ICON		34
 #define STAT_ARMOUR				35
 
+/* Extend to have more slots?
+ * Quake ReRelease has 64,
+ * Heretic 2 has 48 */
 #define MAX_STATS 48
 
 typedef enum

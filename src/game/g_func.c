@@ -829,12 +829,16 @@ plat_blocked(edict_t *self, edict_t *other)
 
 	if ((other->svflags & SVF_MONSTER) && (!other->client) && !(other->svflags & SVF_MONSTER))
 	{
-		/* give it a chance to go away on it's own terms (like gibs) */
+		/* give it a chance to go away on its own terms (like gibs) */
 		T_Damage(other, self, self, vec3_origin, other->s.origin,
 				vec3_origin, 3000, 1, DAMAGE_AVOID_ARMOR, MOD_CRUSH);
+
 		/* if it's still there, nuke it */
 		if (other->health > 0)
+		{
 			BecomeDebris(other);
+		}
+
 		return;
 	}
 

@@ -752,7 +752,7 @@ CL_ParsePacketEntities(const frame_t *oldframe, frame_t *newframe)
 static void
 CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 {
-	int flags, i, statbits[8], stats_size;
+	int flags, group, stats_size;
 	player_state_t *state;
 
 	state = &newframe->playerstate;
@@ -796,9 +796,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_M_VELOCITY)
 	{
-		state->pmove.velocity[0] = MSG_ReadShort(&net_message);
-		state->pmove.velocity[1] = MSG_ReadShort(&net_message);
-		state->pmove.velocity[2] = MSG_ReadShort(&net_message);
+		MSG_ReadVel(&net_message, state->pmove.velocity, protocol);
 	}
 
 	if (flags & PS_M_TIME)
@@ -845,9 +843,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_KICKANGLES)
 	{
-		state->kick_angles[0] = MSG_ReadChar(&net_message) * 0.25f;
-		state->kick_angles[1] = MSG_ReadChar(&net_message) * 0.25f;
-		state->kick_angles[2] = MSG_ReadChar(&net_message) * 0.25f;
+		MSG_ReadKickAngles(&net_message, state->kick_angles, protocol);
 	}
 
 	if (flags & PS_WEAPONINDEX)
@@ -904,42 +900,42 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 	}
 
 	/* parse stats */
-	if (IS_QII97_PROTOCOL(protocol))
+	if (IS_QII97_PROTOCOL(protocol) ||
+		protocol == PROTOCOL_RR22_VERSION)
 	{
-		stats_size = MAX_STATS;
+		stats_size = P_GetCountOfStats(protocol);
 	}
 	else
 	{
 		stats_size = MSG_ReadByte(&net_message);
 	}
 
-	/* clear all before read real values */
-	memset(statbits, 0, sizeof(statbits));
-
 	/* Read stats bits */
-	for (i = 0; i < (int)((stats_size + 31) / 32); i++)
+	for (group = 0; group < (int)((stats_size + 31) / 32); group++)
 	{
-		statbits[i] = MSG_ReadLong(&net_message);
-	}
+		int statbits, i;
 
-	for (i = 0; i < stats_size; i++)
-	{
-		if (statbits[(int)(i / 32)] & (1u << (i % 32)))
+		statbits = MSG_ReadLong(&net_message);
+
+		for (i = group * 32; i < (group + 1) * 32; i++)
 		{
-			if (i < MAX_STATS)
+			if (statbits & (1u << (i % 32)))
 			{
-				state->stats[i] = MSG_ReadShort(&net_message);
-
-				if (i == STAT_PICKUP_STRING)
+				if (i < MAX_STATS)
 				{
-					state->stats[i] = P_ConvertConfigStringFrom(state->stats[i],
-						protocol);
+					state->stats[i] = MSG_ReadShort(&net_message);
+
+					if (i == STAT_PICKUP_STRING)
+					{
+						state->stats[i] = P_ConvertConfigStringFrom(state->stats[i],
+							protocol);
+					}
 				}
-			}
-			else
-			{
-				Com_DPrintf("%s: unknown stats %d: %d\n",
-					__func__, i, MSG_ReadShort(&net_message));
+				else
+				{
+					Com_DPrintf("%s: unknown stats %d: %d\n",
+						__func__, i, MSG_ReadShort(&net_message));
+				}
 			}
 		}
 	}
@@ -1167,6 +1163,8 @@ CL_GetProtocolName(int protocol)
 {
 	switch (protocol)
 	{
+		case PROTOCOL_Q2TEST_VERSION:
+			return "Quake 2 Test Demo";
 		case PROTOCOL_RELEASE_VERSION:
 			return "Quake 2 Demo";
 		case PROTOCOL_XATRIX_VERSION:
@@ -1176,6 +1174,9 @@ CL_GetProtocolName(int protocol)
 		/* Network protocol */
 		case PROTOCOL_R97_VERSION:
 			return "Quake 2";
+		/* Heretic 2 demo */
+		case PROTOCOL_H2DEMO_VERSION:
+			return "Heretic II Demo";
 		/* ReRelease Demo */
 		case PROTOCOL_RR22_VERSION:
 			return "ReRelease Quake 2 Demo";
@@ -1215,6 +1216,8 @@ CL_ParseServerData(void)
 		IS_QII97_PROTOCOL(i) ||
 		(i == PROTOCOL_RR22_VERSION) ||
 		(i == PROTOCOL_RR23_VERSION) ||
+		(i == PROTOCOL_Q2TEST_VERSION) ||
+		(i == PROTOCOL_H2DEMO_VERSION) ||
 		(i == PROTOCOL_VERSION)))
 	{
 		Com_Printf("Network protocol: %s\n", CL_GetProtocolName(i));
@@ -1223,6 +1226,16 @@ CL_ParseServerData(void)
 	{
 		Com_Error(ERR_DROP, "Server returned version %i, not %i",
 				i, PROTOCOL_VERSION);
+		return;
+	}
+
+	if ((cl_shownet->value == 0) &&
+		((i == PROTOCOL_H2DEMO_VERSION) ||
+		 (i == PROTOCOL_Q2TEST_VERSION) ||
+		 (i == PROTOCOL_RR22_VERSION)))
+	{
+		Com_Error(ERR_DROP, "Network protocol '%s' is currently unsupported\n",
+			CL_GetProtocolName(i));
 		return;
 	}
 
@@ -1855,6 +1868,20 @@ CL_ParseServerMessage(void)
 			break;
 		}
 
+		if (!cls.serverProtocol)
+		{
+			if (cmd == 0x07)
+			{
+				cls.serverProtocol = PROTOCOL_Q2TEST_VERSION;
+			}
+			else if (cmd == 0x0b)
+			{
+				cls.serverProtocol = PROTOCOL_H2DEMO_VERSION;
+			}
+		}
+
+		cmd = P_CmdConvert(cmd, cls.serverProtocol);
+
 		CL_ShowNetCmd(cmd);
 
 		/* other commands */
@@ -1883,6 +1910,7 @@ CL_ParseServerMessage(void)
 				}
 
 				cls.state = ca_connecting;
+				cls.serverProtocol = 0;
 				cls.connect_time = -99999; /* CL_CheckForResend() will fire immediately */
 				break;
 
@@ -1941,6 +1969,10 @@ CL_ParseServerMessage(void)
 
 			case svc_muzzleflash2:
 				CL_AddMuzzleFlash2();
+				break;
+
+			case svc_muzzleflash3:
+				CL_AddMuzzleFlash3();
 				break;
 
 			case svc_download:
