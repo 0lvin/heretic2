@@ -4070,8 +4070,6 @@ misc_magic_portal_use(edict_t *self, edict_t *other, edict_t *activator)
 	self->impact_debounce_time = level.time + 4.0;
 }
 
-#define START_OFF	1
-
 /*QUAKED misc_magic_portal (1 .5 0) (-16 -16 -32) (16 16 32)  START_OFF
 A magical glowing portal. Triggerable.
 -------  FIELDS  ------------------

@@ -642,12 +642,6 @@ G_SetStats(edict_t *ent)
 	ppers = &ent->client->playerinfo.pers;
 
 	// ********************************************************************************************
-	// Frags
-	// ********************************************************************************************
-
-	ps->stats[STAT_FRAGS] = pi->resp.score;
-
-	// ********************************************************************************************
 	// Health.
 	// ********************************************************************************************
 
@@ -772,6 +766,7 @@ G_SetStats(edict_t *ent)
 	item = itemlist;
 	count = STAT_PUZZLE_ITEM1;
 	ps->stats[STAT_PUZZLE_COUNT] = 0;
+
 	for(i = 0; i < MAX_ITEMS; i++, item++)
 	{
 		if (i >= itemlist_len)
@@ -932,16 +927,145 @@ G_SetStats(edict_t *ent)
 
 	if (deathmatch->value)
 	{
-		if (pers->health <= 0 || level.intermissiontime || ent->client->playerinfo.showscores)
+		if ((ent->client->pers.health <= 0) || level.intermissiontime ||
+			ent->client->playerinfo.showscores)
 		{
-			ps->stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
+			ent->client->ps.stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
+		}
+
+		if (ent->client->showinventory && (ent->client->pers.health > 0))
+		{
+			ent->client->ps.stats[STAT_LAYOUTS] |= LAYOUTS_INVENTORY;
 		}
 	}
 	else
 	{
-		if (ent->client->playerinfo.showscores)
+		if (ent->client->showscores || ent->client->showhelp)
 		{
-			ps->stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
+			ent->client->ps.stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
 		}
+
+		if (ent->client->showinventory && (ent->client->pers.health > 0))
+		{
+			ent->client->ps.stats[STAT_LAYOUTS] |= LAYOUTS_INVENTORY;
+		}
+	}
+
+	if (level.story_active)
+	{
+		ent->client->ps.stats[STAT_LAYOUTS] |= LAYOUTS_HIDE_CROSSHAIR;
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_LAYOUTS] &= ~LAYOUTS_HIDE_CROSSHAIR;
+	}
+
+	/* frags */
+	ent->client->ps.stats[STAT_FRAGS] = ent->client->resp.score;
+
+#if 0
+	/* help icon / current weapon if not shown */
+	if (ent->client->pers.helpchanged && (level.framenum & 8))
+	{
+		ent->client->ps.stats[STAT_HELPICON] = gi.imageindex("i_help");
+	}
+	else if (((ent->client->pers.hand == CENTER_HANDED) ||
+			  (ent->client->ps.fov > 91) ||
+			  (ent->client->chasetoggle)) &&
+			 ent->client->pers.weapon)
+	{
+		const cvar_t *gun;
+		gun = gi.cvar("cl_gun", "2", 0);
+
+		if (gun->value != 2)
+		{
+			ent->client->ps.stats[STAT_HELPICON] = FirstPersonWeaponIcon(
+					ent->client->pers.weapon);
+		}
+		else
+		{
+			ent->client->ps.stats[STAT_HELPICON] = 0;
+		}
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_HELPICON] = 0;
+	}
+
+	if (ctf->value)
+	{
+		SetCTFStats(ent);
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_SPECTATOR] = 0;
+	}
+#endif
+}
+
+void
+G_CheckChaseStats(const edict_t *ent)
+{
+	int i;
+
+	if (!ent)
+	{
+		return;
+	}
+
+	for (i = 1; i <= maxclients->value; i++)
+	{
+		gclient_t *cl;
+
+		cl = g_edicts[i].client;
+
+		if (!g_edicts[i].inuse || (cl->chase_target != ent))
+		{
+			continue;
+		}
+
+		memcpy(cl->ps.stats, ent->client->ps.stats, sizeof(cl->ps.stats));
+		G_SetSpectatorStats(g_edicts + i);
+	}
+}
+
+void
+G_SetSpectatorStats(edict_t *ent)
+{
+	if (!ent)
+	{
+		return;
+	}
+
+	gclient_t *cl = ent->client;
+
+	if (!cl->chase_target)
+	{
+		G_SetStats(ent);
+	}
+
+	cl->ps.stats[STAT_SPECTATOR] = 1;
+
+	/* layouts are independant in spectator */
+	cl->ps.stats[STAT_LAYOUTS] = 0;
+
+	if ((cl->pers.health <= 0) || level.intermissiontime || cl->showscores)
+	{
+		cl->ps.stats[STAT_LAYOUTS] |= LAYOUTS_LAYOUT;
+	}
+
+	if (cl->showinventory && (cl->pers.health > 0))
+	{
+		cl->ps.stats[STAT_LAYOUTS] |= LAYOUTS_INVENTORY;
+	}
+
+	if (cl->chase_target && cl->chase_target->inuse)
+	{
+		cl->ps.stats[STAT_CHASE] = CS_PLAYERSKINS +
+								   (cl->chase_target - g_edicts) - 1;
+	}
+	else
+	{
+		cl->ps.stats[STAT_CHASE] = 0;
 	}
 }
