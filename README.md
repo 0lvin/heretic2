@@ -35,6 +35,7 @@ It's on really initial steps, it could be complied ;-), it runs mostly without
 crashes. That's all what is good.
 
 Drawbacks, sorted by priority:
+ * [ ] fix regression in 8.71H15 at least with incorrect frame set for elf at ssdocks: "625 -276 105"
  * [ ] remove client->playerinfo.c_mode hack,
  * [ ] fix acrobatic,
  * [ ] fix rope,
