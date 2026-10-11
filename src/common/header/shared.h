@@ -1351,6 +1351,8 @@ typedef enum
 #define STAT_FLASHES 16
 #define STAT_CHASE 16
 #define STAT_SPECTATOR 17
+#define STAT_RADAR_ICON 18
+#define STAT_RADAR 19
 #define STAT_LAYOUTS 17
 #define STAT_PUZZLE_ITEM1	 	18
 #define STAT_PUZZLE_ITEM2	 	19

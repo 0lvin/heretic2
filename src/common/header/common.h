@@ -139,10 +139,13 @@ void MSG_WriteLong(sizebuf_t *sb, int c);
 void MSG_WriteFloat(sizebuf_t *sb, float f);
 void MSG_WriteString(sizebuf_t *sb, const char *s);
 void MSG_WriteCoord(sizebuf_t *sb, float f, int protocol);
+void MSG_WriteOrigin(sizebuf_t *sb, const int origin[3], int protocol);
 void MSG_WritePos(sizebuf_t *sb, const vec3_t pos, int protocol);
 void MSG_WriteVel(sizebuf_t *sb, const short *vel, int protocol);
 void MSG_WriteAngle(sizebuf_t *sb, float f, int protocol);
 void MSG_WriteAngle16(sizebuf_t *sb, float f);
+void MSG_WriteDeltaAngles(sizebuf_t *sb, const short delta_angles[3], int protocol);
+void MSG_WriteViewAngles(sizebuf_t *sb, const vec3_t viewangles, int protocol);
 void MSG_WriteKickAngles(sizebuf_t *sb, const vec3_t kick_angles, int protocol);
 void MSG_WriteConfigString(sizebuf_t *buf, short index, const char *s);
 void MSG_WriteDeltaUsercmd(sizebuf_t *buf, const struct usercmd_s *from,
@@ -163,10 +166,13 @@ char *MSG_ReadString(sizebuf_t *msg_read);
 char *MSG_ReadStringLine(sizebuf_t *msg_read);
 
 float MSG_ReadCoord(sizebuf_t *msg_read, int protocol);
+void MSG_ReadOrigin(sizebuf_t *msg_read, int origin[3], int protocol);
 void MSG_ReadPos(sizebuf_t *msg_read, vec3_t pos, int protocol);
 void MSG_ReadVel(sizebuf_t *msg_read, short *vel, int protocol);
 float MSG_ReadAngle(sizebuf_t *msg_read, int protocol);
 float MSG_ReadAngle16(sizebuf_t *msg_read);
+void MSG_ReadDeltaAngles(sizebuf_t *msg_read, short delta_angles[3], int protocol);
+void MSG_ReadViewAngles(sizebuf_t *msg_read, vec3_t viewangles, int protocol);
 void MSG_ReadKickAngles(sizebuf_t *msg_read, vec3_t kick_angles, int protocol);
 void MSG_ReadDeltaUsercmd(sizebuf_t *msg_read,
 		const struct usercmd_s *from,
@@ -359,26 +365,26 @@ enum clc_ops_e
 #define U_ORIGIN2 (1 << 1)
 #define U_ANGLE2 (1 << 2)
 #define U_ANGLE3 (1 << 3)
-#define U_FRAME8 (1 << 4)       /* frame is a byte */
+#define U_FRAME8 (1 << 4)         /* frame is a byte */
 #define U_EVENT (1 << 5)
-#define U_REMOVE (1 << 6)       /* REMOVE this entity, don't add it */
+#define U_REMOVE (1 << 6)         /* REMOVE this entity, don't add it */
 #define U_MOREBITS1 (1 << 7)      /* read one additional byte */
 
 /* second byte */
-#define U_NUMBER16 (1 << 8)      /* NUMBER8 is implicit if not set */
+#define U_NUMBER16 (1 << 8)       /* NUMBER8 is implicit if not set */
 #define U_ORIGIN3 (1 << 9)
 #define U_ANGLE1 (1 << 10)
 #define U_MODEL (1 << 11)
 #define U_RENDERFX8 (1 << 12)     /* fullbright, etc */
-#define U_EFFECTS8 (1 << 14)     /* autorotate, trails, etc */
+#define U_EFFECTS8 (1 << 14)      /* autorotate, trails, etc */
 #define U_MOREBITS2 (1 << 15)     /* read one additional byte */
 
 /* third byte */
 #define U_SKIN8 (1 << 16)
-#define U_FRAME16 (1 << 17)     /* frame is a short */
+#define U_FRAME16 (1 << 17)       /* frame is a short */
 #define U_RENDERFX16 (1 << 18)    /* 8 + 16 = 32 */
 #define U_EFFECTS16 (1 << 19)     /* 8 + 16 = 32 */
-#define U_MODEL2 (1 << 20)      /* weapons, flags, etc */
+#define U_MODEL2 (1 << 20)        /* weapons, flags, etc */
 #define U_MODEL3 (1 << 21)
 #define U_MODEL4 (1 << 22)
 #define U_MOREBITS3 (1 << 23)     /* read one additional byte */
@@ -388,6 +394,17 @@ enum clc_ops_e
 #define U_SKIN16 (1 << 25)
 #define U_SOUND (1 << 26)
 #define U_SOLID (1 << 27)
+/* Quake 2 ReRelease */
+#define U_MODEL16 (1 << 28)
+#define U_EFFECTS64 (1 << 29)
+#define U_ALPHA (1 << 30)
+#define U_MOREBITS4 (1 << 31)     /* read one additional byte */
+
+/* fifth byte */
+#define U_SCALE (1 << 32)
+#define U_INSTANCE  (1 << 33)
+#define U_OWNER  (1 << 34)
+#define U_OLDFRAME (1 << 35)
 
 /* CMD - Command text buffering and command execution */
 

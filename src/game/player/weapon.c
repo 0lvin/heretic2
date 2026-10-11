@@ -3588,7 +3588,7 @@ Weapon_Phalanx(edict_t *ent)
 
 /* TRAP */
 
-void
+static void
 weapon_trap_fire(edict_t *ent, qboolean held)
 {
 	vec3_t offset;

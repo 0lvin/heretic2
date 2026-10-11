@@ -2439,6 +2439,7 @@ struct gclient_s
 	pmenuhnd_t *menu;               /* current menu */
 	qboolean showinventory;         /* set layout stat */
 	qboolean showhelp;
+	qboolean showradar;
 	qboolean showhelpicon;
 
 	int ammo_index;

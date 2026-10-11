@@ -213,7 +213,8 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		}
 	}
 
-	if (IS_QII97_PROTOCOL(cls.serverProtocol))
+	if (IS_QII97_PROTOCOL(cls.serverProtocol) ||
+		(cls.serverProtocol == PROTOCOL_RR22_VERSION && !(bits & U_MODEL16)))
 	{
 		if (bits & U_MODEL)
 		{
@@ -327,8 +328,6 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 			{
 				to->scale[i] = MSG_ReadFloat(&net_message);
 			}
-
-			to->rr_alpha = MSG_ReadFloat(&net_message);
 		}
 	}
 	else if (bits & U_SKIN8)
@@ -340,7 +339,8 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		to->skinnum = MSG_ReadShort(&net_message);
 	}
 
-	if ((bits & (U_EFFECTS8 | U_EFFECTS16)) == (U_EFFECTS8 | U_EFFECTS16))
+	if ((bits & (U_EFFECTS8 | U_EFFECTS16)) == (U_EFFECTS8 | U_EFFECTS16) ||
+		(bits & U_EFFECTS64))
 	{
 		to->effects = MSG_ReadLong(&net_message);
 	}
@@ -356,7 +356,27 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	/* ReRelease effects */
 	if (cls.serverProtocol != PROTOCOL_VERSION)
 	{
-		to->rr_effects = 0;
+		if (bits & U_EFFECTS64)
+		{
+			/* RR22 */
+			if ((bits & (U_EFFECTS8 | U_EFFECTS16)) == (U_EFFECTS8 | U_EFFECTS16))
+			{
+				to->rr_effects = MSG_ReadLong(&net_message);
+			}
+			else if (bits & U_EFFECTS8)
+			{
+				to->rr_effects = MSG_ReadByte(&net_message);
+			}
+			else if (bits & U_EFFECTS16)
+			{
+				to->rr_effects = MSG_ReadShort(&net_message);
+			}
+		}
+		else
+		{
+			to->rr_effects = 0;
+		}
+
 		to->rr_mesh = 0;
 	}
 	else
@@ -391,19 +411,48 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		to->renderfx = MSG_ReadShort(&net_message);
 	}
 
+	if (cls.serverProtocol == PROTOCOL_RR22_VERSION && (bits & U_SOLID))
+	{
+		to->solid = MSG_ReadLong(&net_message);
+	}
+
 	if (bits & U_ORIGIN1)
 	{
-		to->origin[0] = MSG_ReadCoord(&net_message, cls.serverProtocol);
+		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		{
+			/* Read to float hack */
+			to->origin[0] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
+		}
+		else
+		{
+			to->origin[0] = MSG_ReadCoord(&net_message, cls.serverProtocol);
+		}
 	}
 
 	if (bits & U_ORIGIN2)
 	{
-		to->origin[1] = MSG_ReadCoord(&net_message, cls.serverProtocol);
+		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		{
+			/* Read to float hack */
+			to->origin[1] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
+		}
+		else
+		{
+			to->origin[1] = MSG_ReadCoord(&net_message, cls.serverProtocol);
+		}
 	}
 
 	if (bits & U_ORIGIN3)
 	{
-		to->origin[2] = MSG_ReadCoord(&net_message, cls.serverProtocol);
+		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		{
+			/* Read to float hack */
+			to->origin[2] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
+		}
+		else
+		{
+			to->origin[2] = MSG_ReadCoord(&net_message, cls.serverProtocol);
+		}
 	}
 
 	if (bits & U_ANGLE1)
@@ -423,7 +472,15 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_OLDORIGIN)
 	{
-		MSG_ReadPos(&net_message, to->old_origin, cls.serverProtocol);
+		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		{
+			/* read to float */
+			MSG_ReadPos(&net_message, to->old_origin, PROTOCOL_VERSION);
+		}
+		else
+		{
+			MSG_ReadPos(&net_message, to->old_origin, cls.serverProtocol);
+		}
 	}
 
 	if (bits & U_SOUND)
@@ -440,7 +497,19 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		to->event = 0;
 	}
 
-	if (bits & U_SOLID)
+	if (bits & U_ALPHA)
+	{
+		if (cls.serverProtocol == PROTOCOL_VERSION)
+		{
+			to->rr_alpha = MSG_ReadFloat(&net_message);
+		}
+		else
+		{
+			to->rr_alpha = MSG_ReadByte(&net_message) / 255.0f;
+		}
+	}
+
+	if ((bits & U_SOLID) && (cls.serverProtocol != PROTOCOL_RR22_VERSION))
 	{
 		to->solid = MSG_ReadShort(&net_message);
 	}
@@ -780,18 +849,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_M_ORIGIN)
 	{
-		if (IS_QII97_PROTOCOL(protocol))
-		{
-			newframe->origin[0] = MSG_ReadShort(&net_message);
-			newframe->origin[1] = MSG_ReadShort(&net_message);
-			newframe->origin[2] = MSG_ReadShort(&net_message);
-		}
-		else
-		{
-			newframe->origin[0] = MSG_ReadLong(&net_message);
-			newframe->origin[1] = MSG_ReadLong(&net_message);
-			newframe->origin[2] = MSG_ReadLong(&net_message);
-		}
+		MSG_ReadOrigin(&net_message, newframe->origin, protocol);
 	}
 
 	if (flags & PS_M_VELOCITY)
@@ -816,9 +874,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_M_DELTA_ANGLES)
 	{
-		state->pmove.delta_angles[0] = MSG_ReadShort(&net_message);
-		state->pmove.delta_angles[1] = MSG_ReadShort(&net_message);
-		state->pmove.delta_angles[2] = MSG_ReadShort(&net_message);
+		MSG_ReadDeltaAngles(&net_message, state->pmove.delta_angles, protocol);
 	}
 
 	if (cl.attractloop)
@@ -836,9 +892,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_VIEWANGLES)
 	{
-		state->viewangles[0] = MSG_ReadAngle16(&net_message);
-		state->viewangles[1] = MSG_ReadAngle16(&net_message);
-		state->viewangles[2] = MSG_ReadAngle16(&net_message);
+		MSG_ReadViewAngles(&net_message, state->viewangles, protocol);
 	}
 
 	if (flags & PS_KICKANGLES)
@@ -1013,7 +1067,7 @@ CL_ParseFrame(void)
 
 	cl.frame.serverframe = MSG_ReadLong(&net_message);
 	cl.frame.deltaframe = MSG_ReadLong(&net_message);
-	cl.frame.servertime = cl.frame.serverframe * 100;
+	cl.frame.servertime = cl.frame.serverframe * cl.frame_msec;
 
 	/* BIG HACK to let old demos continue to work */
 	if (cls.serverProtocol != PROTOCOL_RELEASE_VERSION)
@@ -1229,6 +1283,24 @@ CL_ParseServerData(void)
 		return;
 	}
 
+	cl.servercount = MSG_ReadLong(&net_message);
+	cl.attractloop = MSG_ReadByte(&net_message);
+	cl.frame_msec = 100;
+
+	if (cls.serverProtocol == PROTOCOL_RR22_VERSION)
+	{
+		int fps;
+
+		fps = MSG_ReadByte(&net_message);
+
+		if (fps > 0)
+		{
+			cl.frame_msec = 1000 / fps;
+		}
+	}
+
+	Com_DPrintf("Used %d ms frame time\n", cl.frame_msec);
+
 	if ((cl_shownet->value == 0) &&
 		((i == PROTOCOL_H2DEMO_VERSION) ||
 		 (i == PROTOCOL_Q2TEST_VERSION) ||
@@ -1238,9 +1310,6 @@ CL_ParseServerData(void)
 			CL_GetProtocolName(i));
 		return;
 	}
-
-	cl.servercount = MSG_ReadLong(&net_message);
-	cl.attractloop = MSG_ReadByte(&net_message);
 
 	/* game directory */
 	str = MSG_ReadString(&net_message);

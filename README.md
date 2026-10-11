@@ -295,6 +295,7 @@ Checked with:
 * [ ] game: code has reset thirdperson flag on load new level,
 * [ ] game: check RealBoundingBox with frame box,
 * [ ] game/client: update bound box based on frame number,
+* [ ] ReRelease: show whole path of map in console showed by tab,
 * [ ] ReRelease: incorrect dead animation for Arachnid,
 * [ ] ReRelease: broken fire effect for Guardian.
 * [ ] ReRelease: water in basicsjam1_ziutek,
@@ -306,6 +307,7 @@ Checked with:
 * [ ] ReRelease: basicsjam1_detrohogga: fix droptofloor startsolid,
 * [ ] ReRelease: select start level through `mapddb.json`,
 * [ ] ReRelease: mgu5m2: glitch at `-773 -911 190`,
+* [ ] renders: optimize count of threads,
 * [ ] vk: cleanup `PUSH_CONSTANT_*`,
 * [ ] gl1, gl3, gl4, vk, soft: implement direction of `CS_SHADOWLIGHTS`,
 * [ ] gl3, gl4: implement color multiplication and alpha gradient for `misc_flare`,
@@ -343,7 +345,6 @@ Checked with:
 * [ ] Daikatana: Fix protopod animation,
 * [ ] Daikatana/SiN: Fix transparent textures in maps,
 * [ ] DoD: fix statusbar `roarke`,
-* [ ] Infinity: Add support of `item_radar`,
 * [ ] Infinity: Add support of `monster_alienship1`,
 * [ ] Infinity: Add support of `monster_grunt1v1`,
 * [ ] Infinity: Add support of `monster_grunt1v2`,
@@ -365,6 +366,7 @@ Checked with:
 * [ ] Dynamic count of entities on client.
 
 ### Fixed:
+* [x] Infinity: Add support of `item_radar`,
 * [x] vulkan: rearange surfaces before render,
 * [x] vulkan: add fog distance effect,
 * [x] Oblivion: Finish support of `func_rotate_train`, add `speeds` for `path_corner`,

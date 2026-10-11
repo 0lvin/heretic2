@@ -1161,6 +1161,7 @@ Cmd_Score_f(edict_t *ent)
 
 	ent->client->showinventory = false;
 	ent->client->showhelp = false;
+	ent->client->showradar = false;
 
 	if (ent->client->menu)
 	{
@@ -1204,6 +1205,7 @@ Cmd_Help_f(edict_t *ent)
 
 	ent->client->showinventory = false;
 	ent->client->showscores = false;
+	ent->client->showradar = false;
 
 	if (ent->client->showhelp &&
 		(!ctf->value || ent->client->resp.game_helpchanged == game.helpchanged))
@@ -1664,6 +1666,7 @@ Cmd_PutAway_f(edict_t *ent)
 	ent->client->showscores = false;
 	ent->client->showhelp = false;
 	ent->client->showinventory = false;
+	ent->client->showradar = false;
 
 	if (ent->client->menu)
 	{
