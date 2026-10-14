@@ -1550,6 +1550,7 @@ SpawnEntities(const char *mapname, char *entities, const char *spawnpoint)
 
 	memset(&level, 0, sizeof(level));
 	memset(g_edicts, 0, game.maxentities * sizeof(g_edicts[0]));
+	G_ScreenFader_Reset();
 
 	memset(skeletalJoints, 0, sizeof(skeletalJoints));
 	memset(jointNodes, 0, sizeof(jointNodes));

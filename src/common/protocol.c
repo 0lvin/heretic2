@@ -313,13 +313,84 @@ P_GetCountOfStats(int protocol)
 int
 P_CmdConvert(int cmd, int protocol)
 {
-	if (protocol == PROTOCOL_Q2TEST_VERSION && cmd == 0x07)
+	if (protocol == PROTOCOL_Q2TEST_VERSION)
 	{
-		return svc_serverdata;
+		static const int convert_cmd[] = {
+			svc_bad,
+			svc_nop,
+			svc_disconnect,
+			svc_reconnect,
+			svc_sound,
+			svc_print,
+			svc_stufftext,
+			svc_serverdata,
+			svc_configstring,
+			svc_spawnbaseline,
+			svc_temp_entity,
+			svc_centerprint,
+			svc_muzzleflash,
+			svc_download,
+			svc_playerinfo,
+			-1, /* svc_chokecount */
+			svc_packetentities,
+			svc_deltapacketentities,
+			svc_frame,
+			-1, /* svc_muzzlflash2 */
+			svc_inventory,
+			svc_layout,
+		};
+
+		if (cmd < 0 || cmd >= ARRLEN(convert_cmd))
+		{
+			return cmd;
+		}
+
+		return convert_cmd[cmd];
 	}
-	else if (protocol == PROTOCOL_H2DEMO_VERSION && cmd == 0x0b)
+	else if (protocol == PROTOCOL_H2DEMO_VERSION)
 	{
-		return svc_serverdata;
+		static const int convert_cmd[] = {
+			svc_bad,
+			svc_layout,
+			svc_inventory,
+			-1, /* svc_client_effect */
+			svc_nop,
+			svc_disconnect,
+			svc_reconnect,
+			svc_sound,
+			svc_print,
+			-1, /* svc_gamemsg_print */
+			svc_stufftext,
+			svc_serverdata,
+			svc_configstring,
+			svc_spawnbaseline,
+			svc_centerprint,
+			-1, /* svc_gamemsg_centerprint */
+			-1, /* svc_gamemsgvar_centerprint */
+			-1, /* svc_levelmsg_centerprint */
+			-1, /* svc_captionprint */
+			-1, /* svc_obituary */
+			svc_download,
+			svc_playerinfo,
+			svc_packetentities,
+			svc_deltapacketentities,
+			svc_frame,
+			-1, /* svc_removeentities */
+			-1, /* svc_changeCDtrack */
+			-1, /* svc_framenum */
+			-1, /* svc_demo_client_effect */
+			-1, /* svc_special_client_effect */
+			-1, /* svc_gamemsgdual_centerprint */
+			-1, /* svc_nameprint */
+		};
+
+		if (cmd < 0 || cmd >= ARRLEN(convert_cmd))
+		{
+			return cmd;
+		}
+
+		return convert_cmd[cmd];
 	}
+
 	return cmd;
 }

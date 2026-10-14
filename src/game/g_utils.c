@@ -738,9 +738,8 @@ angles and bad trails.
 edict_t *
 G_Spawn(void)
 {
-	int			i;
-	edict_t		*e;
-	//static unsigned int entID = 0;
+	int i;
+	edict_t *e;
 
 	e = &g_edicts[(int)maxclients->value+1];
 	for(i=maxclients->value + 1; i < globals.num_edicts; ++i, ++e)
@@ -775,15 +774,15 @@ void
 G_FreeEdict(edict_t *ed)
 {
 	SinglyLinkedList_t msgs;
-	unsigned int	usageCount;
-	int		entnum;
+	unsigned int usageCount;
+	int entnum;
 
 	if (!ed)
 	{
 		return;
 	}
 
-	gi.unlinkentity(ed);		// unlink from world
+	gi.unlinkentity(ed); /* unlink from world */
 
 	// From Quake2 3.17 code release.
 
@@ -810,25 +809,22 @@ G_FreeEdict(edict_t *ed)
 	msgs = ed->msgQ.msgs;
 	usageCount = ed->s.usageCount;
 	entnum = ed->s.number;
-
 	// End non-quake2.
+
+	G_ScreenFader_Remove(ed);
 
 	memset(ed, 0, sizeof(*ed));
-
-	// Start non-quake2.
-
-	ed->s.usageCount = usageCount;
-	ed->msgQ.msgs = msgs;
-	ed->s.number = entnum;
-
-	// End non-quake2.
-
 	ed->classname = "freed";
 	ed->freetime = level.time + 2.0;
 	ed->inuse = false;
-	ed->s.skeletalType = SKEL_NULL;
 
+	// Start non-quake2.
+	ed->s.usageCount = usageCount;
+	ed->msgQ.msgs = msgs;
+	ed->s.number = entnum;
+	ed->s.skeletalType = SKEL_NULL;
 	ed->svflags = SVF_NOCLIENT;	// so it will get removed from the client properly
+	// End non-quake2.
 }
 
 void
@@ -937,8 +933,12 @@ KillBox(edict_t *ent)
 	edict_t *current = NULL;
 	vec3_t	mins, maxs;
 
-	// since we can't trust the absmin and absmax to be set correctly on entry, I'll create my own versions
+	if (!ent)
+	{
+		return false;
+	}
 
+	// since we can't trust the absmin and absmax to be set correctly on entry, I'll create my own versions
 	VectorAdd(ent->s.origin, ent->mins, mins);
 	VectorAdd(ent->s.origin, ent->maxs, maxs);
 

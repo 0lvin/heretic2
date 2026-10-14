@@ -1787,7 +1787,9 @@ qboolean SV_FilterPacket(const char *from);
 /* p_view.c */
 void G_SetClientFrame(edict_t *ent, float speed);
 void ClientEndServerFrame(edict_t *ent);
-void G_ScreenFade_Reset(void);
+void G_ScreenFader_Reset(void);
+void G_ScreenFader_Remove(edict_t *ent);
+void G_ScreenFader_Relink(void);
 qboolean CheckButton(edict_t *self);
 void SetupPlayerinfo(edict_t *ent);
 void WritePlayerinfo(edict_t *ent);
