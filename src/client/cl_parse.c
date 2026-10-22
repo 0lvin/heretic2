@@ -29,7 +29,7 @@
 #include "../game/header/client_effects.h"
 #include "../game/common/fx.h"
 
-static int bitcounts[32]; /* just for protocol profiling */
+static int bitcounts[64]; /* just for protocol profiling */
 
 static const char *svc_strings[] = {
 	"svc_bad",
@@ -97,10 +97,10 @@ CL_RegisterSounds(void)
  * Returns the entity number and the header bits
  */
 static unsigned
-CL_ParseEntityBits(unsigned *bits)
+CL_ParseEntityBits(uint64_t *bits)
 {
 	int i, b, number;
-	unsigned total;
+	uint64_t total;
 
 	b = MSG_ReadByte(&net_message);
 	if (b < 0)
@@ -109,7 +109,7 @@ CL_ParseEntityBits(unsigned *bits)
 		return 0;
 	}
 
-	total = (unsigned)b;
+	total = (uint64_t)b;
 
 	if (total & U_MOREBITS1)
 	{
@@ -120,7 +120,7 @@ CL_ParseEntityBits(unsigned *bits)
 			return 0;
 		}
 
-		total |= (unsigned)b << 8;
+		total |= (uint64_t)b << 8;
 	}
 
 	if (total & U_MOREBITS2)
@@ -132,7 +132,7 @@ CL_ParseEntityBits(unsigned *bits)
 			return 0;
 		}
 
-		total |= (unsigned)b << 16;
+		total |= (uint64_t)b << 16;
 	}
 
 	if (total & U_MOREBITS3)
@@ -144,13 +144,25 @@ CL_ParseEntityBits(unsigned *bits)
 			return 0;
 		}
 
-		total |= (unsigned)b << 24;
+		total |= (uint64_t)b << 24;
+	}
+
+	if (total & U_MOREBITS4)
+	{
+		b = MSG_ReadByte(&net_message);
+		if (b < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+			return 0;
+		}
+
+		total |= (uint64_t)b << 32;
 	}
 
 	/* count the bits for net profiling */
-	for (i = 0; i < 32; i++)
+	for (i = 0; i < ARRLEN(bitcounts); i++)
 	{
-		if (total & (1u << i))
+		if (total & (1ULL << i))
 		{
 			bitcounts[i]++;
 		}
@@ -181,7 +193,7 @@ CL_ParseEntityBits(unsigned *bits)
  * Can go from either a baseline or a previous packet_entity
  */
 static void
-CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int bits)
+CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint64_t bits)
 {
 	static const entity_xstate_t es_nullstate = {0};
 	entity_xstate_t dummy;
@@ -202,7 +214,8 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	VectorCopy(from->origin, to->old_origin);
 	to->number = number;
 
-	if (cls.serverProtocol != PROTOCOL_VERSION)
+	if (cls.serverProtocol != PROTOCOL_VERSION &&
+		!IS_QIIRR_PROTOCOL(cls.serverProtocol))
 	{
 		int i;
 
@@ -214,7 +227,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	}
 
 	if (IS_QII97_PROTOCOL(cls.serverProtocol) ||
-		(cls.serverProtocol == PROTOCOL_RR22_VERSION && !(bits & U_MODEL16)))
+		(IS_QIIRR_PROTOCOL(cls.serverProtocol) && !(bits & U_MODEL16)))
 	{
 		if (bits & U_MODEL)
 		{
@@ -318,17 +331,6 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 	if ((bits & U_SKIN8) && (bits & U_SKIN16))
 	{
 		to->skinnum = MSG_ReadLong(&net_message);
-
-		/* Additional scale with skinnum */
-		if (cls.serverProtocol == PROTOCOL_VERSION)
-		{
-			int i;
-
-			for (i = 0; i < 3; i++)
-			{
-				to->scale[i] = MSG_ReadFloat(&net_message);
-			}
-		}
 	}
 	else if (bits & U_SKIN8)
 	{
@@ -411,14 +413,14 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		to->renderfx = MSG_ReadShort(&net_message);
 	}
 
-	if (cls.serverProtocol == PROTOCOL_RR22_VERSION && (bits & U_SOLID))
+	if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && (bits & U_SOLID))
 	{
 		to->solid = MSG_ReadLong(&net_message);
 	}
 
 	if (bits & U_ORIGIN1)
 	{
-		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && to->solid)
 		{
 			/* Read to float hack */
 			to->origin[0] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
@@ -431,7 +433,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_ORIGIN2)
 	{
-		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && to->solid)
 		{
 			/* Read to float hack */
 			to->origin[1] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
@@ -444,7 +446,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_ORIGIN3)
 	{
-		if (cls.serverProtocol == PROTOCOL_RR22_VERSION && to->solid)
+		if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && to->solid)
 		{
 			/* Read to float hack */
 			to->origin[2] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
@@ -485,7 +487,43 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 
 	if (bits & U_SOUND)
 	{
-		to->sound = MSG_ReadByte(&net_message);
+		if (IS_QIIRR_PROTOCOL(cls.serverProtocol))
+		{
+			int sound_word = MSG_ReadShort(&net_message);
+
+			to->sound = sound_word & 0x3fff;
+
+			if (sound_word & SOUND_RR22_ATTENUATION)
+			{
+				int attenuation;
+
+				attenuation = MSG_ReadByte(&net_message);
+				Com_DPrintf("%s: ReRelease attenuation %d",
+					__func__, attenuation);
+			}
+
+			if (sound_word & SOUND_RR22_VOLUME)
+			{
+				int volume;
+
+				volume = MSG_ReadByte(&net_message);
+				Com_DPrintf("%s: ReRelease volume %d",
+					__func__, volume);
+			}
+		}
+		else if (IS_QII97_PROTOCOL(cls.serverProtocol))
+		{
+			to->sound = MSG_ReadByte(&net_message);
+		}
+		else if (cls.serverProtocol == PROTOCOL_VERSION)
+		{
+			to->sound = MSG_ReadShort(&net_message);
+		}
+		else
+		{
+			Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+				__func__, cls.serverProtocol);
+		}
 	}
 
 	if (bits & U_EVENT)
@@ -509,7 +547,51 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
 		}
 	}
 
-	if ((bits & U_SOLID) && (cls.serverProtocol != PROTOCOL_RR22_VERSION))
+	if (bits & U_SCALE)
+	{
+		if (cls.serverProtocol == PROTOCOL_VERSION)
+		{
+			int i;
+
+			for (i = 0; i < 3; i++)
+			{
+				to->scale[i] = MSG_ReadFloat(&net_message);
+			}
+		}
+		else
+		{
+			float scale;
+
+			scale = MSG_ReadByte(&net_message) / 255.0f;
+			VectorSet(to->scale, scale, scale, scale);
+		}
+	}
+
+	if (bits & U_INSTANCE)
+	{
+		int instance;
+
+		instance = MSG_ReadByte(&net_message);
+		Com_DPrintf("%s: ReRelease instance %d", __func__, instance);
+	}
+
+	if (bits & U_OWNER)
+	{
+		int owner;
+
+		owner = MSG_ReadShort(&net_message);
+		Com_DPrintf("%s: ReRelease owner %d", __func__, owner);
+	}
+
+	if (bits & U_OLDFRAME)
+	{
+		int oldframe;
+
+		oldframe = MSG_ReadShort(&net_message);
+		Com_DPrintf("%s: ReRelease oldframe %d", __func__, oldframe);
+	}
+
+	if ((bits & U_SOLID) && (!IS_QIIRR_PROTOCOL(cls.serverProtocol)))
 	{
 		to->solid = MSG_ReadShort(&net_message);
 	}
@@ -553,7 +635,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, int 
  * the current frame
  */
 static void
-CL_DeltaEntity(frame_t *frame, int newnum, const entity_xstate_t *old, int bits)
+CL_DeltaEntity(frame_t *frame, int newnum, const entity_xstate_t *old, uint64_t bits)
 {
 	centity_t dummy, *ent;
 	entity_xstate_t *state;
@@ -626,7 +708,6 @@ CL_DeltaEntity(frame_t *frame, int newnum, const entity_xstate_t *old, int bits)
 static void
 CL_ParsePacketEntities(const frame_t *oldframe, frame_t *newframe)
 {
-	unsigned bits;
 	centity_t *ent;
 	const entity_xstate_t *oldstate = NULL;
 	int oldindex, oldnum;
@@ -660,6 +741,7 @@ CL_ParsePacketEntities(const frame_t *oldframe, frame_t *newframe)
 	while (1)
 	{
 		unsigned int newnum;
+		uint64_t bits;
 
 		newnum = CL_ParseEntityBits(&bits);
 
@@ -821,8 +903,9 @@ CL_ParsePacketEntities(const frame_t *oldframe, frame_t *newframe)
 static void
 CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 {
-	int flags, group, stats_size;
+	unsigned flags, group, stats_size;
 	player_state_t *state;
+	int flag_short;
 
 	state = &newframe->playerstate;
 
@@ -839,7 +922,23 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 		memset(newframe->origin, 0, sizeof(newframe->origin));
 	}
 
-	flags = MSG_ReadShort(&net_message);
+	flag_short = MSG_ReadShort(&net_message);
+	if (flag_short == -1)
+	{
+		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+	}
+
+	flags = (unsigned short)flag_short;
+	if (flags & PS_MOREBITS)
+	{
+		flag_short = MSG_ReadShort(&net_message);
+		if (flag_short == -1)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+		}
+
+		flags |= (unsigned short)flag_short << 16;
+	}
 
 	/* parse the pmove_state_t */
 	if (flags & PS_M_TYPE)
@@ -859,12 +958,31 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_M_TIME)
 	{
-		state->pmove.pm_time = MSG_ReadByte(&net_message);
+		if (protocol == PROTOCOL_RR22_VERSION)
+		{
+			int pm_time;
+
+			/* KEX sends milliseconds, pmove_state_t uses 8 ms units */
+			pm_time = MSG_ReadShort(&net_message) / 8;
+			state->pmove.pm_time = pm_time > 255 ? 255 : pm_time;
+		}
+		else
+		{
+			state->pmove.pm_time = MSG_ReadByte(&net_message);
+		}
 	}
 
 	if (flags & PS_M_FLAGS)
 	{
-		state->pmove.pm_flags = MSG_ReadByte(&net_message);
+		if (protocol == PROTOCOL_RR22_VERSION)
+		{
+			/* KEX flags above PMF_NO_PREDICTION have no vanilla equivalent */
+			state->pmove.pm_flags = MSG_ReadShort(&net_message) & 0x7f;
+		}
+		else
+		{
+			state->pmove.pm_flags = MSG_ReadByte(&net_message);
+		}
 	}
 
 	if (flags & PS_M_GRAVITY)
@@ -885,9 +1003,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 	/* parse the rest of the player_state_t */
 	if (flags & PS_VIEWOFFSET)
 	{
-		state->viewoffset[0] = MSG_ReadChar(&net_message) * 0.25f;
-		state->viewoffset[1] = MSG_ReadChar(&net_message) * 0.25f;
-		state->viewoffset[2] = MSG_ReadChar(&net_message) * 0.25f;
+		MSG_ReadViewOffset(&net_message, state->viewoffset, protocol);
 	}
 
 	if (flags & PS_VIEWANGLES)
@@ -918,21 +1034,8 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_WEAPONFRAME)
 	{
-		if (IS_QII97_PROTOCOL(protocol))
-		{
-			state->gunframe = MSG_ReadByte(&net_message);
-		}
-		else
-		{
-			state->gunframe = MSG_ReadShort(&net_message);
-		}
-
-		state->gunoffset[0] = MSG_ReadChar(&net_message) * 0.25f;
-		state->gunoffset[1] = MSG_ReadChar(&net_message) * 0.25f;
-		state->gunoffset[2] = MSG_ReadChar(&net_message) * 0.25f;
-		state->gunangles[0] = MSG_ReadChar(&net_message) * 0.25f;
-		state->gunangles[1] = MSG_ReadChar(&net_message) * 0.25f;
-		state->gunangles[2] = MSG_ReadChar(&net_message) * 0.25f;
+		MSG_ReadWeaponFrameAngles(&net_message, state->gunoffset,
+			state->gunangles, &state->gunframe, protocol);
 	}
 
 	if (flags & PS_BLEND)
@@ -961,7 +1064,14 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 	}
 	else
 	{
-		stats_size = MSG_ReadByte(&net_message);
+		int b;
+
+		b = MSG_ReadByte(&net_message);
+		if (b < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+		}
+		stats_size = b;
 	}
 
 	/* Read stats bits */
@@ -992,6 +1102,29 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 				}
 			}
 		}
+	}
+
+	if (flags & PS_DAMAGE_BLEND)
+	{
+		byte color[4];
+		int i;
+
+		/* damage blend color */
+		for (i = 0; i < 4; i++)
+		{
+			color[i] = MSG_ReadByte(&net_message);
+		}
+
+		Com_DPrintf("%s: damage blend color 0x%2x%2x%2x%2x\n",
+			__func__, color[0], color[1], color[2], color[3]);
+	}
+
+	if (flags & PS_TEAM_ID)
+	{
+		int team_id;
+
+		team_id = MSG_ReadByte(&net_message);
+		Com_DPrintf("%s: team id %d\n", __func__, team_id);
 	}
 }
 
@@ -1268,8 +1401,7 @@ CL_ParseServerData(void)
 	/* another demo hack */
 	if (Com_ServerState() && (
 		IS_QII97_PROTOCOL(i) ||
-		(i == PROTOCOL_RR22_VERSION) ||
-		(i == PROTOCOL_RR23_VERSION) ||
+		IS_QIIRR_PROTOCOL(i) ||
 		(i == PROTOCOL_Q2TEST_VERSION) ||
 		(i == PROTOCOL_H2DEMO_VERSION) ||
 		(i == PROTOCOL_VERSION)))
@@ -1287,7 +1419,7 @@ CL_ParseServerData(void)
 	cl.attractloop = MSG_ReadByte(&net_message);
 	cl.frame_msec = 100;
 
-	if (cls.serverProtocol == PROTOCOL_RR22_VERSION)
+	if (IS_QIIRR_PROTOCOL(cls.serverProtocol))
 	{
 		int fps;
 
@@ -1303,8 +1435,8 @@ CL_ParseServerData(void)
 
 	if ((cl_shownet->value == 0) &&
 		((i == PROTOCOL_H2DEMO_VERSION) ||
-		 (i == PROTOCOL_Q2TEST_VERSION) ||
-		 (i == PROTOCOL_RR22_VERSION)))
+		 (i == PROTOCOL_RR23_VERSION) ||
+		 (i == PROTOCOL_Q2TEST_VERSION)))
 	{
 		Com_Error(ERR_DROP, "Network protocol '%s' is currently unsupported\n",
 			CL_GetProtocolName(i));
@@ -1349,7 +1481,7 @@ CL_ParseServerData(void)
 static void
 CL_ParseBaseline(void)
 {
-	unsigned bits;
+	uint64_t bits;
 	int newnum;
 	centity_t *ent;
 
@@ -1853,8 +1985,15 @@ CL_ParseStartSoundPacket(void)
 
 	if (flags & SND_ENT)
 	{
-		/* entity reletive */
-		channel = MSG_ReadShort(&net_message);
+		/* entity relative */
+		if (flags & SND_LARGE_ENT)
+		{
+			channel = MSG_ReadLong(&net_message);
+		}
+		else
+		{
+			channel = MSG_ReadShort(&net_message);
+		}
 		ent = channel >> 3;
 
 		if (ent < 0)
@@ -1899,6 +2038,183 @@ CL_ParseStartSoundPacket(void)
 
 	S_StartSound(pos, ent, channel, cl.sound_precache[sound_num],
 			volume, attenuation, ofs);
+}
+
+static void
+CL_ParseDamage(void)
+{
+	int count, i;
+
+	count = MSG_ReadByte(&net_message);
+	if (count < 0)
+	{
+		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+		return;
+	}
+
+	for (i = 0; i < count; i++)
+	{
+		vec3_t direction;
+		int damage_type;
+
+		damage_type = MSG_ReadByte(&net_message);
+		if (damage_type < 0)
+		{
+			Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+			return;
+		}
+
+		MSG_ReadDir(&net_message, direction);
+
+		Com_DPrintf("%s: %d: damage %d, health %d, armor %d, shield %d from %.2fx%.2fx%.2f\n",
+			__func__, i,
+			(damage_type & 0x1f) * 3,
+			(damage_type & 0x20) >> 5,
+			(damage_type & 0x40) >> 6,
+			(damage_type & 0x80) >> 7,
+			direction[0], direction[1], direction[2]);
+	}
+}
+
+static void
+CL_ParseLocPrint(void)
+{
+	int num_args, seq_arg = 0, flags, i, formatted_len;
+	char **args, *dest, *message, *formatted;
+	const char *format, *p, *end;
+
+	flags = MSG_ReadByte(&net_message);	/* flags */
+	message = strdup(MSG_ReadString(&net_message));
+	num_args = MSG_ReadByte(&net_message);
+
+	if (num_args < 0)
+	{
+		free(message);
+		Com_Error(ERR_DROP, "%s: Invalid localized print argument count %d\n",
+			__func__, num_args);
+		return;
+	}
+
+	args = calloc(num_args, sizeof(*args));
+	if (!args)
+	{
+		free(message);
+		Com_Error(ERR_DROP, "%s: can't allocate args\n", __func__);
+		return;
+	}
+
+	/* allocate little bit bigger if arg has used several times */
+	formatted_len = 128;
+
+	for (i = 0; i < num_args; i++)
+	{
+		args[i] = strdup(SV_LocalizationMessage(
+			MSG_ReadString(&net_message), NULL));
+		formatted_len += strlen(args[i]);
+	}
+
+	format = SV_LocalizationMessage(message, NULL);
+	formatted_len += strlen(format);
+	formatted = malloc(formatted_len + 1);
+	if (!formatted)
+	{
+		for (i = 0; i < num_args; i++)
+		{
+			free(args[i]);
+		}
+
+		free(args);
+		free(message);
+		Com_Error(ERR_DROP, "%s: can't alloc formated message\n", __func__);
+		return;
+	}
+
+	p = format;
+	dest = formatted;
+	end = formatted + formatted_len;
+
+	while (*p && dest < end)
+	{
+		if (*p == '{')
+		{
+			const char *brace_start = p;
+			p++;
+			if (*p == '}')
+			{
+				p++;
+				if (seq_arg < num_args)
+				{
+					const char *arg = args[seq_arg++];
+					while (*arg && dest < end)
+					{
+						*dest++ = *arg++;
+					}
+				}
+			}
+			else if (*p >= '0' && *p <= '9')
+			{
+				int index = 0;
+				while (*p >= '0' && *p <= '9')
+				{
+					index = index * 10 + (*p - '0');
+					p++;
+				}
+				if (*p == '}')
+				{
+					p++;
+					if (index >= 0 && index < num_args)
+					{
+						const char *arg = args[index];
+						while (*arg && dest < end)
+						{
+							*dest++ = *arg++;
+						}
+					}
+				}
+				else
+				{
+					const char *src = brace_start;
+					while (src < p && dest < end)
+					{
+						*dest++ = *src++;
+					}
+				}
+			}
+			else
+			{
+				const char *src = brace_start;
+				while (src <= p && dest < end)
+				{
+					*dest++ = *src++;
+				}
+			}
+		}
+		else
+		{
+			*dest++ = *p++;
+		}
+	}
+	*dest = '\0';
+
+	if (flags == PRINT_CHAT)
+	{
+		S_StartLocalSound("misc/talk.wav");
+		con.ormask = 128;
+	}
+
+	Com_Printf("%s", formatted);
+	con.ormask = 0;
+
+	/* clean message */
+	free(formatted);
+	free(message);
+
+	/* clean arguments */
+	for (i = 0; i < num_args; i++)
+	{
+		free(args[i]);
+	}
+	free(args);
 }
 
 void
@@ -1964,6 +2280,12 @@ CL_ParseServerMessage(void)
 			case svc_nop:
 				break;
 
+			case svc_splitclient:
+				/* next message for such split screen*/
+				Com_DPrintf("%s: package for split screen %d\n",
+					__func__, MSG_ReadByte(&net_message));
+				break;
+
 			case svc_disconnect:
 				Com_Error(ERR_DISCONNECT, "Server disconnected\n");
 				return;
@@ -2001,6 +2323,10 @@ CL_ParseServerMessage(void)
 				con.ormask = 0;
 				break;
 
+			case svc_locprint:
+				CL_ParseLocPrint();
+				break;
+
 			case svc_centerprint:
 				SCR_CenterPrint(MSG_ReadString(&net_message));
 				break;
@@ -2022,6 +2348,10 @@ CL_ParseServerMessage(void)
 
 			case svc_sound:
 				CL_ParseStartSoundPacket();
+				break;
+
+			case svc_damage:
+				CL_ParseDamage();
 				break;
 
 			case svc_spawnbaseline:

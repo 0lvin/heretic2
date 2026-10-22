@@ -200,13 +200,13 @@ MSG_ConfigString_Size(const char *s)
 	return strlen(s) + 4; /* string length + null char + message type + index */
 }
 
-static int
+static uint64_t
 DeltaEntityBits(const entity_xstate_t *from,
 		const entity_xstate_t *to,
 		qboolean newentity,
 		int protocol)
 {
-	int bits = 0;
+	uint64_t bits = 0;
 
 	if (to->number >= 256)
 	{
@@ -262,15 +262,16 @@ DeltaEntityBits(const entity_xstate_t *from,
 	}
 
 	/* Scale with skins if force or different */
-	if ((protocol == PROTOCOL_VERSION) &&
+	if ((protocol == PROTOCOL_VERSION || protocol == PROTOCOL_RR22_VERSION) &&
 		((to->scale[0] != from->scale[0]) ||
 		 (to->scale[1] != from->scale[1]) ||
 		 (to->scale[2] != from->scale[2])))
 	{
-		bits |= (U_SKIN8 | U_SKIN16);
+		bits |= U_SCALE;
 	}
 
-	if ((protocol == PROTOCOL_VERSION) && (to->rr_alpha != from->rr_alpha))
+	if ((protocol == PROTOCOL_VERSION || protocol == PROTOCOL_RR22_VERSION) &&
+		(to->rr_alpha != from->rr_alpha))
 	{
 		bits |= U_ALPHA;
 	}
@@ -370,7 +371,12 @@ DeltaEntityBits(const entity_xstate_t *from,
 		bits |= U_OLDORIGIN;
 	}
 
-	if (bits & 0xff000000)
+	if (bits & 0xff00000000)
+	{
+		bits |= U_MOREBITS4 | U_MOREBITS3 | U_MOREBITS2 | U_MOREBITS1;
+	}
+
+	else if (bits & 0xff000000)
 	{
 		bits |= U_MOREBITS3 | U_MOREBITS2 | U_MOREBITS1;
 	}
@@ -393,7 +399,7 @@ MSG_DeltaEntity_Size(const entity_xstate_t *from, const entity_xstate_t *to,
 	qboolean force, qboolean newentity, int protocol)
 {
 	size_t sz;
-	int bits;
+	uint64_t bits;
 
 	if (!from)
 	{
@@ -414,7 +420,11 @@ MSG_DeltaEntity_Size(const entity_xstate_t *from, const entity_xstate_t *to,
 
 	sz = 1;
 
-	if (bits & 0xff000000)
+	if (bits & 0xff00000000)
+	{
+		sz += 4;
+	}
+	else if (bits & 0xff000000)
 	{
 		sz += 3;
 	}
@@ -494,14 +504,6 @@ MSG_DeltaEntity_Size(const entity_xstate_t *from, const entity_xstate_t *to,
 	if ((bits & U_SKIN8) && (bits & U_SKIN16)) /*used for laser colors */
 	{
 		sz += 4;
-
-		if (!IS_QII97_PROTOCOL(protocol))
-		{
-			/* 3 float for scale */
-			sz += 12;
-			/* alpha */
-			sz += 4;
-		}
 	}
 	else if (bits & U_SKIN8)
 	{
@@ -594,12 +596,63 @@ MSG_DeltaEntity_Size(const entity_xstate_t *from, const entity_xstate_t *to,
 
 	if (bits & U_SOUND)
 	{
-		sz++;
+		if (protocol == PROTOCOL_RR22_VERSION)
+		{
+			sz += 4;
+		}
+		else if (protocol == PROTOCOL_VERSION)
+		{
+			sz += 2;
+		}
+		else
+		{
+			sz++;
+		}
 	}
 
 	if (bits & U_EVENT)
 	{
 		sz++;
+	}
+
+	if (bits & U_ALPHA)
+	{
+		if (protocol == PROTOCOL_VERSION)
+		{
+			sz += 4;
+		}
+		else
+		{
+			sz += 1;
+		}
+	}
+
+	if (bits & U_SCALE)
+	{
+		if (protocol == PROTOCOL_VERSION)
+		{
+			/* 3 float for scale */
+			sz += 12;
+		}
+		else
+		{
+			sz += 1;
+		}
+	}
+
+	if (bits & U_INSTANCE)
+	{
+		sz += 1;
+	}
+
+	if (bits & U_OWNER)
+	{
+		sz += 2;
+	}
+
+	if (bits & U_OLDFRAME)
+	{
+		sz += 2;
 	}
 
 	if (bits & U_SOLID)
@@ -686,9 +739,15 @@ MSG_WriteCoord(sizebuf_t *sb, float f, int protocol)
 	{
 		MSG_WriteShort(sb, (int)(f * 8));
 	}
-	else
+	else if ((protocol == PROTOCOL_VERSION) ||
+			 (protocol == PROTOCOL_RR22_VERSION))
 	{
 		MSG_WriteFloat(sb, f);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -707,11 +766,16 @@ MSG_WriteOrigin(sizebuf_t *sb, const int origin[3], int protocol)
 		MSG_WriteFloat(sb, origin[1] / 8.0f);
 		MSG_WriteFloat(sb, origin[2] / 8.0f);
 	}
-	else
+	else if (protocol == PROTOCOL_VERSION)
 	{
 		MSG_WriteLong(sb, origin[0]);
 		MSG_WriteLong(sb, origin[1]);
 		MSG_WriteLong(sb, origin[2]);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -732,11 +796,17 @@ MSG_WriteVel(sizebuf_t *sb, const short *vel, int protocol)
 		MSG_WriteFloat(sb, vel[1] * 0.125f);
 		MSG_WriteFloat(sb, vel[2] * 0.125f);
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol) ||
+			(protocol == PROTOCOL_VERSION))
 	{
 		MSG_WriteShort(sb, vel[0]);
 		MSG_WriteShort(sb, vel[1]);
 		MSG_WriteShort(sb, vel[2]);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -751,9 +821,14 @@ MSG_WriteAngle(sizebuf_t *sb, float f, int protocol)
 	{
 		MSG_WriteFloat(sb, f);
 	}
-	else
+	else if (protocol == PROTOCOL_VERSION)
 	{
 		MSG_WriteAngle16(sb, f);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -772,11 +847,17 @@ MSG_WriteDeltaAngles(sizebuf_t *sb, const short delta_angles[3], int protocol)
 		MSG_WriteFloat(sb, SHORT2ANGLE(delta_angles[1]));
 		MSG_WriteFloat(sb, SHORT2ANGLE(delta_angles[2]));
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol) ||
+			(protocol == PROTOCOL_VERSION))
 	{
 		MSG_WriteShort(sb, delta_angles[0]);
 		MSG_WriteShort(sb, delta_angles[1]);
 		MSG_WriteShort(sb, delta_angles[2]);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -790,11 +871,46 @@ MSG_WriteViewAngles(sizebuf_t *sb, const vec3_t viewangles, int protocol)
 		MSG_WriteFloat(sb, viewangles[1]);
 		MSG_WriteFloat(sb, viewangles[2]);
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol))
 	{
 		MSG_WriteAngle16(sb, viewangles[0]);
 		MSG_WriteAngle16(sb, viewangles[1]);
 		MSG_WriteAngle16(sb, viewangles[2]);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
+	}
+}
+
+void
+MSG_WriteViewOffset(sizebuf_t *sb, const vec3_t viewoffset, int protocol)
+{
+	if (protocol == PROTOCOL_RR22_VERSION)
+	{
+		MSG_WriteShort(sb, viewoffset[0] * 16);
+		MSG_WriteShort(sb, viewoffset[1] * 16);
+		MSG_WriteShort(sb, viewoffset[2] * 16);
+		/* viewheight */
+		MSG_WriteChar(sb, 0);
+	}
+	else if (IS_QII97_PROTOCOL(protocol))
+	{
+		MSG_WriteChar(sb, viewoffset[0] * 4);
+		MSG_WriteChar(sb, viewoffset[1] * 4);
+		MSG_WriteChar(sb, viewoffset[2] * 4);
+	}
+	else if (protocol == PROTOCOL_VERSION)
+	{
+		MSG_WriteShort(sb, viewoffset[0] * 16);
+		MSG_WriteShort(sb, viewoffset[1] * 16);
+		MSG_WriteShort(sb, viewoffset[2] * 16);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -808,11 +924,78 @@ MSG_WriteKickAngles(sizebuf_t *sb, const vec3_t kick_angles, int protocol)
 		MSG_WriteShort(sb, kick_angles[1] * 1024);
 		MSG_WriteShort(sb, kick_angles[2] * 1024);
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol))
 	{
 		MSG_WriteChar(sb, kick_angles[0] * 4);
 		MSG_WriteChar(sb, kick_angles[1] * 4);
 		MSG_WriteChar(sb, kick_angles[2] * 4);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
+	}
+}
+
+void
+MSG_WriteWeaponFrameAngles(sizebuf_t *sb, const vec3_t gunoffset, const vec3_t gunangles,
+	int gunframe, int protocol)
+{
+	if (protocol == PROTOCOL_RR22_VERSION)
+	{
+		unsigned gunbits, i;
+
+		gunbits = (0x7f << 9) + gunframe;
+
+		MSG_WriteShort(sb, gunbits);
+
+		gunbits >>= 9;
+
+		for (i = 0; i < 3; i++)
+		{
+			if (gunbits & (1 << i))
+			{
+				MSG_WriteFloat(sb, gunoffset[i]);
+			}
+		}
+
+		for (i = 0; i < 3; i++)
+		{
+			if (gunbits & (1 << (i + 3)))
+			{
+				MSG_WriteFloat(sb, gunangles[i]);
+			}
+		}
+
+		if (gunbits & (1 << 6))
+		{
+			/* write gunrate, unsupported in classic protocol */
+			MSG_WriteByte(sb, 0);
+		}
+	}
+	else if (IS_QII97_PROTOCOL(protocol) ||
+			(protocol == PROTOCOL_VERSION))
+	{
+		if (IS_QII97_PROTOCOL(protocol))
+		{
+			MSG_WriteByte(sb, gunframe);
+		}
+		else
+		{
+			MSG_WriteShort(sb, gunframe);
+		}
+
+		MSG_WriteChar(sb, gunoffset[0] * 4);
+		MSG_WriteChar(sb, gunoffset[1] * 4);
+		MSG_WriteChar(sb, gunoffset[2] * 4);
+		MSG_WriteChar(sb, gunangles[0] * 4);
+		MSG_WriteChar(sb, gunangles[1] * 4);
+		MSG_WriteChar(sb, gunangles[2] * 4);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -989,7 +1172,7 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		qboolean newentity,
 		int protocol)
 {
-	int bits;
+	uint64_t bits;
 
 	if (!from)
 	{
@@ -1017,20 +1200,28 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 
 	MSG_WriteByte(msg, bits & 255);
 
-	if (bits & 0xff000000)
+	if (bits & 0xff00000000) /* U_MOREBITS4 */
+	{
+		MSG_WriteByte(msg, (bits >> 8) & 255);
+		MSG_WriteByte(msg, (bits >> 16) & 255);
+		MSG_WriteByte(msg, (bits >> 24) & 255);
+		MSG_WriteByte(msg, (bits >> 32) & 255);
+	}
+
+	else if (bits & 0xff000000) /* U_MOREBITS3 */
 	{
 		MSG_WriteByte(msg, (bits >> 8) & 255);
 		MSG_WriteByte(msg, (bits >> 16) & 255);
 		MSG_WriteByte(msg, (bits >> 24) & 255);
 	}
 
-	else if (bits & 0x00ff0000)
+	else if (bits & 0x00ff0000) /* U_MOREBITS2 */
 	{
 		MSG_WriteByte(msg, (bits >> 8) & 255);
 		MSG_WriteByte(msg, (bits >> 16) & 255);
 	}
 
-	else if (bits & 0x0000ff00)
+	else if (bits & 0x0000ff00) /* U_MOREBITS1 */
 	{
 		MSG_WriteByte(msg, (bits >> 8) & 255);
 	}
@@ -1116,20 +1307,9 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		MSG_WriteShort(msg, to->frame);
 	}
 
-	if ((bits & U_SKIN8) && (bits & U_SKIN16)) /*used for laser colors */
+	if ((bits & U_SKIN8) && (bits & U_SKIN16)) /* used for laser colors */
 	{
 		MSG_WriteLong(msg, to->skinnum);
-
-		/* Send scale */
-		if (protocol == PROTOCOL_VERSION)
-		{
-			int i;
-
-			for (i = 0; i < 3; i++)
-			{
-				MSG_WriteFloat(msg, to->scale[i]);
-			}
-		}
 	}
 
 	else if (bits & U_SKIN8)
@@ -1260,7 +1440,14 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 
 	if (bits & U_SOUND)
 	{
-		MSG_WriteByte(msg, to->sound);
+		if (protocol == PROTOCOL_VERSION || protocol == PROTOCOL_RR22_VERSION)
+		{
+			MSG_WriteShort(msg, to->sound);
+		}
+		else
+		{
+			MSG_WriteByte(msg, to->sound);
+		}
 	}
 
 	if (bits & U_EVENT)
@@ -1277,6 +1464,28 @@ MSG_WriteDeltaEntity(const entity_xstate_t *from,
 		else
 		{
 			MSG_WriteByte(msg, to->rr_alpha * 255.0f);
+		}
+	}
+
+	if (bits & U_SCALE)
+	{
+		/* Send scale */
+		if (protocol == PROTOCOL_VERSION)
+		{
+			int i;
+
+			for (i = 0; i < 3; i++)
+			{
+				MSG_WriteFloat(msg, to->scale[i]);
+			}
+		}
+		else
+		{
+			MSG_WriteByte(msg, (
+				to->scale[0] +
+				to->scale[1] +
+				to->scale[2]
+			) / 3 * 255.0f);
 		}
 	}
 
@@ -1467,16 +1676,20 @@ MSG_ReadStringLine(sizebuf_t *msg_read)
 float
 MSG_ReadCoord(sizebuf_t *msg_read, int protocol)
 {
-	if (IS_QII97_PROTOCOL(protocol) || protocol == PROTOCOL_RR22_VERSION)
+	if (IS_QII97_PROTOCOL(protocol) ||
+		IS_QIIRR_PROTOCOL(protocol))
 	{
 		return MSG_ReadShort(msg_read) * (0.125f);
 	}
+	else if (protocol == PROTOCOL_VERSION)
+	{
+		return MSG_ReadFloat(msg_read);
+	}
 	else
 	{
-		/*
-		 * PROTOCOL_VERSION
-		 */
-		return MSG_ReadFloat(msg_read);
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
+		return 0;
 	}
 }
 
@@ -1495,11 +1708,16 @@ MSG_ReadOrigin(sizebuf_t *msg_read, int origin[3], int protocol)
 		origin[1] = MSG_ReadFloat(&net_message) * 8.0f + 0.5f;
 		origin[2] = MSG_ReadFloat(&net_message) * 8.0f + 0.5f;
 	}
-	else
+	else if (protocol == PROTOCOL_VERSION)
 	{
 		origin[0] = MSG_ReadLong(msg_read);
 		origin[1] = MSG_ReadLong(msg_read);
 		origin[2] = MSG_ReadLong(msg_read);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -1520,11 +1738,17 @@ MSG_ReadVel(sizebuf_t *msg_read, short *vel, int protocol)
 		vel[1] = MSG_ReadFloat(msg_read) * 8.0f + 0.5f;
 		vel[2] = MSG_ReadFloat(msg_read) * 8.0f + 0.5f;
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol) ||
+			(protocol == PROTOCOL_VERSION))
 	{
 		vel[0] = MSG_ReadShort(msg_read);
 		vel[1] = MSG_ReadShort(msg_read);
 		vel[2] = MSG_ReadShort(msg_read);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -1539,9 +1763,15 @@ MSG_ReadAngle(sizebuf_t *msg_read, int protocol)
 	{
 		return MSG_ReadFloat(&net_message);
 	}
-	else
+	else if (protocol == PROTOCOL_VERSION)
 	{
 		return MSG_ReadAngle16(msg_read);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
+		return 0;
 	}
 }
 
@@ -1560,11 +1790,17 @@ MSG_ReadDeltaAngles(sizebuf_t *msg_read, short delta_angles[3], int protocol)
 		delta_angles[1] = ANGLE2SHORT(MSG_ReadFloat(msg_read));
 		delta_angles[2] = ANGLE2SHORT(MSG_ReadFloat(msg_read));
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol) ||
+			(protocol == PROTOCOL_VERSION))
 	{
 		delta_angles[0] = MSG_ReadShort(msg_read);
 		delta_angles[1] = MSG_ReadShort(msg_read);
 		delta_angles[2] = MSG_ReadShort(msg_read);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -1578,11 +1814,46 @@ MSG_ReadViewAngles(sizebuf_t *msg_read, vec3_t viewangles, int protocol)
 		viewangles[1] = MSG_ReadFloat(msg_read);
 		viewangles[2] = MSG_ReadFloat(msg_read);
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol))
 	{
 		viewangles[0] = MSG_ReadAngle16(msg_read);
 		viewangles[1] = MSG_ReadAngle16(msg_read);
 		viewangles[2] = MSG_ReadAngle16(msg_read);
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
+	}
+}
+
+void
+MSG_ReadViewOffset(sizebuf_t *msg_read, vec3_t viewoffset, int protocol)
+{
+	if (protocol == PROTOCOL_RR22_VERSION)
+	{
+		viewoffset[0] = MSG_ReadShort(msg_read) / 16.0f;
+		viewoffset[1] = MSG_ReadShort(msg_read) / 16.0f;
+		viewoffset[2] = MSG_ReadShort(msg_read) / 16.0f;
+		/* viewheight */
+		viewoffset[2] += MSG_ReadChar(msg_read);
+	}
+	else if (IS_QII97_PROTOCOL(protocol))
+	{
+		viewoffset[0] = MSG_ReadChar(msg_read) * 0.25f;
+		viewoffset[1] = MSG_ReadChar(msg_read) * 0.25f;
+		viewoffset[2] = MSG_ReadChar(msg_read) * 0.25f;
+	}
+	else if (protocol == PROTOCOL_VERSION)
+	{
+		viewoffset[0] = MSG_ReadShort(msg_read) / 16.0f;
+		viewoffset[1] = MSG_ReadShort(msg_read) / 16.0f;
+		viewoffset[2] = MSG_ReadShort(msg_read) / 16.0f;
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 
@@ -1596,11 +1867,82 @@ MSG_ReadKickAngles(sizebuf_t *msg_read, vec3_t kick_angles, int protocol)
 		kick_angles[1] = MSG_ReadShort(msg_read) / 1024.0f;
 		kick_angles[2] = MSG_ReadShort(msg_read) / 1024.0f;
 	}
-	else
+	else if (IS_QII97_PROTOCOL(protocol))
 	{
 		kick_angles[0] = MSG_ReadChar(msg_read) * 0.25f;
 		kick_angles[1] = MSG_ReadChar(msg_read) * 0.25f;
 		kick_angles[2] = MSG_ReadChar(msg_read) * 0.25f;
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
+	}
+}
+
+void
+MSG_ReadWeaponFrameAngles(sizebuf_t *msg_read, vec3_t gunoffset, vec3_t gunangles,
+	int *gunframe, int protocol)
+{
+	if (protocol == PROTOCOL_RR22_VERSION)
+	{
+		unsigned gunbits, i;
+
+		gunbits = MSG_ReadShort(msg_read);
+
+		*gunframe = gunbits & 0x1ff;
+		gunbits >>= 9;
+
+		for (i = 0; i < 3; i++)
+		{
+			if (gunbits & (1 << i))
+			{
+				gunoffset[i] = MSG_ReadFloat(msg_read);
+			}
+		}
+
+		for (i = 0; i < 3; i++)
+		{
+			if (gunbits & (1 << (i + 3)))
+			{
+				gunangles[i] = MSG_ReadFloat(msg_read);
+			}
+		}
+
+		if (gunbits & (1 << 6))
+		{
+			/* read gunrate, unsupported in classic protocol */
+			MSG_ReadByte(msg_read);
+		}
+	}
+	else if (IS_QII97_PROTOCOL(protocol) ||
+			(protocol == PROTOCOL_VERSION))
+	{
+		unsigned i;
+
+		if (IS_QII97_PROTOCOL(protocol))
+		{
+			*gunframe = MSG_ReadByte(msg_read);
+		}
+		else
+		{
+			*gunframe = MSG_ReadShort(msg_read);
+		}
+
+		for (i = 0; i < 3; i++)
+		{
+			gunoffset[i] = MSG_ReadChar(msg_read) * 0.25f;
+		}
+
+		for (i = 0; i < 3; i++)
+		{
+			gunangles[i] = MSG_ReadChar(msg_read) * 0.25f;
+		}
+	}
+	else
+	{
+		Com_Error(ERR_DROP, "%s: unexpected protocol %d",
+			__func__, protocol);
 	}
 }
 

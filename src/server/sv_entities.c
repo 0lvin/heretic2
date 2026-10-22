@@ -340,9 +340,7 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 	/* write the rest of the player_state_t */
 	if (pflags & PS_VIEWOFFSET)
 	{
-		MSG_WriteChar(msg, ps->viewoffset[0] * 4);
-		MSG_WriteChar(msg, ps->viewoffset[1] * 4);
-		MSG_WriteChar(msg, ps->viewoffset[2] * 4);
+		MSG_WriteViewOffset(msg, ps->viewoffset, protocol);
 	}
 
 	if (pflags & PS_VIEWANGLES)
@@ -369,21 +367,8 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 
 	if (pflags & PS_WEAPONFRAME)
 	{
-		if (IS_QII97_PROTOCOL(protocol))
-		{
-			MSG_WriteByte(msg, ps->gunframe);
-		}
-		else
-		{
-			MSG_WriteShort(msg, ps->gunframe);
-		}
-
-		MSG_WriteChar(msg, ps->gunoffset[0] * 4);
-		MSG_WriteChar(msg, ps->gunoffset[1] * 4);
-		MSG_WriteChar(msg, ps->gunoffset[2] * 4);
-		MSG_WriteChar(msg, ps->gunangles[0] * 4);
-		MSG_WriteChar(msg, ps->gunangles[1] * 4);
-		MSG_WriteChar(msg, ps->gunangles[2] * 4);
+		MSG_WriteWeaponFrameAngles(msg, ps->gunoffset, ps->gunangles,
+			ps->gunframe, protocol);
 	}
 
 	if (pflags & PS_BLEND)
@@ -418,7 +403,7 @@ SV_WritePlayerstateToClient(client_frame_t *from, client_frame_t *to,
 	}
 
 	if (IS_QII97_PROTOCOL(protocol) ||
-		protocol == PROTOCOL_RR22_VERSION)
+		IS_QIIRR_PROTOCOL(protocol))
 	{
 		stats_size = Q_min(P_GetCountOfStats(protocol), MAX_STATS);
 	}

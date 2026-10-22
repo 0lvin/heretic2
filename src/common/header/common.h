@@ -146,7 +146,10 @@ void MSG_WriteAngle(sizebuf_t *sb, float f, int protocol);
 void MSG_WriteAngle16(sizebuf_t *sb, float f);
 void MSG_WriteDeltaAngles(sizebuf_t *sb, const short delta_angles[3], int protocol);
 void MSG_WriteViewAngles(sizebuf_t *sb, const vec3_t viewangles, int protocol);
+void MSG_WriteViewOffset(sizebuf_t *sb, const vec3_t viewoffset, int protocol);
 void MSG_WriteKickAngles(sizebuf_t *sb, const vec3_t kick_angles, int protocol);
+void MSG_WriteWeaponFrameAngles(sizebuf_t *sb, const vec3_t gunoffset, const vec3_t gunangles,
+	int gunframe, int protocol);
 void MSG_WriteConfigString(sizebuf_t *buf, short index, const char *s);
 void MSG_WriteDeltaUsercmd(sizebuf_t *buf, const struct usercmd_s *from,
 		const struct usercmd_s *cmd);
@@ -173,7 +176,10 @@ float MSG_ReadAngle(sizebuf_t *msg_read, int protocol);
 float MSG_ReadAngle16(sizebuf_t *msg_read);
 void MSG_ReadDeltaAngles(sizebuf_t *msg_read, short delta_angles[3], int protocol);
 void MSG_ReadViewAngles(sizebuf_t *msg_read, vec3_t viewangles, int protocol);
+void MSG_ReadViewOffset(sizebuf_t *msg_read, vec3_t viewoffset, int protocol);
 void MSG_ReadKickAngles(sizebuf_t *msg_read, vec3_t kick_angles, int protocol);
+void MSG_ReadWeaponFrameAngles(sizebuf_t *msg_read, vec3_t gunoffset, vec3_t gunangles,
+	int *gunframe, int protocol);
 void MSG_ReadDeltaUsercmd(sizebuf_t *msg_read,
 		const struct usercmd_s *from,
 		struct usercmd_s *move);
@@ -239,6 +245,10 @@ void Info_Print(const char *s);
 	((x) == PROTOCOL_DEMO_VERSION) || \
 	((x) == PROTOCOL_XATRIX_VERSION) || \
 	((x) == PROTOCOL_R97_VERSION))
+
+#define IS_QIIRR_PROTOCOL(x) ( \
+	((x) == PROTOCOL_RR22_VERSION) || \
+	((x) == PROTOCOL_RR23_VERSION))
 
 /* ========================================= */
 
@@ -329,6 +339,9 @@ enum clc_ops_e
 #define PS_WEAPONINDEX (1 << 12)
 #define PS_WEAPONFRAME (1 << 13)
 #define PS_RDFLAGS (1 << 14)
+#define PS_MOREBITS (1 << 15)
+#define PS_DAMAGE_BLEND (1 << 16)
+#define PS_TEAM_ID (1 << 17)
 
 /*============================================== */
 
@@ -348,13 +361,18 @@ enum clc_ops_e
 
 /* a sound without an ent or pos will be a local only sound */
 #define SND_VOLUME (1 << 0)         /* a byte */
-#define SND_ATTENUATION (1 << 1)      /* a byte */
+#define SND_ATTENUATION (1 << 1)    /* a byte */
 #define SND_POS (1 << 2)            /* three coordinates */
 #define SND_ENT (1 << 3)            /* a short 0-2: channel, 3-12: entity */
 #define SND_OFFSET (1 << 4)         /* a byte, msec offset from frame start */
+#define SND_LARGE_ENT (1 << 6)      /* 32-bit entity/channel field */
 
 #define DEFAULT_SOUND_PACKET_VOLUME 1.0
 #define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
+
+/* Additional flags */
+#define SOUND_RR22_ATTENUATION (1 << 14)
+#define SOUND_RR22_VOLUME (1 << 15)
 
 /*============================================== */
 
@@ -395,16 +413,16 @@ enum clc_ops_e
 #define U_SOUND (1 << 26)
 #define U_SOLID (1 << 27)
 /* Quake 2 ReRelease */
-#define U_MODEL16 (1 << 28)
-#define U_EFFECTS64 (1 << 29)
-#define U_ALPHA (1 << 30)
-#define U_MOREBITS4 (1 << 31)     /* read one additional byte */
+#define U_MODEL16 (1LL << 28)
+#define U_EFFECTS64 (1LL << 29)
+#define U_ALPHA (1LL << 30)
+#define U_MOREBITS4 (1LL << 31)     /* read one additional byte */
 
 /* fifth byte */
-#define U_SCALE (1 << 32)
-#define U_INSTANCE  (1 << 33)
-#define U_OWNER  (1 << 34)
-#define U_OLDFRAME (1 << 35)
+#define U_SCALE (1LL << 32)
+#define U_INSTANCE  (1LL << 33)
+#define U_OWNER  (1LL << 34)
+#define U_OLDFRAME (1LL << 35)
 
 /* CMD - Command text buffering and command execution */
 
