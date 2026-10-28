@@ -67,7 +67,7 @@ SV_FindIndex(const char *name, int start, int max, qboolean create)
 		return 0;
 	}
 
-	protocol = sv_client ? sv_client->protocol : PROTOCOL_VERSION;
+	protocol = sv_client ? sv_client->protocol : SV_GetRecomendedProtocol();
 
 	for (i = 1; i < max && sv.configstrings[start + i][0]; i++)
 	{
@@ -296,6 +296,7 @@ SV_SpawnServer(char *server, char *spawnpoint, server_state_t serverstate,
 	SV_ClearBaselines();
 	memset(&sv, 0, sizeof(sv));
 	svs.realtime = 0;
+	sv.frame_msec = 100;
 	sv.loadgame = loadgame;
 	sv.attractloop = attractloop;
 

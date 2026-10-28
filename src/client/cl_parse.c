@@ -420,10 +420,10 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint
 
 	if (bits & U_ORIGIN1)
 	{
-		if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && to->solid)
+		if ((cls.serverProtocol == PROTOCOL_RR22_VERSION) && to->solid)
 		{
 			/* Read to float hack */
-			to->origin[0] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
+			to->origin[0] = MSG_ReadCoord(&net_message, PROTOCOL_RR23_VERSION);
 		}
 		else
 		{
@@ -433,10 +433,10 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint
 
 	if (bits & U_ORIGIN2)
 	{
-		if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && to->solid)
+		if ((cls.serverProtocol == PROTOCOL_RR22_VERSION) && to->solid)
 		{
 			/* Read to float hack */
-			to->origin[1] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
+			to->origin[1] = MSG_ReadCoord(&net_message, PROTOCOL_RR23_VERSION);
 		}
 		else
 		{
@@ -446,10 +446,10 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint
 
 	if (bits & U_ORIGIN3)
 	{
-		if (IS_QIIRR_PROTOCOL(cls.serverProtocol) && to->solid)
+		if ((cls.serverProtocol == PROTOCOL_RR22_VERSION) && to->solid)
 		{
 			/* Read to float hack */
-			to->origin[2] = MSG_ReadCoord(&net_message, PROTOCOL_VERSION);
+			to->origin[2] = MSG_ReadCoord(&net_message, PROTOCOL_RR23_VERSION);
 		}
 		else
 		{
@@ -511,7 +511,8 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint
 					__func__, volume);
 			}
 		}
-		else if (IS_QII97_PROTOCOL(cls.serverProtocol))
+		else if (IS_QII97_PROTOCOL(cls.serverProtocol) ||
+			(cls.serverProtocol == PROTOCOL_Q2TEST_VERSION))
 		{
 			to->sound = MSG_ReadByte(&net_message);
 		}
@@ -591,7 +592,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint
 		Com_DPrintf("%s: ReRelease oldframe %d", __func__, oldframe);
 	}
 
-	if ((bits & U_SOLID) && (!IS_QIIRR_PROTOCOL(cls.serverProtocol)))
+	if ((bits & U_SOLID) && !IS_QIIRR_PROTOCOL(cls.serverProtocol))
 	{
 		to->solid = MSG_ReadShort(&net_message);
 	}
@@ -904,7 +905,7 @@ static void
 CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 {
 	unsigned flags, group, stats_size;
-	player_state_t *state;
+	player_xstate_t *state;
 	int flag_short;
 
 	state = &newframe->playerstate;
@@ -958,7 +959,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_M_TIME)
 	{
-		if (protocol == PROTOCOL_RR22_VERSION)
+		if (IS_QIIRR_PROTOCOL(protocol))
 		{
 			int pm_time;
 
@@ -974,7 +975,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	if (flags & PS_M_FLAGS)
 	{
-		if (protocol == PROTOCOL_RR22_VERSION)
+		if (IS_QIIRR_PROTOCOL(protocol))
 		{
 			/* KEX flags above PMF_NO_PREDICTION have no vanilla equivalent */
 			state->pmove.pm_flags = MSG_ReadShort(&net_message) & 0x7f;
@@ -1000,7 +1001,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 		state->pmove.pm_type = PM_FREEZE; /* demo playback */
 	}
 
-	/* parse the rest of the player_state_t */
+	/* parse the rest of the player_xstate_t */
 	if (flags & PS_VIEWOFFSET)
 	{
 		MSG_ReadViewOffset(&net_message, state->viewoffset, protocol);
@@ -1058,7 +1059,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 
 	/* parse stats */
 	if (IS_QII97_PROTOCOL(protocol) ||
-		protocol == PROTOCOL_RR22_VERSION)
+		IS_QIIRR_PROTOCOL(protocol))
 	{
 		stats_size = P_GetCountOfStats(protocol);
 	}
@@ -1085,7 +1086,7 @@ CL_ParsePlayerstate(frame_t *oldframe, frame_t *newframe, int protocol)
 		{
 			if (statbits & (1u << (i % 32)))
 			{
-				if (i < MAX_STATS)
+				if (i < MAX_XSTATS)
 				{
 					state->stats[i] = MSG_ReadShort(&net_message);
 
@@ -1275,7 +1276,7 @@ CL_ParseFrame(void)
 	MSG_ReadData(&net_message, &cl.frame.areabits, len);
 
 	/* read playerinfo */
-	cmd = MSG_ReadByte(&net_message);
+	cmd = P_CmdConvert(MSG_ReadByte(&net_message), cls.serverProtocol);
 	CL_ShowNetCmd(cmd);
 
 	if (cmd != svc_playerinfo)
@@ -1288,7 +1289,7 @@ CL_ParseFrame(void)
 	CL_ParsePlayerstate(old, &cl.frame, cls.serverProtocol);
 
 	/* read packet entities */
-	cmd = MSG_ReadByte(&net_message);
+	cmd = P_CmdConvert(MSG_ReadByte(&net_message), cls.serverProtocol);
 	CL_ShowNetCmd(cmd);
 
 	if (cmd != svc_packetentities)
@@ -2419,4 +2420,3 @@ CL_ParseServerMessage(void)
 		CL_WriteDemoMessage();
 	}
 }
-

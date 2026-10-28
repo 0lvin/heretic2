@@ -1267,7 +1267,7 @@ SCR_ExecuteLayoutString(char *s)
 			token = COM_Parse(&s);
 			index = (int)strtol(token, (char **)NULL, 10);
 
-			if ((index < 0) || (index >= MAX_STATS))
+			if ((index < 0) || (index >= MAX_XSTATS))
 			{
 				Com_DPrintf("%s: bad stats index %d (0x%x) in pic\n",
 					__func__, index, index);
@@ -1497,7 +1497,7 @@ SCR_ExecuteLayoutString(char *s)
 			token = COM_Parse(&s);
 			index = (int)strtol(token, (char **)NULL, 10);
 
-			if ((index < 0) || (index >= MAX_STATS))
+			if ((index < 0) || (index >= MAX_XSTATS))
 			{
 				Com_DPrintf("%s: bad stats index %d (0x%x) in stat_string\n",
 					__func__, index, index);
@@ -1566,7 +1566,7 @@ SCR_ExecuteLayoutString(char *s)
 			token = COM_Parse(&s);
 			index = (int)strtol(token, (char **)NULL, 10);
 
-			if ((index < 0) || (index >= MAX_STATS))
+			if ((index < 0) || (index >= MAX_XSTATS))
 			{
 				Com_DPrintf("%s: bad stats index %d (0x%x) in if\n",
 					__func__, index, index);
