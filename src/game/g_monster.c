@@ -3891,17 +3891,17 @@ void M_ShowLifeMeter( edict_t *self, int value, int max_value )
 		gclient_t *client;
 
 		client = &game.clients[i];
-		client->ps.stats[STAT_LIFEBAR_XSIZE]  = (max_value / LIFEBAR_SCALE);
-		client->ps.stats[STAT_LIFEBAR_YSIZE]  = 16;
-		client->ps.stats[STAT_LIFEBAR_ICON] = gi.imageindex("icons/powerup.m8");
-		client->ps.stats[STAT_LIFEBAR_BACK]  = gi.imageindex("icons/lifebar_back.m8");
+		client->ps_rrstats[STAT_LIFEBAR_XSIZE]  = (max_value / LIFEBAR_SCALE);
+		client->ps_rrstats[STAT_LIFEBAR_YSIZE]  = 16;
+		client->ps_rrstats[STAT_LIFEBAR_ICON] = gi.imageindex("icons/powerup.m8");
+		client->ps_rrstats[STAT_LIFEBAR_BACK]  = gi.imageindex("icons/lifebar_back.m8");
 		if (max_value)
 		{
-			client->ps.stats[STAT_LIFEBAR_VALUE] = (100 * value) / max_value;
+			client->ps_rrstats[STAT_LIFEBAR_VALUE] = (100 * value) / max_value;
 		}
 		else
 		{
-			client->ps.stats[STAT_LIFEBAR_VALUE] = 0;
+			client->ps_rrstats[STAT_LIFEBAR_VALUE] = 0;
 		}
 	}
 }
