@@ -14,19 +14,10 @@
 
 // Structure containing functions and data pointers exported from the player library.
 
-player_export_t	*playerExport;
+
 player_import_t	playerImport;
 
-extern player_export_t *GetPlayerAPI(player_import_t *import);
-
-// ************************************************************************************************
-// P_Freelib
-// ---------
-// ************************************************************************************************
-
-void P_Freelib()
-{
-}
+extern void Player_InitAPI(player_import_t *import);
 
 // ** setup a looping sound on the client
 static void
@@ -41,7 +32,7 @@ G_set_looping_sound(edict_t *self, int sound_num)
 // ------
 // ************************************************************************************************
 
-void *
+void
 P_Load(void)
 {
 	Com_Printf("Initializing static player library\n");
@@ -107,9 +98,7 @@ P_Load(void)
 	playerImport.G_EntIsAButton = G_EntIsAButton;
 
 
-	playerExport = GetPlayerAPI(&playerImport);
+	Player_InitAPI(&playerImport);
 
 	Com_Printf("------------------------------------\n");
-
-	return playerExport;
 }

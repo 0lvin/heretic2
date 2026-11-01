@@ -286,7 +286,7 @@ void harpy_blocked (edict_t *self, trace_t *trace)
 				if (!irand(0, 5))
 				{
 					if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
-						playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
+						KnockDownPlayer(&trace->ent->client->playerinfo);
 				}
 			}
 		}

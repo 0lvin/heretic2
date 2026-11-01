@@ -1004,7 +1004,7 @@ void tbeast_land(edict_t *self)
 			{
 				if (found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 				{
-					playerExport->KnockDownPlayer(&found->client->playerinfo);
+					KnockDownPlayer(&found->client->playerinfo);
 				}
 			}
 		}
@@ -1027,7 +1027,7 @@ void tbeast_roar_knockdown(edict_t *self)
 			{
 				if (found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 				{
-					playerExport->KnockDownPlayer(&found->client->playerinfo);
+					KnockDownPlayer(&found->client->playerinfo);
 				}
 			}
 		}
@@ -1444,7 +1444,7 @@ void tbeast_check_snatch(edict_t *self, float ofsf, float ofsr, float ofsu)
 		{
 			if (found->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 			{
-				playerExport->KnockDownPlayer(&found->client->playerinfo);
+				KnockDownPlayer(&found->client->playerinfo);
 			}
 		}
 		gi.sound(found, CHAN_VOICE, sounds[irand(SND_CORVUS_SCREAM1, SND_CORVUS_SCREAM3)], 1, ATTN_NORM, 0);
@@ -2006,7 +2006,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 					{
 						if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 						{
-							playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
+							KnockDownPlayer(&trace->ent->client->playerinfo);
 						}
 					}
 				}
@@ -2027,7 +2027,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 					if (!irand(0, 5) || (crush && !irand(0,1)))
 					{
 						if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
-							playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
+							KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
 					if (damage)
 						T_Damage(trace->ent, self, self, dir, trace->endpos, dir,
@@ -2051,7 +2051,7 @@ void tbeast_fake_impact(edict_t *self, trace_t *trace, qboolean crush)
 				{
 					if (trace->ent->client->playerinfo.lowerseq != ASEQ_KNOCKDOWN)
 					{
-						playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
+						KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
 				}
 			}

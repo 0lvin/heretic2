@@ -4775,35 +4775,35 @@ WeaponThink_SwordStaffEx(edict_t *caster, int locid)
 					switch ((locid-1)>>2)
 					{
 					case SWORD_ATK_L:
-						playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_L);
+						PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_L);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_L);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_L);
 						return;
 						break;
 					case SWORD_ATK_R:
-						playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_R);
+						PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_R);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_R);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_R);
 						return;
 						break;
 					case SWORD_SPINATK_L:
-						playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED);
+						PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_L);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_L);
 						return;
 						break;
 					case SWORD_SPINATK_R:
-						playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED2);
+						PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED2);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_R);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_R);
 						return;
 						break;
 					case SWORD_ATK_B:
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_R);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_R);
 						return;
 						break;
 					case SWORD_ATK_STAB:
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_L);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCK_L);
 						return;
 						break;
 					}
@@ -4855,35 +4855,35 @@ WeaponThink_SwordStaffEx(edict_t *caster, int locid)
 					switch ((locid-1)>>2)
 					{
 					case SWORD_ATK_L:
-						playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_L);
+						PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_L);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_L);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_L);
 						return;
 						break;
 					case SWORD_ATK_R:
-						playerExport->PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_R);
+						PlayerAnimSetUpperSeq(playerinfo, ASEQ_WSWORD_BLOCKED_R);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_R);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_R);
 						return;
 						break;
 					case SWORD_SPINATK_L:
-						playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED);
+						PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_L);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_L);
 						return;
 						break;
 					case SWORD_SPINATK_R:
-						playerExport->PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED2);
+						PlayerAnimSetLowerSeq(playerinfo, ASEQ_WSWORD_SPINBLOCKED2);
 						// And of course the blocker must react too.
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_R);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_R);
 						return;
 						break;
 					case SWORD_ATK_B:
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_R);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_R);
 						return;
 						break;
 					case SWORD_ATK_STAB:
-						playerExport->PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_L);
+						PlayerAnimSetUpperSeq(&trace.ent->client->playerinfo, ASEQ_WSWORD_BLOCKED_L);
 						return;
 						break;
 					}
@@ -5325,7 +5325,7 @@ Weapon_Ready(gclient_t *client, const gitem_t *weapon)
 		return;
 
 	//Make sure we have an arm to do it
-	if (!playerExport->BranchCheckDismemberAction(playerinfo, weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, weapon->tag))
 		return;
 
 	// Change to this weapon and set the weapon owner's ammo_index to reflect this.
@@ -5357,7 +5357,7 @@ void Weapon_EquipSwordStaff(struct edict_s *ent, const gitem_t *Weapon)
 		return;
 
 	//Make sure we have an arm to do it
-	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
 
 	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= WATER_WAIST)
@@ -5391,7 +5391,7 @@ Weapon_EquipSpell(struct edict_s *ent, const gitem_t *Weapon)
 
 	// Make sure we have an arm to do it.
 
-	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
 
 	// In blade only DM, don't put away the staff and change weapons.
@@ -5436,7 +5436,7 @@ void Weapon_EquipHellStaff(struct edict_s *ent, const gitem_t *Weapon)
 		return;
 
 	//Make sure we have an arm to do it
-	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 	{
 		return;
 	}
@@ -5485,7 +5485,7 @@ void Weapon_EquipBow(struct edict_s *ent, const gitem_t *Weapon)
 	}
 
 	//Make sure we have an arm to do it
-	if (!playerExport->BranchCheckDismemberAction(playerinfo, Weapon->tag))
+	if (!BranchCheckDismemberAction(playerinfo, Weapon->tag))
 		return;
 
 	if (playerinfo->pm_w_flags & WF_SURFACE || playerinfo->waterlevel >= WATER_WAIST)

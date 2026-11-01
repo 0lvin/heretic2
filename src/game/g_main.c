@@ -326,8 +326,6 @@ ShutdownGame(void)
 	gi.FreeTags(TAG_LEVEL);
 	gi.FreeTags(TAG_GAME);
 	SpawnFree();
-
-	P_Freelib();	// free the player lib
 }
 
 /*

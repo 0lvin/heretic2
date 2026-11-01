@@ -257,7 +257,7 @@ void mssithraSwipe (edict_t *self)
 				if (!irand(0,5))
 				{
 					if (!Q_stricmp(self->enemy->classname, "player"))
-						playerExport->KnockDownPlayer(&self->enemy->client->playerinfo);
+						KnockDownPlayer(&self->enemy->client->playerinfo);
 				}
 			}
 			return;

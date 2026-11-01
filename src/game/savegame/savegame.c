@@ -600,10 +600,7 @@ InitGame(void)
 
 	G_InitResourceManagers();
 
-	if (!P_Load())
-	{
-		Sys_Error("Unable to player library");
-	}
+	P_Load();
 
 	G_ClearPersistantEffects();
 
@@ -1835,7 +1832,7 @@ ReadLevel(const char *filename)
 		ent->client = game.clients + i;
 		ent->client->pers.connected = false;
 		SetupPlayerinfo(ent);
-		playerExport->PlayerBasicAnimReset(&ent->client->playerinfo);
+		PlayerBasicAnimReset(&ent->client->playerinfo);
 	}
 
 	/* do any load time things at this point */

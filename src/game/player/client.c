@@ -632,7 +632,7 @@ void
 ClientSetSkinType(edict_t *ent, char *skinname)
 {
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(ent);
+	PlayerUpdateModelAttributes(ent);
 	WritePlayerinfo_effects(ent);
 }
 
@@ -743,7 +743,7 @@ player_repair_skin(edict_t *self)
 			}
 		}
 		SetupPlayerinfo_effects(self);
-		playerExport->PlayerUpdateModelAttributes(self);
+		PlayerUpdateModelAttributes(self);
 		WritePlayerinfo_effects(self);
 		return;
 	}
@@ -797,7 +797,7 @@ player_repair_skin(edict_t *self)
 	}
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self);
+	PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 }
 
@@ -838,7 +838,7 @@ ResetPlayerBaseNodes(edict_t *ent)
 	ent->s.fmnodeinfo[MESH__RLEG].skin = ent->s.skinnum;
 	ent->s.fmnodeinfo[MESH__LLEG].skin = ent->s.skinnum;
 
-	// FIXME: Turn hands back on too? But two pairs, which one? Shouldn't playerExport->PlayerUpdateModelAttributes do that?
+	// FIXME: Turn hands back on too? But two pairs, which one? Shouldn't PlayerUpdateModelAttributes do that?
 
 	/* Sync mesh list */
 	ent->rrs.mesh = 0;
@@ -852,7 +852,7 @@ ResetPlayerBaseNodes(edict_t *ent)
 	}
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(ent);
+	PlayerUpdateModelAttributes(ent);
 	WritePlayerinfo_effects(ent);
 }
 
@@ -1210,7 +1210,7 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 					SpawnBleeder(self, other, blood_dir, blood_spot);//, CORVUS_RARM);
 
 					if (inpolevault)//oops!  no staff! fall down!
-						playerExport->KnockDownPlayer(&self->client->playerinfo);
+						KnockDownPlayer(&self->client->playerinfo);
 				}
 			}
 			else
@@ -1277,21 +1277,21 @@ player_dismember(edict_t *self, edict_t *other, int damage, int HitLocation)
 	if (throw_nodes)
 	{
 		self->pain_debounce_time = 0;
-		if (!playerExport->BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
+		if (!BranchCheckDismemberAction(&self->client->playerinfo, self->client->playerinfo.pers.weapon->tag))
 		{
-			playerExport->PlayerInterruptAction(&self->client->playerinfo);
-			playerExport->PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
+			PlayerInterruptAction(&self->client->playerinfo);
+			PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
 			if (irand(0, 1))
-				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_PAIN_A);
+				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_PAIN_A);
 			else
-				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_PAIN_B);
+				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_PAIN_B);
 		}
 	}
 
 finish:
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self);
+	PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 }
 
@@ -1327,7 +1327,7 @@ player_decap(edict_t *self, edict_t *other)
 	}
 
 	SetupPlayerinfo_effects(self);
-	playerExport->PlayerUpdateModelAttributes(self);
+	PlayerUpdateModelAttributes(self);
 	WritePlayerinfo_effects(self);
 }
 
@@ -1727,17 +1727,17 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 			}
 			else if ( (self->client->playerinfo.flags & PLAYER_FLAG_SURFSWIM) || (self->waterlevel >= WATER_WAIST) )
 			{
-				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
+				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DROWN);
 				gi.sound(self,CHAN_BODY, gi.soundindex("*drowndeath.wav"), 1, ATTN_NORM, 0);
 			}
 			else if ( !Q_stricmp(inflictor->classname, "plague_mist"))
 			{
-				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_CHOKE);
+				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_CHOKE);
 				gi.sound(self,CHAN_BODY, gi.soundindex("*chokedeath.wav"), 1, ATTN_NORM, 0);
 			}
 			else if ( self->fire_damage_time == -1 )
 			{
-				playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_B);
+				PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_B);
 				if (blood_level && (int)(blood_level->value) <= VIOLENCE_BLOOD)	// Don't scream bloody murder in Germany.
 					gi.sound(self,CHAN_BODY, gi.soundindex("*death1.wav"), 1, ATTN_NORM, 0);
 				else
@@ -1755,15 +1755,15 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 				if (speed > 16.0)
 				{	// Fly forward
-					playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_FLYFWD);
+					PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_FLYFWD);
 				}
 				else if (speed < -16.0)
 				{	// Fly backward
-					playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_FLYBACK);
+					PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_FLYBACK);
 				}
 				else
 				{	// Jes' flop to the ground.
-					playerExport->PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_A);
+					PlayerAnimSetLowerSeq(&self->client->playerinfo, ASEQ_DEATH_A);
 				}
 
 				if (irand(0,1))
@@ -1774,7 +1774,7 @@ player_die(edict_t *self, edict_t *inflictor, edict_t *attacker,
 
 			// Make sure it doesn't try and finish an animation.
 
-			playerExport->PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
+			PlayerAnimSetUpperSeq(&self->client->playerinfo, ASEQ_NONE);
 			self->client->playerinfo.upperidle = true;
 
 			// If we're not a chicken, don't set the dying flag.
@@ -3362,7 +3362,7 @@ GiveLevelItems(edict_t *player)
 	}
 
 	SetupPlayerinfo_effects(player);
-	playerExport->PlayerUpdateModelAttributes(player);
+	PlayerUpdateModelAttributes(player);
 	WritePlayerinfo_effects(player);
 }
 
@@ -3723,7 +3723,7 @@ PutClientInServer(edict_t *ent)
 	// Make the player have the right attributes - armor that sort of thing.
 
 	SetupPlayerinfo_effects(ent);
-	playerExport->PlayerUpdateModelAttributes(ent);
+	PlayerUpdateModelAttributes(ent);
 	WritePlayerinfo_effects(ent);
 
 	// Make sure the skin attributes are transferred.
@@ -3747,7 +3747,7 @@ PutClientInServer(edict_t *ent)
 
 	SetupPlayerinfo(ent);
 
-	playerExport->PlayerInit(&ent->client->playerinfo, complete_reset);
+	PlayerInit(&ent->client->playerinfo, complete_reset);
 
 	WritePlayerinfo(ent);
 

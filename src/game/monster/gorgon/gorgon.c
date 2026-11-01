@@ -171,7 +171,7 @@ void gorgon_blocked (edict_t *self, trace_t *trace)
 				{
 					if (infront(trace->ent, self))
 					{
-						playerExport->KnockDownPlayer(&trace->ent->client->playerinfo);
+						KnockDownPlayer(&trace->ent->client->playerinfo);
 					}
 				}
 			}

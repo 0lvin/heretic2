@@ -126,19 +126,19 @@ P_DamageFeedback(edict_t *player)
 	if (player->pain_debounce_time < level.time && client->damage_gas)
 	{
 		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
-			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
+			PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
 
-		playerExport->PlayerPlayPain(&client->playerinfo, 1);
+		PlayerPlayPain(&client->playerinfo, 1);
 	}
 	else if (((!irand(0, 4)) || count > 8) && (player->pain_debounce_time < level.time)) // Play pain animation.
 	{
 		if ( client->playerinfo.loweridle && client->playerinfo.upperidle )
-			playerExport->PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
+			PlayerAnimSetLowerSeq(&client->playerinfo, ASEQ_PAIN_A);
 
 		if (count <= 4)
-			playerExport->PlayerPlayPain(&client->playerinfo, 2);
+			PlayerPlayPain(&client->playerinfo, 2);
 		else
-			playerExport->PlayerPlayPain(&client->playerinfo, 0);
+			PlayerPlayPain(&client->playerinfo, 0);
 
 		player->pain_debounce_time = level.time + 0.5;
 	}
@@ -1132,7 +1132,7 @@ void PlayerTimerUpdate(edict_t *ent)
 
 			// Unset the skin.
 
-			playerExport->PlayerUpdateModelAttributes(ent);
+			PlayerUpdateModelAttributes(ent);
 		}
 	}
 
@@ -1984,7 +1984,7 @@ ClientEndServerFrame(edict_t *ent)
 
 	SetupPlayerinfo(ent);
 
-	playerExport->PlayerFallingDamage(&ent->client->playerinfo);
+	PlayerFallingDamage(&ent->client->playerinfo);
 
 	/* apply all the damage taken this frame */
 	P_DamageFeedback(ent);
@@ -2006,7 +2006,7 @@ ClientEndServerFrame(edict_t *ent)
 	// ********************************************************************************************
 	SetupPlayerinfo(ent); /* Animation check */
 
-	playerExport->PlayerUpdateCmdFlags(ent->client);
+	PlayerUpdateCmdFlags(ent->client);
 
 	if (showbuoys->value) // Note this is a bit of a hack
 	{
@@ -2016,10 +2016,10 @@ ClientEndServerFrame(edict_t *ent)
 		}
 	}
 
-	playerExport->PlayerUpdate(&ent->client->playerinfo);
+	PlayerUpdate(&ent->client->playerinfo);
 
 	// Validate
-	playerExport->AnimUpdateFrame(&ent->client->playerinfo);
+	AnimUpdateFrame(&ent->client->playerinfo);
 
 	PlayerTimerUpdate(ent);
 

@@ -1132,7 +1132,7 @@ void morcalavin_quake(edict_t *self, float pitch_ofs, float yaw_ofs, float roll_
 	if (self->enemy && self->enemy->groundentity && self->enemy->client)
 	{
 		//Knock the player down
-		playerExport->KnockDownPlayer(&self->enemy->client->playerinfo);
+		KnockDownPlayer(&self->enemy->client->playerinfo);
 
 		//Denote we've done so to follow it with an attack
 		self->monsterinfo.flee_finished = true;
