@@ -3572,7 +3572,7 @@ PutClientInServer(edict_t *ent)
 		client->ps.fov = 160;
 	}
 
-	VectorClear(client->ps.offsetangles);
+	VectorClear(client->ps.h2state.offsetangles);
 
 	// ********************************************************************************************
 	// Initialize the player's entity_state_t.
@@ -4870,7 +4870,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 
 	// Handle autotaiming etc.
 	TargetEnt = ent->enemy = NULL;
-	client->ps.AutotargetEntityNum = 0;
+	client->ps.h2state.AutotargetEntityNum = 0;
 
 	if (client->playerinfo.autoaim)
 	{
@@ -4887,7 +4887,7 @@ ClientThink(edict_t *ent, usercmd_t *ucmd)
 		{
 			/* An enemy was successfully autotargeted, so store away the pointer to our enemy. */
 			ent->enemy = TargetEnt;
-			client->ps.AutotargetEntityNum=ent->enemy->s.number;
+			client->ps.h2state.AutotargetEntityNum = ent->enemy->s.number;
 		}
 	}
 

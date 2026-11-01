@@ -1374,7 +1374,7 @@ typedef enum
 #define STAT_ARMOUR				35
 
 /* Original Quake 2 slots count */
-#define MAX_STATS 64
+#define MAX_STATS 32
 /* ReRelease slots count */
 #define MAX_XSTATS 64
 
@@ -1652,22 +1652,6 @@ typedef struct
  * frame rates */
 typedef struct
 {
-	pmove_state_t pmove;        /* for prediction */
-
-	vec3_t viewangles;          /* for fixed views */
-	vec3_t viewoffset;          /* add to pmovestate->origin */
-	vec3_t kick_angles;         /* add to view direction to get render angles */
-								/* set by weapon kicks, pain effects, etc */
-
-	vec3_t gunangles;
-	vec3_t gunoffset;
-	int gunindex;
-	int gunframe;
-
-	float blend[4];             /* rgba full screen effect */
-	float fov;                  /* horizontal field of view */
-	int rdflags;                /* refdef flags */
-
 	// Deltas added to the player model's client determined angles.
 	vec3_t			offsetangles;
 
@@ -1752,6 +1736,27 @@ typedef struct
 
 	// Deathmatch flags.
 	int				dmflags;
+} player_h2state_t;
+
+typedef struct
+{
+	pmove_state_t pmove;        /* for prediction */
+
+	vec3_t viewangles;          /* for fixed views */
+	vec3_t viewoffset;          /* add to pmovestate->origin */
+	vec3_t kick_angles;         /* add to view direction to get render angles */
+								/* set by weapon kicks, pain effects, etc */
+
+	vec3_t gunangles;
+	vec3_t gunoffset;
+	int gunindex;
+	int gunframe;
+
+	float blend[4];             /* rgba full screen effect */
+	float fov;                  /* horizontal field of view */
+	int rdflags;                /* refdef flags */
+
+	player_h2state_t h2state;
 
 	short stats[MAX_STATS];     /* fast status bar updates */
 } player_state_t;
@@ -1775,90 +1780,7 @@ typedef struct
 	float fov;                  /* horizontal field of view */
 	int rdflags;                /* refdef flags */
 
-	// Deltas added to the player model's client determined angles.
-	vec3_t			offsetangles;
-
-	// Index of edict currently targeted by the player's auto-targeting facility.
-	int				AutotargetEntityNum;
-
-	// For showing the amount of current level completed.
-	byte			map_percentage;
-
-	byte			cinematicfreeze;	// Shows if currently in a cinematic
-
-	// Current state of players in this clients view (one bit per player).
-	int				PIV;
-
-	// These are NEVER sent accross the net, but are purely client-side repositiories needed by
-	// prediction and are filled from the player's entity_state_t.
-	int				frame, swapFrame;
-	vec3_t			angles;
-	int				effects,
-		skinnum,
-		renderfx,
-		clientnum;
-	fmnodeinfo_t	fmnodeinfo[MAX_FM_MESH_NODES];
-
-	// ********************************************************************************************
-	// All the stuff below is required for client prediction to function. NOTE still working on
-	// this... expect additions / removals / packet size reduction.
-	// ********************************************************************************************
-
-	// Inventory changes.
-	byte			NoOfItems;
-
-	// Water attributes.
-	int				watertype;
-	int				waterlevel;
-	float			waterheight;
-
-	// Grabbing / pullup stuff.
-	vec3_t			grabloc;
-	float			grabangle;
-
-	// Velocities imparted on a per animation frame basis.
-	float			fwdvel, sidevel, upvel;
-
-	// PLAYER_FLAG_XXX.
-	int				flags;
-
-	// FL_XXX.
-	int				edictflags;
-
-	// Player edict's oldvelocity.
-	float			oldvelocity_z;
-
-	// Animation sequencing state.
-	int				upperseq, lowerseq;
-	int				upperframe, lowerframe;
-	byte			upperidle, loweridle;		// boolean
-	int				uppermove_index, lowermove_index;
-	byte			weapon, defense, lastweapon, lastdefense;
-	int				weaponready;
-	int				switchtoweapon;
-	byte			newweapon;
-	int				weap_ammo_index, def_ammo_index;
-	byte			weaponcharge;
-	byte			advancedstaff;
-	int				armortype;
-	byte			bowtype;
-	byte			stafflevel;
-	byte			helltype;
-	byte			meteor_count;
-	byte			handfxtype;
-	byte			plaguelevel;
-	unsigned int	altparts;
-
-	int				deadflag;
-	float			ideal_yaw;
-	float			leveltime;
-	float			idletime;
-	float			quickturnEndTime;
-	float			quickturn_rate;
-	float			powerup_timer;
-
-	// Deathmatch flags.
-	int				dmflags;
+	player_h2state_t h2state;
 
 	short stats[MAX_XSTATS];     /* fast status bar updates */
 } player_xstate_t;

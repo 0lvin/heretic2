@@ -1051,7 +1051,7 @@ void mappercentage_use (edict_t *self, edict_t *other)
 	if (!other->client)	// Only players use these
 		return;
 
-	other->client->ps.map_percentage = (byte) self->count;
+	other->client->ps.h2state.map_percentage = (byte) self->count;
 
 	G_UseTargets(self, self);
 

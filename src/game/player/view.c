@@ -1039,7 +1039,7 @@ WritePlayerinfo(edict_t *ent)
 	// ********************************************************************************************
 
 	// From playerstate_t.
-	VectorCopy(ent->client->playerinfo.offsetangles,ent->client->ps.offsetangles);
+	VectorCopy(ent->client->playerinfo.offsetangles, ent->client->ps.h2state.offsetangles);
 }
 
 // ************************************************************************************************
@@ -2047,8 +2047,8 @@ ClientEndServerFrame(edict_t *ent)
 	// Reflect inventory changes in the client's playetstate.
 	// ********************************************************************************************
 
-	current_client->ps.NoOfItems = i = 0;
-	current_client->ps.NoOfItems = i;
+	current_client->ps.h2state.NoOfItems = i = 0;
+	current_client->ps.h2state.NoOfItems = i;
 
 	// ********************************************************************************************
 	// Reflect changes to the client's origin and velocity due to the current player animation, in
@@ -2067,65 +2067,65 @@ ClientEndServerFrame(edict_t *ent)
 	// Write all the shit that animation system modifies out to the playerstate (for prediction).
 	// ********************************************************************************************
 
-	current_client->ps.watertype = current_client->playerinfo.watertype;
-	current_client->ps.waterlevel = current_client->playerinfo.waterlevel;
-	current_client->ps.waterheight = current_client->playerinfo.waterheight;
+	current_client->ps.h2state.watertype = current_client->playerinfo.watertype;
+	current_client->ps.h2state.waterlevel = current_client->playerinfo.waterlevel;
+	current_client->ps.h2state.waterheight = current_client->playerinfo.waterheight;
 
-	VectorCopy(current_client->playerinfo.grabloc,current_client->ps.grabloc);
-	current_client->ps.grabangle = current_client->playerinfo.grabangle;
+	VectorCopy(current_client->playerinfo.grabloc, current_client->ps.h2state.grabloc);
+	current_client->ps.h2state.grabangle = current_client->playerinfo.grabangle;
 
-	current_client->ps.fwdvel = current_client->playerinfo.fwdvel;
-	current_client->ps.sidevel = current_client->playerinfo.sidevel;
-	current_client->ps.upvel = current_client->playerinfo.upvel;
+	current_client->ps.h2state.fwdvel = current_client->playerinfo.fwdvel;
+	current_client->ps.h2state.sidevel = current_client->playerinfo.sidevel;
+	current_client->ps.h2state.upvel = current_client->playerinfo.upvel;
 
-	current_client->ps.flags = current_client->playerinfo.flags;
+	current_client->ps.h2state.flags = current_client->playerinfo.flags;
 
-	current_client->ps.edictflags = ent->flags;
+	current_client->ps.h2state.edictflags = ent->flags;
 
-	current_client->ps.oldvelocity_z = current_client->playerinfo.oldvelocity[2];
+	current_client->ps.h2state.oldvelocity_z = current_client->playerinfo.oldvelocity[2];
 
-	current_client->ps.upperseq = current_client->playerinfo.upperseq;
-	current_client->ps.lowerseq = current_client->playerinfo.lowerseq;
+	current_client->ps.h2state.upperseq = current_client->playerinfo.upperseq;
+	current_client->ps.h2state.lowerseq = current_client->playerinfo.lowerseq;
 
-	current_client->ps.upperframe = current_client->playerinfo.upperframe;
-	current_client->ps.lowerframe = current_client->playerinfo.lowerframe;
+	current_client->ps.h2state.upperframe = current_client->playerinfo.upperframe;
+	current_client->ps.h2state.lowerframe = current_client->playerinfo.lowerframe;
 
-	current_client->ps.upperidle = (byte)((current_client->playerinfo.upperidle)?1:0);
-	current_client->ps.loweridle = (byte)((current_client->playerinfo.loweridle)?1:0);
+	current_client->ps.h2state.upperidle = (byte)((current_client->playerinfo.upperidle)?1:0);
+	current_client->ps.h2state.loweridle = (byte)((current_client->playerinfo.loweridle)?1:0);
 
-	current_client->ps.uppermove_index = current_client->playerinfo.uppermove_index;
-	current_client->ps.lowermove_index = current_client->playerinfo.lowermove_index;
+	current_client->ps.h2state.uppermove_index = current_client->playerinfo.uppermove_index;
+	current_client->ps.h2state.lowermove_index = current_client->playerinfo.lowermove_index;
 
-	current_client->ps.weapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.weapon);
-	current_client->ps.defense = (byte)ITEM_INDEX(current_client->pers.defence);
-	current_client->ps.lastweapon = (byte)ITEM_INDEX(current_client->pers.lastweapon);
-	current_client->ps.lastdefense = (byte)ITEM_INDEX(current_client->pers.lastdefence);
-	current_client->ps.weaponready = (byte)current_client->pers.weaponready;
-	current_client->ps.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
-	current_client->ps.newweapon = (byte)ITEM_INDEX(current_client->newweapon);
-	current_client->ps.weap_ammo_index = (byte)current_client->playerinfo.weap_ammo_index;
-	current_client->ps.def_ammo_index = (byte)current_client->playerinfo.def_ammo_index;
-	current_client->ps.weaponcharge = (byte)current_client->playerinfo.weaponcharge;
-	current_client->ps.armortype = (byte)current_client->pers.armortype;
-	current_client->ps.bowtype = (byte)current_client->pers.bowtype;
-	current_client->ps.stafflevel = (byte)current_client->pers.stafflevel;
-	current_client->ps.helltype = (byte)current_client->pers.helltype;
-	current_client->ps.meteor_count = (byte)current_client->playerinfo.meteor_count;
-	current_client->ps.handfxtype = (byte)current_client->pers.handfxtype;
-	current_client->ps.plaguelevel = (byte)current_client->playerinfo.plaguelevel;
-	current_client->ps.altparts = (byte)current_client->pers.altparts;
-	current_client->ps.deadflag = current_client->playerinfo.deadflag;
-	current_client->ps.ideal_yaw = ent->ideal_yaw;
-	current_client->ps.leveltime = level.time;
-	current_client->ps.idletime = current_client->playerinfo.idletime;
-	current_client->ps.quickturnEndTime = current_client->playerinfo.quickturnEndTime;
-	current_client->ps.powerup_timer = current_client->playerinfo.powerup_timer;
-	current_client->ps.quickturn_rate = current_client->playerinfo.quickturn_rate;
+	current_client->ps.h2state.weapon = (byte)ITEM_INDEX(current_client->playerinfo.pers.weapon);
+	current_client->ps.h2state.defense = (byte)ITEM_INDEX(current_client->pers.defence);
+	current_client->ps.h2state.lastweapon = (byte)ITEM_INDEX(current_client->pers.lastweapon);
+	current_client->ps.h2state.lastdefense = (byte)ITEM_INDEX(current_client->pers.lastdefence);
+	current_client->ps.h2state.weaponready = (byte)current_client->pers.weaponready;
+	current_client->ps.h2state.switchtoweapon = (byte)current_client->playerinfo.switchtoweapon;
+	current_client->ps.h2state.newweapon = (byte)ITEM_INDEX(current_client->newweapon);
+	current_client->ps.h2state.weap_ammo_index = (byte)current_client->playerinfo.weap_ammo_index;
+	current_client->ps.h2state.def_ammo_index = (byte)current_client->playerinfo.def_ammo_index;
+	current_client->ps.h2state.weaponcharge = (byte)current_client->playerinfo.weaponcharge;
+	current_client->ps.h2state.armortype = (byte)current_client->pers.armortype;
+	current_client->ps.h2state.bowtype = (byte)current_client->pers.bowtype;
+	current_client->ps.h2state.stafflevel = (byte)current_client->pers.stafflevel;
+	current_client->ps.h2state.helltype = (byte)current_client->pers.helltype;
+	current_client->ps.h2state.meteor_count = (byte)current_client->playerinfo.meteor_count;
+	current_client->ps.h2state.handfxtype = (byte)current_client->pers.handfxtype;
+	current_client->ps.h2state.plaguelevel = (byte)current_client->playerinfo.plaguelevel;
+	current_client->ps.h2state.altparts = (byte)current_client->pers.altparts;
+	current_client->ps.h2state.deadflag = current_client->playerinfo.deadflag;
+	current_client->ps.h2state.ideal_yaw = ent->ideal_yaw;
+	current_client->ps.h2state.leveltime = level.time;
+	current_client->ps.h2state.idletime = current_client->playerinfo.idletime;
+	current_client->ps.h2state.quickturnEndTime = current_client->playerinfo.quickturnEndTime;
+	current_client->ps.h2state.powerup_timer = current_client->playerinfo.powerup_timer;
+	current_client->ps.h2state.quickturn_rate = current_client->playerinfo.quickturn_rate;
 
-	current_client->ps.dmflags = current_client->playerinfo.dmflags;
-	current_client->ps.advancedstaff = current_client->playerinfo.advancedstaff;
+	current_client->ps.h2state.dmflags = current_client->playerinfo.dmflags;
+	current_client->ps.h2state.advancedstaff = current_client->playerinfo.advancedstaff;
 
-	current_client->ps.cinematicfreeze = current_client->playerinfo.sv_cinematicfreeze;
+	current_client->ps.h2state.cinematicfreeze = current_client->playerinfo.sv_cinematicfreeze;
 
 	/* if the inventory is up, update it */
 	if (ent->client->showinventory)

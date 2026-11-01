@@ -726,7 +726,7 @@ void CalculatePIV(edict_t *player)
 	// if we have no names on through deathmatch flags, don't send them down
 	if (deathmatch->value && ((int)dmflags->value & DF_NONAMES))
 	{
-		player->client->ps.PIV = 0;
+		player->client->ps.h2state.PIV = 0;
 		return;
 	}
 
@@ -801,7 +801,7 @@ void CalculatePIV(edict_t *player)
 			PIV |= 1 << i;
 		}
 	}
-	player->client->ps.PIV = PIV;
+	player->client->ps.h2state.PIV = PIV;
 }
 
 void GetVectorsToActor(edict_t *self, edict_t *actor, vec3_t vec)
