@@ -3883,21 +3883,25 @@ void MG_SetNormalizeVelToGoal(edict_t *self, vec3_t vec)
 
 void M_ShowLifeMeter( edict_t *self, int value, int max_value )
 {
-	player_state_t		*ps;
-	int					i;
+	int i;
 
 	//Update all clients
 	for (i = 0 ; i < maxclients->value  ; i++)
 	{
-		ps = &game.clients[i].ps;
+		gclient_t *client;
 
-		ps->stats[STAT_LIFEBAR_XSIZE]  = (max_value / LIFEBAR_SCALE);
-		ps->stats[STAT_LIFEBAR_YSIZE]  = 16;
-		ps->stats[STAT_LIFEBAR_ICON] = gi.imageindex("icons/powerup.m8");
-		ps->stats[STAT_LIFEBAR_BACK]  = gi.imageindex("icons/lifebar_back.m8");
+		client = &game.clients[i];
+		client->ps.stats[STAT_LIFEBAR_XSIZE]  = (max_value / LIFEBAR_SCALE);
+		client->ps.stats[STAT_LIFEBAR_YSIZE]  = 16;
+		client->ps.stats[STAT_LIFEBAR_ICON] = gi.imageindex("icons/powerup.m8");
+		client->ps.stats[STAT_LIFEBAR_BACK]  = gi.imageindex("icons/lifebar_back.m8");
 		if (max_value)
-			ps->stats[STAT_LIFEBAR_VALUE] = (100 * value) / max_value;
+		{
+			client->ps.stats[STAT_LIFEBAR_VALUE] = (100 * value) / max_value;
+		}
 		else
-			ps->stats[STAT_LIFEBAR_VALUE] = 0;
+		{
+			client->ps.stats[STAT_LIFEBAR_VALUE] = 0;
+		}
 	}
 }

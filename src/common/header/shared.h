@@ -1373,10 +1373,8 @@ typedef enum
 #define STAT_ARMOUR_ICON		34
 #define STAT_ARMOUR				35
 
-/* Extend to have more slots?
- * Quake ReRelease has 64,
- * Heretic 2 has 48 */
-#define MAX_STATS 48
+/* Original Quake 2 slots count */
+#define MAX_STATS 64
 /* ReRelease slots count */
 #define MAX_XSTATS 64
 
