@@ -172,7 +172,7 @@ TurnOffPlayerEffects(edict_t *self)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(self, FX_SPELLHANDS);
+				G_RemoveEffects(self, FX_SPELLHANDS);
 			}
 			break;
 
@@ -181,7 +181,7 @@ TurnOffPlayerEffects(edict_t *self)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(self, FX_WEAPON_REDRAINGLOW);
+				G_RemoveEffects(self, FX_WEAPON_REDRAINGLOW);
 			}
 			break;
 
@@ -191,7 +191,7 @@ TurnOffPlayerEffects(edict_t *self)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(self, FX_FIREHANDS);
+				G_RemoveEffects(self, FX_FIREHANDS);
 			}
 			break;
 
@@ -201,7 +201,7 @@ TurnOffPlayerEffects(edict_t *self)
 
 			if (playerinfo->effects)
 			{
-				pi.G_RemoveEffects(self, FX_STAFF);
+				G_RemoveEffects(self, FX_STAFF);
 				playerinfo->effects &= ~EF_BLOOD_ENABLED;
 			}
 
@@ -242,7 +242,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	}
 
 	// Handle teleporting (and chicken morphing) only on game side.
-	if (pi.G_HandleTeleport(playerinfo->self))
+	if (G_HandleTeleport(playerinfo->self))
 	{
 		return;
 	}
@@ -300,9 +300,9 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		playerinfo->self->monsterinfo.jump_time = playerinfo->leveltime + 4;
 		playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_VOICE,
-							pi.G_SoundIndex("player/ropegrab.wav"),
+							gi.soundindex("player/ropegrab.wav"),
 							0.75,
 							ATTN_NORM,
 							0);
@@ -338,7 +338,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 								playerinfo->upvel += 225;
 								PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-								pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
+								gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*offwall.wav"), 0.75, ATTN_NORM, 0);
 								return;
 							}
 						}
@@ -391,7 +391,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 						playerinfo->upvel += 225;
 						PlayerAnimSetLowerSeq(playerinfo, ASEQ_JUMPFLIPB);
 
-						pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*offwall.wav"), 0.75, ATTN_NORM, 0);
+						gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*offwall.wav"), 0.75, ATTN_NORM, 0);
 					}
 					else if (PlayerSeqData2[playerinfo->lowerseq].collideseq != ASEQ_NONE)
 					{
@@ -515,7 +515,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 	if (PlayerSeqData2[playerinfo->lowerseq].nosplit)
 	{
 		// Straighten out joints, i.e. no torso aiming.
-		pi.ResetJointAngles(playerinfo->self);
+		G_ResetJointAngles(playerinfo->self);
 
 		playerinfo->swapFrame = playerinfo->frame;
 
@@ -597,7 +597,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 			if ((PlayerSeqData2[playerinfo->upperseq].nosplit)&&(!(playerinfo->self->flags&FL_CHICKEN)))
 			{
 				// Straighten out joints, i.e. no torso aiming.
-				pi.ResetJointAngles(playerinfo->self);
+				G_ResetJointAngles(playerinfo->self);
 
 				return;
 			}
@@ -625,7 +625,7 @@ void AnimUpdateFrame(playerinfo_t *playerinfo)
 		CalcJointAngles(playerinfo);
 
 		// Now set joints in motion.
-		pi.SetJointAngles(playerinfo->self);
+		G_SetJointAngles(playerinfo->self);
 	}
 }
 
@@ -643,7 +643,7 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 		endpos[2] += playerinfo->self->mins[2];
 
 		if ((playerinfo->flags&PLAYER_FLAG_FALLING)&&
-		   (pi.PointContents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
+		   (gi.pointcontents(endpos)&(CONTENTS_SLIME|CONTENTS_LAVA))&&
 		   (playerinfo->waterlevel == WATER_FEET))
 		{
 			PlayerIntLand(playerinfo,delta);
@@ -684,6 +684,6 @@ void PlayerFallingDamage(playerinfo_t *playerinfo)
 	if (delta > 30.0)
 	{
 		// Apply damage to player entity if we are running server (game) side.
-		pi.G_PlayerFallingDamage(playerinfo,delta);
+		G_PlayerFallingDamage(playerinfo,delta);
 	}
 }

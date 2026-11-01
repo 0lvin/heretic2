@@ -13,6 +13,13 @@
 #include "p_main.h"
 
 void
+G_set_looping_sound(edict_t *self, int sound_num)
+{
+	self->s.sound = sound_num;
+	self->s.sound_data = (255 & ENT_VOL_MASK) | ATTN_NORM;
+}
+
+void
 PlayerInit(playerinfo_t *playerinfo, int complete_reset)
 {
 	if (!complete_reset)
@@ -177,7 +184,7 @@ PlayerUpdate(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] += playerinfo->self->mins[2];
 
-	if ((pi.PointContents(endpos) & (CONTENTS_SLIME|CONTENTS_LAVA)))
+	if ((gi.pointcontents(endpos) & (CONTENTS_SLIME|CONTENTS_LAVA)))
 	{
 	}
 
@@ -231,25 +238,25 @@ PlayerUpdate(playerinfo_t *playerinfo)
 
 		if (client->pers.defence)
 		{
-			if (pi.Defence_CurrentShotsLeft(playerinfo, 0)>0)
+			if (Defence_CurrentShotsLeft(playerinfo, 0)>0)
 			{
-				pi.PlayerActionSpellDefensive(playerinfo->self);
+				G_PlayerActionSpellDefensive(playerinfo->self);
 			}
 			else
 			{
 				//Play a sound to tell the player they're out of mana
-				pi.G_Sound(playerinfo->self,
+				gi.sound(playerinfo->self,
 					CHAN_VOICE,
-					pi.G_SoundIndex("*nomana.wav"), 0.75, ATTN_NORM, 0);
+					gi.soundindex("*nomana.wav"), 0.75, ATTN_NORM, 0);
 			}
 		}
 	}
 
 	// Check to see if the lightning shield is engaged.
 	if (playerinfo->shield_timer > playerinfo->leveltime)
-		pi.G_PlayerSpellShieldAttack(playerinfo->self);
+		G_PlayerSpellShieldAttack(playerinfo->self);
 	else
-		pi.G_PlayerSpellStopShieldAttack(playerinfo->self);
+		G_PlayerSpellStopShieldAttack(playerinfo->self);
 }
 
 // This function should be called anytime the player's skin, armor, weapon, damaged parts, etc are changed.
@@ -584,7 +591,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Red effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 4;		// .4 seconds is normal fireball throw time.
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_SPELLHANDS,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -596,7 +603,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			// Green effect on the right throwing hand.
 			if (lifetime == 0)
 				lifetime = 6;		// .6 seconds is normal fireball throw time
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_SPELLHANDS,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG8,
 									   NULL,
@@ -607,7 +614,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 		case HANDFX_FIREWALL:
 			if (lifetime == 0)
 				lifetime = 11;		// 1.1 seconds is normal fireball throw time
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_FIREHANDS,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 									   NULL,
@@ -628,7 +635,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (powerlevel >= STAFF_LEVEL_MAX)
 				powerlevel = STAFF_LEVEL_MAX-1;
 
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_STAFF,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -642,7 +649,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 			if (lifetime == 0)
 				lifetime = 8;
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_SPELLHANDS,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG6|CEF_FLAG7,
 									   NULL,
@@ -652,7 +659,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_REDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_WEAPON_REDRAINGLOW,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -662,7 +669,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_POWERREDRAIN:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 								FX_WEAPON_REDRAINGLOW,
 								CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								NULL,
@@ -672,7 +679,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_PHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 								FX_FIREHANDS,
 								CEF_OWNERS_ORIGIN,
 								NULL,
@@ -682,7 +689,7 @@ PlayerSetHandFX(playerinfo_t *playerinfo, int handfx, int lifetime)
 
 		case HANDFX_POWERPHOENIX:
 			playerinfo->effects |= EF_TRAILS_ENABLED;		// Set up for hand trails
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 								FX_FIREHANDS,
 								CEF_OWNERS_ORIGIN,
 								NULL,

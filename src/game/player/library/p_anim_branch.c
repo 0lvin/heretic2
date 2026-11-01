@@ -40,7 +40,7 @@ qboolean CheckFall(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] -= FALL_MINHEIGHT;
 
-	checktrace = pi.G_Trace(playerinfo->self->s.origin, playerinfo->self->mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = gi.trace(playerinfo->self->s.origin, playerinfo->self->mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (checktrace.fraction >= 1)
 	{
@@ -62,7 +62,7 @@ qboolean CheckUncrouch(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->self->s.origin,v);
 	v[2]+=25.0 - playerinfo->self->maxs[2];//was 25
 
-	trace = pi.G_Trace(playerinfo->self->s.origin, playerinfo->self->mins, playerinfo->self->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
+	trace = gi.trace(playerinfo->self->s.origin, playerinfo->self->mins, playerinfo->self->maxs, v, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (trace.fraction < 1)
 		return false;
@@ -97,7 +97,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	checktrace = pi.G_Trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	checktrace = gi.trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (checktrace.fraction == 1)
@@ -107,7 +107,7 @@ qboolean CheckCreep(playerinfo_t *playerinfo, int dir)
 		endpos[2] += (playerinfo->self->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		checktrace = pi.G_Trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		checktrace = gi.trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (checktrace.fraction == 1 || (checktrace.startsolid || checktrace.allsolid))
 		{
@@ -168,9 +168,9 @@ int CheckSlopedStand (playerinfo_t *playerinfo)
 	lspotmin[2] += playerinfo->self->mins[2] * 2.0;
 	rspotmin[2] += playerinfo->self->mins[2] * 2.0;
 
-	leftfoot = pi.G_Trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
+	leftfoot = gi.trace(lspotmax, footmins, footmaxs, lspotmin, playerinfo->self, MASK_PLAYERSOLID);
 
-	rightfoot = pi.G_Trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
+	rightfoot = gi.trace(rspotmax, footmins, footmaxs, rspotmin, playerinfo->self, MASK_PLAYERSOLID);
 
 	if ((rightfoot.fraction == 1.0) && !rightfoot.startsolid && !rightfoot.allsolid)
 	{
@@ -591,7 +591,7 @@ int BranchLwrStanding(playerinfo_t *playerinfo)
 		}
 		else if ( (playerinfo->teamchain) && (PlayerActionCheckRopeGrab(playerinfo,0)) ) //Climb a rope?
 		{
-			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 			return ASEQ_CLIMB_ON;
 		}
 		else if (playerinfo->upperidle && PlayerActionCheckJumpGrab(playerinfo, 0))
@@ -930,7 +930,7 @@ int BranchLwrWalking(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1091,7 +1091,7 @@ int BranchLwrRunning(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//On the rope
 			return ASEQ_CLIMB_ON;
@@ -1229,7 +1229,7 @@ int BranchLwrRunningStrafe(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//On a rope
 			return ASEQ_CLIMB_ON;
@@ -1267,7 +1267,7 @@ int BranchLwrStrafe(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1377,7 +1377,7 @@ int BranchLwrShortstep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			return ASEQ_CLIMB_ON;
 		}
@@ -1682,9 +1682,9 @@ int BranchLwrSurfaceSwim(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	if ((client->pers.weaponready != WEAPON_READY_HANDS) &&
-		((Weapon = pi.FindItem("fball")) != NULL))
+		((Weapon = FindItem("fball")) != NULL))
 	{
-		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
+		Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
@@ -1781,9 +1781,9 @@ int BranchLwrUnderwaterSwim(playerinfo_t *playerinfo)
 	assert(playerinfo);
 
 	if ((client->pers.weaponready != WEAPON_READY_HANDS) &&
-		((Weapon = pi.FindItem("fball")) != NULL))
+		((Weapon = FindItem("fball")) != NULL))
 	{
-		pi.Weapon_EquipSpell(playerinfo->self, Weapon);
+		Weapon_EquipSpell(playerinfo->self, Weapon);
 	}
 
 	if (playerinfo->seqcmd[ACMDL_ACTION])
@@ -1862,7 +1862,7 @@ int BranchLwrHanging(playerinfo_t *playerinfo)
 
 int BranchLwrClimbing(playerinfo_t *playerinfo)
 {
-	return(pi.G_BranchLwrClimbing(playerinfo));
+	return(G_BranchLwrClimbing(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -1883,7 +1883,7 @@ int BranchUprReadyHands(playerinfo_t *playerinfo)
 
 		// Check Offensive mana.
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_FLYINGFIST ||
-			pi.Weapon_CurrentShotsLeft(playerinfo))
+			Weapon_CurrentShotsLeft(playerinfo))
 		{
 			// Fireballs have free mana, but if powered up, use the alternate animation sequence.
 			if (playerinfo->powerup_timer > playerinfo->leveltime)
@@ -1972,7 +1972,7 @@ int BranchUprReadyHellStaff(playerinfo_t *playerinfo)
 	if (playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->self->flags & FL_CHICKEN) && pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+	if (playerinfo->seqcmd[ACMDU_ATTACK]  && !(playerinfo->self->flags & FL_CHICKEN) && Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -2003,11 +2003,11 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 	if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return ASEQ_NONE;
 
-	pi.Weapon_CurrentShotsLeft(playerinfo);
+	Weapon_CurrentShotsLeft(playerinfo);
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK]  &&
 		!(playerinfo->self->flags & FL_CHICKEN) &&
-		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+		Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{
 		playerinfo->idletime=playerinfo->leveltime;
 
@@ -2033,10 +2033,10 @@ int BranchUprReadyBow(playerinfo_t *playerinfo)
 
 int BranchCheckAmmo(playerinfo_t *playerinfo)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
+	if (Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return ASEQ_NONE;
 
-	pi.G_WeapNext(playerinfo->self);
+	Cmd_WeapPrev_f(playerinfo->self);
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 	{
 		PlayerAnimSetUpperSeq(playerinfo, ASEQ_WRRBOW_END);
@@ -2057,10 +2057,10 @@ int BranchCheckAmmo(playerinfo_t *playerinfo)
 
 int BranchCheckHellAmmo(playerinfo_t *playerinfo)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
+	if (Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return ASEQ_NONE;
 
-	pi.G_WeapNext(playerinfo->self);
+	Cmd_WeapPrev_f(playerinfo->self);
 	PlayerAnimSetUpperSeq(playerinfo, ASEQ_WHELL_END);
 	return(ASEQ_WHELL_END);
 }
@@ -2112,10 +2112,10 @@ int BranchUprReady(playerinfo_t *playerinfo)
 // if we are out of offensive mana, then switch us to the next weapon
 int BranchCheckMana(playerinfo_t *playerinfo)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
+	if (Weapon_CurrentShotsLeft(playerinfo))		// The client prediction shouldn't test the weapon.
 		return(BranchUprReady(playerinfo));
 
-	pi.G_WeapNext(playerinfo->self);
+	Cmd_WeapPrev_f(playerinfo->self);
 
 	return ASEQ_NONE;
 }

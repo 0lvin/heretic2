@@ -600,8 +600,6 @@ InitGame(void)
 
 	G_InitResourceManagers();
 
-	P_Load();
-
 	G_ClearPersistantEffects();
 
 	InitItems();

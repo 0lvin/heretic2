@@ -657,7 +657,6 @@ enum moveplus_e
 #define DEFAULT_PLAYER_LIB "player.so"
 
 void P_Freelib(void);
-void P_Load(void);
 
 #define	CONTENTS_EMPTY			0x00000000	// nothing
 // Only do the trace against the world, not entities within it. Not stored in the .bsp and passed
@@ -2287,74 +2286,6 @@ extern qboolean G_EntIsAButton(edict_t *ent);
 void Updatefmnodeinfo(edict_t *ent);
 void Setfmnodeinfo(edict_t *ent);
 
-typedef struct
-{
-	void (*dprintf)(const char *fmt, ...);
-	gitem_t *(*FindItem)(const char *pickup_name);
-	void (*Weapon_EquipSpell)(struct edict_s *ent, const gitem_t *Weapon);
-	void (*Weapon_Ready)(gclient_t *client, const gitem_t *Weapon);
-	int (*Weapon_CurrentShotsLeft)(playerinfo_t *playerinfo);
-	int (*Defence_CurrentShotsLeft)(playerinfo_t *playerinfo, int intent);
-	// ********************************************************************************************
-	// Inputs only.
-	// ********************************************************************************************
-
-	// Server (game) function callbacks (approximating functionality of client-side function callbacks).
-	void (*G_L_Sound)(edict_t *entity,int sound_num);
-	void (*G_Sound)(const edict_t *entity,int channel,int sound_num,float volume,float attenuation,float timeofs);
-	trace_t (*G_Trace)(const vec3_t start, const vec3_t mins, const vec3_t maxs,
-			const vec3_t end, const edict_t *passent, int contentmask);
-	void (*G_CreateEffect)(edict_t *state, int type, int flags, vec3_t origin, char *format,...);
-	void (*G_RemoveEffects)(edict_t *state, int type);
-
-	// Server (game) function callbacks that have no client side equivalent.
-	int (*G_SoundIndex)(const char *name);
-	void (*G_UseTargets)(edict_t *ent,edict_t *activator);
-	entity_state_t *(*G_GetEntityStatePtr)(edict_t *entity);
-	int (*G_BranchLwrClimbing)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionCheckRopeGrab)(playerinfo_t *playerinfo, float stomp_org);
-	void (*G_PlayerClimbingMoveFunc)(playerinfo_t *playerinfo, float height, float var2, float var3);
-	qboolean (*G_PlayerActionCheckPuzzleGrab)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionTakePuzzle)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionUsePuzzle)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionCheckPushPull_Ent)(edict_t *ent);
-	void (*G_PlayerActionMoveItem)(playerinfo_t *playerinfo,float distance);
-	qboolean (*G_PlayerActionCheckPushButton)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionPushButton)(playerinfo_t *playerinfo);
-	qboolean (*G_PlayerActionCheckPushLever)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionPushLever)(playerinfo_t *playerinfo);
-	qboolean (*G_HandleTeleport)(edict_t *self);
-	void (*G_PlayerActionShrineEffect)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionChickenBite)(edict_t *self);
-	void (*G_PlayerFallingDamage)(playerinfo_t *playerinfo, float delta);
-	void (*G_PlayerSpellShieldAttack)(edict_t *self);
-	void (*G_PlayerSpellStopShieldAttack)(edict_t *self);
-	void (*G_PlayerVaultKick)(playerinfo_t *playerinfo);
-	void (*G_PlayerActionCheckRopeMove)(playerinfo_t *playerinfo);
-	void (*G_cprintf)(edict_t *ent, int printlevel, short stringid);
-	void (*G_WeapNext)(edict_t *ent);
-	void (*G_UseItem)(edict_t *ent);
-
-	// Common client & server (game) function callbacks.
-	int (*PointContents)(const vec3_t point);
-	void (*SetJointAngles)(edict_t *self);
-	void (*ResetJointAngles)(edict_t *self);
-	void (*PlayerActionSwordAttack)(edict_t *self, int value);
-	void (*PlayerActionSpellFireball)(edict_t *self);
-	void (*PlayerActionSpellBlast)(edict_t *self);
-	void (*PlayerActionSpellArray)(edict_t *self, int value);
-	void (*PlayerActionSpellSphereCreate)(edict_t *self, float value);
-	void (*PlayerActionSpellFirewall)(edict_t *self);
-	void (*PlayerActionSpellBigBall)(edict_t *self);
-	void (*PlayerActionRedRainBowAttack)(edict_t *self);
-	void (*PlayerActionPhoenixBowAttack)(edict_t *self);
-	void (*PlayerActionHellstaffAttack)(edict_t *self);
-	void (*PlayerActionSpellDefensive)(edict_t *self);
-	qboolean (*G_EntIsAButton)(edict_t *ent);
-} player_import_t;
-
-extern player_import_t pi;
-
 /* client data that stays across deathmatch respawns */
 typedef struct
 {
@@ -3337,8 +3268,6 @@ void reinstate_non_cinematic_entites(edict_t *owner);
 
 void ProcessScripts(void);
 void ShutdownScripts(qboolean Complete);
-
-extern player_import_t playerImport;	// interface to player library.
 
 #define AI_EATING				0x00002000
 #define AI_FLEE					0x00008000

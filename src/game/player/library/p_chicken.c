@@ -35,9 +35,9 @@ void ChickenStepSound(playerinfo_t *playerinfo, float value)
 	{
 		name = (irand(0,1)) ? "monsters/tbeast/step1.wav" : "monsters/tbeast/step2.wav";
 
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex(name),
+							gi.soundindex(name),
 							1.0,
 							ATTN_NORM,
 							0);
@@ -60,7 +60,7 @@ void ChickenAssert(playerinfo_t *playerinfo)
 
 void PlayerChickenBite(playerinfo_t *playerinfo)
 {
-	pi.G_PlayerActionChickenBite(playerinfo->self);
+	G_PlayerActionChickenBite(playerinfo->self);
 }
 
 // ***********************************************************************************************
@@ -70,9 +70,9 @@ void PlayerChickenBite(playerinfo_t *playerinfo)
 
 void PlayerChickenSqueal(playerinfo_t *playerinfo)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex(""),
+						gi.soundindex(""),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -97,7 +97,7 @@ void PlayerChickenCluck(playerinfo_t *playerinfo, float force)
 	else
 		soundname = (irand(0,1)) ? "monsters/chicken/cluck1.wav" : "monsters/chicken/cluck2.wav";
 
-	pi.G_Sound(playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
+	gi.sound(playerinfo->self, CHAN_WEAPON, gi.soundindex(soundname), 1.0, ATTN_NORM, 0);
 }
 
 // ***********************************************************************************************
@@ -115,7 +115,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] += (playerinfo->self->mins[2] - 2.0);
 
-	trace = pi.G_Trace(playerinfo->self->s.origin,
+	trace = gi.trace(playerinfo->self->s.origin,
 							  playerinfo->self->mins,
 							  playerinfo->self->maxs,
 							  endpos,
@@ -172,7 +172,7 @@ int PlayerChickenJump(playerinfo_t *playerinfo)
 		}
 	}
 
-	pi.G_Sound(playerinfo->self, CHAN_WEAPON, pi.G_SoundIndex(soundname), 1.0, ATTN_NORM, 0);
+	gi.sound(playerinfo->self, CHAN_WEAPON, gi.soundindex(soundname), 1.0, ATTN_NORM, 0);
 
 	return ASEQ_FALL;
 }
@@ -195,7 +195,7 @@ void PlayerChickenCheckFlap (playerinfo_t *playerinfo)
 
 		self->velocity[2] += CHICKEN_GLIDE;
 
-		pi.G_CreateEffect(self,
+		gi.CreateEffect(self,
 								   FX_CHICKEN_EXPLODE,
 								   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 								   NULL,
@@ -221,7 +221,7 @@ PlayerChickenFlap(playerinfo_t *playerinfo)
 
 	self->velocity[2] += CHICKEN_GLIDE;
 
-	pi.G_CreateEffect(self, // jmarshall: believe this is right.
+	gi.CreateEffect(self, // jmarshall: believe this is right.
 							   FX_CHICKEN_EXPLODE,
 							   CEF_OWNERS_ORIGIN | CEF_FLAG6,
 							   NULL,

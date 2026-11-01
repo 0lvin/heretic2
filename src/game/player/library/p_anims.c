@@ -119,7 +119,7 @@ void PlayerBasicAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. reset torso twisting.
 	if (!(playerinfo->self->flags&FL_CHICKEN))
-		pi.ResetJointAngles(playerinfo->self);
+		G_ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX*sizeof(int));
 }
@@ -153,7 +153,7 @@ void PlayerAnimReset(playerinfo_t *playerinfo)
 
 	// Straighten out joints, i.e. no torso aiming.
 	if (!(playerinfo->self->flags & FL_CHICKEN))
-		pi.ResetJointAngles(playerinfo->self);
+		G_ResetJointAngles(playerinfo->self);
 
 	memset(playerinfo->seqcmd,0,ACMD_MAX * sizeof(int));
 }
@@ -484,26 +484,26 @@ PlayerPlayPain(playerinfo_t *playerinfo, int type)
 			// Normal.
 			case 0:
 				if (chance < 50)
-					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain1.wav"), 1.0, ATTN_NORM, 0);
+					gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*pain1.wav"), 1.0, ATTN_NORM, 0);
 				else
-					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*pain2.wav"), 1.0, ATTN_NORM, 0);
+					gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*pain2.wav"), 1.0, ATTN_NORM, 0);
 
 				break;
 
 			// Gas.
 			case 1:
 				if (chance < 33)
-					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough1.wav"), 1.0, ATTN_NORM, 0);
+					gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*cough1.wav"), 1.0, ATTN_NORM, 0);
 				else if (chance < 66)
-					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough2.wav"), 1.0, ATTN_NORM, 0);
+					gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*cough2.wav"), 1.0, ATTN_NORM, 0);
 				else
-					pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*cough3.wav"), 1.0, ATTN_NORM, 0);
+					gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*cough3.wav"), 1.0, ATTN_NORM, 0);
 
 				break;
 
 			// Small.
 			case 2:
-				pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*ow.wav"), 1.0, ATTN_NORM, 0);
+				gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("*ow.wav"), 1.0, ATTN_NORM, 0);
 				break;
 		}
 	}

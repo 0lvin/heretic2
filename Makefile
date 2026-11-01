@@ -1392,7 +1392,6 @@ GAME_OBJS_ = \
 	src/game/player/funcs.o \
 	src/game/player/hud.o \
 	src/game/player/trail.o \
-	src/game/player/library.o \
 	src/game/player/item.o \
 	src/game/player/view.o \
 	src/game/player/weapon.o \
@@ -1404,7 +1403,6 @@ GAME_OBJS_ = \
 	src/game/player/library/p_chicken_anim.o \
 	src/game/player/library/p_chicken.o \
 	src/game/player/library/p_ctrl.o \
-	src/game/player/library/player_main.o \
 	src/game/player/library/p_main.o \
 	src/game/savegame/savegame.o \
 	src/game/spell/blast.o \

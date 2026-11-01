@@ -639,7 +639,6 @@ set(Game-Source
 	${GAME_SRC_DIR}/player/funcs.c
 	${GAME_SRC_DIR}/player/hud.c
 	${GAME_SRC_DIR}/player/trail.c
-	${GAME_SRC_DIR}/player/library.c
 	${GAME_SRC_DIR}/player/item.c
 	${GAME_SRC_DIR}/player/view.c
 	${GAME_SRC_DIR}/player/weapon.c
@@ -669,7 +668,6 @@ set(Game-Source
 	${PLAYER_SRC_DIR}/p_chicken_anim.c
 	${PLAYER_SRC_DIR}/p_chicken.c
 	${PLAYER_SRC_DIR}/p_ctrl.c
-	${PLAYER_SRC_DIR}/player_main.c
 	${PLAYER_SRC_DIR}/p_main.c
 	)
 

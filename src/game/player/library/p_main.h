@@ -48,6 +48,7 @@
 #define PLAYER_FLAG_RELEASEROPE			0x10000000
 
 int ClientServerRand(playerinfo_t *playerinfo,int mn, int mx);
+void G_set_looping_sound(edict_t *self, int sound_num);
 void PlayerInit(playerinfo_t *playerinfo, int complete_reset);
 void PlayerUpdate(playerinfo_t *playerinfo);
 void PlayerUpdateCmdFlags(gclient_t *client);

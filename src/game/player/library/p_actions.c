@@ -213,7 +213,7 @@ void PlayerActionCheckStrafe (playerinfo_t *playerinfo)
 
 void PlayerActionCheckVaultKick (playerinfo_t *playerinfo)
 {
-	pi.G_PlayerVaultKick(playerinfo);
+	G_PlayerVaultKick(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -240,7 +240,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	trace = pi.G_Trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	trace = gi.trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -250,7 +250,7 @@ qboolean PlayerActionCheckCreepMoveForward(playerinfo_t *playerinfo)
 		endpos[2] += (playerinfo->self->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		trace = pi.G_Trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = gi.trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -289,7 +289,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 	mins[2] += CREEP_MAXFALL;
 
 	//Trace forward to see if the path is clear
-	trace = pi.G_Trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
+	trace = gi.trace(playerinfo->self->s.origin, mins, playerinfo->self->maxs, startpos, playerinfo->self, MASK_PLAYERSOLID);
 
 	//If it is...
 	if (trace.fraction == 1)
@@ -299,7 +299,7 @@ qboolean PlayerActionCheckCreepMoveBack(playerinfo_t *playerinfo)
 		endpos[2] += (playerinfo->self->mins[2] - CREEP_MAXFALL);
 
 		//Trace down
-		trace = pi.G_Trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
+		trace = gi.trace(startpos, mins, playerinfo->self->maxs, endpos, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (trace.fraction == 1 || (trace.startsolid || trace.allsolid))
 		{
@@ -431,7 +431,7 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
 		!(playerinfo->self->flags & FL_CHICKEN) &&
-		pi.Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
+		Weapon_CurrentShotsLeft(playerinfo))	// Not a chicken
 	{	// Shooting is the other!
 		if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW)
 		{
@@ -443,8 +443,8 @@ void PlayerActionCheckBowRefire(playerinfo_t *playerinfo)
 		}
 	}
 	else
-	if (!(pi.Weapon_CurrentShotsLeft(playerinfo)))
-		pi.G_WeapNext(playerinfo->self);
+	if (!(Weapon_CurrentShotsLeft(playerinfo)))
+		Cmd_WeapPrev_f(playerinfo->self);
 
 }
 
@@ -493,7 +493,7 @@ void PlayerActionSphereTrailEnd(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordAttack(playerinfo_t *playerinfo, float value)
 {
-	pi.PlayerActionSwordAttack(playerinfo->self, (int)value);
+	G_PlayerActionSwordAttack(playerinfo->self, (int)value);
 }
 
 /*-----------------------------------------------
@@ -502,7 +502,7 @@ void PlayerActionSwordAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellFireball(playerinfo_t *playerinfo, float value)
 {
-	pi.PlayerActionSpellFireball(playerinfo->self);
+	WeaponThink_FlyingFist(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -511,7 +511,7 @@ void PlayerActionSpellFireball(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellBlast(playerinfo_t *playerinfo, float value)
 {
-	pi.PlayerActionSpellBlast(playerinfo->self);
+	WeaponThink_Blast(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -522,7 +522,7 @@ void PlayerActionSpellArray(playerinfo_t *playerinfo, float value)
 {
 	int shotsleft;
 
-	shotsleft=pi.Weapon_CurrentShotsLeft(playerinfo);
+	shotsleft=Weapon_CurrentShotsLeft(playerinfo);
 
 	if (shotsleft <= 0)
 		return;		// Outta ammo
@@ -531,7 +531,7 @@ void PlayerActionSpellArray(playerinfo_t *playerinfo, float value)
 	else if (value==1.0 && shotsleft <= 1)
 		return;		// Only one shot, use the center projectile slot.
 
-	pi.PlayerActionSpellArray(playerinfo->self, (int)value);
+	G_PlayerActionSpellArray(playerinfo->self, (int)value);
 }
 
 /*-----------------------------------------------
@@ -544,7 +544,7 @@ void PlayerActionSpellSphereCreate(playerinfo_t *playerinfo, float value)
 
 	playerinfo->chargingspell=true;
 	playerinfo->weaponcharge = 1;
-	pi.PlayerActionSpellSphereCreate(playerinfo->self, 1.0);
+	G_PlayerActionSpellSphereCreate(playerinfo->self, 1.0);
 }
 
 /*-----------------------------------------------
@@ -560,7 +560,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 
 	if (playerinfo->seqcmd[ACMDU_ATTACK] &&
 			(playerinfo->weaponcharge < SPHERE_MAX_MANA_CHARGE) &&
-			((pi.Weapon_CurrentShotsLeft(playerinfo)) ||
+			((Weapon_CurrentShotsLeft(playerinfo)) ||
 					(client->pers.inventory[playerinfo->weap_ammo_index] >= SPHERE_MANA_PER_CHARGE)))
 	{
 		if (!(playerinfo->dmflags & DF_INFINITE_MANA))
@@ -572,7 +572,7 @@ void PlayerActionSpellSphereCharge(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	if ((!pi.Weapon_CurrentShotsLeft(playerinfo) && value != 4.0) || !(playerinfo->seqcmd[ACMDU_ATTACK]))
+	if ((!Weapon_CurrentShotsLeft(playerinfo) && value != 4.0) || !(playerinfo->seqcmd[ACMDU_ATTACK]))
 	{	// If we are out of ammo, or if we have let go of the button, then fire.
 		switch ((int)value)
 		{
@@ -619,7 +619,7 @@ void PlayerActionSpellSphereRelease(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellBigBall(playerinfo_t *playerinfo, float value)
 {
-	pi.PlayerActionSpellBigBall(playerinfo->self);
+	WeaponThink_Maceballs(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -628,7 +628,7 @@ void PlayerActionSpellBigBall(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSpellFirewall(playerinfo_t *playerinfo, float value)
 {
-	pi.PlayerActionSpellFirewall(playerinfo->self);
+	WeaponThink_Firewall(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -637,10 +637,10 @@ void PlayerActionSpellFirewall(playerinfo_t *playerinfo, float value)
 
 void PlayerActionRedRainBowAttack(playerinfo_t *playerinfo, float value)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
+	if (Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
-	pi.PlayerActionRedRainBowAttack(playerinfo->self);
+	WeaponThink_RedRainBow(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -649,10 +649,10 @@ void PlayerActionRedRainBowAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo, float value)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
+	if (Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
 
-	pi.PlayerActionPhoenixBowAttack(playerinfo->self);
+	WeaponThink_PhoenixBow(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -661,9 +661,9 @@ void PlayerActionPhoenixBowAttack(playerinfo_t *playerinfo, float value)
 
 void PlayerActionHellstaffAttack(playerinfo_t *playerinfo, float value)
 {
-	if (pi.Weapon_CurrentShotsLeft(playerinfo) <= 0)
+	if (Weapon_CurrentShotsLeft(playerinfo) <= 0)
 		return;		// Outta ammo
-	pi.PlayerActionHellstaffAttack(playerinfo->self);
+	WeaponThink_HellStaff(playerinfo->self);
 }
 
 /*-----------------------------------------------
@@ -693,7 +693,7 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 
 	assert(playerinfo->self->client->newweapon);
 
-	pi.Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
+	Weapon_Ready(playerinfo->self->client, playerinfo->self->client->newweapon);
 	playerinfo->self->client->newweapon = NULL;
 
 	// Do some fancy effect.
@@ -730,14 +730,14 @@ void PlayerActionSpellChange(playerinfo_t *playerinfo, float value)
 			break;
 	}
 
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex("Weapons/SpellChange.wav"),
+						gi.soundindex("Weapons/SpellChange.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
 
-	pi.G_CreateEffect(NULL, FX_SPELL_CHANGE, 0, spawnpoint, "db", right, color);
+	gi.CreateEffect(NULL, FX_SPELL_CHANGE, 0, spawnpoint, "db", right, color);
 }
 
 /*-----------------------------------------------
@@ -765,7 +765,7 @@ PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 
 	assert(client->newweapon);
 
-	pi.Weapon_Ready(client, client->newweapon);
+	Weapon_Ready(client, client->newweapon);
 	client->newweapon = NULL;
 
 	// Do some fancy effect.
@@ -797,14 +797,14 @@ PlayerActionArrowChange(playerinfo_t *playerinfo, float value)
 		PlayerUpdateModelAttributes(playerinfo->self);
 	}
 
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex("Weapons/SpellChange.wav"),
+						gi.soundindex("Weapons/SpellChange.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
 
-	pi.G_CreateEffect(NULL, FX_SPELL_CHANGE, 0, spawnpoint, "db", right, color);
+	gi.CreateEffect(NULL, FX_SPELL_CHANGE, 0, spawnpoint, "db", right, color);
 }
 
 /*-----------------------------------------------
@@ -844,7 +844,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 	else
 	{
 		assert(client->newweapon);
-		pi.Weapon_Ready(client, client->newweapon);
+		Weapon_Ready(client, client->newweapon);
 		client->pers.weaponready = playerinfo->switchtoweapon;
 		PlayerUpdateModelAttributes(playerinfo->self);
 		client->newweapon = NULL;
@@ -858,7 +858,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 		{
 		case WEAPON_READY_SWORDSTAFF:
 
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_STAFF_CREATEPOOF,
 									   CEF_OWNERS_ORIGIN,
 									   NULL,
@@ -867,7 +867,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 
 		case WEAPON_READY_HELLSTAFF:
 
-			pi.G_CreateEffect(playerinfo->self,
+			gi.CreateEffect(playerinfo->self,
 									   FX_STAFF_CREATEPOOF,
 									   CEF_OWNERS_ORIGIN|CEF_FLAG6,
 									   NULL,
@@ -896,9 +896,9 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						client->pers.bowtype = BOW_TYPE_REDRAIN;
 						PlayerUpdateModelAttributes(playerinfo->self);
 
-						pi.G_Sound(playerinfo->self,
+						gi.sound(playerinfo->self,
 											CHAN_WEAPON,
-											pi.G_SoundIndex("Weapons/SpellChange.wav"),
+											gi.soundindex("Weapons/SpellChange.wav"),
 											1.0,
 											ATTN_NORM,
 											0);
@@ -910,7 +910,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						pi.G_CreateEffect(NULL,
+						gi.CreateEffect(NULL,
 												   FX_SPELL_CHANGE,
 												   0,
 												   spawnpoint,
@@ -930,9 +930,9 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						client->pers.bowtype = BOW_TYPE_PHOENIX;
 						PlayerUpdateModelAttributes(playerinfo->self);
 
-						pi.G_Sound(playerinfo->self,
+						gi.sound(playerinfo->self,
 											CHAN_WEAPON,
-											pi.G_SoundIndex("Weapons/SpellChange.wav"),
+											gi.soundindex("Weapons/SpellChange.wav"),
 											1.0,
 											ATTN_NORM,
 											0);
@@ -944,7 +944,7 @@ void PlayerActionWeaponChange(playerinfo_t *playerinfo, float value)
 						VectorMA(spawnpoint, -7, right, spawnpoint);
 						spawnpoint[2] += playerinfo->viewheight - 16.0;
 
-						pi.G_CreateEffect(NULL,
+						gi.CreateEffect(NULL,
 												   FX_SPELL_CHANGE,
 												   0,
 												   spawnpoint,
@@ -981,9 +981,9 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	if (client->pers.stafflevel == STAFF_LEVEL_BASIC ||
 		value == WEAPON_READY_HELLSTAFF)
 	{
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff Ready.wav"),
+							gi.soundindex("weapons/Staff Ready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
@@ -992,9 +992,9 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG7;
 
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff2Ready.wav"),
+							gi.soundindex("weapons/Staff2Ready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
@@ -1003,22 +1003,22 @@ void PlayerActionStartStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG8;
 
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff3Ready.wav"),
+							gi.soundindex("weapons/Staff3Ready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
 	}
 	else
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff Ready.wav"),
+							gi.soundindex("weapons/Staff Ready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
 
-	pi.G_CreateEffect(playerinfo->self, // jmarshall: I think this is right.
+	gi.CreateEffect(playerinfo->self, // jmarshall: I think this is right.
 							   FX_STAFF_CREATE,
 							   flags,
 							   NULL,
@@ -1041,9 +1041,9 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 
 	if (client->pers.stafflevel == STAFF_LEVEL_BASIC || value == WEAPON_READY_HELLSTAFF)
 	{
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff Unready.wav"),
+							gi.soundindex("weapons/Staff Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
@@ -1052,9 +1052,9 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG7;
 
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff2Unready.wav"),
+							gi.soundindex("weapons/Staff2Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
@@ -1063,24 +1063,24 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 	{
 		flags |= CEF_FLAG8;
 
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff3Unready.wav"),
+							gi.soundindex("weapons/Staff3Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
 	}
 	else
 	{
-		pi.G_Sound(playerinfo->self,
+		gi.sound(playerinfo->self,
 							CHAN_WEAPON,
-							pi.G_SoundIndex("weapons/Staff Unready.wav"),
+							gi.soundindex("weapons/Staff Unready.wav"),
 							1.0,
 							ATTN_NORM,
 							0);
 	}
 
-	pi.G_CreateEffect(playerinfo->self,
+	gi.CreateEffect(playerinfo->self,
 							   FX_STAFF_REMOVE,
 							   flags,
 							   NULL,
@@ -1093,9 +1093,9 @@ void PlayerActionEndStaffGlow(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwordTrailSound(playerinfo_t *playerinfo, char *name)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex(name),
+						gi.soundindex(name),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -1171,7 +1171,7 @@ void PlayerActionRedRainBowTrailStart(playerinfo_t *playerinfo, float value)
 		PlayerSetHandFX(playerinfo, HANDFX_REDRAIN, -1);
 	}
 
-	pi.G_L_Sound(playerinfo->self,pi.G_SoundIndex("weapons/bowReady.wav"));
+	G_set_looping_sound(playerinfo->self,gi.soundindex("weapons/bowReady.wav"));
 }
 
 /*-----------------------------------------------
@@ -1191,7 +1191,7 @@ void PlayerActionPhoenixBowTrailStart(playerinfo_t *playerinfo, float value)
 		PlayerSetHandFX(playerinfo, HANDFX_PHOENIX, -1);
 	}
 
-	pi.G_L_Sound(playerinfo->self, pi.G_SoundIndex("weapons/PhoenixReady.wav"));
+	G_set_looping_sound(playerinfo->self, gi.soundindex("weapons/PhoenixReady.wav"));
 }
 
 /*-----------------------------------------------
@@ -1311,9 +1311,9 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 		}
 	}
 
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						channel,
-						pi.G_SoundIndex(WalkSound),
+						gi.soundindex(WalkSound),
 						0.75,
 						ATTN_NORM,
 						0);
@@ -1325,9 +1325,9 @@ void PlayerActionFootstep(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimIdleSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_VOICE,
-						pi.G_SoundIndex("player/swim idle.wav"),
+						gi.soundindex("player/swim idle.wav"),
 						0.4,
 						ATTN_NORM,
 						0);
@@ -1365,9 +1365,9 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 		break;
 	}
 
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_AUTO,
-						pi.G_SoundIndex(name),
+						gi.soundindex(name),
 						0.6,
 						ATTN_NORM,
 						0);
@@ -1379,9 +1379,9 @@ void PlayerActionSwimSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_VOICE,
-						pi.G_SoundIndex("swim backward.wav"),
+						gi.soundindex("swim backward.wav"),
 						0.6,
 						ATTN_NORM,
 						0);
@@ -1393,9 +1393,9 @@ void PlayerActionSwimBackSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_VOICE,
-						pi.G_SoundIndex("player/pullup 1.wav"),
+						gi.soundindex("player/pullup 1.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -1407,9 +1407,9 @@ void PlayerActionClimbWallSound(playerinfo_t *playerinfo, float value)
 
 void PlayerActionClimbFinishSound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_VOICE,
-						pi.G_SoundIndex("player/pullup 2.wav"),
+						gi.soundindex("player/pullup 2.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -1436,7 +1436,7 @@ void PlayerActionSwim(playerinfo_t *playerinfo, float value)
 		Dir[2]=1.0;
 
 		//
-		pi.G_CreateEffect(NULL,
+		gi.CreateEffect(NULL,
 								   FX_WATER_ENTRYSPLASH,
 								   0,
 								   Origin,
@@ -1509,7 +1509,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	righthand[2] += v_adjust;
 	VectorMA(righthand, GRAB_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1530,7 +1530,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	lefthand[2] += v_adjust;
 	VectorMA(lefthand, GRAB_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1571,7 +1571,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= vertlength;
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 
@@ -1595,7 +1595,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= vertlength;
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -1627,7 +1627,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	playermax[2] = GRAB_HAND_HEIGHT;
 	VectorMA(playerinfo->self->s.origin, GRAB_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(playerinfo->self->s.origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(playerinfo->self->s.origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1)
 		return 0;
@@ -1647,7 +1647,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 
 	if (grabtrace.ent)
 	{
-		if (pi.G_EntIsAButton(grabtrace.ent))
+		if (G_EntIsAButton(grabtrace.ent))
 		{
 			return 0;
 		}
@@ -1680,7 +1680,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 	//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-	lasttrace = pi.G_Trace(lastcheck_start, playerinfo->self->mins, playerinfo->self->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+	lasttrace = gi.trace(lastcheck_start, playerinfo->self->mins, playerinfo->self->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 	if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		return (false);
@@ -1694,7 +1694,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	AngleVectors(playerinfo->self->s.angles, forward, NULL, NULL);
 	VectorMA(playerinfo->self->s.origin, 32, forward, endpoint);
 
-	swingtrace = pi.G_Trace(playerinfo->self->s.origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	swingtrace = gi.trace(playerinfo->self->s.origin,mins,maxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	//Did we hit a wall underneath?
 	if (swingtrace.fraction == 1.0f && (!swingtrace.startsolid || !swingtrace.allsolid))
@@ -1710,7 +1710,7 @@ int PlayerActionCheckGrab_(playerinfo_t *playerinfo, float v_adjust)
 	endpoint[1] = grabtrace.endpos[1];
 	endpoint[2] = playerinfo->grabloc[2] - v_adjust;
 
-	grabtrace = pi.G_Trace(playerinfo->self->s.origin,
+	grabtrace = gi.trace(playerinfo->self->s.origin,
 								  NULL,
 								  NULL,
 								  endpoint,
@@ -1823,9 +1823,9 @@ void PlayerActionCheckFallingGrab(playerinfo_t *playerinfo, float value)
 
 void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex("weapons/bowdraw2.Wav"),
+						gi.soundindex("weapons/bowdraw2.Wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -1837,7 +1837,7 @@ void PlayerActionBowReadySound(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 {
-	return(pi.G_PlayerActionUsePuzzle(playerinfo));
+	return(G_PlayerActionUsePuzzle(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -1846,7 +1846,7 @@ qboolean PlayerActionUsePuzzle(playerinfo_t *playerinfo)
 
 qboolean PlayerActionCheckPuzzleGrab(playerinfo_t *playerinfo)
 {
-	return(pi.G_PlayerActionCheckPuzzleGrab(playerinfo));
+	return(G_PlayerActionCheckPuzzleGrab(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -1893,7 +1893,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	playermax[2] = GRAB_HAND_HEIGHT;
 
-	grabtrace = pi.G_Trace(playerinfo->self->s.origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(playerinfo->self->s.origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.startsolid || grabtrace.allsolid)
 	{	// There's no room to jump.
@@ -1915,7 +1915,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	righthand[2] = handheight;
 	VectorMA(righthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0)
@@ -1927,7 +1927,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	lefthand[2] = handheight;
 	VectorMA(lefthand, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0)
@@ -1941,7 +1941,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] = playerinfo->self->s.origin[2] + GRAB_HAND_HEIGHT;
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -1957,7 +1957,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] = playerinfo->self->s.origin[2] + GRAB_HAND_HEIGHT;
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .5)
@@ -1981,7 +1981,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 	VectorMA(playerinfo->self->s.origin, GRAB_JUMP_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(playerinfo->self->s.origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(playerinfo->self->s.origin,NULL,NULL,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	// Now, if the player is grabbing an overhang, this will not hit anything.
 
@@ -1997,7 +1997,7 @@ qboolean PlayerActionCheckJumpGrab(playerinfo_t *playerinfo, float value)
 
 		playermax[2] = (lefthand[2]+righthand[2])*0.5 - playerinfo->self->s.origin[2];
 
-		grabtrace = pi.G_Trace(playerinfo->self->s.origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+		grabtrace = gi.trace(playerinfo->self->s.origin,playermin,playermax,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 		if (grabtrace.fraction >= 1.0)
 		{
@@ -2067,12 +2067,12 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 	righthand[2] += PUSH_HAND_HEIGHT;
 	VectorMA(righthand, PUSH_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	if ((grabtrace.fraction == 1) || (!grabtrace.ent))
 		return false;
 
-	if (!(pi.G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
+	if (!(G_PlayerActionCheckPushPull_Ent((edict_t*)grabtrace.ent)))
 		return false;
 
 	holdent = (void *)grabtrace.ent;
@@ -2081,7 +2081,7 @@ qboolean PlayerActionCheckPushPull(playerinfo_t *playerinfo)
 	lefthand[2] += PUSH_HAND_HEIGHT;
 	VectorMA(lefthand, PUSH_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 
@@ -2147,7 +2147,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 //	start[2] += VAULT_HEIGHT_CHECK;//waist - 16
 	VectorMA(start, VAULT_HAND_HORZONE, forward, end);
 
-	grabtrace = pi.G_Trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(start,vaultcheckmins,vaultcheckmaxs,end,playerinfo->self,MASK_PLAYERSOLID);
 
 	if (grabtrace.fraction == 1.0)
 	{
@@ -2169,7 +2169,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 
 	if (grabtrace.ent)
 	{
-		if (pi.G_EntIsAButton(grabtrace.ent))
+		if (G_EntIsAButton(grabtrace.ent))
 		{
 			return false;
 		}
@@ -2195,7 +2195,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	righthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(righthand, VAULT_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2208,7 +2208,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	lefthand[2] += VAULT_HAND_HEIGHT;
 	VectorMA(lefthand, VAULT_HAND_HORZONE, forward, endpoint);
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction != 1.0 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2224,7 +2224,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(righthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
-	grabtrace = pi.G_Trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(righthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, righthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2241,7 +2241,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 	VectorCopy(lefthand, endpoint);
 	endpoint[2] -= VAULT_HAND_VERTZONE;
 
-	grabtrace = pi.G_Trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
+	grabtrace = gi.trace(lefthand,handmins,handmaxs,endpoint,playerinfo->self,MASK_PLAYERSOLID);
 
 	VectorCopy(grabtrace.endpos, lefthand);
 	if (grabtrace.fraction == 1.0 || grabtrace.plane.normal[2] < .8 || grabtrace.startsolid || grabtrace.allsolid)
@@ -2270,7 +2270,7 @@ qboolean PlayerActionCheckVault(playerinfo_t *playerinfo, float value)
 		VectorMA(lastcheck_start, 1, forward, lastcheck_end);
 
 		//HEY- should the other checks above check against PLAYERSOLID too?  to include clip brushes?
-		lasttrace = pi.G_Trace(lastcheck_start, playerinfo->self->mins, playerinfo->self->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
+		lasttrace = gi.trace(lastcheck_start, playerinfo->self->mins, playerinfo->self->maxs, lastcheck_end, playerinfo->self, MASK_PLAYERSOLID);
 
 		if (lasttrace.fraction < 1.0 || lasttrace.startsolid || lasttrace.allsolid)
 		{
@@ -2335,7 +2335,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	AngleVectors(playerinfo->self->s.angles, pushdir, NULL, NULL);
 	VectorMA(playerinfo->self->s.origin, PLAYER_BLOCKING_DIST, pushdir, endpos);
 
-	trace = pi.G_Trace(playerinfo->self->s.origin,
+	trace = gi.trace(playerinfo->self->s.origin,
 							  NULL,
 							  NULL,
 							  endpos,
@@ -2347,7 +2347,7 @@ void PlayerActionPushAway(playerinfo_t *playerinfo, float value)
 	VectorMA(trace.endpos, -PLAYER_BLOCKING_DIST, pushdir, endpos);
 
 	// Try placing the entity in the new location.
-	trace = pi.G_Trace(endpos,
+	trace = gi.trace(endpos,
 							  playerinfo->self->mins,
 							  playerinfo->self->maxs,
 							  endpos,
@@ -2373,7 +2373,7 @@ qboolean PlayerActionCheckRopeGrab(playerinfo_t *playerinfo, float stomp_org)
 	if (playerinfo->flags & PLAYER_FLAG_NO_LARM || playerinfo->flags & PLAYER_FLAG_NO_RARM)
 		return false;
 	else
-		return(pi.G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
+		return(G_PlayerActionCheckRopeGrab(playerinfo,stomp_org));
 }
 
 /*-----------------------------------------------
@@ -2420,9 +2420,9 @@ void PlayerActionVaultSound(playerinfo_t *playerinfo, float value)
 	strcat(VaultSound, Material);
 	strcat(VaultSound,"vault.wav");
 
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex(VaultSound),
+						gi.soundindex(VaultSound),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -2440,7 +2440,7 @@ void PlayerActionJump(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] += (playerinfo->self->mins[2] - 2);
 
-	trace = pi.G_Trace(playerinfo->self->s.origin,
+	trace = gi.trace(playerinfo->self->s.origin,
 							  playerinfo->self->mins,
 							  playerinfo->self->maxs,
 							  endpos,
@@ -2465,7 +2465,7 @@ void PlayerActionJumpBack(playerinfo_t *playerinfo, float value)
 	VectorCopy(playerinfo->self->s.origin, endpos);
 	endpos[2] += (playerinfo->self->mins[2] - 2);
 
-	trace = pi.G_Trace(playerinfo->self->s.origin,
+	trace = gi.trace(playerinfo->self->s.origin,
 							  playerinfo->self->mins,
 							  playerinfo->self->maxs,
 							  endpos,
@@ -2506,7 +2506,7 @@ void PlayerClimbingMoveFunc(playerinfo_t *playerinfo, float height, float var2, 
 {
 	assert(playerinfo);
 
-	pi.G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
+	G_PlayerClimbingMoveFunc(playerinfo,height,var2,var3);
 }
 
 /*-----------------------------------------------
@@ -2727,7 +2727,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 		VectorCopy(playerinfo->grabloc, endpoint);
 		endpoint[2] -= playerinfo->self->mins[2] + 2;
 
-		trace = pi.G_Trace(playerinfo->self->s.origin,
+		trace = gi.trace(playerinfo->self->s.origin,
 								  playerinfo->self->mins,
 								  playerinfo->self->maxs,
 								  endpoint,
@@ -2767,7 +2767,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 			VectorCopy(playerinfo->self->mins, playermin);
 			VectorCopy(playerinfo->self->maxs, playermax);
 
-			trace = pi.G_Trace(playerinfo->self->s.origin,
+			trace = gi.trace(playerinfo->self->s.origin,
 									  playermin,
 									  playermax,
 									  endpoint,
@@ -2786,7 +2786,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 				VectorMA(trace.endpos, 32, vf, endpoint);
 
 				//Move to the correct distance away from the wall
-				trace = pi.G_Trace(trace.endpos,
+				trace = gi.trace(trace.endpos,
 										  playermin,
 										  playermax,
 										  endpoint,
@@ -2819,7 +2819,7 @@ void PlayerPullupHeight(playerinfo_t *playerinfo, float height, float endseq, fl
 
 qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 {
-	return(pi.G_PlayerActionCheckPushButton(playerinfo));
+	return(G_PlayerActionCheckPushButton(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -2828,7 +2828,7 @@ qboolean PlayerActionCheckPushButton(playerinfo_t *playerinfo)
 
 void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 {
-	pi.G_PlayerActionPushButton(playerinfo);
+	G_PlayerActionPushButton(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -2837,7 +2837,7 @@ void PlayerActionPushButton(playerinfo_t *playerinfo, float value)
 
 qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 {
-	return(pi.G_PlayerActionCheckPushLever(playerinfo));
+	return(G_PlayerActionCheckPushLever(playerinfo));
 }
 
 /*-----------------------------------------------
@@ -2846,7 +2846,7 @@ qboolean PlayerActionCheckPushLever(playerinfo_t *playerinfo)
 
 void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 {
-	pi.G_PlayerActionPushLever(playerinfo);
+	G_PlayerActionPushLever(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -2855,7 +2855,7 @@ void PlayerActionPushLever(playerinfo_t *playerinfo, float value)
 
 void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 {
-	pi.G_PlayerActionTakePuzzle(playerinfo);
+	G_PlayerActionTakePuzzle(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -2864,7 +2864,7 @@ void PlayerActionTakePuzzle(playerinfo_t *playerinfo, float value)
 
 void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 {
-	pi.G_PlayerActionMoveItem(playerinfo,distance);
+	G_PlayerActionMoveItem(playerinfo,distance);
 }
 
 /*-----------------------------------------------
@@ -2873,7 +2873,7 @@ void PlayerActionMoveItem(playerinfo_t *playerinfo, float distance)
 
 void PlayerActionShrineEffect(playerinfo_t *playerinfo, float value)
 {
-	pi.G_PlayerActionShrineEffect(playerinfo);
+	G_PlayerActionShrineEffect(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -2959,7 +2959,7 @@ void PlayerActionCheckDive(playerinfo_t *playerinfo)
 
 void PlayerActionCheckRopeMove(playerinfo_t *playerinfo, float foo )
 {
-	pi.G_PlayerActionCheckRopeMove(playerinfo);
+	G_PlayerActionCheckRopeMove(playerinfo);
 }
 
 /*-----------------------------------------------
@@ -2994,9 +2994,9 @@ void KnockDownPlayer(playerinfo_t *playerinfo)
 
 void PlayFly(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_BODY,
-						pi.G_SoundIndex("player/idle buzz.wav"),
+						gi.soundindex("player/idle buzz.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -3008,9 +3008,9 @@ void PlayFly(playerinfo_t *playerinfo, float dist)
 
 void PlaySlap(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_BODY,
-						pi.G_SoundIndex("player/idle slap.wav"),
+						gi.soundindex("player/idle slap.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -3022,9 +3022,9 @@ void PlaySlap(playerinfo_t *playerinfo, float dist)
 
 void PlaySigh(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_BODY,
-						pi.G_SoundIndex("*phew.wav"),
+						gi.soundindex("*phew.wav"),
 						0.75,
 						ATTN_NORM,
 						0);
@@ -3035,9 +3035,9 @@ void PlaySigh(playerinfo_t *playerinfo, float dist)
 
 void PlayScratch(playerinfo_t *playerinfo, float dist)
 {
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_BODY,
-						pi.G_SoundIndex("player/scratch.wav"),
+						gi.soundindex("player/scratch.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -3051,7 +3051,7 @@ void SpawnDustPuff(playerinfo_t *playerinfo, float dist)
 {
 	if (playerinfo->waterlevel == WATER_NONE)
 	{
-		pi.G_CreateEffect(playerinfo->self,
+		gi.CreateEffect(playerinfo->self,
 								   FX_DUST_PUFF,
 								   CEF_OWNERS_ORIGIN,
 								   playerinfo->self->s.origin,
@@ -3204,7 +3204,7 @@ void PlayerActionCheckCreep(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
+			gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -3724,7 +3724,7 @@ void PlayerActionCheckWalk(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound(playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
+			gi.sound(playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0 );
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -4177,7 +4177,7 @@ void PlayerActionCheckRun(playerinfo_t *playerinfo)
 		{
 			playerinfo->flags |= PLAYER_FLAG_ONROPE;
 
-			pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
+			gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/ropegrab.wav"), 0.75, ATTN_NORM, 0);
 
 			//We're on the rope
 			PlayerAnimSetLowerSeq(playerinfo,  ASEQ_CLIMB_ON);
@@ -4337,14 +4337,14 @@ void PlayerActionClimbStartSound(playerinfo_t *playerinfo, float value)
 	if (irand(0,4))
 		return;
 
-	pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("*grab.wav"), 0.75, ATTN_NORM, 0);
+	gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("*grab.wav"), 0.75, ATTN_NORM, 0);
 }
 
 void PlayerPlaySlide(playerinfo_t *playerinfo)
 {
 	assert(playerinfo);
 
-	pi.G_Sound( playerinfo->self, CHAN_VOICE, pi.G_SoundIndex("player/slope.wav"), 0.75, ATTN_NORM, 0);
+	gi.sound( playerinfo->self, CHAN_VOICE, gi.soundindex("player/slope.wav"), 0.75, ATTN_NORM, 0);
 }
 
 void
@@ -4354,9 +4354,9 @@ PlayerInterruptAction(playerinfo_t *playerinfo)
 	TurnOffPlayerEffects(playerinfo->self);
 
 	//Remove weapon sounds from the player (technically looping weapons should do this for us, but better safe than annoyed)
-	pi.G_Sound(playerinfo->self,
+	gi.sound(playerinfo->self,
 						CHAN_WEAPON,
-						pi.G_SoundIndex("misc/null.wav"),
+						gi.soundindex("misc/null.wav"),
 						1.0,
 						ATTN_NORM,
 						0);
@@ -4364,16 +4364,16 @@ PlayerInterruptAction(playerinfo_t *playerinfo)
 	//Release any held weapons
 	if (playerinfo->pers.weapon->tag == ITEM_WEAPON_REDRAINBOW && playerinfo->upperseq == ASEQ_WRRBOW_HOLD)
 	{
-		pi.PlayerActionRedRainBowAttack(playerinfo->self);
+		WeaponThink_RedRainBow(playerinfo->self);
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_PHOENIXBOW && playerinfo->upperseq == ASEQ_WPHBOW_HOLD)
 	{
-		pi.PlayerActionPhoenixBowAttack(playerinfo->self);
+		WeaponThink_PhoenixBow(playerinfo->self);
 	}
 	else if (playerinfo->pers.weapon->tag == ITEM_WEAPON_SPHEREOFANNIHILATION && playerinfo->chargingspell)
 	{
 		playerinfo->chargingspell = false;
-		pi.PlayerActionSpellSphereCreate(playerinfo->self, 0.0);
+		G_PlayerActionSpellSphereCreate(playerinfo->self, 0.0);
 	}
 
 	//Clear out any pending animations
