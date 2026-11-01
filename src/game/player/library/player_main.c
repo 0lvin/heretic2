@@ -51,16 +51,3 @@ GetPlayerAPI(player_import_t *import)
 
 	return &pe;
 }
-
-void
-Com_Printf(const char *msg, ...)
-{
-	va_list argptr;
-	char text[1024];
-
-	va_start(argptr, msg);
-	vsnprintf(text, sizeof(text), msg, argptr);
-	va_end(argptr);
-
-	pi.dprintf("%s", text);
-}

@@ -661,6 +661,16 @@ set(Game-Source
 	${GAME_SRC_DIR}/spell/teleport.c
 	${GAME_SRC_DIR}/spell/tornado.c
 	${GAME_SRC_DIR}/spell/wall.c
+	${PLAYER_SRC_DIR}/p_actions.c
+	${PLAYER_SRC_DIR}/p_animactor.c
+	${PLAYER_SRC_DIR}/p_anim_branch.c
+	${PLAYER_SRC_DIR}/p_anim_data.c
+	${PLAYER_SRC_DIR}/p_anims.c
+	${PLAYER_SRC_DIR}/p_chicken_anim.c
+	${PLAYER_SRC_DIR}/p_chicken.c
+	${PLAYER_SRC_DIR}/p_ctrl.c
+	${PLAYER_SRC_DIR}/player_main.c
+	${PLAYER_SRC_DIR}/p_main.c
 	)
 
 set(Game-Header
@@ -695,26 +705,6 @@ set(Game-Header
 	${GAME_SRC_DIR}/savegame/tables/gamemmove_list.h
 	${GAME_SRC_DIR}/savegame/tables/levelfields.h
 	${GAME_SRC_DIR}/savegame/tables/stfields.h
-	)
-
-set(Player-Source
-	${GAME_SRC_DIR}/common/h2matrix.c
-	${GAME_SRC_DIR}/common/h2vector.c
-	${GAME_SRC_DIR}/common/h2rand.c
-	${COMMON_SRC_DIR}/shared/shared.c
-	${PLAYER_SRC_DIR}/p_actions.c
-	${PLAYER_SRC_DIR}/p_animactor.c
-	${PLAYER_SRC_DIR}/p_anim_branch.c
-	${PLAYER_SRC_DIR}/p_anim_data.c
-	${PLAYER_SRC_DIR}/p_anims.c
-	${PLAYER_SRC_DIR}/p_chicken_anim.c
-	${PLAYER_SRC_DIR}/p_chicken.c
-	${PLAYER_SRC_DIR}/p_ctrl.c
-	${PLAYER_SRC_DIR}/player_main.c
-	${PLAYER_SRC_DIR}/p_main.c
-	)
-
-set(Player-Header
 	${PLAYER_SRC_DIR}/p_actions.h
 	${PLAYER_SRC_DIR}/p_animactor.h
 	${PLAYER_SRC_DIR}/p_anim_branch.h
@@ -1408,26 +1398,6 @@ else() # single-config, like normal Makefiles
 		)
 endif()
 target_link_libraries(game ${yquake2LinkerFlags})
-
-# Build the player dynamic library
-add_library(player MODULE ${Player-Source} ${Player-Header})
-set_target_properties(player PROPERTIES
-		PREFIX ""
-		SUFFIX ${CMAKE_SHARED_LIBRARY_SUFFIX}
-		)
-get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(isMultiConfig) # multi-config, like Visual Studio solution
-	set_target_properties(player PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/$<CONFIG>/baseq2
-		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/$<CONFIG>/baseq2
-		)
-else() # single-config, like normal Makefiles
-	set_target_properties(player PROPERTIES
-		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/baseq2
-		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/release/baseq2
-		)
-endif()
-target_link_libraries(player ${yquake2LinkerFlags})
 
 # Build the effects dynamic library
 add_library(effects MODULE ${Effects-Source} ${Effects-Header})

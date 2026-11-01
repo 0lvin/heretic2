@@ -485,12 +485,12 @@ endif
 # ----------
 
 # Phony targets
-.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles1 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract player effects viewer assets
+.PHONY : all client game icon server ref_gl1 ref_gl3 ref_gles1 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract effects viewer assets
 
 # ----------
 
 # Builds everything but the GLES1 renderer
-all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract player effects viewer assets
+all: config client server game ref_gl1 ref_gl3 ref_gles3 ref_soft ref_vk ref_gl4 xatrix rogue ctf pakextract effects viewer assets
 
 # ----------
 
@@ -1396,6 +1396,16 @@ GAME_OBJS_ = \
 	src/game/player/item.o \
 	src/game/player/view.o \
 	src/game/player/weapon.o \
+	src/game/player/library/p_actions.o \
+	src/game/player/library/p_animactor.o \
+	src/game/player/library/p_anim_branch.o \
+	src/game/player/library/p_anim_data.o \
+	src/game/player/library/p_anims.o \
+	src/game/player/library/p_chicken_anim.o \
+	src/game/player/library/p_chicken.o \
+	src/game/player/library/p_ctrl.o \
+	src/game/player/library/player_main.o \
+	src/game/player/library/p_main.o \
 	src/game/savegame/savegame.o \
 	src/game/spell/blast.o \
 	src/game/spell/bluering.o \
@@ -1414,76 +1424,6 @@ GAME_OBJS_ = \
 	src/game/spell/teleport.o \
 	src/game/spell/tornado.o \
 	src/game/spell/wall.o
-
-# ----------
-
-# The base player
-ifeq ($(YQ2_OSTYPE), Windows)
-player:
-	@echo "===> Building baseq2/player.dll"
-	${Q}mkdir -p $(BINDIR)/baseq2
-	$(MAKE) $(BINDIR)/baseq2/player.dll
-
-$(BUILDDIR)/player/%.o: %.c
-	@if [ -z $(QUIET) ]; then\
-		echo "===> CC $<";\
-	fi
-	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
-
-$(BINDIR)/baseq2/player.dll : LDFLAGS += -shared
-
-else ifeq ($(YQ2_OSTYPE), Darwin)
-
-player:
-	@echo "===> Building baseq2/player.dylib"
-	${Q}mkdir -p $(BINDIR)/baseq2
-	$(MAKE) $(BINDIR)/baseq2/player.dylib
-
-$(BUILDDIR)/player/%.o: %.c
-	@if [ -z $(QUIET) ]; then\
-		echo "===> CC $<";\
-	fi
-	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
-
-$(BINDIR)/baseq2/player.dylib : CFLAGS += -fPIC
-$(BINDIR)/baseq2/player.dylib : LDFLAGS += -shared
-
-else # not Windows or Darwin
-
-player:
-	@echo "===> Building baseq2/player.so"
-	${Q}mkdir -p $(BINDIR)/baseq2
-	$(MAKE) $(BINDIR)/baseq2/player.so
-
-$(BUILDDIR)/player/%.o: %.c
-	@echo "===> CC $<"
-	${Q}mkdir -p $(@D)
-	${Q}$(CC) -c $(CFLAGS) $(INCLUDE) -o $@ $<
-
-$(BINDIR)/baseq2/player.so : CFLAGS += -fPIC -Wno-unused-result
-$(BINDIR)/baseq2/player.so : LDFLAGS += -shared
-endif
-
-# ----------
-
-# Used by the player
-PLAYER_OBJS_ = \
-	src/game/common/h2matrix.o \
-	src/game/common/h2vector.o \
-	src/game/common/h2rand.o \
-	src/common/shared/shared.o \
-	src/game/player/library/p_actions.o \
-	src/game/player/library/p_animactor.o \
-	src/game/player/library/p_anim_branch.o \
-	src/game/player/library/p_anim_data.o \
-	src/game/player/library/p_anims.o \
-	src/game/player/library/p_chicken_anim.o \
-	src/game/player/library/p_chicken.o \
-	src/game/player/library/p_ctrl.o \
-	src/game/player/library/player_main.o \
-	src/game/player/library/p_main.o
 
 # ----------
 
@@ -2087,7 +2027,6 @@ SERVER_OBJS = $(patsubst %,$(BUILDDIR)/server/%,$(SERVER_OBJS_))
 PAKEXTRACT_OBJS = $(patsubst %,$(BUILDDIR)/pakextract/%,$(PAKEXTRACT_OBJS_))
 VIEWER_OBJS = $(patsubst %,$(BUILDDIR)/viewer/%,$(VIEWER_OBJS_))
 GAME_OBJS = $(patsubst %,$(BUILDDIR)/baseq2/%,$(GAME_OBJS_))
-PLAYER_OBJS = $(patsubst %,$(BUILDDIR)/player/%,$(PLAYER_OBJS_))
 EFFECTS_OBJS = $(patsubst %,$(BUILDDIR)/effects/%,$(EFFECTS_OBJS_))
 
 # ----------
@@ -2095,7 +2034,6 @@ EFFECTS_OBJS = $(patsubst %,$(BUILDDIR)/effects/%,$(EFFECTS_OBJS_))
 # Generate header dependencies.
 CLIENT_DEPS= $(CLIENT_OBJS:.o=.d)
 GAME_DEPS= $(GAME_OBJS:.o=.d)
-PLAYER_DEPS= $(PLAYER_OBJS:.o=.d)
 EFFECTS_DEPS= $(EFFECTS_OBJS:.o=.d)
 REFGL1_DEPS= $(REFGL1_OBJS:.o=.d)
 REFGLES1_DEPS= $(REFGLES1_OBJS:.o=.d)
@@ -2293,22 +2231,6 @@ else
 $(BINDIR)/baseq2/game.so : $(GAME_OBJS)
 	@echo "===> LD $@"
 	${Q}$(CXX) $(LDFLAGS) $(GAME_OBJS) $(LDLIBS) -o $@
-endif
-
-# $(BINDIR)/baseq2/player.so
-ifeq ($(YQ2_OSTYPE), Windows)
-$(BINDIR)/baseq2/player.dll : $(PLAYER_OBJS)
-	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
-	$(Q)strip $@
-else ifeq ($(YQ2_OSTYPE), Darwin)
-$(BINDIR)/baseq2/player.dylib : $(PLAYER_OBJS)
-	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
-else
-$(BINDIR)/baseq2/player.so : $(PLAYER_OBJS)
-	@echo "===> LD $@"
-	${Q}$(CC) $(LDFLAGS) $(PLAYER_OBJS) $(LDLIBS) -o $@
 endif
 
 # $(BINDIR)/baseq2/effects.so
