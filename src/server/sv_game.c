@@ -875,7 +875,6 @@ SV_InitGameProgs(void)
 	import.TagRealloc = Z_TagRealloc;
 
 	/* Heretic 2 specific */
-	import.FS_NextPath = FS_NextPath;
 	import.CreateEffect = SV_CreateEffect;
 	import.CreatePersistantEffect = SV_CreatePersistantEffect;
 	import.Persistant_Effects_Array = SV_Persistant_Effects;

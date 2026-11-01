@@ -252,11 +252,6 @@ typedef struct
 	void	(*CreateEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 	int		(*CreatePersistantEffect) (edict_t *ent, int type, int flags, vec3_t origin, char *format, ...);
 
-	// Files will be memory mapped read only. The returned buffer may be part of a larger '.pak'
-	// file, or a discrete file from anywhere in the quake search path. A -1 return means the file
-	// does not exist. NULL can be passed for buf to just determine existance.
-	const char	*(*FS_NextPath)(const char *prevpath);
-
 	// pointer to the server side persistant effects arrary
 	PerEffectsBuffer_t *Persistant_Effects_Array;
 } game_import_t;
