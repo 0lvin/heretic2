@@ -1333,6 +1333,8 @@ GAME_OBJS_ = \
 	src/game/monster/gorgon/gorgon_anim.o \
 	src/game/monster/gorgon/gorgon.o \
 	src/game/monster/guardian/guardian.o \
+	src/game/monster/grunt/grunt1.o \
+	src/game/monster/grunt/grunt2.o \
 	src/game/monster/gunner/gunner.o \
 	src/game/monster/harpy/harpy_anim.o \
 	src/game/monster/harpy/harpy.o \
@@ -1368,6 +1370,7 @@ GAME_OBJS_ = \
 	src/game/monster/seraph_guard/seraph_guard.o \
 	src/game/monster/seraph/seraph_anim.o \
 	src/game/monster/seraph/seraph.o \
+	src/game/monster/screamer/screamer.o \
 	src/game/monster/shalrath/shalrath.o \
 	src/game/monster/shambler/shambler.o \
 	src/game/monster/soldier/soldier.o \

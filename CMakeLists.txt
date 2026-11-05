@@ -524,6 +524,8 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/gunner/gunner.h
 	${GAME_SRC_DIR}/monster/harpy/harpy_anim.c
 	${GAME_SRC_DIR}/monster/harpy/harpy.c
+	${GAME_SRC_DIR}/monster/grunt/grunt1.c
+	${GAME_SRC_DIR}/monster/grunt/grunt2.c
 	${GAME_SRC_DIR}/monster/hknight/hknight.c
 	${GAME_SRC_DIR}/monster/hover/hover.c
 	${GAME_SRC_DIR}/monster/hover/hover.h
@@ -563,6 +565,7 @@ set(Game-Source
 	${GAME_SRC_DIR}/monster/seraph_guard/seraph_guard.c
 	${GAME_SRC_DIR}/monster/seraph/seraph_anim.c
 	${GAME_SRC_DIR}/monster/seraph/seraph.c
+	${GAME_SRC_DIR}/monster/screamer/screamer.c
 	${GAME_SRC_DIR}/monster/shalrath/shalrath.c
 	${GAME_SRC_DIR}/monster/shambler/shambler.c
 	${GAME_SRC_DIR}/monster/soldier/soldier.c
