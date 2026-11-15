@@ -67,7 +67,7 @@ int num_cl_weaponmodels;
 /*
  * Specifies the model that will be used as the world
  */
-void
+static void
 V_ClearScene(void)
 {
 	r_numdlights = 0;

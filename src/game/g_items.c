@@ -327,7 +327,7 @@ SetRespawn(edict_t *ent, float delay)
 
 /* ====================================================================== */
 
-qboolean
+static qboolean
 Pickup_Powerup(edict_t *ent, edict_t *other)
 {
 	int quantity;
@@ -444,7 +444,7 @@ Pickup_Adrenaline(edict_t *ent, edict_t *other)
 	return true;
 }
 
-qboolean
+static qboolean
 Pickup_AncientHead(edict_t *ent, edict_t *other)
 {
 	if (!ent || !other)
@@ -462,7 +462,7 @@ Pickup_AncientHead(edict_t *ent, edict_t *other)
 	return true;
 }
 
-qboolean
+static qboolean
 Pickup_Bandolier(edict_t *ent, edict_t *other)
 {
 	const gitem_t *item;
@@ -549,7 +549,7 @@ Pickup_Bandolier(edict_t *ent, edict_t *other)
 	return true;
 }
 
-qboolean
+static qboolean
 Pickup_Pack(edict_t *ent, edict_t *other)
 {
 	const gitem_t *item;
@@ -1269,7 +1269,7 @@ Use_Silencer(edict_t *ent, const gitem_t *item)
 
 /* ====================================================================== */
 
-qboolean
+static qboolean
 Pickup_Key(edict_t *ent, edict_t *other)
 {
 	if (!ent || !other)
@@ -1536,7 +1536,7 @@ Add_Ammo(edict_t *ent, const gitem_t *item, int count)
 	return true;
 }
 
-qboolean
+static qboolean
 Pickup_Ammo(edict_t *ent, edict_t *other)
 {
 	int count;

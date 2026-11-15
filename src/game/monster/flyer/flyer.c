@@ -858,7 +858,7 @@ flyer_die(edict_t *self, edict_t *inflictor /* unused */,
 }
 
 /* kamikaze code .. blow up if blocked */
-static int
+int
 flyer_blocked(edict_t *self, float dist)
 {
 	if (!self)
@@ -988,7 +988,7 @@ SP_monster_flyer(edict_t *self)
 	self->monsterinfo.melee = flyer_melee;
 	self->monsterinfo.sight = flyer_sight;
 	self->monsterinfo.idle = flyer_idle;
-	self->monsterinfo.blocked = (void *)flyer_blocked;
+	self->monsterinfo.blocked = flyer_blocked;
 
 	gi.linkentity(self);
 
@@ -1048,7 +1048,7 @@ SP_monster_kamikaze(edict_t *self)
 	self->monsterinfo.sight = flyer_sight;
 	self->monsterinfo.idle = flyer_idle;
 
-	self->monsterinfo.blocked = (void *)flyer_blocked;
+	self->monsterinfo.blocked = flyer_blocked;
 
 	gi.linkentity(self);
 

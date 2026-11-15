@@ -110,7 +110,7 @@ SV_StatusString(void)
 			int playerLength;
 
 			Com_sprintf(player, sizeof(player), "%i %i \"%s\"\n",
-					CL_EDICT(cl)->client->ps.stats[STAT_FRAGS], cl->ping, cl->name);
+					SV_GetPlayerStats(CL_EDICT(cl))[STAT_FRAGS], cl->ping, cl->name);
 			playerLength = (int)strlen(player);
 
 			if (statusLength + playerLength >= sizeof(status))
@@ -375,7 +375,7 @@ SV_Optimizations(void)
 {
 	const cvar_t *cv;
 
-	if (svs.gamemode <= 0 || svs.gamemode > 3)
+	if (svs.gamemode < GAMEMODE_SP || svs.gamemode > GAMEMODE_DM)
 	{
 		return 0;
 	}
@@ -413,7 +413,7 @@ SV_Frame(int usec)
 	SV_ReadPackets();
 
 	/* send messages more often to new clients getting ready for spawning in
-	   speeds up the process of sending configstrings, entty deltas, etc.
+	   speeds up the process of sending configstrings, entity deltas, etc.
 	*/
 	opt_sendrate = SV_Optimizations() & OPTIMIZE_SENDRATE;
 
