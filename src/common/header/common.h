@@ -305,6 +305,11 @@ enum svc_ops_e
 	svc_help_path,              /* [Paril-KEX] help path */
 	svc_muzzleflash3,           /* [Paril-KEX] muzzleflashes, but ushort id */
 	svc_achievement,            /* [Paril-KEX] */
+
+	/* Q2Test / Quake World messages */
+	svc_chokecount,             /* Packets choked */
+
+	/* Heretic 2 */
 	svc_client_effect,          /* Heretic 2 effects */
 };
 
@@ -971,6 +976,7 @@ int P_ConvertConfigStringTo(int i, int protocol);
 int P_GetCountOfItems(int protocol);
 int P_GetCountOfStats(int protocol);
 int P_CmdConvert(int cmd, int protocol);
+uint64_t P_EntityBitsConvert(uint64_t bits, int protocol);
 
 /* ======================================================================= */
 

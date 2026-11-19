@@ -57,6 +57,7 @@ static const char *svc_strings[] = {
 	"svc_deltapacketentities",
 	"svc_frame",
 
+	/* Quake 2 ReRelease */
 	"svc_splitclient",
 	"svc_configblast",
 	"svc_spawnbaselineblast",
@@ -70,6 +71,11 @@ static const char *svc_strings[] = {
 	"svc_help_path",
 	"svc_muzzleflash3",
 	"svc_achievement",
+
+	/* Quake World */
+	"svc_chokecount",
+
+	/* Heretic 2 */
 	"svc_client_effect",
 };
 
@@ -94,11 +100,113 @@ CL_RegisterSounds(void)
 	S_EndRegistration();
 }
 
-/*
- * Returns the entity number and the header bits
- */
+static int
+CL_ParseEntityBitsH2Demo(uint64_t *bits)
+{
+	int i, mask, number;
+	uint64_t total = 0;
+
+	mask = MSG_ReadByte(&net_message);
+	if (mask < 0)
+	{
+		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+		return 0;
+	}
+
+	for (i = 0; i < 5; i++)
+	{
+		if (mask & (1 << i))
+		{
+			int b;
+
+			b = MSG_ReadByte(&net_message);
+			if (b < 0)
+			{
+				Com_Error(ERR_FATAL, "%s: unexpected message end", __func__);
+				return 0;
+			}
+
+			total |= (uint64_t)b << (i * 8);
+		}
+	}
+
+	if (total & (1LL << 30)) /* Heretic 2 U_NUMBER16 */
+	{
+		number = MSG_ReadShort(&net_message);
+	}
+	else
+	{
+		number = MSG_ReadByte(&net_message);
+	}
+
+	if (number < 0)
+	{
+		Com_Error(ERR_DROP, "%s: unexpected message end", __func__);
+		return 0;
+	}
+
+	/* Heretic 2 flags is not converted yet */
+	/* count the bits for net profiling */
+	for (i = 0; i < ARRLEN(bitcounts); i++)
+	{
+		if (total & (1ULL << i))
+		{
+			bitcounts[i]++;
+		}
+	}
+
+	*bits = total;
+	return number;
+}
+
 static unsigned
-CL_ParseEntityBits(uint64_t *bits)
+CL_ParseEntityBitsQ2Test(uint64_t *bits)
+{
+	int i, number, extra_bytes, packed;
+	uint64_t total;
+
+	packed = MSG_ReadShort(&net_message);
+	if (packed < 0)
+	{
+		Com_Error(ERR_FATAL, "%s: unexpected message end", __func__);
+		return 0;
+	}
+
+	total = (short)packed & 0x0f;
+	extra_bytes = ((short)packed >> 4) & 0x03;
+	number = ((short)packed) >> 6;
+
+	for (i = 0; i < extra_bytes; i++)
+	{
+		int b;
+
+		b = MSG_ReadByte(&net_message);
+		if (b < 0)
+		{
+			Com_Error(ERR_FATAL, "%s: unexpected message end", __func__);
+			return 0;
+		}
+
+		total |= (uint64_t)b << ((i + 1) * 8);
+	}
+
+	total = P_EntityBitsConvert(total, cls.serverProtocol);
+
+	/* count the bits for net profiling */
+	for (i = 0; i < ARRLEN(bitcounts); i++)
+	{
+		if (total & (1ULL << i))
+		{
+			bitcounts[i]++;
+		}
+	}
+
+	*bits = total;
+	return number;
+}
+
+static unsigned
+CL_ParseEntityBitsQ2RR(uint64_t *bits)
 {
 	int i, b, number;
 	uint64_t total;
@@ -173,7 +281,6 @@ CL_ParseEntityBits(uint64_t *bits)
 	{
 		number = MSG_ReadShort(&net_message);
 	}
-
 	else
 	{
 		number = MSG_ReadByte(&net_message);
@@ -188,6 +295,26 @@ CL_ParseEntityBits(uint64_t *bits)
 	*bits = total;
 
 	return number;
+}
+
+/*
+ * Returns the entity number and the header bits
+ */
+static unsigned
+CL_ParseEntityBits(uint64_t *bits)
+{
+	if (cls.serverProtocol == PROTOCOL_Q2TEST_VERSION)
+	{
+		return CL_ParseEntityBitsQ2Test(bits);
+	}
+	else if (cls.serverProtocol == PROTOCOL_H2DEMO_VERSION)
+	{
+		return CL_ParseEntityBitsH2Demo(bits);
+	}
+	else
+	{
+		return CL_ParseEntityBitsQ2RR(bits);
+	}
 }
 
 /*
@@ -228,6 +355,7 @@ CL_ParseDelta(const entity_xstate_t *from, entity_xstate_t *to, int number, uint
 	}
 
 	if (IS_QII97_PROTOCOL(cls.serverProtocol) ||
+		(cls.serverProtocol == PROTOCOL_Q2TEST_VERSION) ||
 		(IS_QIIRR_PROTOCOL(cls.serverProtocol) && !(bits & U_MODEL16)))
 	{
 		if (bits & U_MODEL)
@@ -2675,6 +2803,12 @@ CL_ParseServerMessage(void)
 
 			case svc_achievement:
 				Com_Printf("Achievement: %s\n", MSG_ReadString(&net_message));
+				break;
+
+			/* Quake World */
+			case svc_chokecount:
+				Com_DPrintf("%s: %d packages skipped\n",
+					__func__, MSG_ReadByte(&net_message));
 				break;
 		}
 	}

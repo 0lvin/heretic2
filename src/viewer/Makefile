@@ -53,6 +53,8 @@ COMMON_FILES = \
 	../common/models/loadfile.c \
 	../common/models/mesh.c \
 	../common/models/models.c \
+	../common/models/models_ctc.c \
+	../common/models/models_fm.c \
 	../common/models/models_utils.c \
 	../common/models/models_hlmdl.c \
 	../common/models/models_image.c \
