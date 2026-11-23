@@ -68,7 +68,7 @@ image_load(const char* name, int *w, int *h, int *b)
 		pic_decoded[(i * 4) + 0] = palette[pic[i] * 3 + 0];
 		pic_decoded[(i * 4) + 1] = palette[pic[i] * 3 + 1];
 		pic_decoded[(i * 4) + 2] = palette[pic[i] * 3 + 2];
-		pic_decoded[(i * 4) + 2] = 0;
+		pic_decoded[(i * 4) + 3] = 255;
 	}
 	free(pic);
 	free(palette);
@@ -90,7 +90,7 @@ insert_skin(const char *name, byte *data, int width, int realwidth,
 		pixels[(i * 4) + 0] = colormap[data[i]][0];
 		pixels[(i * 4) + 1] = colormap[data[i]][1];
 		pixels[(i * 4) + 2] = colormap[data[i]][2];
-		pixels[(i * 4) + 2] = 0;
+		pixels[(i * 4) + 3] = 255;
 	}
 
 	upload_texture(pixels, width, height);
@@ -332,76 +332,6 @@ void
 cleanup(void)
 {
 	FreeModel(mem_mod);
-}
-
-void
-keyboard(unsigned char key, int x, int y)
-{
-	iskin += skin_count;
-	xrotate += 360;
-	yrotate += 360;
-	zrotate += 360;
-
-	switch (key)
-	{
-		case '0':
-			imesh++;
-			break;
-
-		case '=':
-			iskin++;
-			break;
-
-		case '-':
-			iskin--;
-			break;
-
-		case 'w':
-			xrotate += 5;
-			break;
-
-		case 's':
-			xrotate -= 5;
-			break;
-
-		case 'd':
-			yrotate += 5;
-			break;
-
-		case 'a':
-			yrotate -= 5;
-			break;
-
-		case 'z':
-			zrotate += 5;
-			break;
-
-		case 'c':
-			zrotate -= 5;
-			break;
-
-		case 'x':
-			irender++;
-			break;
-
-		case 'v':
-			zdist -= 5;
-			break;
-
-		case 'b':
-			zdist += 5;
-			break;
-
-
-		case 'q':
-			exit (0);
-			break;
-	}
-
-	iskin %= skin_count;
-	xrotate %= 360;
-	yrotate %= 360;
-	zrotate %= 360;
 }
 
 /*
